@@ -7,12 +7,11 @@ public class QualifiedNameAdapter extends XmlAdapter<QName, org.openprovenance.p
     final ProvFactory pf=new ProvFactory();
 
     @Override
-    public QName marshal(org.openprovenance.prov.model.QualifiedName qname) throws Exception {
-        if (qname==null) {
+    public QName marshal(org.openprovenance.prov.model.QualifiedName qualifiedName) throws Exception {
+        if (qualifiedName==null) {
             return null;
         } else {
-            //System.out.println("marshalling " + qname);
-            return qname.toQName();
+            return qualifiedName.toQName();
         }
     }
 
@@ -21,8 +20,6 @@ public class QualifiedNameAdapter extends XmlAdapter<QName, org.openprovenance.p
         if (q==null) {
             return null;
         } else {
-            //System.out.println("unmarshalling " + ref);
-            //System.out.println("unmarshalling found " + q);
             QualifiedName qq=new QualifiedName(q);
             return qq;
         }

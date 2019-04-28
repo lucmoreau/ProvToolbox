@@ -23,8 +23,11 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.Bundle;
+import org.openprovenance.prov.model.ModelConstructorExtension;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Statement;
@@ -40,11 +43,13 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 /** For testing purpose, conversion back to ASN. */
 
-public class NotationConstructor implements ModelConstructor {
-
+public class NotationConstructor implements ModelConstructor, ModelConstructorExtension {
     public static final String MARKER = "-";
     boolean abbrev = false;
     final private BufferedWriter buffer;
@@ -240,8 +245,7 @@ public class NotationConstructor implements ModelConstructor {
         String s = "";
 
         s = s + keyword("endDocument");
-
-        write(s);
+        writeln(s);
         return null;
     }
 
@@ -466,7 +470,9 @@ public class NotationConstructor implements ModelConstructor {
 
         for (String key : nss.keySet()) {
             String uri = nss.get(key);
-            if ((key.equals("_") || (key.equals("prov")))) {
+            if ((key.equals("_") 
+        	    || (key.equals("prov"))
+        	    || (key.equals("xsd") && NamespacePrefixMapper.XSD_NS.equals(uri)))) {
                 // IGNORE, we have just handled it
             } else {
                 s = s + convertNamespace(key, "<" + uri + ">") + breakline();
@@ -534,6 +540,69 @@ public class NotationConstructor implements ModelConstructor {
     public QualifiedName newQualifiedName(String namespace, String local,
 					  String prefix) {
 	return null;
+    }
+
+    @Override
+    public QualifiedName newQualifiedName(String namespace, String local, String prefix,
+					  BuildFlag flag) {
+	return null;
+    }
+
+    @Override
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id,
+                                                        QualifiedName e2,
+                                                        QualifiedName e1,
+                                                        Collection<Attribute> attributes) {
+        if ((id==null) && (attributes==null || attributes.isEmpty())) {
+             newAlternateOf(e2,e1);
+             return null;
+        }
+        String s = keyword("provext:alternateOf") + "(" + optionalId(id)
+                + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(attributes) + ")";
+        writeln(s);
+        return null;
+    }
+
+    @Override
+    public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id,
+                                                                  QualifiedName e2,
+                                                                  QualifiedName e1,
+                                                                  Collection<Attribute> attributes) {
+        if ((id==null) && (attributes==null || attributes.isEmpty())) {
+            newSpecializationOf(e2,e1);
+            return null;
+        }
+       
+        String s = keyword("provext:specializationOf") + "(" + optionalId(id)
+                + idOrMarker(e2) + "," + idOrMarker(e1) +  optionalAttributes(attributes) + ")";
+        writeln(s);
+        return null;
+    }
+
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id,
+                                                    QualifiedName c,
+                                                    Collection<QualifiedName> ll,
+                                                    Collection<Attribute> attributes) {
+        if ((id==null) && (attributes==null || attributes.isEmpty())) {
+            newHadMember(c,ll);
+            return null;
+        }
+        if ((ll == null) || (ll.size() == 0)) {
+            // strictly speaking it is not a syntactically correct expression,
+            // but we print something to support scruffiness
+            String s = keyword("provext:hadMember") + "(" + optionalId(id) + idOrMarker(c) + ","
+                    + idOrMarker((QualifiedName) null)+  optionalAttributes(attributes) + ")";
+            writeln(s);
+        } else {
+            for (QualifiedName e : ll) {
+                String s = keyword("provext:hadMember") + "(" + optionalId(id) + idOrMarker(c) + ","
+                        + idOrMarker(e) +  optionalAttributes(attributes) + ")";
+                writeln(s);
+            }
+        }
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

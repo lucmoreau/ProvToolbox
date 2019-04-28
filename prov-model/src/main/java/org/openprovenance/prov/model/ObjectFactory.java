@@ -1,5 +1,9 @@
 package org.openprovenance.prov.model;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /**
  * This interface specifies core functionality similar to the JAXB ObjectFactory.
@@ -89,6 +93,10 @@ public interface ObjectFactory {
     WasInvalidatedBy createWasInvalidatedBy();
 
     WasStartedBy createWasStartedBy();
+    
+    QualifiedSpecializationOf createQualifiedSpecializationOf();
+    QualifiedAlternateOf createQualifiedAlternateOf();
+    QualifiedHadMember createQualifiedHadMember();
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Used }{@code >}}

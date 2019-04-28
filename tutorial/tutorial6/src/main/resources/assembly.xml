@@ -1,0 +1,54 @@
+<assembly>
+  <id>src</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <files>
+
+    <file>
+      <source>${project.build.directory}/classes/README.txt</source>
+      <outputDirectory>/${project.artifactId}-${pom.version}/</outputDirectory>
+    </file>
+
+    <file>
+      <source>${project.basedir}/license.txt</source>
+      <destName>LICENSE.TXT</destName>
+      <outputDirectory>/${project.artifactId}-${pom.version}/</outputDirectory>
+    </file>
+
+    <file>
+      <source>${project.basedir}/src/main/resources/standalone-pom.xml</source>
+      <destName>pom.xml</destName>
+      <outputDirectory>/${project.artifactId}-${pom.version}/</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+
+  </files>
+
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/src</directory>
+      <outputDirectory>/${project.artifactId}-${pom.version}/src</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>**/assembly.xml</exclude>
+        <exclude>**/README.txt</exclude>
+        <exclude>**/standalone-pom.xml</exclude>
+        <exclude>**/resources</exclude>
+      </excludes>
+    </fileSet>
+
+  </fileSets>
+
+
+</assembly>
+
+
+
+
+
+
+
+

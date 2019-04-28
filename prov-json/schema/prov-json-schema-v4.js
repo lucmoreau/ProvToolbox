@@ -35,10 +35,9 @@
       "title": "An international string with langtag",
       "properties": {
         "$": { "type": "string" },
-        "type": { "type": "string", "format": "uri" },
         "lang": { "type": "string" }
       },
-      "required": ["$", "type"],
+      "required": ["$", "lang"],
       "additionalProperties": false
     },
     "literal-complex": {

@@ -1,16 +1,16 @@
 package org.openprovenance.prov.model;
 
+
 /** Namespace and prefix declarations for common namespaces manipulated by ProvToolbox. API to
  *  Sun's NamespacePrefixMapper  
  * @author lavm
  * @see <a href="http://grepcode.com/file/repo1.maven.org/maven2/com.sun.xml.bind/jaxb-impl/2.1.11/com/sun/xml/bind/marshaller/NamespacePrefixMapper.java">JAXB NamespacePrefixMapper</a>
  */
 public interface NamespacePrefixMapper {
-
+    static final public String PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
     static final public String PROV_NS = "http://www.w3.org/ns/prov#";
     static final public String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
-    static final public String XSD_NS = "http://www.w3.org/2001/XMLSchema";
-    static final public String XSD_HASH_NS = "http://www.w3.org/2001/XMLSchema#";
+    static final public String XSD_NS = "http://www.w3.org/2001/XMLSchema#";
     static final public String PRINTER_NS = "http://openprovenance.org/model/opmPrinterConfig";
     static final public String XML_NS = "http://www.w3.org/XML/1998/namespace";
     static final public String PROV_PREFIX = "prov";
@@ -21,7 +21,14 @@ public interface NamespacePrefixMapper {
     static final public String RDFS_PREFIX = "rdfs";
     static final public String BOOK_PREFIX = "bk";
     static final public String BOOK_NS = "http://www.provbook.org/ns/#";
-    static final public String TOOLBOX_NS = "http://openprovenance.org/toolbox/";
+    static final public String SHARED_PROV_TOOLBOX_PREFIX="http://openprovenance.org/provtoolbox/";
+    static final public String TOOLBOX_NS = SHARED_PROV_TOOLBOX_PREFIX + "ns#";
+    static final public String TOOLBOX_PREFIX = "box";
+    static final public String DOT_NS = SHARED_PROV_TOOLBOX_PREFIX + "dot/ns#";
+    static final public String DOT_PREFIX = "dot";
+    static final public String SUMMARY_NS = NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX + "summary/ns#";
+    static final public String SUMMARY_PREFIX = "sum";
+
 
     /**
      * Returns a preferred prefix for the given namespace URI.

@@ -1,5 +1,9 @@
 package org.openprovenance.prov.model;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /** Interface to a visitor like functionality operating over PROV statements and bundles.  
  * This visitor returns {@link Object}.  For a visitor that returns void, see {@link StatementAction}.
@@ -54,6 +58,12 @@ public interface StatementActionValue {
     Object doAction(MentionOf s);
 
     Object doAction(SpecializationOf s);
+    
+    Object doAction(QualifiedSpecializationOf s);
+    
+    Object doAction(QualifiedAlternateOf s);
+
+    Object doAction(QualifiedHadMember s);
 
     Object doAction(DerivedByInsertionFrom s);
 

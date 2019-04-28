@@ -11,12 +11,16 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openprovenance.prov.sql.ObjectFactory2;
 import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.xml.ValueConverter;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.LiteralConstructor;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
+import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,9 +28,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /** A stateless factory for PROV objects. */
 
-//TODO: move the QNameExport capability outside the factory, and make it purely stateless, without namespace. 
-
-public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor { //implements ModelConstructor, QNameExport {
+public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor { 
+    
+    final private QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     static public DocumentBuilder builder;
 
@@ -96,26 +100,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 	super(of);
 	init();
     }
-
-    /*
-    @Override
-    public org.openprovenance.prov.model.Attribute createAttribute(QName qname,
-								   Object value,
-								   QName type) {
-	return new Attribute(qname,value,type);
-    }
-
-    @Override
-    public org.openprovenance.prov.model.Attribute createAttribute(AttributeKind kind,
-								   Object value,
-								   QName type) {
-	// TODO Auto-generated method stub
-	return null;
-    }
-    */
-
-   
-
 
 
     
@@ -203,12 +187,32 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 	return null;
     }
 
-	@Override
-	public QualifiedName newQualifiedName(String namespace, String local,
-			String prefix) {
+ 
+    @Override
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
+									String local,
+									String prefix) {
+	return newQualifiedName(namespace,local,prefix, BuildFlag.STRICT);
+    }
+    @Override
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace,
+									String local,
+									String prefix,
+									BuildFlag flag) {
+	if (BuildFlag.NOCHEK.equals(flag) || qnU.patternExactMatch(local)) {
+	    return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
+	} else {
+	    switch(flag){
+	    case STRICT:
+		throw new QualifiedNameException("PROV-N QualifiedName: local name not valid " + local);
+	    case WARN:
+		System.out.println("ProvToolbox Warning: PROV-N QualifiedName: local name not valid " + local);
+	    default:
 		return new org.openprovenance.prov.sql.QualifiedName(namespace, local, prefix);
+	    
+	    }
 	}
-	
+    }	
 
     public Namespace newNamespace(Namespace ns) {
     	return new org.openprovenance.prov.sql.Namespace(ns);
@@ -218,7 +222,17 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     	return new org.openprovenance.prov.sql.Namespace();
     }
     
+    ValueConverter vconv=new ValueConverter(this);
 
+    public Key newKey(Object value, QualifiedName type) {
+        if (getName().RDF_LITERAL.equals(type)&& (value instanceof String)) {
+            value=vconv.convertToJava(type,(String)value);
+        }
+        Key key = new Key();
+        key.type = type;
+        key.setValueFromObject(value);
+        return key;
+    }
 
 
     static public void initializeTables () {

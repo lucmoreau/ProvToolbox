@@ -1,0 +1,16 @@
+
+document
+  prefix xsd <http://www.w3.org/2001/XMLSchema>
+  prefix provbook <http://www.provbook.org>
+  prefix jim <http://www.cs.rpi.edu/~hendler/>
+  prefix foaf <http://xmlns.com/foaf/0.1/>
+
+  entity(provbook:a-little-provenance-goes-a-long-way,[prov:value = "A little provenance goes a long way" %% xsd:string])
+  agent(provbook:Paul,[foaf:name = "Paul Groth"])
+  agent(provbook:Luc,[foaf:name = "Luc Moreau"])
+  wasAttributedTo(provbook:a-little-provenance-goes-a-long-way, provbook:Paul)
+  wasAttributedTo(provbook:a-little-provenance-goes-a-long-way, provbook:Luc)
+  entity(jim:LittleSemanticsWeb.html)
+  wasDerivedFrom(provbook:a-little-provenance-goes-a-long-way, jim:LittleSemanticsWeb.html)
+endDocument
+

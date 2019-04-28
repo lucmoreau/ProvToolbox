@@ -1,0 +1,18 @@
+
+document
+
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+  prefix tmpl <http://openprovenance.org/tmpl#>
+
+  prefix foaf <http://xmlns.com/foaf/0.1/>
+  
+  bundle vargen:bundleId
+    entity(var:quote, [prov:value='var:value'])
+    entity(var:author, [prov:type='prov:Person', foaf:name='var:name'])
+    wasAttributedTo(var:quote,var:author)
+    entity(var:institution)
+    actedOnBehalfOf(var:author,var:institution,-)
+  endBundle
+
+endDocument

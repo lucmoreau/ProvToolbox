@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /**
  * Utility class to traverse a document, register all namespaces occurring in {@link QualifiedName}s 
@@ -143,11 +147,40 @@ public class NamespaceGatherer implements StatementAction {
 	    register(i);
 	}
     }
+    @Override
+    public void doAction(QualifiedHadMember mem) {
+        register(mem.getId());
+        register(mem.getCollection());
+        for (QualifiedName i: mem.getEntity()) {
+            register(i);
+        } 
+        registerType(mem.getType());
+        registerOther(mem.getOther());
+        
+    }
 
     @Override
     public void doAction(SpecializationOf spec) {
 	register(spec.getGeneralEntity());
 	register(spec.getSpecificEntity());
+    }
+    
+    @Override
+    public void doAction(QualifiedSpecializationOf spec) {
+        register(spec.getId());
+        register(spec.getGeneralEntity());
+        register(spec.getSpecificEntity());
+        registerType(spec.getType());
+        registerOther(spec.getOther());
+    }
+    
+    @Override
+    public void doAction(QualifiedAlternateOf alt) {
+        register(alt.getId());
+        register(alt.getAlternate1());
+        register(alt.getAlternate2());
+        registerType(alt.getType());
+        registerOther(alt.getOther());
     }
 
     @Override
@@ -252,6 +285,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(inv.getId());
 	register(inv.getEntity());
 	register(inv.getActivity());
+	registerLocation(inv.getLocation());
 	registerRole(inv.getRole());
 	registerType(inv.getType());
 	registerOther(inv.getOther());
@@ -262,6 +296,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(use.getId());
 	register(use.getEntity());
 	register(use.getActivity());
+	registerLocation(use.getLocation());
 	registerRole(use.getRole());
 	registerType(use.getType());
 	registerOther(use.getOther());
@@ -272,6 +307,7 @@ public class NamespaceGatherer implements StatementAction {
 	register(gen.getId());
 	register(gen.getEntity());
 	register(gen.getActivity());
+	registerLocation(gen.getLocation());	
 	registerRole(gen.getRole());
 	registerType(gen.getType());
 	registerOther(gen.getOther());

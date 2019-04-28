@@ -31,6 +31,12 @@ final public class DOMProcessing {
     private static final String RDF_PREFIX = NamespacePrefixMapper.RDF_PREFIX;
     private static final String RDF_NAMESPACE = NamespacePrefixMapper.RDF_NS;
     private static final String RDF_LITERAL = RDF_PREFIX + ":" + XML_LITERAL;
+    
+    public static final String XSD_NS_FOR_XML = "http://www.w3.org/2001/XMLSchema"; //Note, this is the xml schema namespace URI without #
+    private final static String FOR_XML_XSD_QNAME=NamespacePrefixMapper.XSD_NS + "QName";  
+    
+    private final QualifiedNameUtils qnU=new QualifiedNameUtils();
+
     private final ProvFactory pFactory;
     
     public DOMProcessing(ProvFactory pFactory) {
@@ -59,11 +65,17 @@ final public class DOMProcessing {
 	return ns.qualifiedNameToString(name);
     }
     
+    static public String qualifiedNameToString(javax.xml.namespace.QName name) {
+	Namespace ns=Namespace.getThreadNamespace();
+	return ns.qualifiedNameToString(name);
+    }
+    
 
     
 
     /**
-     * Converts a string to a QualifiedName, extracting namespace from the DOM.
+     * Converts a string to a QualifiedName, extracting namespace from the DOM.  Ensures that the generated qualified name is 
+     * properly escaped, according to PROV-N syntax.
      * 
      * @param str
      *            string to convert to QualifiedName
@@ -85,11 +97,27 @@ final public class DOMProcessing {
         }
         String prefix = str.substring(0, index);
         String local = str.substring(index + 1, str.length());
-        QualifiedName qn = pFactory.newQualifiedName(el.lookupNamespaceURI(prefix), local, prefix);
+        String escapedLocal=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(local));
+        QualifiedName qn = pFactory.newQualifiedName(convertNsFromXml(el.lookupNamespaceURI(prefix)), escapedLocal, prefix);
         return qn;
     }
 
-    
+    public static String convertNsToXml(String uri) {
+	if (NamespacePrefixMapper.XSD_NS.equals(uri)) {
+	    return XSD_NS_FOR_XML;
+	}
+	return uri;
+    }
+
+  
+    final public String convertNsFromXml(String uri) {
+	if (XSD_NS_FOR_XML.equals(uri)) {
+	    return NamespacePrefixMapper.XSD_NS;
+	}
+	return uri;
+    }
+
+
     /** Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value
      * 
      * @param elementName a {@link QualifiedName} to denote the element name
@@ -100,56 +128,67 @@ final public class DOMProcessing {
     final static public Element newElement(QualifiedName elementName, QualifiedName value) {
 	org.w3c.dom.Document doc = builder.newDocument();
 	Element el = doc.createElementNS(elementName.getNamespaceURI(),
-					 qualifiedNameToString(elementName));
+					 qualifiedNameToString(elementName.toQName()));
 	
 	// 1. we add an xsi:type="xsd:QName" attribute
 	//   making sure xsi and xsd prefixes are appropriately declared.
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", "xsd:QName");
-	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", NamespacePrefixMapper.XSD_NS);
+	el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsd", XSD_NS_FOR_XML);
 
 	// 2. We add the QualifiedName's string representation as child of the element
 	//    This representation depends on the extant prefix-namespace mapping
-	String valueAsString=qualifiedNameToString(value);
+	String valueAsString=qualifiedNameToString(value.toQName());
 	el.appendChild(doc.createTextNode(valueAsString));
 	
 	// 3. We make sure that the QualifiedName's prefix is given the right namespace, or the default namespace is declared if there is no prefix
 	int index=valueAsString.indexOf(":");
 	if (index!=-1) {
 	    String prefix = valueAsString.substring(0, index);
-	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, value.getNamespaceURI());
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"+prefix, convertNsToXml(value.getNamespaceURI()));
 	} else {
-	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", value.getNamespaceURI());
+	    el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", convertNsToXml(value.getNamespaceURI()));
 	}
 	
 	doc.appendChild(el);
 	return el;
     }
 
+
+
+
     /**
      * Creates a DOM {@link Element} for a {@link QualifiedName} and content given by value and type
-     * @param name a {@link QualifiedName} to denote the element name
+     * @param elementName a {@link QualifiedName} to denote the element name
      * @param value for the created {@link Element}
      * @param type of the value
      * @return a new {@link Element}
      */
-    final static public Element newElement(QualifiedName name, String value, QualifiedName type) {
+    final static public Element newElement(QualifiedName elementName, String value, QualifiedName type) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(name.getNamespaceURI(),
-	                                 qualifiedNameToString(name));
+	String qualifiedNameString;
+	
+
+	qualifiedNameString= qualifiedNameToString(elementName.toQName());
+
+	Element el = doc.createElementNS(elementName.getNamespaceURI(),
+	                                 qualifiedNameString);
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
+	//if (withNullLocal || withDigit) {
+	//    el.setAttributeNS(NamespacePrefixMapper.PROV_NS, "prov:local", localPart);
+	//}
 	el.appendChild(doc.createTextNode(value));
 	doc.appendChild(el);
 	return el;
     }
 
 
-    final public static Element newElement(QualifiedName name, 
+    final public static Element newElement(QualifiedName qualifiedName, 
                                            String value, 
                                            QualifiedName type,
                                            String lang) {
 	org.w3c.dom.Document doc = builder.newDocument();
-	Element el = doc.createElementNS(name.getNamespaceURI(),
-	                                 qualifiedNameToString(name));				 
+	Element el = doc.createElementNS(qualifiedName.getNamespaceURI(),
+	                                 qualifiedNameToString(qualifiedName.toQName()));				 
 	el.setAttributeNS(NamespacePrefixMapper.XSI_NS, "xsi:type", qualifiedNameToString(type));
 	el.setAttributeNS(NamespacePrefixMapper.XML_NS, "xml:lang", lang);
         el.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xml", NamespacePrefixMapper.XML_NS);
@@ -236,39 +275,40 @@ final public class DOMProcessing {
     public org.w3c.dom.Element marshalAttribute(org.openprovenance.prov.model.Attribute attribute) {
 	return marshalTypedValue(attribute, attribute.getElementName());
     }
-    
+
     final static
     public org.w3c.dom.Element marshalTypedValue(org.openprovenance.prov.model.TypedValue attribute,
                                                  QualifiedName elementName) {	
-	Object value = attribute.getValue();
-	QualifiedName type = attribute.getType();
-	
-	if (value instanceof LangString) {
-	    LangString istring = ((LangString) value);
-	    return newElement(elementName, 
-	                      istring.getValue(),
-			      attribute.getType(), 
-			      istring.getLang());
-	} else if (value instanceof QualifiedName) {
-	    return newElement(elementName, 
-	                      (QualifiedName) value);
+        Object value = attribute.getValue();
+        QualifiedName type = attribute.getType();
 
-	} else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
-		&& type.getLocalPart().equals(XML_LITERAL)) {
-	    return newElement(elementName,
-			      (org.w3c.dom.Element) attribute.getConvertedValue());
+        if (value instanceof LangString) {
+            LangString istring = ((LangString) value);
+            return newElement(elementName, 
+                              istring.getValue(),
+                              attribute.getType(), 
+                              istring.getLang());
+        } else if (value instanceof QualifiedName) {
+            return newElement(elementName, 
+                              (QualifiedName) value);
 
-	} else {
-	    return newElement(elementName, 
-	                      value.toString(),
-			      attribute.getType());
-	}
+        } else if (type.getNamespaceURI().equals(RDF_NAMESPACE)
+                && type.getLocalPart().equals(XML_LITERAL)) {
+
+            return newElement(elementName,
+                              (org.w3c.dom.Element) attribute.getConvertedValue());
+
+        } else {
+            return newElement(elementName, 
+                              value.toString(),
+                              attribute.getType());
+        }
     }
-    
+
     final
     public org.openprovenance.prov.model.Attribute unmarshallAttribute(org.w3c.dom.Element el,
-                                                                              ProvFactory pFactory,
-                                                                              ValueConverter vconv) {
+                                                                       ProvFactory pFactory,
+                                                                       ValueConverter vconv) {
         String prefix = el.getPrefix();
         String namespace = el.getNamespaceURI();
         String local = el.getLocalName();
@@ -282,9 +322,9 @@ final public class DOMProcessing {
         Name name=pFactory.getName();
         if (type == null)
             type = name.XSD_STRING;
-        if (type.equals(name.XSD_QNAME)) {
+        if (FOR_XML_XSD_QNAME.equals(type.getUri())) { 
             QualifiedName qn = stringToQualifiedName(child, el);
-            Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, type);
+            Attribute x= pFactory.newAttribute(namespace, local, prefix, qn, name.PROV_QUALIFIED_NAME);
             return x;
         } else if (type.equals(name.RDF_LITERAL)) {
             NodeList nodes=el.getChildNodes();

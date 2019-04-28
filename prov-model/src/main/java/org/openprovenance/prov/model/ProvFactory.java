@@ -17,13 +17,17 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 
 
 /** A stateless factory for PROV objects. */
 
 
-public abstract class ProvFactory implements LiteralConstructor, ModelConstructor {
+public abstract class ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension {
  
     public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
 
@@ -196,19 +200,19 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public void addPrimarySourceType(HasType a) {
 	a.getType().add(newType(getName().PROV_PRIMARY_SOURCE,
-	                        getName().XSD_QNAME));
+	                        getName().PROV_QUALIFIED_NAME));
     }
 
     public void addQuotationType(HasType a) {
-	a.getType().add(newType(getName().PROV_QUOTATION,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_QUOTATION,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addRevisionType(HasType a) {
-	a.getType().add(newType(getName().PROV_REVISION,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_REVISION,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addBundleType(HasType a) {
-	a.getType().add(newType(getName().PROV_BUNDLE,getName().XSD_QNAME));
+	a.getType().add(newType(getName().PROV_BUNDLE,getName().PROV_QUALIFIED_NAME));
     }
 
     public void addRole(HasRole a, Role role) {
@@ -477,13 +481,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
    abstract public org.openprovenance.prov.model.Attribute newAttribute(QualifiedName elementName, Object value, QualifiedName type) ;
    
     abstract public org.openprovenance.prov.model.Attribute newAttribute(Attribute.AttributeKind kind, Object value, QualifiedName type);
- 
+
     public Attribute newAttribute(String namespace, String localName,
-				  String prefix, Object value, QualifiedName type) {
-	Attribute res;
-	res = newAttribute(newQualifiedName(namespace, localName, prefix),
-	                   value, type);	
-	return res;
+                                  String prefix, Object value, QualifiedName type) {
+        Attribute res;
+        res = newAttribute(newQualifiedName(namespace, localName, prefix),
+                           value, type);	
+        return res;
     }
 
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
@@ -744,14 +748,22 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
                                                        .getTime());
     }
+    /*ValueConverter vconv=new ValueConverter(this);
 
     public Key newKey(Object o, QualifiedName type) {
+        
+        if (getName().RDF_LITERAL.equals(type)&& (o instanceof String)) {
+            o=vconv.convertToJava(type,(String)o);
+        }
+            
     	Key res=of.createKey();
     	res.setType(type);
     	res.setValueFromObject(o);
     	return res;
        }
 
+*/
+    public abstract Key newKey(Object o, QualifiedName type);
 
     public Location newLocation(Object value, QualifiedName type) {
             Location res =  of.createLocation();
@@ -848,6 +860,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix);
     
+    abstract public QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag);
+
+    
     /* A convenience function. */
     public QualifiedName newQualifiedName(javax.xml.namespace.QName qname) {
 	return newQualifiedName(qname.getNamespaceURI(), qname.getLocalPart(), qname.getPrefix());
@@ -868,13 +883,48 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @param general an identifier  ({@link QualifiedName}) for the general {@link Entity}
      * @return an instance of {@link SpecializationOf}
      */       
+    @Override
     public SpecializationOf newSpecializationOf(QualifiedName specific, QualifiedName general) {
 	SpecializationOf res = of.createSpecializationOf();
 	res.setSpecificEntity(specific);
 	res.setGeneralEntity(general);
 	return res;
     }
-
+    
+    @Override
+    public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
+        QualifiedSpecializationOf res = of.createQualifiedSpecializationOf();
+        res.setId(id);
+        res.setSpecificEntity(specific);
+        res.setGeneralEntity(general);
+        setAttributes(res, attributes);
+        return res;
+    }
+    @Override
+    public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName alt1, QualifiedName alt2, Collection<Attribute> attributes) {
+        QualifiedAlternateOf res=of.createQualifiedAlternateOf();
+        res.setId(id);
+        res.setAlternate1(alt1);
+        res.setAlternate2(alt2);
+        setAttributes(res, attributes);
+        return res;
+    }
+    @Override
+    public QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
+        List<QualifiedName> ll=new LinkedList<QualifiedName>();
+        if (e!=null) {
+            for (QualifiedName q: e) {
+            ll.add(q);
+            }
+        }
+        QualifiedHadMember res=of.createQualifiedHadMember();
+        res.setId(id);
+        res.setCollection(c);
+        res.getEntity().addAll(e);
+        return res;
+    }   
+ 
+    
     public XMLGregorianCalendar newTime(Date date) {
 	GregorianCalendar gc = new GregorianCalendar();
 	gc.setTime(date);
@@ -965,14 +1015,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      */    
 
     public Used newUsed(Used u) {
-	Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
-	u1.getOther().addAll(u.getOther());
-	u1.setTime(u.getTime());
-	u1.getType().addAll(u.getType());
-	u1.getLabel().addAll(u.getLabel());
-	u1.getLocation().addAll(u.getLocation());
-	u1.getOther().addAll(u.getOther());
-	return u1;
+        Used u1 = newUsed(u.getId(), u.getActivity(), u.getEntity());
+        u1.setTime(u.getTime());
+        u1.getType().addAll(u.getType());
+        u1.getLabel().addAll(u.getLabel());
+        u1.getRole().addAll(u.getRole());
+        u1.getLocation().addAll(u.getLocation());
+        u1.getOther().addAll(u.getOther());
+        return u1;
     }
 
     /**
@@ -981,7 +1031,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @return a new {@link Value} with type xsd:string (see {@link Name#XSD_STRING})
      */
     public Value newValue(String value) {
-	return newValue(value,getName().XSD_STRING);
+        return newValue(value,getName().XSD_STRING);
     }  
     
     /**
@@ -1166,6 +1216,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
 					       d.getGeneratedEntity(),
 					       d.getUsedEntity());
+	wdf.setActivity(d.getActivity());
 	wdf.setGeneration(d.getGeneration());
 	wdf.setUsage(d.getUsage());
 	wdf.getOther().addAll(d.getOther());
@@ -1231,6 +1282,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
 	u1.getLabel().addAll(u.getLabel());
+	u1.getRole().addAll(u1.getRole());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());
 	return u1;
@@ -1294,15 +1346,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
     public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
-	WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
-					       g.getActivity());
-	wgb.setId(g.getId());
-	wgb.setTime(g.getTime());
-	wgb.getOther().addAll(g.getOther());
-	wgb.getType().addAll(g.getType());
-	wgb.getLabel().addAll(g.getLabel());
-	wgb.getLocation().addAll(g.getLocation());
-	return wgb;
+        WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
+                                               g.getActivity());
+        wgb.setId(g.getId());
+        wgb.setTime(g.getTime());
+        wgb.getOther().addAll(g.getOther());
+        wgb.getRole().addAll(g.getRole());
+        wgb.getType().addAll(g.getType());
+        wgb.getLabel().addAll(g.getLabel());
+        wgb.getLocation().addAll(g.getLocation());
+        return wgb;
     }
 
 
@@ -1428,6 +1481,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setTime(u.getTime());
 	u1.getOther().addAll(u.getOther());
 	u1.getType().addAll(u.getType());
+	u.getRole().addAll(u.getRole());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	return u1;
@@ -1484,6 +1538,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.setStarter(u.getStarter());
 	u1.setTime(u.getTime());
 	u1.getType().addAll(u.getType());
+	u1.getRole().addAll(u.getRole());
 	u1.getLabel().addAll(u.getLabel());
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());
@@ -1504,6 +1559,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	if (statement instanceof HasType) result.addAll(((HasType)statement).getType());
 	if (statement instanceof HasLocation) result.addAll(((HasLocation)statement).getLocation());
 	if (statement instanceof HasRole) result.addAll(((HasRole)statement).getRole());
+	if (statement instanceof HasValue) {
+	    Value val=((HasValue)statement).getValue();
+	    if (val!=null) {
+		result.add(val);
+	    }
+	}
 	if (statement instanceof HasOther) {
 	    for (Other o: ((HasOther)statement).getOther()) {
 		result.add((Attribute)o);
@@ -1511,6 +1572,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}	
 	return result;
     }
+    
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
 	if (attributes==null) return;
@@ -1521,7 +1583,16 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	HasRole rol=(res instanceof HasRole)? (HasRole)res : null;
 
 	for (Attribute attr: attributes) {
+	    
 	    Object aValue=attr.getValue();
+	    
+	    ValueConverter vconv=new ValueConverter(this);
+        if (getName().RDF_LITERAL.equals(attr.getType())&& (aValue instanceof String)) {
+            aValue=vconv.convertToJava(attr.getType(),(String)aValue);
+        }
+            
+	    
+	    
 	    switch (attr.getKind()) {
 	    case PROV_LABEL:
 		if (lab!=null) {
@@ -1582,6 +1653,156 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
     public Namespace newNamespace() {
 	return new Namespace();
+    }
+    
+    public AlternateOf newAlternateOf(AlternateOf s) {
+	AlternateOf res=newAlternateOf(s.getAlternate1(), s.getAlternate2());
+	return res;
+    }
+    
+    public SpecializationOf newSpecializationOf(SpecializationOf s) {
+	SpecializationOf res=newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
+	return res;
+    }
+    
+    public HadMember newHadMember(HadMember s) {
+	HadMember res=newHadMember(s.getCollection(), s.getEntity()); //FIXME: clone collection
+	return res;
+    }
+    
+    ProvUtilities util=new ProvUtilities();
+    
+    @SuppressWarnings("unchecked")
+    public <T extends Statement> T newStatement(T s) {
+	 return (T) util.doAction(s,new Cloner());
+    }
+    
+    public class Cloner implements StatementActionValue {
+
+	@Override
+	public Object doAction(Activity s) {
+	    return newActivity(s);
+	}
+
+	@Override
+	public Object doAction(Used s) {
+	    return newUsed(s);
+	}
+
+	@Override
+	public Object doAction(WasStartedBy s) {
+	    return newWasStartedBy(s);
+	}
+
+	@Override
+	public Object doAction(Agent s) {
+	    return newAgent(s);
+	}
+
+	@Override
+	public Object doAction(AlternateOf s) {
+	    return newAlternateOf(s);
+	}	
+
+	@Override
+	public Object doAction(WasAssociatedWith s) {
+	    return newWasAssociatedWith(s);
+	}
+
+	@Override
+	public Object doAction(WasAttributedTo s) {
+	    return newWasAttributedTo(s);
+	}
+
+	@Override
+	public Object doAction(WasInfluencedBy s) {
+	    return newWasInfluencedBy(s);
+	}
+
+	@Override
+	public Object doAction(ActedOnBehalfOf s) {
+	    return newActedOnBehalfOf(s);
+	}
+
+	@Override
+	public Object doAction(WasDerivedFrom s) {
+	    return newWasDerivedFrom(s);
+	}
+
+	@Override
+	public Object doAction(DictionaryMembership s) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object doAction(DerivedByRemovalFrom s) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object doAction(WasEndedBy s) {
+	    return newWasEndedBy(s);
+	}
+
+	@Override
+	public Object doAction(Entity s) {
+	    return newEntity(s);
+	}
+
+	@Override
+	public Object doAction(WasGeneratedBy s) {
+	    return newWasGeneratedBy(s);
+	}
+
+	@Override
+	public Object doAction(WasInvalidatedBy s) {
+	    return newWasInvalidatedBy(s);
+	}
+
+	@Override
+	public Object doAction(HadMember s) {
+	    return newHadMember(s);
+	}
+
+	@Override
+	public Object doAction(MentionOf s) {
+	    return newMentionOf(s);
+	}
+
+	@Override
+	public Object doAction(SpecializationOf s) {
+	    return newSpecializationOf(s);
+	}
+	@Override
+	public Object doAction(QualifiedSpecializationOf s) {
+        return newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(),s.getGeneralEntity(),getAttributes(s));
+	}
+	
+    @Override
+    public Object doAction(QualifiedHadMember s) {
+        return newQualifiedHadMember(s.getId(),s.getCollection(),s.getEntity(),getAttributes(s));
+    }
+    
+	@Override
+	public Object doAction(DerivedByInsertionFrom s) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object doAction(WasInformedBy s) {
+	    return newWasInformedBy(s);
+	}
+
+	@Override
+	public Object doAction(Bundle s, ProvUtilities provUtilities) {
+	    throw new UnsupportedOperationException();
+	}
+
+    @Override
+    public Object doAction(QualifiedAlternateOf s) {
+        return newQualifiedAlternateOf(s.getId(),s.getAlternate1(),s.getAlternate2(),getAttributes(s));        
+    }
+	
     }
 
 }

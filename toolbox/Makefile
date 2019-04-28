@@ -1,5 +1,11 @@
 
 
+rpm:
+	mvn rpm:rpm
+
+dmg:
+	mvn package osxappbundle:bundle
+
 
 t1:
 	target/appassembler/bin/provconvert -infile ../prov-n/src/test/resources/prov/w3c-publication1.prov-asn -outfile target/w3c-publication1.ttl
@@ -119,3 +125,12 @@ rand1:
 
 rand2:
 	target/appassembler/bin/provconvert -generator 50:4:entity:-6386918869486095322 -outfile target/random2.svg
+
+
+merge:
+	printf "file, ../prov-xml/target/activity7.xml, xml\n../prov-xml/target/bundle1.xml\n" |	target/appassembler/bin/provconvert -merge - -outfile target/merge1.svg
+	printf "file, ../prov-xml/target/activity7.xml, xml\n../prov-xml/target/bundle1.xml\n" |	target/appassembler/bin/provconvert -merge - -flatten -outfile target/merge2.svg
+	printf "file, ../prov-xml/target/activity1.xml, xml\n../prov-xml/target/bundle1.xml\n" |	target/appassembler/bin/provconvert -merge - -flatten -outfile target/merge3.provn
+
+comp1:
+	target/appassembler/bin/provconvert -infile ../prov-template/src/test/resources/template10.provn -compare ../prov-template/src/test/resources/template10.provn -outcompare target/compare1.txt

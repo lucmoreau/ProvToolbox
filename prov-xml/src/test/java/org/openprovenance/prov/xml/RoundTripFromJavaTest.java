@@ -20,6 +20,7 @@ import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.DocumentEquality;
 import org.openprovenance.prov.model.Entry;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
@@ -73,7 +74,7 @@ public class RoundTripFromJavaTest extends TestCase {
      */
     public RoundTripFromJavaTest(String testName) {
         super(testName);
-        this.documentEquality = new DocumentEquality(mergeDuplicateProperties());
+        this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
     }
 
     public boolean urlFlag = true;
@@ -166,6 +167,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public boolean checkSchema(String name) {
         if (name.endsWith("association2" + extension())
+                || name.endsWith("entity101" + extension())  // fails on unicode
                 || name.endsWith("end1" + extension())
                 || name.endsWith("end4" + extension())
                 || name.endsWith("delegation1" + extension())
@@ -203,7 +205,7 @@ public class RoundTripFromJavaTest extends TestCase {
         schemaFiles[0] = "src/main/resources/ex.xsd";
         try {
             ProvDeserialiser.getThreadProvDeserialiser()
-                            .validateDocumentNew(schemaFiles, new File(file));
+                            .validateDocument(schemaFiles, new File(file));
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -329,7 +331,7 @@ public class RoundTripFromJavaTest extends TestCase {
         ht.getType().add(pFactory.newType(1.0, name.XSD_FLOAT));
         ht.getType().add(pFactory.newType(true, name.XSD_STRING));
         ht.getType().add(pFactory.newType(pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX),
-                                          name.XSD_QNAME));
+                                          name.PROV_QUALIFIED_NAME));
         ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
                                           name.XSD_DATETIME));
 
@@ -346,7 +348,7 @@ public class RoundTripFromJavaTest extends TestCase {
           .add(pFactory.newLocation(true, name.XSD_BOOLEAN));
         hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london",
                                                             EX_PREFIX),
-                                                  name.XSD_QNAME));
+                                                  name.PROV_QUALIFIED_NAME));
         hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
                                                   name.XSD_DATETIME));
         hl.getLocation().add(pFactory.newLocation(EX_NS + "london",
@@ -357,7 +359,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void addValue(HasValue hl) {
         hl.setValue(pFactory.newValue(pFactory.newQualifiedName(EX_NS, "avalue", EX_PREFIX),
-                                      name.XSD_QNAME));
+                                      name.PROV_QUALIFIED_NAME));
     }
 
     public void addFurtherAttributes(HasOther he) {
@@ -372,6 +374,10 @@ public class RoundTripFromJavaTest extends TestCase {
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
                                             "hello\nover\nmore\nlines",
                                             name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "0tagWithDigit", EX_PREFIX,
+                                            "hello",
+                                            name.XSD_STRING));
+
 
     }
 
@@ -425,14 +431,14 @@ public class RoundTripFromJavaTest extends TestCase {
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX2_NS, "newyork",
                                                       EX2_PREFIX),
-                                            name.XSD_QNAME));
+                                            name.PROV_QUALIFIED_NAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX_NS, "london",
                                                       EX_PREFIX),
-                                            name.XSD_QNAME));
+                                            name.PROV_QUALIFIED_NAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                                             pFactory.newQualifiedName(EX3_NS, "london",null),
-                                            name.XSD_QNAME));
+                                            name.PROV_QUALIFIED_NAME));
 
     }
 
@@ -589,6 +595,67 @@ public class RoundTripFromJavaTest extends TestCase {
         addLabels(a);
         addFurtherAttributes(a);
         makeDocAndTest(a, "target/entity10");
+    }
+    
+    public void testEntity100() {
+        Entity e = pFactory.newEntity(q("100-entity"), "entity100");
+        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));      
+        e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not valid
+                                           pFactory.newQualifiedName(EX2_NS,"unicode",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+                                           1,
+                                           name.XSD_INT));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           "mystring",
+                                           name.XSD_STRING));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           pFactory.newInternationalizedString("ma chaine", "fr"),
+                                           name.PROV_LANG_STRING));  
+        makeDocAndTest(e, "target/entity100");
+    }
+    
+    
+    public void testEntity101() {
+        Entity e = pFactory.newEntity(q("101-entity"), "entity101");
+        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));      
+        e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ", //validator disabled for this
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not supported by jaxb marshaller
+                                           pFactory.newQualifiedName(EX2_NS,"unicode",
+                                                     EX2_PREFIX),
+                                           name.PROV_QUALIFIED_NAME));    
+        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+                                           1,
+                                           name.XSD_INT));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           "mystring",
+                                           name.XSD_STRING));  
+        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+                                           pFactory.newInternationalizedString("ma chaine", "fr"),
+                                           name.PROV_LANG_STRING));  
+        makeDocAndTest(e, "target/entity101");
     }
 
     // /////////////////////////////////////////////////////////////////////
@@ -2087,7 +2154,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2114,7 +2181,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2140,7 +2207,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);
@@ -2214,7 +2281,7 @@ public class RoundTripFromJavaTest extends TestCase {
         List<org.openprovenance.prov.model.Key> ll = new LinkedList<org.openprovenance.prov.model.Key>();
         ll.add(pFactory.newKey("a", name.XSD_STRING));
         ll.add(pFactory.newKey("1", name.XSD_INT));
-        ll.add(pFactory.newKey(q("a"), name.XSD_QNAME));
+        ll.add(pFactory.newKey(q("a"), name.PROV_QUALIFIED_NAME));
 
         DerivedByRemovalFrom d5 = pFactory.newDerivedByRemovalFrom(q("removal5"),
                                                                    q("d2"),
@@ -2281,7 +2348,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
         ll.add(p2);
         Entry p3 = pFactory.newEntry(pFactory.newKey(q("a"),
-                                                     name.XSD_QNAME),
+                                                     name.PROV_QUALIFIED_NAME),
                                      q("e2"));
 
         ll.add(p3);

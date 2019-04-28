@@ -1,16 +1,22 @@
 package org.openprovenance.prov.interop;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +25,17 @@ import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.DocumentEquality;
+import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
+import org.openprovenance.prov.template.Bindings;
+import org.openprovenance.prov.template.BindingsBeanGenerator;
+import org.openprovenance.prov.template.BindingsJson;
 import org.openprovenance.prov.template.Expand;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
@@ -72,12 +83,15 @@ public class InteropFramework implements InteropMediaType {
     final private String debug;
     final private String logfile;
     final private String infile;
+    final private String informat;
     final private String outfile;
+    final private String outformat;
     final private String namespaces;
     final private String title;
 
     final private String layout;
     final private String bindings;
+    final private String bindingformat;
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, ProvFormat> extensionRevMap;
     public final Hashtable<ProvFormat, String> mimeTypeMap;
@@ -87,25 +101,37 @@ public class InteropFramework implements InteropMediaType {
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
     final private String generator;
+    final private String index;
+    final private String merge;
+    final private String flatten;
+    final private boolean addOrderp;
+    final private boolean allExpanded;
+    final private String compare;
+    final private String compareOut;
+    final private int bindingsVersion;
+    final private String template;
+    final private String packge;
+    final private String location;
 
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
      */
     public InteropFramework() {
-        this(null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null, null,null,null,
                 org.openprovenance.prov.xml.ProvFactory.getFactory());
     }
 
     public InteropFramework(ProvFactory pFactory) {
-        this(null, null, null, null, null, null, null, null, null, null,
+        this(null, null, null, null, null, null, null, null, null, null, null, null, 1, false, false, null, null, null, null, null, null, null,null,null,
                 pFactory);
     }
 
+
     public InteropFramework(String verbose, String debug, String logfile,
-            String infile, String outfile, String namespaces, String title,
-            String layout, String bindings, String generator,
-            ProvFactory pFactory) {
+            String infile, String informat, String outfile, String outformat, String namespaces, String title,
+            String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, String packge, String location, String generator,
+            String index, String merge, String flatten, String compare, String compareOut, ProvFactory pFactory) {
         this.verbose = verbose;
         this.debug = debug;
         this.logfile = logfile;
@@ -116,8 +142,22 @@ public class InteropFramework implements InteropMediaType {
         this.layout = layout;
         this.bindings = bindings;
         this.generator = generator;
+        this.index=index;
+        this.merge=merge;
+        this.flatten=flatten;
         this.pFactory = pFactory;
+        this.addOrderp=addOrderp;
+        this.allExpanded=allExpanded;
         this.onto = new Ontology(pFactory);
+        this.informat = informat;
+        this.outformat = outformat;
+        this.bindingformat = bindingformat;
+        this.compare=compare;
+        this.compareOut=compareOut;
+        this.bindingsVersion=bindingsVersion;
+        this.template=template;
+        this.packge=packge;
+        this.location=location;
 
         extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
         extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
@@ -264,6 +304,20 @@ public class InteropFramework implements InteropMediaType {
             return null;
         String extension = filename.substring(count + 1);
         return extensionRevMap.get(extension);
+    }
+
+    /**
+     * Get a {@link ProvFormat} given a format string
+     * @param format the format for which the {@link ProvFormat} is sought
+     * @return a {@link ProvFormat}
+     */
+    public ProvFormat getTypeForFormat(String format) {
+        ProvFormat result;
+        // try as mimetype and then as an extension
+        result = mimeTypeRevMap.get(format);
+        if (result == null)
+            result = extensionRevMap.get(format);
+        return result;
     }
 
     /**
@@ -490,11 +544,12 @@ public class InteropFramework implements InteropMediaType {
      * Reads a Document from an input stream, using the parser specified by the format argument.
      * @param is an input stream
      * @param format one of the input formats supported by ProvToolbox
+     * @param baseuri a base uri for the input stream document	
      * @return a Document
      */
 
-    public Document readDocument(InputStream is, ProvFormat format) {
-        return readDocument(is, format, pFactory);
+    public Document readDocument(InputStream is, ProvFormat format, String baseuri) {
+        return readDocument(is, format, pFactory, baseuri);
     }
 
     /**
@@ -502,13 +557,15 @@ public class InteropFramework implements InteropMediaType {
      * @param is an input stream
      * @param format one of the input formats supported by ProvToolbox
      * @param pFactory a provenance factory used to construct the Document
+     * @param baseuri a base uri for the input stream document
      * @return a Document
      */
 
   
     public Document readDocument(InputStream is, 
                                  ProvFormat format,
-                                 ProvFactory pFactory) {
+                                 ProvFactory pFactory,
+                                 String baseuri) {
         try {
 
             switch (format) {
@@ -535,17 +592,17 @@ public class InteropFramework implements InteropMediaType {
             case RDFXML: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.RDFXML);
+                return rdfU.parseRDF(is, RDFFormat.RDFXML, baseuri);
             }
             case TRIG: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.TRIG);
+                return rdfU.parseRDF(is, RDFFormat.TRIG,baseuri);
             }
             case TURTLE: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.TURTLE);
+                return rdfU.parseRDF(is, RDFFormat.TURTLE,baseuri);
             }
             case XML: {
                 ProvDeserialiser deserial = ProvDeserialiser
@@ -613,7 +670,7 @@ public class InteropFramework implements InteropMediaType {
 
             InputStream content_stream = conn.getInputStream();
 
-            return readDocument(content_stream, format);
+            return readDocument(content_stream, format,url);
         } catch (IOException e) {
             throw new InteropException(e);
         }
@@ -626,14 +683,24 @@ public class InteropFramework implements InteropMediaType {
      * @return a Document
      */
     public Document readDocumentFromFile(String filename) {
-        try {
 
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
                 throw new InteropException("Unknown output file format: "
                         + filename);
             }
+            return readDocumentFromFile(filename, format);
+    }
 
+    /**
+     * Reads a document from a file, using the format to decide which parser to read the file with.
+     * @param filename the file to read a document from
+     * @param format the format of the file
+     * @return a Document
+     */
+    public Document readDocumentFromFile(String filename, ProvFormat format) {
+
+        try {
             switch (format) {
             case DOT:
             case JPEG:
@@ -689,21 +756,201 @@ public class InteropFramework implements InteropMediaType {
         }
 
     }
+    public java.util.List<java.util.Map<String, String>>getSupportedFormats() {
+        java.util.List<java.util.Map<String, String>> tripleList = new java.util.ArrayList<>();
+        java.util.Map<String, String>trip;
+        for (InteropFramework.ProvFormat pt:  provTypeMap.keySet()) {
+            for (String mt:  mimeTypeRevMap.keySet()) {
+                if (mimeTypeRevMap.get(mt) == pt) {
+                    for (String ext: extensionRevMap.keySet()) {
+                        if (extensionRevMap.get(ext) == pt) {
+                            if (isInputFormat(pt)) {
+                                trip = new java.util.HashMap<String, String>();
+                                trip.put("extension", ext);
+                                trip.put("mediatype", mt);
+                                trip.put("type", "input");
+                                tripleList.add(trip);
+                            }
+                            if (isOutputFormat(pt)) {
+                                trip = new java.util.HashMap<String, String>();
+                                trip.put("extension", ext);
+                                trip.put("mediatype", mt);
+                                trip.put("type", "output");
+                                tripleList.add(trip);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return tripleList;
+    }
 
-    /** Top level entry point of this class, when called from the command line.
-     * <p>
-     * See method {@link CommandLineArguments#main(String[])}*/
+    private Document doReadDocument(String filename, String format)
+    {
+        Document doc;
+        ProvFormat informat;
+        if (format != null) {
+            informat = getTypeForFormat(format);
+            if (informat == null) {
+                throw new InteropException("Unknown format: "
+                        + format);
+            }
+        } else {
+            informat = getTypeForFile(filename);
+            if (informat == null) {
+                throw new InteropException("Unknown file format for: "
+                        + filename);
+            }
+        }
+
+        if (filename == "-") {
+            if (informat == null) {
+                throw new InteropException("File format for standard input not specified");
+            }
+            doc = (Document) readDocument(System.in, informat,"file://stdin/");
+        } else {
+            doc = (Document) readDocumentFromFile(filename, informat);
+        }
+
+        return doc;
+    }
+
+    private void doWriteDocument(String filename, String format, Document doc)
+    {
+        ProvFormat outformat;
+        if (format != null) {
+            outformat = getTypeForFormat(format);
+            if (outformat == null) {
+                throw new InteropException("Unknown format: "
+                        + format);
+            }
+        } else {
+            outformat = getTypeForFile(filename);
+            if (outformat == null) {
+                throw new InteropException("Unknown file format for: "
+                        + filename);
+            }
+        }
+
+        if (filename == "-") {
+            if (outformat == null) {
+                throw new InteropException("File format for standard output not specified");
+            }
+            writeDocument(System.out, outformat, doc);
+        } else {
+            writeDocument(filename, outformat, doc);
+        }
+    }
     
-    public void run() {
-        if (outfile == null)
-            return;
-        if (infile == null && generator == null)
-            return;
+    static String SEPARATOR=",";
+    enum FileKind { FILE , URL };
+    
+    class ToRead {
+    	FileKind kind;
+    	String url;
+    	ProvFormat format;
+
+    	public String toString () {
+    		return "[" + kind + "," + url + "," + format + "]"; 
+    	}
+    	
+		ToRead(FileKind kind, String url, ProvFormat format) {
+    		this.kind=kind;
+    		this.url=url;
+    		this.format=format;
+    	}
+    }
+    
+    public Document readDocument(ToRead something) {
+    	Document doc=null;
+    	switch (something.kind) {
+		case FILE:
+			doc=readDocumentFromFile(something.url, something.format);
+			break;
+		case URL:
+			doc=readDocument(something.url);// note: ignore format?
+			break;
+    	}
+    	return doc;
+    }
+    
+    private List<ToRead> readIndexFile(File fin) throws IOException {
+    	FileInputStream fis = new FileInputStream(fin);
+    	return readIndexFile(fis);
+    }
+    
+    
+    private List<ToRead> readIndexFile(InputStream is) throws IOException {
+    	List<ToRead> res=new LinkedList<InteropFramework.ToRead>();
+     
+    	BufferedReader br = new BufferedReader(new InputStreamReader(is));
+     
+    	String line = null;
+    	while ((line = br.readLine()) != null) {
+    		String [] parts=line.split(SEPARATOR);
+    		if (parts.length>=3) {
+    			FileKind kind=parts[0].trim().equals("URL") ? FileKind.URL : FileKind.FILE;
+    			String path=parts[1].trim();
+    			ProvFormat format=getTypeForFormat(parts[2].trim());
+    			ToRead elem=new ToRead(kind, path, format);
+    			res.add(elem);
+    		} else if (parts.length==1) {
+    			String filename=parts[0].trim();
+    			ToRead elem=new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
+    			res.add(elem);
+    		}
+    	}     
+    	br.close();
+    	return res;
+    }
+
+
+    
+    /**
+     * Top level entry point of this class, when called from the command line.
+     * <p>
+     * See method {@link CommandLineArguments#main(String[])}
+     */
+
+    public int run() {
+        if (outfile == null && compare == null)
+            return CommandLineArguments.STATUS_NO_OUTPUT_OR_COMPARISON;
+        if (infile == null && generator == null && merge == null)
+            return CommandLineArguments.STATUS_NO_INPUT;
+
+        if ((infile == "-") && (bindings == "-"))
+            throw new InteropException(
+                    "Cannot use standard input for both infile and bindings");
 
         Document doc;
         if (infile != null) {
-            doc = (Document) readDocumentFromFile(infile);
+            doc = doReadDocument(infile, informat);
+        } else if (merge != null) {
+            IndexedDocument iDoc = new IndexedDocument(pFactory,
+                                                       pFactory.newDocument(),
+                                                       flatten != null);
+            try {
+                List<ToRead> files;
+                if (merge.equals("-")) {
+                    files = readIndexFile(System.in);
+                } else {
+                    files = readIndexFile(new File(merge));
+                }
+                System.err.println("files to merge " + files);
+                for (ToRead something : files) {
+                    iDoc.merge(readDocument(something));
+                }
+
+            } catch (IOException e) {
+                System.err.println("problem reading index file");
+                e.printStackTrace();
+
+            }
+            doc = iDoc.toDocument();
+
         } else {
+
             String[] options = generator.split(":");
             String noOfNodes = getOption(options, 0);
             String noOfEdges = getOption(options, 1);
@@ -716,29 +963,91 @@ public class InteropFramework implements InteropMediaType {
                 term = "e1";
 
             GeneratorDetails gd = new GeneratorDetails(
-                    Integer.valueOf(noOfNodes), Integer.valueOf(noOfEdges),
-                    firstNode, namespace, (seed == null) ? null
-                            : Long.valueOf(seed), term);
-            System.out.println(gd);
+                                                       Integer.valueOf(noOfNodes),
+                                                       Integer.valueOf(noOfEdges),
+                                                       firstNode,
+                                                       namespace,
+                                                       (seed == null) ? null
+                                                               : Long.valueOf(seed),
+                                                               term);
+            System.err.println(gd);
             GraphGenerator gg = new GraphGenerator(gd, pFactory);
             gg.generateElements();
 
             doc = gg.getDetails().getDocument();
         }
-        if (bindings != null) {
-            Document docBindings = (Document) readDocumentFromFile(bindings);
-            Document expanded = new Expand(pFactory).expander(doc, outfile,
-                                                              docBindings);
-            writeDocument(outfile, expanded);
 
-        } else {
-            writeDocument(outfile, doc);
+        if (compare!=null) {
+            return doCompare(doc,doReadDocument(compare, informat));
+        } 
+        
+        if (template!=null) {
+            BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
+            
+            boolean val=bbgen.generate(doc, template, packge, outfile, location);
+            return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
         }
+
+        if (index != null) {
+            Document indexedDoc = new IndexedDocument(pFactory, doc,
+                                                      (flatten != null)).toDocument();
+            doc = indexedDoc;
+        }
+        if (bindings != null) {
+            Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+            Document expanded;
+            System.err.println("bindings version is " + bindingsVersion);
+            if (bindingsVersion==3) {
+                Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(bindings)),pFactory);
+                expanded = myExpand.expander(doc,
+                                             bb);
+
+            } else {
+                Document docBindings = (Document) doReadDocument(bindings,
+                                                                 bindingformat);
+                expanded = myExpand.expander(doc,
+                                             outfile,
+                                             docBindings);
+            }
+            boolean flag=myExpand.getAllExpanded();
+            doWriteDocument(outfile, outformat, expanded);
+
+            if (!flag) {
+                return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
+            }
+        } else {
+            doWriteDocument(outfile, outformat, doc);
+        }
+        return CommandLineArguments.STATUS_OK;
 
     }
 
+    private int doCompare(Document doc1, Document doc2) {
+        if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;
+        if (doc2==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG2;
+
+        //System.out.println("doCompare()");
+        PrintStream ps=System.out;
+        try {
+            if (!(compareOut==null || compareOut.equals("-"))) {
+                ps=new PrintStream(compareOut);
+            }
+        } catch (FileNotFoundException e) {
+            // ok, we ignore the exception, we continue with stdout
+        }
+        DocumentEquality comparator=new DocumentEquality(false,ps);
+        logger.debug("about to compare two docs");
+        if (comparator.check(doc1, doc2)) {
+            //System.out.println("doCompare(): Success");
+
+            return CommandLineArguments.STATUS_OK;
+        }	    
+        //System.out.println("doCompare(): Failure");
+        return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
+    }
+
     /** Initializes a Document's namespace. */
-    
+
     public void setNamespaces(Document doc) {
         if (doc.getNamespace() == null)
             doc.setNamespace(new Namespace());
@@ -862,13 +1171,22 @@ public class InteropFramework implements InteropMediaType {
      */
 
     public void writeDocument(String filename, Document document) {
-        Namespace.withThreadNamespace(document.getNamespace());
-        try {
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
                 System.err.println("Unknown output file format: " + filename);
                 return;
             }
+        writeDocument(filename, format, document);
+    }
+    /**
+     * Write a {@link Document} to file, serialized according to the file extension
+     * @param filename path of the file to write the Document to
+     * @param document a {@link Document} to serialize
+     */
+
+    public void writeDocument(String filename, ProvFormat format, Document document) {
+        Namespace.withThreadNamespace(document.getNamespace());
+        try {
             logger.debug("writing " + format);
             logger.debug("writing " + filename);
             setNamespaces(document);

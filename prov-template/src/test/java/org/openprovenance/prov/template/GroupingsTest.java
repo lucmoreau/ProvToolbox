@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 
-import static org.openprovenance.prov.template.Expand.VAR_NS;
+import static org.openprovenance.prov.template.ExpandUtil.VAR_NS;
 import junit.framework.TestCase;
 
 public class GroupingsTest extends TestCase {
@@ -50,6 +50,11 @@ public class GroupingsTest extends TestCase {
 
     public void testGroupings2() throws IOException, JAXBException, Throwable {
 	Groupings grps=getGroupings("src/test/resources/template21.provn");
+	assertTrue(grps.size()==1);
+    }
+
+    public void testGroupings3() throws IOException, JAXBException, Throwable {
+	Groupings grps=getGroupings("src/test/resources/template24.provn");
 	assertTrue(grps.size()==1);
     }
 

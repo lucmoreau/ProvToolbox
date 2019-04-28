@@ -74,8 +74,8 @@ public class PC1FullTest extends TestCase {
 	    IOException, SAXException {
 	subtestPC1Full();
 	subtestCopyPC1Full();
-	//subtestSchemaValidateXML(); now failing, since no curie version
-	subtestSchemaFailValidateXML();
+	subtestSchemaValidateXML(); //now failing, since no curie version
+	//subtestSchemaFailValidateXML();
     }
 
     public void subtestPC1Full() throws JAXBException {
@@ -173,9 +173,9 @@ public class PC1FullTest extends TestCase {
 	Activity p1 = pFactory.newActivity(q("00000p1"), "align_warp 1");
 	List<Type> o = p1.getType();
 
-	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.XSD_QNAME));
+	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.PROV_QUALIFIED_NAME));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.XSD_QNAME);
+	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 	pFactory.addType(p1, 10, name.XSD_INT);
 	pFactory.addType(p1, -10, name.XSD_INT);
 	pFactory.addType(p1, -10.55, name.XSD_FLOAT);
@@ -187,10 +187,10 @@ public class PC1FullTest extends TestCase {
 	p1.getLabel().add(pFactory.newInternationalizedString("hello", "en"));
 
 	Activity p2 = pFactory.newActivity(q("a2"), "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.XSD_QNAME);
+	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
 	Activity p3 = pFactory.newActivity(q("a3"), "align_warp 3");
-	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.XSD_QNAME);
+	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
 	Activity p4 = pFactory.newActivity(q("a4"), "align_warp 4");
 
@@ -535,8 +535,9 @@ public class PC1FullTest extends TestCase {
 	ProvDeserialiser deserial = ProvDeserialiser
 	        .getThreadProvDeserialiser();
 
-	String[] schemaFiles = new String[1];
+	String[] schemaFiles = new String[2];
 	schemaFiles[0] = "src/test/resources/pc1.xsd";
+	schemaFiles[1] = "src/test/resources/prim.xsd";
 	deserial.validateDocument(schemaFiles, new File("target/pc1-full.xml"));
 
     }
@@ -553,7 +554,7 @@ public class PC1FullTest extends TestCase {
 	    deserial.validateDocument(schemaFiles,
 		                    new File("target/pc1-full.xml"));
 	} catch (Exception e) {
-	    //e.printStackTrace();
+	    e.printStackTrace();
 	    assertTrue(e instanceof javax.xml.bind.UnmarshalException);
 	    return;
 	}

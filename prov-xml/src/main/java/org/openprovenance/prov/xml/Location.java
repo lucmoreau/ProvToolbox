@@ -34,11 +34,11 @@ public class Location extends TypedValue
 {
 
     private static final AttributeKind PROV_LOCATION_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION;
-    private static final QualifiedName PROV_LOCATION_QNAME = ProvFactory.getFactory().getName().PROV_LOCATION;
+    private static final QualifiedName PROV_LOCATION_QualifiedName = ProvFactory.getFactory().getName().PROV_LOCATION;
  
     @Override
     public QualifiedName getElementName() {
-	return PROV_LOCATION_QNAME;
+	return PROV_LOCATION_QualifiedName;
     }
 
     @Override

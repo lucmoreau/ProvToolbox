@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
 import org.openprovenance.prov.model.LangString;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
+import org.openprovenance.prov.xml.extension.QualifiedSpecializationOf;
 
 
 /**
@@ -33,47 +35,50 @@ import org.openprovenance.prov.model.LangString;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _HadPrimarySource_QNAME = new QName("http://www.w3.org/ns/prov#", "hadPrimarySource");
-    private final static QName _Collection_QNAME = new QName("http://www.w3.org/ns/prov#", "collection");
-    private final static QName _WasDerivedFrom_QNAME = new QName("http://www.w3.org/ns/prov#", "wasDerivedFrom");
-    private final static QName _Used_QNAME = new QName("http://www.w3.org/ns/prov#", "used");
-    private final static QName _Type_QNAME = new QName("http://www.w3.org/ns/prov#", "type");
-    private final static QName _WasInformedBy_QNAME = new QName("http://www.w3.org/ns/prov#", "wasInformedBy");
-    private final static QName _ActedOnBehalfOf_QNAME = new QName("http://www.w3.org/ns/prov#", "actedOnBehalfOf");
-    private final static QName _EmptyDictionary_QNAME = new QName("http://www.w3.org/ns/prov#", "emptyDictionary");
-    private final static QName _WasAssociatedWith_QNAME = new QName("http://www.w3.org/ns/prov#", "wasAssociatedWith");
-    private final static QName _SoftwareAgent_QNAME = new QName("http://www.w3.org/ns/prov#", "softwareAgent");
-    private final static QName _Person_QNAME = new QName("http://www.w3.org/ns/prov#", "person");
-    private final static QName _WasRevisionOf_QNAME = new QName("http://www.w3.org/ns/prov#", "wasRevisionOf");
-    private final static QName _Location_QNAME = new QName("http://www.w3.org/ns/prov#", "location");
-    private final static QName _WasInfluencedBy_QNAME = new QName("http://www.w3.org/ns/prov#", "wasInfluencedBy");
-    private final static QName _Entity_QNAME = new QName("http://www.w3.org/ns/prov#", "entity");
-    private final static QName _EmptyCollection_QNAME = new QName("http://www.w3.org/ns/prov#", "emptyCollection");
-    private final static QName _Role_QNAME = new QName("http://www.w3.org/ns/prov#", "role");
-    private final static QName _Bundle_QNAME = new QName("http://www.w3.org/ns/prov#", "bundle");
-    private final static QName _Value_QNAME = new QName("http://www.w3.org/ns/prov#", "value");
-    private final static QName _AlternateOf_QNAME = new QName("http://www.w3.org/ns/prov#", "alternateOf");
-    private final static QName _Activity_QNAME = new QName("http://www.w3.org/ns/prov#", "activity");
-    private final static QName _HadDictionaryMember_QNAME = new QName("http://www.w3.org/ns/prov#", "hadDictionaryMember");
-    private final static QName _WasEndedBy_QNAME = new QName("http://www.w3.org/ns/prov#", "wasEndedBy");
-    private final static QName _Document_QNAME = new QName("http://www.w3.org/ns/prov#", "document");
-    private final static QName _Organization_QNAME = new QName("http://www.w3.org/ns/prov#", "organization");
-    private final static QName _HadMember_QNAME = new QName("http://www.w3.org/ns/prov#", "hadMember");
-    private final static QName _Dictionary_QNAME = new QName("http://www.w3.org/ns/prov#", "dictionary");
-    private final static QName _Label_QNAME = new QName("http://www.w3.org/ns/prov#", "label");
-    private final static QName _Agent_QNAME = new QName("http://www.w3.org/ns/prov#", "agent");
-    private final static QName _WasInvalidatedBy_QNAME = new QName("http://www.w3.org/ns/prov#", "wasInvalidatedBy");
-    private final static QName _MentionOf_QNAME = new QName("http://www.w3.org/ns/prov#", "mentionOf");
-    private final static QName _Others_QNAME = new QName("http://www.w3.org/ns/prov#", "others");
-    private final static QName _WasAttributedTo_QNAME = new QName("http://www.w3.org/ns/prov#", "wasAttributedTo");
-    private final static QName _SpecializationOf_QNAME = new QName("http://www.w3.org/ns/prov#", "specializationOf");
-    private final static QName _WasStartedBy_QNAME = new QName("http://www.w3.org/ns/prov#", "wasStartedBy");
-    private final static QName _DerivedByRemovalFrom_QNAME = new QName("http://www.w3.org/ns/prov#", "derivedByRemovalFrom");
-    private final static QName _DerivedByInsertionFrom_QNAME = new QName("http://www.w3.org/ns/prov#", "derivedByInsertionFrom");
-    private final static QName _WasQuotedFrom_QNAME = new QName("http://www.w3.org/ns/prov#", "wasQuotedFrom");
-    private final static QName _KeyEntityPair_QNAME = new QName("http://www.w3.org/ns/prov#", "keyEntityPair");
-    private final static QName _Plan_QNAME = new QName("http://www.w3.org/ns/prov#", "plan");
-    private final static QName _WasGeneratedBy_QNAME = new QName("http://www.w3.org/ns/prov#", "wasGeneratedBy");
+    private final static String PROV_NS = NamespacePrefixMapper.PROV_NS;
+    private final static String PROV_EXT_NS = NamespacePrefixMapper.PROV_EXT_NS;
+    
+    private final static QName _HadPrimarySource_QNAME = new QName(PROV_NS, "hadPrimarySource");
+    private final static QName _Collection_QNAME = new QName(PROV_NS, "collection");
+    private final static QName _WasDerivedFrom_QNAME = new QName(PROV_NS, "wasDerivedFrom");
+    private final static QName _Used_QNAME = new QName(PROV_NS, "used");
+    private final static QName _Type_QNAME = new QName(PROV_NS, "type");
+    private final static QName _WasInformedBy_QNAME = new QName(PROV_NS, "wasInformedBy");
+    private final static QName _ActedOnBehalfOf_QNAME = new QName(PROV_NS, "actedOnBehalfOf");
+    private final static QName _EmptyDictionary_QNAME = new QName(PROV_NS, "emptyDictionary");
+    private final static QName _WasAssociatedWith_QNAME = new QName(PROV_NS, "wasAssociatedWith");
+    private final static QName _SoftwareAgent_QNAME = new QName(PROV_NS, "softwareAgent");
+    private final static QName _Person_QNAME = new QName(PROV_NS, "person");
+    private final static QName _WasRevisionOf_QNAME = new QName(PROV_NS, "wasRevisionOf");
+    private final static QName _Location_QNAME = new QName(PROV_NS, "location");
+    private final static QName _WasInfluencedBy_QNAME = new QName(PROV_NS, "wasInfluencedBy");
+    private final static QName _Entity_QNAME = new QName(PROV_NS, "entity");
+    private final static QName _EmptyCollection_QNAME = new QName(PROV_NS, "emptyCollection");
+    private final static QName _Role_QNAME = new QName(PROV_NS, "role");
+    private final static QName _Bundle_QNAME = new QName(PROV_NS, "bundle");
+    private final static QName _Value_QNAME = new QName(PROV_NS, "value");
+    private final static QName _AlternateOf_QNAME = new QName(PROV_NS, "alternateOf");
+    private final static QName _Activity_QNAME = new QName(PROV_NS, "activity");
+    private final static QName _HadDictionaryMember_QNAME = new QName(PROV_NS, "hadDictionaryMember");
+    private final static QName _WasEndedBy_QNAME = new QName(PROV_NS, "wasEndedBy");
+    private final static QName _Document_QNAME = new QName(PROV_NS, "document");
+    private final static QName _Organization_QNAME = new QName(PROV_NS, "organization");
+    private final static QName _HadMember_QNAME = new QName(PROV_NS, "hadMember");
+    private final static QName _Dictionary_QNAME = new QName(PROV_NS, "dictionary");
+    private final static QName _Label_QNAME = new QName(PROV_NS, "label");
+    private final static QName _Agent_QNAME = new QName(PROV_NS, "agent");
+    private final static QName _WasInvalidatedBy_QNAME = new QName(PROV_NS, "wasInvalidatedBy");
+    private final static QName _MentionOf_QNAME = new QName(PROV_NS, "mentionOf");
+    private final static QName _WasAttributedTo_QNAME = new QName(PROV_NS, "wasAttributedTo");
+    private final static QName _SpecializationOf_QNAME = new QName(PROV_NS, "specializationOf");
+    private final static QName _WasStartedBy_QNAME = new QName(PROV_NS, "wasStartedBy");
+    private final static QName _DerivedByRemovalFrom_QNAME = new QName(PROV_NS, "derivedByRemovalFrom");
+    private final static QName _DerivedByInsertionFrom_QNAME = new QName(PROV_NS, "derivedByInsertionFrom");
+    private final static QName _WasQuotedFrom_QNAME = new QName(PROV_NS, "wasQuotedFrom");
+    private final static QName _KeyEntityPair_QNAME = new QName(PROV_NS, "keyEntityPair");
+    private final static QName _Plan_QNAME = new QName(PROV_NS, "plan");
+    private final static QName _WasGeneratedBy_QNAME = new QName(PROV_NS, "wasGeneratedBy");
+    private final static QName _QualifiedSpecializationOf_QNAME = new QName(PROV_EXT_NS, "specializationOf");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.openprovenance.prov.xml
@@ -290,13 +295,6 @@ public class ObjectFactory {
         return new Activity();
     }
 
-    /**
-     * Create an instance of {@link Others }
-     * 
-     */
-    public Others createOthers() {
-        return new Others();
-    }
 
     /**
      * Create an instance of {@link SpecializationOf }
@@ -307,6 +305,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SpecializationOf }
+     * 
+     */
+    public QualifiedSpecializationOf createQualifiedSpecializationOf() {
+        return new QualifiedSpecializationOf();
+    }
+  /**
      * Create an instance of {@link WasAttributedTo }
      * 
      */
@@ -438,7 +443,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link PrimarySource }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "hadPrimarySource")
+    @XmlElementDecl(namespace = PROV_NS, name = "hadPrimarySource")
     public JAXBElement<PrimarySource> createHadPrimarySource(PrimarySource value) {
         return new JAXBElement<PrimarySource>(_HadPrimarySource_QNAME, PrimarySource.class, null, value);
     }
@@ -447,7 +452,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Collection }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "collection")
+    @XmlElementDecl(namespace = PROV_NS, name = "collection")
     public JAXBElement<Collection> createCollection(Collection value) {
         return new JAXBElement<Collection>(_Collection_QNAME, Collection.class, null, value);
     }
@@ -456,7 +461,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasDerivedFrom }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasDerivedFrom")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasDerivedFrom")
     public JAXBElement<WasDerivedFrom> createWasDerivedFrom(WasDerivedFrom value) {
         return new JAXBElement<WasDerivedFrom>(_WasDerivedFrom_QNAME, WasDerivedFrom.class, null, value);
     }
@@ -465,7 +470,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Used }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "used")
+    @XmlElementDecl(namespace = PROV_NS, name = "used")
     public JAXBElement<Used> createUsed(Used value) {
         return new JAXBElement<Used>(_Used_QNAME, Used.class, null, value);
     }
@@ -474,7 +479,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Type }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "type")
+    @XmlElementDecl(namespace = PROV_NS, name = "type")
     public JAXBElement<Type> createType(Type value) {
         return new JAXBElement<Type>(_Type_QNAME, Type.class, null, value);
     }
@@ -483,7 +488,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasInformedBy }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasInformedBy")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasInformedBy")
     public JAXBElement<WasInformedBy> createWasInformedBy(WasInformedBy value) {
         return new JAXBElement<WasInformedBy>(_WasInformedBy_QNAME, WasInformedBy.class, null, value);
     }
@@ -492,7 +497,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link ActedOnBehalfOf }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "actedOnBehalfOf")
+    @XmlElementDecl(namespace = PROV_NS, name = "actedOnBehalfOf")
     public JAXBElement<ActedOnBehalfOf> createActedOnBehalfOf(ActedOnBehalfOf value) {
         return new JAXBElement<ActedOnBehalfOf>(_ActedOnBehalfOf_QNAME, ActedOnBehalfOf.class, null, value);
     }
@@ -501,7 +506,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link EmptyDictionary }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "emptyDictionary")
+    @XmlElementDecl(namespace = PROV_NS, name = "emptyDictionary")
     public JAXBElement<EmptyDictionary> createEmptyDictionary(EmptyDictionary value) {
         return new JAXBElement<EmptyDictionary>(_EmptyDictionary_QNAME, EmptyDictionary.class, null, value);
     }
@@ -510,7 +515,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasAssociatedWith }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasAssociatedWith")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasAssociatedWith")
     public JAXBElement<WasAssociatedWith> createWasAssociatedWith(WasAssociatedWith value) {
         return new JAXBElement<WasAssociatedWith>(_WasAssociatedWith_QNAME, WasAssociatedWith.class, null, value);
     }
@@ -519,7 +524,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link SoftwareAgent }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "softwareAgent")
+    @XmlElementDecl(namespace = PROV_NS, name = "softwareAgent")
     public JAXBElement<SoftwareAgent> createSoftwareAgent(SoftwareAgent value) {
         return new JAXBElement<SoftwareAgent>(_SoftwareAgent_QNAME, SoftwareAgent.class, null, value);
     }
@@ -528,7 +533,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Person }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "person")
+    @XmlElementDecl(namespace = PROV_NS, name = "person")
     public JAXBElement<Person> createPerson(Person value) {
         return new JAXBElement<Person>(_Person_QNAME, Person.class, null, value);
     }
@@ -537,7 +542,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Revision }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasRevisionOf")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasRevisionOf")
     public JAXBElement<Revision> createWasRevisionOf(Revision value) {
         return new JAXBElement<Revision>(_WasRevisionOf_QNAME, Revision.class, null, value);
     }
@@ -546,7 +551,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Location }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "location")
+    @XmlElementDecl(namespace = PROV_NS, name = "location")
     public JAXBElement<Location> createLocation(Location value) {
         return new JAXBElement<Location>(_Location_QNAME, Location.class, null, value);
     }
@@ -555,7 +560,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasInfluencedBy }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasInfluencedBy")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasInfluencedBy")
     public JAXBElement<WasInfluencedBy> createWasInfluencedBy(WasInfluencedBy value) {
         return new JAXBElement<WasInfluencedBy>(_WasInfluencedBy_QNAME, WasInfluencedBy.class, null, value);
     }
@@ -564,7 +569,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Entity }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "entity")
+    @XmlElementDecl(namespace = PROV_NS, name = "entity")
     public JAXBElement<Entity> createEntity(Entity value) {
         return new JAXBElement<Entity>(_Entity_QNAME, Entity.class, null, value);
     }
@@ -573,7 +578,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link EmptyCollection }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "emptyCollection")
+    @XmlElementDecl(namespace = PROV_NS, name = "emptyCollection")
     public JAXBElement<EmptyCollection> createEmptyCollection(EmptyCollection value) {
         return new JAXBElement<EmptyCollection>(_EmptyCollection_QNAME, EmptyCollection.class, null, value);
     }
@@ -582,7 +587,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Role }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "role")
+    @XmlElementDecl(namespace = PROV_NS, name = "role")
     public JAXBElement<Role> createRole(Role value) {
         return new JAXBElement<Role>(_Role_QNAME, Role.class, null, value);
     }
@@ -591,7 +596,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link BundleEntity }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "bundle")
+    @XmlElementDecl(namespace = PROV_NS, name = "bundle")
     public JAXBElement<BundleEntity> createBundle(BundleEntity value) {
         return new JAXBElement<BundleEntity>(_Bundle_QNAME, BundleEntity.class, null, value);
     }
@@ -600,7 +605,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Value }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "value")
+    @XmlElementDecl(namespace = PROV_NS, name = "value")
     public JAXBElement<Value> createValue(Value value) {
         return new JAXBElement<Value>(_Value_QNAME, Value.class, null, value);
     }
@@ -609,7 +614,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link AlternateOf }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "alternateOf")
+    @XmlElementDecl(namespace = PROV_NS, name = "alternateOf")
     public JAXBElement<AlternateOf> createAlternateOf(AlternateOf value) {
         return new JAXBElement<AlternateOf>(_AlternateOf_QNAME, AlternateOf.class, null, value);
     }
@@ -618,7 +623,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Activity }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "activity")
+    @XmlElementDecl(namespace = PROV_NS, name = "activity")
     public JAXBElement<Activity> createActivity(Activity value) {
         return new JAXBElement<Activity>(_Activity_QNAME, Activity.class, null, value);
     }
@@ -627,7 +632,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DictionaryMembership }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "hadDictionaryMember")
+    @XmlElementDecl(namespace = PROV_NS, name = "hadDictionaryMember")
     public JAXBElement<DictionaryMembership> createHadDictionaryMember(DictionaryMembership value) {
         return new JAXBElement<DictionaryMembership>(_HadDictionaryMember_QNAME, DictionaryMembership.class, null, value);
     }
@@ -636,7 +641,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasEndedBy }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasEndedBy")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasEndedBy")
     public JAXBElement<WasEndedBy> createWasEndedBy(WasEndedBy value) {
         return new JAXBElement<WasEndedBy>(_WasEndedBy_QNAME, WasEndedBy.class, null, value);
     }
@@ -645,7 +650,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Document }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "document")
+    @XmlElementDecl(namespace = PROV_NS, name = "document")
     public JAXBElement<Document> createDocument(Document value) {
         return new JAXBElement<Document>(_Document_QNAME, Document.class, null, value);
     }
@@ -654,7 +659,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Organization }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "organization")
+    @XmlElementDecl(namespace = PROV_NS, name = "organization")
     public JAXBElement<Organization> createOrganization(Organization value) {
         return new JAXBElement<Organization>(_Organization_QNAME, Organization.class, null, value);
     }
@@ -663,7 +668,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link HadMember }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "hadMember")
+    @XmlElementDecl(namespace = PROV_NS, name = "hadMember")
     public JAXBElement<HadMember> createHadMember(HadMember value) {
         return new JAXBElement<HadMember>(_HadMember_QNAME, HadMember.class, null, value);
     }
@@ -672,7 +677,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Dictionary }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "dictionary")
+    @XmlElementDecl(namespace = PROV_NS, name = "dictionary")
     public JAXBElement<Dictionary> createDictionary(Dictionary value) {
         return new JAXBElement<Dictionary>(_Dictionary_QNAME, Dictionary.class, null, value);
     }
@@ -681,7 +686,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link LangString }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "label")
+    @XmlElementDecl(namespace = PROV_NS, name = "label")
     public JAXBElement<InternationalizedString> createLabel(InternationalizedString value) {
         return new JAXBElement<InternationalizedString>(_Label_QNAME, InternationalizedString.class, null, value);
     }
@@ -690,7 +695,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Agent }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "agent")
+    @XmlElementDecl(namespace = PROV_NS, name = "agent")
     public JAXBElement<Agent> createAgent(Agent value) {
         return new JAXBElement<Agent>(_Agent_QNAME, Agent.class, null, value);
     }
@@ -699,7 +704,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasInvalidatedBy }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasInvalidatedBy")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasInvalidatedBy")
     public JAXBElement<WasInvalidatedBy> createWasInvalidatedBy(WasInvalidatedBy value) {
         return new JAXBElement<WasInvalidatedBy>(_WasInvalidatedBy_QNAME, WasInvalidatedBy.class, null, value);
     }
@@ -708,25 +713,17 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link MentionOf }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "mentionOf")
+    @XmlElementDecl(namespace = PROV_NS, name = "mentionOf")
     public JAXBElement<MentionOf> createMentionOf(MentionOf value) {
         return new JAXBElement<MentionOf>(_MentionOf_QNAME, MentionOf.class, null, value);
     }
 
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Others }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "others")
-    public JAXBElement<Others> createOthers(Others value) {
-        return new JAXBElement<Others>(_Others_QNAME, Others.class, null, value);
-    }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link WasAttributedTo }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasAttributedTo")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasAttributedTo")
     public JAXBElement<WasAttributedTo> createWasAttributedTo(WasAttributedTo value) {
         return new JAXBElement<WasAttributedTo>(_WasAttributedTo_QNAME, WasAttributedTo.class, null, value);
     }
@@ -735,16 +732,25 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link SpecializationOf }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "specializationOf")
+    @XmlElementDecl(namespace = PROV_NS, name = "specializationOf")
     public JAXBElement<SpecializationOf> createSpecializationOf(SpecializationOf value) {
         return new JAXBElement<SpecializationOf>(_SpecializationOf_QNAME, SpecializationOf.class, null, value);
+    }
+    
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link QualifiedSpecializationOf }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = PROV_EXT_NS, name = "specializationOf")
+    public JAXBElement<QualifiedSpecializationOf> createQualifiedSpecializationOf(QualifiedSpecializationOf value) {
+        return new JAXBElement<QualifiedSpecializationOf>(_QualifiedSpecializationOf_QNAME, QualifiedSpecializationOf.class, null, value);
     }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link WasStartedBy }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasStartedBy")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasStartedBy")
     public JAXBElement<WasStartedBy> createWasStartedBy(WasStartedBy value) {
         return new JAXBElement<WasStartedBy>(_WasStartedBy_QNAME, WasStartedBy.class, null, value);
     }
@@ -753,7 +759,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DerivedByRemovalFrom }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "derivedByRemovalFrom")
+    @XmlElementDecl(namespace = PROV_NS, name = "derivedByRemovalFrom")
     public JAXBElement<DerivedByRemovalFrom> createDerivedByRemovalFrom(DerivedByRemovalFrom value) {
         return new JAXBElement<DerivedByRemovalFrom>(_DerivedByRemovalFrom_QNAME, DerivedByRemovalFrom.class, null, value);
     }
@@ -762,7 +768,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DerivedByInsertionFrom }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "derivedByInsertionFrom")
+    @XmlElementDecl(namespace = PROV_NS, name = "derivedByInsertionFrom")
     public JAXBElement<DerivedByInsertionFrom> createDerivedByInsertionFrom(DerivedByInsertionFrom value) {
         return new JAXBElement<DerivedByInsertionFrom>(_DerivedByInsertionFrom_QNAME, DerivedByInsertionFrom.class, null, value);
     }
@@ -771,7 +777,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Quotation }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasQuotedFrom")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasQuotedFrom")
     public JAXBElement<Quotation> createWasQuotedFrom(Quotation value) {
         return new JAXBElement<Quotation>(_WasQuotedFrom_QNAME, Quotation.class, null, value);
     }
@@ -780,7 +786,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Entry }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "keyEntityPair")
+    @XmlElementDecl(namespace = PROV_NS, name = "keyEntityPair")
     public JAXBElement<Entry> createKeyEntityPair(Entry value) {
         return new JAXBElement<Entry>(_KeyEntityPair_QNAME, Entry.class, null, value);
     }
@@ -789,7 +795,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Plan }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "plan")
+    @XmlElementDecl(namespace = PROV_NS, name = "plan")
     public JAXBElement<Plan> createPlan(Plan value) {
         return new JAXBElement<Plan>(_Plan_QNAME, Plan.class, null, value);
     }
@@ -798,7 +804,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link WasGeneratedBy }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasGeneratedBy")
+    @XmlElementDecl(namespace = PROV_NS, name = "wasGeneratedBy")
     public JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy value) {
         return new JAXBElement<WasGeneratedBy>(_WasGeneratedBy_QNAME, WasGeneratedBy.class, null, value);
     }

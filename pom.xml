@@ -5,7 +5,7 @@
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox</artifactId>
   <name>ProvToolbox: Java for W3C PROV</name>
-  <version>0.6.2-SNAPSHOT</version>
+  <version>0.7.4-SNAPSHOT</version>
   <url>http://lucmoreau.github.io/ProvToolbox/</url>
   <packaging>pom</packaging>
   <description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -30,6 +30,11 @@
     <module>toolbox</module>
     <module>prov-sql</module>
     <module>tutorial/tutorial1</module>
+    <module>tutorial/tutorial2</module>
+    <module>tutorial/tutorial3</module>
+    <module>tutorial/tutorial4</module>
+    <module>tutorial/tutorial5</module>
+    <module>tutorial/tutorial6</module>
   </modules>
 
 
@@ -74,7 +79,7 @@
     </developer>
     <developer>
       <id>jamalhussein</id>
-      <name>Jamal Hussein Jewell</name>
+      <name>Jamal Hussein</name>
       <roles>
 	<role>Developer</role>
       </roles>
@@ -186,12 +191,12 @@
 	  <plugin>
 	    <groupId>org.sonatype.plugins</groupId>
 	    <artifactId>nexus-staging-maven-plugin</artifactId>
-	    <version>1.6.2</version>
+	    <version>1.6.7</version>
 	    <extensions>true</extensions>
 	    <configuration>
 	      <serverId>ossrh</serverId>
 	      <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-	      <autoReleaseAfterClose>false</autoReleaseAfterClose>
+	      <autoReleaseAfterClose>true</autoReleaseAfterClose>
 	    </configuration>
 	  </plugin>
 
@@ -274,7 +279,7 @@
 	<plugin>
 	  <groupId>org.apache.maven.plugins</groupId>
 	  <artifactId>maven-release-plugin</artifactId>
-	  <version>2.4.2</version>
+	  <version>2.5.3</version>
 
 	  <configuration>
 	    <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -294,6 +299,8 @@
 	</plugin>
       </plugins>
     </pluginManagement>
+
+
   </build>
 
   <properties>
@@ -306,21 +313,21 @@
     <log4j.version>1.2.17</log4j.version>
 
     <!-- jaxb -->
-    <jaxb.impl.version>2.2.6</jaxb.impl.version>
-    <jaxb.api.version>2.2.4</jaxb.api.version>
+    <jaxb.impl.version>2.2.11</jaxb.impl.version>  <!-- 2.2.11, 2.2.6 -->
+    <jaxb.api.version>2.2.12</jaxb.api.version>   <!-- 2.2.12, 2.2.4 -->
     <jaxb.xjc.version>2.2.4</jaxb.xjc.version>
     <jaxb.common.version>0.4.1.5</jaxb.common.version>
     <maven.jaxb.plugin.version>0.8.2</maven.jaxb.plugin.version>
 
     <!-- hibernate -->
-    <hibernate.version>4.3.5.Final</hibernate.version>
+    <hibernate.version>4.3.10.Final</hibernate.version>
     <hibernate3.plugin.version>3.0</hibernate3.plugin.version>
 
     <!-- hsqldb -->
     <hsqldb.version>2.3.2</hsqldb.version>
 
     <!-- postgres -->
-    <postgres.version>9.3-1101-jdbc41</postgres.version>
+    <postgres.version>9.3-1102-jdbc41</postgres.version>
   </properties>
 
 

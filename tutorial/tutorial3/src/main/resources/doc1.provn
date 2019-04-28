@@ -1,0 +1,10 @@
+document
+
+ prefix ex <http://example.org/#>
+
+ entity(ex:e1,[ex:attr1="val1"])
+ agent(ex:ag1)
+ wasAttributedTo(ex:e1, ex:ag1)
+
+endDocument
+

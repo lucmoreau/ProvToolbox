@@ -37,6 +37,9 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.WasAssociatedWith; 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
 /**
@@ -820,6 +823,21 @@ public class ObjectFactory2 implements org.openprovenance.prov.model.ObjectFacto
     @XmlElementDecl(namespace = "http://www.w3.org/ns/prov#", name = "wasGeneratedBy")
     public JAXBElement<WasGeneratedBy> createWasGeneratedBy(WasGeneratedBy value) {
         return new JAXBElement<WasGeneratedBy>(_WasGeneratedBy_QNAME, WasGeneratedBy.class, null, value);
+    }
+
+    @Override
+    public QualifiedSpecializationOf createQualifiedSpecializationOf() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public QualifiedAlternateOf createQualifiedAlternateOf() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public QualifiedHadMember createQualifiedHadMember() {
+        throw new UnsupportedOperationException();
     }
 
 

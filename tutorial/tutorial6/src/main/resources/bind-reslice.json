@@ -1,0 +1,30 @@
+{
+  "var" : {
+    "b" :              [ { "@id" : "vargen:b" } ],
+    "agent" :          [ { "@id" : "var:agent" } ],
+    "block_instance" : [ { "@id" : "var:block_instance" } ],
+    "block_type" :     [ { "@id" : "prim:Reslice"  } ] ,
+    "parent" :         [ { "@id" : "var:parent" } ],
+    "produced" :       [ { "@id" : "var:produced1" },
+			 { "@id" : "var:produced2" }] ,
+    "produced_label" : [ { "@id" : "var:produced_label1"  },
+			 { "@id" : "var:produced_label2"  } ],
+    "produced_name" :  [ { "@id" : "prim:Img"  },
+			 { "@id" : "prim:Hdr"  } ],
+    "produced_type" :  [ { "@id" : "prim:File" },
+			 { "@id" : "prim:File" } ],
+    "produced_at" :    [ { "@id" : "var:produced_at1" },
+			 { "@id" : "var:produced_at2" } ],
+    "consumed" :       [ { "@id" : "var:consumed" } ],
+    "consumed_type" :  [ { "@id" : "prim:File" } ],
+    "consumed_label" : [ { "@id" : "var:consumed_label" } ],
+    "consumed_name" :  [ { "@id" : "prim:In" } ],
+    "consumed_at" :    [ { "@id" : "var:consumed_at" } ]  },
+    "vargen" : { },
+    "context" : {
+        "prim" : "http://openprovenance.org/primitives#",
+        "pc1" : "http://www.ipaw.info/challenge/",
+        "var" :  "http://openprovenance.org/var#",
+        "vargen" :  "http://openprovenance.org/vargen#"
+    }
+}

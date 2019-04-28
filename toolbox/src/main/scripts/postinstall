@@ -1,0 +1,10 @@
+ #!/bin/sh
+echo "postinstall"
+find  /usr/local/lib/provconvert/repo -name *.jar | xargs chmod 444
+rm /usr/local/lib/provconvert/bin/provconvert.bat
+rm /usr/local/lib/provconvert/bin/provconvertBAK
+
+
+
+
+

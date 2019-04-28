@@ -3,6 +3,10 @@ package org.openprovenance.prov.model;
 import java.util.List;
 import java.util.LinkedList;
 
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+
 
 /** Generic Traversal of a PROV model bean.
  * Makes use of the "visitor" in {@link ProvUtilities#doAction(StatementOrBundle, StatementActionValue)}
@@ -185,6 +189,42 @@ public class BeanTraversal implements StatementActionValue {
         return c.newSpecializationOf(o.getSpecificEntity(), o.getGeneralEntity());
     }
     
+    @Override
+    public SpecializationOf doAction(QualifiedSpecializationOf o) {
+        List<Attribute> attrs=new LinkedList<Attribute>();  
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+        ModelConstructorExtension c2=(ModelConstructorExtension)c;
+        return c2.newQualifiedSpecializationOf(o.getId(), o.getSpecificEntity(), o.getGeneralEntity(), attrs);
+    }
+    
+    @Override
+    public AlternateOf doAction(QualifiedAlternateOf o) {
+        List<Attribute> attrs=new LinkedList<Attribute>();  
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+        ModelConstructorExtension c2=(ModelConstructorExtension)c;
+        return c2.newQualifiedAlternateOf(o.getId(), o.getAlternate1(), o.getAlternate2(), attrs);
+    }
+    
+    @Override
+    public HadMember doAction(QualifiedHadMember o) {
+        List<Attribute> attrs=new LinkedList<Attribute>();  
+        convertTypeAttributes(o,attrs);
+        convertLabelAttributes(o,attrs);
+        convertAttributes(o,attrs);
+        ModelConstructorExtension c2=(ModelConstructorExtension)c;
+        List<QualifiedName> qq=new LinkedList<QualifiedName>();
+        if (o.getEntity()!=null) {
+            for (QualifiedName eid:o.getEntity()) {
+                qq.add(eid);
+            }
+        }
+        return c2.newQualifiedHadMember(o.getId(),o.getCollection(), qq,attrs);
+    }
+
     public Used doAction(Used use) {
 	List<Attribute> attrs=new LinkedList<Attribute>();	
 	convertTypeAttributes(use,attrs);

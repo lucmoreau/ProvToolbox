@@ -18,11 +18,11 @@ COPY prov-xml/pom.xml /src/prov-xml/
 COPY toolbox/pom.xml /src/toolbox/
 
 COPY ./tutorial/tutorial1/pom.xml /src/tutorial/tutorial1/pom.xml
-COPY ./tutorial/tutorial1/pom.xml /src/tutorial/tutorial2/pom.xml
-COPY ./tutorial/tutorial1/pom.xml /src/tutorial/tutorial3/pom.xml
-COPY ./tutorial/tutorial1/pom.xml /src/tutorial/tutorial4/pom.xml
-COPY ./tutorial/tutorial1/pom.xml /src/tutorial/tutorial5/pom.xml
-COPY ./tutorial/tutorial1/pom.xml /src/tutorial/tutorial6/pom.xml
+COPY ./tutorial/tutorial2/pom.xml /src/tutorial/tutorial2/pom.xml
+COPY ./tutorial/tutorial3/pom.xml /src/tutorial/tutorial3/pom.xml
+COPY ./tutorial/tutorial4/pom.xml /src/tutorial/tutorial4/pom.xml
+COPY ./tutorial/tutorial5/pom.xml /src/tutorial/tutorial5/pom.xml
+COPY ./tutorial/tutorial6/pom.xml /src/tutorial/tutorial6/pom.xml
 
 RUN mvn -f pom.xml dependency:resolve --fail-never
 

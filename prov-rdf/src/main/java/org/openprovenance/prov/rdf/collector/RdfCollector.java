@@ -39,12 +39,8 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
-import org.openrdf.model.BNode;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
+import org.openrdf.model.*;
+import org.openrdf.model.impl.SimpleBNode;
 import org.openrdf.model.impl.BNodeImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.rio.helpers.RDFHandlerBase;
@@ -317,19 +313,25 @@ public class RdfCollector extends RDFHandlerBase {
 	//System.out.println("+++-----> Literal " + literal.getDatatype());
 	    //System.out.println("+++--------> Literal " + obj2);
 	String dataType = NamespacePrefixMapper.XSD_NS + "string";
-	if (literal.getLanguage() != null) {
-	    return pFactory.newInternationalizedString(literal.stringValue(),
-						       literal.getLanguage());
+	String dataType2 = NamespacePrefixMapper.RDF_NS + "langString";
+
+	if (dataType.equals(literal.getDatatype().stringValue()) || (dataType2.equals(literal.getDatatype().stringValue()) )) {
+		if (literal.getLanguage().isPresent() && literal.getLanguage().get()!=null) {
+			return pFactory.newInternationalizedString(literal.stringValue(),
+					literal.getLanguage().get());
+		} else {
+			return literal.stringValue();
+		}
 	}
 
 	if (literal.getDatatype() != null) {
-	    if (literal instanceof URI) {
-		QualifiedName qualifiedName = namespace.stringToQualifiedName(literal.getDatatype()
-							       .stringValue(),pFactory);
-		dataType = qualifiedName.getNamespaceURI() + qualifiedName.getLocalPart();
-	    } else {
-		dataType = literal.getDatatype().stringValue();
-	    }
+		if (literal instanceof URI) {
+			QualifiedName qualifiedName = namespace.stringToQualifiedName(literal.getDatatype()
+					.stringValue(),pFactory);
+			dataType = qualifiedName.getNamespaceURI() + qualifiedName.getLocalPart();
+		} else {
+			dataType = literal.getDatatype().stringValue();
+		}
 	}
 
 	if (dataType.equals(NamespacePrefixMapper.XSD_NS + "qualifiedName")) {
@@ -340,10 +342,8 @@ public class RdfCollector extends RDFHandlerBase {
 		+ "dateTime")
 		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "time")
 		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "date")
-		|| dataType.equals(NamespacePrefixMapper.XSD_NS
-			+ "gYearMonth")
-		|| dataType.equals(NamespacePrefixMapper.XSD_NS
-			+ "gMonthDay")
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gYearMonth")
+		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gMonthDay")
 		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gYear")
 		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gMonth")
 		|| dataType.equals(NamespacePrefixMapper.XSD_NS + "gDay")) {
@@ -457,23 +457,23 @@ public class RdfCollector extends RDFHandlerBase {
     final QualifiedNameUtils qnU=new QualifiedNameUtils();
     
     protected QualifiedName convertURIToQualifiedName(URI uri) {
-	QualifiedName qualifiedName;
-	String uriNamespace = uri.getNamespace();
-	String prefix=namespace.getNamespaces().get(uriNamespace);
-	String uriLocalName = qnU.escapeProvLocalName(uri.getLocalName());
-	if (prefix!=null) {
-	    qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName, prefix);
-	} else {
-	    String defaultNS=namespace.getDefaultNamespace();
-	    if ((defaultNS!=null) && (defaultNS.equals(uriNamespace))) {
-		qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName,null);
-	    } else {
-		namespace.newPrefix(uriNamespace);
-		String pref=namespace.getNamespaces().get(uriNamespace);
-		qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName, pref);
-	    }
-	}	
-	return qualifiedName;
+		QualifiedName qualifiedName;
+		String uriNamespace = uri.getNamespace();
+		String prefix=namespace.getNamespaces().get(uriNamespace);
+		String uriLocalName = qnU.escapeProvLocalName(uri.getLocalName());
+		if (prefix!=null) {
+			qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName, prefix);
+		} else {
+			String defaultNS=namespace.getDefaultNamespace();
+			if ((defaultNS!=null) && (defaultNS.equals(uriNamespace))) {
+				qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName,null);
+			} else {
+				namespace.newPrefix(uriNamespace);
+				String pref=namespace.getNamespaces().get(uriNamespace);
+				qualifiedName = pFactory.newQualifiedName(uriNamespace, uriLocalName, pref);
+			}
+		}
+		return qualifiedName;
     }
 
     /*
@@ -576,23 +576,39 @@ public class RdfCollector extends RDFHandlerBase {
 	return attr;
     }
 
-    public Attribute newAttribute(Literal lit, QualifiedName type) {
-	Object theValue;
-	if (lit.getLanguage() != null) {
-	    theValue = pFactory.newInternationalizedString(lit.stringValue(),
-							   lit.getLanguage());
-	} else {
-	    theValue = lit.stringValue();
+
+	public Attribute newAttribute(Literal lit, QualifiedName type) {
+		String double_type=name.XSD_DOUBLE.getUri();
+		String decimal_type=name.XSD_DECIMAL.getUri();
+
+		Object theValue;
+		IRI dataType = lit.getDatatype();
+		if (dataType.toString().equals(double_type)) {
+			return pFactory.newAttribute(type,lit.doubleValue(),name.XSD_DOUBLE);
+		}
+		if (dataType.toString().equals(decimal_type)) {
+			return pFactory.newAttribute(type,lit.decimalValue(),name.XSD_DECIMAL);
+		}
+		if (lit.getLanguage().isPresent()) {
+			theValue = pFactory.newInternationalizedString(lit.stringValue(),
+					lit.getLanguage().get());
+		} else {
+			theValue = lit.stringValue();
+		}
+
+
+
+		Attribute attr = pFactory.newAttribute(type,
+				theValue,
+				(((dataType == null) || dataType.stringValue().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"))?
+						((lit.getLanguage().isPresent())
+								? name.PROV_LANG_STRING
+								: name.XSD_STRING)
+						: convertURIToQualifiedName(dataType)));
+
+		//System.out.println("===> Attr" + attr);
+		return attr;
 	}
-	Attribute attr = pFactory.newAttribute(type,
-					       theValue,
-					       ((lit.getDatatype() == null) ? 
-					               ((lit.getLanguage()==null)
-					                       ? name.XSD_STRING
-					                       : name.PROV_LANG_STRING)
-						       : convertURIToQualifiedName(lit.getDatatype())));
-	return attr;
-    }
 
     /*
      * Handles PROV-O predicates, creating beans where appropriate.
@@ -771,7 +787,7 @@ public class RdfCollector extends RDFHandlerBase {
 	}
     }
 
-    protected List<Value> getDataObjects(QualifiedName context, 
+    protected List<Value> getDataObjects(QualifiedName context,
                                          QualifiedName subject,
 					 QualifiedName pred) {
 	List<Statement> statements = collators.get(context).get(subject);
@@ -895,6 +911,9 @@ public class RdfCollector extends RDFHandlerBase {
     protected QualifiedName bnodeToQualifiedName(BNode bnode) {
 	return pFactory.newQualifiedName(BNODE_NS, bnode.getID(), "bnode");
     }
+    protected QualifiedName bnodeToQualifiedName(SimpleBNode bnode) {
+	return pFactory.newQualifiedName(BNODE_NS, bnode.getID(), "bnode");
+    }
 
     @Override
     public void handleStatement(Statement statement) {
@@ -905,11 +924,13 @@ public class RdfCollector extends RDFHandlerBase {
 	Resource subject = statement.getSubject();
 	if (subject instanceof BNodeImpl) {
 	    subjectQ = bnodeToQualifiedName((BNodeImpl) subject);
+	} else 	if (subject instanceof SimpleBNode) {
+	    subjectQ = bnodeToQualifiedName((SimpleBNode) subject);
 	} else if (subject instanceof URI) {
 	    URI uri = (URI) subject;
 	    subjectQ = convertURIToQualifiedName(uri);
 	} else {
-	    System.err.println("Invalid subject resource");
+	    System.err.println("Invalid subject resource " + subject.getClass());
 	}
 
 	if (!collators.containsKey(contextQ)) {

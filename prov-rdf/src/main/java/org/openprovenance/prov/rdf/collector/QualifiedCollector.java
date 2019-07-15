@@ -615,7 +615,7 @@ public class QualifiedCollector extends RdfCollector {
 
 	private QualifiedName getQualqualifiedName(QualifiedName qualifiedName)
 	{
-		if (qualifiedName.getNamespaceURI() == "" || qualifiedName.getNamespaceURI().equals(BNODE_NS))
+		if (qualifiedName.getNamespaceURI() == "" || qualifiedName.getNamespaceURI() == null || qualifiedName.getNamespaceURI().equals(BNODE_NS))
 		{
 			BNode bnode = new BNodeImpl(qualifiedName.getLocalPart());
 			if (!isBNodeReferenced(bnode))

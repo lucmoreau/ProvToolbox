@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-dot" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-generator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-interop" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-json" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-n" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-rdf" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-sql" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-template" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/prov-xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/toolbox" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tutorial/tutorial1" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tutorial/tutorial2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tutorial/tutorial3" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tutorial/tutorial4" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tutorial/tutorial5" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/tutorial/tutorial6" charset="UTF-8" />
+  </component>
+</project>

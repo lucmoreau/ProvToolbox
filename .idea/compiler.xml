@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="prov-json" />
+        <module name="prov-n" />
+        <module name="prov-xml" />
+        <module name="ProvToolbox-Tutorial6" />
+        <module name="ProvToolbox-Tutorial5" />
+        <module name="ProvToolbox-Tutorial4" />
+        <module name="ProvToolbox-Tutorial3" />
+        <module name="ProvToolbox-Tutorial2" />
+        <module name="ProvToolbox-Tutorial1" />
+        <module name="prov-interop" />
+        <module name="prov-generator" />
+        <module name="provconvert" />
+        <module name="prov-sql" />
+        <module name="prov-rdf" />
+        <module name="prov-dot" />
+        <module name="prov-template" />
+        <module name="prov-model" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="prov-dot" target="1.7" />
+      <module name="prov-generator" target="1.7" />
+      <module name="prov-interop" target="1.7" />
+      <module name="prov-json" target="1.7" />
+      <module name="prov-model" target="1.7" />
+      <module name="prov-n" target="1.7" />
+      <module name="prov-rdf" target="8" />
+      <module name="prov-sql" target="1.7" />
+      <module name="prov-template" target="1.7" />
+      <module name="prov-xml" target="1.7" />
+      <module name="provconvert" target="1.7" />
+      <module name="ProvToolbox" target="1.5" />
+      <module name="ProvToolbox-Tutorial1" target="1.7" />
+      <module name="ProvToolbox-Tutorial2" target="1.7" />
+      <module name="ProvToolbox-Tutorial3" target="1.7" />
+      <module name="ProvToolbox-Tutorial4" target="1.7" />
+      <module name="ProvToolbox-Tutorial5" target="1.7" />
+      <module name="ProvToolbox-Tutorial6" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

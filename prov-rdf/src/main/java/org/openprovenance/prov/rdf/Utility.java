@@ -43,7 +43,7 @@ public class Utility {
         File file = new File(filename);
         URL documentURL = file.toURI().toURL();
         InputStream inputStream = documentURL.openStream();
-        RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()));
+        RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()).orElse(null));
         String streamName = documentURL.toString();
 
         return parseRDF(inputStream, rdfParser, streamName);

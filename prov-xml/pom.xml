@@ -29,15 +29,23 @@
     </dependency>
 
     <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>${jaxb.api.version}</version>
+    </dependency>    
+    
+<!--    <dependency>
      <groupId>com.sun.xml.bind</groupId>
      <artifactId>jaxb-impl</artifactId>
      <version>${jaxb.impl.version}</version>
     </dependency>
+
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
       <version>${jaxb.impl.version}</version>
     </dependency>
+-->
 
     <dependency>
       <groupId>xerces</groupId>

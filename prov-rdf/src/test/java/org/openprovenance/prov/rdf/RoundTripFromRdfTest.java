@@ -76,8 +76,8 @@ public class RoundTripFromRdfTest extends TestCase {
 		DocumentEquality de = new DocumentEquality(true,null);
 		Document doc1 = u.parseRDF("src/test/resources/" + file);
 		file = file.replace('/', '_');
-		RDFFormat format = Rio.getParserFormatForFileName(file,
-				RDFFormat.TURTLE);
+		RDFFormat format = Rio.getParserFormatForFileName(file//,RDFFormat.TURTLE
+								  ).get();
 		u.dumpRDF(doc1, format, "target/" + file);
 		Document doc2 = u.parseRDF("target/" + file);
 

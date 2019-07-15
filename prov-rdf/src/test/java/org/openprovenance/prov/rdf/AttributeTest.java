@@ -5,7 +5,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.xml.UncheckedTestException;
 import org.openrdf.rio.RDFFormat;
 
-public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
+abstract public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
     final ProvFactory pFactory = new org.openprovenance.prov.xml.ProvFactory();
     final Ontology onto = new Ontology(pFactory);
     final Utility u = new Utility(pFactory, onto);

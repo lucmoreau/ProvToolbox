@@ -158,7 +158,12 @@ public class SesameGraphBuilder implements GraphBuilder<Resource,LiteralImpl,org
     }
     @Override
     public LiteralImpl newLiteral(String value, String lang) {
+	if (lang==null) {
+	    return new LiteralImpl(value);
+	} else {
 	 return new LiteralImpl(value,lang);
+	}
+
     }
 
 }

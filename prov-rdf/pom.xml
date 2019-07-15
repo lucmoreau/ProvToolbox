@@ -24,7 +24,8 @@
 -->
   
   <properties>
-    <sesame.version>2.6.10</sesame.version> 
+<!--    <sesame.version>2.6.10</sesame.version>  -->
+    <sesame.version>4.1.2</sesame.version> 
   </properties>
 
   <dependencies>
@@ -103,10 +104,17 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.3</version>
       </plugin>
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-compiler-plugin</artifactId>
+             <configuration>
+                 <source>8</source>
+                 <target>8</target>
+             </configuration>
+         </plugin>
 
 
-
-    </plugins>
+     </plugins>
 
    <pluginManagement>
      <plugins>

@@ -21,7 +21,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jvnet.staxex:stax-ex:1.8" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" level="project" />
-    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-runtime:4.1.2" level="project" />
@@ -95,6 +95,7 @@
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-sail-base:4.1.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.openrdf.sesame:sesame-sail-spin:4.1.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.openrdf.sesame:sesame-spin:4.1.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.openrdf.sesame:sesame-queryrender:4.1.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.openrdf.sesame:sesame-sail-nativerdf:4.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-n3:4.1.2" level="project" />
@@ -105,7 +106,6 @@
     <orderEntry type="module" module-name="prov-xml" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Maven: xerces:xercesImpl:2.11.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.slf4j:slf4j-nop:1.7.12" level="project" />
     <orderEntry type="module" module-name="prov-xml" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />

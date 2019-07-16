@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.collections.bag.HashBag;
+import org.apache.commons.collections4.bag.HashBag;
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Document;

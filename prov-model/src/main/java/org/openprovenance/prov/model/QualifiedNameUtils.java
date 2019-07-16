@@ -225,7 +225,7 @@ public class QualifiedNameUtils {
     static final String NC_NameStartChar=XML_NameStartChar;
     static final String NC_Name=NC_NameStartChar + "(" + NC_NameChar + ")*";
 
-    final Pattern NC_pat=Pattern.compile(QualifiedNameUtils.NC_Name);
+    static final Pattern NC_pat=Pattern.compile(QualifiedNameUtils.NC_Name);
     
     public boolean is_NC_Name (String input) {
 	if ("".equals(input)) return false;

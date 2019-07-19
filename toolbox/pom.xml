@@ -2,7 +2,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.8.1-SNAPSHOT</version>
+    <version>0.7.4-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -18,25 +18,25 @@
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.7.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-rdf</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.7.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.7.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-interop</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.7.4-SNAPSHOT</version>
     </dependency>
 
     <!-- required by sesame openrdf, to avoid slf4j warning -->

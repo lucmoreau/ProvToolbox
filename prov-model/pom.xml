@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.openprovenance.prov</groupId>
     <artifactId>ProvToolbox</artifactId>
-    <version>0.8.1-SNAPSHOT</version>
+    <version>0.7.4-SNAPSHOT</version>
   </parent>
   <artifactId>prov-model</artifactId>
   <name>PROV-MODEL</name>

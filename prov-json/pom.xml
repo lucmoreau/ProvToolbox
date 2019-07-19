@@ -4,7 +4,7 @@
   <parent>
     <artifactId>ProvToolbox</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.8.0</version>
+    <version>0.8.1-SNAPSHOT</version>
   </parent>
   <artifactId>prov-json</artifactId>
   <name>PROV-JSON</name>
@@ -15,7 +15,7 @@
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-model</artifactId>
-    	<version>0.8.0</version>
+    	<version>0.8.1-SNAPSHOT</version>
     </dependency>
     <dependency>
     	<groupId>com.google.code.gson</groupId>
@@ -29,7 +29,7 @@
     <dependency>
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-xml</artifactId>
-    	<version>0.8.0</version>
+    	<version>0.8.1-SNAPSHOT</version>
     	<scope>test</scope>
     </dependency>
 
@@ -38,7 +38,7 @@
     	<groupId>org.openprovenance.prov</groupId>
     	<artifactId>prov-xml</artifactId>
     	<scope>test</scope>
-    	<version>0.8.0</version>
+    	<version>0.8.1-SNAPSHOT</version>
     	<classifier>tests</classifier>
     </dependency>
 

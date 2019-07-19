@@ -55,7 +55,7 @@ import com.google.gson.JsonParseException;
  * A Gson deserializer adapter for PROV-JSON Decode a PROV-JSON structure and
  * produces a {@link Document}
  * 
- * @author Trung Dong Huynh <trungdong@donggiang.com>
+ * @author Trung Dong Huynh &lt;trungdong@donggiang.com&gt;
  * 
  */
 public class ProvDocumentDeserializer implements JsonDeserializer<Document> {

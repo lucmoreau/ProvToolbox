@@ -77,6 +77,7 @@ import java.util.NoSuchElementException;
  *  <tr>
  *   <td>ignoreEmptyTokens</td><td>boolean</td><td>true</td>
  *  </tr>
+ *  <caption></caption>
  * </table>
  *
  * @author Apache Software Foundation

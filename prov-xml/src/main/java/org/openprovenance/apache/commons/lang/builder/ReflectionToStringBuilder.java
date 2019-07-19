@@ -66,7 +66,6 @@ import org.openprovenance.apache.commons.lang.ClassUtils;
  * <li>{@link #accept(java.lang.reflect.Field)}</li>
  * <li>{@link #getValue(java.lang.reflect.Field)}</li>
  * </ul>
- * </p>
  * <p>
  * For example, this method does <i>not</i> include the <code>password</code> field in the returned
  * <code>String</code>:
@@ -76,7 +75,7 @@ import org.openprovenance.apache.commons.lang.ClassUtils;
  * public String toString() {
  *     return (new ReflectionToStringBuilder(this) {
  *         protected boolean accept(Field f) {
- *             return super.accept(f) && !f.getName().equals("password");
+ *             return super.accept(f) &amp;&amp; !f.getName().equals("password");
  *         }
  *     }).toString();
  * }</pre>

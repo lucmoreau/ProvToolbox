@@ -927,10 +927,10 @@ public class BooleanUtils {
      *   BooleanUtils.xor(new boolean[] { true, false })  = true
      * </pre>
      *
-     * @param array  an array of <code>boolean<code>s
-     * @return <code>true</code> if the xor is successful.
-     * @throws IllegalArgumentException if <code>array</code> is <code>null</code>
-     * @throws IllegalArgumentException if <code>array</code> is empty.
+     * @param array  an array of {@code boolean}s
+     * @return {@code true} if the xor is successful.
+     * @throws IllegalArgumentException if {@code array} is {@code null}
+     * @throws IllegalArgumentException if {@code array} is empty.
      */
     public static boolean xor(boolean[] array) {
         // Validates input
@@ -967,11 +967,11 @@ public class BooleanUtils {
      *   BooleanUtils.xor(new Boolean[] { Boolean.TRUE, Boolean.FALSE })  = Boolean.TRUE
      * </pre>
      *
-     * @param array  an array of <code>Boolean<code>s
-     * @return <code>true</code> if the xor is successful.
-     * @throws IllegalArgumentException if <code>array</code> is <code>null</code>
-     * @throws IllegalArgumentException if <code>array</code> is empty.
-     * @throws IllegalArgumentException if <code>array</code> contains a <code>null</code>
+     * @param array  an array of {@code Boolean}s
+     * @return {@code true} if the xor is successful.
+     * @throws IllegalArgumentException if {@code array} is {@code null}
+     * @throws IllegalArgumentException if {@code array} is empty.
+     * @throws IllegalArgumentException if {@code array} contains a {@code null}
      */
     public static Boolean xor(Boolean[] array) {
         if (array == null) {

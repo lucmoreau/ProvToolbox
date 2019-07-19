@@ -6,9 +6,9 @@ package org.openprovenance.prov.model;
  *  an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasDerivedFrom(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>WasDerivedFrom</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasDerivedFrom(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of {@code WasDerivedFrom}.
  * The following code snippet creates a new derivation statement, with a type attribute.
- * The instance of derivation is given an identifier <tt>myId</tt>.
+ * The instance of derivation is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * QualifiedName effectId= ... ;  // some qualified name

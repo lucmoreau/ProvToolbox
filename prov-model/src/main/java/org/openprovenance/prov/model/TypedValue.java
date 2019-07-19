@@ -6,9 +6,9 @@ package org.openprovenance.prov.model;
  * A value is a constant such as a string, number, time, qualified name, IRI, and encoded binary data, 
  * whose interpretation is outside the scope of PROV. Values can occur in attribute-value pairs.
  * 
- * <p>In the Java implementation, a TypedValue can be seen as an object with two properties: a <tt>value</tt> and a <tt>type</tt>.
+ * <p>In the Java implementation, a TypedValue can be seen as an object with two properties: a {@code value} and a {@code type}.
  * 
- * <p>The <tt>type</tt> is expressed as a QualifiedName, whereas the <tt>value</tt> is normally expected to be a string. 
+ * <p>The {@code type} is expressed as a QualifiedName, whereas the {@code value} is normally expected to be a string. 
  * (Two notable exceptions are qualified names whose external representation is dependent on the choice of 
  * prefix, and langString which also have a language property.
  * 
@@ -47,7 +47,7 @@ package org.openprovenance.prov.model;
 public interface TypedValue {
 
     /**
-     * Converts the value associated with the <tt>value</tt> property into a Java object.
+     * Converts the value associated with the {@code value} property into a Java object.
      * 
      * @return
      *     possible object is
@@ -73,7 +73,7 @@ public interface TypedValue {
     public Object getValue();
     
     /**
-     * Returns the cached converted value for the <tt>value</tt> property .
+     * Returns the cached converted value for the {@code value} property .
      * 
      * @return
      *     possible object is
@@ -83,7 +83,7 @@ public interface TypedValue {
     public Object getConvertedValue();
 
     /**
-     * Sets the value of the <tt>type</tt> property.
+     * Sets the value of the {@code type} property.
      * 
      * @param value
      *     allowed object is
@@ -93,7 +93,7 @@ public interface TypedValue {
     public void setType(QualifiedName value);
 
     /**
-     * Sets the <tt>value</tt> property.
+     * Sets the {@code value} property.
      * 
      * @param value
      *     allowed object is
@@ -103,7 +103,7 @@ public interface TypedValue {
     public void setValue(LangString value);
 
     /**
-     * Sets the <tt>value</tt> property.
+     * Sets the {@code value} property.
      * 
      * @param value
      *     allowed object is
@@ -113,7 +113,7 @@ public interface TypedValue {
     public void setValue(QualifiedName value);
 
     /**
-     * Sets the <tt>value</tt> property.
+     * Sets the {@code value} property.
      * 
      * @param value
      *     allowed object is
@@ -123,7 +123,7 @@ public interface TypedValue {
     public void setValue(String value);
 
     /**
-     * Sets the value of the <tt>value</tt> property.
+     * Sets the value of the {@code value} property.
      * 
      * @param value
      *     allowed object is

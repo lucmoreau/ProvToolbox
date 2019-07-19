@@ -23,7 +23,7 @@ import java.io.PrintWriter;
  * The base class of all runtime exceptions which can contain other
  * exceptions.
  *
- * @see org.apache.commons.lang.exception.NestableException
+ * org.apache.commons.lang.exception.NestableException
  * @author <a href="mailto:Rafal.Krzewski@e-point.pl">Rafal Krzewski</a>
  * @author Daniel L. Rall
  * @author <a href="mailto:knielsen@apache.org">Kasper Nielsen</a>

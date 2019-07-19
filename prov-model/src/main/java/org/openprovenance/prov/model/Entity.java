@@ -6,9 +6,9 @@ package org.openprovenance.prov.model;
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-entity">PROV-DM Definition for Entity</a>: An entity is a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary. 
  *  
  *
- * <p>The constructor method {@link ProvFactory#newEntity(QualifiedName)} can be used to create an instance of <tt>Entity</tt>.
+ * <p>The constructor method {@link ProvFactory#newEntity(QualifiedName)} can be used to create an instance of {@code Entity}.
  * The following code snippet creates a new entity statement, with a location attribute
- * "London".  The entity is given an identifier <tt>myId</tt>.
+ * "London".  The entity is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * Entity myEntity=provFactory.newEntity(myId)

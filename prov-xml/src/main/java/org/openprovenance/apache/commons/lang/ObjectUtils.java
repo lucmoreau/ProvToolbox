@@ -337,8 +337,8 @@ public class ObjectUtils {
      * 
      * @param c1  the first comparable, may be null
      * @param c2  the second comparable, may be null
-     * @return a negative value if c1 < c2, zero if c1 = c2
-     * and a positive value if c1 > c2
+     * @return a negative value if c1 &lt; c2, zero if c1 = c2
+     * and a positive value if c1 &gt; c2
      * @since 2.6
      */
     public static int compare(Comparable c1, Comparable c2) {
@@ -353,8 +353,8 @@ public class ObjectUtils {
      * @param nullGreater if true <code>null</code> is considered greater
      * than a Non-<code>null</code> value or if false <code>null</code> is
      * considered less than a Non-<code>null</code> value
-     * @return a negative value if c1 < c2, zero if c1 = c2
-     * and a positive value if c1 > c2
+     * @return a negative value if c1 &lt; c2, zero if c1 = c2
+     * and a positive value if c1 &gt; c2
      * @see java.util.Comparator#compare(Object, Object)
      * @since 2.6
      */

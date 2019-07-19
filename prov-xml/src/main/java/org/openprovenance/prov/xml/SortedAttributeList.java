@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 
  * @author lavm
  *
- * @param <TYPE>
+ * @param <TYPE> parametric type
  */
 public class SortedAttributeList<TYPE> extends AbstractList<TYPE> {
 

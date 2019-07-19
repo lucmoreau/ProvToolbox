@@ -30,8 +30,8 @@ import java.util.List;
  * <p>A shared implementation of the nestable exception functionality.</p>
  * <p>
  * The code is shared between 
- * {@link org.apache.commons.lang.exception.NestableError NestableError},
- * {@link org.apache.commons.lang.exception.NestableException NestableException} and
+ *  org.apache.commons.lang.exception.NestableError NestableError,
+ * org.apache.commons.lang.exception.NestableException NestableException and
  * {@link org.openprovenance.apache.commons.lang.exception.NestableRuntimeException NestableRuntimeException}.
  * </p>
  * 

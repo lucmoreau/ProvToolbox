@@ -22,7 +22,7 @@ public class InvalidCaseException extends RuntimeException {
     }
 
     /**
-     * @param message
+     * @param message a message
      */
     public InvalidCaseException(String message) {
 	super(message);
@@ -30,7 +30,7 @@ public class InvalidCaseException extends RuntimeException {
     }
 
     /**
-     * @param cause
+     * @param cause the exception
      */
     public InvalidCaseException(Throwable cause) {
 	super(cause);
@@ -38,8 +38,8 @@ public class InvalidCaseException extends RuntimeException {
     }
 
     /**
-     * @param message
-     * @param cause
+     * @param message a message
+     * @param cause the exception
      */
     public InvalidCaseException(String message, Throwable cause) {
 	super(message, cause);

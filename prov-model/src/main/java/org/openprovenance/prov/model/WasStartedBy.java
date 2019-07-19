@@ -7,9 +7,9 @@ package org.openprovenance.prov.model;
  * the activity's start. A start may refer to a trigger entity that set off the activity, or to an activity, known as starter, that generated the trigger.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>Start</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of {@code Start}.
  * The following code snippet creates a new start statement, with a role attribute, and current time.
- * The instance of start is given an identifier <tt>myId</tt>.
+ * The instance of start is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * QualifiedName activityId= ... ;  // some activity qualified name

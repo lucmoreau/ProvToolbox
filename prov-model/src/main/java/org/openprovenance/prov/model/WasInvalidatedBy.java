@@ -7,9 +7,9 @@ package org.openprovenance.prov.model;
  * Any generation or usage of an entity precedes its invalidation.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>WasInvalidatedBy</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of {@code WasInvalidatedBy}.
  * The following code snippet creates a new invalidation statement, with a role attribute, and current time.
- * The instance of invalidation is given an identifier <tt>myId</tt>.
+ * The instance of invalidation is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * QualifiedName entityId= ... ;    // some entity qualified name

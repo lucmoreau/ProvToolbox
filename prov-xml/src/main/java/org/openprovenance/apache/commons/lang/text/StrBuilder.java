@@ -47,7 +47,6 @@ import org.openprovenance.apache.commons.lang.SystemUtils;
  *   <li>size/clear/isEmpty - collections style API methods</li>
  *  </ul>
  * </li>
- * </ul>
  * <li>Views
  *  <ul>
  *   <li>asTokenizer - uses the internal buffer as the source of a StrTokenizer</li>
@@ -1158,7 +1157,7 @@ public class StrBuilder implements Cloneable {
      * This method is useful for adding a separator each time around the
      * loop except the first.
      * <pre>
-     * for (int i = 0; i < list.size(); i++) {
+     * for (int i = 0; i &lt; list.size(); i++) {
      *   appendSeparator(",", i);
      *   append(list.get(i));
      * }
@@ -1185,7 +1184,7 @@ public class StrBuilder implements Cloneable {
      * This method is useful for adding a separator each time around the
      * loop except the first.
      * <pre>
-     * for (int i = 0; i < list.size(); i++) {
+     * for (int i = 0; i &lt; list.size(); i++) {
      *   appendSeparator(",", i);
      *   append(list.get(i));
      * }

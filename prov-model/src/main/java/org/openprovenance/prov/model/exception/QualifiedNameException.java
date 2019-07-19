@@ -25,7 +25,7 @@ public class QualifiedNameException extends RuntimeException {
     }
 
     /**
-     * @param message
+     * @param message a message descriping the exception situation
      */
     public QualifiedNameException(String message) {
 	super(message);
@@ -33,7 +33,7 @@ public class QualifiedNameException extends RuntimeException {
     }
 
     /**
-     * @param cause
+     * @param cause the cause
      */
     public QualifiedNameException(Throwable cause) {
 	super(cause);
@@ -41,8 +41,8 @@ public class QualifiedNameException extends RuntimeException {
     }
 
     /**
-     * @param message
-     * @param cause
+     * @param message a messae
+     * @param cause the cause
      */
     public QualifiedNameException(String message, Throwable cause) {
 	super(message, cause);

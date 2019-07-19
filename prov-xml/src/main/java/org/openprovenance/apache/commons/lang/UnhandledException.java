@@ -21,7 +21,7 @@ import org.openprovenance.apache.commons.lang.exception.NestableRuntimeException
 /**
  * <p>Thrown when it is impossible or undesirable to consume or throw a checked exception.</p>
  * This exception supplements the standard exception classes by providing a more
- * semantically rich description of the problem.</p>
+ * semantically rich description of the problem.
  * 
  * <p><code>UnhandledException</code> represents the case where a method has to deal
  * with a checked exception but does not wish to.

@@ -6,9 +6,9 @@ package org.openprovenance.prov.model;
  *  Before usage, the activity had not begun to utilize this entity and could not have been affected by the entity.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>Used</tt>.
+ * <p>The constructor method {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of {@code Used}.
  * The following code snippet creates a new usage statement, with a role attribute, and current time.
- * The instance of usage is given an identifier <tt>myId</tt>.
+ * The instance of usage is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * QualifiedName activityId= ... ;  // some activity qualified name

@@ -885,7 +885,7 @@ public class NumberUtils {
      * @return the minimum value in the array
      * @throws IllegalArgumentException if <code>array</code> is <code>null</code>
      * @throws IllegalArgumentException if <code>array</code> is empty
-     * @see IEEE754rUtils#min(double[]) IEEE754rUtils for a version of this method that handles NaN differently
+     * see IEEE754rUtils#min(double[]) IEEE754rUtils for a version of this method that handles NaN differently
      */
     public static double min(double[] array) {
         // Validates input
@@ -916,7 +916,7 @@ public class NumberUtils {
      * @return the minimum value in the array
      * @throws IllegalArgumentException if <code>array</code> is <code>null</code>
      * @throws IllegalArgumentException if <code>array</code> is empty
-     * @see IEEE754rUtils#min(float[]) IEEE754rUtils for a version of this method that handles NaN differently
+     * see IEEE754rUtils#min(float[]) IEEE754rUtils for a version of this method that handles NaN differently
      */
     public static float min(float[] array) {
         // Validates input
@@ -1057,7 +1057,7 @@ public class NumberUtils {
      * @return the minimum value in the array
      * @throws IllegalArgumentException if <code>array</code> is <code>null</code>
      * @throws IllegalArgumentException if <code>array</code> is empty
-     * @see IEEE754rUtils#max(double[]) IEEE754rUtils for a version of this method that handles NaN differently
+     * see IEEE754rUtils#max(double[]) IEEE754rUtils for a version of this method that handles NaN differently
      */
     public static double max(double[] array) {
         // Validates input
@@ -1088,7 +1088,7 @@ public class NumberUtils {
      * @return the minimum value in the array
      * @throws IllegalArgumentException if <code>array</code> is <code>null</code>
      * @throws IllegalArgumentException if <code>array</code> is empty
-     * @see IEEE754rUtils#max(float[]) IEEE754rUtils for a version of this method that handles NaN differently
+     * see IEEE754rUtils#max(float[]) IEEE754rUtils for a version of this method that handles NaN differently
      */
     public static float max(float[] array) {
         // Validates input
@@ -1196,7 +1196,7 @@ public class NumberUtils {
      * @param b  value 2
      * @param c  value 3
      * @return  the smallest of the values
-     * @see IEEE754rUtils#min(double, double, double) for a version of this method that handles NaN differently
+     * see IEEE754rUtils#min(double, double, double) for a version of this method that handles NaN differently
      */
     public static double min(double a, double b, double c) {
         return Math.min(Math.min(a, b), c);
@@ -1212,7 +1212,7 @@ public class NumberUtils {
      * @param b  value 2
      * @param c  value 3
      * @return  the smallest of the values
-     * @see IEEE754rUtils#min(float, float, float) for a version of this method that handles NaN differently
+     * see IEEE754rUtils#min(float, float, float) for a version of this method that handles NaN differently
      */
     public static float min(float a, float b, float c) {
         return Math.min(Math.min(a, b), c);
@@ -1302,7 +1302,7 @@ public class NumberUtils {
      * @param b  value 2
      * @param c  value 3
      * @return  the largest of the values
-     * @see IEEE754rUtils#max(double, double, double) for a version of this method that handles NaN differently
+     * see IEEE754rUtils#max(double, double, double) for a version of this method that handles NaN differently
      */
     public static double max(double a, double b, double c) {
         return Math.max(Math.max(a, b), c);
@@ -1318,7 +1318,7 @@ public class NumberUtils {
      * @param b  value 2
      * @param c  value 3
      * @return  the largest of the values
-     * @see IEEE754rUtils#max(float, float, float) for a version of this method that handles NaN differently
+     * see IEEE754rUtils#max(float, float, float) for a version of this method that handles NaN differently
      */
     public static float max(float a, float b, float c) {
         return Math.max(Math.max(a, b), c);
@@ -1349,7 +1349,6 @@ public class NumberUtils {
      *  <li>Minimum double (<code>-Double.MAX_VALUE</code>)
      *  <li>Negative infinity
      * </ul>
-     * </p>
      *
      * <p>Comparing <code>NaN</code> with <code>NaN</code> will
      * return <code>0</code>.</p>

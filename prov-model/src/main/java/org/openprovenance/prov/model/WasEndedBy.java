@@ -7,9 +7,9 @@ package org.openprovenance.prov.model;
  * An end may refer to a trigger entity that terminated the activity, or to an activity, known as ender that generated the trigger.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasEndedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>End</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasEndedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of {@code End}.
  * The following code snippet creates a new end statement, with a role attribute, and current time.
- * The instance of end is given an identifier <tt>myId</tt>.
+ * The instance of end is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * QualifiedName activityId= ... ;  // some activity qualified name

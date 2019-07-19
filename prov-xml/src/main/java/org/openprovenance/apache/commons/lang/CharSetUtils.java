@@ -111,7 +111,7 @@ public class CharSetUtils {
      *
      * <p>An example is:</p>
      * <ul>
-     *   <li>squeeze(&quot;hello&quot;, {&quot;el&quot;}) => &quot;helo&quot;</li>
+     *   <li>squeeze(&quot;hello&quot;, {&quot;el&quot;}) =&gt; &quot;helo&quot;</li>
      * </ul>
      * 
      * @see CharSet#getInstance(java.lang.String) for set-syntax.

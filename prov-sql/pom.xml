@@ -147,12 +147,17 @@
      <plugins>
 
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
 
+
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-javadoc-plugin</artifactId>
+             <configuration>
+                 <additionalOptions>
+                     <additionalOption>-Xdoclint:none</additionalOption>
+                 </additionalOptions>
+             </configuration>
+         </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

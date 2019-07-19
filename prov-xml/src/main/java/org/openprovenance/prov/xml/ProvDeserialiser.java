@@ -75,7 +75,7 @@ public class ProvDeserialiser {
 
     /**
      * After reading a document, this method should be called to ensure that Namespaces are properly chained.
-     * @param document a {@link Document} to update
+     * param document a {@link Document} to update
      */
   /*  public void updateNamespacesxx(Document document) {
 	Namespace rootNamespace = Namespace.gatherNamespaces(document);

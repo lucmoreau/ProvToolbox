@@ -626,7 +626,7 @@ public class HashCodeBuilder {
      * that represent <code>false</code>.
      * </p>
      * <p>
-     * This is in accordance with the <quote>Effective Java</quote> design.
+     * This is in accordance with the Effective Java design.
      * </p>
      * 
      * @param value

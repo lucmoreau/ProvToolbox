@@ -20,7 +20,7 @@ public class ConverterException extends RuntimeException {
     }
 
     /**
-     * @param message
+     * @param message a message
      */
     public ConverterException(String message) {
 	super(message);
@@ -28,7 +28,7 @@ public class ConverterException extends RuntimeException {
     }
 
     /**
-     * @param cause
+     * @param cause a cause
      */
     public ConverterException(Throwable cause) {
 	super(cause);
@@ -36,8 +36,8 @@ public class ConverterException extends RuntimeException {
     }
 
     /**
-     * @param message
-     * @param cause
+     * @param message a message
+     * @param cause a cause
      */
     public ConverterException(String message, Throwable cause) {
 	super(message, cause);

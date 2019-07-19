@@ -7,9 +7,9 @@ package org.openprovenance.prov.model;
  * new entity by an activity. This entity did not exist before generation and becomes available for usage after this generation.
  *  
  *
- * <p>The constructor method {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of <tt>WasGeneratedBy</tt>.
+ * <p>The constructor method {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName)} can be used to create an instance of {@code WasGeneratedBy}.
  * The following code snippet creates a new generation statement, with a role attribute, and current time.
- * The instance of generation is given an identifier <tt>myId</tt>.
+ * The instance of generation is given an identifier {@code myId}.
  * <pre>
  * QualifiedName myId= ... ;  // some qualified name
  * QualifiedName entityId= ... ;    // some entity qualified name

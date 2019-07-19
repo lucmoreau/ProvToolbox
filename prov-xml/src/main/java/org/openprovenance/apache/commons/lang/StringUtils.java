@@ -601,7 +601,7 @@ public class StringUtils {
     /**
      * <p>Strips any of a set of characters from the start and end of every
      * String in an array.</p>
-     * Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     * Whitespace is defined by {link Character#isWhitespace(char)}.
      *
      * <p>A new array is returned each time, except for length zero.
      * A <code>null</code> array will return <code>null</code>.
@@ -4132,10 +4132,10 @@ public class StringUtils {
      * <p>Replaces multiple characters in a String in one go.
      * This method can also be used to delete characters.</p>
      *
-     * <p>For example:<br />
-     * <code>replaceChars(&quot;hello&quot;, &quot;ho&quot;, &quot;jy&quot;) = jelly</code>.</p>
+     * <p>For example:
+     * {@code replaceChars(&quot;hello&quot;, &quot;ho&quot;, &quot;jy&quot;) = jelly}.</p>
      *
-     * <p>A <code>null</code> string input returns <code>null</code>.
+     * <p>A {@code null} string input returns {@code null}.
      * An empty ("") string input returns an empty string.
      * A null or empty set of search characters returns the input string.</p>
      *
@@ -4161,7 +4161,7 @@ public class StringUtils {
      * @param str  String to replace characters in, may be null
      * @param searchChars  a set of characters to search for, may be null
      * @param replaceChars  a set of characters to replace, may be null
-     * @return modified String, <code>null</code> if null string input
+     * @return modified String, {@code null} if null string input
      * @since 2.0
      */
     public static String replaceChars(String str, String searchChars, String replaceChars) {
@@ -4214,7 +4214,7 @@ public class StringUtils {
      * @param overlay  the String to overlay, may be null
      * @param start  the position to start overlaying at, must be valid
      * @param end  the position to stop overlaying before, must be valid
-     * @return overlayed String, <code>null</code> if null String input
+     * @return overlayed String, {@code null} if null String input
      * @throws NullPointerException if text or overlay is null
      * @throws IndexOutOfBoundsException if either position is invalid
      * @deprecated Use better named {@link #overlay(String, String, int, int)} instead.
@@ -4231,7 +4231,7 @@ public class StringUtils {
     /**
      * <p>Overlays part of a String with another String.</p>
      *
-     * <p>A <code>null</code> string input returns <code>null</code>.
+     * <p>A {@code null} string input returns {@code null}.
      * A negative index is treated as zero.
      * An index greater than the string length is treated as the string length.
      * The start index is always the smaller of the two indices.</p>
@@ -4254,7 +4254,7 @@ public class StringUtils {
      * @param overlay  the String to overlay, may be null
      * @param start  the position to start overlaying at
      * @param end  the position to stop overlaying before
-     * @return overlayed String, <code>null</code> if null String input
+     * @return overlayed String, {@code null} if null String input
      * @since 2.0
      */
     public static String overlay(String str, String overlay, int start, int end) {
@@ -4293,8 +4293,8 @@ public class StringUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Removes one newline from end of a String if it's there,
-     * otherwise leave it alone.  A newline is &quot;<code>\n</code>&quot;,
-     * &quot;<code>\r</code>&quot;, or &quot;<code>\r\n</code>&quot;.</p>
+     * otherwise leave it alone.  A newline is &quot;{@code \n}&quot;,
+     * &quot;{@code \r}&quot;, or &quot;{@code \r\n}&quot;.</p>
      *
      * <p>NOTE: This method changed in 2.0.
      * It now more closely matches Perl chomp.</p>
@@ -4314,7 +4314,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to chomp a newline from, may be null
-     * @return String without newline, <code>null</code> if null String input
+     * @return String without newline, {@code null} if null String input
      */
     public static String chomp(String str) {
         if (isEmpty(str)) {
@@ -4343,8 +4343,8 @@ public class StringUtils {
     }
 
     /**
-     * <p>Removes <code>separator</code> from the end of
-     * <code>str</code> if it's there, otherwise leave it alone.</p>
+     * <p>Removes {@code separator} from the end of
+     * {@code str} if it's there, otherwise leave it alone.</p>
      *
      * <p>NOTE: This method changed in version 2.0.
      * It now more closely matches Perl chomp.
@@ -4366,7 +4366,7 @@ public class StringUtils {
      *
      * @param str  the String to chomp from, may be null
      * @param separator  separator String, may be null
-     * @return String without trailing separator, <code>null</code> if null String input
+     * @return String without trailing separator, {@code null} if null String input
      */
     public static String chomp(String str, String separator) {
         if (isEmpty(str) || separator == null) {
@@ -4384,7 +4384,7 @@ public class StringUtils {
      *
      * @param str  the String to chomp from, must not be null
      * @return String without chomped ending
-     * @throws NullPointerException if str is <code>null</code>
+     * @throws NullPointerException if str is {@code null}
      * @deprecated Use {@link #chomp(String)} instead.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -4398,7 +4398,7 @@ public class StringUtils {
      * @param str  the String to chomp from, must not be null
      * @param sep  the String to chomp, must not be null
      * @return String without chomped ending
-     * @throws NullPointerException if str or sep is <code>null</code>
+     * @throws NullPointerException if str or sep is {@code null}
      * @deprecated Use {@link #chomp(String,String)} instead.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -4420,7 +4420,7 @@ public class StringUtils {
      * @param str  the String to chomp from, must not be null
      * @param sep  the String to chomp, must not be null
      * @return String chomped
-     * @throws NullPointerException if str or sep is <code>null</code>
+     * @throws NullPointerException if str or sep is {@code null}
      * @deprecated Use {@link #substringAfterLast(String, String)} instead
      *             (although this doesn't include the separator)
      *             Method will be removed in Commons Lang 3.0.
@@ -4443,7 +4443,7 @@ public class StringUtils {
      * @param str  the String to chomp from, must not be null
      * @param sep  the String to chomp, must not be null
      * @return String without chomped beginning
-     * @throws NullPointerException if str or sep is <code>null</code>
+     * @throws NullPointerException if str or sep is {@code null}
      * @deprecated Use {@link #substringAfter(String,String)} instead.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -4462,7 +4462,7 @@ public class StringUtils {
      * @param str  the String to chomp from, must not be null
      * @param sep  the String to chomp, must not be null
      * @return String prechomped
-     * @throws NullPointerException if str or sep is <code>null</code>
+     * @throws NullPointerException if str or sep is {@code null}
      * @deprecated Use {@link #substringBefore(String,String)} instead
      *             (although this doesn't include the separator).
      *             Method will be removed in Commons Lang 3.0.
@@ -4480,7 +4480,7 @@ public class StringUtils {
     /**
      * <p>Remove the last character from a String.</p>
      *
-     * <p>If the String ends in <code>\r\n</code>, then remove both
+     * <p>If the String ends in {@code \r\n}, then remove both
      * of them.</p>
      *
      * <pre>
@@ -4498,7 +4498,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to chop last character from, may be null
-     * @return String without last character, <code>null</code> if null String input
+     * @return String without last character, {@code null} if null String input
      */
     public static String chop(String str) {
         if (str == null) {
@@ -4520,12 +4520,12 @@ public class StringUtils {
     }
 
     /**
-     * <p>Removes <code>\n</code> from end of a String if it's there.
-     * If a <code>\r</code> precedes it, then remove that too.</p>
+     * <p>Removes {@code \n} from end of a String if it's there.
+     * If a {@code \r} precedes it, then remove that too.</p>
      *
      * @param str  the String to chop a newline from, must not be null
      * @return String without newline
-     * @throws NullPointerException if str is <code>null</code>
+     * @throws NullPointerException if str is {@code null}
      * @deprecated Use {@link #chomp(String)} instead.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -4550,8 +4550,8 @@ public class StringUtils {
     /**
      * <p>Escapes any values it finds into their String form.</p>
      *
-     * <p>So a tab becomes the characters <code>'\\'</code> and
-     * <code>'t'</code>.</p>
+     * <p>So a tab becomes the characters {@code '\\'} and
+     * {@code 't'}.</p>
      *
      * <p>As of Lang 2.0, this calls {@link StringEscapeUtils#escapeJava(String)}
      * behind the scenes.
@@ -4559,7 +4559,7 @@ public class StringUtils {
      * @see StringEscapeUtils#escapeJava(java.lang.String)
      * @param str String to escape values in
      * @return String with escaped values
-     * @throws NullPointerException if str is <code>null</code>
+     * @throws NullPointerException if str is {@code null}
      * @deprecated Use {@link StringEscapeUtils#escapeJava(String)}
      *             This method will be removed in Commons Lang 3.0
      */
@@ -4570,7 +4570,7 @@ public class StringUtils {
     // Padding
     //-----------------------------------------------------------------------
     /**
-     * <p>Repeat a String <code>repeat</code> times to form a
+     * <p>Repeat a String {@code repeat} times to form a
      * new String.</p>
      *
      * <pre>
@@ -4585,7 +4585,7 @@ public class StringUtils {
      * @param str  the String to repeat, may be null
      * @param repeat  number of times to repeat str, negative treated as zero
      * @return a new String consisting of the original String repeated,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      */
     public static String repeat(String str, int repeat) {
         // Performance tuned for 2.0 (JDK1.4)
@@ -4632,7 +4632,7 @@ public class StringUtils {
     }
 
     /**
-     * <p>Repeat a String <code>repeat</code> times to form a
+     * <p>Repeat a String {@code repeat} times to form a
      * new String, with a String separator injected each time. </p>
      *
      * <pre>
@@ -4648,7 +4648,7 @@ public class StringUtils {
      * @param separator  the String to inject, may be null
      * @param repeat     number of times to repeat str, negative treated as zero
      * @return a new String consisting of the original String repeated,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      * @since 2.5
      */
     public static String repeat(String str, String separator, int repeat) {
@@ -4673,7 +4673,7 @@ public class StringUtils {
      *
      * <p>Note: this method doesn't not support padding with
      * <a href="http://www.unicode.org/glossary/#supplementary_character">Unicode Supplementary Characters</a>
-     * as they require a pair of <code>char</code>s to be represented.
+     * as they require a pair of {@code char}s to be represented.
      * If you are needing to support full I18N of your applications
      * consider using {@link #repeat(String, int)} instead. 
      * </p>
@@ -4681,7 +4681,7 @@ public class StringUtils {
      * @param repeat  number of times to repeat delim
      * @param padChar  character to repeat
      * @return String with repeated character
-     * @throws IndexOutOfBoundsException if <code>repeat &lt; 0</code>
+     * @throws IndexOutOfBoundsException if {@code repeat &lt; 0}
      * @see #repeat(String, int)
      */
     private static String padding(int repeat, char padChar) throws IndexOutOfBoundsException {
@@ -4698,7 +4698,7 @@ public class StringUtils {
     /**
      * <p>Right pad a String with spaces (' ').</p>
      *
-     * <p>The String is padded to the size of <code>size</code>.</p>
+     * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
      * StringUtils.rightPad(null, *)   = null
@@ -4712,7 +4712,7 @@ public class StringUtils {
      * @param str  the String to pad out, may be null
      * @param size  the size to pad to
      * @return right padded String or original String if no padding is necessary,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      */
     public static String rightPad(String str, int size) {
         return rightPad(str, size, ' ');
@@ -4721,7 +4721,7 @@ public class StringUtils {
     /**
      * <p>Right pad a String with a specified character.</p>
      *
-     * <p>The String is padded to the size of <code>size</code>.</p>
+     * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
      * StringUtils.rightPad(null, *, *)     = null
@@ -4736,7 +4736,7 @@ public class StringUtils {
      * @param size  the size to pad to
      * @param padChar  the character to pad with
      * @return right padded String or original String if no padding is necessary,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      * @since 2.0
      */
     public static String rightPad(String str, int size, char padChar) {
@@ -4756,7 +4756,7 @@ public class StringUtils {
     /**
      * <p>Right pad a String with a specified String.</p>
      *
-     * <p>The String is padded to the size of <code>size</code>.</p>
+     * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
      * StringUtils.rightPad(null, *, *)      = null
@@ -4774,7 +4774,7 @@ public class StringUtils {
      * @param size  the size to pad to
      * @param padStr  the String to pad with, null or empty treated as single space
      * @return right padded String or original String if no padding is necessary,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      */
     public static String rightPad(String str, int size, String padStr) {
         if (str == null) {
@@ -4810,7 +4810,7 @@ public class StringUtils {
     /**
      * <p>Left pad a String with spaces (' ').</p>
      *
-     * <p>The String is padded to the size of <code>size</code>.</p>
+     * <p>The String is padded to the size of {@code size}.</p>
      *
      * <pre>
      * StringUtils.leftPad(null, *)   = null
@@ -4824,7 +4824,7 @@ public class StringUtils {
      * @param str  the String to pad out, may be null
      * @param size  the size to pad to
      * @return left padded String or original String if no padding is necessary,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      */
     public static String leftPad(String str, int size) {
         return leftPad(str, size, ' ');
@@ -4833,7 +4833,7 @@ public class StringUtils {
     /**
      * <p>Left pad a String with a specified character.</p>
      *
-     * <p>Pad to a size of <code>size</code>.</p>
+     * <p>Pad to a size of {@code size}.</p>
      *
      * <pre>
      * StringUtils.leftPad(null, *, *)     = null
@@ -4848,7 +4848,7 @@ public class StringUtils {
      * @param size  the size to pad to
      * @param padChar  the character to pad with
      * @return left padded String or original String if no padding is necessary,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      * @since 2.0
      */
     public static String leftPad(String str, int size, char padChar) {
@@ -4868,7 +4868,7 @@ public class StringUtils {
     /**
      * <p>Left pad a String with a specified String.</p>
      *
-     * <p>Pad to a size of <code>size</code>.</p>
+     * <p>Pad to a size of {@code size}.</p>
      *
      * <pre>
      * StringUtils.leftPad(null, *, *)      = null
@@ -4886,7 +4886,7 @@ public class StringUtils {
      * @param size  the size to pad to
      * @param padStr  the String to pad with, null or empty treated as single space
      * @return left padded String or original String if no padding is necessary,
-     *  <code>null</code> if null String input
+     *  {@code null} if null String input
      */
     public static String leftPad(String str, int size, String padStr) {
         if (str == null) {
@@ -4920,11 +4920,11 @@ public class StringUtils {
     }
 
     /**
-     * Gets a String's length or <code>0</code> if the String is <code>null</code>.
+     * Gets a String's length or {@code 0} if the String is {@code null}.
      * 
      * @param str
-     *            a String or <code>null</code>
-     * @return String length or <code>0</code> if the String is <code>null</code>.
+     *            a String or {@code null}
+     * @return String length or {@code 0} if the String is {@code null}.
      * @since 2.4
      */
     public static int length(String str) {
@@ -4934,14 +4934,14 @@ public class StringUtils {
     // Centering
     //-----------------------------------------------------------------------
     /**
-     * <p>Centers a String in a larger String of size <code>size</code>
+     * <p>Centers a String in a larger String of size {@code size}
      * using the space character (' ').<p>
      *
      * <p>If the size is less than the String length, the String is returned.
-     * A <code>null</code> String returns <code>null</code>.
+     * A {@code null} String returns {@code null}.
      * A negative size is treated as zero.</p>
      *
-     * <p>Equivalent to <code>center(str, size, " ")</code>.</p>
+     * <p>Equivalent to {@code center(str, size, " ")}.</p>
      *
      * <pre>
      * StringUtils.center(null, *)   = null
@@ -4954,18 +4954,18 @@ public class StringUtils {
      *
      * @param str  the String to center, may be null
      * @param size  the int size of new String, negative treated as zero
-     * @return centered String, <code>null</code> if null String input
+     * @return centered String, {@code null} if null String input
      */
     public static String center(String str, int size) {
         return center(str, size, ' ');
     }
 
     /**
-     * <p>Centers a String in a larger String of size <code>size</code>.
+     * <p>Centers a String in a larger String of size {@code size}.
      * Uses a supplied character as the value to pad the String with.</p>
      *
      * <p>If the size is less than the String length, the String is returned.
-     * A <code>null</code> String returns <code>null</code>.
+     * A {@code null} String returns {@code null}.
      * A negative size is treated as zero.</p>
      *
      * <pre>
@@ -4981,7 +4981,7 @@ public class StringUtils {
      * @param str  the String to center, may be null
      * @param size  the int size of new String, negative treated as zero
      * @param padChar  the character to pad the new String with
-     * @return centered String, <code>null</code> if null String input
+     * @return centered String, {@code null} if null String input
      * @since 2.0
      */
     public static String center(String str, int size, char padChar) {
@@ -4999,11 +4999,11 @@ public class StringUtils {
     }
 
     /**
-     * <p>Centers a String in a larger String of size <code>size</code>.
+     * <p>Centers a String in a larger String of size {@code size}.
      * Uses a supplied String as the value to pad the String with.</p>
      *
      * <p>If the size is less than the String length, the String is returned.
-     * A <code>null</code> String returns <code>null</code>.
+     * A {@code null} String returns {@code null}.
      * A negative size is treated as zero.</p>
      *
      * <pre>
@@ -5021,8 +5021,8 @@ public class StringUtils {
      * @param str  the String to center, may be null
      * @param size  the int size of new String, negative treated as zero
      * @param padStr  the String to pad the new String with, must not be null or empty
-     * @return centered String, <code>null</code> if null String input
-     * @throws IllegalArgumentException if padStr is <code>null</code> or empty
+     * @return centered String, {@code null} if null String input
+     * @throws IllegalArgumentException if padStr is {@code null} or empty
      */
     public static String center(String str, int size, String padStr) {
         if (str == null || size <= 0) {
@@ -5046,7 +5046,7 @@ public class StringUtils {
     /**
      * <p>Converts a String to upper case as per {@link String#toUpperCase()}.</p>
      *
-     * <p>A <code>null</code> input String returns <code>null</code>.</p>
+     * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.upperCase(null)  = null
@@ -5060,7 +5060,7 @@ public class StringUtils {
      * should be used with a specific locale (e.g. {@link Locale#ENGLISH}).</p>
      *
      * @param str  the String to upper case, may be null
-     * @return the upper cased String, <code>null</code> if null String input
+     * @return the upper cased String, {@code null} if null String input
      */
     public static String upperCase(String str) {
         if (str == null) {
@@ -5072,7 +5072,7 @@ public class StringUtils {
     /**
      * <p>Converts a String to upper case as per {@link String#toUpperCase(Locale)}.</p>
      *
-     * <p>A <code>null</code> input String returns <code>null</code>.</p>
+     * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.upperCase(null, Locale.ENGLISH)  = null
@@ -5082,7 +5082,7 @@ public class StringUtils {
      *
      * @param str  the String to upper case, may be null
      * @param locale  the locale that defines the case transformation rules, must not be null
-     * @return the upper cased String, <code>null</code> if null String input
+     * @return the upper cased String, {@code null} if null String input
      * @since 2.5
      */
     public static String upperCase(String str, Locale locale) {
@@ -5095,7 +5095,7 @@ public class StringUtils {
     /**
      * <p>Converts a String to lower case as per {@link String#toLowerCase()}.</p>
      *
-     * <p>A <code>null</code> input String returns <code>null</code>.</p>
+     * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.lowerCase(null)  = null
@@ -5109,7 +5109,7 @@ public class StringUtils {
      * should be used with a specific locale (e.g. {@link Locale#ENGLISH}).</p>
      *
      * @param str  the String to lower case, may be null
-     * @return the lower cased String, <code>null</code> if null String input
+     * @return the lower cased String, {@code null} if null String input
      */
     public static String lowerCase(String str) {
         if (str == null) {
@@ -5121,7 +5121,7 @@ public class StringUtils {
     /**
      * <p>Converts a String to lower case as per {@link String#toLowerCase(Locale)}.</p>
      *
-     * <p>A <code>null</code> input String returns <code>null</code>.</p>
+     * <p>A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.lowerCase(null, Locale.ENGLISH)  = null
@@ -5131,7 +5131,7 @@ public class StringUtils {
      *
      * @param str  the String to lower case, may be null
      * @param locale  the locale that defines the case transformation rules, must not be null
-     * @return the lower cased String, <code>null</code> if null String input
+     * @return the lower cased String, {@code null} if null String input
      * @since 2.5
      */
     public static String lowerCase(String str, Locale locale) {
@@ -5146,7 +5146,7 @@ public class StringUtils {
      * per {@link Character#toTitleCase(char)}. No other letters are changed.</p>
      *
      * <p>For a word based algorithm, see {@link WordUtils#capitalize(String)}.
-     * A <code>null</code> input String returns <code>null</code>.</p>
+     * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.capitalize(null)  = null
@@ -5156,7 +5156,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to capitalize, may be null
-     * @return the capitalized String, <code>null</code> if null String input
+     * @return the capitalized String, {@code null} if null String input
      * @see WordUtils#capitalize(String)
      * @see #uncapitalize(String)
      * @since 2.0
@@ -5177,7 +5177,7 @@ public class StringUtils {
      * per {@link Character#toTitleCase(char)}. No other letters are changed.</p>
      *
      * @param str  the String to capitalize, may be null
-     * @return the capitalized String, <code>null</code> if null String input
+     * @return the capitalized String, {@code null} if null String input
      * @deprecated Use the standardly named {@link #capitalize(String)}.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -5190,7 +5190,7 @@ public class StringUtils {
      * per {@link Character#toLowerCase(char)}. No other letters are changed.</p>
      *
      * <p>For a word based algorithm, see {@link WordUtils#uncapitalize(String)}.
-     * A <code>null</code> input String returns <code>null</code>.</p>
+     * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.uncapitalize(null)  = null
@@ -5200,7 +5200,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to uncapitalize, may be null
-     * @return the uncapitalized String, <code>null</code> if null String input
+     * @return the uncapitalized String, {@code null} if null String input
      * @see WordUtils#uncapitalize(String)
      * @see #capitalize(String)
      * @since 2.0
@@ -5221,7 +5221,7 @@ public class StringUtils {
      * per {@link Character#toLowerCase(char)}. No other letters are changed.</p>
      *
      * @param str  the String to uncapitalize, may be null
-     * @return the uncapitalized String, <code>null</code> if null String input
+     * @return the uncapitalized String, {@code null} if null String input
      * @deprecated Use the standardly named {@link #uncapitalize(String)}.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -5240,7 +5240,7 @@ public class StringUtils {
      * </ul>
      *
      * <p>For a word based algorithm, see {@link WordUtils#swapCase(String)}.
-     * A <code>null</code> input String returns <code>null</code>.</p>
+     * A {@code null} input String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.swapCase(null)                 = null
@@ -5254,7 +5254,7 @@ public class StringUtils {
      * That functionality is available in WordUtils.</p>
      *
      * @param str  the String to swap case, may be null
-     * @return the changed String, <code>null</code> if null String input
+     * @return the changed String, {@code null} if null String input
      */
     public static String swapCase(String str) {
         int strLen;
@@ -5283,10 +5283,10 @@ public class StringUtils {
      * Only the first letter of each word is changed.</p>
      *
      * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.
-     * A <code>null</code> input String returns <code>null</code>.</p>
+     * A {@code null} input String returns {@code null}.</p>
      *
      * @param str  the String to capitalize, may be null
-     * @return capitalized String, <code>null</code> if null String input
+     * @return capitalized String, {@code null} if null String input
      * @deprecated Use the relocated {@link WordUtils#capitalize(String)}.
      *             Method will be removed in Commons Lang 3.0.
      */
@@ -5299,7 +5299,7 @@ public class StringUtils {
     /**
      * <p>Counts how many times the substring appears in the larger String.</p>
      *
-     * <p>A <code>null</code> or empty ("") String input returns <code>0</code>.</p>
+     * <p>A {@code null} or empty ("") String input returns {@code 0}.</p>
      *
      * <pre>
      * StringUtils.countMatches(null, *)       = 0
@@ -5313,7 +5313,7 @@ public class StringUtils {
      *
      * @param str  the String to check, may be null
      * @param sub  the substring to count, may be null
-     * @return the number of occurrences, 0 if either String is <code>null</code>
+     * @return the number of occurrences, 0 if either String is {@code null}
      */
     public static int countMatches(String str, String sub) {
         if (isEmpty(str) || isEmpty(sub)) {
@@ -5333,8 +5333,8 @@ public class StringUtils {
     /**
      * <p>Checks if the String contains only unicode letters.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isAlpha(null)   = false
@@ -5346,7 +5346,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains letters, and is non-null
+     * @return {@code true} if only contains letters, and is non-null
      */
     public static boolean isAlpha(String str) {
         if (str == null) {
@@ -5365,8 +5365,8 @@ public class StringUtils {
      * <p>Checks if the String contains only unicode letters and
      * space (' ').</p>
      *
-     * <p><code>null</code> will return <code>false</code>
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isAlphaSpace(null)   = false
@@ -5379,7 +5379,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains letters and space,
+     * @return {@code true} if only contains letters and space,
      *  and is non-null
      */
     public static boolean isAlphaSpace(String str) {
@@ -5398,8 +5398,8 @@ public class StringUtils {
     /**
      * <p>Checks if the String contains only unicode letters or digits.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isAlphanumeric(null)   = false
@@ -5412,7 +5412,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains letters or digits,
+     * @return {@code true} if only contains letters or digits,
      *  and is non-null
      */
     public static boolean isAlphanumeric(String str) {
@@ -5430,10 +5430,10 @@ public class StringUtils {
 
     /**
      * <p>Checks if the String contains only unicode letters, digits
-     * or space (<code>' '</code>).</p>
+     * or space ({@code ' '}).</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isAlphanumeric(null)   = false
@@ -5446,7 +5446,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains letters, digits or space,
+     * @return {@code true} if only contains letters, digits or space,
      *  and is non-null
      */
     public static boolean isAlphanumericSpace(String str) {
@@ -5465,8 +5465,8 @@ public class StringUtils {
     /**
      * <p>Checks if the string contains only ASCII printable characters.</p>
      * 
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      * 
      * <pre>
      * StringUtils.isAsciiPrintable(null)     = false
@@ -5483,7 +5483,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str the string to check, may be null
-     * @return <code>true</code> if every character is in the range
+     * @return {@code true} if every character is in the range
      *  32 thru 126
      * @since 2.1
      */
@@ -5504,8 +5504,8 @@ public class StringUtils {
      * <p>Checks if the String contains only unicode digits.
      * A decimal point is not a unicode digit and returns false.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isNumeric(null)   = false
@@ -5519,7 +5519,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains digits, and is non-null
+     * @return {@code true} if only contains digits, and is non-null
      */
     public static boolean isNumeric(String str) {
         if (str == null) {
@@ -5536,11 +5536,11 @@ public class StringUtils {
 
     /**
      * <p>Checks if the String contains only unicode digits or space
-     * (<code>' '</code>).
+     * ({@code ' '}).
      * A decimal point is not a unicode digit and returns false.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isNumeric(null)   = false
@@ -5554,7 +5554,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains digits or space,
+     * @return {@code true} if only contains digits or space,
      *  and is non-null
      */
     public static boolean isNumericSpace(String str) {
@@ -5573,8 +5573,8 @@ public class StringUtils {
     /**
      * <p>Checks if the String contains only whitespace.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>true</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code true}.</p>
      *
      * <pre>
      * StringUtils.isWhitespace(null)   = false
@@ -5586,7 +5586,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains whitespace, and is non-null
+     * @return {@code true} if only contains whitespace, and is non-null
      * @since 2.0
      */
     public static boolean isWhitespace(String str) {
@@ -5605,8 +5605,8 @@ public class StringUtils {
     /**
      * <p>Checks if the String contains only lowercase characters.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>false</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code false}.</p>
      *
      * <pre>
      * StringUtils.isAllLowerCase(null)   = false
@@ -5617,7 +5617,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains lowercase characters, and is non-null
+     * @return {@code true} if only contains lowercase characters, and is non-null
      * @since 2.5
      */
     public static boolean isAllLowerCase(String str) {
@@ -5636,8 +5636,8 @@ public class StringUtils {
     /**
      * <p>Checks if the String contains only uppercase characters.</p>
      *
-     * <p><code>null</code> will return <code>false</code>.
-     * An empty String (length()=0) will return <code>false</code>.</p>
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code false}.</p>
      *
      * <pre>
      * StringUtils.isAllUpperCase(null)   = false
@@ -5648,7 +5648,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to check, may be null
-     * @return <code>true</code> if only contains uppercase characters, and is non-null
+     * @return {@code true} if only contains uppercase characters, and is non-null
      * @since 2.5
      */
     public static boolean isAllUpperCase(String str) {
@@ -5668,7 +5668,7 @@ public class StringUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Returns either the passed in String,
-     * or if the String is <code>null</code>, an empty String ("").</p>
+     * or if the String is {@code null}, an empty String ("").</p>
      *
      * <pre>
      * StringUtils.defaultString(null)  = ""
@@ -5680,7 +5680,7 @@ public class StringUtils {
      * @see String#valueOf(Object)
      * @param str  the String to check, may be null
      * @return the passed in String, or the empty String if it
-     *  was <code>null</code>
+     *  was {@code null}
      */
     public static String defaultString(String str) {
         return str == null ? EMPTY : str;
@@ -5688,7 +5688,7 @@ public class StringUtils {
 
     /**
      * <p>Returns either the passed in String, or if the String is
-     * <code>null</code>, the value of <code>defaultStr</code>.</p>
+     * {@code null}, the value of {@code defaultStr}.</p>
      *
      * <pre>
      * StringUtils.defaultString(null, "NULL")  = "NULL"
@@ -5700,8 +5700,8 @@ public class StringUtils {
      * @see String#valueOf(Object)
      * @param str  the String to check, may be null
      * @param defaultStr  the default String to return
-     *  if the input is <code>null</code>, may be null
-     * @return the passed in String, or the default if it was <code>null</code>
+     *  if the input is {@code null}, may be null
+     * @return the passed in String, or the default if it was {@code null}
      */
     public static String defaultString(String str, String defaultStr) {
         return str == null ? defaultStr : str;
@@ -5709,7 +5709,7 @@ public class StringUtils {
 
     /**
      * <p>Returns either the passed in String, or if the String is
-     * whitespace, empty ("") or <code>null</code>, the value of <code>defaultStr</code>.</p>
+     * whitespace, empty ("") or {@code null}, the value of {@code defaultStr}.</p>
      *
      * <pre>
      * StringUtils.defaultIfBlank(null, "NULL")  = "NULL"
@@ -5720,7 +5720,7 @@ public class StringUtils {
      * </pre>
      * @param str the String to check, may be null
      * @param defaultStr  the default String to return
-     *  if the input is whitespace, empty ("") or <code>null</code>, may be null
+     *  if the input is whitespace, empty ("") or {@code null}, may be null
      * @return the passed in String, or the default
      * @see StringUtils#defaultString(String, String)
      * @since 2.6
@@ -5731,7 +5731,7 @@ public class StringUtils {
 
     /**
      * <p>Returns either the passed in String, or if the String is
-     * empty or <code>null</code>, the value of <code>defaultStr</code>.</p>
+     * empty or {@code null}, the value of {@code defaultStr}.</p>
      *
      * <pre>
      * StringUtils.defaultIfEmpty(null, "NULL")  = "NULL"
@@ -5742,7 +5742,7 @@ public class StringUtils {
      *
      * @param str  the String to check, may be null
      * @param defaultStr  the default String to return
-     *  if the input is empty ("") or <code>null</code>, may be null
+     *  if the input is empty ("") or {@code null}, may be null
      * @return the passed in String, or the default
      * @see StringUtils#defaultString(String, String)
      */
@@ -5755,7 +5755,7 @@ public class StringUtils {
     /**
      * <p>Reverses a String as per {@link StrBuilder#reverse()}.</p>
      *
-     * <p>A <code>null</code> String returns <code>null</code>.</p>
+     * <p>A {@code null} String returns {@code null}.</p>
      *
      * <pre>
      * StringUtils.reverse(null)  = null
@@ -5764,7 +5764,7 @@ public class StringUtils {
      * </pre>
      *
      * @param str  the String to reverse, may be null
-     * @return the reversed String, <code>null</code> if null String input
+     * @return the reversed String, {@code null} if null String input
      */
     public static String reverse(String str) {
         if (str == null) {
@@ -5778,7 +5778,7 @@ public class StringUtils {
      *
      * <p>The Strings between the delimiters are not reversed.
      * Thus java.lang.String becomes String.lang.java (if the delimiter
-     * is <code>'.'</code>).</p>
+     * is {@code '.'}).</p>
      *
      * <pre>
      * StringUtils.reverseDelimited(null, *)      = null
@@ -5789,7 +5789,7 @@ public class StringUtils {
      *
      * @param str  the String to reverse, may be null
      * @param separatorChar  the separator character to use
-     * @return the reversed String, <code>null</code> if null String input
+     * @return the reversed String, {@code null} if null String input
      * @since 2.0
      */
     public static String reverseDelimited(String str, char separatorChar) {
@@ -5808,7 +5808,7 @@ public class StringUtils {
      *
      * <p>The Strings between the delimiters are not reversed.
      * Thus java.lang.String becomes String.lang.java (if the delimiter
-     * is <code>"."</code>).</p>
+     * is {@code "."}).</p>
      *
      * <pre>
      * StringUtils.reverseDelimitedString(null, *)       = null
@@ -5819,7 +5819,7 @@ public class StringUtils {
      *
      * @param str  the String to reverse, may be null
      * @param separatorChars  the separator characters to use, null treated as whitespace
-     * @return the reversed String, <code>null</code> if null String input
+     * @return the reversed String, {@code null} if null String input
      * @deprecated Use {@link #reverseDelimited(String, char)} instead.
      *      This method is broken as the join doesn't know which char to use.
      *      Method will be removed in Commons Lang 3.0.
@@ -5847,15 +5847,14 @@ public class StringUtils {
      *
      * <p>Specifically:
      * <ul>
-     *   <li>If <code>str</code> is less than <code>maxWidth</code> characters
+     *   <li>If {@code str} is less than {@code maxWidth} characters
      *       long, return it.</li>
-     *   <li>Else abbreviate it to <code>(substring(str, 0, max-3) + "...")</code>.</li>
-     *   <li>If <code>maxWidth</code> is less than <code>4</code>, throw an
-     *       <code>IllegalArgumentException</code>.</li>
+     *   <li>Else abbreviate it to {@code (substring(str, 0, max-3) + "...")}.</li>
+     *   <li>If {@code maxWidth} is less than {@code 4}, throw an
+     *       {@code IllegalArgumentException}.</li>
      *   <li>In no case will it return a String of length greater than
-     *       <code>maxWidth</code>.</li>
+     *       {@code maxWidth}.</li>
      * </ul>
-     * </p>
      *
      * <pre>
      * StringUtils.abbreviate(null, *)      = null
@@ -5869,7 +5868,7 @@ public class StringUtils {
      *
      * @param str  the String to check, may be null
      * @param maxWidth  maximum length of result String, must be at least 4
-     * @return abbreviated String, <code>null</code> if null String input
+     * @return abbreviated String, {@code null} if null String input
      * @throws IllegalArgumentException if the width is too small
      * @since 2.0
      */
@@ -5881,13 +5880,13 @@ public class StringUtils {
      * <p>Abbreviates a String using ellipses. This will turn
      * "Now is the time for all good men" into "...is the time for..."</p>
      *
-     * <p>Works like <code>abbreviate(String, int)</code>, but allows you to specify
+     * <p>Works like {@code abbreviate(String, int)}, but allows you to specify
      * a "left edge" offset.  Note that this left edge is not necessarily going to
      * be the leftmost character in the result, or the first character following the
      * ellipses, but it will appear somewhere in the result.
      *
      * <p>In no case will it return a String of length greater than
-     * <code>maxWidth</code>.</p>
+     * {@code maxWidth}.</p>
      *
      * <pre>
      * StringUtils.abbreviate(null, *, *)                = null
@@ -5908,7 +5907,7 @@ public class StringUtils {
      * @param str  the String to check, may be null
      * @param offset  left edge of source String
      * @param maxWidth  maximum length of result String, must be at least 4
-     * @return abbreviated String, <code>null</code> if null String input
+     * @return abbreviated String, {@code null} if null String input
      * @throws IllegalArgumentException if the width is too small
      * @since 2.0
      */
@@ -5953,7 +5952,6 @@ public class StringUtils {
      * and the first and last characters of the supplied String for abbreviation</li>
      * </ul>
      * Otherwise, the returned String will be the same as the supplied String for abbreviation.
-     * </p>
      *
      * <pre>
      * StringUtils.abbreviateMiddle(null, null, 0)      = null
@@ -5965,7 +5963,7 @@ public class StringUtils {
      *
      * @param str  the String to abbreviate, may be null
      * @param middle the String to replace the middle characters with, may be null
-     * @param length the length to abbreviate <code>str</code> to.
+     * @param length the length to abbreviate {@code str} to.
      * @return the abbreviated String if the above criteria is met, or the original String supplied for abbreviation.
      * @since 2.5
      */
@@ -5998,7 +5996,7 @@ public class StringUtils {
      * starting from where it's different from the first.)</p>
      *
      * <p>For example,
-     * <code>difference("i am a machine", "i am a robot") -> "robot"</code>.</p>
+     * {@code difference("i am a machine", "i am a robot") -> "robot"}.</p>
      *
      * <pre>
      * StringUtils.difference(null, null) = null
@@ -6036,7 +6034,7 @@ public class StringUtils {
      * Strings begin to differ.</p>
      *
      * <p>For example,
-     * <code>indexOfDifference("i am a machine", "i am a robot") -> 7</code></p>
+     * {@code indexOfDifference("i am a machine", "i am a robot") -> 7}</p>
      *
      * <pre>
      * StringUtils.indexOfDifference(null, null) = -1
@@ -6078,7 +6076,7 @@ public class StringUtils {
      * Strings begin to differ.</p>
      *
      * <p>For example,
-     * <code>indexOfDifference(new String[] {"i am a machine", "i am a robot"}) -> 7</code></p>
+     * {@code indexOfDifference(new String[] {"i am a machine", "i am a robot"}) -> 7}</p>
      *
      * <pre>
      * StringUtils.indexOfDifference(null) = -1
@@ -6167,7 +6165,7 @@ public class StringUtils {
      * characters that is common to all of them.</p>
      *
      * <p>For example,
-     * <code>getCommonPrefix(new String[] {"i am a machine", "i am a robot"}) -> "i am a "</code></p>
+     * {@code getCommonPrefix(new String[] {"i am a machine", "i am a robot"}) -> "i am a "}</p>
      *
      * <pre>
      * StringUtils.getCommonPrefix(null) = ""
@@ -6249,7 +6247,7 @@ public class StringUtils {
      * @param s  the first String, must not be null
      * @param t  the second String, must not be null
      * @return result distance
-     * @throws IllegalArgumentException if either String input <code>null</code>
+     * @throws IllegalArgumentException if either String input {@code null}
      */
     public static int getLevenshteinDistance(String s, String t) {
         if (s == null || t == null) {
@@ -6334,7 +6332,7 @@ public class StringUtils {
     /**
      * <p>Check if a String starts with a specified prefix.</p>
      *
-     * <p><code>null</code>s are handled without exceptions. Two <code>null</code>
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
      * references are considered to be equal. The comparison is case sensitive.</p>
      *
      * <pre>
@@ -6348,8 +6346,8 @@ public class StringUtils {
      * @see java.lang.String#startsWith(String)
      * @param str  the String to check, may be null
      * @param prefix the prefix to find, may be null
-     * @return <code>true</code> if the String starts with the prefix, case sensitive, or
-     *  both <code>null</code>
+     * @return {@code true} if the String starts with the prefix, case sensitive, or
+     *  both {@code null}
      * @since 2.4
      */
     public static boolean startsWith(String str, String prefix) {
@@ -6359,7 +6357,7 @@ public class StringUtils {
     /**
      * <p>Case insensitive check if a String starts with a specified prefix.</p>
      *
-     * <p><code>null</code>s are handled without exceptions. Two <code>null</code>
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
      * references are considered to be equal. The comparison is case insensitive.</p>
      *
      * <pre>
@@ -6373,8 +6371,8 @@ public class StringUtils {
      * @see java.lang.String#startsWith(String)
      * @param str  the String to check, may be null
      * @param prefix the prefix to find, may be null
-     * @return <code>true</code> if the String starts with the prefix, case insensitive, or
-     *  both <code>null</code>
+     * @return {@code true} if the String starts with the prefix, case insensitive, or
+     *  both {@code null}
      * @since 2.4
      */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
@@ -6389,8 +6387,8 @@ public class StringUtils {
      * @param prefix the prefix to find, may be null
      * @param ignoreCase inidicates whether the compare should ignore case
      *  (case insensitive) or not.
-     * @return <code>true</code> if the String starts with the prefix or
-     *  both <code>null</code>
+     * @return {@code true} if the String starts with the prefix or
+     *  both {@code null}
      */
     private static boolean startsWith(String str, String prefix, boolean ignoreCase) {
         if (str == null || prefix == null) {
@@ -6417,8 +6415,8 @@ public class StringUtils {
      * @see #startsWith(String, String)
      * @param string  the String to check, may be null
      * @param searchStrings the Strings to find, may be null or empty
-     * @return <code>true</code> if the String starts with any of the the prefixes, case insensitive, or
-     *  both <code>null</code>
+     * @return {@code true} if the String starts with any of the the prefixes, case insensitive, or
+     *  both {@code null}
      * @since 2.5
      */
     public static boolean startsWithAny(String string, String[] searchStrings) {
@@ -6440,7 +6438,7 @@ public class StringUtils {
     /**
      * <p>Check if a String ends with a specified suffix.</p>
      *
-     * <p><code>null</code>s are handled without exceptions. Two <code>null</code>
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
      * references are considered to be equal. The comparison is case sensitive.</p>
      *
      * <pre>
@@ -6455,8 +6453,8 @@ public class StringUtils {
      * @see java.lang.String#endsWith(String)
      * @param str  the String to check, may be null
      * @param suffix the suffix to find, may be null
-     * @return <code>true</code> if the String ends with the suffix, case sensitive, or
-     *  both <code>null</code>
+     * @return {@code true} if the String ends with the suffix, case sensitive, or
+     *  both {@code null}
      * @since 2.4
      */
     public static boolean endsWith(String str, String suffix) {
@@ -6466,7 +6464,7 @@ public class StringUtils {
     /**
      * <p>Case insensitive check if a String ends with a specified suffix.</p>
      *
-     * <p><code>null</code>s are handled without exceptions. Two <code>null</code>
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
      * references are considered to be equal. The comparison is case insensitive.</p>
      *
      * <pre>
@@ -6481,8 +6479,8 @@ public class StringUtils {
      * @see java.lang.String#endsWith(String)
      * @param str  the String to check, may be null
      * @param suffix the suffix to find, may be null
-     * @return <code>true</code> if the String ends with the suffix, case insensitive, or
-     *  both <code>null</code>
+     * @return {@code true} if the String ends with the suffix, case insensitive, or
+     *  both {@code null}
      * @since 2.4
      */
     public static boolean endsWithIgnoreCase(String str, String suffix) {
@@ -6497,8 +6495,8 @@ public class StringUtils {
      * @param suffix the suffix to find, may be null
      * @param ignoreCase inidicates whether the compare should ignore case
      *  (case insensitive) or not.
-     * @return <code>true</code> if the String starts with the prefix or
-     *  both <code>null</code>
+     * @return {@code true} if the String starts with the prefix or
+     *  both {@code null}
      */
     private static boolean endsWith(String str, String suffix, boolean ignoreCase) {
         if (str == null || suffix == null) {
@@ -6519,7 +6517,7 @@ public class StringUtils {
      * </p>
      * <p>
      * The function returns the argument string with whitespace normalized by using
-     * <code>{@link #trim(String)}</code> to remove leading and trailing whitespace
+     * {@code {@link #trim(String)}} to remove leading and trailing whitespace
      * and then replacing sequences of whitespace characters by a single space.
      * </p>
      * In XML Whitespace characters are the same as those allowed by the <a
@@ -6528,16 +6526,16 @@ public class StringUtils {
      * See Java's {@link Character#isWhitespace(char)} for which characters are considered whitespace.
      * <p>
      * The difference is that Java's whitespace includes vertical tab and form feed, which this functional will also
-     * normalize. Additonally <code>{@link #trim(String)}</code> removes control characters (char &lt;= 32) from both
+     * normalize. Additonally {@code {@link #trim(String)}} removes control characters (char &lt;= 32) from both
      * ends of this String.
      * </p>
      *
      * @see Character#isWhitespace(char)
      * @see #trim(String)
-     * @see <ahref="http://www.w3.org/TR/xpath/#function-normalize-space">
+     * @see <a href="http://www.w3.org/TR/xpath/#function-normalize-space">
      *              http://www.w3.org/TR/xpath/#function-normalize-space</a>
      * @param str the source String to normalize whitespaces from, may be null
-     * @return the modified string with whitespace normalized, <code>null</code> if null String input
+     * @return the modified string with whitespace normalized, {@code null} if null String input
      * 
      * @since 2.6
      */
@@ -6574,8 +6572,8 @@ public class StringUtils {
      *
      * @param string  the String to check, may be null
      * @param searchStrings the Strings to find, may be null or empty
-     * @return <code>true</code> if the String ends with any of the the prefixes, case insensitive, or
-     *  both <code>null</code>
+     * @return {@code true} if the String ends with any of the the prefixes, case insensitive, or
+     *  both {@code null}
      * @since 2.6
      */
     public static boolean endsWithAny(String string, String[] searchStrings) {

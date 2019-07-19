@@ -12,7 +12,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public interface LiteralConstructor {
     
     /** Factory method for a <a href="http://www.w3.org/TR/xmlschema-2/#gYear">gYear</a>.
-     * A <tt>gYear</tt> represents a gregorian calendar year.
+     * A {@code gYear} represents a gregorian calendar year.
      * @param year value 
      * @return an instance of {@link XMLGregorianCalendar}
      * 
@@ -21,7 +21,7 @@ public interface LiteralConstructor {
     Object newGYear(int year);
     
     /** Factory method for a <a href="http://www.w3.org/TR/xmlschema-2/#gMonth">gMonth</a>.
-     * A <tt>gMonth</tt> represents a gregorian month that recurs every year.
+     * A {@code gMonth} represents a gregorian month that recurs every year.
      * @param month value 
      * @return an instance of {@link XMLGregorianCalendar}
      * 
@@ -32,7 +32,7 @@ public interface LiteralConstructor {
     
     
     /** Factory method for a <a href="http://www.w3.org/TR/xmlschema-2/#gDay">gDay</a>.
-     * A <tt>gDay</tt> represents a gregorian day that recurs, specifically a day of the month such as the 5th of the month.
+     * A {@code gDay} represents a gregorian day that recurs, specifically a day of the month such as the 5th of the month.
      * @param day value 
      * @return an instance of {@link XMLGregorianCalendar}
      * 
@@ -42,7 +42,7 @@ public interface LiteralConstructor {
     
     
     /** Factory method for a <a href="http://www.w3.org/TR/xmlschema-2/#gMonthDay">gMonthDay</a>.
-     * A <tt>gMonthDay</tt> is a gregorian date that recurs, specifically a day of the year such as the third of May. 
+     * A {@code gMonthDay} is a gregorian date that recurs, specifically a day of the year such as the third of May. 
      * @param month value 
      * @param day value 
      * @return an instance of {@link XMLGregorianCalendar}

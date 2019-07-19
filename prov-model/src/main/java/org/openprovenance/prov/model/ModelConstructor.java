@@ -70,7 +70,7 @@ public interface ModelConstructor {
      * @param namespace a URI for the namespace
      * @param local a local name 
      * @param prefix a string, which can be null
-     * @param build flag.
+     * @param flag build flag.
      * @return an instance of {@link QualifiedName}
      */
     public QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag);

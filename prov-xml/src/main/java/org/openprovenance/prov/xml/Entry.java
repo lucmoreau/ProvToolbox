@@ -31,16 +31,16 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="KeyEntityPair">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="key" type="{http://www.w3.org/ns/prov#}TypedValue"/>
- *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="KeyEntityPair"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="key" type="{http://www.w3.org/ns/prov#}TypedValue"/&gt;
+ *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

@@ -9,16 +9,16 @@ import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 /**
  * <p>Java class for QualifiedName complex type.
- * 
- * 
+ *
+ *
  */
 
 
 public class QualifiedName
- implements org.openprovenance.prov.model.QualifiedName
-    
+        implements org.openprovenance.prov.model.QualifiedName
+
 {
-    
+
     static final QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public QualifiedName(String namespaceURI, String localPart, String prefix) {
@@ -28,9 +28,9 @@ public class QualifiedName
     }
 
     public QualifiedName(QName id) {
-	this.namespace=id.getNamespaceURI();
-	this.local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
-	this.prefix=id.getPrefix();
+        this.namespace=id.getNamespaceURI();
+        this.local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
+        this.prefix=id.getPrefix();
     }
 
     @XmlAttribute(name = "ref", namespace = "http://www.w3.org/ns/prov#", required = true)
@@ -41,42 +41,42 @@ public class QualifiedName
      */
     @Override
     public javax.xml.namespace.QName toQName () {
-	String escapedLocal=qnU.escapeToXsdLocalName(getUnescapedLocalPart());
-	if (qnU.is_NC_Name(escapedLocal)) {
-	    if (prefix==null) {
-		return new javax.xml.namespace.QName(namespace,escapedLocal);
-	    } else {
-		return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
-	    }
-	} else {
-	    throw new QualifiedNameException("PROV-XML QName: local not valid " + escapedLocal);
+        String escapedLocal=qnU.escapeToXsdLocalName(getUnescapedLocalPart());
+        if (qnU.is_NC_Name(escapedLocal)) {
+            if (prefix==null) {
+                return new javax.xml.namespace.QName(namespace,escapedLocal);
+            } else {
+                return new javax.xml.namespace.QName(namespace,escapedLocal,prefix);
+            }
+        } else {
+            throw new QualifiedNameException("PROV-XML QName: local not valid " + escapedLocal);
 
-	}
+        }
     }
 
     public String getUnescapedLocalPart() {
-	return qnU.unescapeProvLocalName(local);
+        return qnU.unescapeProvLocalName(local);
     }
-    
+
 
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#getUri()
      */
     @Override
     public String getUri() {
-	return this.getNamespaceURI()
-		+ this.getUnescapedLocalPart();
-    } 
-    
+        return this.getNamespaceURI()
+                + this.getUnescapedLocalPart();
+    }
+
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#setUri(java.lang.String)
      */
     @Override
-    public void setUri(String uri) {} 
-    
-    
+    public void setUri(String uri) {}
 
-  
+
+
+
 
     transient String local;
     /* (non-Javadoc)
@@ -93,7 +93,7 @@ public class QualifiedName
     public void setLocalPart(String  local) {
         this.local=local;
     }
- 
+
     transient String namespace;
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#getNamespaceURI()
@@ -109,7 +109,7 @@ public class QualifiedName
     public void setNamespaceURI(String namespace) {
         this.namespace=namespace;
     }
-    
+
     transient String prefix;
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#getPrefix()
@@ -125,24 +125,24 @@ public class QualifiedName
     public void setPrefix(String prefix) {
         this.prefix=prefix;
     }
-    
+
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#equals(java.lang.Object)
      */
     @Override
     public final boolean equals(Object objectToTest) {
-	// Is this the same object?
-	if (objectToTest == this) {
-	    return true;
-	}
-	// Is this a QualifiedName?
-	if (objectToTest instanceof QualifiedName) {
-	    QualifiedName qualifiedName = (QualifiedName) objectToTest;
-	    return local.equals(qualifiedName.local) && namespace.equals(qualifiedName.namespace);
-	}	
-	return false;	  
+        // Is this the same object?
+        if (objectToTest == this) {
+            return true;
+        }
+        // Is this a QualifiedName?
+        if (objectToTest instanceof QualifiedName) {
+            QualifiedName qualifiedName = (QualifiedName) objectToTest;
+            return local.equals(qualifiedName.local) && namespace.equals(qualifiedName.namespace);
+        }
+        return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#hashCode()
      */
@@ -150,11 +150,11 @@ public class QualifiedName
     public final int hashCode() {
         return namespace.hashCode() ^ local.hashCode();
     }
-    
+
     public String toString() {
-	return "'" + prefix + ":{" + namespace + "}" + local + "'";
+        return "'" + prefix + ":{" + namespace + "}" + local + "'";
     }
 
-    	     
+
 }
 

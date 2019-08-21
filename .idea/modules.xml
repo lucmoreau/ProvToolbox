@@ -20,6 +20,7 @@
       <module fileurl="file://$PROJECT_DIR$/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/prov-template/prov-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/prov-xml/prov-xml.iml" />
       <module fileurl="file://$PROJECT_DIR$/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/toolbox/provconvert.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-core/provcore.iml" filepath="$PROJECT_DIR$/prov-core/provcore.iml" />
     </modules>
   </component>
 </project>

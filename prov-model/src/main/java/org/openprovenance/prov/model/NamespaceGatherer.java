@@ -45,75 +45,75 @@ public class NamespaceGatherer implements StatementAction {
      * @param document Document from which Namespaces are accumulated
      * @return a new instance of {@link Namespace}
      */
-    static public Namespace accumulateAllNamespaces(Document document) {
-	Namespace res=new Namespace(document.getNamespace());
-	for (Bundle b: pu.getNamedBundle(document)) {
-	    Namespace ns=b.getNamespace();
-	    if (ns!=null) res.extendWith(ns);
-	}
-	return res;
-    }
-
-    public Namespace getNamespace() {
-	return ns;
-    }
-
-    public void registerLocation(List<Location> locations) {
-	for (Location loc : locations) {
-	    register(loc);
-	}
-    }
-
-    public void registerPotentialQualifiedName(Object o) {
-	if (o instanceof QualifiedName) {
-	    register((QualifiedName) o);
-	}
-    }
-    
-    public void register(Location loc) {
-	if (loc!=null) {
-	    register(loc.getType());
-	    Object val = loc.getValue();
-	    registerPotentialQualifiedName(val);
-	}
-    }
-
-    public void registerType(List<Type> types) {
-	for (Type typ : types) {
-	    register(typ);
+	static public Namespace accumulateAllNamespaces(Document document) {
+		Namespace res=new Namespace(document.getNamespace());
+		for (Bundle b: pu.getNamedBundle(document)) {
+			Namespace ns=b.getNamespace();
+			if (ns!=null) res.extendWith(ns);
+		}
+		return res;
 	}
 
-    }
-
-    public void register(Type typ) {
-	register(typ.getType());
-	Object val = typ.getValue();
-	registerPotentialQualifiedName(val);
-    }
-
-    public void registerRole(List<Role> roles) {
-	for (Role rol : roles) {
-	    register(rol);
+	public Namespace getNamespace() {
+		return ns;
 	}
 
-    }
-
-    public void register(Role rol) {
-	register(rol.getType());
-	Object val = rol.getValue();
-	registerPotentialQualifiedName(val);
-    }
-
-    public void registerOther(List<Other> others) {
-	for (Other other : others) {
-	    register(other);
+	public void registerLocation(List<Location> locations) {
+		for (Location loc : locations) {
+			register(loc);
+		}
 	}
 
-    }
-    
- 
+	public void registerPotentialQualifiedName(Object o) {
+		if (o instanceof QualifiedName) {
+			register((QualifiedName) o);
+		}
+	}
 
-    public void register(Other other) {
+	public void register(Location loc) {
+		if (loc!=null) {
+			register(loc.getType());
+			Object val = loc.getValue();
+			registerPotentialQualifiedName(val);
+		}
+	}
+
+	public void registerType(List<Type> types) {
+		for (Type typ : types) {
+			register(typ);
+		}
+
+	}
+
+	public void register(Type typ) {
+		register(typ.getType());
+		Object val = typ.getValue();
+		registerPotentialQualifiedName(val);
+	}
+
+	public void registerRole(List<Role> roles) {
+		for (Role rol : roles) {
+			register(rol);
+		}
+
+	}
+
+	public void register(Role rol) {
+		register(rol.getType());
+		Object val = rol.getValue();
+		registerPotentialQualifiedName(val);
+	}
+
+	public void registerOther(List<Other> others) {
+		for (Other other : others) {
+			register(other);
+		}
+
+	}
+
+
+
+	public void register(Other other) {
 	register(other.getType());
 	register(other.getElementName());
 	Object val = other.getValue();

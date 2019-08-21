@@ -70,10 +70,10 @@
 	 <artifactId>antlr3-maven-plugin</artifactId>
 	 <version>3.5.2</version>
 
-	 <executions>
-           
+         <executions>
+
            <execution>
-	     <phase>generate-sources</phase>
+             <phase>generate-sources</phase>
              <goals>
                <goal>antlr</goal>
              </goals>
@@ -81,7 +81,7 @@
 
              </configuration>
            </execution>
-	 </executions>
+         </executions>
 
        </plugin>
 

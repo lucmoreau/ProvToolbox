@@ -728,21 +728,21 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setCollection(c);
         res.getEntity().addAll(ll);
         return res;
-    }    
-
-    public LangString newInternationalizedString(String s) {
-	LangString res = of.createInternationalizedString();
-	res.setValue(s);
-	return res;
     }
 
-    public LangString newInternationalizedString(String s,
-							      String lang) {
-	LangString res = of.createInternationalizedString();
-	res.setValue(s);
-	res.setLang(lang);
-	return res;
-    }
+	public LangString newInternationalizedString(String s) {
+		LangString res = of.createInternationalizedString();
+		res.setValue(s);
+		return res;
+	}
+
+	public LangString newInternationalizedString(String s,
+												 String lang) {
+		LangString res = of.createInternationalizedString();
+		res.setValue(s);
+		res.setLang(lang);
+		return res;
+	}
 
     public XMLGregorianCalendar newISOTime(String time) {
         return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
@@ -837,23 +837,23 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return res;
     }
 
-    
 
-    public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
-	if (value==null) return null;
-        Other res =  of.createOther();
-        res.setType(type);
-        res.setValueFromObject(value);
-        res.setElementName(elementName);
-        return res;
-      }
 
-    public Other newOther(String namespace, String local, String prefix,  Object value, QualifiedName type) {
-	QualifiedName elementName=newQualifiedName(namespace,local,prefix);
-        return newOther(elementName,value,type);
-    }
-    
-    /*
+	public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
+		if (value==null) return null;
+		Other res =  of.createOther();
+		res.setType(type);
+		res.setValueFromObject(value);
+		res.setElementName(elementName);
+		return res;
+	}
+
+	public Other newOther(String namespace, String local, String prefix,  Object value, QualifiedName type) {
+		QualifiedName elementName=newQualifiedName(namespace,local,prefix);
+		return newOther(elementName,value,type);
+	}
+
+	/*
      * (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newQualifiedName(java.lang.String, java.lang.String, java.lang.String)
      */

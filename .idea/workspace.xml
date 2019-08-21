@@ -1,84 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_annotations_17_0_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/provcore.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/ArrayUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/BooleanUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/CharRange.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/CharSet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/CharSetUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/CharUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/ClassUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/Entities.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/IntHashMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/NullArgumentException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/ObjectUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/StringEscapeUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/StringUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/SystemUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/UnhandledException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/WordUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/Equals.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/EqualsBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/HashCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/HashCodeBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/IDKey.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/ReflectionToStringBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/ToString.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/ToStringBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/builder/ToStringStyle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/exception/CloneFailedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/exception/ExceptionUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/exception/Nestable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/exception/NestableDelegate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/exception/NestableRuntimeException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/math/NumberUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/reflect/MemberUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/reflect/MethodUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/text/StrBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/text/StrMatcher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/apache/commons/lang/text/StrTokenizer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/Activity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomAttributeSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomKindDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomKindSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomLocationDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomOtherDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomQualifiedNameDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/CustomTypeDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/Document.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/LangString.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/Location.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/Other.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/ProvDeserialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/ProvFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/ProvSerialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/QualifiedName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/Type.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/TypedValue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/resources/toolbox.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/UncheckedTestException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/DOMProcessing.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/DOMProcessing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/NamespaceGatherer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/NamespaceGatherer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/src/test/java/org/openprovenance/prov/model/QualifiedNameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/src/test/java/org/openprovenance/prov/model/QualifiedNameTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-n/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-n/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-xml/src/main/java/org/openprovenance/prov/xml/QualifiedName.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-xml/src/main/java/org/openprovenance/prov/xml/QualifiedName.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-xml/src/test/java/org/openprovenance/prov/xml/AttributeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-xml/src/test/java/org/openprovenance/prov/xml/AttributeTest.java" afterDir="false" />
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_8.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_8.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/provcore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/provcore.iml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
@@ -170,7 +96,7 @@
         <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvUtilities.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="373">
-              <caret line="237" column="62" lean-forward="true" selection-start-line="237" selection-start-column="62" selection-end-line="237" selection-end-column="62" />
+              <caret line="237" column="62" selection-start-line="237" selection-start-column="62" selection-end-line="237" selection-end-column="62" />
             </state>
           </provider>
         </entry>
@@ -264,6 +190,11 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="development" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -717,8 +648,16 @@
       <workItem from="1563716775188" duration="447000" />
       <workItem from="1563737915342" duration="255000" />
       <workItem from="1564838129931" duration="24000" />
-      <workItem from="1565514544963" duration="35825000" />
+      <workItem from="1565514544963" duration="36082000" />
     </task>
+    <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
+      <created>1566430960720</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1566430960720</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -754,7 +693,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52997000" />
+    <option name="totallyTimeSpent" value="53254000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="243" y="41" width="2166" height="1229" extended-state="0" />
@@ -796,6 +735,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First cut of json-ld serialisation for activities" />
+    <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/openprovenance/prov/xml/WasInfluencedBy.java">
@@ -1207,7 +1150,7 @@
     <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvUtilities.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="373">
-          <caret line="237" column="62" lean-forward="true" selection-start-line="237" selection-start-column="62" selection-end-line="237" selection-end-column="62" />
+          <caret line="237" column="62" selection-start-line="237" selection-start-column="62" selection-end-line="237" selection-end-column="62" />
         </state>
       </provider>
     </entry>

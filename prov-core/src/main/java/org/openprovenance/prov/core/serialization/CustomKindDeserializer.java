@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.serialization;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;

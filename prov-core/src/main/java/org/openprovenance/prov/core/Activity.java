@@ -2,19 +2,23 @@ package org.openprovenance.prov.core;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
+import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
+import org.openprovenance.prov.core.serialization.CustomMapSerializer;
+import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @JsonPropertyOrder({ "@id", "startTime", "endTime" })
 
-public class Activity implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString {
+public class Activity implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString, HasAttributes {
 
+    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<org.openprovenance.prov.model.QualifiedName> id;
     private Optional<XMLGregorianCalendar> startTime;
     private Optional<XMLGregorianCalendar> endTime;
@@ -22,6 +26,8 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     private List<org.openprovenance.prov.model.Location> location = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
+
+    final ProvUtilities u=new ProvUtilities();
 
     static public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName id,
                                                                      XMLGregorianCalendar startTime,
@@ -126,6 +132,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         equalsBuilder.append(this.getType(), that.getType());
         equalsBuilder.append(this.getOther(), that.getOther());
         equalsBuilder.append(this.getId(), that.getId());
+      //  equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
     }
 
     public boolean equals(Object object) {
@@ -148,6 +155,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         hashCodeBuilder.append(this.getType());
         hashCodeBuilder.append(this.getOther());
         hashCodeBuilder.append(this.getId());
+        //hashCodeBuilder.append(this.getIndexedAttributes());
     }
 
     public int hashCode() {
@@ -187,6 +195,14 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
             theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }
+        /*
+        {
+            Map<QualifiedName, Set<Attribute>> theAttributes;
+            theAttributes = this.getIndexedAttributes();
+            toStringBuilder.append("attributes", theAttributes);
+        }
+
+         */
         {
             org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
@@ -200,5 +216,32 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }
+
+    @JsonIgnore
+    @Override
+    public Collection<Attribute> getAttributes() {
+        //      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++other.values.flatten
+        LinkedList<Attribute> result=new LinkedList<>();
+        result.addAll(getLabel().stream().map(s -> new Label(QUALIFIED_NAME_XSD_STRING,s)).collect(Collectors.toList()));
+        result.addAll(getType());
+        result.addAll(getLocation());
+        result.addAll(getOther().stream().map(o -> (Attribute)o).collect(Collectors.toList())); //TODO: collect directly into result
+        return result;
+    }
+
+    @Override
+    @JsonProperty("attributes")
+   // @JsonDeserialize(keyUsing=CustomKeyDeserializer.class)
+    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+    public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
+        return u.split(getAttributes());
+    }
+
+    /*
+    @JsonIgnore
+    public Map<QualifiedName, Attribute[]> getIndexedAttributes2() {
+        return u.split2(getAttributes());
+    }
+    */
 
 }

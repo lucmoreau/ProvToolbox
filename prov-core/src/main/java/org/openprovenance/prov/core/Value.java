@@ -1,36 +1,36 @@
 package org.openprovenance.prov.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
-import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.DOMProcessing;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 
+/* Deerialisation requires type to be known to properly parse value. */
 
 @JsonPropertyOrder({ "elementName", "type", "value" })
-@JsonTypeName("prov:type")
-public class Type extends TypedValue implements org.openprovenance.prov.model.Type, org.openprovenance.prov.model.Attribute {
 
-    private static final AttributeKind PROV_TYPE_KIND = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE;
-    private static final QualifiedName PROV_TYPE_QualifiedName = ProvFactory.getFactory().getName().PROV_TYPE;
+public class Value extends TypedValue implements org.openprovenance.prov.model.Value, Attribute {
+
+    private static final AttributeKind PROV_VALUE_KIND = AttributeKind.PROV_VALUE;
+    private static final QualifiedName PROV_VALUE_QualifiedName = ProvFactory.getFactory().getName().PROV_VALUE;
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    @JsonProperty("elementName")
     @Override
-    public org.openprovenance.prov.model.QualifiedName getElementName() {
-        return PROV_TYPE_QualifiedName;
+    public QualifiedName getElementName() {
+        return PROV_VALUE_QualifiedName;
     }
 
     /* for the purpose of json deserialisation only */
-    private void setElementName(org.openprovenance.prov.model.QualifiedName q) {}
+    private void setElementName(QualifiedName q) {}
 
     @JsonIgnore
     @Override
     public AttributeKind getKind() {
-        return PROV_TYPE_KIND;
+        return PROV_VALUE_KIND;
     }
 
     @Override
@@ -39,12 +39,12 @@ public class Type extends TypedValue implements org.openprovenance.prov.model.Ty
                 + ProvUtilities.valueToNotationString(getValue(), getType());
     }
 
-    public Type (org.openprovenance.prov.model.QualifiedName type, Object value) {
+    public Value(QualifiedName type, Object value) {
         super(type, castToStringOrLangStringOrQualifiedName(value));
     }
 
-
-    private Type () {
+    private Value() {
+        super();
     }
 
 

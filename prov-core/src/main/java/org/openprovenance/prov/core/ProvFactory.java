@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core;
 
 import org.apache.log4j.Logger;
+import org.openprovenance.prov.core.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Document;
@@ -32,8 +33,36 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public Attribute newAttribute(org.openprovenance.prov.model.QualifiedName elementName, Object value, org.openprovenance.prov.model.QualifiedName type) {
-        return null;
+
+ //       if (getName().RDF_LITERAL.equals(type)&& (value instanceof String)) {
+ //           value=vconv.convertToJava(type,(String)value);
+ //       }
+
+        // TODO: use TypedValue.getAttributeKind and switch on a kind
+        if (elementName.equals(getName().PROV_LOCATION)) {
+            return newLocation(value, type);
+        }
+        if (elementName.equals(getName().PROV_TYPE)) {
+            return newType(value, type);
+        }
+        if (elementName.equals(getName().PROV_VALUE)) {
+            return newValue(value, type);
+        }
+        if (elementName.equals(getName().PROV_ROLE)) {
+            return newRole(value, type);
+        }
+        if (elementName.equals(getName().PROV_LABEL)) {
+            new UnsupportedOperationException("label not there yet");
+            //return newLabel(value, type);
+        }
+        if (elementName.equals(getName().PROV_KEY)) {
+            new UnsupportedOperationException("key not there yet");
+            //return newKey(value, type);
+        }
+        return new org.openprovenance.prov.core.Other(elementName, type, value);
     }
+
+
 
     @Override
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, org.openprovenance.prov.model.QualifiedName type) {

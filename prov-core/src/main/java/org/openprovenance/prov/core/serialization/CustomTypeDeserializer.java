@@ -1,10 +1,12 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.serialization;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.openprovenance.prov.core.ProvFactory;
+import org.openprovenance.prov.core.Type;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -13,19 +15,19 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-public class CustomLocationDeserializer extends StdDeserializer<Location> {
+public class CustomTypeDeserializer extends StdDeserializer<Type> {
 
 static public Namespace theNS;
 
     private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
-    public CustomLocationDeserializer() {
+    public CustomTypeDeserializer() {
         this(Attribute.class);
     }
 
 
-    public CustomLocationDeserializer(Class<?> vc) {
+    public CustomTypeDeserializer(Class<?> vc) {
         super(vc);
         Namespace ns=new Namespace();
         ns.addKnownNamespaces();
@@ -37,7 +39,7 @@ static public Namespace theNS;
     }
 
     @Override
-    public Location deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Type deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
         //System.out.println(node);
         Map.Entry<String, JsonNode> pair=node.fields().next();
@@ -49,14 +51,14 @@ static public Namespace theNS;
         String type=pairs.next().getValue().textValue();
         String value=pairs.next().getValue().textValue();
 
-       // System.out.println("Found value " + value);
-       // System.out.println("Found type " + type);
+        //System.out.println("Found value " + value);
+        //System.out.println("Found type " + type);
 
         QualifiedName typeQN=ns.stringToQualifiedName(type,pf);
         if (pf.getName().PROV_QUALIFIED_NAME.equals(typeQN)) {
-            return new Location(ns.stringToQualifiedName(type,pf),ns.stringToQualifiedName(value,pf));
+            return new Type(ns.stringToQualifiedName(type,pf),ns.stringToQualifiedName(value,pf));
         } else { //TODO: need to handle LangString
-            return new Location(ns.stringToQualifiedName(type,pf),value);
+            return new Type(ns.stringToQualifiedName(type,pf),value);
 
         }
 

@@ -1,9 +1,13 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.serialization;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.openprovenance.prov.core.QualifiedName;
+import org.openprovenance.prov.core.serialization.CustomAttributeSerializer;
+import org.openprovenance.prov.core.serialization.CustomKindSerializer;
+import org.openprovenance.prov.core.serialization.CustomQualifiedNameSerializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;

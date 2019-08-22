@@ -1,10 +1,22 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.serialization;
 
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.MapType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.openprovenance.prov.core.Document;
+import org.openprovenance.prov.core.Location;
+import org.openprovenance.prov.core.Other;
+import org.openprovenance.prov.core.Type;
+import org.openprovenance.prov.core.serialization.*;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ProvDeserialiser {
 
@@ -23,9 +35,16 @@ public class ProvDeserialiser {
         module.addDeserializer(Location.class, new CustomLocationDeserializer());
         module.addDeserializer(Other.class, new CustomOtherDeserializer());
 
+        TypeFactory typeFactory = mapper.getTypeFactory();
+        CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
+        JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
+        MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
+        module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
+
+
         mapper.registerModule(module);
 
-        return mapper.readValue(in,Document.class);
+        return mapper.readValue(in, Document.class);
 
     }
 

@@ -1,24 +1,16 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import junit.framework.TestCase;
+import org.openprovenance.prov.core.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
-import org.xml.sax.SAXException;
+import org.openprovenance.prov.model.Role;
 
-import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
@@ -46,7 +38,7 @@ public class RoundTripFromJavaTest extends TestCase {
      */
     public RoundTripFromJavaTest(String testName) {
         super(testName);
-        this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
+        this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),System.out);
     }
 
     public boolean urlFlag = true;
@@ -231,13 +223,19 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {
- //       assertTrue("self doc equality", doc.equals(doc));
- //       assertTrue("self doc2 equality", doc2.equals(doc2));
+  //     assertTrue("self doc equality", doc.equals(doc));
+  //      assertTrue("self doc2 equality", doc2.equals(doc2));
         if (check) {
             boolean result = this.documentEquality.check(doc, doc2);
             if (!result) {
                 System.out.println("Pre-write graph: " + doc);
                 System.out.println("Read graph: " + doc2);
+                System.out.println("test1: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)));
+                System.out.println("test2: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)));
+                System.out.println("test1: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getClass());
+                System.out.println("test2: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)).getClass());
+                System.out.println("test3: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).equals(((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0))));
+
             }
             assertTrue("doc equals doc2", result);
         } else {
@@ -273,7 +271,7 @@ public class RoundTripFromJavaTest extends TestCase {
         System.out.println("writing to " + file);
 
 
-        ProvSerialiser serial=new ProvSerialiser();
+        org.openprovenance.prov.core.serialization.ProvSerialiser serial=new ProvSerialiser();
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
 
 

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.openprovenance.apache.commons.lang.builder.*;
 
@@ -28,6 +29,7 @@ public class LangString implements org.openprovenance.prov.model.LangString, Equ
         this.lang=Optional.ofNullable(lang);
     }
 
+    @JsonProperty("$")
     @Override
     public String getValue() {
         return value;

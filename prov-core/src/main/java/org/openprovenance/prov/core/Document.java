@@ -1,5 +1,7 @@
 package org.openprovenance.prov.core;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.openprovenance.apache.commons.lang.builder.*;
@@ -8,6 +10,8 @@ import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.util.LinkedList;
 import java.util.List;
+
+@JsonPropertyOrder({ "namespace"})
 
 public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode {
 
@@ -23,6 +27,7 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
     }
 
     @Override
+    @JsonFilter("nsFilter")
     public Namespace getNamespace() {
         return namespace;
     }
@@ -38,7 +43,7 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
 
     @Override
     public void setNamespace(Namespace namespace) {
-
+        this.namespace=namespace;
     }
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

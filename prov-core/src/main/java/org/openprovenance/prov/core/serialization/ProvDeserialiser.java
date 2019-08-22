@@ -12,6 +12,7 @@ import org.openprovenance.prov.core.Location;
 import org.openprovenance.prov.core.Other;
 import org.openprovenance.prov.core.Type;
 import org.openprovenance.prov.core.serialization.*;
+import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
 import java.util.HashMap;
@@ -35,11 +36,17 @@ public class ProvDeserialiser {
         module.addDeserializer(Location.class, new CustomLocationDeserializer());
         module.addDeserializer(Other.class, new CustomOtherDeserializer());
 
+
         TypeFactory typeFactory = mapper.getTypeFactory();
         CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
         JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
         module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
+
+
+        MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);
+        module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
+
 
         //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.TypedValue.class);
 

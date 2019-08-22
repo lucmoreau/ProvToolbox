@@ -628,6 +628,14 @@ public class RoundTripFromJavaTest extends TestCase {
     */
     // /////////////////////////////////////////////////////////////////////
 
+    public void testDocument1() {
+        Activity a = pFactory.newActivity(q("a1"));
+        makeDocAndTest(new Statement[0],null, "target/document1");
+    }
+
+
+    ////
+
     public void testActivity1() {
         Activity a = pFactory.newActivity(q("a1"));
         makeDocAndTest(a, "target/activity1");

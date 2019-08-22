@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.openprovenance.prov.core.QualifiedName;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
@@ -26,8 +28,13 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(Attribute.class, new CustomAttributeSerializer());
-
         mapper.registerModule(module);
+
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.addFilter("nsFilter",
+                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
+        mapper.setFilterProvider(filterProvider);
+
 
         try {
             mapper.writeValue(out,document);

@@ -18,10 +18,10 @@ public class Namespace  {
 
     private static ThreadLocal<Namespace> threadNamespace =
             new ThreadLocal<Namespace> () {
-        protected synchronized Namespace initialValue () {
-            return new Namespace();
-        }
-    };
+                protected synchronized Namespace initialValue () {
+                    return new Namespace();
+                }
+            };
 
 
     public static Namespace getThreadNamespace() {
@@ -228,7 +228,7 @@ public class Namespace  {
         if (index == -1) {
             String tmp = getDefaultNamespace();
             if (tmp == null && parent != null) tmp = parent.getDefaultNamespace();
-            if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(: Null namespace for "+id);
+            if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for "+id);
             return pFactory.newQualifiedName(tmp, id, null);
         }
         String prefix = id.substring(0, index);

@@ -43,7 +43,6 @@ static public Namespace theNS;
 
         QualifiedName context=(QualifiedName)deserializationContext.getAttribute(PROV_ATTRIBUTE_CONTEXT_KEY);
 
-        System.out.println("--> Found context " + context);
 
 
         Iterator<JsonNode> elements=node.elements();
@@ -51,13 +50,10 @@ static public Namespace theNS;
         while (elements.hasNext()) {
             JsonNode next=elements.next();
             Attribute attr=new CustomAttributeDeserializer().deserialize(context,next,deserializationContext);
-            System.out.println("--> Created Attr " + attr);
 
 
             set.add(attr);
         }
-
-        System.out.println(set);
 
         return set;
 

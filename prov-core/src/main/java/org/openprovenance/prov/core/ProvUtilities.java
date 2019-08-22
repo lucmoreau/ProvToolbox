@@ -107,7 +107,6 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         String uri=qn.getUri();
         if (PROV_LABEL_URI.equals(uri)) {
             for (Attribute attr: attributes) {
-                System.out.println("**** " + attr);
                 LangString ls= (LangString) attr.getValue();
                 labels.add(ls);
             }

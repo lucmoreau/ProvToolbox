@@ -132,10 +132,6 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         final Activity that = ((Activity) object);
         equalsBuilder.append(this.getStartTime(), that.getStartTime());
         equalsBuilder.append(this.getEndTime(), that.getEndTime());
-    //    equalsBuilder.append(this.getLabel(), that.getLabel());
-     //   equalsBuilder.append(this.getLocation(), that.getLocation());
-     //   equalsBuilder.append(this.getType(), that.getType());
-     //   equalsBuilder.append(this.getOther(), that.getOther());
         equalsBuilder.append(this.getId(), that.getId());
        equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
     }
@@ -155,10 +151,6 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
         hashCodeBuilder.append(this.getStartTime());
         hashCodeBuilder.append(this.getEndTime());
-   //     hashCodeBuilder.append(this.getLabel());
-    //    hashCodeBuilder.append(this.getLocation());
-    //    hashCodeBuilder.append(this.getType());
-   //     hashCodeBuilder.append(this.getOther());
         hashCodeBuilder.append(this.getId());
         hashCodeBuilder.append(this.getIndexedAttributes());
     }
@@ -180,29 +172,6 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
             theEndTime = this.getEndTime();
             toStringBuilder.append("endTime", theEndTime);
         }
-        /*
-        {
-            List<org.openprovenance.prov.model.LangString> theLabel;
-            theLabel = this.getLabel();
-            toStringBuilder.append("label", theLabel);
-        }
-        {
-            List<org.openprovenance.prov.model.Location> theLocation;
-            theLocation = this.getLocation();
-            toStringBuilder.append("location", theLocation);
-        }
-        {
-            List<org.openprovenance.prov.model.Type> theType;
-            theType = this.getType();
-            toStringBuilder.append("type", theType);
-        }
-        {
-            List<org.openprovenance.prov.model.Other> theOthers;
-            theOthers = this.getOther();
-            toStringBuilder.append("others", theOthers);
-        }
-        */
-
 
         {
             Map<QualifiedName, Set<Attribute>> theAttributes;
@@ -228,7 +197,6 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
-        //      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++other.values.flatten
         LinkedList<Attribute> result=new LinkedList<>();
         result.addAll(getLabel().stream().map(s -> new Label(QUALIFIED_NAME_XSD_STRING,s)).collect(Collectors.toList()));
         result.addAll(getType());
@@ -238,11 +206,8 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     }
 
     @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)//contentAs = TypedValue.class,
-
+    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
-        System.out.println("setIndexedAttributes" + qn);
-        System.out.println("setIndexedAttributes" + attributes);
         u.distribute((QualifiedName)qn,attributes,getLabel(),getLocation(),getType(),getOther());
     }
 
@@ -250,17 +215,10 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     @JsonAnyGetter
     @Override
     @JsonProperty("attributes")
-   // @JsonDeserialize(keyUsing=CustomKeyDeserializer.class)
     @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }
 
-    /*
-    @JsonIgnore
-    public Map<QualifiedName, Attribute[]> getIndexedAttributes2() {
-        return u.split2(getAttributes());
-    }
-    */
 
 }

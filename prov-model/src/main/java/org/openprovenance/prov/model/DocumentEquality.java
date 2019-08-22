@@ -52,8 +52,8 @@ public class DocumentEquality {
 			bag1 = new HashBag(c1);
 			bag2 = new HashBag(c2);
 		}
-		System.out.println("bag1: " +bag1);
-		System.out.println("bag2: " +bag2);
+		//System.out.println("bag1: " +bag1);
+		//System.out.println("bag2: " +bag2);
 		return bag1.equals(bag2);
 	}
 
@@ -82,7 +82,7 @@ public class DocumentEquality {
 		Method[] allMethods = class1.getDeclaredMethods();
 		for (Method m : allMethods) {
 			String methodName = m.getName();
-			if (methodName.startsWith("get") && (!methodName.equals("getAll"))&& (!methodName.equals("getAttributes"))) {
+			if (methodName.startsWith("get") && (!methodName.equals("getAll"))) {
 				try {
 					Object attr1 = m.invoke(r1);
 					Object attr2 = m.invoke(r2);
@@ -104,7 +104,7 @@ public class DocumentEquality {
 								Set.of((Object [])attr2)))
 							continue;
 
-						System.out.println("%%%%%%%%%%%% method " + methodName);
+						//System.out.println("%%%%%%%%%%%% method " + methodName);
 					/*
 					 * // the two attributes are not equal String attrName =
 					 * methodName.substring(3);

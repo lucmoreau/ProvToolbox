@@ -73,15 +73,17 @@ static public Namespace theNS;
         if ("@value".equals(key2)   ) value=pair2.getValue();
 
 
+        /*
 
         System.out.println("-Found key1 " + key1);
         System.out.println("-Found key2 " + key2);
         System.out.println("-Found @value " + value);
         System.out.println("-Found @type " + type);
 
+         */
         Object valueObject=value.textValue(); //TODO: should not be checking qname but uri
         if (type.equals("xsd:string") && value.isObject()) {
-            System.out.println(" This is an object " + value);
+            //System.out.println(" This is an object " + value);
             JsonNode theValue=value.get("$");
             JsonNode theLang=value.get("lang");
             valueObject=new LangString(theValue.textValue(),(theLang==null)?null:theLang.textValue());

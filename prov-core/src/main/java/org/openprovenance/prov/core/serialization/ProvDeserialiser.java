@@ -41,6 +41,10 @@ public class ProvDeserialiser {
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
         module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
 
+        //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.TypedValue.class);
+
+        module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
+
 
         mapper.registerModule(module);
 

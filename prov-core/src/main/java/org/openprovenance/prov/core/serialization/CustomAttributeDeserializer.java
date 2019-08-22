@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.openprovenance.prov.core.LangString;
 import org.openprovenance.prov.core.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
@@ -64,19 +65,31 @@ static public Namespace theNS;
         String key2=pair2.getKey();
 
         String type=null;
-        String value=null;
+        JsonNode value=null;
         if ("@type".equals(key1)   ) type=pair1.getValue().textValue();
         if ("@type".equals(key2)   ) type=pair2.getValue().textValue();
 
-        if ("@value".equals(key1)   ) value=pair1.getValue().textValue();
-        if ("@value".equals(key2)   ) value=pair2.getValue().textValue();
+        if ("@value".equals(key1)   ) value=pair1.getValue();
+        if ("@value".equals(key2)   ) value=pair2.getValue();
 
 
 
-        System.out.println("Found @value " + value);
-        System.out.println("Found @type " + type);
+        System.out.println("-Found key1 " + key1);
+        System.out.println("-Found key2 " + key2);
+        System.out.println("-Found @value " + value);
+        System.out.println("-Found @type " + type);
+
+        Object valueObject=value.textValue(); //TODO: should not be checking qname but uri
+        if (type.equals("xsd:string") && value.isObject()) {
+            System.out.println(" This is an object " + value);
+            JsonNode theValue=value.get("$");
+            JsonNode theLang=value.get("lang");
+            valueObject=new LangString(theValue.textValue(),(theLang==null)?null:theLang.textValue());
+        } else if (type.equals("prov:QUALIFIED_NAME")) {
+            valueObject=ns.stringToQualifiedName(value.textValue(),pf);
+        }
 
         QualifiedName typeQN=ns.stringToQualifiedName(type,pf);
-        return pf.newAttribute(elementName,value, ns.stringToQualifiedName(type,pf));
+        return pf.newAttribute(elementName,valueObject, ns.stringToQualifiedName(type,pf));
     }
 }

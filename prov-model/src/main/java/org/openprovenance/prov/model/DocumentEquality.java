@@ -3,10 +3,7 @@ package org.openprovenance.prov.model;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.collections4.bag.HashBag;
 import org.apache.log4j.Logger;
@@ -55,8 +52,11 @@ public class DocumentEquality {
 			bag1 = new HashBag(c1);
 			bag2 = new HashBag(c2);
 		}
+		System.out.println("bag1: " +bag1);
+		System.out.println("bag2: " +bag2);
 		return bag1.equals(bag2);
 	}
+
 
 	@SuppressWarnings("unchecked")
 	private boolean statementEqual(StatementOrBundle r1, StatementOrBundle r2) {
@@ -76,6 +76,9 @@ public class DocumentEquality {
 		if (class1 != r2.getClass()) {
 			return false;
 		}
+		if (r1.equals(r2)) {
+			return true;
+		}
 		Method[] allMethods = class1.getDeclaredMethods();
 		for (Method m : allMethods) {
 			String methodName = m.getName();
@@ -90,10 +93,18 @@ public class DocumentEquality {
 					if (attr1.equals(attr2))
 						continue;
 					if (attr1 instanceof Collection<?>
-							&& attr1 instanceof Collection<?>)
+							&& attr2 instanceof Collection<?>)
 						if (collectionEqual((Collection<?>) attr1,
 								(Collection<?>) attr2))
 							continue;
+
+					if (( attr1.getClass().isArray())
+							&& attr2 .getClass().isArray())
+						if (collectionEqual(Set.of((Object [])attr1),
+								Set.of((Object [])attr2)))
+							continue;
+
+						System.out.println("%%%%%%%%%%%% method " + methodName);
 					/*
 					 * // the two attributes are not equal String attrName =
 					 * methodName.substring(3);

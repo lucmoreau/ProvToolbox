@@ -52,8 +52,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
             return newRole(value, type);
         }
         if (elementName.equals(getName().PROV_LABEL)) {
-            new UnsupportedOperationException("label not there yet");
-            //return newLabel(value, type);
+            //new UnsupportedOperationException("label not there yet");
+            return new Label(type, value);
         }
         if (elementName.equals(getName().PROV_KEY)) {
             new UnsupportedOperationException("key not there yet");

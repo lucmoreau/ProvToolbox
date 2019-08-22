@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
+import org.openprovenance.prov.core.serialization.CustomKeyDeserializer;
 import org.openprovenance.prov.core.serialization.CustomMapSerializer;
 import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.*;
@@ -89,26 +90,30 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         endTime = Optional.ofNullable(value);
     }
 
-    @JsonDeserialize(contentAs = LangString.class)
+    @JsonIgnore
+ //   @JsonDeserialize(contentAs = LangString.class)
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
-    @JsonDeserialize(contentAs = Location.class)
+    @JsonIgnore
+  //  @JsonDeserialize(contentAs = Location.class)
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
-    @JsonDeserialize(contentAs = Type.class)
+    @JsonIgnore
+ //   @JsonDeserialize(contentAs = Type.class)
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    @JsonDeserialize(contentAs = Other.class)
+    @JsonIgnore
+    //@JsonDeserialize(contentAs = Other.class)
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -127,12 +132,12 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         final Activity that = ((Activity) object);
         equalsBuilder.append(this.getStartTime(), that.getStartTime());
         equalsBuilder.append(this.getEndTime(), that.getEndTime());
-        equalsBuilder.append(this.getLabel(), that.getLabel());
-        equalsBuilder.append(this.getLocation(), that.getLocation());
-        equalsBuilder.append(this.getType(), that.getType());
-        equalsBuilder.append(this.getOther(), that.getOther());
+    //    equalsBuilder.append(this.getLabel(), that.getLabel());
+     //   equalsBuilder.append(this.getLocation(), that.getLocation());
+     //   equalsBuilder.append(this.getType(), that.getType());
+     //   equalsBuilder.append(this.getOther(), that.getOther());
         equalsBuilder.append(this.getId(), that.getId());
-      //  equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
+       equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
     }
 
     public boolean equals(Object object) {
@@ -150,12 +155,12 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
         hashCodeBuilder.append(this.getStartTime());
         hashCodeBuilder.append(this.getEndTime());
-        hashCodeBuilder.append(this.getLabel());
-        hashCodeBuilder.append(this.getLocation());
-        hashCodeBuilder.append(this.getType());
-        hashCodeBuilder.append(this.getOther());
+   //     hashCodeBuilder.append(this.getLabel());
+    //    hashCodeBuilder.append(this.getLocation());
+    //    hashCodeBuilder.append(this.getType());
+   //     hashCodeBuilder.append(this.getOther());
         hashCodeBuilder.append(this.getId());
-        //hashCodeBuilder.append(this.getIndexedAttributes());
+        hashCodeBuilder.append(this.getIndexedAttributes());
     }
 
     public int hashCode() {
@@ -175,6 +180,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
             theEndTime = this.getEndTime();
             toStringBuilder.append("endTime", theEndTime);
         }
+        /*
         {
             List<org.openprovenance.prov.model.LangString> theLabel;
             theLabel = this.getLabel();
@@ -195,14 +201,16 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
             theOthers = this.getOther();
             toStringBuilder.append("others", theOthers);
         }
-        /*
+        */
+
+
         {
             Map<QualifiedName, Set<Attribute>> theAttributes;
             theAttributes = this.getIndexedAttributes();
             toStringBuilder.append("attributes", theAttributes);
         }
 
-         */
+
         {
             org.openprovenance.prov.model.QualifiedName theId;
             theId = this.getId();
@@ -229,6 +237,17 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         return result;
     }
 
+    @JsonAnySetter
+    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)//contentAs = TypedValue.class,
+
+    public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
+        System.out.println("setIndexedAttributes" + qn);
+        System.out.println("setIndexedAttributes" + attributes);
+        u.distribute((QualifiedName)qn,attributes,getLabel(),getLocation(),getType(),getOther());
+    }
+
+
+    @JsonAnyGetter
     @Override
     @JsonProperty("attributes")
    // @JsonDeserialize(keyUsing=CustomKeyDeserializer.class)

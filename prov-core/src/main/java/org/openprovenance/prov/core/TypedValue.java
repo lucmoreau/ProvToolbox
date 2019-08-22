@@ -11,7 +11,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
-abstract public class TypedValue implements org.openprovenance.prov.model.TypedValue, Equals, ToString, HashCode {
+ public class TypedValue implements org.openprovenance.prov.model.TypedValue, Equals, ToString, HashCode {
 
 
 

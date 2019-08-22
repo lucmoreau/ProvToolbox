@@ -235,6 +235,11 @@ public class RoundTripFromJavaTest extends TestCase {
                 System.out.println("test1: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getClass());
                 System.out.println("test2: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)).getClass());
                 System.out.println("test3: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).equals(((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0))));
+                System.out.println("test4: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.core.Activity) doc2.getStatementOrBundle().get(0)).getLabel())));
+                System.out.println("test5: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.core.Activity) doc2.getStatementOrBundle().get(0)).getType())));
+                System.out.println("test5b: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getType());
+                System.out.println("test5c: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)).getType());
+
 
             }
             assertTrue("doc equals doc2", result);

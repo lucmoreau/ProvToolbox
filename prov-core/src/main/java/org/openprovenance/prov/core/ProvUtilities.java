@@ -4,6 +4,7 @@ package org.openprovenance.prov.core;
 import java.util.*;
 
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.QualifiedName;
 
 public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
@@ -14,6 +15,13 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
     private static final QualifiedName QualifiedName_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
     private static final QualifiedName QualifiedName_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
+
+    public static final String PROV_LABEL_URI = QualifiedName_PROV_LABEL.getUri();
+    public static final String PROV_TYPE_URI = QualifiedName_PROV_TYPE.getUri();
+    public static final String PROV_LOCATION_URI = QualifiedName_PROV_LOCATION.getUri();
+    public static final String PROV_ROLE_URI = QualifiedName_PROV_ROLE.getUri();
+    public static final String PROV_VALUE_URI = QualifiedName_PROV_VALUE.getUri();
+
 
 
     Map<QualifiedName, Set<Attribute>> split(Collection<Attribute> attributes) {
@@ -90,4 +98,37 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     }
 
 
+    public void distribute(QualifiedName qn,
+                           Collection<Attribute> attributes,
+                           Collection<LangString> labels,
+                           Collection<org.openprovenance.prov.model.Location> locations,
+                           Collection<org.openprovenance.prov.model.Type> types,
+                           Collection<org.openprovenance.prov.model.Other> others) {
+        String uri=qn.getUri();
+        if (PROV_LABEL_URI.equals(uri)) {
+            for (Attribute attr: attributes) {
+                System.out.println("**** " + attr);
+                LangString ls= (LangString) attr.getValue();
+                labels.add(ls);
+            }
+            return;
+        }
+        if (PROV_TYPE_URI.equals(uri)) {
+            for (Attribute attr: attributes) {
+                types.add((org.openprovenance.prov.model.Type)attr);
+            }
+            return;
+        }
+        if (PROV_LOCATION_URI.equals(uri)) {
+            for (Attribute attr: attributes) {
+                locations.add((org.openprovenance.prov.model.Location)attr);
+            }
+            return;
+        }
+        for (Attribute attr: attributes) {
+            others.add((org.openprovenance.prov.model.Other) attr);
+        }
+
+
+    }
 }

@@ -15,7 +15,7 @@ public class LangString implements org.openprovenance.prov.model.LangString, Equ
     Optional<String> lang;
     String value;
 
-    private LangString() {
+     private LangString() {
         this.lang=Optional.empty();
     }
 

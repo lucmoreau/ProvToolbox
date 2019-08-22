@@ -20,7 +20,6 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
 static public Namespace theNS;
 
-    private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
 
@@ -28,12 +27,7 @@ static public Namespace theNS;
 
     public CustomAttributeSetDeserializer(JavaType vc) {
         super(vc);
-        Namespace ns=new Namespace();
-        ns.addKnownNamespaces();
-        ns.register("ex", "http://example.org/");
-        ns.register("ex2", "http://example2.org/");
-        this.ns=ns;
-        theNS=ns;
+
 
     }
 

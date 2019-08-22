@@ -12,9 +12,7 @@ import java.io.IOException;
 
 public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedName> {
 
-static public Namespace theNS;
 
-    private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
     public CustomQualifiedNameDeserializer() {
@@ -24,22 +22,19 @@ static public Namespace theNS;
 
     public CustomQualifiedNameDeserializer(Class<?> vc) {
         super(vc);
-        Namespace ns=new Namespace();
-        ns.addKnownNamespaces();
-        ns.register("ex", "http://example.org/");
-        ns.register("ex2", "http://example2.org/");
-        this.ns=ns;
-        theNS=ns;
+
 
     }
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         return ns.stringToQualifiedName(jsonParser.getText(), pf, false);
     }
 
 
     public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         return ns.stringToQualifiedName(s, pf, false);
     }
 }

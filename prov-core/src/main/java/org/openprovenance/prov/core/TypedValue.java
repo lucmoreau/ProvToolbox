@@ -128,7 +128,9 @@ import javax.xml.transform.TransformerException;
     public void setValue(String value) {
         if ((type!=null) && QualifiedName_PROV_QUALIFIEDNAME.equals(type)) {
             System.out.println("HACK: deserializing value " + value + "type " + type);
-            setValue(CustomQualifiedNameDeserializer.theNS.stringToQualifiedName(value, ProvFactory.getFactory(), false));
+            Namespace ns=null;
+            setValue(ns.stringToQualifiedName(value, ProvFactory.getFactory(), false));
+            //setValue(CustomQualifiedNameDeserializer.theNS.stringToQualifiedName(value, ProvFactory.getFactory(), false));
         } else {
             this.value = value;
         }

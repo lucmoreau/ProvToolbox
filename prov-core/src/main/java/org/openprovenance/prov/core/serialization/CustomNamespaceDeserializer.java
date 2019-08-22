@@ -19,37 +19,36 @@ import java.util.*;
 
 public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
-    JavaType tr;
+    public static final Object CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
 
     public CustomNamespaceDeserializer(JavaType tr) {
         super(tr);
-        this.tr=tr;
-
     }
 
     @Override
     public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-
-        String key=jp.getCurrentName();
-
-        System.out.println("Key " + key);
-        //JsonNode map=jp.getCodec().readTree(jp);
-        //Hashtable<String,String> map=jp.getCodec().readValue(jp, Hashtable.class);
-        //HashMap<String,String> map2=jp.getCodec().readValue(jp, HashMap.class);
-
-
-
-        JsonNode map2=jp.readValueAsTree();
-
-
-        System.out.println("Key " + map2);
-
         
 
 
-        Namespace ns=new Namespace();
+        JsonNode map2=jp.readValueAsTree();
+        JsonNode prefixes=map2.get("prefixes");
+        JsonNode def=map2.get("defaultNamespace");
+
+
+
+        Hashtable<String, String> map=new Hashtable<String,String>();
+        for (Iterator<String> it = prefixes.fieldNames(); it.hasNext(); ) {
+            String prefix = it.next();
+            String namespace=prefixes.get(prefix).textValue();
+            map.put(prefix,namespace);
+        }
+
+        Namespace ns=new Namespace(map);
+        ns.setDefaultNamespace(def.textValue());
 
         System.out.println("NS " + ns);
+        deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
+
 
         return ns;
     }

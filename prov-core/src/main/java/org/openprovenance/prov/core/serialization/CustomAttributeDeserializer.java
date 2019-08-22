@@ -17,9 +17,7 @@ import java.util.Map;
 
 public class CustomAttributeDeserializer extends StdDeserializer<Attribute> {
 
-static public Namespace theNS;
 
-    private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
     public CustomAttributeDeserializer() {
@@ -29,13 +27,6 @@ static public Namespace theNS;
 
     public CustomAttributeDeserializer(Class<?> vc) {
         super(vc);
-        Namespace ns=new Namespace();
-        ns.addKnownNamespaces();
-        ns.register("ex", "http://example.org/");
-        ns.register("ex2", "http://example2.org/");
-        this.ns=ns;
-        theNS=ns;
-
     }
 
     @Override
@@ -45,7 +36,7 @@ static public Namespace theNS;
     }
 
     public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         Map.Entry<String, JsonNode> pair=node.fields().next();
 
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
@@ -55,6 +46,7 @@ static public Namespace theNS;
     }
 
     public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
 
         Iterator<Map.Entry<String, JsonNode>> pairs=vObj.fields();

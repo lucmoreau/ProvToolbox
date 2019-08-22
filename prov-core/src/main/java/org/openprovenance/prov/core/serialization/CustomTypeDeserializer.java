@@ -17,9 +17,7 @@ import java.util.Map;
 
 public class CustomTypeDeserializer extends StdDeserializer<Type> {
 
-static public Namespace theNS;
 
-    private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
     public CustomTypeDeserializer() {
@@ -29,17 +27,14 @@ static public Namespace theNS;
 
     public CustomTypeDeserializer(Class<?> vc) {
         super(vc);
-        Namespace ns=new Namespace();
-        ns.addKnownNamespaces();
-        ns.register("ex", "http://example.org/");
-        ns.register("ex2", "http://example2.org/");
-        this.ns=ns;
-        theNS=ns;
+        //Namespace ns=new Namespace();
 
     }
 
     @Override
     public Type deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+
         JsonNode node = jp.getCodec().readTree(jp);
         //System.out.println(node);
         Map.Entry<String, JsonNode> pair=node.fields().next();

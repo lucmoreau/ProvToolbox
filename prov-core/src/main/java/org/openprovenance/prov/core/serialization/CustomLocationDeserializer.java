@@ -17,9 +17,7 @@ import java.util.Map;
 
 public class CustomLocationDeserializer extends StdDeserializer<Location> {
 
-static public Namespace theNS;
 
-    private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
     public CustomLocationDeserializer() {
@@ -29,17 +27,13 @@ static public Namespace theNS;
 
     public CustomLocationDeserializer(Class<?> vc) {
         super(vc);
-        Namespace ns=new Namespace();
-        ns.addKnownNamespaces();
-        ns.register("ex", "http://example.org/");
-        ns.register("ex2", "http://example2.org/");
-        this.ns=ns;
-        theNS=ns;
+
 
     }
 
     @Override
     public Location deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         JsonNode node = jp.getCodec().readTree(jp);
         //System.out.println(node);
         Map.Entry<String, JsonNode> pair=node.fields().next();

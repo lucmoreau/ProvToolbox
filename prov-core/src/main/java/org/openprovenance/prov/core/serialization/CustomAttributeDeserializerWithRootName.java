@@ -15,17 +15,17 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-public class CustomAttributeDeserializer extends StdDeserializer<Attribute> implements Constants {
+public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
 
     static final ProvFactory pf=new ProvFactory();
 
-    public CustomAttributeDeserializer() {
+    public CustomAttributeDeserializerWithRootName() {
         this(Attribute.class);
     }
 
 
-    public CustomAttributeDeserializer(Class<?> vc) {
+    public CustomAttributeDeserializerWithRootName(Class<?> vc) {
         super(vc);
     }
 

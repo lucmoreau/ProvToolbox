@@ -6,7 +6,7 @@ public interface Constants {
 
     String PROPERTY_STRING_VALUE = "$";
     String PROPERTY_STRING_LANG = "$lang";
-    
+
     String PROPERTY_PROV_ACTIVITY = "prov:activity";
     String PROPERTY_PROV_AGENT = "prov:agent";
     String PROPERTY_PROV_ENTITY = "prov:entity";

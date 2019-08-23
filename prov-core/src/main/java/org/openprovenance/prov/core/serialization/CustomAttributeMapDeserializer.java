@@ -41,7 +41,7 @@ static public Namespace theNS;
             Set<Attribute> set=new HashSet<>();
             while (elements.hasNext()) {
                 JsonNode next=elements.next();
-                Attribute attr=new CustomAttributeDeserializer().deserialize(elementName,next,deserializationContext);
+                Attribute attr=new CustomAttributeDeserializerWithRootName().deserialize(elementName,next,deserializationContext);
                 set.add(attr);
             }
             result.put(elementName,set);

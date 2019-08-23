@@ -97,10 +97,11 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         }
     }
 
-
+//TODO: these URI need to be constants in the Constants interface, also need to have proper dispatch
     public void distribute(QualifiedName qn,
                            Collection<Attribute> attributes,
                            Collection<LangString> labels,
+                           Collection<org.openprovenance.prov.model.Value> values,
                            Collection<org.openprovenance.prov.model.Location> locations,
                            Collection<org.openprovenance.prov.model.Type> types,
                            Collection<org.openprovenance.prov.model.Other> others) {
@@ -121,6 +122,12 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         if (PROV_LOCATION_URI.equals(uri)) {
             for (Attribute attr: attributes) {
                 locations.add((org.openprovenance.prov.model.Location)attr);
+            }
+            return;
+        }
+        if (PROV_VALUE_URI.equals(uri)) {
+            for (Attribute attr: attributes) {
+                values.add((org.openprovenance.prov.model.Value)attr);
             }
             return;
         }

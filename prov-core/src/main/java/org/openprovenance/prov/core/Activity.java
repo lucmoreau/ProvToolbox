@@ -10,6 +10,7 @@ import org.openprovenance.prov.core.serialization.CustomMapSerializer;
 import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.Value;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
@@ -220,7 +221,8 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     @JsonAnySetter
     @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
-        u.distribute((QualifiedName)qn,attributes,getLabel(),getLocation(),getType(),getOther());
+        List<Value> values=new LinkedList<>();
+        u.distribute((QualifiedName)qn,attributes,getLabel(),values,getLocation(),getType(),getOther());
     }
 
 

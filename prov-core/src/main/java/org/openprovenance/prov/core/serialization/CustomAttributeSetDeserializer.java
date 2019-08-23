@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
         Set<Attribute> set=new HashSet<>();
         while (elements.hasNext()) {
             JsonNode next=elements.next();
-            Attribute attr=new CustomAttributeDeserializer().deserialize(context,next,deserializationContext);
+            Attribute attr=new CustomAttributeDeserializerWithRootName().deserialize(context,next,deserializationContext);
 
 
             set.add(attr);

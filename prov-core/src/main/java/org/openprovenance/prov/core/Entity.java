@@ -28,7 +28,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     private List<org.openprovenance.prov.model.Location> location = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
-    private org.openprovenance.prov.model.Value value;
+    private Optional<org.openprovenance.prov.model.Value> value=Optional.empty();
 
 
     final ProvUtilities u=new ProvUtilities();
@@ -48,12 +48,12 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     }
 
     public void setValue(org.openprovenance.prov.model.Value o) {
-        this.value=o;
+        this.value=Optional.ofNullable(o);
     }
 
     @JsonIgnore
     public org.openprovenance.prov.model.Value getValue() {
-        return value;
+        return value.orElse(null);
     }
 
 
@@ -173,7 +173,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
         result.addAll(getLabel().stream().map(s -> new Label(QUALIFIED_NAME_XSD_STRING,s)).collect(Collectors.toList()));
-        if (value!=null) result.add(getValue());
+        if (value.isPresent()) result.add(getValue());
         result.addAll(getType());
         result.addAll(getLocation());
         result.addAll(getOther().stream().map(o -> (Attribute)o).collect(Collectors.toList())); //TODO: collect directly into result
@@ -186,7 +186,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         List<Value> values_discard=new LinkedList<>();
         List<Role> roles_discard=new LinkedList<>();
         u.distribute((QualifiedName)qn,attributes,getLabel(),values_discard,getLocation(),getType(),roles_discard,getOther());
-        if (!values_discard.isEmpty()) value=values_discard.get(0);
+        if (!values_discard.isEmpty()) value=Optional.of(values_discard.get(0));
 
     }
 

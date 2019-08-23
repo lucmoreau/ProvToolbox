@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.openprovenance.apache.commons.lang.builder.*;
+import org.openprovenance.prov.core.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 @JsonPropertyOrder({ "namespace"})
 
-public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode {
+public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode, Constants {
 
     private List<StatementOrBundle> statementsOrBundle;
     private Namespace namespace;
@@ -32,10 +33,11 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
         return namespace;
     }
 
-    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = "@type")
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = PROPERTY_AT_TYPE)
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = Activity.class, name = "prov:activity"),
-            @JsonSubTypes.Type(value = Entity.class, name = "prov:entity")
+            @JsonSubTypes.Type(value = Activity.class, name = PROPERTY_PROV_ACTIVITY),
+            @JsonSubTypes.Type(value = Agent.class, name = PROPERTY_PROV_AGENT),
+            @JsonSubTypes.Type(value = Entity.class, name = PROPERTY_PROV_ENTITY)
     })
     @Override
     public List<StatementOrBundle> getStatementOrBundle() {

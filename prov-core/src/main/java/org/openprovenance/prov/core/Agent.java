@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @JsonPropertyOrder({ "@id" })
 
-public class Entity implements org.openprovenance.prov.model.Entity, Equals, HashCode, ToString, HasAttributes {
+public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id;
@@ -26,17 +26,16 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     private List<org.openprovenance.prov.model.Location> location = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
-    private org.openprovenance.prov.model.Value value;
 
 
     final ProvUtilities u=new ProvUtilities();
 
 
 
-    private Entity() {}
+    private Agent() {}
 
-    public Entity(QualifiedName id,
-                  Collection<Attribute> attributes) {
+    public Agent(QualifiedName id,
+                 Collection<Attribute> attributes) {
         this.setId(id);
 
 
@@ -44,15 +43,6 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
 
 
     }
-
-    public void setValue(org.openprovenance.prov.model.Value o) {
-
-    }
-
-    public org.openprovenance.prov.model.Value getValue() {
-        return null;
-    }
-
 
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
@@ -66,7 +56,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     @JsonIgnore
     @Override
     public Kind getKind() {
-        return Kind.PROV_ENTITY;
+        return Kind.PROV_AGENT;
     }
 
 
@@ -107,20 +97,20 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
 
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof Entity)) {
+        if (!(object instanceof Agent)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final Entity that = ((Entity) object);
+        final Agent that = ((Agent) object);
         equalsBuilder.append(this.getId(), that.getId());
        equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Entity)) {
+        if (!(object instanceof Agent)) {
             return false;
         }
         if (this == object) {

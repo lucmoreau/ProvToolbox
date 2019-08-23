@@ -58,11 +58,11 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
 
         String type=null;
         JsonNode value=null;
-        if (AT_TYPE.equals(key1)   ) type=pair1.getValue().textValue();
-        if (AT_TYPE.equals(key2)   ) type=pair2.getValue().textValue();
+        if (PROPERTY_AT_TYPE.equals(key1)   ) type=pair1.getValue().textValue();
+        if (PROPERTY_AT_TYPE.equals(key2)   ) type=pair2.getValue().textValue();
 
-        if (AT_VALUE.equals(key1)   ) value=pair1.getValue();
-        if (AT_VALUE.equals(key2)   ) value=pair2.getValue();
+        if (PROPERTY_AT_VALUE.equals(key1)   ) value=pair1.getValue();
+        if (PROPERTY_AT_VALUE.equals(key2)   ) value=pair2.getValue();
 
 
         /*

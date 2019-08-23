@@ -23,8 +23,8 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
     public void serialize(TypedValue attr, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=null;
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField(AT_TYPE, prnt(attr.getType()));
-        serializeValue(AT_VALUE,  attr.getValue(), jsonGenerator, serializerProvider);
+        jsonGenerator.writeStringField(PROPERTY_AT_TYPE, prnt(attr.getType()));
+        serializeValue(PROPERTY_AT_VALUE,  attr.getValue(), jsonGenerator, serializerProvider);
         jsonGenerator.writeEndObject();
     }
 

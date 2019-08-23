@@ -4,10 +4,14 @@ import org.apache.log4j.Logger;
 import org.openprovenance.prov.core.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Value;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
@@ -122,7 +126,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName a) {
-        Entity res = new org.openprovenance.prov.core.Entity(a,null,null,null);
+        Entity res = new org.openprovenance.prov.core.Entity(a,null);
         return res;
     }
 
@@ -144,5 +148,43 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
         return res;
     }
+
+
+    /**
+     * Creates a new {@link org.openprovenance.prov.model.Agent} with provided identifier
+     * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the agent
+     * @return an object of type {@link org.openprovenance.prov.model.Agent}
+     */
+    public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName ag) {
+        org.openprovenance.prov.model.Agent res = new org.openprovenance.prov.core.Agent(ag,new LinkedList<>());
+        return res;
+    }
+
+    /**
+     * Creates a new {@link org.openprovenance.prov.model.Agent} with provided identifier and attributes
+     * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the agent
+     * @param attributes a collection of {@link Attribute} for the agent
+     * @return an object of type {@link org.openprovenance.prov.model.Agent}
+     */
+
+    public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName id, Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.Agent res = new org.openprovenance.prov.core.Agent(id,attributes);
+        return res;
+    }
+
+    /**
+     * Creates a new {@link org.openprovenance.prov.model.Agent} with provided identifier and label
+     * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the agent
+     * @param label a String for the label property (see {@link HasLabel#getLabel()}
+     * @return an object of type {@link org.openprovenance.prov.model.Agent}
+     */
+    public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName ag, String label) {
+        Agent res = newAgent(ag);
+        //new Label(null,newInternationalizedString(label));
+        if (label != null)
+            res.getLabel().add(newInternationalizedString(label));
+        return res;
+    }
+
 
 }

@@ -5,6 +5,7 @@ import org.openprovenance.prov.core.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entity;
+import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -713,7 +714,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     // /////////////////////////////////////////////////////////////////////
 
-/*
+
     public void testAgent1() {
         Agent a = pFactory.newAgent(q("ag1"));
         makeDocAndTest(a, "target/agent1");
@@ -785,11 +786,9 @@ public class RoundTripFromJavaTest extends TestCase {
 
     // /////////////////////////////////////////////////////////////////////
 
-    public org.openprovenance.prov.model.QualifiedName q(String n) {
-        return pFactory.newQualifiedName(EX_NS, n, EX_PREFIX);
-    }
 
 
+/*
     public void testGeneration1() {
         WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen1"), q("e1"),
                                                         null, null);

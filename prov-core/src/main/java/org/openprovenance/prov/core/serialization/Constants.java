@@ -10,4 +10,5 @@ public interface Constants {
     String PROPERTY_PROV_ACTIVITY = "prov:activity";
     String PROPERTY_PROV_AGENT = "prov:agent";
     String PROPERTY_PROV_ENTITY = "prov:entity";
+    String PROPERTY_PROV_USED = "prov:used";
 }

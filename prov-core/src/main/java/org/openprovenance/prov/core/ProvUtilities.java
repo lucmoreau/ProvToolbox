@@ -104,6 +104,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                            Collection<org.openprovenance.prov.model.Value> values,
                            Collection<org.openprovenance.prov.model.Location> locations,
                            Collection<org.openprovenance.prov.model.Type> types,
+                           Collection<org.openprovenance.prov.model.Role> roles,
                            Collection<org.openprovenance.prov.model.Other> others) {
         String uri=qn.getUri();
         if (PROV_LABEL_URI.equals(uri)) {
@@ -131,6 +132,12 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
             }
             return;
         }
+        if (PROV_ROLE_URI.equals(uri)) {
+            for (Attribute attr: attributes) {
+                roles.add((org.openprovenance.prov.model.Role)attr);
+            }
+            return;
+        }
         for (Attribute attr: attributes) {
             others.add((org.openprovenance.prov.model.Other) attr);
         }
@@ -141,7 +148,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     // TODO: missing fields to populate
     void populateAttributes(Collection<Attribute> attributes,
                             List<org.openprovenance.prov.model.Location> location,
-                            List<org.openprovenance.prov.model.Type> type) {
+                            List<org.openprovenance.prov.model.Type> type,
+                            List<org.openprovenance.prov.model.Role> role) {
         Collection<Label> labels=new LinkedList<>();
         Collection<Type> types=new LinkedList<>();
         Collection<Location> locations=new LinkedList<>();
@@ -162,5 +170,6 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
         location.addAll(locations);
         type.addAll(types);
+        role.addAll(roles);
     }
 }

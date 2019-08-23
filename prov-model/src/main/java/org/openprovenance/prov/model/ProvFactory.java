@@ -951,12 +951,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     /** A factory method to create an instance of a usage {@link Used}
      * @param id an optional identifier for a usage
      * @return an instance of {@link Used}
-     */    
-    public Used newUsed(QualifiedName id) {
-	Used res = of.createUsed();
-	res.setId(id);
-	return res;
-    }
+     */
+	public Used newUsed(QualifiedName id) {
+		Used res = of.createUsed();
+		res.setId(id);
+		return res;
+	}
 
     public Used newUsed(QualifiedName id, QualifiedName aid, String role, QualifiedName eid) {
         Used res = newUsed(id);

@@ -6,6 +6,7 @@ import org.openprovenance.prov.core.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -847,6 +848,8 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(gen, "target/generation7");
     }
 
+    */
+
     // ////////////////////////////////
 
     public void testUsage1() {
@@ -904,6 +907,8 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     // //////////////////////////////////////////////
+
+    /*
 
     public void testInvalidation1() {
         WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv1"), q("e1"),

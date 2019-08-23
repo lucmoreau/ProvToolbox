@@ -8,8 +8,11 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.Role;
+import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Value;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -185,6 +188,78 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
             res.getLabel().add(newInternationalizedString(label));
         return res;
     }
+
+
+    /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
+     * @param id an optional identifier for a usage
+     * @return an instance of {@link org.openprovenance.prov.model.Used}
+     */
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id) {
+        org.openprovenance.prov.model.Used res = new org.openprovenance.prov.core.Used(id,new LinkedList<>());
+        return res;
+    }
+
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, String role, org.openprovenance.prov.model.QualifiedName eid) {
+        org.openprovenance.prov.model.Used res = newUsed(id);
+        res.setActivity(aid);
+        if (role!=null)
+            addRole(res, newRole(role,getName().XSD_STRING));
+        res.setEntity(eid);
+        return res;
+    }
+
+    /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
+     * @param id an optional identifier for a usage
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @return an instance of {@link org.openprovenance.prov.model.Used}
+     */
+
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity) {
+        org.openprovenance.prov.model.Used res = new org.openprovenance.prov.core.Used(id,activity,entity, new LinkedList<>());
+        return res;
+    }
+
+
+    /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @return an instance of {@link org.openprovenance.prov.model.Used}
+     */
+
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity) {
+        org.openprovenance.prov.model.Used res = newUsed((org.openprovenance.prov.model.QualifiedName)null, activity, entity);
+        return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newUsed(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity,
+                                                      XMLGregorianCalendar time,
+                                                      Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.Used res = newUsed(id, activity, null, entity);
+        res.setTime(time);
+        setAttributes(res, attributes);
+        return res;
+    }
+
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity,
+                                                      XMLGregorianCalendar time) {
+        Used res = newUsed(id, activity, null, entity);
+        res.setTime(time);
+        return res;
+    }
+
+
+    @Override
+    public org.openprovenance.prov.model.Role newRole(Object value, org.openprovenance.prov.model.QualifiedName type) {
+        if (value==null) return null;
+        Role res =  new org.openprovenance.prov.core.Role(type,value);
+//        res.setValueFromObject(value);
+        return res;
+    }
+
 
 
 }

@@ -10,6 +10,7 @@ import org.openprovenance.prov.core.serialization.CustomMapSerializer;
 import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Value;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -41,7 +42,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         this.setId(id);
 
 
-        u.populateAttributes(attributes, location, type);
+        u.populateAttributes(attributes, location, type, new LinkedList<>());
 
 
     }
@@ -182,9 +183,10 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     @JsonAnySetter
     @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
-        List<Value> values=new LinkedList<>();
-        u.distribute((QualifiedName)qn,attributes,getLabel(),values,getLocation(),getType(),getOther());
-        if (!values.isEmpty()) value=values.get(0);
+        List<Value> values_discard=new LinkedList<>();
+        List<Role> roles_discard=new LinkedList<>();
+        u.distribute((QualifiedName)qn,attributes,getLabel(),values_discard,getLocation(),getType(),roles_discard,getOther());
+        if (!values_discard.isEmpty()) value=values_discard.get(0);
 
     }
 

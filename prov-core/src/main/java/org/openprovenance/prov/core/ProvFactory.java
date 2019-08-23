@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Value;
+import org.openprovenance.prov.model.WasGeneratedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
@@ -260,6 +261,14 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
+    public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                          org.openprovenance.prov.model.QualifiedName aid,
+                                                                          String role,
+                                                                          org.openprovenance.prov.model.QualifiedName eid) {
+        WasGeneratedBy res = new org.openprovenance.prov.core.WasGeneratedBy(id,aid,eid,new LinkedList<>());
+        if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
+        return res;
+    }
 
 
 }

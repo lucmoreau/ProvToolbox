@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Used;
+import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -789,7 +790,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
 
-/*
+
     public void testGeneration1() {
         WasGeneratedBy gen = pFactory.newWasGeneratedBy(q("gen1"), q("e1"),
                                                         null, null);
@@ -848,7 +849,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(gen, "target/generation7");
     }
 
-    */
+
 
     // ////////////////////////////////
 

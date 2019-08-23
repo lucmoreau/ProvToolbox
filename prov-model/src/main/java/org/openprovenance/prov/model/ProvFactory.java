@@ -1301,80 +1301,80 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	u1.getLocation().addAll(u.getLocation());
 	u1.getOther().addAll(u.getOther());
 	return u1;
-    }
+	}
 
-    public WasGeneratedBy newWasGeneratedBy(Entity a, String role, Activity p) {
-	return newWasGeneratedBy((QualifiedName) null, a, role, p);
-    }
+	public WasGeneratedBy newWasGeneratedBy(Entity a, String role, Activity p) {
+		return newWasGeneratedBy((QualifiedName) null, a, role, p);
+	}
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id) {
-	WasGeneratedBy res = of.createWasGeneratedBy();
-	res.setId(id);
-	return res;
-	
-    }
+	public WasGeneratedBy newWasGeneratedBy(QualifiedName id) {
+		WasGeneratedBy res = of.createWasGeneratedBy();
+		res.setId(id);
+		return res;
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, 
-                                            Entity a, 
-                                            String role,
-					    Activity p) {
+	}
 
-	WasGeneratedBy res=newWasGeneratedBy(id, a.getId(), p.getId());
-	if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
-	return res;
-    }
+	public WasGeneratedBy newWasGeneratedBy(QualifiedName id,
+											Entity a,
+											String role,
+											Activity p) {
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, 
-                                            QualifiedName aid,
-					    String role, 
-					    QualifiedName pid) {
-	WasGeneratedBy res = of.createWasGeneratedBy();
-	res.setId(id);
-	res.setActivity(pid);
-	res.setEntity(aid);
-	if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
-	return res;
-    }
+		WasGeneratedBy res=newWasGeneratedBy(id, a.getId(), p.getId());
+		if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
+		return res;
+	}
 
-    /** A factory method to create an instance of a generation {@link WasGeneratedBy}
-     * @param id an optional identifier for a usage
-     * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#generation.entity">entity</a>
-     * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#generation.activity">activity</a> that creates the entity
-     * @return an instance of {@link WasGeneratedBy}
-     */    
+	public WasGeneratedBy newWasGeneratedBy(QualifiedName id,
+											QualifiedName aid,
+											String role,
+											QualifiedName pid) {
+		WasGeneratedBy res = of.createWasGeneratedBy();
+		res.setId(id);
+		res.setActivity(pid);
+		res.setEntity(aid);
+		if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
+		return res;
+	}
 
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity) {
-   	WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);	
-   	return res;
-    }
+	/** A factory method to create an instance of a generation {@link WasGeneratedBy}
+	 * @param id an optional identifier for a usage
+	 * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#generation.entity">entity</a>
+	 * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#generation.activity">activity</a> that creates the entity
+	 * @return an instance of {@link WasGeneratedBy}
+	 */
 
-    /* (non-Javadoc)
-     * @see org.openprovenance.prov.model.ModelConstructor#newWasGeneratedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
-     */
-    public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
-   	WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);	
-   	res.setTime(time);
-	setAttributes(res, attributes);
-   	return res;
-    }
+	public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity) {
+		WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);
+		return res;
+	}
 
-
-
-    public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
-        WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
-                                               g.getActivity());
-        wgb.setId(g.getId());
-        wgb.setTime(g.getTime());
-        wgb.getOther().addAll(g.getOther());
-        wgb.getRole().addAll(g.getRole());
-        wgb.getType().addAll(g.getType());
-        wgb.getLabel().addAll(g.getLabel());
-        wgb.getLocation().addAll(g.getLocation());
-        return wgb;
-    }
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.ModelConstructor#newWasGeneratedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+	 */
+	public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+		WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);
+		res.setTime(time);
+		setAttributes(res, attributes);
+		return res;
+	}
 
 
-    /**A factory method to create an instance of an influence {@link WasInfluencedBy}
+
+	public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
+		WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
+				g.getActivity());
+		wgb.setId(g.getId());
+		wgb.setTime(g.getTime());
+		wgb.getOther().addAll(g.getOther());
+		wgb.getRole().addAll(g.getRole());
+		wgb.getType().addAll(g.getType());
+		wgb.getLabel().addAll(g.getLabel());
+		wgb.getLocation().addAll(g.getLocation());
+		return wgb;
+	}
+
+
+	/**A factory method to create an instance of an influence {@link WasInfluencedBy}
      * @param id optional identifier identifying the association
      * @param influencee an identifier for an entity, activity, or agent
      * @param influencer an identifier for an ancestor entity, activity, or agent that the former depends on

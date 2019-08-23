@@ -32,9 +32,9 @@ public class ProvDeserialiser {
 
      //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
         module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
-        module.addDeserializer(Type.class, new CustomTypeDeserializer());
-        module.addDeserializer(Location.class, new CustomLocationDeserializer());
-        module.addDeserializer(Other.class, new CustomOtherDeserializer());
+       // module.addDeserializer(Type.class, new CustomTypeDeserializer());
+       // module.addDeserializer(Location.class, new CustomLocationDeserializer());
+       // module.addDeserializer(Other.class, new CustomOtherDeserializer());
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();

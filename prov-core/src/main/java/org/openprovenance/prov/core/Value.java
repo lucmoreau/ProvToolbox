@@ -40,7 +40,8 @@ public class Value extends TypedValue implements org.openprovenance.prov.model.V
     }
 
     public Value(QualifiedName type, Object value) {
-        super(type, castToStringOrLangStringOrQualifiedName(value));
+ //       super(type, castToStringOrLangStringOrQualifiedName(value));
+        super(type, value, null);
     }
 
     private Value() {

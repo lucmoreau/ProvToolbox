@@ -37,43 +37,43 @@ public class CustomKindSerializer extends StdSerializer<StatementOrBundle.Kind> 
                 s="prov:wasGeneratedBy";
                 break;
             case PROV_INVALIDATION:
-                s="prov:";
+                s="prov:wasInvalidatedBy";
                 break;
             case PROV_START:
-                s="prov:";
+                s="prov:wasStartedBy";
                 break;
             case PROV_END:
-                s="prov:";
+                s="prov:wasEndedBy";
                 break;
             case PROV_COMMUNICATION:
-                s="prov:";
+                s="prov:wasInformedBy";
                 break;
             case PROV_DERIVATION:
-                s="prov:";
+                s="prov:wasDerivedFrom";
                 break;
             case PROV_ASSOCIATION:
-                s="prov:";
+                s="prov:wasAssociatedWith";
                 break;
             case PROV_ATTRIBUTION:
-                s="prov:";
+                s="prov:wasAttributedTo";
                 break;
             case PROV_DELEGATION:
-                s="prov:";
+                s="prov:actedOnBehalfOf";
                 break;
             case PROV_INFLUENCE:
-                s="prov:";
+                s="prov:wasInfluencedBy";
                 break;
             case PROV_ALTERNATE:
-                s="prov:";
+                s="prov:alternateOf";
                 break;
             case PROV_SPECIALIZATION:
-                s="prov:";
+                s="prov:specializationOf";
                 break;
             case PROV_MENTION:
-                s="prov:";
+                s="prov:mentionOf";
                 break;
             case PROV_MEMBERSHIP:
-                s="prov:";
+                s="prov:hadMember";
                 break;
             case PROV_BUNDLE:
                 s="prov:";

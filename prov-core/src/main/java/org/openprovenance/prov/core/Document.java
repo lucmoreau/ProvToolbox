@@ -34,7 +34,8 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = "@type")
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = Activity.class, name = "prov:activity")
+            @JsonSubTypes.Type(value = Activity.class, name = "prov:activity"),
+            @JsonSubTypes.Type(value = Entity.class, name = "prov:entity")
     })
     @Override
     public List<StatementOrBundle> getStatementOrBundle() {

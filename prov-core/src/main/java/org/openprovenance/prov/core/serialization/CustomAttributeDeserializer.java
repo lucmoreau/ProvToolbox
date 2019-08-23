@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-public class CustomAttributeDeserializer extends StdDeserializer<Attribute> {
+public class CustomAttributeDeserializer extends StdDeserializer<Attribute> implements Constants {
 
 
-    ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=new ProvFactory();
 
     public CustomAttributeDeserializer() {
         this(Attribute.class);
@@ -58,11 +58,11 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> {
 
         String type=null;
         JsonNode value=null;
-        if ("@type".equals(key1)   ) type=pair1.getValue().textValue();
-        if ("@type".equals(key2)   ) type=pair2.getValue().textValue();
+        if (AT_TYPE.equals(key1)   ) type=pair1.getValue().textValue();
+        if (AT_TYPE.equals(key2)   ) type=pair2.getValue().textValue();
 
-        if ("@value".equals(key1)   ) value=pair1.getValue();
-        if ("@value".equals(key2)   ) value=pair2.getValue();
+        if (AT_VALUE.equals(key1)   ) value=pair1.getValue();
+        if (AT_VALUE.equals(key2)   ) value=pair2.getValue();
 
 
         /*
@@ -74,10 +74,10 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> {
 
          */
         Object valueObject=value.textValue(); //TODO: should not be checking qname but uri
-        if (type.equals("xsd:string") && value.isObject()) {
+        if ((type.equals("xsd:string") || type.equals("prov:InternationalizedString")) && value.isObject()) {
             //System.out.println(" This is an object " + value);
-            JsonNode theValue=value.get("$");
-            JsonNode theLang=value.get("lang");
+            JsonNode theValue=value.get(Constants.PROPERTY_STRING_VALUE);
+            JsonNode theLang=value.get(Constants.PROPERTY_STRING_LANG);
             valueObject=new LangString(theValue.textValue(),(theLang==null)?null:theLang.textValue());
         } else if (type.equals("prov:QUALIFIED_NAME")) {
             valueObject=ns.stringToQualifiedName(value.textValue(),pf);

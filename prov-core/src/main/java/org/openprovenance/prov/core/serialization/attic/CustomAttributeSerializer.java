@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.serialization;
+package org.openprovenance.prov.core.serialization.attic;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -10,8 +10,9 @@ import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.io.IOException;
 
+// I believe it's not used anymore
 
-public class CustomAttributeSerializer extends StdSerializer<Attribute> {
+abstract public class CustomAttributeSerializer extends StdSerializer<Attribute> {
 
     protected CustomAttributeSerializer() {
         super(Attribute.class);

@@ -43,7 +43,7 @@ public class Other extends TypedValue implements org.openprovenance.prov.model.O
     }
 
     public Other(QualifiedName elementName, QualifiedName type, Object value) {
-        super(type,value);
+        super(type,castToStringOrLangStringOrQualifiedName(value));
         this.elementName=elementName;
     }
     private Other() {

@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.Value;
 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
@@ -115,9 +116,16 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a) {
-        Activity res = org.openprovenance.prov.core.Activity.newActivity(a,null,null,null);
+        Activity res = new org.openprovenance.prov.core.Activity(a,null,null,null);
         return res;
     }
+
+    @Override
+    public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName a) {
+        Entity res = new org.openprovenance.prov.core.Entity(a,null,null,null);
+        return res;
+    }
+
 
     @Override
     public org.openprovenance.prov.model.Document newDocument() {
@@ -129,4 +137,12 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public Key newKey(Object o, org.openprovenance.prov.model.QualifiedName type) {
         return null;
     }
+
+    public org.openprovenance.prov.model.Value newValue(Object value, org.openprovenance.prov.model.QualifiedName type) {
+        if (value==null) return null;
+        Value res =  new org.openprovenance.prov.core.Value(type,value);
+
+        return res;
+    }
+
 }

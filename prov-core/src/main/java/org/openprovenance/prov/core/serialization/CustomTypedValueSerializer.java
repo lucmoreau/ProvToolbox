@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.core.LangString;
 import org.openprovenance.prov.core.TypedValue;
-import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
 
 
-public class CustomTypedValueSerializer extends StdSerializer<TypedValue> {
+public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
 
     protected CustomTypedValueSerializer() {
         super(TypedValue.class);
@@ -24,8 +23,8 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> {
     public void serialize(TypedValue attr, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=null;
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("@type", prnt(attr.getType()));
-        serializeValue("@value",  attr.getValue(), jsonGenerator, serializerProvider);
+        jsonGenerator.writeStringField(AT_TYPE, prnt(attr.getType()));
+        serializeValue(AT_VALUE,  attr.getValue(), jsonGenerator, serializerProvider);
         jsonGenerator.writeEndObject();
     }
 

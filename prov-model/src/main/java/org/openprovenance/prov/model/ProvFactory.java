@@ -1055,13 +1055,13 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
      * @param type a {@link QualifiedName} to denote the type of value
      * @return a new {@link Value}
      */
-    public Value newValue(Object value, QualifiedName type) {
-	if (value==null) return null;
-        Value res =  of.createValue();
-        res.setType(type);
-        res.setValueFromObject(value);
-        return res;
-      }
+	public Value newValue(Object value, QualifiedName type) {
+		if (value==null) return null;
+		Value res =  of.createValue();
+		res.setType(type);
+		res.setValueFromObject(value);
+		return res;
+	}
 
     /** A factory method to create an instance of an Association {@link WasAssociatedWith}
      * @param id an identifier for the association

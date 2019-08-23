@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.openprovenance.apache.commons.lang.builder.*;
+import org.openprovenance.prov.core.serialization.Constants;
+
 
 import java.util.Optional;
 
 @JsonPropertyOrder({ "value", "lang" })
-public class LangString implements org.openprovenance.prov.model.LangString, Equals, HashCode, ToString {
+public class LangString implements org.openprovenance.prov.model.LangString, Equals, HashCode, ToString, Constants {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
 
@@ -30,7 +32,7 @@ public class LangString implements org.openprovenance.prov.model.LangString, Equ
         this.lang=Optional.ofNullable(lang);
     }
 
-    @JsonProperty("$")
+    @JsonProperty(Constants.PROPERTY_STRING_VALUE)
     @Override
     public String getValue() {
         return value;
@@ -42,6 +44,7 @@ public class LangString implements org.openprovenance.prov.model.LangString, Equ
     }
 
     @Override
+    @JsonProperty(Constants.PROPERTY_STRING_LANG)
     public String getLang() {
         return lang.orElse(null);
     }

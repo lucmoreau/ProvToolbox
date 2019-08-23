@@ -25,9 +25,10 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer",
                         new Version(1, 0, 0, null, null, null));
+
         module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
-        module.addSerializer(Attribute.class, new CustomAttributeSerializer());
+        //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
         mapper.registerModule(module);
 
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();

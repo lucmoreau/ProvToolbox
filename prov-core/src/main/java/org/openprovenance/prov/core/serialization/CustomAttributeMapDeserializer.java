@@ -18,7 +18,7 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 static public Namespace theNS;
 
-    ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=new ProvFactory();
 
 
     public CustomAttributeMapDeserializer(JavaType vc) {

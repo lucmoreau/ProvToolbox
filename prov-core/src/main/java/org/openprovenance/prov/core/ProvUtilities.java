@@ -55,7 +55,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
     }
 
 
-        void split(Collection<Attribute> attributes,
+    void split(Collection<Attribute> attributes,
                Collection<Label> labels,
                Collection<Type> types,
                Collection<Value> values,
@@ -129,5 +129,31 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         }
 
 
+    }
+
+    // TODO: missing fields to populate
+    void populateAttributes(Collection<Attribute> attributes,
+                            List<org.openprovenance.prov.model.Location> location,
+                            List<org.openprovenance.prov.model.Type> type) {
+        Collection<Label> labels=new LinkedList<>();
+        Collection<Type> types=new LinkedList<>();
+        Collection<Location> locations=new LinkedList<>();
+        Collection<Role> roles=new LinkedList<>();
+        Collection<Value> values=new LinkedList<>();
+        Map<QualifiedName,Collection<Other>> others=new HashMap<>();
+
+        if (attributes != null) {
+            split(attributes,
+                    labels,
+                    types,
+                    values,
+                    locations,
+                    roles,
+                    others);
+            //TODO: Assign back to bean fields
+        }
+
+        location.addAll(locations);
+        type.addAll(types);
     }
 }

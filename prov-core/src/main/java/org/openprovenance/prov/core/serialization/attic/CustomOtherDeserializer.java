@@ -1,12 +1,12 @@
-package org.openprovenance.prov.core.serialization;
+package org.openprovenance.prov.core.serialization.attic;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.openprovenance.prov.core.Other;
 import org.openprovenance.prov.core.ProvFactory;
-import org.openprovenance.prov.core.Type;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -15,26 +15,31 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-public class CustomTypeDeserializer extends StdDeserializer<Type> {
+public class CustomOtherDeserializer extends StdDeserializer<Other> {
 
+static public Namespace theNS;
 
+    private final Namespace ns;
     ProvFactory pf=new ProvFactory();
 
-    public CustomTypeDeserializer() {
+    public CustomOtherDeserializer() {
         this(Attribute.class);
     }
 
 
-    public CustomTypeDeserializer(Class<?> vc) {
+    public CustomOtherDeserializer(Class<?> vc) {
         super(vc);
-        //Namespace ns=new Namespace();
+        Namespace ns=new Namespace();
+        ns.addKnownNamespaces();
+        ns.register("ex", "http://example.org/");
+        ns.register("ex2", "http://example2.org/");
+        this.ns=ns;
+        theNS=ns;
 
     }
 
     @Override
-    public Type deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-
+    public Other deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
         //System.out.println(node);
         Map.Entry<String, JsonNode> pair=node.fields().next();
@@ -51,9 +56,9 @@ public class CustomTypeDeserializer extends StdDeserializer<Type> {
 
         QualifiedName typeQN=ns.stringToQualifiedName(type,pf);
         if (pf.getName().PROV_QUALIFIED_NAME.equals(typeQN)) {
-            return new Type(ns.stringToQualifiedName(type,pf),ns.stringToQualifiedName(value,pf));
+            return new Other(elementName, ns.stringToQualifiedName(type,pf),ns.stringToQualifiedName(value,pf));
         } else { //TODO: need to handle LangString
-            return new Type(ns.stringToQualifiedName(type,pf),value);
+            return new Other(elementName, ns.stringToQualifiedName(type,pf),value);
 
         }
 

@@ -18,9 +18,8 @@ import static org.openprovenance.prov.core.serialization.CustomKeyDeserializer.P
 
 public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
-static public Namespace theNS;
 
-    ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=new ProvFactory();
 
 
 

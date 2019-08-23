@@ -44,6 +44,12 @@ import javax.xml.transform.TransformerException;
         this.value=value;
     }
 
+     /* dummy, introduced to distinguish the constructors. */
+     public TypedValue(QualifiedName type, Object value, Object _dummy) {
+         this.type=type;
+         setValueFromObject(value);
+     }
+
     protected TypedValue() {}
 
 
@@ -130,6 +136,7 @@ import javax.xml.transform.TransformerException;
             System.out.println("HACK: deserializing value " + value + "type " + type);
             Namespace ns=null;
             setValue(ns.stringToQualifiedName(value, ProvFactory.getFactory(), false));
+            throw new UnsupportedOperationException("we should not be here with " + value);
             //setValue(CustomQualifiedNameDeserializer.theNS.stringToQualifiedName(value, ProvFactory.getFactory(), false));
         } else {
             this.value = value;
@@ -230,7 +237,7 @@ import javax.xml.transform.TransformerException;
             Object theValue;
             theValue = this.getValue();
             toStringBuilder.append("value", theValue);
-           // toStringBuilder.append("DEBUG_type1", theValue.getClass());
+            toStringBuilder.append("DEBUG_type1", theValue.getClass());
         }
         {
             QualifiedName theType;

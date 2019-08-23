@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.openprovenance.prov.core.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -230,15 +231,21 @@ public class RoundTripFromJavaTest extends TestCase {
             if (!result) {
                 System.out.println("Pre-write graph: " + doc);
                 System.out.println("Read graph: " + doc2);
-                System.out.println("test1: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)));
-                System.out.println("test2: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)));
-                System.out.println("test1: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getClass());
-                System.out.println("test2: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)).getClass());
-                System.out.println("test3: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).equals(((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0))));
-                System.out.println("test4: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.core.Activity) doc2.getStatementOrBundle().get(0)).getLabel())));
-                System.out.println("test5: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.core.Activity) doc2.getStatementOrBundle().get(0)).getType())));
-                System.out.println("test5b: " + ((org.openprovenance.prov.core.Activity)doc.getStatementOrBundle().get(0)).getType());
-                System.out.println("test5c: " + ((org.openprovenance.prov.core.Activity)doc2.getStatementOrBundle().get(0)).getType());
+
+                System.out.println("test1: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)));
+                System.out.println("test2: " + ((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0)));
+                System.out.println("test1: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)).getClass());
+                System.out.println("test2: " + ((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0)).getClass());
+                System.out.println("test3: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)).equals(((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0))));
+                System.out.println("test4: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.core.Entity) doc2.getStatementOrBundle().get(0)).getLabel())));
+                System.out.println("test5: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.core.Entity) doc2.getStatementOrBundle().get(0)).getType())));
+                System.out.println("test5b: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)).getOther());
+                System.out.println("test5c: " + ((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0)).getOther());
+                System.out.println("test5d: " + ((org.openprovenance.prov.core.Entity)doc.getStatementOrBundle().get(0)).getValue());
+                System.out.println("test5e: " + ((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0)).getValue());
+                System.out.println("test6: " + ((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.core.Entity)doc2.getStatementOrBundle().get(0)).getOther()));
+
+
 
 
             }
@@ -452,9 +459,9 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public boolean test = true;
 
-    /*
+
     public void testEntity0() {
-        Entity a = pFactory.newEntity(q("e0"));
+        org.openprovenance.prov.model.Entity a = pFactory.newEntity(q("e0"));
         a.getOther()
          .add(pFactory.newOther(pFactory.newQualifiedName(EX_NS, "tag2", EX_PREFIX),
                                 pFactory.newInternationalizedString("bonjour",
@@ -564,9 +571,12 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(a, "target/entity10");
     }
 
-    public void testEntity100() {
-        Entity e = pFactory.newEntity(q("100-entity"), "entity100");
-        e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
+    String problematic="?a\\=b";
+    //TODO: problematic, but unicode in gneral doesnot serialize to json
+    
+    public void NOtestEntity100() {
+	    Entity e = pFactory.newEntity(q("100-entity"), "entity100");
+	    	    	     e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));
@@ -577,15 +587,15 @@ public class RoundTripFromJavaTest extends TestCase {
         e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-", //˿Ͱͽ not valid
                                                      EX2_PREFIX),
-                                           name.PROV_QUALIFIED_NAME));
+                                           name.PROV_QUALIFIED_NAME)); 
         e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not valid
                                            pFactory.newQualifiedName(EX2_NS,"unicode",
                                                      EX2_PREFIX),
-                                           name.PROV_QUALIFIED_NAME));
-        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+						     name.PROV_QUALIFIED_NAME)); 
+        e.getOther().add(pFactory.newOther(EX_NS, problematic, EX_PREFIX,
                                            1,
                                            name.XSD_INT));
-        e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
+		      e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
                                            "mystring",
                                            name.XSD_STRING));
         e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
@@ -595,7 +605,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
 
-    public void testEntity101() {
+    public void NOtestEntity101() {
         Entity e = pFactory.newEntity(q("101-entity"), "entity101");
         e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
@@ -613,7 +623,7 @@ public class RoundTripFromJavaTest extends TestCase {
                                            pFactory.newQualifiedName(EX2_NS,"unicode",
                                                      EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));
-        e.getOther().add(pFactory.newOther(EX_NS, "?a\\=b", EX_PREFIX,
+        e.getOther().add(pFactory.newOther(EX_NS, problematic, EX_PREFIX,
                                            1,
                                            name.XSD_INT));
         e.getOther().add(pFactory.newOther(EX_NS, "123", EX_PREFIX,
@@ -625,7 +635,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(e, "target/entity101");
     }
 
-    */
+
     // /////////////////////////////////////////////////////////////////////
 
     public void testDocument1() {

@@ -13,7 +13,7 @@ import java.io.IOException;
 public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedName> {
 
 
-    ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=new ProvFactory();
 
     public CustomQualifiedNameDeserializer() {
         this(QualifiedName.class);

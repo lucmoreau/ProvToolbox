@@ -35,11 +35,13 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = PROPERTY_AT_TYPE)
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = WasGeneratedBy.class, name = PROPERTY_PROV_GENERATION),
-            @JsonSubTypes.Type(value = Used.class, name = PROPERTY_PROV_USED),
-            @JsonSubTypes.Type(value = Activity.class, name = PROPERTY_PROV_ACTIVITY),
-            @JsonSubTypes.Type(value = Agent.class, name = PROPERTY_PROV_AGENT),
-            @JsonSubTypes.Type(value = Entity.class, name = PROPERTY_PROV_ENTITY)
+            @JsonSubTypes.Type(value = WasAttributedTo.class,    name = PROPERTY_PROV_ATTRIBUTION),
+            @JsonSubTypes.Type(value = WasAssociatedWith.class,  name = PROPERTY_PROV_ASSOCIATION),
+            @JsonSubTypes.Type(value = WasGeneratedBy.class,     name = PROPERTY_PROV_GENERATION),
+            @JsonSubTypes.Type(value = Used.class,               name = PROPERTY_PROV_USED),
+            @JsonSubTypes.Type(value = Activity.class,           name = PROPERTY_PROV_ACTIVITY),
+            @JsonSubTypes.Type(value = Agent.class,              name = PROPERTY_PROV_AGENT),
+            @JsonSubTypes.Type(value = Entity.class,             name = PROPERTY_PROV_ENTITY)
     })
     @Override
     public List<StatementOrBundle> getStatementOrBundle() {

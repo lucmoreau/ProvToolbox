@@ -8,6 +8,8 @@ import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -1262,6 +1264,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(der, "target/derivation13");
     }
 
+*/
     // ////////////////////////////////
 
     public void testAssociation1() {
@@ -1340,6 +1343,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(assoc, "target/association9");
     }
 
+
     // ////////////////////////////////
 
     public void testAttribution1() {
@@ -1395,6 +1399,8 @@ public class RoundTripFromJavaTest extends TestCase {
         addFurtherAttributes(attr);
         makeDocAndTest(attr, "target/attribution8");
     }
+
+   /*
 
     // ////////////////////////////////
 

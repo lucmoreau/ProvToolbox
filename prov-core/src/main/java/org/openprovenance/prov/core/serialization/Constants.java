@@ -12,4 +12,6 @@ public interface Constants {
     String PROPERTY_PROV_ENTITY = "prov:entity";
     String PROPERTY_PROV_USED = "prov:used";
     String PROPERTY_PROV_GENERATION = "prov:wasGeneratedBy";
+    String PROPERTY_PROV_ASSOCIATION = "prov:wasAssociatedWith";
+    String PROPERTY_PROV_ATTRIBUTION = "prov:wasAttributedTo";
 }

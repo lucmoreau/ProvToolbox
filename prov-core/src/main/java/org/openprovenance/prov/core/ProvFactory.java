@@ -11,10 +11,13 @@ import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Value;
+import org.openprovenance.prov.model.WasAssociatedWith;
+import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasGeneratedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 
@@ -269,6 +272,92 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
         return res;
     }
+
+
+    /** A factory method to create an instance of an Association {@link org.openprovenance.prov.model.WasAssociatedWith}
+     * @param id an optional identifier for the association between an activity and an agent
+     * @param activity an identifier for the activity
+     * @param agent an optional identifier for the agent associated with the activity
+     * @return an instance of {@link org.openprovenance.prov.model.WasAssociatedWith}
+     */
+
+
+    public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
+                                                                                org.openprovenance.prov.model.QualifiedName activity,
+                                                                                org.openprovenance.prov.model.QualifiedName agent) {
+        org.openprovenance.prov.model.WasAssociatedWith res = new org.openprovenance.prov.core.WasAssociatedWith(id,activity,agent, Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
+
+    public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
+                                                                                org.openprovenance.prov.model.QualifiedName a,
+                                                                                org.openprovenance.prov.model.QualifiedName ag,
+                                                                                org.openprovenance.prov.model.QualifiedName plan,
+                                                                                Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
+        res.setPlan(plan);
+        setAttributes(res, attributes);
+        return res;
+    }
+
+    public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
+                                                                                org.openprovenance.prov.model.QualifiedName a,
+                                                                                org.openprovenance.prov.model.QualifiedName ag,
+                                                                                org.openprovenance.prov.model.QualifiedName plan) {
+        org.openprovenance.prov.model.WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
+        res.setPlan(plan);
+        return res;
+    }
+
+
+
+    public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.WasAssociatedWith u) {
+        WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
+                u.getAgent());
+        u1.getOther().addAll(u.getOther());
+        u1.setPlan(u.getPlan());
+        u1.getType().addAll(u.getType());
+        u1.getLabel().addAll(u.getLabel());
+        u1.getRole().addAll(u.getRole());
+        return u1;
+    }
+
+
+    /** A factory method to create an instance of an attribution {@link org.openprovenance.prov.model.WasAttributedTo}
+     * @param id  an optional identifier for the relation
+     * @param entity an entity identifier
+     * @param agent  the identifier of the agent whom the entity is ascribed to, and therefore bears some responsibility for its existence
+     * @return an instance of {@link org.openprovenance.prov.model.WasAttributedTo}
+     */
+    public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName id,
+                                                                            org.openprovenance.prov.model.QualifiedName entity,
+                                                                            org.openprovenance.prov.model.QualifiedName agent) {
+        org.openprovenance.prov.model.WasAttributedTo res = new org.openprovenance.prov.core.WasAttributedTo(id,entity,agent,Collections.EMPTY_LIST);
+        return res;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasAttributedTo(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
+    public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName id,
+                                                                            org.openprovenance.prov.model.QualifiedName entity,
+                                                                            org.openprovenance.prov.model.QualifiedName agent,
+                                                                            Collection<Attribute> attributes) {
+        WasAttributedTo res = of.createWasAttributedTo();
+        res.setId(id);
+        res.setEntity(entity);
+        res.setAgent(agent);
+        setAttributes(res, attributes);
+        return res;
+    }
+
 
 
 }

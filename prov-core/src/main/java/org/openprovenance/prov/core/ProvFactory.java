@@ -19,6 +19,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Optional;
 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
@@ -299,9 +300,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
                                                                                 org.openprovenance.prov.model.QualifiedName ag,
                                                                                 org.openprovenance.prov.model.QualifiedName plan,
                                                                                 Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
-        res.setPlan(plan);
-        setAttributes(res, attributes);
+        org.openprovenance.prov.model.WasAssociatedWith res = new org.openprovenance.prov.core.WasAssociatedWith(id,a,ag, plan, attributes);
         return res;
     }
 
@@ -309,21 +308,18 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
                                                                                 org.openprovenance.prov.model.QualifiedName a,
                                                                                 org.openprovenance.prov.model.QualifiedName ag,
                                                                                 org.openprovenance.prov.model.QualifiedName plan) {
-        org.openprovenance.prov.model.WasAssociatedWith res= newWasAssociatedWith(id,a,ag);
-        res.setPlan(plan);
+        org.openprovenance.prov.model.WasAssociatedWith res = new org.openprovenance.prov.core.WasAssociatedWith(id,a,ag, plan, Collections.EMPTY_LIST);
         return res;
     }
 
 
 
     public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.WasAssociatedWith u) {
-        WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
-                u.getAgent());
-        u1.getOther().addAll(u.getOther());
-        u1.setPlan(u.getPlan());
+        WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent(), u.getPlan());
         u1.getType().addAll(u.getType());
         u1.getLabel().addAll(u.getLabel());
         u1.getRole().addAll(u.getRole());
+        u1.getOther().addAll(u.getOther());
         return u1;
     }
 
@@ -341,6 +337,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
+    public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName entity,
+                                                                            org.openprovenance.prov.model.QualifiedName agent) {
+        org.openprovenance.prov.model.WasAttributedTo res = new org.openprovenance.prov.core.WasAttributedTo(null,entity,agent,Collections.EMPTY_LIST);
+        return res;
+    }
 
     /*
      * (non-Javadoc)
@@ -350,11 +351,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
                                                                             org.openprovenance.prov.model.QualifiedName entity,
                                                                             org.openprovenance.prov.model.QualifiedName agent,
                                                                             Collection<Attribute> attributes) {
-        WasAttributedTo res = of.createWasAttributedTo();
-        res.setId(id);
-        res.setEntity(entity);
-        res.setAgent(agent);
-        setAttributes(res, attributes);
+        WasAttributedTo res = new org.openprovenance.prov.core.WasAttributedTo(id,entity,agent,attributes);
         return res;
     }
 

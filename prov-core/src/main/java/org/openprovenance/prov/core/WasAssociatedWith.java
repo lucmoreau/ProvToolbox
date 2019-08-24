@@ -55,6 +55,18 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
     }
 
 
+    public WasAssociatedWith(QualifiedName id,
+                             QualifiedName activity,
+                             QualifiedName agent,
+                             QualifiedName plan,
+                             Collection<Attribute> attributes) {
+        this.setId(id);
+        this.activity=activity;
+        this.agent=agent;
+        this.plan=Optional.ofNullable(plan);
+        u.populateAttributes(attributes, new LinkedList<>(), type,role);
+    }
+
 
     @Override
     public void setActivity(QualifiedName aid) {

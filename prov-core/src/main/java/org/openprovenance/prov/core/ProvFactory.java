@@ -362,4 +362,14 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
+    /** A factory method to create an instance of an alternate {@link org.openprovenance.prov.model.AlternateOf}
+     * @param entity1 an identifier for the first {@link org.openprovenance.prov.model.Entity}
+     * @param entity2 an identifier for the second {@link org.openprovenance.prov.model.Entity}
+     * @return an instance of {@link org.openprovenance.prov.model.AlternateOf}
+     */
+    public org.openprovenance.prov.model.AlternateOf newAlternateOf(org.openprovenance.prov.model.QualifiedName entity1, org.openprovenance.prov.model.QualifiedName entity2) {
+        org.openprovenance.prov.model.AlternateOf res = new org.openprovenance.prov.core.AlternateOf(entity1,entity2);
+        return res;
+    }
+
 }

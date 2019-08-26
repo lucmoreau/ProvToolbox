@@ -16,7 +16,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id", "generalEntity", "specificEntity"})
+@JsonPropertyOrder({ "@id", "entity", "agent"})
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WasAttributedTo implements org.openprovenance.prov.model.WasAttributedTo, Equals, HashCode, ToString, HasAttributes {
@@ -176,13 +176,13 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
         {
             QualifiedName theEntity;
             theEntity = this.getEntity();
-            toStringBuilder.append("generalEntity", theEntity);
+            toStringBuilder.append("entity", theEntity);
         }
 
         {
             QualifiedName theAgent;
             theAgent = this.getAgent();
-            toStringBuilder.append("specificEntity", theAgent);
+            toStringBuilder.append("agent", theAgent);
         }
 
 

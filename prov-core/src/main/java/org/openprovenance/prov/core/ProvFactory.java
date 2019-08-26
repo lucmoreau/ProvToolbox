@@ -9,6 +9,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Role;
+import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Value;
 import org.openprovenance.prov.model.WasAssociatedWith;
@@ -160,7 +161,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     /**
      * Creates a new {@link org.openprovenance.prov.model.Agent} with provided identifier
-     * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the agent
+     * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the specificEntity
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
     public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName ag) {
@@ -170,8 +171,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     /**
      * Creates a new {@link org.openprovenance.prov.model.Agent} with provided identifier and attributes
-     * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the agent
-     * @param attributes a collection of {@link Attribute} for the agent
+     * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the specificEntity
+     * @param attributes a collection of {@link Attribute} for the specificEntity
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
 
@@ -182,7 +183,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     /**
      * Creates a new {@link org.openprovenance.prov.model.Agent} with provided identifier and label
-     * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the agent
+     * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the specificEntity
      * @param label a String for the label property (see {@link HasLabel#getLabel()}
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
@@ -215,8 +216,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
      * @param id an optional identifier for a usage
-     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
-     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an generalEntity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">generalEntity</a> being used
      * @return an instance of {@link org.openprovenance.prov.model.Used}
      */
 
@@ -227,8 +228,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
 
     /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
-     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
-     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @param activity the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an generalEntity
+     * @param entity an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">generalEntity</a> being used
      * @return an instance of {@link org.openprovenance.prov.model.Used}
      */
 
@@ -276,9 +277,9 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
 
     /** A factory method to create an instance of an Association {@link org.openprovenance.prov.model.WasAssociatedWith}
-     * @param id an optional identifier for the association between an activity and an agent
+     * @param id an optional identifier for the association between an activity and an specificEntity
      * @param activity an identifier for the activity
-     * @param agent an optional identifier for the agent associated with the activity
+     * @param agent an optional identifier for the specificEntity associated with the activity
      * @return an instance of {@link org.openprovenance.prov.model.WasAssociatedWith}
      */
 
@@ -326,8 +327,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     /** A factory method to create an instance of an attribution {@link org.openprovenance.prov.model.WasAttributedTo}
      * @param id  an optional identifier for the relation
-     * @param entity an entity identifier
-     * @param agent  the identifier of the agent whom the entity is ascribed to, and therefore bears some responsibility for its existence
+     * @param entity an generalEntity identifier
+     * @param agent  the identifier of the specificEntity whom the generalEntity is ascribed to, and therefore bears some responsibility for its existence
      * @return an instance of {@link org.openprovenance.prov.model.WasAttributedTo}
      */
     public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName id,
@@ -355,6 +356,10 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
-
+    @Override
+    public org.openprovenance.prov.model.SpecializationOf newSpecializationOf(org.openprovenance.prov.model.QualifiedName specific, org.openprovenance.prov.model.QualifiedName general) {
+        SpecializationOf res = new org.openprovenance.prov.core.SpecializationOf(specific,general);
+        return res;
+    }
 
 }

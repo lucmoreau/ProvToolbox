@@ -440,7 +440,7 @@ public class StringEscapeUtils {
      *
      * <p>Supports all known HTML 4.0 entities, including funky accents.
      * Note that the commonly used apostrophe escape character (&amp;apos;)
-     * is not a legal entity and so is not supported). </p>
+     * is not a legal generalEntity and so is not supported). </p>
      *
      * @param str  the {@code String} to escape, may be null
      * @return a new escaped {@code String}, {@code null} if null string input
@@ -448,7 +448,7 @@ public class StringEscapeUtils {
      * @see #unescapeHtml(String)
      * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
      * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
-     * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
+     * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character generalEntity references</a>
      * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
      * @see <a href="http://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
      */
@@ -479,7 +479,7 @@ public class StringEscapeUtils {
      *
      * <p>Supports all known HTML 4.0 entities, including funky accents.
      * Note that the commonly used apostrophe escape character (&amp;apos;)
-     * is not a legal entity and so is not supported). </p>
+     * is not a legal generalEntity and so is not supported). </p>
      *
      * @param writer  the writer receiving the escaped string, not null
      * @param string  the {@code String} to escape, may be null
@@ -491,7 +491,7 @@ public class StringEscapeUtils {
      * @see #unescapeHtml(String)
      * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
      * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
-     * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
+     * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character generalEntity references</a>
      * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
      * @see <a href="http://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
      */
@@ -507,14 +507,14 @@ public class StringEscapeUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * <p>Unescapes a string containing entity escapes to a string
+     * <p>Unescapes a string containing generalEntity escapes to a string
      * containing the actual Unicode characters corresponding to the
      * escapes. Supports HTML 4.0 entities.</p>
      *
      * <p>For example, the string "&amp;lt;Fran&amp;ccedil;ais&amp;gt;"
      * will become "&lt;Fran&ccedil;ais&gt;"</p>
      *
-     * <p>If an entity is unrecognized, it is left alone, and inserted
+     * <p>If an generalEntity is unrecognized, it is left alone, and inserted
      * verbatim into the result string. e.g. "&amp;gt;&amp;zzzz;x" will
      * become "&gt;&amp;zzzz;x".</p>
      *
@@ -537,14 +537,14 @@ public class StringEscapeUtils {
     }
 
     /**
-     * <p>Unescapes a string containing entity escapes to a string
+     * <p>Unescapes a string containing generalEntity escapes to a string
      * containing the actual Unicode characters corresponding to the
      * escapes. Supports HTML 4.0 entities.</p>
      *
      * <p>For example, the string "&amp;lt;Fran&amp;ccedil;ais&amp;gt;"
      * will become "&lt;Fran&ccedil;ais&gt;"</p>
      *
-     * <p>If an entity is unrecognized, it is left alone, and inserted
+     * <p>If an generalEntity is unrecognized, it is left alone, and inserted
      * verbatim into the result string. e.g. "&amp;gt;&amp;zzzz;x" will
      * become "&gt;&amp;zzzz;x".</p>
      *
@@ -620,7 +620,7 @@ public class StringEscapeUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * <p>Unescapes a string containing XML entity escapes to a string
+     * <p>Unescapes a string containing XML generalEntity escapes to a string
      * containing the actual Unicode characters corresponding to the
      * escapes.</p>
      *
@@ -647,7 +647,7 @@ public class StringEscapeUtils {
     }
 
     /**
-     * <p>Unescapes a string containing XML entity escapes to a string
+     * <p>Unescapes a string containing XML generalEntity escapes to a string
      * containing the actual Unicode characters corresponding to the
      * escapes.</p>
      *

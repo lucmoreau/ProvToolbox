@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -580,7 +581,7 @@ public class RoundTripFromJavaTest extends TestCase {
     //TODO: problematic, but unicode in gneral doesnot serialize to json
     
     public void NOtestEntity100() {
-	    Entity e = pFactory.newEntity(q("100-entity"), "entity100");
+	    Entity e = pFactory.newEntity(q("100-generalEntity"), "entity100");
 	    	    	     e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
@@ -611,7 +612,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
 
     public void NOtestEntity101() {
-        Entity e = pFactory.newEntity(q("101-entity"), "entity101");
+        Entity e = pFactory.newEntity(q("101-generalEntity"), "entity101");
         e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
                                                      EX2_PREFIX),
@@ -1565,11 +1566,13 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(alt, "target/alternate1");
     }
 
+*/
     public void testSpecialization1() {
         SpecializationOf spe = pFactory.newSpecializationOf(q("e2"), q("e1"));
         makeDocAndTest(spe, "target/specialization1");
     }
 
+    /*
     public void testMention1() {
         MentionOf men = pFactory.newMentionOf(q("e2"), q("e1"), null);
         makeDocAndTest(men, "target/mention1");

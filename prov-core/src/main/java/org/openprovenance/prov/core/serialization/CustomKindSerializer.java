@@ -22,13 +22,13 @@ public class CustomKindSerializer extends StdSerializer<StatementOrBundle.Kind> 
         String s=null;
         switch (kind) {
             case PROV_ENTITY:
-                s="prov:entity";
+                s="prov:generalEntity";
                 break;
             case PROV_ACTIVITY:
                 s="prov:activity";
                 break;
             case PROV_AGENT:
-                s="prov:agent";
+                s="prov:specificEntity";
                 break;
             case PROV_USAGE:
                 s="prov:used";

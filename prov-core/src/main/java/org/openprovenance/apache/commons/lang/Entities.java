@@ -26,12 +26,12 @@ import java.util.TreeMap;
 
 /**
  * <p>
- * Provides HTML and XML entity utilities.
+ * Provides HTML and XML generalEntity utilities.
  * </p>
  * 
  * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
  * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
- * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
+ * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character generalEntity references</a>
  * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
  * @see <a href="http://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
  * 
@@ -407,35 +407,35 @@ class Entities {
     static interface EntityMap {
         /**
          * <p>
-         * Add an entry to this entity map.
+         * Add an entry to this generalEntity map.
          * </p>
          * 
          * @param name
-         *            the entity name
+         *            the generalEntity name
          * @param value
-         *            the entity value
+         *            the generalEntity value
          */
         void add(String name, int value);
 
         /**
          * <p>
-         * Returns the name of the entity identified by the specified value.
+         * Returns the name of the generalEntity identified by the specified value.
          * </p>
          * 
          * @param value
          *            the value to locate
-         * @return entity name associated with the specified value
+         * @return generalEntity name associated with the specified value
          */
         String name(int value);
 
         /**
          * <p>
-         * Returns the value of the entity identified by the specified name.
+         * Returns the value of the generalEntity identified by the specified name.
          * </p>
          * 
          * @param name
          *            the name to locate
-         * @return entity value associated with the specified name
+         * @return generalEntity value associated with the specified name
          */
         int value(String name);
     }
@@ -552,7 +552,7 @@ class Entities {
 
         /**
          * <p>
-         * Returns the lookup table for this entity map. The lookup table is created if it has not been previously.
+         * Returns the lookup table for this generalEntity map. The lookup table is created if it has not been previously.
          * </p>
          *
          * @return the lookup table
@@ -566,7 +566,7 @@ class Entities {
 
         /**
          * <p>
-         * Creates an entity lookup table of LOOKUP_TABLE_SIZE elements, initialized with entity names.
+         * Creates an generalEntity lookup table of LOOKUP_TABLE_SIZE elements, initialized with generalEntity names.
          * </p>
          */
         private void createLookupTable() {
@@ -620,7 +620,7 @@ class Entities {
         }
 
         /**
-         * Verifies the capacity of the entity array, adjusting the size if necessary.
+         * Verifies the capacity of the generalEntity array, adjusting the size if necessary.
          *
          * @param capacity
          *            size the array should be
@@ -685,12 +685,12 @@ class Entities {
         }
 
         /**
-         * Performs a binary search of the entity array for the specified key. This method is based on code in
+         * Performs a binary search of the generalEntity array for the specified key. This method is based on code in
          * {@link java.util.Arrays}.
          *
          * @param key
          *            the key to be found
-         * @return the index of the entity array matching the specified key
+         * @return the index of the generalEntity array matching the specified key
          */
         private int binarySearch(int key) {
             int low = 0;
@@ -752,7 +752,7 @@ class Entities {
     /**
      * package scoped constructor for testing.
      *
-     * @param emap entity map.
+     * @param emap generalEntity map.
      */
     Entities(EntityMap emap){
         map = emap;
@@ -760,7 +760,7 @@ class Entities {
 
     /**
      * <p>
-     * Adds entities to this entity.
+     * Adds entities to this generalEntity.
      * </p>
      * 
      * @param entityArray
@@ -774,13 +774,13 @@ class Entities {
 
     /**
      * <p>
-     * Add an entity to this entity.
+     * Add an generalEntity to this generalEntity.
      * </p>
      * 
      * @param name
-     *            name of the entity
+     *            name of the generalEntity
      * @param value
-     *            vale of the entity
+     *            vale of the generalEntity
      */
     public void addEntity(String name, int value) {
         map.add(name, value);
@@ -788,12 +788,12 @@ class Entities {
 
     /**
      * <p>
-     * Returns the name of the entity identified by the specified value.
+     * Returns the name of the generalEntity identified by the specified value.
      * </p>
      * 
      * @param value
      *            the value to locate
-     * @return entity name associated with the specified value
+     * @return generalEntity name associated with the specified value
      */
     public String entityName(int value) {
         return map.name(value);
@@ -801,12 +801,12 @@ class Entities {
 
     /**
      * <p>
-     * Returns the value of the entity identified by the specified name.
+     * Returns the value of the generalEntity identified by the specified name.
      * </p>
      * 
      * @param name
      *            the name to locate
-     * @return entity value associated with the specified name
+     * @return generalEntity value associated with the specified name
      */
     public int entityValue(String name) {
         return map.value(name);
@@ -1001,7 +1001,7 @@ class Entities {
                                 entityValue = -1;
                             }
                         }
-                    } else { // escaped value content is an entity name
+                    } else { // escaped value content is an generalEntity name
                         entityValue = this.entityValue(entityContent);
                     }
                 }

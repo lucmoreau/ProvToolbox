@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -1561,12 +1562,13 @@ public class RoundTripFromJavaTest extends TestCase {
 
     // ////////////////////////////////
 
+*/
+
     public void testAlternate1() {
         AlternateOf alt = pFactory.newAlternateOf(q("e2"), q("e1"));
         makeDocAndTest(alt, "target/alternate1");
     }
 
-*/
     public void testSpecialization1() {
         SpecializationOf spe = pFactory.newSpecializationOf(q("e2"), q("e1"));
         makeDocAndTest(spe, "target/specialization1");

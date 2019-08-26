@@ -35,6 +35,7 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = PROPERTY_AT_TYPE)
     @JsonSubTypes({
+            @JsonSubTypes.Type(value = WasDerivedFrom.class,     name = PROPERTY_PROV_DERIVATION),
             @JsonSubTypes.Type(value = AlternateOf.class,        name = PROPERTY_PROV_ALTERNATE),
             @JsonSubTypes.Type(value = SpecializationOf.class,   name = PROPERTY_PROV_SPECIALIZATION),
             @JsonSubTypes.Type(value = WasAttributedTo.class,    name = PROPERTY_PROV_ATTRIBUTION),

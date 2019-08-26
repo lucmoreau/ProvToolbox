@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.Value;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
+import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -371,5 +372,44 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         org.openprovenance.prov.model.AlternateOf res = new org.openprovenance.prov.core.AlternateOf(entity1,entity2);
         return res;
     }
+
+
+    /** A factory method to create an instance of a derivation {@link org.openprovenance.prov.model.WasDerivedFrom}
+     * @param id an optional identifier for a derivation
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link org.openprovenance.prov.model.WasDerivedFrom}
+     */
+    public org.openprovenance.prov.model.WasDerivedFrom newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName id,
+                                                                          org.openprovenance.prov.model.QualifiedName e2,
+                                                                          org.openprovenance.prov.model.QualifiedName e1) {
+        WasDerivedFrom res = new org.openprovenance.prov.core.WasDerivedFrom(id,e2,e1,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    public Document newDocument(Collection<Activity> ps,
+                                Collection<org.openprovenance.prov.model.Entity> as,
+                                Collection<Agent> ags,
+                                Collection<Statement> lks) {
+        Document res = newDocument();
+        res.getStatementOrBundle().addAll(ps);
+        res.getStatementOrBundle().addAll(as);
+        res.getStatementOrBundle().addAll(ags);
+        res.getStatementOrBundle().addAll(lks);
+        return res;
+    }
+
+
+    public Document newDocument(Document graph) {
+        Document res = newDocument();
+        res.getStatementOrBundle()
+                .addAll(graph.getStatementOrBundle());
+        if (graph.getNamespace()!=null) {
+            res.setNamespace(new Namespace(graph.getNamespace()));
+        }
+        return res;
+    }
+
+
 
 }

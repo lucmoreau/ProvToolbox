@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.Type;
 import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.*;
 import org.xml.sax.SAXException;
 
@@ -37,6 +38,7 @@ public class PC1FullTest extends TestCase {
 
 	public static ProvFactory pFactory=new ProvFactory();
 	public static Name name=pFactory.getName();
+	private final String filename = "target/pc1-full.json";
 
 
 	public QualifiedName q(String n) {
@@ -80,7 +82,7 @@ public class PC1FullTest extends TestCase {
 		ProvSerialiser serial = new ProvSerialiser();
 		Namespace.withThreadNamespace(graph.getNamespace());
 
-		serial.serialiseDocument(new FileOutputStream("target/pc1-full.xml"), graph, true);
+		serial.serialiseDocument(new FileOutputStream(filename), graph, true);
 
 		graph1 = graph;
 		//System.out.println("PC1Full Test asserting True");

@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
@@ -1158,6 +1159,8 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(end, "target/end10");
     }
 
+    */
+
     // ////////////////////////////////
 
     public void testDerivation1() {
@@ -1266,7 +1269,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(der, "target/derivation13");
     }
 
-*/
+
     // ////////////////////////////////
 
     public void testAssociation1() {

@@ -16,4 +16,5 @@ public interface Constants {
     String PROPERTY_PROV_ATTRIBUTION = "prov:wasAttributedTo";
     String PROPERTY_PROV_SPECIALIZATION = "prov:specializationOf";
     String PROPERTY_PROV_ALTERNATE = "prov:alternateOf";
+    String PROPERTY_PROV_DERIVATION = "prov:wasDerivedFrom";
 }

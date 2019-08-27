@@ -53,7 +53,7 @@ public class ProvDeserialiser {
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 
-        mapper.addMixIn(org.openprovenance.prov.core.Activity.class, JLD_Activity.class);
+     //   mapper.addMixIn(org.openprovenance.prov.core.Activity.class, JLD_Activity.class);
 
 
         mapper.registerModule(module);

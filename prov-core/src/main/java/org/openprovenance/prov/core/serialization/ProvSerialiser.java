@@ -36,7 +36,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
                 SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
         mapper.setFilterProvider(filterProvider);
 
-        mapper.addMixIn(org.openprovenance.prov.core.Activity.class,  Activity.class);
+       // mapper.addMixIn(org.openprovenance.prov.core.Activity.class,  Activity.class);
 
 
         try {

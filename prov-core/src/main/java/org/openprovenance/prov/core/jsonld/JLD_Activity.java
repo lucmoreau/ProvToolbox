@@ -19,10 +19,8 @@ import java.util.Set;
 
 @JsonPropertyOrder({ "@id", "startTime", "endTime" })
 
-public interface JLD_Activity extends Identifiable {
+public interface JLD_Activity extends Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
 
-    @JsonIgnore
-    StatementOrBundle.Kind getKind();
 
     XMLGregorianCalendar getStartTime();
 
@@ -32,27 +30,6 @@ public interface JLD_Activity extends Identifiable {
 
     void setEndTime(XMLGregorianCalendar value);
 
-    @JsonIgnore
-    List<LangString> getLabel();
 
-    @JsonIgnore
-    List<org.openprovenance.prov.model.Location> getLocation();
 
-    @JsonIgnore
-    List<org.openprovenance.prov.model.Type> getType();
-
-    @JsonIgnore
-    List<org.openprovenance.prov.model.Other> getOther();
-
-    @JsonIgnore
-    Collection<Attribute> getAttributes();
-
-    @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
-    void setIndexedAttributes (Object qn, Set<Attribute> attributes);
-
-    @JsonAnyGetter
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
-    Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

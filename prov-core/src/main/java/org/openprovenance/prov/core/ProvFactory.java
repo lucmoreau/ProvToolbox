@@ -6,6 +6,7 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.Role;
@@ -20,10 +21,7 @@ import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
@@ -470,6 +468,23 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return res;
     }
 
+
+    public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName collection, org.openprovenance.prov.model.QualifiedName... entities) {
+        org.openprovenance.prov.model.HadMember res = new org.openprovenance.prov.core.jsonld.HadMember(collection,Arrays.asList(entities));
+        return res;
+    }
+
+
+    public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName c, Collection<org.openprovenance.prov.model.QualifiedName> e) {
+        List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        if (e!=null) {
+            for (org.openprovenance.prov.model.QualifiedName q: e) {
+                ll.add(q);
+            }
+        }
+        HadMember res = new org.openprovenance.prov.core.jsonld.HadMember(c,ll);
+        return res;
+    }
 
 
 }

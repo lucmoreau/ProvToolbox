@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
@@ -1590,6 +1591,8 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(men, "target/mention2");
     }
 
+    */
+
     public void testMembership1() {
         HadMember mem = pFactory.newHadMember(q("c"), q("e1"));
         makeDocAndTest(mem, "target/member1");
@@ -1607,6 +1610,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(mem, "target/member3");
     }
 
+    /*
     public void testScruffyGeneration1() {
         WasGeneratedBy gen1 = pFactory.newWasGeneratedBy(q("gen1"),
                                                          q("e1"),

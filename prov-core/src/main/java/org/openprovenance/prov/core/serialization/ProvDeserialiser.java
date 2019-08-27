@@ -13,6 +13,7 @@ import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +40,9 @@ public class ProvDeserialiser {
         JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
         module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
+
+
+       // CollectionType listType = typeFactory.constructCollectionType(List.class, qnType);
 
 
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);

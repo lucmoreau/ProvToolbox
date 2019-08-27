@@ -13,13 +13,10 @@ import org.openprovenance.prov.model.QualifiedName;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AlternateOf implements org.openprovenance.prov.model.AlternateOf, Equals, HashCode, ToString {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
 
     protected QualifiedName alternate1;
     protected QualifiedName alternate2;
 
-
-    final ProvUtilities u=new ProvUtilities();
 
 
 

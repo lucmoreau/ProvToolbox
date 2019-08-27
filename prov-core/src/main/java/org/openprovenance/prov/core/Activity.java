@@ -17,9 +17,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id", "startTime", "endTime" })
+//@JsonPropertyOrder({ "@id", "startTime", "endTime" })
 
-public class Activity implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString, HasAttributes {
+public class Activity implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString, HasAttributes { //, JLD_Activity {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<org.openprovenance.prov.model.QualifiedName> id;
@@ -32,23 +32,8 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
 
     final ProvUtilities u=new ProvUtilities();
 
-    /*
-    static public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName id,
-                                                                     XMLGregorianCalendar startTime,
-                                                                     XMLGregorianCalendar endTime,
-                                                                     Collection<Attribute> attributes) {
-        Activity res = new Activity();
-        res.setId(id);
-        res.setStartTime(startTime);
-        res.setEndTime(endTime);
 
-        return res;
-
-    }
-
-     */
-
-    private Activity() {}
+    protected Activity() {}
 
     public Activity(org.openprovenance.prov.model.QualifiedName id,
                     XMLGregorianCalendar startTime,
@@ -64,15 +49,15 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     }
 
 
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    @JsonProperty("@id")
+ //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+ //   @JsonProperty("@id")
     @Override
     public org.openprovenance.prov.model.QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ACTIVITY;
@@ -80,7 +65,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
 
 
 
-    @JsonProperty("@id")
+//    @JsonProperty("@id")
     @Override
     public void setId(org.openprovenance.prov.model.QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -108,26 +93,26 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         endTime = Optional.ofNullable(value);
     }
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -208,7 +193,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         return toStringBuilder.toString();
     }
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -219,19 +204,20 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         return result;
     }
 
-    @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
-    public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
+  //  @Override
+ //   @JsonAnySetter
+  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+    public void setIndexedAttributes(Object qn, Set<Attribute> attributes) {
         List<Value> values_discard=new LinkedList<>();
         List<Role> roles_discard=new LinkedList<>();
         u.distribute((QualifiedName)qn,attributes,getLabel(),values_discard,getLocation(),getType(),roles_discard,getOther());
     }
 
 
-    @JsonAnyGetter
+//    @JsonAnyGetter
     @Override
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+ //   @JsonProperty("attributes")
+//    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

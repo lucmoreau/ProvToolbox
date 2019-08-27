@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.WasDerivedFrom;
+import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
@@ -1464,7 +1465,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addFurtherAttributes(del);
         makeDocAndTest(del, "target/delegation8");
     }
-
+*/
     // ////////////////////////////////
 
     public void testCommunication1() {
@@ -1514,7 +1515,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     // ////////////////////////////////
-
+/*
     public void testInfluence1() {
         WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf1"), q("a2"),
                                                           null);

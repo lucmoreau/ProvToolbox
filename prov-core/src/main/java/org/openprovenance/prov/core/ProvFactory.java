@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInformedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
@@ -409,6 +410,36 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         }
         return res;
     }
+
+
+    /** A factory method to create an instance of an communication {@link org.openprovenance.prov.model.WasInformedBy}
+     * @param id an optional identifier identifying the association;
+     * @param informed the identifier of the informed activity;
+     * @param informant the identifier of the informant activity;
+     * @return an instance of {@link org.openprovenance.prov.model.WasInformedBy}
+     */
+
+    public org.openprovenance.prov.model.WasInformedBy newWasInformedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                        org.openprovenance.prov.model.QualifiedName informed,
+                                                                        org.openprovenance.prov.model.QualifiedName informant) {
+        org.openprovenance.prov.model.WasInformedBy res = new org.openprovenance.prov.core.WasInformedBy(id,informed,informant,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInformedBy(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
+
+    public org.openprovenance.prov.model.WasInformedBy newWasInformedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                        org.openprovenance.prov.model.QualifiedName informed,
+                                                                        org.openprovenance.prov.model.QualifiedName informant,
+                                                                        Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.WasInformedBy res = new org.openprovenance.prov.core.WasInformedBy(id,informed,informant,attributes);
+        return res;
+    }
+
+
 
 
 

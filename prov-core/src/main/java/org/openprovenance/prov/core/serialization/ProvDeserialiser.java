@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.core.Document;
-import org.openprovenance.prov.core.Location;
-import org.openprovenance.prov.core.Other;
-import org.openprovenance.prov.core.Type;
-import org.openprovenance.prov.core.serialization.*;
+import org.openprovenance.prov.core.jsonld.Activity;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
@@ -51,6 +48,8 @@ public class ProvDeserialiser {
         //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.TypedValue.class);
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
+
+        mapper.addMixIn(org.openprovenance.prov.core.Activity.class, Activity.class);
 
 
         mapper.registerModule(module);

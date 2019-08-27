@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.openprovenance.prov.core.QualifiedName;
-import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.core.jsonld.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
@@ -35,6 +35,8 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         filterProvider.addFilter("nsFilter",
                 SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
         mapper.setFilterProvider(filterProvider);
+
+        mapper.addMixIn(org.openprovenance.prov.core.Activity.class, Activity.class);
 
 
         try {

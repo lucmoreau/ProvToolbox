@@ -1,9 +1,5 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.core.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
@@ -12,9 +8,9 @@ import org.openprovenance.prov.model.StatementOrBundle;
 import java.util.LinkedList;
 import java.util.List;
 
-@JsonPropertyOrder({ "namespace"})
+//@JsonPropertyOrder({ "namespace"})
 
-public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode, Constants {
+public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode, Constants, org.openprovenance.prov.core.jsonld.Document {
 
     private List<StatementOrBundle> statementsOrBundle;
     private Namespace namespace;
@@ -28,12 +24,12 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
     }
 
     @Override
-    @JsonFilter("nsFilter")
+  //  @JsonFilter("nsFilter")
     public Namespace getNamespace() {
         return namespace;
     }
 
-    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = PROPERTY_AT_TYPE)
+  /*  @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = PROPERTY_AT_TYPE)
     @JsonSubTypes({
             @JsonSubTypes.Type(value = WasDerivedFrom.class,     name = PROPERTY_PROV_DERIVATION),
             @JsonSubTypes.Type(value = AlternateOf.class,        name = PROPERTY_PROV_ALTERNATE),
@@ -46,6 +42,8 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
             @JsonSubTypes.Type(value = Agent.class,              name = PROPERTY_PROV_AGENT),
             @JsonSubTypes.Type(value = Entity.class,             name = PROPERTY_PROV_ENTITY)
     })
+
+   */
     @Override
     public List<StatementOrBundle> getStatementOrBundle() {
         return statementsOrBundle;

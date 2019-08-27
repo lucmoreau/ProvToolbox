@@ -20,4 +20,5 @@ public interface Constants {
     String PROPERTY_PROV_COMMUNICATION = "prov:wasInformedBy";
     String PROPERTY_PROV_INFLUENCE = "prov:wasInfluencedBy";
     String PROPERTY_PROV_MEMBERSHIP = "prov:hadMember";
+    String PROPERTY_PROV_INVALIDATION = "prov:wasInvalidatedBy";
 }

@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInfluencedBy;
+import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
@@ -917,7 +918,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     // //////////////////////////////////////////////
 
-    /*
+
 
     public void testInvalidation1() {
         WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv1"), q("e1"),
@@ -979,6 +980,8 @@ public class RoundTripFromJavaTest extends TestCase {
 
         makeDocAndTest(inv, "target/invalidation7");
     }
+
+    /*
 
     // ////////////////////////////////
 

@@ -41,6 +41,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         super(null);
     }
 
+
     @Override
     public ProvSerialiser getSerializer() {
         return null;
@@ -275,6 +276,40 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
         return res;
     }
+
+
+    public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                          org.openprovenance.prov.model.QualifiedName eid,
+                                                                          String role,
+                                                                          org.openprovenance.prov.model.QualifiedName aid) {
+        WasInvalidatedBy res = new org.openprovenance.prov.core.WasInvalidatedBy(id,aid,eid,new LinkedList<>());
+        if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
+        return res;
+    }
+
+
+    /** A factory method to create an instance of an invalidation {@link org.openprovenance.prov.model.WasInvalidatedBy}
+     * @param id an optional identifier for a usage
+     * @param entity an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#invalidation.entity">entity</a>
+     * @param activity an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#invalidation.activity">activity</a> that creates the entity
+     * @return an instance of {@link org.openprovenance.prov.model.WasInvalidatedBy}
+     */
+
+    public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName entity, org.openprovenance.prov.model.QualifiedName activity) {
+        WasInvalidatedBy res = new org.openprovenance.prov.core.WasInvalidatedBy(id,entity,activity,new LinkedList<>());
+        return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
+    public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName entity, org.openprovenance.prov.model.QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.WasInvalidatedBy res=new  org.openprovenance.prov.core.WasInvalidatedBy(id,entity,activity,attributes);
+        res.setTime(time);
+        return res;
+    }
+
+
 
 
     /** A factory method to create an instance of an Association {@link org.openprovenance.prov.model.WasAssociatedWith}

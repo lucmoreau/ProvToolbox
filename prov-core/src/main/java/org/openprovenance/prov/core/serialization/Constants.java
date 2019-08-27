@@ -18,4 +18,5 @@ public interface Constants {
     String PROPERTY_PROV_ALTERNATE = "prov:alternateOf";
     String PROPERTY_PROV_DERIVATION = "prov:wasDerivedFrom";
     String PROPERTY_PROV_COMMUNICATION = "prov:wasInformedBy";
+    String PROPERTY_PROV_INFLUENCE = "prov:wasInfluencedBy";
 }

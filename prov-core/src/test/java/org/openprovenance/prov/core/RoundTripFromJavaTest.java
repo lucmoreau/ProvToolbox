@@ -15,6 +15,7 @@ import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
@@ -63,7 +64,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public String extension() {
-        return ".json";
+        return ".jsonld";
     }
 
     public void makeDocAndTest(Statement stment, String file) {
@@ -1515,7 +1516,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     // ////////////////////////////////
-/*
+
     public void testInfluence1() {
         WasInfluencedBy inf = pFactory.newWasInfluencedBy(q("inf1"), q("a2"),
                                                           null);
@@ -1566,7 +1567,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     // ////////////////////////////////
 
-*/
+
 
     public void testAlternate1() {
         AlternateOf alt = pFactory.newAlternateOf(q("e2"), q("e1"));

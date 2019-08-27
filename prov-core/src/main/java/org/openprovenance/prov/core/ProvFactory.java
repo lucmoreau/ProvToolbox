@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -440,6 +441,34 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
 
+
+    /**A factory method to create an instance of an influence {@link org.openprovenance.prov.model.WasInfluencedBy}
+     * @param id optional identifier identifying the association
+     * @param influencee an identifier for an entity, activity, or agent
+     * @param influencer an identifier for an ancestor entity, activity, or agent that the former depends on
+     *
+     * @return an instance of {@link org.openprovenance.prov.model.WasInfluencedBy}
+     */
+
+    public org.openprovenance.prov.model.WasInfluencedBy newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                            org.openprovenance.prov.model.QualifiedName influencee,
+                                                                            org.openprovenance.prov.model.QualifiedName influencer) {
+        org.openprovenance.prov.model.WasInfluencedBy res = new org.openprovenance.prov.core.WasInfluencedBy(id,influencee,influencer,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
+
+    public org.openprovenance.prov.model.WasInfluencedBy newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                            org.openprovenance.prov.model.QualifiedName influencee,
+                                                                            org.openprovenance.prov.model.QualifiedName influencer,
+                                                                            Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.WasInfluencedBy res = new org.openprovenance.prov.core.WasInfluencedBy(id,influencee,influencer,attributes);
+        return res;
+    }
 
 
 

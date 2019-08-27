@@ -15,10 +15,10 @@ import org.openprovenance.prov.model.Value;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id", "informed", "informant"})
+@JsonPropertyOrder({ "@id", "influencee", "influencer" })
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class WasInformedBy implements org.openprovenance.prov.model.WasInformedBy, Equals, HashCode, ToString, HasAttributes {
+public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluencedBy, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
@@ -26,54 +26,54 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
     private List<org.openprovenance.prov.model.Role> role = new LinkedList<>();
-    protected QualifiedName informed;
-    protected QualifiedName informant;
+    protected QualifiedName influencee;
+    protected QualifiedName influencer;
 
 
     final ProvUtilities u=new ProvUtilities();
 
 
 
-    private WasInformedBy() {}
+    private WasInfluencedBy() {}
 
-    public WasInformedBy(QualifiedName id,
-                         Collection<Attribute> attributes) {
+    public WasInfluencedBy(QualifiedName id,
+                           Collection<Attribute> attributes) {
         this.setId(id);
         u.populateAttributes(attributes, new LinkedList<>(), type,role);
     }
 
-    public WasInformedBy(QualifiedName id,
-                         QualifiedName informed,
-                         QualifiedName informant,
-                         Collection<Attribute> attributes) {
+    public WasInfluencedBy(QualifiedName id,
+                           QualifiedName influencee,
+                           QualifiedName influencer,
+                           Collection<Attribute> attributes) {
         this.setId(id);
-        this.informed=informed;
-        this.informant=informant;
+        this.influencee=influencee;
+        this.influencer=influencer;
         u.populateAttributes(attributes, new LinkedList<>(), type,role);
     }
 
 
 
     @Override
-    public void setInformed(QualifiedName informed) {
-        this.informed=informed;
+    public void setInfluencee(QualifiedName influencee) {
+        this.influencee=influencee;
     }
 
     @Override
-    public void setInformant(QualifiedName informant) {
-        this.informant=informant;
-    }
-
-    @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getInformant() {
-        return informant;
+    public void setInfluencer(QualifiedName influencer) {
+        this.influencer=influencer;
     }
 
     @Override
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getInformed() {
-        return informed;
+    public QualifiedName getInfluencer() {
+        return influencer;
+    }
+
+    @Override
+    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+    public QualifiedName getInfluencee() {
+        return influencee;
     }
 
 
@@ -89,7 +89,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     @JsonIgnore
     @Override
     public Kind getKind() {
-        return Kind.PROV_COMMUNICATION;
+        return Kind.PROV_INFLUENCE;
     }
 
 
@@ -125,22 +125,22 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
 
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {
-        if (!(object instanceof WasInformedBy)) {
+        if (!(object instanceof WasInfluencedBy)) {
             equalsBuilder.appendSuper(false);
             return ;
         }
         if (this == object) {
             return ;
         }
-        final WasInformedBy that = ((WasInformedBy) object);
+        final WasInfluencedBy that = ((WasInfluencedBy) object);
         equalsBuilder.append(this.getId(), that.getId());
-        equalsBuilder.append(this.getInformed(), that.getInformed());
-        equalsBuilder.append(this.getInformant(), that.getInformant());
+        equalsBuilder.append(this.getInfluencee(), that.getInfluencee());
+        equalsBuilder.append(this.getInfluencer(), that.getInfluencer());
         equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof WasInformedBy)) {
+        if (!(object instanceof WasInfluencedBy)) {
             return false;
         }
         if (this == object) {
@@ -153,8 +153,8 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
         hashCodeBuilder.append(this.getId());
-        hashCodeBuilder.append(this.getInformed());
-        hashCodeBuilder.append(this.getInformant());
+        hashCodeBuilder.append(this.getInfluencee());
+        hashCodeBuilder.append(this.getInfluencer());
         hashCodeBuilder.append(this.getIndexedAttributes());
     }
 
@@ -174,15 +174,15 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
         }
 
         {
-            QualifiedName theInformed;
-            theInformed = this.getInformed();
-            toStringBuilder.append("informed", theInformed);
+            QualifiedName theInfluencee;
+            theInfluencee = this.getInfluencee();
+            toStringBuilder.append("influencee", theInfluencee);
         }
 
         {
-            QualifiedName theInformant;
-            theInformant = this.getInformant();
-            toStringBuilder.append("informant", theInformant);
+            QualifiedName theInfluencer;
+            theInfluencer = this.getInfluencer();
+            toStringBuilder.append("influencer", theInfluencer);
         }
 
        {

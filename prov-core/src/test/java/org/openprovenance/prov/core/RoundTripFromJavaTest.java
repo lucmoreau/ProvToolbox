@@ -18,6 +18,8 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.WasEndedBy;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
@@ -981,7 +983,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(inv, "target/invalidation7");
     }
 
-    /*
+
 
     // ////////////////////////////////
 
@@ -1080,6 +1082,8 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(start, "target/start10");
     }
 
+
+
     // ////////////////////////////////
 
     public void testEnd1() {
@@ -1165,7 +1169,6 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(end, "target/end10");
     }
 
-    */
 
     // ////////////////////////////////
 

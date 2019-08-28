@@ -12,6 +12,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -28,6 +29,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
         module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
+        module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
         //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
         mapper.registerModule(module);
 

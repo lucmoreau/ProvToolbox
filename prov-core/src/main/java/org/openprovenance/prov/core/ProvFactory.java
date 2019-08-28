@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
+import org.openprovenance.prov.model.WasStartedBy;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
@@ -520,6 +521,80 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         HadMember res = new org.openprovenance.prov.core.jsonld.HadMember(c,ll);
         return res;
     }
+
+
+    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
+        org.openprovenance.prov.model.WasStartedBy res = new org.openprovenance.prov.core.WasStartedBy(id,aid,eid,null,null,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /** A factory method to create an instance of a start {@link org.openprovenance.prov.model.WasStartedBy}
+     * @param id
+     * @param activity an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.trigger">entity triggering</a> the activity
+     * @param starter an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.starter">activity</a> that generated the (possibly unspecified) entity
+     * @return an instance of {@link org.openprovenance.prov.model.WasStartedBy}
+     */
+
+    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                      org.openprovenance.prov.model.QualifiedName activity,
+                                                                      org.openprovenance.prov.model.QualifiedName trigger,
+                                                                      org.openprovenance.prov.model.QualifiedName starter) {
+        org.openprovenance.prov.model.WasStartedBy res = new org.openprovenance.prov.core.WasStartedBy(id,activity,trigger,starter,null,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasStartedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
+    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                      org.openprovenance.prov.model.QualifiedName activity,
+                                                                      org.openprovenance.prov.model.QualifiedName trigger,
+                                                                      org.openprovenance.prov.model.QualifiedName starter,
+                                                                      XMLGregorianCalendar time,
+                                                                      Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.WasStartedBy res = new org.openprovenance.prov.core.WasStartedBy(id,activity,trigger,starter,time,attributes);
+        return res;
+    }
+
+
+
+
+    public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
+        org.openprovenance.prov.model.WasEndedBy res = new org.openprovenance.prov.core.WasEndedBy(id,aid,eid,null,null,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /** A factory method to create an instance of a end {@link org.openprovenance.prov.model.WasEndedBy}
+     * @param id
+     * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
+     * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity
+     * @param ender an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
+     * @return an instance of {@link org.openprovenance.prov.model.WasEndedBy}
+     */
+
+    public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                  org.openprovenance.prov.model.QualifiedName activity,
+                                                                  org.openprovenance.prov.model.QualifiedName trigger,
+                                                                  org.openprovenance.prov.model.QualifiedName ender) {
+        org.openprovenance.prov.model.WasEndedBy res = new org.openprovenance.prov.core.WasEndedBy(id,activity,trigger,ender,null,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    /* (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasEndedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
+     */
+    public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                  org.openprovenance.prov.model.QualifiedName activity,
+                                                                  org.openprovenance.prov.model.QualifiedName trigger,
+                                                                  org.openprovenance.prov.model.QualifiedName ender,
+                                                                  XMLGregorianCalendar time,
+                                                                  Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.WasEndedBy res = new org.openprovenance.prov.core.WasEndedBy(id,activity,trigger,ender,time,attributes);
+        return res;
+    }
+
+
 
 
 }

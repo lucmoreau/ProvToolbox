@@ -49,10 +49,10 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
     }
 
-    public Attribute deserialize(QualifiedName elementName,  String node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        return pf.newAttribute(elementName, new LangString(node,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
+        return pf.newAttribute(elementName, new LangString(astring,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
     }
 
 

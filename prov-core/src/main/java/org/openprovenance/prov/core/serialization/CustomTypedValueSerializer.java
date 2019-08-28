@@ -13,8 +13,6 @@ import java.io.IOException;
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
 
-    static boolean optimise=true;
-
     static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
 
     protected CustomTypedValueSerializer() {
@@ -27,13 +25,14 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
     @Override
     public void serialize(TypedValue attr, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=null;
-        if (optimise && (attr.getValue() instanceof LangString) &&
+        if ((attr.getValue() instanceof LangString) &&
                 ((LangString)attr.getValue()).getLang()==null &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             jsonGenerator.writeString(((LangString)attr.getValue()).getValue().toString());
-        } else if (optimise && (attr.getValue() instanceof String) &&
+        } else if ((attr.getValue() instanceof String) &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
-            jsonGenerator.writeString((String)attr.getValue());
+            throw new UnsupportedOperationException("should never be here");
+            //jsonGenerator.writeString((String)attr.getValue());
         } else {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField(PROPERTY_AT_TYPE, prnt(attr.getType()));

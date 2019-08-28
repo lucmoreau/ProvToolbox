@@ -44,7 +44,7 @@ public class WasStartedBy implements org.openprovenance.prov.model.WasStartedBy,
                         Collection<Attribute> attributes) {
         this.setId(id);
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role, other);
     }
 
     public WasStartedBy(QualifiedName id,
@@ -58,7 +58,7 @@ public class WasStartedBy implements org.openprovenance.prov.model.WasStartedBy,
         this.trigger=Optional.ofNullable(trigger);
         this.starter=Optional.ofNullable(starter);
         this.time=Optional.ofNullable(time);
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role, other);
     }
 
 

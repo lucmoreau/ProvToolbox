@@ -41,9 +41,10 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     public Entity(QualifiedName id,
                   Collection<Attribute> attributes) {
         this.setId(id);
-
-
-        u.populateAttributes(attributes, location, type, new LinkedList<>());
+        location=new LinkedList<>();
+        type=new LinkedList<>();
+        other=new LinkedList<>();
+        u.populateAttributes(attributes, labels, location, type, new LinkedList<>(), other);
 
 
     }

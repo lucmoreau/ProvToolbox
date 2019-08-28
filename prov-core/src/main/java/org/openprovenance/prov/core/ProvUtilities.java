@@ -87,7 +87,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                     QualifiedName name=other.getElementName();
                     Collection<Other> some=others.get(name);
                     if (some==null) {
-                        some=new LinkedList<>();
+                        some = new LinkedList<>();
                         others.put(name,some);
                     }
                     some.add(other);
@@ -147,9 +147,11 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
     // TODO: missing fields to populate
     void populateAttributes(Collection<Attribute> attributes,
+                            List<org.openprovenance.prov.model.LangString> label,
                             List<org.openprovenance.prov.model.Location> location,
                             List<org.openprovenance.prov.model.Type> type,
-                            List<org.openprovenance.prov.model.Role> role) {
+                            List<org.openprovenance.prov.model.Role> role,
+                            List<org.openprovenance.prov.model.Other> other) {
         Collection<Label> labels=new LinkedList<>();
         Collection<Type> types=new LinkedList<>();
         Collection<Location> locations=new LinkedList<>();
@@ -171,5 +173,12 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         location.addAll(locations);
         type.addAll(types);
         role.addAll(roles);
+        for (Collection<Other> col: others.values())
+            other.addAll(col);
+
+        for (Label lab: labels) {
+            label.add((LangString)lab.value);
+        }
+
     }
 }

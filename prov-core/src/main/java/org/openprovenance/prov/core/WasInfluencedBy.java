@@ -39,7 +39,7 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
     public WasInfluencedBy(QualifiedName id,
                            Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, new LinkedList<>(), type,role);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
     }
 
     public WasInfluencedBy(QualifiedName id,
@@ -49,7 +49,7 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
         this.setId(id);
         this.influencee=influencee;
         this.influencer=influencer;
-        u.populateAttributes(attributes, new LinkedList<>(), type,role);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
     }
 
 

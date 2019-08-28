@@ -44,7 +44,7 @@ public class WasEndedBy implements org.openprovenance.prov.model.WasEndedBy, Equ
                       Collection<Attribute> attributes) {
         this.setId(id);
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
     public WasEndedBy(QualifiedName id,
@@ -58,7 +58,7 @@ public class WasEndedBy implements org.openprovenance.prov.model.WasEndedBy, Equ
         this.trigger=Optional.ofNullable(trigger);
         this.ender=Optional.ofNullable(ender);
         this.time=Optional.ofNullable(time);
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
 

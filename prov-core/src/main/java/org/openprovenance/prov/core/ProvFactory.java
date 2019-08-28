@@ -82,7 +82,21 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public Attribute newAttribute(Attribute.AttributeKind kind, Object value, org.openprovenance.prov.model.QualifiedName type) {
-        return null;
+        switch (kind) {
+
+            case PROV_TYPE:
+                return newType(value, type);
+            case PROV_LABEL:
+                return new Label(type, value);
+            case PROV_ROLE:
+                return newRole(value, type);
+            case PROV_LOCATION:
+                return newLocation(value, type);
+            case PROV_VALUE:
+                return newValue(value, type);
+        }
+
+        throw new UnsupportedOperationException("Should never be here, unknown " + kind);
     }
 
     @Override
@@ -139,6 +153,33 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     @Override
     public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName a) {
         Entity res = new org.openprovenance.prov.core.Entity(a,null);
+        return res;
+    }
+
+    /**
+     * Creates a new {@link org.openprovenance.prov.model.Entity} with provided identifier and label
+     * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the entity
+     * @param label a String for the label property (see {@link HasLabel#getLabel()}
+     * @return an object of type {@link org.openprovenance.prov.model.Entity}
+     */
+    @Override
+    public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName id, String label) {
+        Collection<Attribute> attrs=new LinkedList<>();
+        attrs.add(newAttribute(Attribute.AttributeKind.PROV_LABEL,newInternationalizedString(label),getName().XSD_STRING));
+        org.openprovenance.prov.model.Entity res =  new org.openprovenance.prov.core.Entity(id,attrs);
+        System.out.println(res);
+        return res;
+    }
+
+    /**
+     * Creates a new {@link org.openprovenance.prov.model.Entity} with provided identifier and attributes
+     * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the entity
+     * @param attributes a collection of {@link Attribute} for the entity
+     * @return an object of type {@link org.openprovenance.prov.model.Entity}
+     */
+    @Override
+    public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName id, Collection<Attribute> attributes) {
+        org.openprovenance.prov.model.Entity res = new org.openprovenance.prov.core.Entity(id,attributes);
         return res;
     }
 
@@ -595,6 +636,22 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
 
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newDocument(org.openprovenance.prov.model.Namespace, java.util.Collection, java.util.Collection)
+     */
+    @Override
+    public Document newDocument(Namespace namespace,
+                                Collection<Statement> statements,
+                                Collection<Bundle> bundles) {
+        Document res = newDocument();
 
+        res.setNamespace(namespace);
+        res.getStatementOrBundle()
+                .addAll(statements);
+        res.getStatementOrBundle()
+                .addAll(bundles);
+        return res;
+    }
 
 }

@@ -41,7 +41,7 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
         this.setId(id);
 
 
-        u.populateAttributes(attributes, location, type, new LinkedList<>());
+        u.populateAttributes(attributes, labels, location, type, new LinkedList<>(),other);
 
 
     }

@@ -43,7 +43,7 @@ public class WasInvalidatedBy implements org.openprovenance.prov.model.WasInvali
                             Collection<Attribute> attributes) {
         this.setId(id);
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
     public WasInvalidatedBy(QualifiedName id,
@@ -54,7 +54,7 @@ public class WasInvalidatedBy implements org.openprovenance.prov.model.WasInvali
         this.activity=activity;
         this.entity=entity;
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
     public WasInvalidatedBy(QualifiedName id,
@@ -66,7 +66,7 @@ public class WasInvalidatedBy implements org.openprovenance.prov.model.WasInvali
         this.activity=activity;
         this.entity=entity;
         setTime(time);
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
 

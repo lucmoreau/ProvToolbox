@@ -117,16 +117,16 @@ public class BeanTraversal implements StatementActionValue {
 	return c.newDocument(doc.getNamespace(), sRecords, bRecords);
     }
 
-       
+
 
     public Entity doAction(Entity e) {
-	List<Attribute> attrs=new LinkedList<Attribute>();	
-	convertTypeAttributes(e,attrs);
-	convertLabelAttributes(e,attrs);
-	convertLocationAttributes(e,attrs);	
-	convertValueAttributes(e,attrs);
-	convertAttributes(e,attrs);
-	return c.newEntity(e.getId(), attrs);
+        List<Attribute> attrs=new LinkedList<Attribute>();
+        convertTypeAttributes(e,attrs);
+        convertLabelAttributes(e,attrs);
+        convertLocationAttributes(e,attrs);
+        convertValueAttributes(e,attrs);
+        convertAttributes(e,attrs);
+        return c.newEntity(e.getId(), attrs);
     }
 
     //TODO: only supporting one member in the relation
@@ -340,11 +340,11 @@ public class BeanTraversal implements StatementActionValue {
     }
 
     public List<Attribute> convertLabelAttributes(HasLabel e, List<Attribute> acc) {
-   	List<LangString> labels = e.getLabel();
-   	for (LangString label : labels) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, pFactory.getName().XSD_STRING));
-   	}
-   	return acc;
+        List<LangString> labels = e.getLabel();
+        for (LangString label : labels) {
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_LABEL,label, pFactory.getName().XSD_STRING));
+        }
+        return acc;
     }
 
     public List<Attribute> convertLocationAttributes(HasLocation e, List<Attribute> acc) {
@@ -356,39 +356,39 @@ public class BeanTraversal implements StatementActionValue {
         }
         return acc;
     }
-    
+
 
     public List<Attribute> convertRoleAttributes(HasRole e, List<Attribute> acc) {
-   	List<Role> roles = e.getRole();
-   	for (Role role : roles) {
-   	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,
-   	                                  role.getValue(), 
-   	                                  role.getType()));
-   	}
-   	return acc;
+        List<Role> roles = e.getRole();
+        for (Role role : roles) {
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_ROLE,
+                    role.getValue(),
+                    role.getType()));
+        }
+        return acc;
     }
 
     public List<Attribute> convertTypeAttributes(HasType e, List<Attribute> acc) {
-	List<Type> types=e.getType();
-	for (Type type : types) {
-	    acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE, 
-	                                  type.getValue(),
-	                                  //type.getValueAsObject(vconv), 
-	                                  type.getType()));
-	}
-	return acc;
+        List<Type> types=e.getType();
+        for (Type type : types) {
+            acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_TYPE,
+                    type.getValue(),
+                    //type.getValueAsObject(vconv),
+                    type.getType()));
+        }
+        return acc;
     }
-    
+
 
     public Object convertValueAttributes(HasValue e, List<Attribute> acc) {
         Value value = e.getValue();
         if (value==null) return acc;
         acc.add(pFactory.newAttribute(Attribute.AttributeKind.PROV_VALUE,
-                                      value.getValue(), 
-                                      value.getType()));
-        return acc;     
+                value.getValue(),
+                value.getType()));
+        return acc;
     }
 
-    
-	
+
+
 }

@@ -1590,7 +1590,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     
 
     public void setAttributes(HasOther res, Collection<Attribute> attributes) {
-        if (attributes==null) return;
+		if (attributes==null) return;
+		if (attributes.isEmpty()) return;
         HasType typ=(res instanceof HasType)? (HasType)res : null;
         HasLocation loc=(res instanceof HasLocation)? (HasLocation)res : null;
         HasLabel lab=(res instanceof HasLabel)? (HasLabel)res : null;

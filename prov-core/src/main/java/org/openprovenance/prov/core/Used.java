@@ -43,7 +43,7 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
                 Collection<Attribute> attributes) {
         this.setId(id);
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type, role, other);
     }
 
     public Used(QualifiedName id,
@@ -54,7 +54,7 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
         this.activity=activity;
         this.entity=entity;
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type, role, other);
     }
 
     public Used(QualifiedName id,
@@ -66,7 +66,7 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
         this.activity=activity;
         this.entity=entity;
         setTime(time);
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type, role, other);
     }
 
 

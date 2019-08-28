@@ -43,7 +43,7 @@ public class WasGeneratedBy implements org.openprovenance.prov.model.WasGenerate
                           Collection<Attribute> attributes) {
         this.setId(id);
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
     public WasGeneratedBy(QualifiedName id,
@@ -54,7 +54,7 @@ public class WasGeneratedBy implements org.openprovenance.prov.model.WasGenerate
         this.activity=activity;
         this.entity=entity;
         time=Optional.empty();
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
     public WasGeneratedBy(QualifiedName id,
@@ -66,7 +66,7 @@ public class WasGeneratedBy implements org.openprovenance.prov.model.WasGenerate
         this.activity=activity;
         this.entity=entity;
         setTime(time);
-        u.populateAttributes(attributes, location, type,role);
+        u.populateAttributes(attributes, labels, location, type,role,other);
     }
 
 

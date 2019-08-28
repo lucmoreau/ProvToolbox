@@ -42,7 +42,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
     public WasDerivedFrom(QualifiedName id,
                           Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST, other);
     }
 
     public WasDerivedFrom(QualifiedName id,
@@ -52,7 +52,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         this.setId(id);
         this.usedEntity=usedEntity;
         this.generatedEntity=generatedEntity;
-        u.populateAttributes(attributes, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST, other);
     }
 
     public WasDerivedFrom(QualifiedName id,
@@ -64,7 +64,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         this.setActivity(activity);
         this.usedEntity=usedEntity;
         this.generatedEntity=generatedEntity;
-        u.populateAttributes(attributes, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,  other);
     }
 
 

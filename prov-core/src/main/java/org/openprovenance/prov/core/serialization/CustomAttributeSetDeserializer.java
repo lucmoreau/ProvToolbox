@@ -21,12 +21,8 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
     static final ProvFactory pf=new ProvFactory();
 
 
-
-
     public CustomAttributeSetDeserializer(JavaType vc) {
         super(vc);
-
-
     }
 
     @Override
@@ -35,27 +31,21 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
         QualifiedName context=(QualifiedName)deserializationContext.getAttribute(PROV_ATTRIBUTE_CONTEXT_KEY);
 
-
-
         Iterator<JsonNode> elements=node.elements();
         Set<Attribute> set=new HashSet<>();
         while (elements.hasNext()) {
             JsonNode next=elements.next();
 
-            if (next.isObject() || !CustomTypedValueSerializer.optimise) {
-
-                Attribute attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next, deserializationContext);
-
-                set.add(attr);
+            Attribute attr;
+            if (next.isObject() ) {
+                attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next, deserializationContext);
             } else {
-                Attribute attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next.textValue(), deserializationContext);
-
-                set.add(attr);
+                attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next.textValue(), deserializationContext);
             }
+            set.add(attr);
+
         }
-
         return set;
-
-
     }
+
 }

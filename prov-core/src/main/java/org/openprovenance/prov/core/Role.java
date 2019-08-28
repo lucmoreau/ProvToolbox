@@ -40,8 +40,8 @@ public class Role extends TypedValue implements org.openprovenance.prov.model.Ro
     }
 
     public Role(QualifiedName type, Object value) {
-        //       super(type, castToStringOrLangStringOrQualifiedName(value));
-        super(type, value, null);
+        super(type, castToStringOrLangStringOrQualifiedName(value,type));
+        //super(type, value, null);
     }
 
 

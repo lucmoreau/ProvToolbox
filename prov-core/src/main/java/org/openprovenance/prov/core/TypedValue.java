@@ -14,20 +14,20 @@ import javax.xml.transform.TransformerException;
  public class TypedValue implements org.openprovenance.prov.model.TypedValue, Equals, ToString, HashCode {
 
 
-
-    private static final QualifiedName QualifiedName_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
-    private static final QualifiedName QualifiedName_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
-    private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
-    private static final QualifiedName QualifiedName_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
-    private static final QualifiedName QualifiedName_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
-    private static final QualifiedName QualifiedName_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
-    private static final QualifiedName QualifiedName_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
+     private static final QualifiedName QualifiedName_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
+     private static final QualifiedName QualifiedName_PROV_TYPE = ProvFactory.getFactory().getName().PROV_TYPE;
+     private static final QualifiedName QualifiedName_PROV_LABEL = ProvFactory.getFactory().getName().PROV_LABEL;
+     private static final QualifiedName QualifiedName_PROV_VALUE = ProvFactory.getFactory().getName().PROV_VALUE;
+     private static final QualifiedName QualifiedName_PROV_LOCATION = ProvFactory.getFactory().getName().PROV_LOCATION;
+     private static final QualifiedName QualifiedName_PROV_ROLE = ProvFactory.getFactory().getName().PROV_ROLE;
+     private static final QualifiedName QualifiedName_XSD_HEX_BINARY = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
+     private static final QualifiedName QualifiedName_XSD_BASE64_BINARY = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
 
 
     private static final QualifiedName QualifiedName_PROV_QUALIFIEDNAME = ProvFactory.getFactory().getName().PROV_QUALIFIED_NAME;
 
-    public static Object castToStringOrLangStringOrQualifiedName(Object value) {
-        return (value instanceof org.openprovenance.prov.core.LangString)? value : ((value instanceof org.openprovenance.prov.core.QualifiedName)? value : value.toString());
+    public static Object castToStringOrLangStringOrQualifiedName(Object value, QualifiedName type) {
+        return (value instanceof org.openprovenance.prov.core.LangString)? value : ((value instanceof org.openprovenance.prov.core.QualifiedName)? value : ((QualifiedName_XSD_STRING.equals(type))? new org.openprovenance.prov.core.LangString(value.toString(),null): value.toString()));
     }
 
 
@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerException;
     }
 
      /* dummy, introduced to distinguish the constructors. */
-     public TypedValue(QualifiedName type, Object value, Object _dummy) {
+     public TypedValue(QualifiedName type, Object value, Object _dummy, Object ignore) {
          this.type=type;
          setValueFromObject(value);
      }

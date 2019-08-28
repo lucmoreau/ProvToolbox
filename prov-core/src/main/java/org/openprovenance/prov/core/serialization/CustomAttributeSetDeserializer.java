@@ -41,10 +41,17 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
         Set<Attribute> set=new HashSet<>();
         while (elements.hasNext()) {
             JsonNode next=elements.next();
-            Attribute attr=new CustomAttributeDeserializerWithRootName().deserialize(context,next,deserializationContext);
 
+            if (next.isObject() || !CustomTypedValueSerializer.optimise) {
 
-            set.add(attr);
+                Attribute attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next, deserializationContext);
+
+                set.add(attr);
+            } else {
+                Attribute attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next.textValue(), deserializationContext);
+
+                set.add(attr);
+            }
         }
 
         return set;

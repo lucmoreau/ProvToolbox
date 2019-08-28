@@ -40,7 +40,7 @@ public class Type extends TypedValue implements org.openprovenance.prov.model.Ty
     }
 
     public Type (org.openprovenance.prov.model.QualifiedName type, Object value) {
-        super(type, castToStringOrLangStringOrQualifiedName(value));
+        super(type, castToStringOrLangStringOrQualifiedName(value,type));
     }
 
 

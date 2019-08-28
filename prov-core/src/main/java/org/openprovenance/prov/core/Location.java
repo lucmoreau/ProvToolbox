@@ -40,7 +40,7 @@ public class Location extends TypedValue implements org.openprovenance.prov.mode
     }
 
     public Location(QualifiedName type, Object value) {
-        super(type, castToStringOrLangStringOrQualifiedName(value));
+        super(type, castToStringOrLangStringOrQualifiedName(value, type));
     }
 
     private Location () {

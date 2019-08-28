@@ -16,7 +16,6 @@ import java.util.*;
 
 public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
-static public Namespace theNS;
 
     static final ProvFactory pf=new ProvFactory();
 

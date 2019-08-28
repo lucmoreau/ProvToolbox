@@ -32,7 +32,10 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     @Override
     public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
-        return deserialize(node,deserializationContext);
+
+        return deserialize(node, deserializationContext);
+
+
     }
 
     public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
@@ -43,10 +46,22 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         JsonNode vObj=pair.getValue();
 
         return deserialize(elementName,vObj,deserializationContext);
+
     }
+
+    public Attribute deserialize(QualifiedName elementName,  String node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+
+        return pf.newAttribute(elementName, new LangString(node,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
+    }
+
+
+
+
 
     public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+
 
 
         Iterator<Map.Entry<String, JsonNode>> pairs=vObj.fields();

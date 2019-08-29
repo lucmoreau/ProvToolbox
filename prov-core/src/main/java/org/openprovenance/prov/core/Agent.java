@@ -6,7 +6,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Value;
 import org.openprovenance.prov.model.Role;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 

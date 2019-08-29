@@ -1,16 +1,13 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.apache.commons.lang.builder.*;
+import org.openprovenance.prov.core.jsonld.JLD_AlternateOf;
 import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.QualifiedName;
 
-@JsonPropertyOrder({ "alternate1", "alternate2"})
+//@JsonPropertyOrder({ "alternate1", "alternate2"})
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AlternateOf implements org.openprovenance.prov.model.AlternateOf, Equals, HashCode, ToString {
 
 
@@ -43,19 +40,19 @@ public class AlternateOf implements org.openprovenance.prov.model.AlternateOf, E
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+//    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAlternate2() {
         return alternate2;
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+//    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAlternate1() {
         return alternate1;
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ALTERNATE;

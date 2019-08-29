@@ -105,13 +105,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     @Override
-    public QualifiedName newQualifiedName(String namespace, String local, String prefix) {
-        return new QualifiedName(namespace,local,prefix);
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace, String local, String prefix) {
+        return mc.newQualifiedName(namespace,local,prefix);
     }
 
     @Override
-    public QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag) {
-        return new QualifiedName(namespace,local,prefix);
+    public org.openprovenance.prov.model.QualifiedName newQualifiedName(String namespace, String local, String prefix, ProvUtilities.BuildFlag flag) {
+        return mc.newQualifiedName(namespace,local,prefix);
     }
 
     @Override
@@ -135,7 +135,9 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     @Override
-    public Other newOther(org.openprovenance.prov.model.QualifiedName elementName, Object value, org.openprovenance.prov.model.QualifiedName type) {
+    public Other newOther(org.openprovenance.prov.model.QualifiedName elementName,
+                          Object value,
+                          org.openprovenance.prov.model.QualifiedName type) {
         return new org.openprovenance.prov.core.Other(elementName,type,value);
     }
 
@@ -572,12 +574,14 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName collection, org.openprovenance.prov.model.QualifiedName... entities) {
+        //TODO FIXME, jsonld!
         org.openprovenance.prov.model.HadMember res = new org.openprovenance.prov.core.jsonld.HadMember(collection,Arrays.asList(entities));
         return res;
     }
 
 
-    public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName c, Collection<org.openprovenance.prov.model.QualifiedName> e) {
+    public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName c,
+                                                                Collection<org.openprovenance.prov.model.QualifiedName> e) {
         List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
         if (e!=null) {
             for (org.openprovenance.prov.model.QualifiedName q: e) {
@@ -590,7 +594,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
-        org.openprovenance.prov.model.WasStartedBy res = new org.openprovenance.prov.core.WasStartedBy(id,aid,eid,null,null,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasStartedBy res = mc.newWasStartedBy(id,aid,eid,null,null,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -606,7 +610,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                       org.openprovenance.prov.model.QualifiedName activity,
                                                                       org.openprovenance.prov.model.QualifiedName trigger,
                                                                       org.openprovenance.prov.model.QualifiedName starter) {
-        org.openprovenance.prov.model.WasStartedBy res = new org.openprovenance.prov.core.WasStartedBy(id,activity,trigger,starter,null,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasStartedBy res = mc.newWasStartedBy(id,activity,trigger,starter,null,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -619,7 +623,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                       org.openprovenance.prov.model.QualifiedName starter,
                                                                       XMLGregorianCalendar time,
                                                                       Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasStartedBy res = new org.openprovenance.prov.core.WasStartedBy(id,activity,trigger,starter,time,attributes);
+        org.openprovenance.prov.model.WasStartedBy res = mc.newWasStartedBy(id,activity,trigger,starter,time,attributes);
         return res;
     }
 
@@ -627,7 +631,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
-        org.openprovenance.prov.model.WasEndedBy res = new org.openprovenance.prov.core.WasEndedBy(id,aid,eid,null,null,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasEndedBy res = mc.newWasEndedBy(id,aid,eid,null,null,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -643,7 +647,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                   org.openprovenance.prov.model.QualifiedName activity,
                                                                   org.openprovenance.prov.model.QualifiedName trigger,
                                                                   org.openprovenance.prov.model.QualifiedName ender) {
-        org.openprovenance.prov.model.WasEndedBy res = new org.openprovenance.prov.core.WasEndedBy(id,activity,trigger,ender,null,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasEndedBy res = mc.newWasEndedBy(id,activity,trigger,ender,null,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -656,7 +660,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                   org.openprovenance.prov.model.QualifiedName ender,
                                                                   XMLGregorianCalendar time,
                                                                   Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasEndedBy res = new org.openprovenance.prov.core.WasEndedBy(id,activity,trigger,ender,time,attributes);
+        org.openprovenance.prov.model.WasEndedBy res = mc.newWasEndedBy(id,activity,trigger,ender,time,attributes);
         return res;
     }
 

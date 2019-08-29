@@ -20,5 +20,7 @@ public class ProvMixin {
         mapper.addMixIn(WasDerivedFrom.class,       org.openprovenance.prov.core.jsonld.JLD_WasDerivedFrom.class);
         mapper.addMixIn(WasEndedBy.class,           org.openprovenance.prov.core.jsonld.JLD_WasEndedBy.class);
         mapper.addMixIn(WasStartedBy.class,         org.openprovenance.prov.core.jsonld.JLD_WasStartedBy.class);
+        mapper.addMixIn(WasGeneratedBy.class,       org.openprovenance.prov.core.jsonld.JLD_WasGeneratedBy.class);
+        mapper.addMixIn(WasInvalidatedBy.class,     org.openprovenance.prov.core.jsonld.JLD_WasInvalidatedBy.class);
     }
 }

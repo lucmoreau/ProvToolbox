@@ -1,8 +1,5 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
 import org.openprovenance.prov.core.serialization.CustomKeyDeserializer;
@@ -15,9 +12,9 @@ import org.openprovenance.prov.model.Value;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id", "informed", "informant"})
+//@JsonPropertyOrder({ "@id", "informed", "informant"})
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WasInformedBy implements org.openprovenance.prov.model.WasInformedBy, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -25,7 +22,6 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
-    private List<org.openprovenance.prov.model.Role> role = new LinkedList<>();
     protected QualifiedName informed;
     protected QualifiedName informant;
 
@@ -39,7 +35,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     public WasInformedBy(QualifiedName id,
                          Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,new LinkedList<>(),other,null);
     }
 
     public WasInformedBy(QualifiedName id,
@@ -49,7 +45,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
         this.setId(id);
         this.informed=informed;
         this.informant=informant;
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,new LinkedList<>(),other,null);
     }
 
 
@@ -65,28 +61,28 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+ //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getInformant() {
         return informant;
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getInformed() {
         return informed;
     }
 
 
 
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    @JsonProperty("@id")
+  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+  //  @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_COMMUNICATION;
@@ -94,7 +90,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
 
 
 
-    @JsonProperty("@id")
+ //   @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -102,21 +98,21 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
 
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -202,7 +198,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
         return toStringBuilder.toString();
     }
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -212,8 +208,8 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
         return result;
     }
 
-    @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+ //   @JsonAnySetter
+ //   @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         List<org.openprovenance.prov.model.Location> locations=new LinkedList<>();
@@ -221,10 +217,10 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     }
 
 
-    @JsonAnyGetter
+ //   @JsonAnyGetter
     @Override
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+  //  @JsonProperty("attributes")
+  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

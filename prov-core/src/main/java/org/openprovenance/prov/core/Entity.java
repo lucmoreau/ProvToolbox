@@ -1,24 +1,16 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
-import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
-import org.openprovenance.prov.core.serialization.CustomKeyDeserializer;
-import org.openprovenance.prov.core.serialization.CustomMapSerializer;
-import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Value;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id" })
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//@JsonPropertyOrder({ "@id" })
+//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 
 public class Entity implements org.openprovenance.prov.model.Entity, Equals, HashCode, ToString, HasAttributes {
 
@@ -50,27 +42,27 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         value=Optional.ofNullable(valueHolder[0]);
     }
 
-    @JsonIgnore
+   // @JsonIgnore
     public void setValue(org.openprovenance.prov.model.Value o) {
         this.value=Optional.ofNullable(o);
     }
 
-    @JsonIgnore
+ //   @JsonIgnore
     public org.openprovenance.prov.model.Value getValue() {
         return value.orElse(null);
     }
 
 
 
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    @JsonProperty("@id")
+  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+  //  @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ENTITY;
@@ -78,7 +70,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
 
 
 
-    @JsonProperty("@id")
+  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -86,26 +78,26 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
 
 
 
-    @JsonIgnore
+    //@JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    @JsonIgnore
+    //@JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -170,7 +162,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         return toStringBuilder.toString();
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -182,8 +174,8 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         return result;
     }
 
-    @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+    //@JsonAnySetter
+    //@JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values_discard=new LinkedList<>();
         List<Role> roles_discard=new LinkedList<>();
@@ -193,10 +185,10 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     }
 
 
-    @JsonAnyGetter
+    //@JsonAnyGetter
     @Override
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+    //@JsonProperty("attributes")
+    //@JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

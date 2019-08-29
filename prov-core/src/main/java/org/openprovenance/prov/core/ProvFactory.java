@@ -146,7 +146,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a) {
-        Activity res = new org.openprovenance.prov.core.jsonld.Activity(a,null,null,null);
+        Activity res = new org.openprovenance.prov.core.Activity(a,null,null,null);
         return res;
     }
 

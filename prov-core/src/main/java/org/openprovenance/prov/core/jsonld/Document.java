@@ -34,7 +34,7 @@ public interface Document {
             @JsonSubTypes.Type(value = WasAssociatedWith.class,  name = Constants.PROPERTY_PROV_ASSOCIATION),
             @JsonSubTypes.Type(value = WasGeneratedBy.class,     name = Constants.PROPERTY_PROV_GENERATION),
             @JsonSubTypes.Type(value = Used.class,               name = Constants.PROPERTY_PROV_USED),
-            @JsonSubTypes.Type(value = org.openprovenance.prov.core.jsonld.Activity.class,           name = Constants.PROPERTY_PROV_ACTIVITY),
+            @JsonSubTypes.Type(value = org.openprovenance.prov.core.Activity.class,           name = Constants.PROPERTY_PROV_ACTIVITY),
             @JsonSubTypes.Type(value = Agent.class,              name = Constants.PROPERTY_PROV_AGENT),
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY)
     })

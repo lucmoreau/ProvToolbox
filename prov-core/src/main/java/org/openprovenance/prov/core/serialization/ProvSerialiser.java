@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.openprovenance.prov.core.QualifiedName;
-import org.openprovenance.prov.core.jsonld.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
@@ -17,6 +16,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
+
+    private final ProvMixin provMixin = new ProvMixin();
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
@@ -38,7 +39,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
                 SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
         mapper.setFilterProvider(filterProvider);
 
-       // mapper.addMixIn(org.openprovenance.prov.core.Activity.class,  Activity.class);
+        provMixin.addProvMixin(mapper);
 
 
         try {
@@ -48,5 +49,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
             throw new UncheckedException(e);
         }
     }
+
 
 }

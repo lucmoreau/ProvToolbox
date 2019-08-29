@@ -19,6 +19,9 @@ import java.util.Set;
 
 public class ProvDeserialiser {
 
+    private final ProvMixin provMixin = new ProvMixin();
+
+
     public org.openprovenance.prov.model.Document deserialiseDocument (File serialised) throws IOException, FileNotFoundException {
         return deserialiseDocument(new FileInputStream(serialised));
     }
@@ -53,7 +56,7 @@ public class ProvDeserialiser {
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 
-     //   mapper.addMixIn(org.openprovenance.prov.core.Activity.class, JLD_Activity.class);
+        provMixin.addProvMixin(mapper);
 
 
         mapper.registerModule(module);

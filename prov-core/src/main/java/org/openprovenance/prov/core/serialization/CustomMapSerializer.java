@@ -10,13 +10,15 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-public class CustomMapSerializer extends JsonSerializer<QualifiedName> {
+abstract public class CustomMapSerializer extends JsonSerializer<QualifiedName> {
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=q.getPrefix() + ":" + q.getLocalPart();
         if (s.equals("prov:type")) {
             s=Constants.PROPERTY_AT_TYPE;
         }
+        //deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+
         jsonGenerator.writeFieldName(s);
     }
 }

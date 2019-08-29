@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-//@JsonPropertyOrder({ "namespace"})
-
 public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode, Constants, org.openprovenance.prov.core.jsonld.Document {
 
     private List<StatementOrBundle> statementsOrBundle;
@@ -38,26 +36,11 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
     }
 
     @Override
-  //  @JsonFilter("nsFilter")
     public Namespace getNamespace() {
         return namespace;
     }
 
-  /*  @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = PROPERTY_AT_TYPE)
-    @JsonSubTypes({
-            @JsonSubTypes.Type(value = WasDerivedFrom.class,     name = PROPERTY_PROV_DERIVATION),
-            @JsonSubTypes.Type(value = AlternateOf.class,        name = PROPERTY_PROV_ALTERNATE),
-            @JsonSubTypes.Type(value = SpecializationOf.class,   name = PROPERTY_PROV_SPECIALIZATION),
-            @JsonSubTypes.Type(value = WasAttributedTo.class,    name = PROPERTY_PROV_ATTRIBUTION),
-            @JsonSubTypes.Type(value = WasAssociatedWith.class,  name = PROPERTY_PROV_ASSOCIATION),
-            @JsonSubTypes.Type(value = WasGeneratedBy.class,     name = PROPERTY_PROV_GENERATION),
-            @JsonSubTypes.Type(value = Used.class,               name = PROPERTY_PROV_USED),
-            @JsonSubTypes.Type(value = Activity.class,           name = PROPERTY_PROV_ACTIVITY),
-            @JsonSubTypes.Type(value = Agent.class,              name = PROPERTY_PROV_AGENT),
-            @JsonSubTypes.Type(value = Entity.class,             name = PROPERTY_PROV_ENTITY)
-    })
 
-   */
     @Override
     public List<StatementOrBundle> getStatementOrBundle() {
         return statementsOrBundle;

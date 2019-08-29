@@ -13,6 +13,7 @@ public interface InteropMediaType {
     public static final String EXTENSION_JPG = "jpg";
     public static final String EXTENSION_PNG = "png";
     public static final String EXTENSION_JSON = "json";
+    public static final String EXTENSION_JSONLD= "jsonld";
     public static final String EXTENSION_PDF = "pdf";
     /** The recommended extension for PROV-N files.
      * @see <a href="http://www.w3.org/TR/prov-n/#media-type">Media Type for PROV-N</a> */
@@ -35,6 +36,7 @@ public interface InteropMediaType {
     /** The extension for XML files. */
     public static final String EXTENSION_XML = "xml";
     public static final String MEDIA_APPLICATION_FORM_URLENCODED = MediaType.APPLICATION_FORM_URLENCODED;
+    public static final String MEDIA_APPLICATION_JSONLD = "application/ld+json";
     public static final String MEDIA_APPLICATION_JSON = MediaType.APPLICATION_JSON;
     public static final String MEDIA_APPLICATION_PDF = "application/pdf";
     /** The Internet Media type for PROV-XML

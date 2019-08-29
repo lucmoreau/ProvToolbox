@@ -8,6 +8,8 @@ import org.openprovenance.prov.core.vanilla.TypedValue;
 import java.io.IOException;
 import java.util.Set;
 
+import static org.openprovenance.prov.core.serialization.CustomMapSerializer2.CONTEXT_KEY_FOR_MAP;
+
 
 public class CustomAttributesSerializer extends StdSerializer<Object> {
 
@@ -23,12 +25,17 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
 
     @Override
     public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        String newKey=(String)serializerProvider.getAttribute(CONTEXT_KEY_FOR_MAP);
+
         Set<TypedValue> set=(Set<TypedValue>) o;
-        jsonGenerator.writeStartArray();
-        for (TypedValue a: set) {
-            new CustomTypedValueSerializer().serialize(a,jsonGenerator,serializerProvider);
+        if (!(set.isEmpty())) {
+            jsonGenerator.writeFieldName(newKey);
+            jsonGenerator.writeStartArray();
+            for (TypedValue a : set) {
+                new CustomTypedValueSerializer().serialize(a, jsonGenerator, serializerProvider);
+            }
+            jsonGenerator.writeEndArray();
         }
-        jsonGenerator.writeEndArray();
     }
 
 

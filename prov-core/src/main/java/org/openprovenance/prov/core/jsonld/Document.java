@@ -1,9 +1,6 @@
 package org.openprovenance.prov.core.jsonld;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import org.openprovenance.prov.core.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
@@ -13,10 +10,10 @@ import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "namespace"})
-
+@JsonPropertyOrder({ "@context", "@graph"})
 public interface Document {
     @JsonFilter("nsFilter")
+    @JsonProperty("@context")
     Namespace getNamespace();
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = Constants.PROPERTY_BLOCK_TYPE)
@@ -39,5 +36,6 @@ public interface Document {
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
             @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
+    @JsonProperty("@graph")
     List<StatementOrBundle> getStatementOrBundle();
 }

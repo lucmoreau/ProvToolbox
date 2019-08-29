@@ -72,7 +72,7 @@ public class InteropFramework implements InteropMediaType {
      * Some of these serializations can be input, output, or both. */
     
     static public enum ProvFormat {
-        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, DOT, JPEG, PNG, SVG, PDF
+        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, JSONLD, DOT, JPEG, PNG, SVG, PDF
     }
 
     static public enum ProvFormatType {
@@ -384,6 +384,13 @@ public class InteropFramework implements InteropMediaType {
                 mimeTypeRevMap.put(MEDIA_TEXT_TURTLE, ProvFormat.TURTLE);
                 provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
                 break;
+            case JSONLD:
+                extensionMap.put(ProvFormat.JSONLD, EXTENSION_JSONLD);
+                extensionRevMap.put(EXTENSION_JSONLD, ProvFormat.JSONLD);
+                mimeTypeMap.put(ProvFormat.JSONLD, MEDIA_APPLICATION_JSONLD);
+                mimeTypeRevMap.put(MEDIA_APPLICATION_JSONLD, ProvFormat.JSONLD);
+                provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
+                break;
             case XML:
                 extensionMap.put(ProvFormat.XML, EXTENSION_PROVX);
                 extensionRevMap.put(EXTENSION_PROVX, ProvFormat.XML);
@@ -564,6 +571,11 @@ public class InteropFramework implements InteropMediaType {
                         pFactory, onto);
                 return rdfU.parseRDF(is, RDFFormat.TURTLE,baseuri);
             }
+            case JSONLD: {
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
+                        pFactory, onto);
+                return rdfU.parseRDF(is, RDFFormat.JSONLD,baseuri);
+            }
             case XML: {
                 ProvDeserialiser deserial = ProvDeserialiser
                         .getThreadProvDeserialiser();
@@ -685,6 +697,7 @@ public class InteropFramework implements InteropMediaType {
             }
             case RDFXML:
             case TRIG:
+            case JSONLD:
             case TURTLE: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                         pFactory, onto);
@@ -1110,11 +1123,7 @@ public class InteropFramework implements InteropMediaType {
                 serial.serialiseDocument(os, document, true);
                 break;
             }
-            case TURTLE: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.TURTLE, os);
-                break;
-            }
+
             case RDFXML: {
                 new org.openprovenance.prov.rdf.Utility(pFactory, onto)
                         .dumpRDF(document, RDFFormat.RDFXML, os);
@@ -1218,6 +1227,11 @@ public class InteropFramework implements InteropMediaType {
             case TURTLE: {
                 new org.openprovenance.prov.rdf.Utility(pFactory, onto)
                         .dumpRDF(document, RDFFormat.TURTLE, filename);
+                break;
+            }
+            case JSONLD: {
+                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
+                        .dumpRDF(document, RDFFormat.JSONLD, filename);
                 break;
             }
             case RDFXML: {

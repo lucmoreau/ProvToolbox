@@ -39,7 +39,7 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
     public WasAttributedTo(QualifiedName id,
                            Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,other);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,other,null);
     }
 
     public WasAttributedTo(QualifiedName id,
@@ -49,7 +49,7 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
         this.setId(id);
         this.agent=agent;
         this.entity=entity;
-        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,other);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,other,null);
     }
 
 

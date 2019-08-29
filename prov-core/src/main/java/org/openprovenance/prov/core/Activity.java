@@ -43,7 +43,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         this.setStartTime(startTime);
         this.setEndTime(endTime);
 
-        u.populateAttributes(attributes, labels, location, type, new LinkedList<>(),other);
+        u.populateAttributes(attributes, labels, location, type, new LinkedList<>(),other,null);
 
 
     }

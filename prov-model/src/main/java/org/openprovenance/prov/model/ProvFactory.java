@@ -131,12 +131,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	return to;
     }
 
-    public WasDerivedFrom addAttributes(WasDerivedFrom from, WasDerivedFrom to) {
-	to.getLabel().addAll(from.getLabel());
-	to.getType().addAll(from.getType());
-	to.getOther().addAll(from.getOther());
-	return to;
-    }
+	public WasDerivedFrom addAttributes(WasDerivedFrom from, WasDerivedFrom to) {
+		to.getLabel().addAll(from.getLabel());
+		to.getType().addAll(from.getType());
+		to.getOther().addAll(from.getOther());
+		return to;
+	}
 
     public WasEndedBy addAttributes(WasEndedBy from, WasEndedBy to) {
 	to.getLabel().addAll(from.getLabel());
@@ -1188,22 +1188,22 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
         res.setUsedEntity(e1);
         res.setGeneratedEntity(e2);
         return res;
-    }    
+    }
 
-    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
-     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation 
-     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
-     * @return an instance of {@link WasDerivedFrom}
-     */
-    public WasDerivedFrom newWasDerivedFrom(QualifiedName e2,
-					    QualifiedName e1) {
-	WasDerivedFrom res = of.createWasDerivedFrom();
-	res.setUsedEntity(e1);
-	res.setGeneratedEntity(e2);
-	return res;
-    }    
-   
-    /*
+	/** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+	 * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation
+	 * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+	 * @return an instance of {@link WasDerivedFrom}
+	 */
+	public WasDerivedFrom newWasDerivedFrom(QualifiedName e2,
+											QualifiedName e1) {
+		WasDerivedFrom res = of.createWasDerivedFrom();
+		res.setUsedEntity(e1);
+		res.setGeneratedEntity(e2);
+		return res;
+	}
+
+	/*
      * (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
      */
@@ -1694,133 +1694,133 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
     public <T extends Statement> T newStatement(T s) {
 	 return (T) util.doAction(s,new Cloner());
     }
-    
-    public class Cloner implements StatementActionValue {
 
-	@Override
-	public Object doAction(Activity s) {
-	    return newActivity(s);
-	}
+	public class Cloner implements StatementActionValue {
 
-	@Override
-	public Object doAction(Used s) {
-	    return newUsed(s);
-	}
+		@Override
+		public Object doAction(Activity s) {
+			return newActivity(s);
+		}
 
-	@Override
-	public Object doAction(WasStartedBy s) {
-	    return newWasStartedBy(s);
-	}
+		@Override
+		public Object doAction(Used s) {
+			return newUsed(s);
+		}
 
-	@Override
-	public Object doAction(Agent s) {
-	    return newAgent(s);
-	}
+		@Override
+		public Object doAction(WasStartedBy s) {
+			return newWasStartedBy(s);
+		}
 
-	@Override
-	public Object doAction(AlternateOf s) {
-	    return newAlternateOf(s);
-	}	
+		@Override
+		public Object doAction(Agent s) {
+			return newAgent(s);
+		}
 
-	@Override
-	public Object doAction(WasAssociatedWith s) {
-	    return newWasAssociatedWith(s);
-	}
+		@Override
+		public Object doAction(AlternateOf s) {
+			return newAlternateOf(s);
+		}
 
-	@Override
-	public Object doAction(WasAttributedTo s) {
-	    return newWasAttributedTo(s);
-	}
+		@Override
+		public Object doAction(WasAssociatedWith s) {
+			return newWasAssociatedWith(s);
+		}
 
-	@Override
-	public Object doAction(WasInfluencedBy s) {
-	    return newWasInfluencedBy(s);
-	}
+		@Override
+		public Object doAction(WasAttributedTo s) {
+			return newWasAttributedTo(s);
+		}
 
-	@Override
-	public Object doAction(ActedOnBehalfOf s) {
-	    return newActedOnBehalfOf(s);
-	}
+		@Override
+		public Object doAction(WasInfluencedBy s) {
+			return newWasInfluencedBy(s);
+		}
 
-	@Override
-	public Object doAction(WasDerivedFrom s) {
-	    return newWasDerivedFrom(s);
-	}
+		@Override
+		public Object doAction(ActedOnBehalfOf s) {
+			return newActedOnBehalfOf(s);
+		}
 
-	@Override
-	public Object doAction(DictionaryMembership s) {
-	    throw new UnsupportedOperationException();
-	}
+		@Override
+		public Object doAction(WasDerivedFrom s) {
+			return newWasDerivedFrom(s);
+		}
 
-	@Override
-	public Object doAction(DerivedByRemovalFrom s) {
-	    throw new UnsupportedOperationException();
-	}
+		@Override
+		public Object doAction(DictionaryMembership s) {
+			throw new UnsupportedOperationException();
+		}
 
-	@Override
-	public Object doAction(WasEndedBy s) {
-	    return newWasEndedBy(s);
-	}
+		@Override
+		public Object doAction(DerivedByRemovalFrom s) {
+			throw new UnsupportedOperationException();
+		}
 
-	@Override
-	public Object doAction(Entity s) {
-	    return newEntity(s);
-	}
+		@Override
+		public Object doAction(WasEndedBy s) {
+			return newWasEndedBy(s);
+		}
 
-	@Override
-	public Object doAction(WasGeneratedBy s) {
-	    return newWasGeneratedBy(s);
-	}
+		@Override
+		public Object doAction(Entity s) {
+			return newEntity(s);
+		}
 
-	@Override
-	public Object doAction(WasInvalidatedBy s) {
-	    return newWasInvalidatedBy(s);
-	}
+		@Override
+		public Object doAction(WasGeneratedBy s) {
+			return newWasGeneratedBy(s);
+		}
 
-	@Override
-	public Object doAction(HadMember s) {
-	    return newHadMember(s);
-	}
+		@Override
+		public Object doAction(WasInvalidatedBy s) {
+			return newWasInvalidatedBy(s);
+		}
 
-	@Override
-	public Object doAction(MentionOf s) {
-	    return newMentionOf(s);
-	}
+		@Override
+		public Object doAction(HadMember s) {
+			return newHadMember(s);
+		}
 
-	@Override
-	public Object doAction(SpecializationOf s) {
-	    return newSpecializationOf(s);
-	}
-	@Override
-	public Object doAction(QualifiedSpecializationOf s) {
-        return newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(),s.getGeneralEntity(),getAttributes(s));
-	}
-	
-    @Override
-    public Object doAction(QualifiedHadMember s) {
-        return newQualifiedHadMember(s.getId(),s.getCollection(),s.getEntity(),getAttributes(s));
-    }
-    
-	@Override
-	public Object doAction(DerivedByInsertionFrom s) {
-	    throw new UnsupportedOperationException();
-	}
+		@Override
+		public Object doAction(MentionOf s) {
+			return newMentionOf(s);
+		}
 
-	@Override
-	public Object doAction(WasInformedBy s) {
-	    return newWasInformedBy(s);
-	}
+		@Override
+		public Object doAction(SpecializationOf s) {
+			return newSpecializationOf(s);
+		}
+		@Override
+		public Object doAction(QualifiedSpecializationOf s) {
+			return newQualifiedSpecializationOf(s.getId(),s.getSpecificEntity(),s.getGeneralEntity(),getAttributes(s));
+		}
 
-	@Override
-	public Object doAction(Bundle s, ProvUtilities provUtilities) {
-	    throw new UnsupportedOperationException();
-	}
+		@Override
+		public Object doAction(QualifiedHadMember s) {
+			return newQualifiedHadMember(s.getId(),s.getCollection(),s.getEntity(),getAttributes(s));
+		}
 
-    @Override
-    public Object doAction(QualifiedAlternateOf s) {
-        return newQualifiedAlternateOf(s.getId(),s.getAlternate1(),s.getAlternate2(),getAttributes(s));        
-    }
-	
-    }
+		@Override
+		public Object doAction(DerivedByInsertionFrom s) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Object doAction(WasInformedBy s) {
+			return newWasInformedBy(s);
+		}
+
+		@Override
+		public Object doAction(Bundle s, ProvUtilities provUtilities) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Object doAction(QualifiedAlternateOf s) {
+			return newQualifiedAlternateOf(s.getId(),s.getAlternate1(),s.getAlternate2(),getAttributes(s));
+		}
+
+	}
 
 }

@@ -23,9 +23,9 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
-    private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
-    private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
-    private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
+    final private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
+    final private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
+    final private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
     protected QualifiedName generatedEntity;
     protected QualifiedName usedEntity;
     protected Optional<QualifiedName> activity=Optional.empty();
@@ -42,7 +42,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
     public WasDerivedFrom(QualifiedName id,
                           Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST, other);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST, other,null);
     }
 
     public WasDerivedFrom(QualifiedName id,
@@ -52,7 +52,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         this.setId(id);
         this.usedEntity=usedEntity;
         this.generatedEntity=generatedEntity;
-        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST, other);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type, Collections.EMPTY_LIST, other,null);
     }
 
     public WasDerivedFrom(QualifiedName id,
@@ -64,8 +64,25 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         this.setActivity(activity);
         this.usedEntity=usedEntity;
         this.generatedEntity=generatedEntity;
-        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,  other);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,  other,null);
     }
+
+    public WasDerivedFrom(QualifiedName id,
+                          QualifiedName generatedEntity,
+                          QualifiedName usedEntity,
+                          QualifiedName activity,
+                          QualifiedName generation,
+                          QualifiedName usage,
+                          Collection<Attribute> attributes) {
+        this.setId(id);
+        this.setActivity(activity);
+        this.usedEntity=usedEntity;
+        this.generatedEntity=generatedEntity;
+        this.setGeneration(generation);
+        this.setUsage(usage);
+        u.populateAttributes(attributes, labels, Collections.EMPTY_LIST, type,Collections.EMPTY_LIST,  other,null);
+    }
+
 
 
     @Override
@@ -155,7 +172,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         return labels;
     }
 
-     @JsonIgnore
+    @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;

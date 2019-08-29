@@ -151,7 +151,8 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                             List<org.openprovenance.prov.model.Location> location,
                             List<org.openprovenance.prov.model.Type> type,
                             List<org.openprovenance.prov.model.Role> role,
-                            List<org.openprovenance.prov.model.Other> other) {
+                            List<org.openprovenance.prov.model.Other> other,
+                            org.openprovenance.prov.model.Value [] value) {
         Collection<Label> labels=new LinkedList<>();
         Collection<Type> types=new LinkedList<>();
         Collection<Location> locations=new LinkedList<>();
@@ -167,17 +168,23 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                     locations,
                     roles,
                     others);
-            //TODO: Assign back to bean fields
-        }
 
-        location.addAll(locations);
-        type.addAll(types);
-        role.addAll(roles);
-        for (Collection<Other> col: others.values())
-            other.addAll(col);
 
-        for (Label lab: labels) {
-            label.add((LangString)lab.value);
+            location.addAll(locations);
+            type.addAll(types);
+            role.addAll(roles);
+            for (Collection<Other> col : others.values())
+                other.addAll(col);
+
+            for (Label lab : labels) {
+                label.add((LangString) lab.value);
+            }
+            if (value != null) {
+                for (Value val : values) {
+                    value[0] = val;
+                    break;
+                }
+            }
         }
 
     }

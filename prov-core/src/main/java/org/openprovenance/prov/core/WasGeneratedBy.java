@@ -43,30 +43,30 @@ public class WasGeneratedBy implements org.openprovenance.prov.model.WasGenerate
                           Collection<Attribute> attributes) {
         this.setId(id);
         time=Optional.empty();
-        u.populateAttributes(attributes, labels, location, type,role,other);
+        u.populateAttributes(attributes, labels, location, type,role,other,null);
     }
 
     public WasGeneratedBy(QualifiedName id,
-                          QualifiedName activity,
                           QualifiedName entity,
+                          QualifiedName activity,
                           Collection<Attribute> attributes) {
         this.setId(id);
         this.activity=activity;
         this.entity=entity;
         time=Optional.empty();
-        u.populateAttributes(attributes, labels, location, type,role,other);
+        u.populateAttributes(attributes, labels, location, type,role,other,null);
     }
 
     public WasGeneratedBy(QualifiedName id,
-                          QualifiedName activity,
                           QualifiedName entity,
+                          QualifiedName activity,
                           XMLGregorianCalendar time,
                           Collection<Attribute> attributes) {
         this.setId(id);
         this.activity=activity;
         this.entity=entity;
         setTime(time);
-        u.populateAttributes(attributes, labels, location, type,role,other);
+        u.populateAttributes(attributes, labels, location, type,role,other,null);
     }
 
 

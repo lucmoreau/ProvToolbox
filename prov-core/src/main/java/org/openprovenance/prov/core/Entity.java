@@ -44,9 +44,10 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
         location=new LinkedList<>();
         type=new LinkedList<>();
         other=new LinkedList<>();
-        u.populateAttributes(attributes, labels, location, type, new LinkedList<>(), other);
-
-
+        Value [] valueHolder=new Value[1];
+        valueHolder[0]=null;
+        u.populateAttributes(attributes, labels, location, type, new LinkedList<>(), other, valueHolder);
+        value=Optional.ofNullable(valueHolder[0]);
     }
 
     @JsonIgnore

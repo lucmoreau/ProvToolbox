@@ -167,7 +167,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         Collection<Attribute> attrs=new LinkedList<>();
         attrs.add(newAttribute(Attribute.AttributeKind.PROV_LABEL,newInternationalizedString(label),getName().XSD_STRING));
         org.openprovenance.prov.model.Entity res =  new org.openprovenance.prov.core.Entity(id,attrs);
-        System.out.println(res);
         return res;
     }
 
@@ -311,20 +310,20 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
     public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName id,
-                                                                          org.openprovenance.prov.model.QualifiedName aid,
+                                                                          org.openprovenance.prov.model.QualifiedName eid,
                                                                           String role,
-                                                                          org.openprovenance.prov.model.QualifiedName eid) {
-        WasGeneratedBy res = new org.openprovenance.prov.core.WasGeneratedBy(id,aid,eid,new LinkedList<>());
+                                                                          org.openprovenance.prov.model.QualifiedName aid) {
+        WasGeneratedBy res = new org.openprovenance.prov.core.WasGeneratedBy(id,eid,aid,new LinkedList<>());
         if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
         return res;
     }
 
 
     public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id,
-                                                                          org.openprovenance.prov.model.QualifiedName eid,
-                                                                          String role,
-                                                                          org.openprovenance.prov.model.QualifiedName aid) {
-        WasInvalidatedBy res = new org.openprovenance.prov.core.WasInvalidatedBy(id,aid,eid,new LinkedList<>());
+                                                                              org.openprovenance.prov.model.QualifiedName eid,
+                                                                              String role,
+                                                                              org.openprovenance.prov.model.QualifiedName aid) {
+        WasInvalidatedBy res = new org.openprovenance.prov.core.WasInvalidatedBy(id,eid,aid,new LinkedList<>());
         if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
         return res;
     }
@@ -345,7 +344,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName entity, org.openprovenance.prov.model.QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+    public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id,
+                                                                              org.openprovenance.prov.model.QualifiedName entity,
+                                                                              org.openprovenance.prov.model.QualifiedName activity,
+                                                                              XMLGregorianCalendar time,
+                                                                              Collection<Attribute> attributes) {
         org.openprovenance.prov.model.WasInvalidatedBy res=new  org.openprovenance.prov.core.WasInvalidatedBy(id,entity,activity,attributes);
         res.setTime(time);
         return res;
@@ -463,6 +466,23 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         WasDerivedFrom res = new org.openprovenance.prov.core.WasDerivedFrom(id,e2,e1,Collections.EMPTY_LIST);
         return res;
     }
+
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ModelConstructor#newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
+     */
+    @Override
+    public WasDerivedFrom newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName id,
+                                            org.openprovenance.prov.model.QualifiedName e2,
+                                            org.openprovenance.prov.model.QualifiedName e1,
+                                            org.openprovenance.prov.model.QualifiedName a,
+                                            org.openprovenance.prov.model.QualifiedName gen,
+                                            org.openprovenance.prov.model.QualifiedName use,
+                                            Collection<Attribute> attributes) {
+        WasDerivedFrom res = new org.openprovenance.prov.core.WasDerivedFrom(id,e2,e1, a, gen, use, attributes);
+        return res;
+    }
+
 
     public Document newDocument(Collection<Activity> ps,
                                 Collection<org.openprovenance.prov.model.Entity> as,

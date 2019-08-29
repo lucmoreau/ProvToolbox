@@ -39,7 +39,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     public WasInformedBy(QualifiedName id,
                          Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
     }
 
     public WasInformedBy(QualifiedName id,
@@ -49,7 +49,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
         this.setId(id);
         this.informed=informed;
         this.informant=informant;
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
     }
 
 

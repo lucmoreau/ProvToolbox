@@ -41,7 +41,7 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
     public WasAssociatedWith(QualifiedName id,
                              Collection<Attribute> attributes) {
         this.setId(id);
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
     }
 
     public WasAssociatedWith(QualifiedName id,
@@ -51,7 +51,7 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
         this.setId(id);
         this.activity=activity;
         this.agent=agent;
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
     }
 
 
@@ -64,7 +64,7 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
         this.activity=activity;
         this.agent=agent;
         this.plan=Optional.ofNullable(plan);
-        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type,role,other,null);
     }
 
 

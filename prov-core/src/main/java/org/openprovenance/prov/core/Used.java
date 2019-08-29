@@ -66,6 +66,7 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
         this.activity=activity;
         this.entity=entity;
         setTime(time);
+
         u.populateAttributes(attributes, labels, location, type, role, other, null);
     }
 

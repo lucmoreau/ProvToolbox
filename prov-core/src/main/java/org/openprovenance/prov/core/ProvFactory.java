@@ -190,13 +190,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     @Override
     public org.openprovenance.prov.model.Document newDocument() {
-        Document res = new org.openprovenance.prov.core.Document();
+        Document res = mc.newDocument(null,null,null);
         return res;
     }
 
     @Override
     public Key newKey(Object o, org.openprovenance.prov.model.QualifiedName type) {
-        return null;
+        throw new UnsupportedOperationException("newKey not supported");
     }
 
     public org.openprovenance.prov.model.Value newValue(Object value, org.openprovenance.prov.model.QualifiedName type) {
@@ -213,7 +213,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
     public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName ag) {
-        org.openprovenance.prov.model.Agent res = new org.openprovenance.prov.core.Agent(ag,new LinkedList<>());
+        org.openprovenance.prov.model.Agent res = mc.newAgent(ag,new LinkedList<>());
         return res;
     }
 
@@ -225,7 +225,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      */
 
     public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName id, Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.Agent res = new org.openprovenance.prov.core.Agent(id,attributes);
+        org.openprovenance.prov.model.Agent res = mc.newAgent(id,attributes);
         return res;
     }
 
@@ -249,16 +249,17 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.Used}
      */
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id) {
-        org.openprovenance.prov.model.Used res = new org.openprovenance.prov.core.Used(id,new LinkedList<>());
+        org.openprovenance.prov.model.Used res = mc.newUsed(id,null,null, null, new LinkedList<>());
         return res;
     }
 
-    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, String role, org.openprovenance.prov.model.QualifiedName eid) {
-        org.openprovenance.prov.model.Used res = newUsed(id);
-        res.setActivity(aid);
-        if (role!=null)
-            addRole(res, newRole(role,getName().XSD_STRING));
-        res.setEntity(eid);
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
+                                                      org.openprovenance.prov.model.QualifiedName aid,
+                                                      String role,
+                                                      org.openprovenance.prov.model.QualifiedName eid) {
+        List<Attribute> attributes=new LinkedList<>();
+        if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
+        org.openprovenance.prov.model.Used res = mc.newUsed(id,aid,eid,null,attributes);
         return res;
     }
 
@@ -270,7 +271,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      */
 
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity) {
-        org.openprovenance.prov.model.Used res = new org.openprovenance.prov.core.Used(id,activity,entity, new LinkedList<>());
+        org.openprovenance.prov.model.Used res = mc.newUsed(id,activity,entity,null, new LinkedList<>());
         return res;
     }
 
@@ -292,16 +293,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity,
                                                       XMLGregorianCalendar time,
                                                       Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.Used res = newUsed(id, activity, null, entity);
-        res.setTime(time);
-        setAttributes(res, attributes);
+        org.openprovenance.prov.model.Used res = mc.newUsed(id, activity, entity,time,  attributes);
         return res;
     }
 
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity,
                                                       XMLGregorianCalendar time) {
-        Used res = newUsed(id, activity, null, entity);
-        res.setTime(time);
+        Used res = newUsed(id, activity, entity, time, Collections.EMPTY_LIST);
         return res;
     }
 
@@ -318,8 +316,9 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                           org.openprovenance.prov.model.QualifiedName eid,
                                                                           String role,
                                                                           org.openprovenance.prov.model.QualifiedName aid) {
-        WasGeneratedBy res = new org.openprovenance.prov.core.WasGeneratedBy(id,eid,aid,new LinkedList<>());
-        if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
+        Collection<Attribute> attributes=new LinkedList<>();
+        if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
+        WasGeneratedBy res=mc.newWasGeneratedBy(id,eid,aid, null,attributes);
         return res;
     }
 
@@ -328,8 +327,9 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                               org.openprovenance.prov.model.QualifiedName eid,
                                                                               String role,
                                                                               org.openprovenance.prov.model.QualifiedName aid) {
-        WasInvalidatedBy res = new org.openprovenance.prov.core.WasInvalidatedBy(id,eid,aid,new LinkedList<>());
-        if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
+        Collection<Attribute> attributes=new LinkedList<>();
+        if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
+        org.openprovenance.prov.model.WasInvalidatedBy res = mc.newWasInvalidatedBy(id,eid,aid,null, attributes);
         return res;
     }
 
@@ -342,7 +342,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      */
 
     public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName entity, org.openprovenance.prov.model.QualifiedName activity) {
-        WasInvalidatedBy res = new org.openprovenance.prov.core.WasInvalidatedBy(id,entity,activity,new LinkedList<>());
+        org.openprovenance.prov.model.WasInvalidatedBy res = mc.newWasInvalidatedBy(id,entity,activity,null,new LinkedList<>());
         return res;
     }
 
@@ -354,7 +354,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                               org.openprovenance.prov.model.QualifiedName activity,
                                                                               XMLGregorianCalendar time,
                                                                               Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasInvalidatedBy res=new  org.openprovenance.prov.core.WasInvalidatedBy(id,entity,activity,attributes);
+        org.openprovenance.prov.model.WasInvalidatedBy res=mc.newWasInvalidatedBy(id,entity,activity,time,attributes);
         res.setTime(time);
         return res;
     }
@@ -373,7 +373,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
                                                                                 org.openprovenance.prov.model.QualifiedName activity,
                                                                                 org.openprovenance.prov.model.QualifiedName agent) {
-        org.openprovenance.prov.model.WasAssociatedWith res = new org.openprovenance.prov.core.WasAssociatedWith(id,activity,agent, Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasAssociatedWith res = mc.newWasAssociatedWith(id,activity,agent, null, Collections.EMPTY_LIST);
         return res;
     }
 
@@ -387,7 +387,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                                 org.openprovenance.prov.model.QualifiedName ag,
                                                                                 org.openprovenance.prov.model.QualifiedName plan,
                                                                                 Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasAssociatedWith res = new org.openprovenance.prov.core.WasAssociatedWith(id,a,ag, plan, attributes);
+        org.openprovenance.prov.model.WasAssociatedWith res = mc.newWasAssociatedWith(id,a,ag, plan, attributes);
         return res;
     }
 
@@ -395,7 +395,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                                 org.openprovenance.prov.model.QualifiedName a,
                                                                                 org.openprovenance.prov.model.QualifiedName ag,
                                                                                 org.openprovenance.prov.model.QualifiedName plan) {
-        org.openprovenance.prov.model.WasAssociatedWith res = new org.openprovenance.prov.core.WasAssociatedWith(id,a,ag, plan, Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasAssociatedWith res = mc.newWasAssociatedWith(id,a,ag, plan, Collections.EMPTY_LIST);
         return res;
     }
 
@@ -420,13 +420,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName entity,
                                                                             org.openprovenance.prov.model.QualifiedName agent) {
-        org.openprovenance.prov.model.WasAttributedTo res = new org.openprovenance.prov.core.WasAttributedTo(id,entity,agent,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasAttributedTo res = mc.newWasAttributedTo(id,entity,agent,Collections.EMPTY_LIST);
         return res;
     }
 
     public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName entity,
                                                                             org.openprovenance.prov.model.QualifiedName agent) {
-        org.openprovenance.prov.model.WasAttributedTo res = new org.openprovenance.prov.core.WasAttributedTo(null,entity,agent,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasAttributedTo res = mc.newWasAttributedTo(null,entity,agent,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -438,13 +438,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                             org.openprovenance.prov.model.QualifiedName entity,
                                                                             org.openprovenance.prov.model.QualifiedName agent,
                                                                             Collection<Attribute> attributes) {
-        WasAttributedTo res = new org.openprovenance.prov.core.WasAttributedTo(id,entity,agent,attributes);
+        WasAttributedTo res = mc.newWasAttributedTo(id,entity,agent,attributes);
         return res;
     }
 
     @Override
     public org.openprovenance.prov.model.SpecializationOf newSpecializationOf(org.openprovenance.prov.model.QualifiedName specific, org.openprovenance.prov.model.QualifiedName general) {
-        SpecializationOf res = new org.openprovenance.prov.core.SpecializationOf(specific,general);
+        SpecializationOf res = mc.newSpecializationOf(specific,general);
         return res;
     }
 
@@ -454,7 +454,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.AlternateOf}
      */
     public org.openprovenance.prov.model.AlternateOf newAlternateOf(org.openprovenance.prov.model.QualifiedName entity1, org.openprovenance.prov.model.QualifiedName entity2) {
-        org.openprovenance.prov.model.AlternateOf res = new org.openprovenance.prov.core.AlternateOf(entity1,entity2);
+        org.openprovenance.prov.model.AlternateOf res = mc.newAlternateOf(entity1,entity2);
         return res;
     }
 
@@ -468,7 +468,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.WasDerivedFrom newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName id,
                                                                           org.openprovenance.prov.model.QualifiedName e2,
                                                                           org.openprovenance.prov.model.QualifiedName e1) {
-        WasDerivedFrom res = new org.openprovenance.prov.core.WasDerivedFrom(id,e2,e1,Collections.EMPTY_LIST);
+        WasDerivedFrom res =mc.newWasDerivedFrom(id,e2,e1,null,null,null,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -484,7 +484,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                             org.openprovenance.prov.model.QualifiedName gen,
                                             org.openprovenance.prov.model.QualifiedName use,
                                             Collection<Attribute> attributes) {
-        WasDerivedFrom res = new org.openprovenance.prov.core.WasDerivedFrom(id,e2,e1, a, gen, use, attributes);
+        WasDerivedFrom res = mc.newWasDerivedFrom(id,e2,e1, a, gen, use, attributes);
         return res;
     }
 
@@ -523,7 +523,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.WasInformedBy newWasInformedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                         org.openprovenance.prov.model.QualifiedName informed,
                                                                         org.openprovenance.prov.model.QualifiedName informant) {
-        org.openprovenance.prov.model.WasInformedBy res = new org.openprovenance.prov.core.WasInformedBy(id,informed,informant,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasInformedBy res = mc.newWasInformedBy(id,informed,informant,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -536,7 +536,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                         org.openprovenance.prov.model.QualifiedName informed,
                                                                         org.openprovenance.prov.model.QualifiedName informant,
                                                                         Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasInformedBy res = new org.openprovenance.prov.core.WasInformedBy(id,informed,informant,attributes);
+        org.openprovenance.prov.model.WasInformedBy res = mc.newWasInformedBy(id,informed,informant,attributes);
         return res;
     }
 
@@ -553,7 +553,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.WasInfluencedBy newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName influencee,
                                                                             org.openprovenance.prov.model.QualifiedName influencer) {
-        org.openprovenance.prov.model.WasInfluencedBy res = new org.openprovenance.prov.core.WasInfluencedBy(id,influencee,influencer,Collections.EMPTY_LIST);
+        org.openprovenance.prov.model.WasInfluencedBy res = mc.newWasInfluencedBy(id,influencee,influencer,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -566,7 +566,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                             org.openprovenance.prov.model.QualifiedName influencee,
                                                                             org.openprovenance.prov.model.QualifiedName influencer,
                                                                             Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.WasInfluencedBy res = new org.openprovenance.prov.core.WasInfluencedBy(id,influencee,influencer,attributes);
+        org.openprovenance.prov.model.WasInfluencedBy res = mc.newWasInfluencedBy(id,influencee,influencer,attributes);
         return res;
     }
 

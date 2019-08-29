@@ -28,8 +28,8 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
     public Document(Namespace namespace, Collection<Statement> statements, Collection<Bundle> bundles) {
         this.namespace=namespace;
         this.statementsOrBundle=new LinkedList<>();
-        statementsOrBundle.addAll(statements);
-        statementsOrBundle.addAll(bundles);
+        if (statements!=null) statementsOrBundle.addAll(statements);
+        if (bundles!=null) statementsOrBundle.addAll(bundles);
     }
 
 

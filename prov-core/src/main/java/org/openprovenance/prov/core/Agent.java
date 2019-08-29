@@ -1,13 +1,6 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
-import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
-import org.openprovenance.prov.core.serialization.CustomKeyDeserializer;
-import org.openprovenance.prov.core.serialization.CustomMapSerializer;
-import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Value;
@@ -17,7 +10,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id" })
+//@JsonPropertyOrder({ "@id" })
 
 public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashCode, ToString, HasAttributes {
 
@@ -47,15 +40,15 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
     }
 
 
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    @JsonProperty("@id")
+ //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+  //  @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_AGENT;
@@ -63,7 +56,7 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
 
 
 
-    @JsonProperty("@id")
+  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -71,26 +64,26 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
 
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -157,7 +150,7 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
         return toStringBuilder.toString();
     }
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -168,8 +161,8 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
         return result;
     }
 
-    @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+ //   @JsonAnySetter
+ //   @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         List<Role> roles=new LinkedList<>();
@@ -177,10 +170,10 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
     }
 
 
-    @JsonAnyGetter
+//    @JsonAnyGetter
     @Override
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+//    @JsonProperty("attributes")
+ //   @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

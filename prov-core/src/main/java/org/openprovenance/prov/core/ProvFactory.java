@@ -17,6 +17,7 @@ import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.WasInfluencedBy;
 import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasStartedBy;
@@ -25,7 +26,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
 
-public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
+public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension{
     static Logger logger = Logger.getLogger(ProvFactory.class);
 
     private final static ProvFactory oFactory = new ProvFactory();
@@ -34,12 +35,16 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
         return oFactory;
     }
 
+    final ModelConstructor mc;
+
     public ProvFactory(ObjectFactory of) {
         super(of);
+        mc=new org.openprovenance.prov.core.ModelConstructor();
     }
 
     public ProvFactory () {
         super(null);
+        mc=new org.openprovenance.prov.core.ModelConstructor();
     }
 
 
@@ -146,13 +151,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
     @Override
     public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a) {
-        Activity res = new org.openprovenance.prov.core.Activity(a,null,null,null);
+        Activity res = mc.newActivity(a,null,null,null);
         return res;
     }
 
     @Override
     public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName a) {
-        Entity res = new org.openprovenance.prov.core.Entity(a,null);
+        org.openprovenance.prov.model.Entity res = mc.newEntity(a,Collections.EMPTY_LIST);
         return res;
     }
 
@@ -166,7 +171,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName id, String label) {
         Collection<Attribute> attrs=new LinkedList<>();
         attrs.add(newAttribute(Attribute.AttributeKind.PROV_LABEL,newInternationalizedString(label),getName().XSD_STRING));
-        org.openprovenance.prov.model.Entity res =  new org.openprovenance.prov.core.Entity(id,attrs);
+        org.openprovenance.prov.model.Entity res = mc.newEntity(id,attrs);
         return res;
     }
 
@@ -178,7 +183,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
      */
     @Override
     public org.openprovenance.prov.model.Entity newEntity(org.openprovenance.prov.model.QualifiedName id, Collection<Attribute> attributes) {
-        org.openprovenance.prov.model.Entity res = new org.openprovenance.prov.core.Entity(id,attributes);
+        org.openprovenance.prov.model.Entity res = mc.newEntity(id,attributes);
         return res;
     }
 

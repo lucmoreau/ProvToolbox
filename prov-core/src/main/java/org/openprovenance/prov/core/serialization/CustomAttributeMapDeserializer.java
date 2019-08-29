@@ -30,7 +30,7 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         Map<QualifiedName, Set<Attribute>> result=new HashMap<>();
         JsonNode node = jp.getCodec().readTree(jp);
-        System.out.println(node);
+
         Iterator<Map.Entry<String, JsonNode>> it=node.fields();
         while (it.hasNext()) {
             Map.Entry<String, JsonNode> pair=it.next();

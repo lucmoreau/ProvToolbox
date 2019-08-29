@@ -14,6 +14,9 @@ public class CustomMapSerializer extends JsonSerializer<QualifiedName> {
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=q.getPrefix() + ":" + q.getLocalPart();
+        if (s.equals("prov:type")) {
+            s=Constants.PROPERTY_AT_TYPE;
+        }
         jsonGenerator.writeFieldName(s);
     }
 }

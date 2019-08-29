@@ -7,20 +7,23 @@ public interface Constants {
     String PROPERTY_STRING_VALUE = "$";
     String PROPERTY_STRING_LANG = "$lang";
 
-    String PROPERTY_PROV_ACTIVITY = "prov:activity";
-    String PROPERTY_PROV_AGENT = "prov:agent";
-    String PROPERTY_PROV_ENTITY = "prov:entity";
-    String PROPERTY_PROV_USED = "prov:used";
-    String PROPERTY_PROV_GENERATION = "prov:wasGeneratedBy";
-    String PROPERTY_PROV_ASSOCIATION = "prov:wasAssociatedWith";
-    String PROPERTY_PROV_ATTRIBUTION = "prov:wasAttributedTo";
-    String PROPERTY_PROV_SPECIALIZATION = "prov:specializationOf";
-    String PROPERTY_PROV_ALTERNATE = "prov:alternateOf";
-    String PROPERTY_PROV_DERIVATION = "prov:wasDerivedFrom";
-    String PROPERTY_PROV_COMMUNICATION = "prov:wasInformedBy";
-    String PROPERTY_PROV_INFLUENCE = "prov:wasInfluencedBy";
-    String PROPERTY_PROV_MEMBERSHIP = "prov:hadMember";
-    String PROPERTY_PROV_INVALIDATION = "prov:wasInvalidatedBy";
-    String PROPERTY_PROV_START = "prov:wasStartedBy";
-    String PROPERTY_PROV_END = "prov:wasEndedBy";
+    String PROPERTY_BLOCK_TYPE = "prov:type";
+
+    String PROPERTY_PROV_ACTIVITY = "prov:Activity";
+    String PROPERTY_PROV_AGENT = "prov:Agent";
+    String PROPERTY_PROV_ENTITY = "prov:Entity";
+    String PROPERTY_PROV_USED = "prov:Usage";
+    String PROPERTY_PROV_GENERATION = "prov:Generation";
+    String PROPERTY_PROV_ASSOCIATION = "prov:Association";
+    String PROPERTY_PROV_ATTRIBUTION = "prov:Attribution";
+    String PROPERTY_PROV_SPECIALIZATION = "prov:Specialization";
+    String PROPERTY_PROV_ALTERNATE = "prov:Alternate";
+    String PROPERTY_PROV_DERIVATION = "prov:Derivation";
+    String PROPERTY_PROV_COMMUNICATION = "prov:Communication";
+    String PROPERTY_PROV_INFLUENCE = "prov:Influence";
+    String PROPERTY_PROV_MEMBERSHIP = "prov:Membership";
+    String PROPERTY_PROV_INVALIDATION = "prov:Invalidation";
+    String PROPERTY_PROV_START = "prov:Start";
+    String PROPERTY_PROV_END = "prov:End";
+    String PROPERTY_PROV_DELEGATION = "prov:Delegation";
 }

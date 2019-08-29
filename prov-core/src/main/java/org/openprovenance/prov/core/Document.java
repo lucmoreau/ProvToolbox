@@ -2,9 +2,12 @@ package org.openprovenance.prov.core;
 
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.core.serialization.Constants;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,6 +21,17 @@ public class Document implements org.openprovenance.prov.model.Document, Equals,
     public Document(List<StatementOrBundle> statementsOrBundle) {
         this.statementsOrBundle=statementsOrBundle;
     }
+    public Document(Namespace namespace, List<StatementOrBundle> statementsOrBundle) {
+        this.namespace=namespace;
+        this.statementsOrBundle=statementsOrBundle;
+    }
+    public Document(Namespace namespace, Collection<Statement> statements, Collection<Bundle> bundles) {
+        this.namespace=namespace;
+        this.statementsOrBundle=new LinkedList<>();
+        statementsOrBundle.addAll(statements);
+        statementsOrBundle.addAll(bundles);
+    }
+
 
     public Document() {
         this.statementsOrBundle=new LinkedList<>();

@@ -1,9 +1,7 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
+import org.openprovenance.prov.core.jsonld.JLD_WasAttributedTo;
 import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
 import org.openprovenance.prov.core.serialization.CustomKeyDeserializer;
 import org.openprovenance.prov.core.serialization.CustomMapSerializer;
@@ -16,9 +14,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "@id", "entity", "agent"})
+//@JsonPropertyOrder({ "@id", "entity", "agent"})
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WasAttributedTo implements org.openprovenance.prov.model.WasAttributedTo, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -65,28 +63,28 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getEntity() {
         return entity;
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+ //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAgent() {
         return agent;
     }
 
 
 
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    @JsonProperty("@id")
+ //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+ //   @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ATTRIBUTION;
@@ -94,7 +92,7 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
 
 
 
-    @JsonProperty("@id")
+  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -102,21 +100,21 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
 
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    @JsonIgnore
+ //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -204,7 +202,7 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
         return toStringBuilder.toString();
     }
 
-    @JsonIgnore
+   // @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -214,17 +212,17 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
         return result;
     }
 
-    @JsonAnySetter
-    @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+  //  @JsonAnySetter
+  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         u.distribute((QualifiedName)qn,attributes,getLabel(),Collections.EMPTY_LIST, Collections.EMPTY_LIST,getType(),Collections.EMPTY_LIST, getOther());
     }
 
 
-    @JsonAnyGetter
+ //   @JsonAnyGetter
     @Override
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+  //  @JsonProperty("attributes")
+  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

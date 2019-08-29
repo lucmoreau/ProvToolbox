@@ -15,5 +15,6 @@ public class ProvMixin {
         mapper.addMixIn(Entity.class,               org.openprovenance.prov.core.jsonld.JLD_Entity.class);
         mapper.addMixIn(SpecializationOf.class,     org.openprovenance.prov.core.jsonld.JLD_SpecializationOf.class);
         mapper.addMixIn(Used.class,                 org.openprovenance.prov.core.jsonld.JLD_Used.class);
+        mapper.addMixIn(WasAssociatedWith.class,    org.openprovenance.prov.core.jsonld.JLD_WasAssociatedWith.class);
     }
 }

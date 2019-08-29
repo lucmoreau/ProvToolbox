@@ -1,9 +1,7 @@
 package org.openprovenance.prov.core;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.apache.commons.lang.builder.*;
+import org.openprovenance.prov.core.jsonld.JLD_SpecializationOf;
 import org.openprovenance.prov.core.serialization.CustomAttributesSerializer;
 import org.openprovenance.prov.core.serialization.CustomKeyDeserializer;
 import org.openprovenance.prov.core.serialization.CustomMapSerializer;
@@ -14,9 +12,9 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({ "specificEntity", "generalEntity"})
+//@JsonPropertyOrder({ "specificEntity", "generalEntity"})
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SpecializationOf implements org.openprovenance.prov.model.SpecializationOf, Equals, HashCode, ToString {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -52,19 +50,19 @@ public class SpecializationOf implements org.openprovenance.prov.model.Specializ
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+   // @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getGeneralEntity() {
         return generalEntity;
     }
 
     @Override
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getSpecificEntity() {
         return specificEntity;
     }
 
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_SPECIALIZATION;

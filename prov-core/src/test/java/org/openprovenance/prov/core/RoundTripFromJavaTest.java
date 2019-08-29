@@ -1414,7 +1414,7 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(attr, "target/attribution8");
     }
 
-   /*
+
 
     // ////////////////////////////////
 
@@ -1473,7 +1473,7 @@ public class RoundTripFromJavaTest extends TestCase {
         addFurtherAttributes(del);
         makeDocAndTest(del, "target/delegation8");
     }
-*/
+
     // ////////////////////////////////
 
     public void testCommunication1() {

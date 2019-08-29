@@ -8,6 +8,7 @@ public class ProvMixin {
     }
 
     public void addProvMixin(ObjectMapper mapper) {
+        mapper.addMixIn(ActedOnBehalfOf.class,      org.openprovenance.prov.core.jsonld.JLD_ActedOnBehalfOf.class);
         mapper.addMixIn(Activity.class,             org.openprovenance.prov.core.jsonld.JLD_Activity.class);
         mapper.addMixIn(HadMember.class,            org.openprovenance.prov.core.jsonld.JLD_HadMember.class);
         mapper.addMixIn(Agent.class,                org.openprovenance.prov.core.jsonld.JLD_Agent.class);

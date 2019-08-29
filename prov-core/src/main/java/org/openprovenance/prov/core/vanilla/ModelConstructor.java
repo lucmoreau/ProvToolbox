@@ -28,7 +28,7 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
      */
     @Override
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible, QualifiedName activity, Collection<Attribute> attributes) {
-        throw new UnsupportedOperationException();
+        return new org.openprovenance.prov.core.vanilla.ActedOnBehalfOf(id,delegate,responsible,activity,attributes);
     }
 
     @Override

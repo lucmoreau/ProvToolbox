@@ -7,13 +7,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.openprovenance.prov.core.Document;
-import org.openprovenance.prov.core.jsonld.JLD_Activity;
+import org.openprovenance.prov.core.vanilla.Document;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,7 +50,7 @@ public class ProvDeserialiser {
         module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
 
 
-        //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.TypedValue.class);
+        //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.vanilla.TypedValue.class);
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 

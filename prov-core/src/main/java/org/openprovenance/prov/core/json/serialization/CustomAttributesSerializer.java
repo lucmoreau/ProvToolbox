@@ -8,7 +8,7 @@ import org.openprovenance.prov.core.vanilla.TypedValue;
 import java.io.IOException;
 import java.util.Set;
 
-import static org.openprovenance.prov.core.jsonld.serialization.CustomMapSerializer2.CONTEXT_KEY_FOR_MAP;
+import static org.openprovenance.prov.core.json.serialization.CustomMapSerializer2.CONTEXT_KEY_FOR_MAP;
 
 
 public class CustomAttributesSerializer extends StdSerializer<Object> {

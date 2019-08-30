@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static org.openprovenance.prov.core.jsonld.serialization.CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY;
+import static org.openprovenance.prov.core.json.serialization.CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY;
 
 public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 

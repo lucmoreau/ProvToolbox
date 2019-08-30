@@ -8,10 +8,10 @@ import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "@context", "@graph"})
+@JsonPropertyOrder({ "context", "statements"})
 public interface Document {
     @JsonFilter("nsFilter")
-    @JsonProperty("@context")
+    @JsonProperty("context")
     Namespace getNamespace();
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = Constants.PROPERTY_BLOCK_TYPE)
@@ -34,6 +34,6 @@ public interface Document {
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
             @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
-    @JsonProperty("@graph")
+    @JsonProperty("statements")
     List<StatementOrBundle> getStatementOrBundle();
 }

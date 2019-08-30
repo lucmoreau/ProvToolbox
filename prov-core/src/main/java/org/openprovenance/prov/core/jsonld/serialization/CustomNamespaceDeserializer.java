@@ -63,7 +63,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
           }
 
 
-        System.out.println("NS " + ns);
+      //  System.out.println("NS " + ns);
         deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
 
 

@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
-    static final QualifiedName QUALIFIED_NAME_PROV_QN = ProvFactory.getFactory().getName().PROV_QUALIFIED_NAME;
 
 
     static final ProvFactory pf=new ProvFactory();
@@ -53,7 +52,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), QUALIFIED_NAME_PROV_QN);
+        return pf.newAttribute(elementName, astring, CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
     }
 
 

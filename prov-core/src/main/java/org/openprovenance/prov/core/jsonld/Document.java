@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.jsonld;
 
 import com.fasterxml.jackson.annotation.*;
-import org.openprovenance.prov.core.serialization.Constants;
+import org.openprovenance.prov.core.jsonld.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @JsonPropertyOrder({ "@context", "@graph"})
 public interface Document {
-    @JsonFilter("nsFilter")
+  //  @JsonFilter("nsFilter")
     @JsonProperty("@context")
     Namespace getNamespace();
 

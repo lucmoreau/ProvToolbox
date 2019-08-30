@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-abstract public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
+public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
     /**
      * Create the test case
      *

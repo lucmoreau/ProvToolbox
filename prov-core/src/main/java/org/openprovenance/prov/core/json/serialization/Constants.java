@@ -4,8 +4,8 @@ public interface Constants {
     String PROPERTY_AT_TYPE = "@type";
     String PROPERTY_AT_VALUE = "@value";
 
-    String PROPERTY_STRING_VALUE = "$";
-    String PROPERTY_STRING_LANG = "$lang";
+    String PROPERTY_STRING_VALUE = "@value";
+    String PROPERTY_STRING_LANG = "@lang";
 
     String PROPERTY_BLOCK_TYPE = "prov:type";
 

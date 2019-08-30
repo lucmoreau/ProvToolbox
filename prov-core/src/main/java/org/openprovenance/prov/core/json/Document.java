@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.json;
 
 import com.fasterxml.jackson.annotation.*;
-import org.openprovenance.prov.core.jsonld.serialization.Constants;
+import org.openprovenance.prov.core.json.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;

@@ -1,8 +1,8 @@
 package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
-import org.openprovenance.prov.core.serialization.ProvDeserialiser;
-import org.openprovenance.prov.core.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
@@ -297,7 +297,7 @@ public class RoundTripFromJavaTest extends TestCase {
         System.out.println("writing to " + file);
 
 
-        org.openprovenance.prov.core.serialization.ProvSerialiser serial=new ProvSerialiser();
+        ProvSerialiser serial=new ProvSerialiser();
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
 
 

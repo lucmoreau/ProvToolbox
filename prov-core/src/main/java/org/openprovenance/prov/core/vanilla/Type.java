@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.openprovenance.prov.core.serialization.CustomQualifiedNameDeserializer;
+import org.openprovenance.prov.core.jsonld.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.QualifiedName;
 

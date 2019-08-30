@@ -1,9 +1,8 @@
 package org.openprovenance.prov.core.vanilla;
 
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.core.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Document;

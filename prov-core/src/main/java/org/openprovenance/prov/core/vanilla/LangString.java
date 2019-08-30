@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.openprovenance.apache.commons.lang.builder.*;
-import org.openprovenance.prov.core.serialization.Constants;
+import org.openprovenance.prov.core.jsonld.serialization.Constants;
 
 
 import java.util.Optional;

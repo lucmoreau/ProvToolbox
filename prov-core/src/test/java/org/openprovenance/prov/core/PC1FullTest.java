@@ -2,8 +2,8 @@ package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.core.serialization.ProvSerialiser;
-import org.openprovenance.prov.core.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser;
 
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;

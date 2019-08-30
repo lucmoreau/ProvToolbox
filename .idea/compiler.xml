@@ -9,7 +9,6 @@
         <module name="prov-json" />
         <module name="prov-n" />
         <module name="prov-xml" />
-        <module name="ProvToolbox-Tutorial6" />
         <module name="ProvToolbox-Tutorial5" />
         <module name="ProvToolbox-Tutorial4" />
         <module name="ProvToolbox-Tutorial3" />

@@ -28,17 +28,25 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
         if ((attr.getValue() instanceof LangString) &&
                 ((LangString)attr.getValue()).getLang()==null &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
-            jsonGenerator.writeString(((LangString)attr.getValue()).getValue().toString());
+           // jsonGenerator.writeString(((LangString)attr.getValue()).getValue().toString());
+            jsonGenerator.writeObject(attr.getValue());
         } else if ((attr.getValue() instanceof String) &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             throw new UnsupportedOperationException("should never be here");
             //jsonGenerator.writeString((String)attr.getValue());
+        } else if ((attr.getValue() instanceof LangString) &&
+                ((LangString)attr.getValue()).getLang()!=null ) {
+            jsonGenerator.writeObject(attr.getValue());
+        } else if ((attr.getValue() instanceof QualifiedName)  ) {
+            jsonGenerator.writeObject(prnt((QualifiedName)attr.getValue()));
         } else {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField(PROPERTY_AT_TYPE, prnt(attr.getType()));
             serializeValue(PROPERTY_AT_VALUE, attr.getValue(), jsonGenerator, serializerProvider);
             jsonGenerator.writeEndObject();
         }
+
+
     }
 
     private void serializeValue(String fieldName, Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {

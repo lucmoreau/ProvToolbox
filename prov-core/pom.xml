@@ -42,6 +42,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-rdf</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- XML Serialization ... -->
 
         <dependency>

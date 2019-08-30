@@ -2,122 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_xml_2_7_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_7_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_xml_stream_stax_api_1_0_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_woodstox_woodstox_core_asl_4_4_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/Document.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasAttributes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasKind.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasLabel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasLocation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasOther.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasRole.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/HasType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/Identifiable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_ActedOnBehalfOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_Activity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_Agent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_AlternateOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_Entity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_Generic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_Generic2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_HadMember.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_SpecializationOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_Used.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasAssociatedWith.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasAttributedTo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasDerivedFrom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasEndedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasGeneratedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasInfluencedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasInformedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasInvalidatedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/JSON_WasStartedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasAttributes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasKind.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasLabel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasLocation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasOther.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasRole.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/HasType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Identifiable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_ActedOnBehalfOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_Activity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_Agent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_AlternateOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_Entity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_Generic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_Generic2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_HadMember.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_LangString.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_SpecializationOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_Used.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasAssociatedWith.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasAttributedTo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasDerivedFrom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasEndedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasGeneratedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasInfluencedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasInformedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasInvalidatedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasStartedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeDeserializerWithRootName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeMapDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeSetDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributesSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomDateSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKeyDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKindDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKindSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomNamespaceDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvMixin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_LangString.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaViaRdfTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prov-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prov-core/provcore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/provcore.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomAttributeDeserializerWithRootName.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomAttributeDeserializerWithRootName.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomAttributeMapDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomAttributeMapDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomAttributeSetDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomAttributeSetDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomAttributesSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomAttributesSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomDateSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomDateSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomKeyDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomKeyDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomKindDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomKindDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomKindSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomKindSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomMapSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomMapSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomMapSerializer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomMapSerializer2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomNamespaceDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomNamespaceDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomQualifiedNameDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomQualifiedNameDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomTypedValueSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvMixin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Document.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Label.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Label.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/LangString.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/LangString.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Location.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Other.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Other.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Role.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Type.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Type.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/TypedValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/TypedValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Value.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Value.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/PC1FullTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_ActedOnBehalfOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_ActedOnBehalfOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_Used.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_Used.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAssociatedWith.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAssociatedWith.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAttributedTo.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAttributedTo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasDerivedFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasDerivedFrom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasEndedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasEndedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInformedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInformedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasStartedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasStartedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomTypedValueSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvMixin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasDerivedFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasDerivedFrom.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
@@ -151,103 +54,94 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvSerialiser.java">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="44" column="35" selection-start-line="44" selection-end-line="45" />
-              <folding>
-                <element signature="e#954#955#0" expanded="true" />
-                <element signature="e#973#974#0" expanded="true" />
-                <element signature="e#933#934#0" expanded="true" />
-                <element signature="e#952#953#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="120">
+              <caret line="15" column="17" selection-start-line="15" selection-end-line="16" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomNamespaceSerializer.java">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="545">
-              <caret line="47" column="13" lean-forward="true" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
+            <state relative-caret-position="120">
+              <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasDerivedFrom.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="31" column="32" selection-start-line="31" selection-start-column="32" selection-end-line="31" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-13870">
+              <caret line="1249" selection-start-line="1249" selection-end-line="1258" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvDeserialiser.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="54" column="89" selection-start-line="54" selection-start-column="89" selection-end-line="54" selection-end-column="89" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomNamespaceDeserializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="695">
-              <caret line="62" column="11" lean-forward="true" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasDerivedFrom.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="316">
+              <caret line="241" column="51" selection-start-line="241" selection-start-column="36" selection-end-line="241" selection-end-column="51" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomQualifiedNameDeserializer.java">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_ActedOnBehalfOf.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="20" column="32" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInformedBy.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasStartedBy.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="15" column="15" lean-forward="true" selection-start-line="15" selection-end-line="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasEndedBy.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
-              <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+              <caret line="11" column="78" selection-start-line="11" selection-start-column="78" selection-end-line="11" selection-end-column="78" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomAttributeSetDeserializer.java">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_Used.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
-              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomAttributeMapDeserializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="22" column="50" selection-start-line="22" selection-start-column="42" selection-end-line="22" selection-end-column="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/Document.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomAttributesSerializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="19" column="49" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="49" />
+              <caret line="11" column="60" selection-start-line="11" selection-start-column="60" selection-end-line="11" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -264,8 +158,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>newWasD</find>
-      <find>newatt</find>
       <find>system</find>
       <find>geto</find>
       <find>newwasD</find>
@@ -294,6 +186,8 @@
       <find>namespa</find>
       <find>cfg</find>
       <find>tag</find>
+      <find>jsonld</find>
+      <find>generatedentity</find>
     </findStrings>
     <replaceStrings>
       <replace>json.JSON</replace>
@@ -310,24 +204,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasEndedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/WasEndedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasStartedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/WasStartedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/WasGeneratedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/WasInvalidatedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInformedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/WasInformedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInfluencedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/WasInfluencedBy.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/ProvFactory.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/HadMember.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/HadMember.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_ActedOnBehalfOf.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/serialization/ProvMixin.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/ActedOnBehalfOf.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/ProvFactory.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/ModelConstructor.java" />
@@ -342,10 +219,8 @@
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/jsonld/JLD_HadMember.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" />
         <option value="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONTest.java" />
-        <option value="$PROJECT_DIR$/prov-core/pom.xml" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Document.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvMixin.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvMixin.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Identifiable.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java" />
@@ -361,6 +236,25 @@
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvDeserialiser.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomNamespaceDeserializer.java" />
         <option value="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" />
+        <option value="$PROJECT_DIR$/prov-core/pom.xml" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_LangString.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/Constants.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvMixin.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaViaRdfTest.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomTypedValueSerializer.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasAssociatedWith.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAssociatedWith.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAttributedTo.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasDerivedFrom.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_ActedOnBehalfOf.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInformedBy.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasStartedBy.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_Used.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasEndedBy.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasDerivedFrom.java" />
       </list>
     </option>
   </component>
@@ -457,6 +351,17 @@
               <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="jsonld" type="462c0819:PsiDirectoryNode" />
               <item name="serialization" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-core" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="openprovenance" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+              <item name="vanilla" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
@@ -845,10 +750,10 @@
       <recent name="$PROJECT_DIR$/prov-core/src/main/java" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.jsonld" />
       <recent name="org.openprovenance.prov.core" />
       <recent name="org.openprovenance.prov.core.json.serialization" />
       <recent name="org.openprovenance.prov.core.serialization" />
-      <recent name="org.openprovenance.prov.core.jsonld" />
       <recent name="org.openprovenance.prov.core.vanilla" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
@@ -870,7 +775,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.RoundTripFromJavaTest">
+  <component name="RunManager" selected="JUnit.RoundTripFromJavaViaRdfTest">
     <configuration name="PC1FullTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="provcore" />
       <extension name="coverage">
@@ -916,6 +821,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="RoundTripFromJavaViaRdfTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="provcore" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.core.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.RoundTripFromJavaViaRdfTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RoundTripFromJavaXMLTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="provcore" />
       <extension name="coverage">
@@ -931,28 +851,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripJavaToJavaTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="provcore" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.vanilla.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.RoundTripJavaToJavaTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.RoundTripFromJavaViaRdfTest" />
         <item itemvalue="JUnit.RoundTripFromJavaTest" />
         <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
         <item itemvalue="JUnit.PC1FullTest" />
-        <item itemvalue="JUnit.RoundTripJavaToJavaTest" />
       </list>
     </recent_temporary>
   </component>
@@ -978,7 +883,7 @@
       <workItem from="1566920367084" duration="2951000" />
       <workItem from="1566929460594" duration="2272000" />
       <workItem from="1567007361993" duration="19002000" />
-      <workItem from="1567075018595" duration="37107000" />
+      <workItem from="1567075018595" duration="44093000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -991,39 +896,39 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 23m 58s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 10m 53s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 24m 39s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 11m 08s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 25m 09s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 13m 05s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 31m 36s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 13m 30s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 32m 56s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 14m 28s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 38m 51s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 15m 30s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 39m 28s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 16m 39s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 41m 07s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 17m 55s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 41m 46s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 19m 35s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="RoundTripFromJavaTest - 2019.08.30 at 16h 45m 33s.xml">
-      <configuration name="RoundTripFromJavaTest" configurationId="JUnit" />
+    <history-entry file="RoundTripFromJavaViaRdfTest - 2019.08.30 at 18h 19m 55s.xml">
+      <configuration name="RoundTripFromJavaViaRdfTest" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="178315000" />
+    <option name="totallyTimeSpent" value="185301000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="158" y="23" width="2366" height="1218" extended-state="0" />
@@ -1071,200 +976,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/prov-core/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="57" lean-forward="true" selection-start-line="26" selection-start-column="57" selection-end-line="26" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_ActedOnBehalfOf.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/Document.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="13" column="110" selection-start-line="13" selection-start-column="110" selection-end-line="13" selection-end-column="110" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvMixin.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="3" selection-start-line="10" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/dataformat/jackson-dataformat-xml/2.7.5/jackson-dataformat-xml-2.7.5.jar!/com/fasterxml/jackson/dataformat/xml/annotation/JacksonXmlRootElement.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvMixin.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="66" selection-start-line="30" selection-start-column="52" selection-end-line="30" selection-end-column="66" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Identifiable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="10" column="14" selection-start-line="10" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/woodstox-core-asl/4.4.1/woodstox-core-asl-4.4.1.jar!/com/ctc/wstx/stax/WstxOutputFactory.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret lean-forward="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/woodstox-core-asl/4.4.1/woodstox-core-asl-4.4.1.jar!/com/ctc/wstx/api/WriterConfig.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="341" column="16" selection-start-line="341" selection-start-column="16" selection-end-line="341" selection-end-column="16" />
-          <folding>
-            <element signature="e#11927#11928#0" expanded="true" />
-            <element signature="e#11971#11972#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/LangString.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="34" selection-start-line="34" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_LangString.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="18" selection-start-line="18" selection-start-column="18" selection-end-line="18" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/dataformat/jackson-dataformat-xml/2.7.5/jackson-dataformat-xml-2.7.5.jar!/com/fasterxml/jackson/dataformat/xml/util/DefaultXmlPrettyPrinter.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="76" column="48" selection-start-line="76" selection-start-column="30" selection-end-line="76" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/dataformat/jackson-dataformat-xml/2.7.5/jackson-dataformat-xml-2.7.5.jar!/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="283">
-          <caret line="282" selection-start-line="282" selection-end-line="282" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/woodstox-core-asl/4.4.1/woodstox-core-asl-4.4.1.jar!/com/ctc/wstx/sw/BaseNsStreamWriter.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="151" selection-start-line="151" selection-end-line="151" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/woodstox-core-asl/4.4.1/woodstox-core-asl-4.4.1.jar!/com/ctc/wstx/sw/SimpleNsStreamWriter.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="137" column="48" selection-start-line="137" selection-start-column="39" selection-end-line="137" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomNamespaceDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeDeserializerWithRootName.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="59">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="31" column="1" lean-forward="true" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeSetDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/codehaus/woodstox/stax2-api/3.1.4/stax2-api-3.1.4.jar!/org/codehaus/stax2/XMLOutputFactory2.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="23" column="99" selection-start-line="23" selection-start-column="82" selection-end-line="23" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeMapDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="525">
           <caret line="47" column="9" lean-forward="true" selection-start-line="47" selection-start-column="9" selection-end-line="47" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="364" column="55" selection-start-line="364" selection-start-column="52" selection-end-line="364" selection-end-column="55" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1279,13 +994,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="172">
           <caret line="38" column="18" selection-start-line="38" selection-start-column="18" selection-end-line="38" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
         </state>
       </provider>
     </entry>
@@ -1366,16 +1074,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvMixin.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvSerialiser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -1386,13 +1084,6 @@
             <element signature="e#933#934#0" expanded="true" />
             <element signature="e#952#953#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomAttributesSerializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="19" column="49" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -1427,7 +1118,7 @@
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomNamespaceSerializer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="545">
-          <caret line="47" column="13" lean-forward="true" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
+          <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1451,17 +1142,218 @@
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomNamespaceDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="695">
-          <caret line="62" column="11" lean-forward="true" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
+          <caret line="62" column="11" selection-start-line="62" selection-start-column="11" selection-end-line="62" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
+        <state relative-caret-position="615">
+          <caret line="43" selection-start-line="43" selection-end-line="43" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="48" column="31" lean-forward="true" selection-start-line="48" selection-start-column="31" selection-end-line="48" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="534" column="40" selection-start-line="534" selection-start-column="40" selection-end-line="534" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomAttributesSerializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="19" column="49" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_LangString.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="49" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="49" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="44" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvMixin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="102" selection-start-line="28" selection-start-column="102" selection-end-line="28" selection-end-column="102" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaViaRdfTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/CustomTypedValueSerializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="40" column="73" selection-start-line="40" selection-start-column="73" selection-end-line="40" selection-end-column="73" />
+          <folding>
+            <element signature="e#3092#3093#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="31" column="1" lean-forward="true" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeSetDeserializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeDeserializerWithRootName.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="59">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasAssociatedWith.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasAssociatedWith.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="115" column="7" lean-forward="true" selection-start-line="115" selection-start-column="7" selection-end-line="115" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAssociatedWith.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasAttributedTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAttributedTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="16" column="16" selection-start-line="16" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="15" column="17" selection-start-line="15" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_ActedOnBehalfOf.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="20" column="32" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInformedBy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasStartedBy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="15" column="15" lean-forward="true" selection-start-line="15" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_Used.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="11" column="60" selection-start-line="11" selection-start-column="60" selection-end-line="11" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasEndedBy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="11" column="78" selection-start-line="11" selection-start-column="78" selection-end-line="11" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasDerivedFrom.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="31" column="32" selection-start-line="31" selection-start-column="32" selection-end-line="31" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-13870">
+          <caret line="1249" selection-start-line="1249" selection-end-line="1258" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/WasDerivedFrom.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="241" column="51" selection-start-line="241" selection-start-column="36" selection-end-line="241" selection-end-column="51" />
         </state>
       </provider>
     </entry>

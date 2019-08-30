@@ -47,5 +47,37 @@ public class RoundTripFromJavaViaRdfTest extends RoundTripFromJavaTest {
 
     }
 
+    public void testDerivation11() {
+    }
+    public void testDerivation12() {
+
+    }
+    public void testDerivation13() {
+    }
+
+    public void testMembership1() {
+
+    }
+    public void testMembership2() {
+
+    }
+    public void testMembership3() {
+
+    }
+
+
+    public void testSpecialization1() {
+
+    }
+
+    public void testAlternate1() {
+
+    }
+
+    public void testEntity3() {
+
+    }
+
+
 
 }

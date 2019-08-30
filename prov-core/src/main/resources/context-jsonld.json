@@ -1,0 +1,110 @@
+{
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "prov:role": {
+        "@id": "prov:hadRole",
+        "@type": "@id"
+    },
+    "prov:type": {
+        "@id": "rdf:type",
+        "@type": "@id"
+    },
+    "prov:label": {
+        "@id": "rdfs:label"
+    },
+    "prov:location": {
+        "@id": "prov:atLocation",
+        "@type": "@id"
+    },
+    "atTime": {
+        "@id": "prov:atTime",
+        "@type": "xsd:dateTime"
+    },
+    "startTime": {
+        "@id": "prov:startedAtTime",
+        "@type": "xsd:dateTime"
+    },
+    "endTime": {
+        "@id": "prov:endedAtTime",
+        "@type": "xsd:dateTime"
+    },
+    "entity": {
+        "@id": "prov:entity",
+        "@type": "@id"
+    },
+    "activity": {
+        "@id": "prov:activity",
+        "@type": "@id"
+    },
+    "agent": {
+        "@id": "prov:agent",
+        "@type": "@id"
+    },
+    "influencer": {
+        "@id": "prov:influencer",
+        "@type": "@id"
+    },
+    "hadActivity": {
+        "@id": "prov:hadActivity",
+        "@type": "@id"
+    },
+    "hadUsage": {
+        "@id": "prov:hadUsage",
+        "@type": "@id"
+    },
+    "hadGeneration": {
+        "@id": "prov:hadGeneration",
+        "@type": "@id"
+    },
+    "hadPlan": {
+        "@id": "prov:hadPlan",
+        "@type": "@id"
+    },
+    "activity_using": {
+        "@reverse": "prov:qualifiedUsage",
+        "@type": "@id"
+    },
+    "entity_generated": {
+        "@reverse": "prov:qualifiedGeneration",
+        "@type": "@id"
+    },
+    "activity_started": {
+        "@reverse": "prov:qualifiedStart",
+        "@type": "@id"
+    },
+    "activity_ended": {
+        "@reverse": "prov:qualifiedEnd",
+        "@type": "@id"
+    },
+    "entity_derived": {
+        "@reverse": "prov:qualifiedDerivation",
+        "@type": "@id"
+    },
+    "informed": {
+        "@reverse": "prov:qualifiedCommunication",
+        "@type": "@id"
+    },
+    "entity_invalidated": {
+        "@reverse": "prov:qualifiedInvalidation",
+        "@type": "@id"
+    },
+    "entity_attributed": {
+        "@reverse": "prov:qualifiedAttribution",
+        "@type": "@id"
+    },
+    "activity_associated": {
+        "@reverse": "prov:qualifiedAssociation",
+        "@type": "@id"
+    },
+    "delegate": {
+        "@reverse": "prov:qualifiedDelegation",
+        "@type": "@id"
+    },
+    "influencee": {
+        "@reverse": "prov:qualifiedInfluence",
+        "@type": "@id"
+    }
+}
+

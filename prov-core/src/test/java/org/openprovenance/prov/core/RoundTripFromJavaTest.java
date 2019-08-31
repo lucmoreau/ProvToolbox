@@ -363,7 +363,11 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void addFurtherAttributes(HasOther he) {
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello",
-                                            name.XSD_STRING));
+                name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "bonjour",
+                name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, pFactory.newGYear(2002),
+                name.XSD_GYEAR));
         he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye",
                                             name.XSD_STRING));
         // he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX,
@@ -374,8 +378,11 @@ public class RoundTripFromJavaTest extends TestCase {
                                             "hello\nover\nmore\nlines",
                                             name.XSD_STRING));
         he.getOther().add(pFactory.newOther(EX_NS, "0tagWithDigit", EX_PREFIX,
-                                            "hello",
-                                            name.XSD_STRING));
+                "hello",
+                name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "0tagWithDigit", EX_PREFIX,
+                "hello2",
+                name.XSD_STRING));
 
 
     }

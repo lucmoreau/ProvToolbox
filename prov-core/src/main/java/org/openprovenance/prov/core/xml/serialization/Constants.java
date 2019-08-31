@@ -9,21 +9,21 @@ public interface Constants {
 
     String PROPERTY_BLOCK_TYPE = "prov:type";
 
-    String PROPERTY_PROV_ACTIVITY = "prov:activity";
-    String PROPERTY_PROV_AGENT = "prov:agent";
-    String PROPERTY_PROV_ENTITY = "prov:entity";
-    String PROPERTY_PROV_USED = "prov:used";
+    String PROPERTY_PROV_ACTIVITY = "activity";
+    String PROPERTY_PROV_AGENT = "agent";
+    String PROPERTY_PROV_ENTITY = "entity";
+    String PROPERTY_PROV_USED = "used";
     String PROPERTY_PROV_GENERATION = "wasGeneratedBy";
-    String PROPERTY_PROV_ASSOCIATION = "prov:wasAssociatedWith";
-    String PROPERTY_PROV_ATTRIBUTION = "prov:wasAttributedTo";
-    String PROPERTY_PROV_SPECIALIZATION = "prov:specializationOf";
-    String PROPERTY_PROV_ALTERNATE = "prov:alternateOf";
-    String PROPERTY_PROV_DERIVATION = "prov:wasDerivedFrom";
-    String PROPERTY_PROV_COMMUNICATION = "prov:wasInformedBy";
-    String PROPERTY_PROV_INFLUENCE = "prov:wasInfluencedBy";
-    String PROPERTY_PROV_MEMBERSHIP = "prov:hadMember";
-    String PROPERTY_PROV_INVALIDATION = "prov:wasInvalidatedBy";
-    String PROPERTY_PROV_START = "prov:wasStartedBy";
-    String PROPERTY_PROV_END = "prov:wasEndedBy";
-    String PROPERTY_PROV_DELEGATION = "prov:actedOnBehalfOf";
+    String PROPERTY_PROV_ASSOCIATION = "wasAssociatedWith";
+    String PROPERTY_PROV_ATTRIBUTION = "wasAttributedTo";
+    String PROPERTY_PROV_SPECIALIZATION = "specializationOf";
+    String PROPERTY_PROV_ALTERNATE = "alternateOf";
+    String PROPERTY_PROV_DERIVATION = "wasDerivedFrom";
+    String PROPERTY_PROV_COMMUNICATION = "wasInformedBy";
+    String PROPERTY_PROV_INFLUENCE = "wasInfluencedBy";
+    String PROPERTY_PROV_MEMBERSHIP = "hadMember";
+    String PROPERTY_PROV_INVALIDATION = "wasInvalidatedBy";
+    String PROPERTY_PROV_START = "wasStartedBy";
+    String PROPERTY_PROV_END = "wasEndedBy";
+    String PROPERTY_PROV_DELEGATION = "actedOnBehalfOf";
 }

@@ -5,10 +5,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.TypedValue;
+import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.Set;
+
+import static org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer.writeAttribute;
 
 
 public class CustomAttributesSerializer extends StdSerializer<Object> {
@@ -31,25 +35,50 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
         if (!(set.isEmpty())) {
             ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 
-            try {
-                xmlGenerator.getStaxWriter().setDefaultNamespace("http://ff");
-            } catch (XMLStreamException e) {
-                e.printStackTrace();
-                throw new IOException(e);
-            }
+
+
             if (newKey.contains(":")) {
                 String s=newKey.substring(newKey.indexOf(":")+1);
-                if (s.startsWith("0")) s="A"+s;
+
+                if (s.startsWith("0")) s="A"+s; //dummy escape
+
+                //setDefaultNamespace(xmlGenerator, "http://foo.");
                 jsonGenerator.writeFieldName(s);
+
+
+                //writeEmptyElement(xmlGenerator,s,"pre","http://foo/");
+
+                //setDefaultNamespace(xmlGenerator, NamespacePrefixMapper.PROV_NS);
+
+
+
             } else {
                 jsonGenerator.writeFieldName(newKey);
             }
 
             jsonGenerator.writeStartArray();
             for (TypedValue a : set) {
+
                 new CustomTypedValueSerializer().serialize(a, jsonGenerator, serializerProvider);
             }
             jsonGenerator.writeEndArray();
+        }
+    }
+
+    static void setDefaultNamespace(ToXmlGenerator xmlGenerator, String provNs) throws IOException {
+        try {
+            xmlGenerator.getStaxWriter().setDefaultNamespace(provNs);
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        }
+    }
+    public void writeEmptyElement(ToXmlGenerator xmlGenerator, String name, String prefix, String provNs) throws IOException {
+        try {
+            xmlGenerator.getStaxWriter().writeEmptyElement(prefix,name,provNs);
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+            throw new IOException(e);
         }
     }
 

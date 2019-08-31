@@ -40,6 +40,7 @@ public interface Document {
             @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
     @JsonProperty("statements")
+    @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
     @JacksonXmlElementWrapper(useWrapping = false)
     List<StatementOrBundle> getStatementOrBundle();
 }

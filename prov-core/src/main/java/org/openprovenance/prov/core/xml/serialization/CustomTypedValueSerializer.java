@@ -37,30 +37,26 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
         String s=null;
         ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 
-        String aNamespace=null;
-        if (attr instanceof Attribute) {
-            Attribute a=(Attribute) attr;
-            String ns=a.getElementName().getNamespaceURI();
-            if (!ns.equals(NamespacePrefixMapper.PROV_NS)) {
-                aNamespace=ns;
-            }
-        }
+
 
         if ((attr.getValue() instanceof LangString) &&
                 ((LangString)attr.getValue()).getLang()==null &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             String strValue = ((LangString) attr.getValue()).getValue();
-
+            jsonGenerator.writeString(strValue);
+           /*
             if (aNamespace==null) {
-                jsonGenerator.writeString(strValue);
             } else {
                 // trick seems to create an object, and write the names, and then write an element unwrapped.
                 jsonGenerator.writeStartObject();
+                setDefaultNamespace(xmlGenerator,aNamespace);
                 writeAttribute(xmlGenerator, "xmlns", aNamespace);
                 xmlGenerator.setNextIsUnwrapped(true);
                 serializeValue(PROPERTY_AT_VALUE, strValue, jsonGenerator, serializerProvider);
                 jsonGenerator.writeEndObject();
             }
+
+          */
 
         } else if ((attr.getValue() instanceof String) &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
@@ -71,7 +67,7 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
             xmlGenerator.setNextIsAttribute(true);
             jsonGenerator.writeStartObject();
 
-            if (aNamespace!=null)  writeAttribute(xmlGenerator, "xmlns",aNamespace);
+            //if (aNamespace!=null)  writeAttribute(xmlGenerator, "xmlns",aNamespace);
 
             writeAttribute(xmlGenerator,PREFIX_XSI, NAMESPACE_XSI,PROPERTY_AT_TYPE,prnt(attr.getType()));
             Object obj=attr.getValue();

@@ -22,11 +22,15 @@ public class CustomMapSerializer2 extends StdSerializer<QualifiedName> {
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        /*
         String s=q.getPrefix() + ":" + q.getLocalPart();
         if (s.equals("prov:type")) {
             s= Constants.PROPERTY_AT_TYPE;
         }
-        serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,s);
+        //serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,s);
+
+         */
+        serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,q);
 
     }
 }

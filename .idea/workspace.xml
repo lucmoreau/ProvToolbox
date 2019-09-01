@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributesSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributesSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
@@ -39,34 +37,16 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/Constants.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="58" column="12" lean-forward="true" selection-start-line="58" selection-start-column="12" selection-end-line="58" selection-end-column="12" />
+            <state relative-caret-position="776">
+              <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
               <folding>
                 <element signature="e#789#790#0" expanded="true" />
                 <element signature="e#828#829#0" expanded="true" />
                 <element signature="e#5646#5647#0" expanded="true" />
                 <element signature="e#5709#5710#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -83,8 +63,47 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributesSerializer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
+            <state relative-caret-position="495">
+              <caret line="50" column="43" selection-start-line="50" selection-start-column="43" selection-end-line="50" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="530">
+              <caret line="42" selection-start-line="42" selection-end-line="42" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/QualifiedName.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="302">
+              <caret line="30" column="54" selection-start-line="30" selection-start-column="34" selection-end-line="30" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedNameUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="163" column="18" selection-start-line="163" selection-start-column="18" selection-end-line="163" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKeyDeserializer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
         </entry>
@@ -107,24 +126,6 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/Namespace.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-572">
-              <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeSetDeserializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14">
-              <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -137,7 +138,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>wasd</find>
       <find>newwasd</find>
       <find>wasder</find>
       <find>newact</find>
@@ -167,6 +167,7 @@
       <find>exclu</find>
       <find>lang_s</find>
       <find>newva</find>
+      <find>toqu</find>
     </findStrings>
     <replaceStrings>
       <replace>json.JSON</replace>
@@ -183,8 +184,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/XML_WasAssociatedWith.java" />
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAssociatedWith.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasAttributedTo.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasGeneratedBy.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/JLD_WasInvalidatedBy.java" />
@@ -233,6 +232,8 @@
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKeyDeserializer.java" />
+        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributesSerializer.java" />
       </list>
     </option>
@@ -353,6 +354,17 @@
               <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="jsonld" type="462c0819:PsiDirectoryNode" />
               <item name="serialization" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-core" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="openprovenance" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+              <item name="vanilla" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
@@ -923,7 +935,7 @@
       <workItem from="1566920367084" duration="2951000" />
       <workItem from="1566929460594" duration="2272000" />
       <workItem from="1567007361993" duration="19002000" />
-      <workItem from="1567075018595" duration="65910000" />
+      <workItem from="1567075018595" duration="69003000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -936,45 +948,45 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 40m 59s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 42m 03s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 42m 23s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 44m 59s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 48m 11s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 54m 11s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 55m 46s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 58m 22s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 20h 59m 55s.xml">
-      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="RoundTripFromJavaXMLTest - 2019.08.31 at 21h 01m 01s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 13h 57m 28s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 06m 55s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 07m 49s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 16m 21s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 17m 41s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 18m 43s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 19m 14s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 21m 02s.xml">
+      <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaXMLTest - 2019.09.01 at 14h 43m 37s.xml">
       <configuration name="RoundTripFromJavaXMLTest" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="207118000" />
+    <option name="totallyTimeSpent" value="210211000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="158" y="23" width="2366" height="1218" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17641996" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17598967" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -983,7 +995,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3268206" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.1651865" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.1651865" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -1016,54 +1028,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomMapSerializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomMapSerializer2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomQualifiedNameDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomTypedValueSerializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="37" column="59" selection-start-line="37" selection-start-column="43" selection-end-line="37" selection-end-column="59" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/json/serialization/CustomAttributeMapDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -1294,20 +1258,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeMapDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/Document.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -1350,24 +1300,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="369" column="30" selection-start-line="369" selection-start-column="30" selection-end-line="369" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/Document.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
           <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeDeserializerWithRootName.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="800">
-          <caret line="104" lean-forward="true" selection-start-line="104" selection-end-line="104" />
         </state>
       </provider>
     </entry>
@@ -1385,10 +1321,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKindDeserializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeDeserializerWithRootName.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributeMapDeserializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="369" column="30" selection-start-line="369" selection-start-column="30" selection-end-line="369" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomQualifiedNameDeserializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomTypedValueSerializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="58" column="12" lean-forward="true" selection-start-line="58" selection-start-column="12" selection-end-line="58" selection-end-column="12" />
+        <state relative-caret-position="776">
+          <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
           <folding>
             <element signature="e#789#790#0" expanded="true" />
             <element signature="e#828#829#0" expanded="true" />
@@ -1398,17 +1379,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomMapSerializer2.java">
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomKeyDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
+        <state relative-caret-position="150">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedName.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="34" column="37" selection-start-line="34" selection-start-column="37" selection-end-line="34" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/vanilla/QualifiedName.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="30" column="54" selection-start-line="30" selection-start-column="34" selection-end-line="30" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedNameUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="163" column="18" selection-start-line="163" selection-start-column="18" selection-end-line="163" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-xml/src/main/java/org/openprovenance/prov/xml/QualifiedNameAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/xml/serialization/CustomAttributesSerializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
+        <state relative-caret-position="495">
+          <caret line="50" column="43" selection-start-line="50" selection-start-column="43" selection-end-line="50" selection-end-column="43" />
         </state>
       </provider>
     </entry>

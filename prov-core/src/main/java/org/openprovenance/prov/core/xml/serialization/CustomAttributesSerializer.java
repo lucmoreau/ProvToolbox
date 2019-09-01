@@ -35,16 +35,20 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
         QualifiedName newKey=(QualifiedName) serializerProvider.getAttribute(CustomMapSerializer2.CONTEXT_KEY_FOR_MAP);
 
         Set<TypedValue> set=(Set<TypedValue>) o;
-        
+
 
         if (!(set.isEmpty())) {
             ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 
             setPrefix(xmlGenerator,newKey.getPrefix(),newKey.getNamespaceURI());
 
-            xmlGenerator.setNextName(new QName(newKey.getNamespaceURI(),newKey.getLocalPart()));
 
-            jsonGenerator.writeFieldName(newKey.getLocalPart());
+            //xmlGenerator.setNextName(new QName(newKey.getNamespaceURI(),newKey.getLocalPart()));
+            QName qn=newKey.toQName();
+            xmlGenerator.setNextName(qn);
+
+
+            jsonGenerator.writeFieldName(qn.getLocalPart());
 
             jsonGenerator.writeStartArray();
 

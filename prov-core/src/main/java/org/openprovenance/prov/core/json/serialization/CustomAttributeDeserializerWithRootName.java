@@ -51,7 +51,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-
         return pf.newAttribute(elementName, astring, CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
     }
 

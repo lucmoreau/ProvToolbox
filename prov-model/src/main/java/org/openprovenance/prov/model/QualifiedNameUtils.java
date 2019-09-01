@@ -67,19 +67,19 @@ public class QualifiedNameUtils {
 		    );
 
 
-    
-    public String escapeProvLocalName(String localName) {
-	if ("-".equals(localName)) return "\\-";
-	String tmp=ESCAPE_PROV_LOCAL_NAME.translate(localName);
-	int len = tmp.length();
-	if (len>0 && tmp.charAt(len-1)=='.') {
-	    return (tmp.substring(0,len-1)) + "\\.";
-	} else 	if (len>0 && tmp.charAt(0)=='.') {
-	    return ("\\." + tmp.substring(1)) ;
-	} else {
-	    return tmp;
+
+	public String escapeProvLocalName(String localName) {
+		if ("-".equals(localName)) return "\\-";
+		String tmp=ESCAPE_PROV_LOCAL_NAME.translate(localName);
+		int len = tmp.length();
+		if (len>0 && tmp.charAt(len-1)=='.') {
+			return (tmp.substring(0,len-1)) + "\\.";
+		} else 	if (len>0 && tmp.charAt(0)=='.') {
+			return ("\\." + tmp.substring(1)) ;
+		} else {
+			return tmp;
+		}
 	}
-    }
 
     public String unescapeProvLocalName(String localName) {
 	return UNESCAPE_PROV_LOCAL_NAME.translate(localName);

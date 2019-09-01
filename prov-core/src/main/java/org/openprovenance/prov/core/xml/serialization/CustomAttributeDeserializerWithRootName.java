@@ -10,7 +10,9 @@ import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.QualifiedNameUtils;
 
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,6 +54,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
+        System.out.println("++++++ " + astring + " " + elementName);
         return pf.newAttribute(elementName, new LangString(astring,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
     }
 
@@ -63,31 +66,17 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
 
+        JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);
+        String type = (typeRaw == null) ? null : typeRaw.textValue();
 
-        Iterator<Map.Entry<String, JsonNode>> pairs=vObj.fields();
-        Map.Entry<String, JsonNode> pair1=pairs.next();
-        Map.Entry<String, JsonNode> pair2=pairs.next();
-
-        String key1=pair1.getKey();
-        String key2=pair2.getKey();
-
-        String type=null;
-        JsonNode value=null;
-        if (PROPERTY_AT_TYPE.equals(key1)   ) type=pair1.getValue().textValue();
-        if (PROPERTY_AT_TYPE.equals(key2)   ) type=pair2.getValue().textValue();
-
-        if (PROPERTY_AT_VALUE.equals(key1)   ) value=pair1.getValue();
-        if (PROPERTY_AT_VALUE.equals(key2)   ) value=pair2.getValue();
+        JsonNode value = vObj.get(PROPERTY_AT_VALUE);
 
 
-        /*
+        System.out.println("+ type " + type);
+        System.out.println("+ value " + value);
 
-        System.out.println("-Found key1 " + key1);
-        System.out.println("-Found key2 " + key2);
-        System.out.println("-Found @value " + value);
-        System.out.println("-Found @type " + type);
 
-         */
+
         Object valueObject=value.textValue(); //TODO: should not be checking qname but uri
         if ((type.equals("xsd:string") || type.equals("prov:InternationalizedString")) && value.isObject()) {
             //System.out.println(" This is an object " + value);
@@ -100,5 +89,33 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
         QualifiedName typeQN=ns.stringToQualifiedName(type,pf);
         return pf.newAttribute(elementName,valueObject, ns.stringToQualifiedName(type,pf));
+    }
+
+    final static QualifiedNameUtils qnU=new QualifiedNameUtils();
+
+    public QualifiedName unescapeQualifiedName(QualifiedName id) {
+
+        String namespace=id.getNamespaceURI();
+        String local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
+        String prefix=id.getPrefix();
+        return pf.newQualifiedName(namespace,local,prefix);
+    }
+
+    public Attribute deserialize(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+
+        elementName=unescapeQualifiedName(elementName);
+
+        Object valueObject=body;
+        if (type==null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
+            valueObject=new LangString(body,lang);
+            if (type==null) {
+                type="xsd:string";
+            }
+        } else if (type.equals("prov:QUALIFIED_NAME")) {
+            valueObject=ns.stringToQualifiedName(body,pf);
+        }
+        return pf.newAttribute(elementName,valueObject, ns.stringToQualifiedName(type,pf));
+
     }
 }

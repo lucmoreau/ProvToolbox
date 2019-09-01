@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
@@ -31,20 +33,46 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
         QualifiedName context=(QualifiedName)deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
 
+
+        //System.out.println(node);
+        JsonNode aType=node.get(Constants.PROPERTY_AT_TYPE);
+        String type = (aType==null)?null:aType.textValue();
+        JsonNode aLang=node.get(Constants.PROPERTY_STRING_LANG);
+        String lang = (aLang==null)?null:aLang.textValue();
+        JsonNode aBody=node.get("");
+        String body = (aBody==null)?node.textValue():aBody.textValue();
+        //System.out.println("@@ type " + type);
+        //System.out.println("@@ lang " + lang);
+        //System.out.println("@@ body " + body);
+
+
         Iterator<JsonNode> elements=node.elements();
+        //System.out.println("@@ found " + node);
+
         Set<Attribute> set=new HashSet<>();
+        Attribute attr;
+        attr = new CustomAttributeDeserializerWithRootName().deserialize(context,type, lang, body, deserializationContext);
+        set.add(attr);
+        /*
         while (elements.hasNext()) {
             JsonNode next=elements.next();
 
+            //FromXmlParser xmlParser=(FromXmlParser)jp;
+
+            //String type=xmlParser.getStaxReader().getAttributeValue(NamespacePrefixMapper.XSI_NS,Constants.PROPERTY_AT_TYPE);
+            System.out.println("@ found " + next);
             Attribute attr;
             if (next.isObject() ) {
                 attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next, deserializationContext);
             } else {
+                System.out.println(" + " + next);
+
+
                 attr = new CustomAttributeDeserializerWithRootName().deserialize(context, next.textValue(), deserializationContext);
             }
             set.add(attr);
 
-        }
+        }*/
         return set;
     }
 

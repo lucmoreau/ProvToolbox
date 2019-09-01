@@ -17,6 +17,7 @@ public interface Document {
     @JsonFilter("nsFilter")
     @JsonProperty("context")
     @JacksonXmlProperty(localName="context",namespace="http://www.w3.org/ns/prov#")
+    @JsonIgnore
     Namespace getNamespace();
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT, property = Constants.PROPERTY_BLOCK_TYPE)

@@ -9,10 +9,13 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
+
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
 
@@ -36,8 +39,24 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        if (ns==null) {
+            ns=new Namespace();
+            ns.addKnownNamespaces();
+        }
+        deserializationContext.setAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE,ns);
 
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
+
+        String av=xmlParser.getStaxReader().getAttributeValue(PROV_NS,"id");
+        System.out.println( " -> " + av);
+        if (av.contains(":")) {
+            String prefix=av.substring(0,av.indexOf(":"));
+            String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
+
+            System.out.println( "  --> " + ans + " " + prefix);
+            ns.register(prefix,ans);
+
+        }
 
         String text = jsonParser.getText();
 

@@ -77,7 +77,7 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
             throw new IOException(e);
         }
     }
-    public void setPrefix(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
+    public static void setPrefix(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
         try {
             xmlGenerator.getStaxWriter().setPrefix(prefix,provNs);
         } catch (XMLStreamException e) {

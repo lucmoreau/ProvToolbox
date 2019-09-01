@@ -37,13 +37,16 @@ public class RoundTripFromJavaXMLTest extends RoundTripFromJavaTest {
         System.out.println("writing to " + file);
 
 
-        ProvSerialiser serial=new ProvSerialiser();
+        ProvSerialiser serial=new ProvSerialiser(wrapper_erase());
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
 
 
 
     }
 
+    public boolean wrapper_erase() {
+        return false;
+    }
     public String extension() {
         return ".xml";
     }

@@ -126,8 +126,30 @@ public class BeanTraversal implements StatementActionValue {
         convertLocationAttributes(e,attrs);
         convertValueAttributes(e,attrs);
         convertAttributes(e,attrs);
-        return c.newEntity(e.getId(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+        return c.newEntity(e.getId(), attrs2);
     }
+
+    public List<Attribute> copyAttributes(List<Attribute> attrs) {
+        List<Attribute> attrs2=new LinkedList<>();
+        for (Attribute attr: attrs) {
+            attrs2.add(pFactory.newAttribute(attr.getElementName(), copyValue(attr.getValue()),attr.getType()));
+        }
+        return attrs2;
+    }
+
+    public Object copyValue(Object value) {
+        if (value instanceof LangString) {
+            LangString ls=(LangString) value;
+            return pFactory.newInternationalizedString(ls.getValue(),ls.getLang());
+        }
+        if (value instanceof QualifiedName) {
+            QualifiedName qn=(QualifiedName) value;
+            return pFactory.newQualifiedName(qn.getNamespaceURI(),qn.getLocalPart(),qn.getPrefix());
+        }
+        return value;
+    }
+
 
     //TODO: only supporting one member in the relation
     // note: lots of test to support scruffy provenance

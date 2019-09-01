@@ -83,7 +83,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
             JsonNode theValue=value.get(Constants.PROPERTY_STRING_VALUE);
             JsonNode theLang=value.get(Constants.PROPERTY_STRING_LANG);
             valueObject=new LangString(theValue.textValue(),(theLang==null)?null:theLang.textValue());
-        } else if (type.equals("prov:QUALIFIED_NAME")) {
+        } else if (type.equals("xsd:QName")) {
             valueObject=ns.stringToQualifiedName(value.textValue(),pf);
         }
 
@@ -101,7 +101,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         return pf.newQualifiedName(namespace,local,prefix);
     }
 
-    public Attribute deserialize(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
+    public Attribute deserializeX(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
         elementName=unescapeQualifiedName(elementName);
@@ -112,8 +112,9 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
             if (type==null) {
                 type="xsd:string";
             }
-        } else if (type.equals("prov:QUALIFIED_NAME")) {
+        } else if (type.equals("xsd:QName")) {
             valueObject=ns.stringToQualifiedName(body,pf);
+            type="prov:QUALIFIED_NAME";
         }
         return pf.newAttribute(elementName,valueObject, ns.stringToQualifiedName(type,pf));
 

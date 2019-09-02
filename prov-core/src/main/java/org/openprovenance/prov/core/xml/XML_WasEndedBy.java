@@ -25,6 +25,7 @@ public interface XML_WasEndedBy extends XML_Generic, HasRole {
     @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     public QualifiedName getEnder();
 
+    @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     XMLGregorianCalendar getTime();
 
 

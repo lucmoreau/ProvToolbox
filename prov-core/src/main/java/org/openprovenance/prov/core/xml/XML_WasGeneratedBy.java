@@ -20,6 +20,7 @@ public interface XML_WasGeneratedBy extends XML_Generic, HasRole {
     @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     public QualifiedName getActivity();
 
+    @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     XMLGregorianCalendar getTime();
 
 

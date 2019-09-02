@@ -30,7 +30,8 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(del,attrs);
         convertLabelAttributes(del,attrs);
         convertAttributes(del,attrs);
-        return c.newActedOnBehalfOf(del.getId(), del.getDelegate(), del.getResponsible(), del.getActivity(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+        return c.newActedOnBehalfOf(copyQ(del.getId()), copyQ(del.getDelegate()), copyQ(del.getResponsible()), copyQ(del.getActivity()), attrs2);
     }
 
 
@@ -40,7 +41,8 @@ public class BeanTraversal implements StatementActionValue {
         convertLabelAttributes(e,attrs);
         convertLocationAttributes(e,attrs);
         convertAttributes(e,attrs);
-        return c.newActivity(e.getId(), e.getStartTime(), e.getEndTime(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+        return c.newActivity(copyQ(e.getId()), e.getStartTime(), e.getEndTime(), attrs2);
     }
 
 
@@ -50,11 +52,12 @@ public class BeanTraversal implements StatementActionValue {
         convertLabelAttributes(e,attrs);
         convertLocationAttributes(e,attrs);
         convertAttributes(e,attrs);
-        return c.newAgent(e.getId(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+        return c.newAgent(copyQ(e.getId()), attrs2);
     }
 
     public AlternateOf doAction(AlternateOf o) {
-        return c.newAlternateOf(o.getAlternate1(), o.getAlternate2());
+        return c.newAlternateOf(copyQ(o.getAlternate1()), copyQ(o.getAlternate2()));
     }
 
     public Relation doAction(DerivedByInsertionFrom o) {
@@ -127,13 +130,13 @@ public class BeanTraversal implements StatementActionValue {
         convertValueAttributes(e,attrs);
         convertAttributes(e,attrs);
         List<Attribute> attrs2 = copyAttributes(attrs);
-        return c.newEntity(e.getId(), attrs2);
+        return c.newEntity(copyQ(e.getId()), attrs2);
     }
 
     public List<Attribute> copyAttributes(List<Attribute> attrs) {
         List<Attribute> attrs2=new LinkedList<>();
         for (Attribute attr: attrs) {
-            attrs2.add(pFactory.newAttribute(attr.getElementName(), copyValue(attr.getValue()),attr.getType()));
+            attrs2.add(pFactory.newAttribute(copyQ(attr.getElementName()), copyValue(attr.getValue()), copyQ(attr.getType())));
         }
         return attrs2;
     }
@@ -145,11 +148,15 @@ public class BeanTraversal implements StatementActionValue {
         }
         if (value instanceof QualifiedName) {
             QualifiedName qn=(QualifiedName) value;
-            return pFactory.newQualifiedName(qn.getNamespaceURI(),qn.getLocalPart(),qn.getPrefix());
+            return copyQ(qn);
         }
         return value;
     }
 
+    public QualifiedName copyQ(QualifiedName qn) {
+        if (qn==null) return null;
+        return pFactory.newQualifiedName(qn.getNamespaceURI(),qn.getLocalPart(),qn.getPrefix());
+    }
 
     //TODO: only supporting one member in the relation
     // note: lots of test to support scruffy provenance
@@ -157,10 +164,10 @@ public class BeanTraversal implements StatementActionValue {
         List<QualifiedName> qq=new LinkedList<QualifiedName>();
         if (o.getEntity()!=null) {
             for (QualifiedName eid:o.getEntity()) {
-                qq.add(eid);
+                qq.add(copyQ(eid));
             }
         }
-        return c.newHadMember(o.getCollection(), qq);
+        return c.newHadMember(copyQ(o.getCollection()), qq);
         
        /*remember, scruffy hadmember in provn, has a null in get(0)!!
 	return deprecated.convertHadMember(deprecated.doAction((o.getCollection()==null) ? null: 	                                    
@@ -208,7 +215,7 @@ public class BeanTraversal implements StatementActionValue {
 
 
     public SpecializationOf doAction(SpecializationOf o) {
-        return c.newSpecializationOf(o.getSpecificEntity(), o.getGeneralEntity());
+        return c.newSpecializationOf(copyQ(o.getSpecificEntity()), copyQ(o.getGeneralEntity()));
     }
 
     @Override
@@ -218,7 +225,8 @@ public class BeanTraversal implements StatementActionValue {
         convertLabelAttributes(o,attrs);
         convertAttributes(o,attrs);
         ModelConstructorExtension c2=(ModelConstructorExtension)c;
-        return c2.newQualifiedSpecializationOf(o.getId(), o.getSpecificEntity(), o.getGeneralEntity(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+        return c2.newQualifiedSpecializationOf(copyQ(o.getId()), copyQ(o.getSpecificEntity()), copyQ(o.getGeneralEntity()), attrs2);
     }
 
     @Override
@@ -227,8 +235,10 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(o,attrs);
         convertLabelAttributes(o,attrs);
         convertAttributes(o,attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
         ModelConstructorExtension c2=(ModelConstructorExtension)c;
-        return c2.newQualifiedAlternateOf(o.getId(), o.getAlternate1(), o.getAlternate2(), attrs);
+        return c2.newQualifiedAlternateOf(copyQ(o.getId()), copyQ(o.getAlternate1()), copyQ(o.getAlternate2()), attrs2);
     }
 
     @Override
@@ -237,14 +247,16 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(o,attrs);
         convertLabelAttributes(o,attrs);
         convertAttributes(o,attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
         ModelConstructorExtension c2=(ModelConstructorExtension)c;
         List<QualifiedName> qq=new LinkedList<QualifiedName>();
         if (o.getEntity()!=null) {
             for (QualifiedName eid:o.getEntity()) {
-                qq.add(eid);
+                qq.add(copyQ(eid));
             }
         }
-        return c2.newQualifiedHadMember(o.getId(),o.getCollection(), qq,attrs);
+        return c2.newQualifiedHadMember(copyQ(o.getId()),copyQ(o.getCollection()), qq,attrs2);
     }
 
     public Used doAction(Used use) {
@@ -254,7 +266,9 @@ public class BeanTraversal implements StatementActionValue {
         convertLocationAttributes(use,attrs);
         convertRoleAttributes(use,attrs);
         convertAttributes(use,attrs);
-        return c.newUsed(use.getId(), use.getActivity(), use.getEntity(), use.getTime(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newUsed(copyQ(use.getId()), copyQ(use.getActivity()), copyQ(use.getEntity()), use.getTime(), attrs2);
     }
 
 
@@ -264,11 +278,13 @@ public class BeanTraversal implements StatementActionValue {
         convertLabelAttributes(assoc,attrs);
         convertRoleAttributes(assoc,attrs);
         convertAttributes(assoc,attrs);
-        return c.newWasAssociatedWith(assoc.getId(),
-                assoc.getActivity(),
-                assoc.getAgent(),
-                assoc.getPlan(),
-                attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasAssociatedWith(copyQ(assoc.getId()),
+                copyQ(assoc.getActivity()),
+                copyQ(assoc.getAgent()),
+                copyQ(assoc.getPlan()),
+                attrs2);
     }
 
     public WasAttributedTo doAction(WasAttributedTo att) {
@@ -276,7 +292,9 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(att,attrs);
         convertLabelAttributes(att,attrs);
         convertAttributes(att,attrs);
-        return c.newWasAttributedTo(att.getId(), att.getEntity(), att.getAgent(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasAttributedTo(copyQ(att.getId()), copyQ(att.getEntity()), copyQ(att.getAgent()), attrs2);
     }
 
     public WasDerivedFrom doAction(WasDerivedFrom deriv) {
@@ -284,13 +302,15 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(deriv,attrs);
         convertLabelAttributes(deriv,attrs);
         convertAttributes(deriv,attrs);
-        return c.newWasDerivedFrom(deriv.getId(),
-                deriv.getGeneratedEntity(),
-                deriv.getUsedEntity(),
-                deriv.getActivity(),
-                deriv.getGeneration(),
-                deriv.getUsage(),
-                attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasDerivedFrom(copyQ(deriv.getId()),
+                copyQ(deriv.getGeneratedEntity()),
+                copyQ(deriv.getUsedEntity()),
+                copyQ(deriv.getActivity()),
+                copyQ(deriv.getGeneration()),
+                copyQ(deriv.getUsage()),
+                attrs2);
     }
 
 
@@ -304,7 +324,9 @@ public class BeanTraversal implements StatementActionValue {
         convertLocationAttributes(end,attrs);
         convertRoleAttributes(end,attrs);
         convertAttributes(end,attrs);
-        return c.newWasEndedBy(end.getId(), end.getActivity(), end.getTrigger(), end.getEnder(), end.getTime(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasEndedBy(copyQ(end.getId()), copyQ(end.getActivity()), copyQ(end.getTrigger()), copyQ(end.getEnder()), end.getTime(), attrs2);
     }
 
     public WasGeneratedBy doAction(WasGeneratedBy gen) {
@@ -314,7 +336,9 @@ public class BeanTraversal implements StatementActionValue {
         convertLocationAttributes(gen,attrs);
         convertRoleAttributes(gen,attrs);
         convertAttributes(gen,attrs);
-        return c.newWasGeneratedBy(gen.getId(), gen.getEntity(), gen.getActivity(), gen.getTime(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasGeneratedBy(copyQ(gen.getId()), copyQ(gen.getEntity()), copyQ(gen.getActivity()), gen.getTime(), attrs2);
     }
 
     public WasInfluencedBy doAction(WasInfluencedBy infl) {
@@ -322,7 +346,9 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(infl,attrs);
         convertLabelAttributes(infl,attrs);
         convertAttributes(infl,attrs);
-        return c.newWasInfluencedBy(infl.getId(), infl.getInfluencee(), infl.getInfluencer(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasInfluencedBy(copyQ(infl.getId()), copyQ(infl.getInfluencee()), copyQ(infl.getInfluencer()), attrs2);
     }
 
     public WasInformedBy doAction(WasInformedBy inf) {
@@ -330,7 +356,9 @@ public class BeanTraversal implements StatementActionValue {
         convertTypeAttributes(inf,attrs);
         convertLabelAttributes(inf,attrs);
         convertAttributes(inf,attrs);
-        return c.newWasInformedBy(inf.getId(), inf.getInformed(), inf.getInformant(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasInformedBy(copyQ(inf.getId()), copyQ(inf.getInformed()), copyQ(inf.getInformant()), attrs2);
     }
 
     public WasInvalidatedBy doAction(WasInvalidatedBy inv) {
@@ -340,7 +368,9 @@ public class BeanTraversal implements StatementActionValue {
         convertLocationAttributes(inv,attrs);
         convertRoleAttributes(inv,attrs);
         convertAttributes(inv,attrs);
-        return c.newWasInvalidatedBy(inv.getId(), inv.getEntity(), inv.getActivity(), inv.getTime(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasInvalidatedBy(copyQ(inv.getId()), copyQ(inv.getEntity()), copyQ(inv.getActivity()), inv.getTime(), attrs2);
     }
 
     public WasStartedBy doAction(WasStartedBy start) {
@@ -350,7 +380,9 @@ public class BeanTraversal implements StatementActionValue {
         convertLocationAttributes(start,attrs);
         convertRoleAttributes(start,attrs);
         convertAttributes(start,attrs);
-        return c.newWasStartedBy(start.getId(), start.getActivity(), start.getTrigger(), start.getStarter(), start.getTime(), attrs);
+        List<Attribute> attrs2 = copyAttributes(attrs);
+
+        return c.newWasStartedBy(copyQ(start.getId()), copyQ(start.getActivity()), copyQ(start.getTrigger()), copyQ(start.getStarter()), start.getTime(), attrs2);
     }
 
     @SuppressWarnings("unchecked")

@@ -14,6 +14,8 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.*;
 
+import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
+
 public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 
@@ -34,7 +36,9 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
         Iterator<Map.Entry<String, JsonNode>> it=node.fields();
         while (it.hasNext()) {
             Map.Entry<String, JsonNode> pair=it.next();
-            QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
+            QualifiedName elementName=unescapeQualifiedName(ns.stringToQualifiedName(pair.getKey(),pf));
+
+            System.out.println("$$$ " +elementName);
             JsonNode vObj=pair.getValue();
             Iterator<JsonNode> elements=vObj.elements();
             Set<Attribute> set=new HashSet<>();

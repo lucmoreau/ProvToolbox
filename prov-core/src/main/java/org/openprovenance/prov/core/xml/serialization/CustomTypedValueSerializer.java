@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
-import static org.openprovenance.prov.core.xml.serialization.CustomAttributesSerializer.setDefaultNamespace;
+import static org.openprovenance.prov.core.xml.serialization.CustomAttributesSerializer.*;
 
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
@@ -46,43 +46,38 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             String strValue = ((LangString) attr.getValue()).getValue();
             jsonGenerator.writeString(strValue);
-           /*
-            if (aNamespace==null) {
-            } else {
-                // trick seems to create an object, and write the names, and then write an element unwrapped.
-                jsonGenerator.writeStartObject();
-                setDefaultNamespace(xmlGenerator,aNamespace);
-                writeAttribute(xmlGenerator, "xmlns", aNamespace);
-                xmlGenerator.setNextIsUnwrapped(true);
-                serializeValue(PROPERTY_AT_VALUE, strValue, jsonGenerator, serializerProvider);
-                jsonGenerator.writeEndObject();
-            }
-
-          */
 
         } else if ((attr.getValue() instanceof String) &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             throw new UnsupportedOperationException("should never be here");
-            //jsonGenerator.writeString((String)attr.getValue());
         } else {
-            //System.out.println(jsonGenerator);
             xmlGenerator.setNextIsAttribute(true);
             jsonGenerator.writeStartObject();
 
-            //if (aNamespace!=null)  writeAttribute(xmlGenerator, "xmlns",aNamespace);
 
             writeAttribute(xmlGenerator,PREFIX_XSI, NAMESPACE_XSI,PROPERTY_AT_TYPE,attr.getType());
             Object obj=attr.getValue();
             if (obj instanceof org.openprovenance.prov.model.LangString) {
                 String theLang = ((org.openprovenance.prov.model.LangString) obj).getLang();
 
-                writeAttribute(xmlGenerator,PREFIX_XML, NamespacePrefixMapper.XML_NS,PROPERTY_STRING_LANG,theLang);
+                writeAttribute(xmlGenerator, PREFIX_XML, NamespacePrefixMapper.XML_NS, PROPERTY_STRING_LANG, theLang);
 
                 xmlGenerator.setNextIsAttribute(false);
 
                 xmlGenerator.setNextIsUnwrapped(true);
                 serializeValue(PROPERTY_AT_VALUE, ((org.openprovenance.prov.model.LangString) obj).getValue(), jsonGenerator, serializerProvider);
+            } else if (obj instanceof QualifiedName) {
+                QualifiedName qn=(QualifiedName) obj;
+                QName q=qn.toQName();
+                //setPrefix(xmlGenerator,qn.getPrefix(),qn.getNamespaceURI());
+                writeNamespace(xmlGenerator, qn.getPrefix(), qn.getNamespaceURI());
 
+System.out.println("Adding prefix for " + qn);
+
+                xmlGenerator.setNextIsAttribute(false);
+                xmlGenerator.setNextIsUnwrapped(true);
+
+                serializeValue(PROPERTY_AT_VALUE, obj, jsonGenerator, serializerProvider);
 
             } else {
                 xmlGenerator.setNextIsAttribute(false);
@@ -92,6 +87,8 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
             jsonGenerator.writeEndObject();
         }
     }
+
+
 
     static final public String XSD_NS_NO_HASH = "http://www.w3.org/2001/XMLSchema";
 

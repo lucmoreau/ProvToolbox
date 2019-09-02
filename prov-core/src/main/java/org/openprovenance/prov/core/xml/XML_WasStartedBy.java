@@ -25,6 +25,7 @@ public interface XML_WasStartedBy extends XML_Generic, HasRole {
     @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     public QualifiedName getStarter();
 
+    @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     XMLGregorianCalendar getTime();
 
 

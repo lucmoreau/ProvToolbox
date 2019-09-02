@@ -15,6 +15,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 
+import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
@@ -61,7 +62,7 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
         String text = jsonParser.getText();
 
         if (Constants.PROPERTY_AT_TYPE.equals(text)) return PROV_TYPE;
-        return ns.stringToQualifiedName(text, pf, false);
+        return unescapeQualifiedName(ns.stringToQualifiedName(text, pf));
     }
 
 
@@ -75,6 +76,6 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
         ns.register(qName.getPrefix(),qName.getNamespaceURI());
         System.out.println(ns);
         if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;
-        return pf.newQualifiedName(qName);
+        return unescapeQualifiedName(pf.newQualifiedName(qName));
     }
 }

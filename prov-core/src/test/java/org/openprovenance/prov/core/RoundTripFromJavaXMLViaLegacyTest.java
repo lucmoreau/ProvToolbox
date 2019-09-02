@@ -1,5 +1,6 @@
 package org.openprovenance.prov.core;
 
+import org.jetbrains.annotations.NotNull;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
@@ -43,8 +44,26 @@ public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest 
         return doc2;
     }
 
+    @NotNull
+    public String get0tagWithDigit() {
+        return "x0tagWithDigit";
+    }
+
+
     @Override
     public boolean wrapper_erase() {
         return true;
     }
+
+
+    public void testMembership1() {
+
+    }
+    public void testMembership2() {
+
+    }
+    public void testMembership3() {
+
+    }
+
 }

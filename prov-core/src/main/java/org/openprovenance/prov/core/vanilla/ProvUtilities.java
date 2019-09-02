@@ -85,6 +85,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                 case OTHER:
                     Other other=(Other) attribute;
                     QualifiedName name=other.getElementName();
+
                     Collection<Other> some=others.get(name);
                     if (some==null) {
                         some = new LinkedList<>();

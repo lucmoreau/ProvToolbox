@@ -86,5 +86,15 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
         }
     }
 
+    public static void writeNamespace(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
+        try {
+            xmlGenerator.getStaxWriter().writeNamespace(prefix,provNs);
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        }
+    }
+
+
 
 }

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
+import org.jetbrains.annotations.NotNull;
 import org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
@@ -377,14 +378,19 @@ public class RoundTripFromJavaTest extends TestCase {
         he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
                                             "hello\nover\nmore\nlines",
                                             name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "0tagWithDigit", EX_PREFIX,
+        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
                 "hello",
                 name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "0tagWithDigit", EX_PREFIX,
+        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
                 "hello2",
                 name.XSD_STRING));
 
 
+    }
+
+    @NotNull
+    public String get0tagWithDigit() {
+        return "0tagWithDigit";
     }
 
     public void addFurtherAttributes0(HasOther he) {
@@ -1354,6 +1360,7 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAssociation9() {
+
         WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc9"),
                                                                 q("a1"),
                                                                 q("ag1"));
@@ -1362,6 +1369,8 @@ public class RoundTripFromJavaTest extends TestCase {
         addTypes(assoc);
         addFurtherAttributes(assoc);
         makeDocAndTest(assoc, "target/association9");
+
+
     }
 
 

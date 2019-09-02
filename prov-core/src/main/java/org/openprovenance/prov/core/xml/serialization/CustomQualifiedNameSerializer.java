@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
+import org.openprovenance.prov.core.xml.QualifiedNameRef;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 
 import javax.xml.stream.XMLStreamException;
@@ -23,6 +24,7 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+
 
         ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 

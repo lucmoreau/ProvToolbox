@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.jsonld.serialization;
+package org.openprovenance.prov.core.jsonld11.serialization;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+
 import org.openprovenance.prov.core.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
@@ -16,21 +17,22 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
+public class ProvSerialiser extends org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser {
 
-    protected final boolean embedContext;
 
     public ProvSerialiser () {
         this(true);
     }
 
     public ProvSerialiser (boolean embedContext) {
-        this.embedContext=embedContext;
+        super(embedContext);
     }
 
     public ProvMixin provMixin() {
         return new ProvMixin();
     }
+
+
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
@@ -62,6 +64,5 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
             throw new UncheckedException(e);
         }
     }
-
 
 }

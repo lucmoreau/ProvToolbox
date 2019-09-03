@@ -1,0 +1,153 @@
+{
+    "@version": 1.1,
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "prov:role": {
+        "@id": "prov:hadRole",
+        "@type": "@id"
+    },
+    "prov:type": {
+        "@id": "rdf:type",
+        "@type": "@id"
+    },
+    "prov:label": {
+        "@id": "rdfs:label"
+    },
+    "prov:location": {
+        "@id": "prov:atLocation",
+        "@type": "@id"
+    },
+    "startTime": {
+        "@id": "prov:startedAtTime",
+        "@type": "xsd:dateTime"
+    },
+    "endTime": {
+        "@id": "prov:endedAtTime",
+        "@type": "xsd:dateTime"
+    },
+    "entity": {
+        "@id": "prov:entity",
+        "@type": "@id"
+    },
+    "activity": {
+        "@id": "prov:activity",
+        "@type": "@id"
+    },
+    "agent": {
+        "@id": "prov:agent",
+        "@type": "@id"
+    },
+    "influencer": {
+        "@id": "prov:influencer",
+        "@type": "@id"
+    },
+    "hadActivity": {
+        "@id": "prov:hadActivity",
+        "@type": "@id"
+    },
+    "hadUsage": {
+        "@id": "prov:hadUsage",
+        "@type": "@id"
+    },
+    "hadGeneration": {
+        "@id": "prov:hadGeneration",
+        "@type": "@id"
+    },
+    "activity_started": {
+        "@reverse": "prov:qualifiedStart",
+        "@type": "@id"
+    },
+    "activity_ended": {
+        "@reverse": "prov:qualifiedEnd",
+        "@type": "@id"
+    },
+    "entity_derived": {
+        "@reverse": "prov:qualifiedDerivation",
+        "@type": "@id"
+    },
+    "informed": {
+        "@reverse": "prov:qualifiedCommunication",
+        "@type": "@id"
+    },
+
+
+    "delegate": {
+        "@reverse": "prov:qualifiedDelegation",
+        "@type": "@id"
+    },
+    "influencee": {
+        "@reverse": "prov:qualifiedInfluence",
+        "@type": "@id"
+    },
+    "prov:Generation": {
+	"@id": "prov:Generation",
+	"@context": {
+	    "entity": {
+		"@reverse" : "prov:qualifiedGeneration",
+		"@type" : "@id"
+	    },
+	    "time": {
+		"@id": "prov:atTime",
+		"@type": "xsd:dateTime"
+	    }
+
+	}
+    },
+    "prov:Invalidation": {
+	"@id": "prov:Invalidation",
+	"@context": {
+	    "entity": {
+		"@reverse" : "prov:qualifiedInvalidation",
+		"@type" : "@id"
+	    },
+	    "time": {
+		"@id": "prov:atTime",
+		"@type": "xsd:dateTime"
+	    }
+
+	}
+    },
+    "prov:Attribution": {
+	"@id": "prov:Attribution",
+	"@context": {
+	    "entity": {
+		"@reverse" : "prov:qualifiedAttribution",
+		"@type" : "@id"
+	    }
+	}
+
+    },
+    "prov:Usage": {
+	"@id": "prov:Usage",
+	"@context": {
+	    "activity": {
+		"@reverse" : "prov:qualifiedUsage",
+		"@type" : "@id"
+	    },
+	    "time": {
+		"@id": "prov:atTime",
+		"@type": "xsd:dateTime"
+	    }
+
+	}
+
+    },
+    "prov:Association": {
+	"@id": "prov:Association",
+	"@context": {
+	    "activity": {
+		"@reverse" : "prov:qualifiedAssociation",
+		"@type" : "@id"
+	    },
+	    "plan": {
+		"@id": "prov:hadPlan",
+		"@type": "@id"
+	    }
+	}
+    }
+    
+
+}
+

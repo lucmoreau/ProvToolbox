@@ -24,7 +24,7 @@ public class CustomMapSerializer2 extends StdSerializer<QualifiedName> {
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=q.getPrefix() + ":" + q.getLocalPart();
         if (s.equals("prov:type")) {
-            s= Constants.PROPERTY_AT_TYPE;
+            s= Constants.PROPERTY_PROV_TYPE;
         }
         serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,s);
 

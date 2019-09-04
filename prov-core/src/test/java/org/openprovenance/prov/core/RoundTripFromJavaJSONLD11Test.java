@@ -40,6 +40,10 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
         ProvSerialiser serial=new ProvSerialiser();
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
 
+        String command = "jsonld --format=ntriples -o " + file + ".ttl " + file;
+        System.out.println(command);
+        Runtime.getRuntime().exec(command);
+
 
 
     }

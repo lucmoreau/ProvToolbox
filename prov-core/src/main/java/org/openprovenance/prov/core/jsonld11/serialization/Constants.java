@@ -1,13 +1,16 @@
 package org.openprovenance.prov.core.jsonld11.serialization;
 
 public interface Constants {
-    String PROPERTY_AT_TYPE = "prov:type";
+    String PROPERTY_AT_TYPE = "@type";
     String PROPERTY_AT_VALUE = "@value";
 
     String PROPERTY_STRING_VALUE = "@value";
     String PROPERTY_STRING_LANG = "@language";
 
     String PROPERTY_BLOCK_TYPE = "@type";
+
+    String PROPERTY_PROV_TYPE = "prov:type";
+
 
     String PROPERTY_PROV_ACTIVITY = "prov:Activity";
     String PROPERTY_PROV_AGENT = "prov:Agent";

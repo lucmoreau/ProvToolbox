@@ -19,14 +19,7 @@
         "@id": "prov:atLocation",
         "@type": "@id"
     },
-    "startTime": {
-        "@id": "prov:startedAtTime",
-        "@type": "xsd:dateTime"
-    },
-    "endTime": {
-        "@id": "prov:endedAtTime",
-        "@type": "xsd:dateTime"
-    },
+
     "entity": {
         "@id": "prov:entity",
         "@type": "@id"
@@ -39,47 +32,55 @@
         "@id": "prov:agent",
         "@type": "@id"
     },
-    "influencer": {
-        "@id": "prov:influencer",
-        "@type": "@id"
-    },
-    "hadActivity": {
-        "@id": "prov:hadActivity",
-        "@type": "@id"
-    },
-    "hadUsage": {
-        "@id": "prov:hadUsage",
-        "@type": "@id"
-    },
-    "hadGeneration": {
-        "@id": "prov:hadGeneration",
-        "@type": "@id"
-    },
-    "activity_started": {
-        "@reverse": "prov:qualifiedStart",
-        "@type": "@id"
-    },
-    "activity_ended": {
-        "@reverse": "prov:qualifiedEnd",
-        "@type": "@id"
-    },
-    "entity_derived": {
-        "@reverse": "prov:qualifiedDerivation",
-        "@type": "@id"
-    },
-    "informed": {
-        "@reverse": "prov:qualifiedCommunication",
-        "@type": "@id"
+
+
+
+    "prov:Activity": {
+	"@id": "prov:Activity",
+	"@context" : {    
+	    "startTime": {
+		"@id": "prov:startedAtTime",
+		"@type": "xsd:dateTime"
+	    },
+	    "endTime": {
+		"@id": "prov:endedAtTime",
+		"@type": "xsd:dateTime"
+	    }
+	}
     },
 
 
-    "delegate": {
-        "@reverse": "prov:qualifiedDelegation",
-        "@type": "@id"
+    "prov:Delegation": {
+	"@id": "prov:Delegation",
+	"@context": {
+	    "responsible": {
+		"@reverse": "prov:activity",
+		"@type": "@id"
+	    },
+	    "delegate": {
+		"@reverse": "prov:qualifiedDelegation",
+		"@type": "@id"
+	    },
+	    "activity": {
+		"@reverse" : "prov:hadActivity",
+		"@type" : "@id"
+	    }
+
+	}
     },
-    "influencee": {
-        "@reverse": "prov:qualifiedInfluence",
-        "@type": "@id"
+    "prov:Usage": {
+	"@id": "prov:Usage",
+	"@context": {
+	    "activity": {
+		"@reverse" : "prov:qualifiedUsage",
+		"@type" : "@id"
+	    },
+	    "time": {
+		"@id": "prov:atTime",
+		"@type": "xsd:dateTime"
+	    }
+
+	}
     },
     "prov:Generation": {
 	"@id": "prov:Generation",
@@ -145,6 +146,101 @@
 		"@id": "prov:hadPlan",
 		"@type": "@id"
 	    }
+	}
+    },
+    "prov:Communication": {
+	"@id": "prov:Communication",
+	"@context": {
+	    "informed": {
+		"@reverse" : "prov:qualifiedCommunication",
+		"@type" : "@id"
+	    },
+	    "informant": {
+		"@id": "prov:activity",
+		"@type": "@id"
+	    }
+	}
+    },
+    "prov:Influence": {
+	"@id": "prov:Influence",
+	"@context": {
+	    "influencee": {
+		"@reverse" : "prov:qualifiedInfluence",
+		"@type" : "@id"
+	    },
+	    "influencer": {
+		"@id": "prov:influencer",
+		"@type": "@id"
+	    }
+	}
+    },
+    "prov:Derivation": {
+	"@id": "prov:Derivation",
+	"@context": {
+	    "generatedEntity": {
+		"@reverse": "prov:qualifiedDerivation",
+		"@type": "@id"
+	    },
+	    "usedEntity": {
+		"@id": "prov:entity",
+		"@type": "@id"
+	    },
+	    "generation": {
+		"@id": "prov:hadGeneration",
+		"@type": "@id"
+	    },
+	    "activity": {
+		"@id": "prov:hadActivity",
+		"@type": "@id"
+	    },
+	    "usage": {
+		"@id": "prov:hadUsage",
+		"@type": "@id"
+	    }
+	}
+    },
+    "prov:Start": {
+	"@id": "prov:Start",
+	"@context": {
+	    "activity": {
+		"@reverse": "prov:qualifiedStart",
+		"@type": "@id"
+	    },
+	    "trigger": {
+		"@id": "prov:entity",
+		"@type": "@id"
+	    },
+	    "starter": {
+		"@id": "prov:hadActivity",
+		"@type": "@id"
+	    },
+	    "time": {
+		"@id": "prov:atTime",
+		"@type": "xsd:dateTime"
+	    }
+	    
+	}
+    },
+    "prov:End": {
+	"@id": "prov:End",
+	"@context": {
+	    "activity": {
+		"@reverse": "prov:qualifiedEnd",
+		"@type": "@id"
+	    },
+	    "trigger": {
+		"@id": "prov:entity",
+		"@type": "@id"
+	    },
+	    "starter": {
+		"@id": "prov:hadActivity",
+		"@type": "@id"
+	    },
+	    "time": {
+		"@id": "prov:atTime",
+		"@type": "xsd:dateTime"
+	    }
+	    
 	}
     }
     

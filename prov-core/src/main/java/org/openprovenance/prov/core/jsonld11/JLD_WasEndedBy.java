@@ -9,24 +9,20 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-@JsonPropertyOrder({ "@id", "activity_ended", "entity", "hadActivity", "atTime" })
+@JsonPropertyOrder({ "@id", "activity", "trigger", "ender", "time" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface JLD_WasEndedBy extends JLD_Generic, HasRole {
 
-    @JsonProperty("entity")
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getTrigger();
 
-    @JsonProperty("activity_ended")
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getActivity();
 
 
-    @JsonProperty("hadActivity")
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getEnder();
 
-    @JsonProperty("atTime")
     XMLGregorianCalendar getTime();
 
 

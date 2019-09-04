@@ -7,18 +7,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.prov.core.jsonld11.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.QualifiedName;
 
-@JsonPropertyOrder({ "@id", "delegate", "agent", "hadActivity" })
+@JsonPropertyOrder({ "@id", "delegate", "responsible", "activity" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface JLD_ActedOnBehalfOf extends JLD_Generic2 {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getDelegate();
 
-    @JsonProperty("agent")
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getResponsible();
 
-    @JsonProperty("hadActivity")
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getActivity();
 

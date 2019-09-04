@@ -112,8 +112,7 @@ public class PC1FullTest extends TestCase {
 	                  String file, String location) {
 
 	Entity a = pFactory.newEntity(q(id), label);
-	pFactory.addType(a, URI
-	        .create("http://openprovenance.org/primitives#File"));
+	pFactory.addType(a, pFactory.newQualifiedName(PRIM_NS, "FILE", PRIM_PREFIX));
 
 	addUrl(a, location + file);
 
@@ -124,7 +123,7 @@ public class PC1FullTest extends TestCase {
 	                       String value) {
 
 	Entity a = pFactory.newEntity(q(id), label);
-	pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
+	pFactory.addType(a,pFactory.newQualifiedName(PRIM_NS, "Sring", PRIM_PREFIX));
 
 	addValue(a, value);
 
@@ -175,19 +174,13 @@ public class PC1FullTest extends TestCase {
 
 	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.PROV_QUALIFIED_NAME));
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
-	pFactory.addType(p1, 10, name.XSD_INT);
-	pFactory.addType(p1, -10, name.XSD_INT);
-	pFactory.addType(p1, -10.55, name.XSD_FLOAT);
-	pFactory.addType(p1, "abc", name.XSD_STRING);
-	pFactory.addType(p1, true, name.XSD_BOOLEAN);
-	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
+		pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
 	p1.getLabel().add(pFactory.newInternationalizedString("bonjour", "fr"));
 	p1.getLabel().add(pFactory.newInternationalizedString("hello", "en"));
 
 	Activity p2 = pFactory.newActivity(q("a2"), "align_warp 2");
-	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
+		pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
 
 	Activity p3 = pFactory.newActivity(q("a3"), "align_warp 3");
 	pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);

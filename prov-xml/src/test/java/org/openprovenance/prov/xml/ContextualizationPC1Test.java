@@ -86,14 +86,10 @@ public class ContextualizationPC1Test extends TestCase {
     static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
     static QualifiedName PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "align_warp",null);
-    static URI PRIMITIVE_RESLICE = URI
-	    .create("http://openprovenance.org/primitives#reslice");
-    static URI PRIMITIVE_SOFTMEAN = URI
-	    .create("http://openprovenance.org/primitives#softmean");
-    static URI PRIMITIVE_CONVERT = URI
-	    .create("http://openprovenance.org/primitives#convert");
-    static URI PRIMITIVE_SLICER = URI
-	    .create("http://openprovenance.org/primitives#slicer");
+    static QualifiedName PRIMITIVE_RESLICE = pFactory.newQualifiedName(PRIM_NS, "reslice", PRIM_PREFIX);
+    static QualifiedName PRIMITIVE_SOFTMEAN = pFactory.newQualifiedName(PRIM_NS, "softmean", PRIM_PREFIX);
+    static QualifiedName PRIMITIVE_CONVERT =pFactory.newQualifiedName(PRIM_NS, "convert", PRIM_PREFIX);
+    static QualifiedName PRIMITIVE_SLICER = pFactory.newQualifiedName(PRIM_NS, "slicer", PRIM_PREFIX);
 
 
     public QualifiedName q(String n) {
@@ -105,8 +101,7 @@ public class ContextualizationPC1Test extends TestCase {
 	                  String file, String location) {
 
 	org.openprovenance.prov.model.Entity a = pFactory.newEntity(q(id), label);
-	pFactory.addType(a, URI
-	        .create("http://openprovenance.org/primitives#File"));
+	pFactory.addType(a, pFactory.newQualifiedName(PRIM_NS, "File", PRIM_PREFIX));
 
 	addUrl(a, location + file);
 
@@ -117,7 +112,7 @@ public class ContextualizationPC1Test extends TestCase {
 	                       String value) {
 
 	Entity a = pFactory.newEntity(q(id), label);
-	pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
+	pFactory.addType(a, pFactory.newQualifiedName(PRIM_NS, "String", PRIM_PREFIX));
 
 	addValue(a, value);
 
@@ -206,14 +201,8 @@ public class ContextualizationPC1Test extends TestCase {
 	List<Type> o = p1.getType();
 
 	o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.XSD_ANY_URI));
+		pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.XSD_ANY_URI);
 
-	pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.XSD_ANY_URI);
-	pFactory.addType(p1, 10, name.XSD_INT);
-	pFactory.addType(p1, -10, name.XSD_INT);
-	pFactory.addType(p1, -10.55, name.XSD_FLOAT);
-	pFactory.addType(p1, "abc", name.XSD_STRING);
-	pFactory.addType(p1, true, name.XSD_BOOLEAN);
-	pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 	Activity p2 = pFactory.newActivity(q("p2"), "align_warp 2");
 	pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.XSD_ANY_URI);

@@ -9,7 +9,6 @@ import java.util.List;
 public interface HasRole extends org.openprovenance.prov.model.HasRole{
 
     @JsonIgnore
-    @JsonProperty("hadRole")
     List<Role> getRole();
 
 

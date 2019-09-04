@@ -2,8 +2,8 @@ package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
-import org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -97,21 +97,16 @@ public class PC1FullTest extends TestCase {
 	static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
 	private static QualifiedName PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "align_warp", PRIM_PREFIX);
-	static URI PRIMITIVE_RESLICE = URI
-			.create("http://openprovenance.org/primitives#reslice");
-	static URI PRIMITIVE_SOFTMEAN = URI
-			.create("http://openprovenance.org/primitives#softmean");
-	static URI PRIMITIVE_CONVERT = URI
-			.create("http://openprovenance.org/primitives#convert");
-	static URI PRIMITIVE_SLICER = URI
-			.create("http://openprovenance.org/primitives#slicer");
+	static QualifiedName PRIMITIVE_RESLICE = pFactory.newQualifiedName(PRIM_NS,"reslice", PRIM_PREFIX);
+	static QualifiedName PRIMITIVE_SOFTMEAN = pFactory.newQualifiedName(PRIM_NS,"softmean", PRIM_PREFIX);
+	static QualifiedName PRIMITIVE_CONVERT = pFactory.newQualifiedName(PRIM_NS,"convert", PRIM_PREFIX);
+	static QualifiedName PRIMITIVE_SLICER = pFactory.newQualifiedName(PRIM_NS,"slicer", PRIM_PREFIX);
 
 	public Entity newFile(org.openprovenance.prov.core.vanilla.ProvFactory pFactory, String id, String label,
                           String file, String location) {
 
 		Entity a = pFactory.newEntity(q(id), label);
-		pFactory.addType(a, URI
-				.create("http://openprovenance.org/primitives#File"));
+		pFactory.addType(a, pFactory.newQualifiedName(PRIM_NS,"File", PRIM_PREFIX));
 
 		addUrl(a, location + file);
 
@@ -122,7 +117,7 @@ public class PC1FullTest extends TestCase {
                                String value) {
 
 		Entity a = pFactory.newEntity(q(id), label);
-		pFactory.addType(a, URI.create("http://openprovenance.org/primitives#String"));
+		pFactory.addType(a, pFactory.newQualifiedName(PRIM_NS,"String", PRIM_PREFIX));
 
 		addValue(a, value);
 
@@ -174,12 +169,6 @@ public class PC1FullTest extends TestCase {
 		o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.PROV_QUALIFIED_NAME));
 
 		pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
-		pFactory.addType(p1, 10, name.XSD_INT);
-		pFactory.addType(p1, -10, name.XSD_INT);
-		pFactory.addType(p1, -10.55, name.XSD_FLOAT);
-		pFactory.addType(p1, "abc", name.XSD_STRING);
-		pFactory.addType(p1, true, name.XSD_BOOLEAN);
-		pFactory.addType(p1, URI.create("http://www.example.com/hi"));
 
 		p1.getLabel().add(pFactory.newInternationalizedString("bonjour", "fr"));
 		p1.getLabel().add(pFactory.newInternationalizedString("hello", "en"));

@@ -19,7 +19,6 @@ public interface JLD_WasGeneratedBy extends JLD_Generic, HasRole {
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getActivity();
 
-    @JsonProperty("atTime")
     XMLGregorianCalendar getTime();
 
 

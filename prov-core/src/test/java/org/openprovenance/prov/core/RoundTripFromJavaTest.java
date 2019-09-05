@@ -635,9 +635,8 @@ public class RoundTripFromJavaTest extends TestCase {
         Entity a = pFactory.newEntity(q("e10"), "entity10");
         addTypes(a);
         addLocations(a);
-       addLabels(a);
+        addLabels(a);
         addFurtherAttributes(a);
-        System.out.println(a);
         makeDocAndTest(a, "target/entity10");
     }
 

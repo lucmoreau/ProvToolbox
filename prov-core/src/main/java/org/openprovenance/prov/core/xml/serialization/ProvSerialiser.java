@@ -509,7 +509,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         XmlFactory xmlFactory = new XmlFactory(inputFactory2,outputFactory2);
 
 
-       XmlMapper mapper = new XmlMapper(xmlFactory);
+        XmlMapper mapper = new XmlMapper(xmlFactory);
 
 
 
@@ -522,6 +522,9 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
+
+        //mapper.setDefaultUseWrapper(false); NO, use annotation instead
+
         //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
         mapper.registerModule(module);
 

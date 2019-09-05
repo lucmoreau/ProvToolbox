@@ -43,6 +43,7 @@ public class DocumentEquality {
 	}
 
 	private boolean collectionEqual(Collection<?> c1, Collection<?> c2) {
+	//	System.out.println("collectionEqual " + c1.getClass());
 		Collection<?> bag1;
 		Collection<?> bag2;
 		if (mergeDuplicates) {
@@ -52,8 +53,9 @@ public class DocumentEquality {
 			bag1 = new HashBag(c1);
 			bag2 = new HashBag(c2);
 		}
-		//System.out.println("bag1: " +bag1);
-		//System.out.println("bag2: " +bag2);
+	//	System.out.println("bag1: " +bag1);
+	//	System.out.println("bag2: " +bag2);
+	//	System.out.println(bag1.equals(bag2));
 		return bag1.equals(bag2);
 	}
 
@@ -83,6 +85,7 @@ public class DocumentEquality {
 		for (Method m : allMethods) {
 			String methodName = m.getName();
 			if (methodName.startsWith("get") && (!methodName.equals("getAll"))) {
+				//System.out.println(methodName);
 				try {
 					Object attr1 = m.invoke(r1);
 					Object attr2 = m.invoke(r2);

@@ -112,7 +112,7 @@ public class QualifiedName implements org.openprovenance.prov.model.QualifiedNam
     }
 
     public String toString() {
-        return "'" + prefix + ":{" + namespace + "}" + local + "'";
+        return "'" + prefix + ":{{" + namespace + "}}" + local + "'";
     }
 
 }

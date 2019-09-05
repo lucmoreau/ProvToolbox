@@ -4,9 +4,7 @@ import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     /**
@@ -41,11 +39,26 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
 
         String command = "jsonld --format=ntriples -o " + file + ".ttl " + file;
-        System.out.println(command);
-        Runtime.getRuntime().exec(command);
+        //System.out.println(command);
+        //Runtime.getRuntime().exec(command);
+        executeAndWait(command);
 
 
 
+    }
+
+    public void executeAndWait (String command) throws IOException {
+        Runtime runtime = Runtime.getRuntime();
+        java.lang.Process proc = runtime.exec(command);
+        try {
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            String s_error=errorReader.readLine();
+            if (s_error!=null && !s_error.equals("")) {
+                System.out.println("Error:  " + s_error);
+            }
+            proc.waitFor();
+            //System.err.println("exit value " + proc.exitValue());
+        } catch (InterruptedException e){};
     }
 
     public String extension() {

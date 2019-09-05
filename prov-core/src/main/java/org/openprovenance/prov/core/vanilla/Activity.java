@@ -16,8 +16,8 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<org.openprovenance.prov.model.QualifiedName> id;
-    private Optional<XMLGregorianCalendar> startTime;
-    private Optional<XMLGregorianCalendar> endTime;
+    private Optional<XMLGregorianCalendar> startTime=Optional.empty();
+    private Optional<XMLGregorianCalendar> endTime=Optional.empty();
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     private List<org.openprovenance.prov.model.Location> location = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();

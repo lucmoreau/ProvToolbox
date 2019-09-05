@@ -54,15 +54,15 @@
 	"@id": "prov:Delegation",
 	"@context": {
 	    "responsible": {
-		"@reverse": "prov:activity",
-		"@type": "@id"
+		"@id": "prov:agent",
+		"@type" : "@id"
 	    },
 	    "delegate": {
 		"@reverse": "prov:qualifiedDelegation",
 		"@type": "@id"
 	    },
 	    "activity": {
-		"@reverse" : "prov:hadActivity",
+		"@id" : "prov:hadActivity",
 		"@type" : "@id"
 	    }
 
@@ -232,7 +232,7 @@
 		"@id": "prov:entity",
 		"@type": "@id"
 	    },
-	    "starter": {
+	    "ender": {
 		"@id": "prov:hadActivity",
 		"@type": "@id"
 	    },

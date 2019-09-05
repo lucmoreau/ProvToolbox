@@ -26,7 +26,7 @@ import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
@@ -247,20 +247,39 @@ public class RoundTripFromJavaTest extends TestCase {
                 System.out.println("Pre-write graph: " + doc);
                 System.out.println("Read graph: " + doc2);
 
-                System.out.println("test1: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)));
-                System.out.println("test2: " + ((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)));
-                System.out.println("test1: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).getClass());
-                System.out.println("test2: " + ((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)).getClass());
-                System.out.println("test3: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).equals(((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0))));
-                System.out.println("test4: " +  ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.core.vanilla.Entity) doc2.getStatementOrBundle().get(0)).getLabel())));
-                System.out.println("test4a: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).getLabel());
-                System.out.println("test4b: " + ((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)).getLabel());
-                System.out.println("test5: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.core.vanilla.Entity) doc2.getStatementOrBundle().get(0)).getType())));
-                System.out.println("test5b: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).getOther());
-                System.out.println("test5c: " + ((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)).getOther());
-                System.out.println("test5d: " + ((org.openprovenance.prov.core.vanilla.Entity)doc.getStatementOrBundle().get(0)).getValue());
-                System.out.println("test5e: " + ((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)).getValue());
-                System.out.println("test6: " + ((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.core.vanilla.Entity)doc2.getStatementOrBundle().get(0)).getOther()));
+                System.out.println("test0: " + doc.getStatementOrBundle().get(0));
+                System.out.println("test0: " + doc2.getStatementOrBundle().get(0));
+                System.out.println("test1: " + doc.getStatementOrBundle().get(0).getClass());
+                System.out.println("test1: " + doc2.getStatementOrBundle().get(0).getClass());
+
+                System.out.println("test: " + (doc.getStatementOrBundle().get(0)).equals((doc2.getStatementOrBundle().get(0))));
+
+                System.out.println("test2  (attr): " + compareSet(((org.openprovenance.prov.core.vanilla.HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((org.openprovenance.prov.core.vanilla.HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
+
+
+                System.out.println("test3  (I): " + compare(((org.openprovenance.prov.model.Identifiable) doc.getStatementOrBundle().get(0)).getId(), ((((org.openprovenance.prov.model.Identifiable) doc2.getStatementOrBundle().get(0)).getId()))));
+
+                System.out.println("test4  (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel())));
+                System.out.println("test4  (L): " + compareSet(((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel(), ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel()));
+                System.out.println("test4a (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel());
+                System.out.println("test4b (L): " + ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel());
+                System.out.println("test5  (T): " + ((org.openprovenance.prov.model.HasType) doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.model.HasType) doc2.getStatementOrBundle().get(0)).getType())));
+                System.out.println("test6  (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther()));
+                System.out.println("test6b (O): " + ((org.openprovenance.prov.model.HasOther) doc.getStatementOrBundle().get(0)).getOther());
+                System.out.println("test6c (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther());
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole) {
+                    System.out.println("test7  (R): " + compareSet(((org.openprovenance.prov.model.HasRole) doc.getStatementOrBundle().get(0)).getRole(), ((((org.openprovenance.prov.model.HasRole) doc2.getStatementOrBundle().get(0)).getRole()))));
+                }
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLocation) {
+                    System.out.println("test8  (Loc): " + compareSet(((org.openprovenance.prov.model.HasLocation) doc.getStatementOrBundle().get(0)).getLocation(), ((org.openprovenance.prov.model.HasLocation) doc2.getStatementOrBundle().get(0)).getLocation()));
+                    System.out.println("test8a (Loc): " + ((org.openprovenance.prov.model.HasLocation) doc.getStatementOrBundle().get(0)).getLocation());
+                    System.out.println("test8b (Loc): " + ((org.openprovenance.prov.model.HasLocation) doc2.getStatementOrBundle().get(0)).getLocation());
+                }
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasValue) {
+                    System.out.println("test9  (V): " + compare(((org.openprovenance.prov.model.HasValue) doc.getStatementOrBundle().get(0)).getValue(), ((org.openprovenance.prov.model.HasValue) doc2.getStatementOrBundle().get(0)).getValue()));
+                    System.out.println("test9a (V): " + ((org.openprovenance.prov.model.HasValue) doc.getStatementOrBundle().get(0)).getValue());
+                    System.out.println("test9b (V): " + ((org.openprovenance.prov.model.HasValue) doc2.getStatementOrBundle().get(0)).getValue());
+                }
 
 
 
@@ -270,6 +289,27 @@ public class RoundTripFromJavaTest extends TestCase {
         } else {
             assertFalse("doc distinct from doc2", doc.equals(doc2));
         }
+
+
+    }
+
+    private <E>boolean compare(E value1, E value2) {
+        if (value1==null) return (value2==null);
+        if (value2==null) return false;
+        return value1.equals(value2);
+    }
+
+
+    public <E> boolean  compareSet(List<E> a1, List<E> a2) {
+        Set<E> set1 = new HashSet<>(a1);
+        Set<E> set2 = new HashSet(a2);
+        return set1.equals(set2);
+    }
+
+    public <E> boolean  compareSet(Collection<E> a1, Collection<E> a2) {
+        Set<E> set1 = new HashSet<>(a1);
+        Set<E> set2 = new HashSet(a2);
+        return set1.equals(set2);
     }
 
     public boolean checkTest(String name) {
@@ -343,20 +383,20 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void addLocations(HasLocation hl) {
         hl.getLocation().add(pFactory.newLocation("London",
-                                                  name.XSD_STRING));
+                name.XSD_STRING));
         hl.getLocation().add(pFactory.newLocation(1, name.XSD_INT));
         hl.getLocation().add(pFactory.newLocation(1.0, name.XSD_FLOAT));
         hl.getLocation()
-          .add(pFactory.newLocation(true, name.XSD_BOOLEAN));
+                .add(pFactory.newLocation(true, name.XSD_BOOLEAN));
         hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london",
-                                                            EX_PREFIX),
-                                                  name.PROV_QUALIFIED_NAME));
+                EX_PREFIX),
+                name.PROV_QUALIFIED_NAME));
         hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
-                                                  name.XSD_DATETIME));
+                name.XSD_DATETIME));
         hl.getLocation().add(pFactory.newLocation(EX_NS + "london",
-                                                  name.XSD_ANY_URI));
+                name.XSD_ANY_URI));
         hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),
-                                                  name.XSD_GYEAR));
+                name.XSD_GYEAR));
     }
 
     public void addValue(HasValue hl) {
@@ -595,8 +635,9 @@ public class RoundTripFromJavaTest extends TestCase {
         Entity a = pFactory.newEntity(q("e10"), "entity10");
         addTypes(a);
         addLocations(a);
-        addLabels(a);
+       addLabels(a);
         addFurtherAttributes(a);
+        System.out.println(a);
         makeDocAndTest(a, "target/entity10");
     }
 

@@ -1,9 +1,6 @@
 package org.openprovenance.prov.core.vanilla;
 
-//import com.fasterxml.jackson.annotation.JsonIgnore;
-//import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.apache.commons.lang.builder.*;
-//import org.openprovenance.prov.core.jsonld.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.QualifiedName;
@@ -64,7 +61,6 @@ import javax.xml.transform.TransformerException;
         return valueAsJavaObject;
     }
 
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     @Override
     public QualifiedName getType() {
         return type;
@@ -75,7 +71,6 @@ import javax.xml.transform.TransformerException;
         return value;
     }
 
-  //  @JsonIgnore
     @Override
     public Object getConvertedValue() {
         return valueAsJavaObject;
@@ -145,7 +140,6 @@ import javax.xml.transform.TransformerException;
     }
 
 
-  //  @JsonIgnore
     @Override
     public void setValueFromObject(Object anObject) {
         if ((anObject!=null) && (value==null)) {
@@ -169,7 +163,6 @@ import javax.xml.transform.TransformerException;
      * @param bytes array of bytes to convert
      */
 
-  //  @JsonIgnore
     private void setValueFromObject(byte[] bytes) {
         if (type.equals(QualifiedName_XSD_BASE64_BINARY)) {
             setValue(ProvFactory.getFactory().base64Encoding(bytes));
@@ -183,8 +176,8 @@ import javax.xml.transform.TransformerException;
      *
      * @param n DOM Node to convert.
      */
- //   @JsonIgnore
-    private void setValueFromObject(org.w3c.dom.Node n) {
+
+     private void setValueFromObject(org.w3c.dom.Node n) {
         DOMProcessing.trimNode(n);
         try {
             setValue(DOMProcessing.writeToString(n));

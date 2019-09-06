@@ -38,6 +38,9 @@ public class RoundTripFromJavaViaRdfTest extends RoundTripFromJavaTest {
        // return deserial.deserialiseDocument(new File(file));
 
     }
+    public String extension() {
+        return "_b.jsonld";
+    }
 
 
     public void addTypes(HasType ht) {

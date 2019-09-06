@@ -44,9 +44,15 @@ public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest 
         return doc2;
     }
 
+    public String extension() {
+        return "_b.xml";
+    }
+
+
     @NotNull
     public String get0tagWithDigit() {
-        return "x0tagWithDigit";
+       // return "x0tagWithDigit";
+        return "0tagWithDigit";
     }
 
 

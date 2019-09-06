@@ -14,21 +14,21 @@ public class AnyAdapter extends
 
     final org.openprovenance.prov.model.ProvFactory pFactory;
     final DOMProcessing domProcessor;
-    
+
     public AnyAdapter() {
-	pFactory= new ProvFactory();
-	domProcessor=new DOMProcessing(pFactory);
-	vconv=new ValueConverter(pFactory);
+        pFactory= new ProvFactory();
+        domProcessor=new DOMProcessing(pFactory);
+        vconv=new ValueConverter(pFactory);
     }
 
     public AnyAdapter(org.openprovenance.prov.model.ProvFactory pFactory) {
-	this.pFactory= pFactory;
-	domProcessor=new DOMProcessing(pFactory);
-	vconv=new ValueConverter(pFactory);
+        this.pFactory= pFactory;
+        domProcessor=new DOMProcessing(pFactory);
+        vconv=new ValueConverter(pFactory);
     }
 
     final ValueConverter vconv;
-    
+
 
 
     /** Unmarshals an Object (expect to be a DOM Element) into an Attribute.
@@ -40,7 +40,7 @@ public class AnyAdapter extends
             org.w3c.dom.Element el = (org.w3c.dom.Element) value;
             return domProcessor.unmarshallAttribute(el,pFactory,vconv);
         }
-	System.out.println("******** " + value);
+        System.out.println("******** " + value);
         /*
         if (value instanceof JAXBElement) {
             JAXBElement<?> je = (JAXBElement<?>) value;

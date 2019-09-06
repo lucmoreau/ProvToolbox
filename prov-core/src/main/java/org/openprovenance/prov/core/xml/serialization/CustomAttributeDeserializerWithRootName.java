@@ -110,8 +110,8 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     public Attribute deserializeX(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        elementName=unescapeQualifiedName(elementName);
-System.out.println("[[[[[ " + elementName);
+        QualifiedName unescaped=unescapeQualifiedName(elementName);
+        System.out.println("[[[[[ " + elementName);
         Object valueObject=body;
         if (type==null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
             valueObject=new LangString(body,lang);
@@ -122,7 +122,10 @@ System.out.println("[[[[[ " + elementName);
             valueObject=ns.stringToQualifiedName(body,pf);
             type="prov:QUALIFIED_NAME";
         }
-        return pf.newAttribute(elementName,valueObject, ns.stringToQualifiedName(type,pf));
+        Attribute attr= pf.newAttribute(unescaped,valueObject, ns.stringToQualifiedName(type,pf));
+        System.out.println("[[[[[ " + attr);
+
+        return attr;
 
     }
 }

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.core;
 
+import org.jetbrains.annotations.NotNull;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.BeanTraversal;
@@ -28,18 +29,48 @@ public class RoundTripFromJavaJSONLD11LegacyTest extends RoundTripFromJavaJSONLD
     public Document readXMLDocument(String file)
             throws IOException {
 
-        System.out.println("reading (rdf) from " + file);
+        String ttl = turtleFile(file);
+        System.out.println("reading from " + ttl);
 
         Ontology onto=new Ontology(pFactory);
 
         org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
                 pFactory, onto);
-        Document doc= rdfU.parseRDF(new FileInputStream(file + ".ttl" ), RDFFormat.NTRIPLES, "file://" + file);
+        Document doc= rdfU.parseRDF(new FileInputStream(ttl), RDFFormat.NTRIPLES, "file://" + file);
 
         BeanTraversal bc=new BeanTraversal(pFactory, pFactory);
         org.openprovenance.prov.model.Document doc2=bc.doAction(doc);
         return doc2;
 
+    }
+
+    @NotNull
+    public String turtleFile(String file) {
+        return file.replace(".jsonld11",".ttl" );
+    }
+
+
+    public void writeXMLDocument(Document doc, String file)
+            throws IOException {
+
+
+        System.out.println("writing to " + file);
+
+
+        ProvSerialiser serial=new ProvSerialiser();
+        serial.serialiseDocument(new FileOutputStream(file), doc, true);
+
+        String command = "jsonld --format=ntriples -o " + turtleFile(file) + " " + file;
+        executeAndWait(command);
+
+
+
+    }
+
+    String theExtension = "_b.jsonld11";
+
+    public String extension() {
+        return theExtension;
     }
 
 

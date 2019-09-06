@@ -19,7 +19,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     public Document readXMLDocument(String file)
             throws IOException {
 
-        System.out.println("reading from " + file);
+   //     System.out.println("reading from " + file);
 
         ProvDeserialiser deserial=new ProvDeserialiser();
         return deserial.deserialiseDocument(new File(file));
@@ -37,15 +37,8 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
         ProvSerialiser serial=new ProvSerialiser();
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
-
-        String command = "jsonld --format=ntriples -o " + file + ".ttl " + file;
-        //System.out.println(command);
-        //Runtime.getRuntime().exec(command);
-        executeAndWait(command);
-
-
-
     }
+
 
     public void executeAndWait (String command) throws IOException {
         Runtime runtime = Runtime.getRuntime();
@@ -62,7 +55,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     }
 
     public String extension() {
-        return "_11.jsonld";
+        return ".jsonld11";
     }
 
 }

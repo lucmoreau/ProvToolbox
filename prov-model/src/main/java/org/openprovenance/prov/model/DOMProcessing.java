@@ -320,6 +320,9 @@ final public class DOMProcessing {
         String prefix = el.getPrefix();
         String namespace = el.getNamespaceURI();
         String local = el.getLocalName();
+
+        local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(local));
+
         String child = el.getTextContent();
         String typeAsString = el.getAttributeNS(NamespacePrefixMapper.XSI_NS,
                 "type");

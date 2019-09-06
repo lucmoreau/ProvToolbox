@@ -1,6 +1,5 @@
 package org.openprovenance.prov.core.vanilla;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
 
@@ -46,7 +45,6 @@ public class QualifiedName implements org.openprovenance.prov.model.QualifiedNam
         return qnU.unescapeProvLocalName(local);
     }
 
-    @JsonIgnore
     @Override
     public String getUri() {
         return this.getNamespaceURI()

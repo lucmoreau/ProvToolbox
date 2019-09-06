@@ -1,18 +1,12 @@
 package org.openprovenance.prov.core.vanilla;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
 import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
-import org.openprovenance.prov.core.jsonld.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.DOMProcessing;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
-
-@JsonPropertyOrder({ "elementName", "value", "type" })
 
 public class Other extends TypedValue implements org.openprovenance.prov.model.Other, Attribute {
 
@@ -21,13 +15,11 @@ public class Other extends TypedValue implements org.openprovenance.prov.model.O
 
     QualifiedName elementName;
 
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     @Override
     public QualifiedName getElementName() {
         return elementName;
     }
 
-    @JsonIgnore
     @Override
     public AttributeKind getKind() {
         return PROV_OTHER_KIND;

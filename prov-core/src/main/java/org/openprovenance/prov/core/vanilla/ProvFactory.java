@@ -578,7 +578,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName collection, org.openprovenance.prov.model.QualifiedName... entities) {
-        //TODO FIXME, jsonld!
         org.openprovenance.prov.model.HadMember res = new org.openprovenance.prov.core.vanilla.HadMember(collection,Arrays.asList(entities));
         return res;
     }

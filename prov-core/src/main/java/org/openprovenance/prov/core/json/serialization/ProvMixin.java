@@ -27,5 +27,10 @@ public class ProvMixin {
         mapper.addMixIn(WasInformedBy.class,        org.openprovenance.prov.core.json.JSON_WasInformedBy.class);
         mapper.addMixIn(WasInfluencedBy.class,      org.openprovenance.prov.core.json.JSON_WasInfluencedBy.class);
         mapper.addMixIn(LangString.class,           org.openprovenance.prov.core.json.JSON_LangString.class);
+        mapper.addMixIn(Role.class,                 org.openprovenance.prov.core.json.JSON_Attribute.class);
+        mapper.addMixIn(Label.class,                org.openprovenance.prov.core.json.JSON_Attribute.class);
+        mapper.addMixIn(Value.class,                org.openprovenance.prov.core.json.JSON_Attribute.class);
+        mapper.addMixIn(Location.class,             org.openprovenance.prov.core.json.JSON_Attribute.class);
+        mapper.addMixIn(Other.class,                org.openprovenance.prov.core.json.JSON_Attribute.class);
     }
 }

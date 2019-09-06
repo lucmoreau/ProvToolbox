@@ -64,7 +64,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
                 // result.setPrefix("", "http://www.w3.org/ns/prov#");
                 result.setDefaultNamespace("http://www.w3.org/ns/prov#");
 
-                XMLStreamWriter xsw = new WrappedXMLStreamWriter2(result);
+                XMLStreamWriter xsw = new ElementEraserXMLStreamWriter2(result);
                 if (WRAP_ERASE) {
                     return xsw;
                 } else {

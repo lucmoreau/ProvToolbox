@@ -15,438 +15,407 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class WrappedXMLStreamWriter2 implements XMLStreamWriter2 {
-    final XMLStreamWriter2 result;
+    protected final XMLStreamWriter2 delegate;
 
-    public WrappedXMLStreamWriter2(XMLStreamWriter2 result) {
-        this.result = result;
+    public WrappedXMLStreamWriter2(XMLStreamWriter2 delegate) {
+        this.delegate = delegate;
     }
 
 
     @Override
     public XMLValidator validateAgainst(XMLValidationSchema xmlValidationSchema) throws
             XMLStreamException {
-        return result.validateAgainst(xmlValidationSchema);
+        return delegate.validateAgainst(xmlValidationSchema);
     }
 
     @Override
     public XMLValidator stopValidatingAgainst(XMLValidationSchema xmlValidationSchema) throws XMLStreamException {
-        return result.stopValidatingAgainst(xmlValidationSchema);
+        return delegate.stopValidatingAgainst(xmlValidationSchema);
     }
 
     @Override
     public XMLValidator stopValidatingAgainst(XMLValidator xmlValidator) throws XMLStreamException {
-        return result.stopValidatingAgainst(xmlValidator);
+        return delegate.stopValidatingAgainst(xmlValidator);
     }
 
     @Override
     public ValidationProblemHandler setValidationProblemHandler(ValidationProblemHandler validationProblemHandler) {
-        return result.setValidationProblemHandler(validationProblemHandler);
+        return delegate.setValidationProblemHandler(validationProblemHandler);
     }
 
     @Override
     public void writeBoolean(boolean b) throws XMLStreamException {
-        result.writeBoolean(b);
+        delegate.writeBoolean(b);
     }
 
     @Override
     public void writeInt(int i) throws XMLStreamException {
-        result.writeInt(i);
+        delegate.writeInt(i);
     }
 
     @Override
     public void writeLong(long l) throws XMLStreamException {
-        result.writeLong(l);
+        delegate.writeLong(l);
     }
 
     @Override
     public void writeFloat(float v) throws XMLStreamException {
-        result.writeFloat(v);
+        delegate.writeFloat(v);
     }
 
     @Override
     public void writeDouble(double v) throws XMLStreamException {
-        result.writeDouble(v);
+        delegate.writeDouble(v);
     }
 
     @Override
     public void writeInteger(BigInteger bigInteger) throws XMLStreamException {
-        result.writeInteger(bigInteger);
+        delegate.writeInteger(bigInteger);
     }
 
     @Override
     public void writeDecimal(BigDecimal bigDecimal) throws XMLStreamException {
-        result.writeDecimal(bigDecimal);
+        delegate.writeDecimal(bigDecimal);
     }
 
     @Override
     public void writeQName(QName qName) throws XMLStreamException {
-        result.writeQName(qName);
+        delegate.writeQName(qName);
     }
 
     @Override
     public void writeBinary(byte[] bytes, int i, int i1) throws XMLStreamException {
-        result.writeBinary(bytes, i, i1);
+        delegate.writeBinary(bytes, i, i1);
     }
 
     @Override
     public void writeBinary(Base64Variant base64Variant, byte[] bytes, int i, int i1) throws XMLStreamException {
-        result.writeBinary(base64Variant, bytes, i, i1);
+        delegate.writeBinary(base64Variant, bytes, i, i1);
     }
 
     @Override
     public void writeIntArray(int[] ints, int i, int i1) throws XMLStreamException {
-        result.writeIntArray(ints, i, i1);
+        delegate.writeIntArray(ints, i, i1);
     }
 
     @Override
     public void writeLongArray(long[] longs, int i, int i1) throws XMLStreamException {
-        result.writeLongArray(longs, i, i1);
+        delegate.writeLongArray(longs, i, i1);
     }
 
     @Override
     public void writeFloatArray(float[] floats, int i, int i1) throws XMLStreamException {
-        result.writeFloatArray(floats, i, i1);
+        delegate.writeFloatArray(floats, i, i1);
     }
 
     @Override
     public void writeDoubleArray(double[] doubles, int i, int i1) throws XMLStreamException {
-        result.writeDoubleArray(doubles, i, i1);
+        delegate.writeDoubleArray(doubles, i, i1);
     }
 
     @Override
     public void writeBooleanAttribute(String s, String s1, String s2, boolean b) throws XMLStreamException {
-        result.writeBooleanAttribute(s, s1, s2, b);
+        delegate.writeBooleanAttribute(s, s1, s2, b);
     }
 
     @Override
     public void writeIntAttribute(String s, String s1, String s2, int i) throws XMLStreamException {
-        result.writeIntAttribute(s, s1, s2, i);
+        delegate.writeIntAttribute(s, s1, s2, i);
     }
 
     @Override
     public void writeLongAttribute(String s, String s1, String s2, long l) throws XMLStreamException {
-        result.writeLongAttribute(s, s1, s2, l);
+        delegate.writeLongAttribute(s, s1, s2, l);
     }
 
     @Override
     public void writeFloatAttribute(String s, String s1, String s2, float v) throws XMLStreamException {
-        result.writeFloatAttribute(s, s1, s2, v);
+        delegate.writeFloatAttribute(s, s1, s2, v);
     }
 
     @Override
     public void writeDoubleAttribute(String s, String s1, String s2, double v) throws XMLStreamException {
-        result.writeDoubleAttribute(s, s1, s2, v);
+        delegate.writeDoubleAttribute(s, s1, s2, v);
     }
 
     @Override
     public void writeIntegerAttribute(String s, String s1, String s2, BigInteger bigInteger) throws XMLStreamException {
-        result.writeIntegerAttribute(s, s1, s2, bigInteger);
+        delegate.writeIntegerAttribute(s, s1, s2, bigInteger);
     }
 
     @Override
     public void writeDecimalAttribute(String s, String s1, String s2, BigDecimal bigDecimal) throws XMLStreamException {
-        result.writeDecimalAttribute(s, s1, s2, bigDecimal);
+        delegate.writeDecimalAttribute(s, s1, s2, bigDecimal);
     }
 
     @Override
     public void writeQNameAttribute(String s, String s1, String s2, QName qName) throws XMLStreamException {
-        result.writeQNameAttribute(s, s1, s2, qName);
+        delegate.writeQNameAttribute(s, s1, s2, qName);
     }
 
     @Override
     public void writeBinaryAttribute(String s, String s1, String s2, byte[] bytes) throws XMLStreamException {
-        result.writeBinaryAttribute(s, s1, s2, bytes);
+        delegate.writeBinaryAttribute(s, s1, s2, bytes);
     }
 
     @Override
     public void writeBinaryAttribute(Base64Variant base64Variant, String s, String s1, String s2, byte[] bytes) throws XMLStreamException {
-        result.writeBinaryAttribute(base64Variant, s, s1, s2, bytes);
+        delegate.writeBinaryAttribute(base64Variant, s, s1, s2, bytes);
     }
 
     @Override
     public void writeIntArrayAttribute(String s, String s1, String s2, int[] ints) throws XMLStreamException {
-        result.writeIntArrayAttribute(s, s1, s2, ints);
+        delegate.writeIntArrayAttribute(s, s1, s2, ints);
     }
 
     @Override
     public void writeLongArrayAttribute(String s, String s1, String s2, long[] longs) throws XMLStreamException {
-        result.writeLongArrayAttribute(s, s1, s2, longs);
+        delegate.writeLongArrayAttribute(s, s1, s2, longs);
     }
 
     @Override
     public void writeFloatArrayAttribute(String s, String s1, String s2, float[] floats) throws XMLStreamException {
-        result.writeFloatArrayAttribute(s, s1, s2, floats);
+        delegate.writeFloatArrayAttribute(s, s1, s2, floats);
     }
 
     @Override
     public void writeDoubleArrayAttribute(String s, String s1, String s2, double[] doubles) throws XMLStreamException {
-        result.writeDoubleArrayAttribute(s, s1, s2, doubles);
+        delegate.writeDoubleArrayAttribute(s, s1, s2, doubles);
     }
 
     @Override
     public boolean isPropertySupported(String s) {
-        return result.isPropertySupported(s);
+        return delegate.isPropertySupported(s);
     }
 
     @Override
     public boolean setProperty(String s, Object o) {
-        return result.setProperty(s, o);
+        return delegate.setProperty(s, o);
     }
 
     @Override
     public XMLStreamLocation2 getLocation() {
-        return result.getLocation();
+        return delegate.getLocation();
     }
 
     @Override
     public String getEncoding() {
-        return result.getEncoding();
+        return delegate.getEncoding();
     }
 
     @Override
     public void writeCData(char[] chars, int i, int i1) throws XMLStreamException {
-        result.writeCData(chars, i, i1);
+        delegate.writeCData(chars, i, i1);
     }
 
     @Override
     public void writeDTD(String s, String s1, String s2, String s3) throws XMLStreamException {
-        result.writeDTD(s, s1, s2, s3);
+        delegate.writeDTD(s, s1, s2, s3);
     }
 
     @Override
     public void writeFullEndElement() throws XMLStreamException {
-        result.writeFullEndElement();
+        delegate.writeFullEndElement();
     }
 
     @Override
     public void writeStartDocument(String s, String s1, boolean b) throws XMLStreamException {
-        result.writeStartDocument(s, s1, b);
+        delegate.writeStartDocument(s, s1, b);
     }
 
     @Override
     public void writeSpace(String s) throws XMLStreamException {
-        result.writeSpace(s);
+        delegate.writeSpace(s);
     }
 
     @Override
     public void writeSpace(char[] chars, int i, int i1) throws XMLStreamException {
-        result.writeSpace(chars, i, i1);
+        delegate.writeSpace(chars, i, i1);
     }
 
     @Override
     public void writeRaw(String s) throws XMLStreamException {
-        result.writeRaw(s);
+        delegate.writeRaw(s);
     }
 
     @Override
     public void writeRaw(String s, int i, int i1) throws XMLStreamException {
-        result.writeRaw(s, i, i1);
+        delegate.writeRaw(s, i, i1);
     }
 
     @Override
     public void writeRaw(char[] chars, int i, int i1) throws XMLStreamException {
-        result.writeRaw(chars, i, i1);
+        delegate.writeRaw(chars, i, i1);
     }
 
     @Override
     public void copyEventFromReader(XMLStreamReader2 xmlStreamReader2, boolean b) throws XMLStreamException {
-        result.copyEventFromReader(xmlStreamReader2, b);
+        delegate.copyEventFromReader(xmlStreamReader2, b);
     }
 
     @Override
     public void closeCompletely() throws XMLStreamException {
-        result.closeCompletely();
+        delegate.closeCompletely();
     }
-
-    int count = 0;
-    int ignore = -1;
 
     @Override
     public void writeStartElement(String localName) throws XMLStreamException {
-        count++;
-        if (localName.equals("statements")) {
-            //    System.out.println(" * writeStartElement " + localName + " " + count);
-            ignore = count;
-        } else {
-
-            result.writeStartElement(localName);
-        }
+        delegate.writeStartElement(localName);
     }
 
     @Override
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
-        count++;
-        if (localName.equals("statements")) {
-            //      System.out.println(" * writeStartElement " + localName + " " + namespaceURI + " " + count);
-            ignore = count;
-        } else {
-            result.writeStartElement(namespaceURI, localName);
-        }
+        delegate.writeStartElement(namespaceURI, localName);
     }
 
     @Override
     public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
-        count++;
-        if (localName.equals("statements")) {
-            //       System.out.println(" * writeStartElement " + localName + " " + namespaceURI + " (pre " + prefix + " " + count);
-            ignore = count;
-        } else {
-            result.writeStartElement(prefix, localName, namespaceURI);
-        }
+        delegate.writeStartElement(prefix, localName, namespaceURI);
     }
 
     @Override
     public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
-        result.writeEmptyElement(namespaceURI, localName);
+        delegate.writeEmptyElement(namespaceURI, localName);
     }
 
     @Override
     public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
-        result.writeEmptyElement(prefix, localName, namespaceURI);
+        delegate.writeEmptyElement(prefix, localName, namespaceURI);
 
     }
 
     @Override
     public void writeEmptyElement(String localName) throws XMLStreamException {
-        result.writeEmptyElement(localName);
+        delegate.writeEmptyElement(localName);
     }
 
     @Override
     public void writeEndElement() throws XMLStreamException {
-        count--;
-        //      System.out.println(" count " + count + " ignore " + ignore);
-        if (count != ignore)
-            result.writeEndElement();
+            delegate.writeEndElement();
     }
 
     @Override
     public void writeEndDocument() throws XMLStreamException {
-        result.writeEndDocument();
+        delegate.writeEndDocument();
     }
 
     @Override
     public void close() throws XMLStreamException {
-        result.close();
+        delegate.close();
     }
 
     @Override
     public void flush() throws XMLStreamException {
-        result.flush();
+        delegate.flush();
     }
 
     @Override
     public void writeAttribute(String localName, String value) throws XMLStreamException {
-        result.writeAttribute(localName, value);
+        delegate.writeAttribute(localName, value);
     }
 
     @Override
     public void writeAttribute(String prefix, String namespaceURI, String localName, String value) throws XMLStreamException {
-        result.writeAttribute(prefix, namespaceURI, localName, value);
+        delegate.writeAttribute(prefix, namespaceURI, localName, value);
     }
 
     @Override
     public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
-        result.writeAttribute(namespaceURI, localName, value);
+        delegate.writeAttribute(namespaceURI, localName, value);
     }
 
     @Override
     public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
-        result.writeNamespace(prefix, namespaceURI);
+        delegate.writeNamespace(prefix, namespaceURI);
     }
 
     @Override
     public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
-        result.writeDefaultNamespace(namespaceURI);
+        delegate.writeDefaultNamespace(namespaceURI);
     }
 
     @Override
     public void writeComment(String data) throws XMLStreamException {
-        result.writeComment(data);
+        delegate.writeComment(data);
     }
 
     @Override
     public void writeProcessingInstruction(String target) throws XMLStreamException {
-        result.writeProcessingInstruction(target);
+        delegate.writeProcessingInstruction(target);
     }
 
     @Override
     public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
-        result.writeProcessingInstruction(target, data);
+        delegate.writeProcessingInstruction(target, data);
     }
 
     @Override
     public void writeCData(String data) throws XMLStreamException {
-        result.writeCData(data);
+        delegate.writeCData(data);
     }
 
     @Override
     public void writeDTD(String dtd) throws XMLStreamException {
-        result.writeDTD(dtd);
+        delegate.writeDTD(dtd);
     }
 
     @Override
     public void writeEntityRef(String name) throws XMLStreamException {
-        result.writeEntityRef(name);
+        delegate.writeEntityRef(name);
     }
 
     @Override
     public void writeStartDocument() throws XMLStreamException {
-        result.writeStartDocument();
-        result.writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
-        result.setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
+        delegate.writeStartDocument();
     }
 
     @Override
     public void writeStartDocument(String version) throws XMLStreamException {
-        result.writeStartDocument(version);
-        result.writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
-        result.setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
+        delegate.writeStartDocument(version);
     }
 
     @Override
     public void writeStartDocument(String encoding, String version) throws XMLStreamException {
-        result.writeStartDocument(encoding, version);
-        result.writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
-        result.setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
+        delegate.writeStartDocument(encoding, version);
     }
 
     @Override
     public void writeCharacters(String text) throws XMLStreamException {
-        result.writeCharacters(text);
+        delegate.writeCharacters(text);
     }
 
     @Override
     public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
-        result.writeCharacters(text, start, len);
+        delegate.writeCharacters(text, start, len);
     }
 
     @Override
     public String getPrefix(String uri) throws XMLStreamException {
-        return result.getPrefix(uri);
+        return delegate.getPrefix(uri);
     }
 
     @Override
     public void setPrefix(String prefix, String uri) throws XMLStreamException {
-        result.setPrefix(prefix, uri);
+        delegate.setPrefix(prefix, uri);
     }
 
     @Override
     public void setDefaultNamespace(String uri) throws XMLStreamException {
-        result.setDefaultNamespace(uri);
+        delegate.setDefaultNamespace(uri);
     }
 
     @Override
     public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
-        result.setNamespaceContext(context);
+        delegate.setNamespaceContext(context);
     }
 
     @Override
     public NamespaceContext getNamespaceContext() {
-        return result.getNamespaceContext();
+        return delegate.getNamespaceContext();
     }
 
     @Override
     public Object getProperty(String name) throws IllegalArgumentException {
-        return result.getProperty(name);
+        return delegate.getProperty(name);
     }
 }

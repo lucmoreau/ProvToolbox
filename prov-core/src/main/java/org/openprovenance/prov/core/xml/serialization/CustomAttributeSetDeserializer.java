@@ -35,7 +35,6 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
         QualifiedName context=(QualifiedName)deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
 
 
-        System.out.println("**** " + node);
 
         JsonNode aType=node.get(Constants.PROPERTY_AT_TYPE);
         String type = (aType==null)?null:aType.textValue();
@@ -43,13 +42,8 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
         String lang = (aLang==null)?null:aLang.textValue();
         JsonNode aBody=node.get("");
         String body = (aBody==null)?node.textValue():aBody.textValue();
-        System.out.println("@@ type " + type);
-        System.out.println("@@ lang " + lang);
-        System.out.println("@@ body " + body);
-
 
         Iterator<JsonNode> elements=node.elements();
-        //System.out.println("@@ found " + node);
 
         Set<Attribute> set=new HashSet<>();
         Attribute attr;

@@ -42,7 +42,6 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         Namespace ns=new Namespace(map);
         ns.setDefaultNamespace(def.textValue());
 
-        //System.out.println("NS " + ns);
         deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
 
 

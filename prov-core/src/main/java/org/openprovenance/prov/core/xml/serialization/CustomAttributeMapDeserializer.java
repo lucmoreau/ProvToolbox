@@ -38,7 +38,6 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
             Map.Entry<String, JsonNode> pair=it.next();
             QualifiedName elementName=unescapeQualifiedName(ns.stringToQualifiedName(pair.getKey(),pf));
 
-            System.out.println("$$$ " +elementName);
             JsonNode vObj=pair.getValue();
             Iterator<JsonNode> elements=vObj.elements();
             Set<Attribute> set=new HashSet<>();

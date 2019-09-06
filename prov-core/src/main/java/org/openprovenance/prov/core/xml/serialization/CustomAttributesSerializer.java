@@ -43,13 +43,9 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
             setPrefix(xmlGenerator,newKey.getPrefix(),newKey.getNamespaceURI());
 
 
-            //xmlGenerator.setNextName(new QName(newKey.getNamespaceURI(),newKey.getLocalPart()));
             QName qn=newKey.toQName();
             xmlGenerator.setNextName(qn);
 
-            System.out.println("£££ " + newKey);
-            System.out.println("£££ " + qn);
-            System.out.println("£££ " + qn.getLocalPart());
 
             jsonGenerator.writeFieldName(qn.getLocalPart());
 

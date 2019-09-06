@@ -16,7 +16,6 @@ public class CustomKeyDeserializer extends KeyDeserializer {
     public Object deserializeKey(String s, DeserializationContext deserializationContext) throws IOException {
         QualifiedName qn = new CustomQualifiedNameDeserializer().deserialize(s, deserializationContext);
         qn=unescapeQualifiedName(qn);
-        System.out.println("££££ " + qn);
         deserializationContext.setAttribute(PROV_ATTRIBUTE_CONTEXT_KEY,qn);
         return qn;
     }

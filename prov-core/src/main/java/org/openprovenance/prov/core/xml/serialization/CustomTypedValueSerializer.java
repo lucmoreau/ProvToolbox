@@ -72,8 +72,6 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
                 //setPrefix(xmlGenerator,qn.getPrefix(),qn.getNamespaceURI());
                 writeNamespace(xmlGenerator, qn.getPrefix(), qn.getNamespaceURI());
 
-System.out.println("Adding prefix for " + qn);
-
                 xmlGenerator.setNextIsAttribute(false);
                 xmlGenerator.setNextIsUnwrapped(true);
 
@@ -105,7 +103,6 @@ System.out.println("Adding prefix for " + qn);
             }
 
             ((TypedXMLStreamWriter)xmlGenerator.getStaxWriter()).writeQNameAttribute(prefix, namespace,property, qn2);
-            System.out.println("%%%%% qn " + qn);
         } catch (XMLStreamException e) {
             e.printStackTrace();
             throw new UnsupportedOperationException(e);
@@ -119,7 +116,6 @@ System.out.println("Adding prefix for " + qn);
                 qn2=new QName(XSD_NS_NO_HASH,qn2.getLocalPart(),qn2.getPrefix());
             }
             ((TypedXMLStreamWriter)xmlGenerator.getStaxWriter()).writeQNameAttribute(prefix,namespace,property,qn2);
-            System.out.println("%%%%% qn " + qn);
         } catch (XMLStreamException e) {
             e.printStackTrace();
             throw new UnsupportedOperationException(e);

@@ -28,14 +28,6 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
         //this(QualifiedName.class);
     }
 
-/*
-    public CustomQualifiedNameDeserializer(Class<?> vc) {
-        super(vc);
-
-
-    }
-
- */
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
@@ -49,12 +41,10 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 
         String av=xmlParser.getStaxReader().getAttributeValue(PROV_NS,"id");
-        System.out.println( " -> " + av);
         if (av.contains(":")) {
             String prefix=av.substring(0,av.indexOf(":"));
             String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
 
-            System.out.println( "  --> " + ans + " " + prefix);
             ns.register(prefix,ans);
 
         }
@@ -74,7 +64,6 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
 
         QName qName=xmlParser.getStaxReader().getName();
         ns.register(qName.getPrefix(),qName.getNamespaceURI());
-        System.out.println(ns);
         if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;
         return unescapeQualifiedName(pf.newQualifiedName(qName));
     }

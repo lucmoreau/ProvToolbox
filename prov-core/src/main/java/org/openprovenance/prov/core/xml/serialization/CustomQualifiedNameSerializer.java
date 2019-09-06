@@ -28,10 +28,6 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
 
         ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 
-       // CustomAttributesSerializer.setPrefix(xmlGenerator,q.getPrefix(),q.getNamespaceURI());
-      //  xmlGenerator.setNextName(qn);
-
-System.out.println("++ " +q);
         String s=q.getPrefix() + ":" + q.getLocalPart();
 
         jsonGenerator.writeString(s);
@@ -45,8 +41,6 @@ System.out.println("++ " +q);
         }
 
 
-
-        // CustomTypedValueSerializer.writeAttributeValue(xmlGenerator,"prov", NamespacePrefixMapper.PROV_NS,"id",q);
 
 
     }

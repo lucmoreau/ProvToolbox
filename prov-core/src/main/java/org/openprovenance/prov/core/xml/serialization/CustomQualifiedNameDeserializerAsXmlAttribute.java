@@ -45,13 +45,11 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
 
 
-        System.out.println(" ----> ref " + ref);
 
         if (ref.contains(":")) {
             String prefix=ref.substring(0,ref.indexOf(":"));
             String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
 
-            System.out.println( "  --> " + ans + " " + prefix);
             ns.register(prefix,ans);
 
         }
@@ -59,11 +57,6 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
         jsonParser.readValueAsTree();
         jsonParser.readValueAsTree();
-/*
-        JsonToken token=jsonParser.nextValue();
-        System.out.println(token);
-        System.out.println("tree " + jsonParser.readValueAsTree());
-        System.out.println("tree " + jsonParser.readValueAsTree());*/
 
         return ns.stringToQualifiedName(ref, pf, false);
 

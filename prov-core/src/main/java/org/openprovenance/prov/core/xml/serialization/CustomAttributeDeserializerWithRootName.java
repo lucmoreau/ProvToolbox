@@ -49,7 +49,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
         elementName=unescapeQualifiedName(elementName);
 
-        System.out.println("[[[[[ " + elementName);
 
         JsonNode vObj=pair.getValue();
 
@@ -60,7 +59,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        System.out.println("++++++ " + astring + " " + elementName);
         return pf.newAttribute(elementName, new LangString(astring,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
     }
 
@@ -78,14 +76,8 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         JsonNode value = vObj.get(PROPERTY_AT_VALUE);
 
 
-        System.out.println("+ type " + type);
-        System.out.println("+ value " + value);
-
-
-
         Object valueObject=value.textValue(); //TODO: should not be checking qname but uri
         if ((type.equals("xsd:string") || type.equals("prov:InternationalizedString")) && value.isObject()) {
-            //System.out.println(" This is an object " + value);
             JsonNode theValue=value.get(Constants.PROPERTY_STRING_VALUE);
             JsonNode theLang=value.get(Constants.PROPERTY_STRING_LANG);
             valueObject=new LangString(theValue.textValue(),(theLang==null)?null:theLang.textValue());
@@ -111,7 +103,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
         QualifiedName unescaped=unescapeQualifiedName(elementName);
-        System.out.println("[[[[[ " + elementName);
         Object valueObject=body;
         if (type==null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
             valueObject=new LangString(body,lang);
@@ -123,7 +114,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
             type="prov:QUALIFIED_NAME";
         }
         Attribute attr= pf.newAttribute(unescaped,valueObject, ns.stringToQualifiedName(type,pf));
-        System.out.println("[[[[[ " + attr);
 
         return attr;
 

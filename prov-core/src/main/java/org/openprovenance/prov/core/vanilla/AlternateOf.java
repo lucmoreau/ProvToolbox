@@ -3,9 +3,7 @@ package org.openprovenance.prov.core.vanilla;
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.model.QualifiedName;
 
-//@JsonPropertyOrder({ "alternate1", "alternate2"})
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AlternateOf implements org.openprovenance.prov.model.AlternateOf, Equals, HashCode, ToString {
 
 
@@ -38,19 +36,16 @@ public class AlternateOf implements org.openprovenance.prov.model.AlternateOf, E
     }
 
     @Override
-//    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAlternate2() {
         return alternate2;
     }
 
     @Override
-//    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAlternate1() {
         return alternate1;
     }
 
 
- //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ALTERNATE;

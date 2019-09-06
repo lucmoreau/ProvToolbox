@@ -9,9 +9,7 @@ import org.openprovenance.prov.model.Value;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "generatedEntity", "usedEntity", "activity" })
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedFrom, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -105,45 +103,38 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
     }
 
     @Override
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getUsedEntity() {
         return usedEntity;
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getUsage() {
         return usage.orElse(null);
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getGeneratedEntity() {
         return generatedEntity;
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getGeneration() {
         return generation.orElse(null);
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getActivity() {
         return activity.orElse(null);
     }
 
 
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
- //   @JsonProperty("@id")
+
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-   // @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_DERIVATION;
@@ -151,7 +142,6 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -159,20 +149,17 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
 
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-    //@JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -289,7 +276,6 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         return toStringBuilder.toString();
     }
 
- //   @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -299,18 +285,13 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
         return result;
     }
 
- //   @JsonAnySetter
-  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         u.distribute((QualifiedName)qn,attributes,getLabel(),values, Collections.EMPTY_LIST,getType(),Collections.EMPTY_LIST, getOther());
     }
 
 
- //   @JsonAnyGetter
     @Override
-//    @JsonProperty("attributes")
- //   @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

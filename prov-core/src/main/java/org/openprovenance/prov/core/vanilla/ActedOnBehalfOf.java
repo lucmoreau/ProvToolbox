@@ -7,9 +7,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "entity", "agent"})
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBehalfOf, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -79,15 +77,12 @@ public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBeh
         return activity.orElse(null);
     }
 
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
- //   @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_DELEGATION;
@@ -95,7 +90,6 @@ public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBeh
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -103,21 +97,18 @@ public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBeh
 
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -213,7 +204,7 @@ public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBeh
         return toStringBuilder.toString();
     }
 
-   // @JsonIgnore
+
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -223,17 +214,14 @@ public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBeh
         return result;
     }
 
-  //  @JsonAnySetter
-  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         u.distribute((QualifiedName)qn,attributes,getLabel(),Collections.EMPTY_LIST, Collections.EMPTY_LIST,getType(),Collections.EMPTY_LIST, getOther());
     }
 
 
- //   @JsonAnyGetter
+
     @Override
-  //  @JsonProperty("attributes")
-  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

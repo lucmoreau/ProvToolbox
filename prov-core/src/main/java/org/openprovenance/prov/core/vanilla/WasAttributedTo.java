@@ -7,9 +7,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "entity", "agent"})
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WasAttributedTo implements org.openprovenance.prov.model.WasAttributedTo, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -56,28 +54,23 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getEntity() {
         return entity;
     }
 
     @Override
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAgent() {
         return agent;
     }
 
 
 
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
- //   @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ATTRIBUTION;
@@ -85,7 +78,6 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -93,21 +85,18 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
 
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -195,7 +184,6 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
         return toStringBuilder.toString();
     }
 
-   // @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -205,17 +193,13 @@ public class WasAttributedTo implements org.openprovenance.prov.model.WasAttribu
         return result;
     }
 
-  //  @JsonAnySetter
-  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         u.distribute((QualifiedName)qn,attributes,getLabel(),Collections.EMPTY_LIST, Collections.EMPTY_LIST,getType(),Collections.EMPTY_LIST, getOther());
     }
 
 
- //   @JsonAnyGetter
     @Override
-  //  @JsonProperty("attributes")
-  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

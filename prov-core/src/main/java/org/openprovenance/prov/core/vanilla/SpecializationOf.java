@@ -3,9 +3,7 @@ package org.openprovenance.prov.core.vanilla;
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.model.QualifiedName;
 
-//@JsonPropertyOrder({ "specificEntity", "generalEntity"})
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SpecializationOf implements org.openprovenance.prov.model.SpecializationOf, Equals, HashCode, ToString {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -41,24 +39,20 @@ public class SpecializationOf implements org.openprovenance.prov.model.Specializ
     }
 
     @Override
-   // @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getGeneralEntity() {
         return generalEntity;
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getSpecificEntity() {
         return specificEntity;
     }
 
 
-  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_SPECIALIZATION;
     }
-
 
 
     public void equals(Object object, EqualsBuilder equalsBuilder) {

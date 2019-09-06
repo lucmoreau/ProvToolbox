@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.vanilla;
 
 import org.openprovenance.apache.commons.lang.builder.*;
-import org.openprovenance.prov.core.jsonld.serialization.Constants;
+
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode, Constants {
+public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode {
 
     private List<StatementOrBundle> statementsOrBundle;
     private Namespace namespace;

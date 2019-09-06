@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.vanilla;
 
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
+
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.ModelConstructor;
+import org.openprovenance.prov.model.ProvSerialiser;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;

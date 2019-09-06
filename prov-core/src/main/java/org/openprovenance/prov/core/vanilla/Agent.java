@@ -9,7 +9,6 @@ import org.openprovenance.prov.model.Role;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id" })
 
 public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashCode, ToString, HasAttributes {
 
@@ -39,15 +38,12 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
     }
 
 
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-  //  @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
- //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_AGENT;
@@ -55,34 +51,28 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
     }
 
 
-
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -149,7 +139,6 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
         return toStringBuilder.toString();
     }
 
-  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -160,8 +149,7 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
         return result;
     }
 
- //   @JsonAnySetter
- //   @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
+
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         List<Role> roles=new LinkedList<>();
@@ -169,10 +157,7 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
     }
 
 
-//    @JsonAnyGetter
     @Override
-//    @JsonProperty("attributes")
- //   @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

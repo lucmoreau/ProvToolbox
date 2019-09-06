@@ -9,9 +9,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "activity", "entity", "time" })
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Used implements org.openprovenance.prov.model.Used, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -75,13 +73,11 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
     }
 
     @Override
-   // @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getEntity() {
         return entity;
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getActivity() {
         return activity;
     }
@@ -105,7 +101,6 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
      * {@link Role }
      */
     @Override
-  //  @JsonIgnore
     public List<org.openprovenance.prov.model.Role> getRole() {
         return role;
     }
@@ -131,15 +126,13 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
     }
 
 
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-  //  @JsonProperty("@id")
+
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-  //  @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_USAGE;
@@ -147,7 +140,6 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -155,26 +147,22 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
 
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-   // @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -268,7 +256,6 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
         return toStringBuilder.toString();
     }
 
-  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -280,18 +267,13 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
         return result;
     }
 
-  //  @JsonAnySetter
-  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         u.distribute((QualifiedName)qn,attributes,getLabel(),values, getLocation(),getType(),getRole(), getOther());
     }
 
 
- //   @JsonAnyGetter
     @Override
- //   @JsonProperty("attributes")
-  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

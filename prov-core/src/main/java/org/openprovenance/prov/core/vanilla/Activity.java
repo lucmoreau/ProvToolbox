@@ -10,8 +10,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "startTime", "endTime" })
-
 public class Activity implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString, HasAttributes { //, JLD_Activity {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -42,15 +40,12 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     }
 
 
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
- //   @JsonProperty("@id")
     @Override
     public org.openprovenance.prov.model.QualifiedName getId() {
         return id.orElse(null);
     }
 
 
- //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ACTIVITY;
@@ -58,7 +53,6 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
 
 
 
-//    @JsonProperty("@id")
     @Override
     public void setId(org.openprovenance.prov.model.QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -86,26 +80,22 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         endTime = Optional.ofNullable(value);
     }
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Location> getLocation() {
         return location;
     }
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -186,7 +176,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         return toStringBuilder.toString();
     }
 
-  //  @JsonIgnore
+
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -197,9 +187,6 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
         return result;
     }
 
-  //  @Override
- //   @JsonAnySetter
-  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes(Object qn, Set<Attribute> attributes) {
         List<Value> values_discard=new LinkedList<>();
         List<Role> roles_discard=new LinkedList<>();
@@ -207,10 +194,8 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     }
 
 
-//    @JsonAnyGetter
+
     @Override
- //   @JsonProperty("attributes")
-//    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

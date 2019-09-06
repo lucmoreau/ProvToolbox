@@ -1,6 +1,6 @@
 package org.openprovenance.prov.core.vanilla;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -86,7 +86,6 @@ this.collection=collection;
      */
 
 
-    @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_MEMBERSHIP;

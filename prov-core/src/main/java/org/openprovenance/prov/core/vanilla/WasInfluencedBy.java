@@ -9,9 +9,7 @@ import org.openprovenance.prov.model.Value;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "influencee", "influencer" })
 
-//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluencedBy, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -58,28 +56,22 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getInfluencer() {
         return influencer;
     }
 
     @Override
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getInfluencee() {
         return influencee;
     }
 
 
-
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
- //   @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
- //   @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_INFLUENCE;
@@ -87,7 +79,6 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -95,21 +86,18 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
 
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
 
-   // @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -195,7 +183,6 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
         return toStringBuilder.toString();
     }
 
-  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -205,8 +192,6 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
         return result;
     }
 
-  //  @JsonAnySetter
-  //  @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         List<org.openprovenance.prov.model.Location> locations=new LinkedList<>();
@@ -214,10 +199,7 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
     }
 
 
-  //  @JsonAnyGetter
     @Override
-  //  @JsonProperty("attributes")
-  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

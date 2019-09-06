@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_xml_2_9_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_9_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_woodstox_woodstox_core_5_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/provcore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/provcore.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-generator/prov-generator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-generator/prov-generator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-json/prov-json.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-json/prov-json.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/prov-model.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/prov-model.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-n/prov-n.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-n/prov-n.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-rdf/prov-rdf.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-rdf/prov-rdf.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-sql/prov-sql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-sql/prov-sql.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-template/prov-template.iml" beforeDir="false" afterPath="$PROJECT_DIR$/prov-template/prov-template.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/tutorial1/ProvToolbox-Tutorial1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/tutorial1/ProvToolbox-Tutorial1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/tutorial2/ProvToolbox-Tutorial2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/tutorial2/ProvToolbox-Tutorial2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/tutorial3/ProvToolbox-Tutorial3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/tutorial3/ProvToolbox-Tutorial3.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/tutorial4/ProvToolbox-Tutorial4.iml" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/tutorial4/ProvToolbox-Tutorial4.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tutorial/tutorial5/ProvToolbox-Tutorial5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/tutorial/tutorial5/ProvToolbox-Tutorial5.iml" afterDir="false" />
-    </list>
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
     <ignored path="$PROJECT_DIR$/prov-n/target/" />
@@ -123,10 +102,9 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="403" column="35" selection-start-line="403" selection-start-column="32" selection-end-line="403" selection-end-column="35" />
+            <state relative-caret-position="225">
+              <caret line="15" column="46" lean-forward="true" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="46" />
               <folding>
-                <element signature="imports" expanded="true" />
                 <element signature="e#6169#6170#0" expanded="true" />
                 <element signature="e#6253#6254#0" expanded="true" />
               </folding>
@@ -307,41 +285,6 @@
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-model" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-model" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-model" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-model" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
@@ -644,7 +587,7 @@
       <workItem from="1566929460594" duration="2272000" />
       <workItem from="1567007361993" duration="19002000" />
       <workItem from="1567075018595" duration="89860000" />
-      <workItem from="1567440900973" duration="41984000" />
+      <workItem from="1567440900973" duration="44161000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -689,7 +632,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="273052000" />
+    <option name="totallyTimeSpent" value="275229000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="146" y="23" width="2221" height="1306" extended-state="0" />
@@ -1124,10 +1067,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="403" column="35" selection-start-line="403" selection-start-column="32" selection-end-line="403" selection-end-column="35" />
+        <state relative-caret-position="225">
+          <caret line="15" column="46" lean-forward="true" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="46" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#6169#6170#0" expanded="true" />
             <element signature="e#6253#6254#0" expanded="true" />
           </folding>

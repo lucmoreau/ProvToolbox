@@ -8,9 +8,7 @@ import org.openprovenance.prov.model.Value;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//@JsonPropertyOrder({ "@id", "activity", "agent", "plan" })
 
-//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssociatedWith, Equals, HashCode, ToString, HasAttributes {
 
     private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
@@ -71,13 +69,11 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getAgent() {
         return agent;
     }
 
     @Override
-  //  @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getActivity() {
         return activity;
     }
@@ -101,14 +97,12 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
      * {@link Role }
      */
     @Override
-   // @JsonIgnore
     public List<org.openprovenance.prov.model.Role> getRole() {
         return role;
     }
 
 
     @Override
- //   @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getPlan() {
         return plan.orElse(null);
     }
@@ -124,15 +118,12 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
     }
 
 
-   // @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-   // @JsonProperty("@id")
     @Override
     public QualifiedName getId() {
         return id.orElse(null);
     }
 
 
-   // @JsonIgnore
     @Override
     public Kind getKind() {
         return Kind.PROV_ASSOCIATION;
@@ -140,7 +131,6 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
 
 
 
-  //  @JsonProperty("@id")
     @Override
     public void setId(QualifiedName value) {
         id = Optional.ofNullable(value);
@@ -148,21 +138,18 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
 
 
 
- //   @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.LangString> getLabel() {
         return labels;
     }
 
 
-  //  @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
 
 
-   // @JsonIgnore
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;
@@ -249,7 +236,6 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
         return toStringBuilder.toString();
     }
 
-  //  @JsonIgnore
     @Override
     public Collection<Attribute> getAttributes() {
         LinkedList<Attribute> result=new LinkedList<>();
@@ -260,8 +246,6 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
         return result;
     }
 
-   // @JsonAnySetter
-   // @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     public void setIndexedAttributes (Object qn, Set<Attribute> attributes) {
         List<Value> values=new LinkedList<>();
         List<org.openprovenance.prov.model.Location> locations=new LinkedList<>();
@@ -269,10 +253,7 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
     }
 
 
-   // @JsonAnyGetter
     @Override
-  //  @JsonProperty("attributes")
-  //  @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
     public Map<QualifiedName, Set<Attribute>> getIndexedAttributes() {
         return u.split(getAttributes());
     }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import org.openprovenance.prov.core.xml.serialization.CustomMapSerializer2;
 import org.openprovenance.prov.core.xml.serialization.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.core.xml.serialization.CustomQualifiedNameSerializer;
 import org.openprovenance.prov.model.NamespacePrefixMapper;

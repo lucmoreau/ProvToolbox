@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.stax;
 
 import org.codehaus.stax2.XMLStreamWriter2;
 
@@ -15,10 +15,10 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
 
     @Override
     public void writeEndElement() throws XMLStreamException {
-        count--;
         //      System.out.println(" count " + count + " ignore " + ignore);
         if (count != ignore)
             super.writeEndElement();
+        count--;
     }
 
     @Override
@@ -53,5 +53,10 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
         } else {
             super.writeStartElement(prefix, localName, namespaceURI);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "<<" + super.toString() + ">>";
     }
 }

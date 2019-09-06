@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.TypedValue;
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.namespace.QName;
@@ -32,7 +29,7 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
 
     @Override
     public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        QualifiedName newKey=(QualifiedName) serializerProvider.getAttribute(CustomMapSerializer2.CONTEXT_KEY_FOR_MAP);
+        QualifiedName newKey=(QualifiedName) serializerProvider.getAttribute(CustomMapSerializer.CONTEXT_KEY_FOR_MAP);
 
         Set<TypedValue> set=(Set<TypedValue>) o;
 

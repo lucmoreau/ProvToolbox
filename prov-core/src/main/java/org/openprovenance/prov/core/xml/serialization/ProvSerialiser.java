@@ -1,10 +1,8 @@
 package org.openprovenance.prov.core.xml.serialization;
 
-import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.stax.WstxInputFactory;
 import com.ctc.wstx.stax.WstxOutputFactory;
 import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -12,25 +10,17 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.*;
-import org.codehaus.stax2.typed.Base64Variant;
-import org.codehaus.stax2.validation.ValidationProblemHandler;
-import org.codehaus.stax2.validation.XMLValidationSchema;
-import org.codehaus.stax2.validation.XMLValidator;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
+import org.openprovenance.prov.core.xml.serialization.stax.ElementEraserXMLStreamWriter2;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
 

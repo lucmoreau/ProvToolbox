@@ -2,6 +2,7 @@ package org.openprovenance.prov.core.xml.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,10 +18,13 @@ import java.util.*;
 
 import static org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
 
-public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
+abstract public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 
     private static final ProvFactory pf= ProvDeserialiser.pf;
+
+    private final TypeReference tr=new TypeReference<Map<QualifiedName,Set<Attribute>>>(){};
+
 
 
     public CustomAttributeMapDeserializer(JavaType vc) {
@@ -32,6 +36,7 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
     public Map deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         Map<QualifiedName, Set<Attribute>> result=new HashMap<>();
+        System.out.println("#######  found " + jp.readValueAs(tr));
         JsonNode node = jp.getCodec().readTree(jp);
 
         Iterator<Map.Entry<String, JsonNode>> it=node.fields();

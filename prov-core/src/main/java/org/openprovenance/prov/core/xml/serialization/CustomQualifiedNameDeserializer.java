@@ -20,8 +20,8 @@ import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
 
+    private static final ProvFactory pf=ProvDeserialiser.pf;
 
-    static final ProvFactory pf=new ProvFactory();
     static final QualifiedName PROV_TYPE=pf.getName().PROV_TYPE;
 
     public CustomQualifiedNameDeserializer() {

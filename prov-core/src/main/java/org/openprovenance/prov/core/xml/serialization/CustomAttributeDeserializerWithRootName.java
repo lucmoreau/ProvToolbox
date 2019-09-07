@@ -22,7 +22,7 @@ import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDese
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
 
-    static final ProvFactory pf=new ProvFactory();
+    private static final ProvFactory pf=ProvDeserialiser.pf;
 
     public CustomAttributeDeserializerWithRootName() {
         this(Attribute.class);

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.openprovenance.prov.core.vanilla.Document;
+import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
@@ -16,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ProvDeserialiser {
+
+    static final ProvFactory pf=new ProvFactory();
 
     private final ProvMixin provMixin = new ProvMixin();
 

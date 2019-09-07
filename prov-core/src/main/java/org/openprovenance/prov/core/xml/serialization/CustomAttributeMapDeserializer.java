@@ -19,7 +19,7 @@ import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDese
 public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 
-    static final ProvFactory pf=new ProvFactory();
+    private static final ProvFactory pf=ProvDeserialiser.pf;
 
 
     public CustomAttributeMapDeserializer(JavaType vc) {

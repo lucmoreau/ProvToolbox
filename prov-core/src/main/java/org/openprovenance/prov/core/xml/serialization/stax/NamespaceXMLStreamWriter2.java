@@ -9,26 +9,18 @@ public class NamespaceXMLStreamWriter2 extends WrappedXMLStreamWriter2 {
         super(delegate);
     }
 
-
+boolean first=true;
     @Override
-    public void writeStartDocument() throws XMLStreamException {
-        super.writeStartDocument();
-        delegate.writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
-        delegate.setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
-    }
+    public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
+        super.writeStartElement(namespaceURI, localName);
+        if (first) {
+            first = false;
 
-    @Override
-    public void writeStartDocument(String version) throws XMLStreamException {
-        super.writeStartDocument(version);
-        delegate.writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
-        delegate.setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
-    }
+            writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
+            writeNamespace("prov", "http://www.w3.org/ns/prov#");
+            writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-    @Override
-    public void writeStartDocument(String encoding, String version) throws XMLStreamException {
-        super.writeStartDocument(encoding, version);
-        delegate.writeNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
-        delegate.setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
+           // setPrefix("xsd", "http://www.w3.org/2001/XMLSchema");
+        }
     }
-
 }

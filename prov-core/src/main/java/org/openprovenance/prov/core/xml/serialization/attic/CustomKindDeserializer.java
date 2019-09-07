@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.attic;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 import java.io.IOException;
 
 
-public class CustomKindDeserializer extends StdDeserializer<StatementOrBundle.Kind> {
+abstract public class CustomKindDeserializer extends StdDeserializer<StatementOrBundle.Kind> {
 
     protected CustomKindDeserializer() {
         super(StatementOrBundle.Kind.class);

@@ -30,7 +30,7 @@ public class ProvDeserialiser {
                 new SimpleModule("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
 
      //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
-        module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
+     //   module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
        // module.addDeserializer(Type.class, new CustomTypeDeserializer());
        // module.addDeserializer(Location.class, new CustomLocationDeserializer());
        // module.addDeserializer(Other.class, new CustomOtherDeserializer());

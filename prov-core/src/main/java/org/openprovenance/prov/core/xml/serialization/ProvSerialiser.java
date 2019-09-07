@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.*;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
 import org.openprovenance.prov.core.xml.serialization.stax.ElementEraserXMLStreamWriter2;
+import org.openprovenance.prov.core.xml.serialization.stax.NamespaceXMLStreamWriter2;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
@@ -54,11 +55,10 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
                 // result.setPrefix("", "http://www.w3.org/ns/prov#");
                 result.setDefaultNamespace("http://www.w3.org/ns/prov#");
 
-                XMLStreamWriter xsw = new ElementEraserXMLStreamWriter2(result);
                 if (WRAP_ERASE) {
-                    return xsw;
+                    return new ElementEraserXMLStreamWriter2(result);
                 } else {
-                    return result;
+                    return new NamespaceXMLStreamWriter2(result);
                 }
             }
         };
@@ -78,11 +78,11 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
                 new SimpleModule("CustomKindSerializer",
                         new Version(1, 0, 0, null, null, null));
 
-        module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
+       // module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
 
-        //mapper.setDefaultUseWrapper(false); NO, use annotation instead
+        //mapper.setDefaultUseWrapper(false); //NO, use annotation instead
 
         //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
         mapper.registerModule(module);

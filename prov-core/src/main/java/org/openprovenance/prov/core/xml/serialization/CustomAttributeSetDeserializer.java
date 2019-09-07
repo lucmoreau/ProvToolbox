@@ -21,9 +21,6 @@ import java.util.Set;
 public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
 
-    static final ProvFactory pf=new ProvFactory();
-
-
     public CustomAttributeSetDeserializer(JavaType vc) {
         super(vc);
     }

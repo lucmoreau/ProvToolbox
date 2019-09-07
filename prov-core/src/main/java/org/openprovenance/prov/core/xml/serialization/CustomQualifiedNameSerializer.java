@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
 import org.openprovenance.prov.core.xml.QualifiedNameRef;
+import org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 
 import javax.xml.stream.XMLStreamException;
@@ -32,14 +33,7 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
 
         jsonGenerator.writeString(s);
 
-
-        try {
-            xmlGenerator.getStaxWriter().writeNamespace(q.getPrefix(),q.getNamespaceURI());
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-            throw new UnsupportedOperationException(e);
-        }
-
+        StaxStreamWriterUtil.writeNamespace(xmlGenerator,q.getPrefix(),q.getNamespaceURI());
 
 
 

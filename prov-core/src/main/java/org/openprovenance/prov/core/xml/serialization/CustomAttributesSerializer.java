@@ -5,14 +5,12 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.TypedValue;
+import org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil;
 import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.Set;
-
-import static org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer.writeAttribute;
 
 
 public class CustomAttributesSerializer extends StdSerializer<Object> {
@@ -37,7 +35,7 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
         if (!(set.isEmpty())) {
             ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 
-            setPrefix(xmlGenerator,newKey.getPrefix(),newKey.getNamespaceURI());
+            StaxStreamWriterUtil.setPrefix(xmlGenerator, newKey.getPrefix(), newKey.getNamespaceURI());
 
 
             QName qn=newKey.toQName();
@@ -56,41 +54,6 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
             jsonGenerator.writeEndArray();
         }
     }
-
-    static void setDefaultNamespace(ToXmlGenerator xmlGenerator, String provNs) throws IOException {
-        try {
-            xmlGenerator.getStaxWriter().writeDefaultNamespace(provNs);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-            throw new IOException(e);
-        }
-    }
-    public void writeEmptyElement(ToXmlGenerator xmlGenerator, String name, String prefix, String provNs) throws IOException {
-        try {
-            xmlGenerator.getStaxWriter().writeEmptyElement(prefix,name,provNs);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-            throw new IOException(e);
-        }
-    }
-    public static void setPrefix(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
-        try {
-            xmlGenerator.getStaxWriter().setPrefix(prefix,provNs);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-            throw new IOException(e);
-        }
-    }
-
-    public static void writeNamespace(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
-        try {
-            xmlGenerator.getStaxWriter().writeNamespace(prefix,provNs);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-            throw new IOException(e);
-        }
-    }
-
 
 
 }

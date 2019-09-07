@@ -10,11 +10,13 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.*;
+import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
+import org.openprovenance.prov.core.xml.serialization.serial.CustomDateSerializer;
+import org.openprovenance.prov.core.xml.serialization.serial.CustomQualifiedNameSerializer;
 import org.openprovenance.prov.core.xml.serialization.stax.ElementEraserXMLStreamWriter2;
 import org.openprovenance.prov.core.xml.serialization.stax.NamespaceXMLStreamWriter2;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -24,6 +26,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
+
+    static final public ProvFactory pf = ProvFactory.getFactory();
+
+    static final public org.openprovenance.prov.model.QualifiedName QUALIFIED_NAME_XSD_STRING = pf.getName().XSD_STRING;
+
+
 
     public ProvSerialiser() {
         this.WRAP_ERASE=false;

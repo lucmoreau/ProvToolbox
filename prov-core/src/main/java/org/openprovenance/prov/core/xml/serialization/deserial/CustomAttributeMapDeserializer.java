@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
+import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -14,12 +15,12 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.*;
 
-import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
+import static org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
 
 public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 
-    private static final ProvFactory pf=ProvDeserialiser.pf;
+    private static final ProvFactory pf= ProvDeserialiser.pf;
 
 
     public CustomAttributeMapDeserializer(JavaType vc) {

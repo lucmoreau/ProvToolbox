@@ -1,12 +1,13 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.vanilla.LangString;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.vanilla.TypedValue;
+import org.openprovenance.prov.core.xml.serialization.Constants;
+import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
 import org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.QualifiedName;
@@ -17,11 +18,13 @@ import java.io.IOException;
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
 
-    static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
-    public static final String NAMESPACE_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-    public static final String NAMESPACE_XML = "http://www.w3.org/XML/1998/namespace";
+    static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvSerialiser.QUALIFIED_NAME_XSD_STRING;
+
+    public static final String NAMESPACE_XSI = NamespacePrefixMapper.XSI_NS;
+    public static final String NAMESPACE_XML = NamespacePrefixMapper.XML_NS;
     public static final String PREFIX_XSI = "xsi";
     public static final String PREFIX_XML = "xml";
+    static final public String XSD_NS_NO_HASH = "http://www.w3.org/2001/XMLSchema";
 
     protected CustomTypedValueSerializer() {
         super(TypedValue.class);
@@ -84,7 +87,6 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
 
 
 
-    static final public String XSD_NS_NO_HASH = "http://www.w3.org/2001/XMLSchema";
 
     private void serializeValue(String fieldName, Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         if (value instanceof String) {

@@ -1,8 +1,9 @@
 package org.openprovenance.prov.core.xml.serialization.stax;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.codehaus.stax2.typed.TypedXMLStreamWriter;
-import org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer;
+import org.openprovenance.prov.core.xml.serialization.serial.CustomTypedValueSerializer;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -12,7 +13,8 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public class StaxStreamWriterUtil implements Serializable {
-    public static void setPrefix(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
+    public static void setPrefix(JsonGenerator jsonGenerator, String prefix, String provNs) throws IOException {
+        ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
         try {
             xmlGenerator.getStaxWriter().setPrefix(prefix, provNs);
         } catch (XMLStreamException e) {
@@ -21,8 +23,9 @@ public class StaxStreamWriterUtil implements Serializable {
         }
     }
 
-    public static void writeNamespace(ToXmlGenerator xmlGenerator, String prefix, String provNs) throws IOException {
+    public static void writeNamespace(JsonGenerator jsonGenerator, String prefix, String provNs) throws IOException {
         try {
+            ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
             xmlGenerator.getStaxWriter().writeNamespace(prefix, provNs);
         } catch (XMLStreamException e) {
             e.printStackTrace();
@@ -30,7 +33,9 @@ public class StaxStreamWriterUtil implements Serializable {
         }
     }
 
-    public static void writeAttribute(ToXmlGenerator xmlGenerator, String prefix, String namespace, String property, QualifiedName qn) {
+    public static void writeAttribute(JsonGenerator jsonGenerator, String prefix, String namespace, String property, QualifiedName qn) {
+        ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
+
         try {
             //xmlGenerator.getStaxWriter().
             QName qn2 = qn.toQName();
@@ -49,7 +54,9 @@ public class StaxStreamWriterUtil implements Serializable {
         }
     }
 
-    public static void writeAttributeValue(ToXmlGenerator xmlGenerator, String prefix, String namespace, String property, QualifiedName qn) {
+    public static void writeAttributeValue(JsonGenerator jsonGenerator, String prefix, String namespace, String property, QualifiedName qn) {
+        ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
+
         try {
             //xmlGenerator.getStaxWriter().
             QName qn2 = qn.toQName();
@@ -63,7 +70,9 @@ public class StaxStreamWriterUtil implements Serializable {
         }
     }
 
-    public static void writeAttribute(ToXmlGenerator xmlGenerator, String prefix, String namespace, String property, String str) {
+    public static void writeAttribute(JsonGenerator jsonGenerator, String prefix, String namespace, String property, String str) {
+        ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
+
         try {
             //xmlGenerator.getStaxWriter().
             xmlGenerator.getStaxWriter().writeAttribute(prefix, namespace, property, str);
@@ -73,7 +82,9 @@ public class StaxStreamWriterUtil implements Serializable {
         }
     }
 
-    public static void writeAttribute(ToXmlGenerator xmlGenerator, String property, String str) {
+    public static void writeAttribute(JsonGenerator jsonGenerator, String property, String str) {
+        ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
+
         try {
             //xmlGenerator.getStaxWriter().
             xmlGenerator.getStaxWriter().writeAttribute(property, str);

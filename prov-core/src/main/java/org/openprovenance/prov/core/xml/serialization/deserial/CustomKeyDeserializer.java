@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.deserial;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
@@ -6,7 +6,7 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
 
-import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
+import static org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
 
 public class CustomKeyDeserializer extends KeyDeserializer {
 

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,22 +7,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.vanilla.LangString;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
+import org.openprovenance.prov.core.xml.serialization.Constants;
+import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.xml.serialization.serial.CustomTypedValueSerializer;
+import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QualifiedNameUtils;
 
-import javax.xml.namespace.QName;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
-
-import static org.openprovenance.prov.core.xml.serialization.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
 
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
 
-    private static final ProvFactory pf=ProvDeserialiser.pf;
+    private static final ProvFactory pf= ProvDeserialiser.pf;
 
     public CustomAttributeDeserializerWithRootName() {
         this(Attribute.class);
@@ -59,7 +59,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        return pf.newAttribute(elementName, new LangString(astring,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
+        return pf.newAttribute(elementName, new LangString(astring,null), ProvSerialiser.QUALIFIED_NAME_XSD_STRING);
     }
 
 

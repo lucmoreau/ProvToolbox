@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization;
+package org.openprovenance.prov.core.xml.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -33,14 +33,13 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
 
 
         if (!(set.isEmpty())) {
-            ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
 
-            StaxStreamWriterUtil.setPrefix(xmlGenerator, newKey.getPrefix(), newKey.getNamespaceURI());
+            StaxStreamWriterUtil.setPrefix(jsonGenerator, newKey.getPrefix(), newKey.getNamespaceURI());
 
 
             QName qn=newKey.toQName();
-            xmlGenerator.setNextName(qn);
 
+            ((ToXmlGenerator)jsonGenerator).setNextName(qn);
 
             jsonGenerator.writeFieldName(qn.getLocalPart());
 

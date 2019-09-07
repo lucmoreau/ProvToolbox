@@ -9,11 +9,15 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.codehaus.stax2.*;
+import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.XMLOutputFactory2;
+import org.codehaus.stax2.XMLStreamWriter2;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
+import org.openprovenance.prov.core.vanilla.TypedValue;
 import org.openprovenance.prov.core.xml.serialization.serial.CustomDateSerializer;
 import org.openprovenance.prov.core.xml.serialization.serial.CustomQualifiedNameSerializer;
+import org.openprovenance.prov.core.xml.serialization.serial.CustomTypedValueSerializer;
 import org.openprovenance.prov.core.xml.serialization.stax.ElementEraserXMLStreamWriter2;
 import org.openprovenance.prov.core.xml.serialization.stax.NamespaceXMLStreamWriter2;
 import org.openprovenance.prov.model.Document;
@@ -89,6 +93,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
        // module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
+        module.addSerializer(TypedValue.class, new CustomTypedValueSerializer());
 
         //mapper.setDefaultUseWrapper(false); //NO, use annotation instead
 

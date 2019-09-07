@@ -47,7 +47,8 @@ public class CustomAttributesSerializer extends StdSerializer<Object> {
 
             for (TypedValue a : set) {
 
-                new CustomTypedValueSerializer().serialize(a, jsonGenerator, serializerProvider);
+                jsonGenerator.writeObject(a);
+                // used to be new CustomTypedValueSerializer().serialize(a, jsonGenerator, serializerProvider);
             }
 
             jsonGenerator.writeEndArray();

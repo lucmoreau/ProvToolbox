@@ -28,7 +28,7 @@ public class ProvMixin {
         mapper.addMixIn(WasInvalidatedBy.class,     XML_WasInvalidatedBy.class);
         mapper.addMixIn(WasInformedBy.class,        XML_WasInformedBy.class);
         mapper.addMixIn(WasInfluencedBy.class,      XML_WasInfluencedBy.class);
-        mapper.addMixIn(LangString.class,           XML_LangString.class);
+      //  mapper.addMixIn(LangString.class,           XML_LangString.class);
         mapper.addMixIn(Role.class,                 XML_Attribute.class);
         mapper.addMixIn(Label.class,                XML_Attribute.class);
         mapper.addMixIn(Value.class,                XML_Attribute.class);

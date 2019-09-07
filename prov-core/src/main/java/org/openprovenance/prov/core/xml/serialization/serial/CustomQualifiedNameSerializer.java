@@ -26,9 +26,10 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
 
         String s= prefix + ":" + q.getLocalPart();
 
+        StaxStreamWriterUtil.writeNamespace(jsonGenerator, prefix,q.getNamespaceURI());
+
         jsonGenerator.writeString(s);
 
-        StaxStreamWriterUtil.writeNamespace(jsonGenerator, prefix,q.getNamespaceURI());
 
 
     }

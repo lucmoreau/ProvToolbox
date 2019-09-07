@@ -11,16 +11,14 @@ import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "context", "statements"})
+//@JsonPropertyOrder({ "context", "statements"})
 @JacksonXmlRootElement(localName="document", namespace="http://www.w3.org/ns/prov#")
 public interface Document {
-    @JsonFilter("nsFilter")
-    @JsonProperty("context")
-    @JacksonXmlProperty(localName="context",namespace="http://www.w3.org/ns/prov#")
+
     @JsonIgnore
     Namespace getNamespace();
 
-    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT, property = Constants.PROPERTY_BLOCK_TYPE)
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
     @JsonSubTypes({
             @JsonSubTypes.Type(value = WasEndedBy.class,         name = Constants.PROPERTY_PROV_END),
             @JsonSubTypes.Type(value = WasStartedBy.class,       name = Constants.PROPERTY_PROV_START),
@@ -40,8 +38,8 @@ public interface Document {
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
             @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
-    @JsonProperty("statements")
     @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
     @JacksonXmlElementWrapper(useWrapping = false)
+   // @JsonUnwrapped
     List<StatementOrBundle> getStatementOrBundle();
 }

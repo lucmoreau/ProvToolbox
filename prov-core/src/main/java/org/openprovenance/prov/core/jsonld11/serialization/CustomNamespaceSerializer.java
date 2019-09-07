@@ -32,7 +32,6 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
         TypeFactory typeFactory = mapper.getTypeFactory();
         MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
         Map<String,Object> o=mapper.readValue(CustomNamespaceSerializer.class.getResourceAsStream("/context-jsonld11.json"),mapType);
-        //System.out.println(o);
         return o;
     }
 

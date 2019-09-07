@@ -1,23 +1,30 @@
 package org.openprovenance.prov.core.xml.serialization;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
+import com.fasterxml.jackson.databind.deser.*;
+import com.fasterxml.jackson.databind.introspect.ClassIntrospector;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.type.TypeModifier;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.openprovenance.prov.core.vanilla.Document;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
-import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeMapDeserializer;
+import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeSetDeserializer;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.core.xml.serialization.deserial.StatementsHandler;
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ProvDeserialiser {
 
@@ -29,11 +36,13 @@ public class ProvDeserialiser {
     public org.openprovenance.prov.model.Document deserialiseDocument (File serialised) throws IOException, FileNotFoundException {
         return deserialiseDocument(new FileInputStream(serialised));
     }
+
+
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
         XmlMapper mapper = new XmlMapper();
 
         SimpleModule module =
-                new SimpleModule("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
+                new StatementsHandler("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
 
      //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
      //   module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
@@ -66,6 +75,8 @@ public class ProvDeserialiser {
 
 
         mapper.registerModule(module);
+
+
 
         return mapper.readValue(in, Document.class);
 

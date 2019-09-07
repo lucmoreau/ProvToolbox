@@ -39,7 +39,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
         return deserialize(node, deserializationContext);
 
-
     }
 
     public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {

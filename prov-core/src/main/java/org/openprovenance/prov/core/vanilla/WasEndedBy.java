@@ -3,6 +3,7 @@ package org.openprovenance.prov.core.vanilla;
 import org.openprovenance.apache.commons.lang.builder.*;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Value;
 
 import javax.xml.datatype.XMLGregorianCalendar;

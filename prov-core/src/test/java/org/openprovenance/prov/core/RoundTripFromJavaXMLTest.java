@@ -45,7 +45,7 @@ public class RoundTripFromJavaXMLTest extends RoundTripFromJavaTest {
     }
 
     public boolean wrapper_erase() {
-        return false;
+        return true;
     }
     public String extension() {
         return ".xml";

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core.xml;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -41,5 +42,8 @@ public interface Document {
     @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
     @JacksonXmlElementWrapper(useWrapping = false)
    // @JsonUnwrapped
+   // @JsonValue
+   // @JsonRawValue
+    @JsonDeserialize(as=List.class)
     List<StatementOrBundle> getStatementOrBundle();
 }

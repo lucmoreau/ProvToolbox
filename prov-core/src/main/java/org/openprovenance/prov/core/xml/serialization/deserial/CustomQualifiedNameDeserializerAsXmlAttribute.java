@@ -12,8 +12,6 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
 
-import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
-
 public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
 
     private static final ProvFactory pf= ProvDeserialiser.pf;

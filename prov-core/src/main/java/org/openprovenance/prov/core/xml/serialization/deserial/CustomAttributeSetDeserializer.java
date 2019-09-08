@@ -12,7 +12,6 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
@@ -39,7 +38,7 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
 
         Set<Attribute> set=new HashSet<>();
-        Attribute attr = new CustomAttributeDeserializerWithRootName().deserializeX(context,type, lang, body, deserializationContext);
+        Attribute attr = new CustomAttributeDeserializerWithRootName().deserialize(context,type, lang, body, deserializationContext);
         set.add(attr);
 
 

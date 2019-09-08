@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName;
+import org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil;
 import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
@@ -18,7 +19,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.*;
 
-import static org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
 
 abstract public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
@@ -44,7 +44,7 @@ abstract public class CustomAttributeMapDeserializer extends StdDeserializer<Map
         Iterator<Map.Entry<String, JsonNode>> it=node.fields();
         while (it.hasNext()) {
             Map.Entry<String, JsonNode> pair=it.next();
-            QualifiedName elementName=unescapeQualifiedName(ns.stringToQualifiedName(pair.getKey(),pf));
+            QualifiedName elementName= DeserializerUtil.unescapeQualifiedName(ns.stringToQualifiedName(pair.getKey(),pf));
 
             JsonNode vObj=pair.getValue();
             Iterator<JsonNode> elements=vObj.elements();

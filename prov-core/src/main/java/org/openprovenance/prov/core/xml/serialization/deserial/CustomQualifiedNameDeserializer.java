@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
-import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -14,8 +13,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 
-import static org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName.unescapeQualifiedName;
-import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedName> { //StdDeserializer<QualifiedName> {
 
@@ -34,7 +31,7 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
 
         String text = jsonParser.getText();
 
-        return unescapeQualifiedName(ns.stringToQualifiedName(text, pf));
+        return DeserializerUtil.unescapeQualifiedName(ns.stringToQualifiedName(text, pf));
     }
 
 
@@ -47,6 +44,6 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
         QName qName=xmlParser.getStaxReader().getName();
         ns.register(qName.getPrefix(),qName.getNamespaceURI());
 
-        return unescapeQualifiedName(pf.newQualifiedName(qName));
+        return DeserializerUtil.unescapeQualifiedName(pf.newQualifiedName(qName));
     }
 }

@@ -8,13 +8,11 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.vanilla.LangString;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.Constants;
-import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
-import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.QualifiedNameUtils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -42,11 +40,11 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     }
 
     public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
         Map.Entry<String, JsonNode> pair=node.fields().next();
 
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
-        elementName=unescapeQualifiedName(elementName);
+        elementName=DeserializerUtil.unescapeQualifiedName(elementName);
 
 
         JsonNode vObj=pair.getValue();
@@ -55,18 +53,9 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
     }
 
-    public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-
-        return pf.newAttribute(elementName, new LangString(astring,null), ProvSerialiser.QUALIFIED_NAME_XSD_STRING);
-    }
-
-
-
-
 
     public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
 
 
         JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);
@@ -88,20 +77,12 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
         return pf.newAttribute(elementName,valueObject, typeQN);
     }
 
-    final static QualifiedNameUtils qnU=new QualifiedNameUtils();
 
-    static public QualifiedName unescapeQualifiedName(QualifiedName id) {
 
-        String namespace=id.getNamespaceURI();
-        String local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
-        String prefix=id.getPrefix();
-        return pf.newQualifiedName(namespace,local,prefix);
-    }
-
-    public Attribute deserializeX(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
+    public Attribute deserialize(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        QualifiedName unescaped=unescapeQualifiedName(elementName);
+        QualifiedName unescaped=DeserializerUtil.unescapeQualifiedName(elementName);
         Object valueObject=body;
         if (type==null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
             valueObject=new LangString(body,lang);

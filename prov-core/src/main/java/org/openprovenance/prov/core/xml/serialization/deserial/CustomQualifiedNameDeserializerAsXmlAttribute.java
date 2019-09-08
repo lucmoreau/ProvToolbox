@@ -28,27 +28,11 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        if (ns==null) {
-            ns=new Namespace();
-            ns.addKnownNamespaces();
-        }
-        deserializationContext.setAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE,ns);
+        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
 
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 
-        String ref=xmlParser.getStaxReader().getAttributeValue(PROV_NS,"ref");
-
-
-
-
-        if (ref.contains(":")) {
-            String prefix=ref.substring(0,ref.indexOf(":"));
-            String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
-
-            ns.register(prefix,ans);
-
-        }
+        String ref = DeserializerUtil.getAttributeValue(ns, xmlParser, "ref");
         jsonParser.nextValue();
 
         jsonParser.readValueAsTree();
@@ -57,6 +41,7 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
         return ns.stringToQualifiedName(ref, pf, false);
 
     }
+
 
 
 }

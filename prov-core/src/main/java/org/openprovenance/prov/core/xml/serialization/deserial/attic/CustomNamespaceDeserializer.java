@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.xml.serialization.deserial;
+package org.openprovenance.prov.core.xml.serialization.deserial.attic;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,7 +13,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 
-public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
+abstract public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
     public static final Object CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
 

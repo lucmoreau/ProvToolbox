@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeDeserializerWithRootName;
-import org.openprovenance.prov.core.xml.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;

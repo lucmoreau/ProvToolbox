@@ -23,47 +23,30 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
 
     static final QualifiedName PROV_TYPE=pf.getName().PROV_TYPE;
 
-    public CustomQualifiedNameDeserializer() {
-        //this(QualifiedName.class);
-    }
-
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        if (ns==null) {
-            ns=new Namespace();
-            ns.addKnownNamespaces();
-        }
-        deserializationContext.setAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE,ns);
+        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
 
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 
-        String av=xmlParser.getStaxReader().getAttributeValue(PROV_NS,"id");
-        if (av.contains(":")) {
-            String prefix=av.substring(0,av.indexOf(":"));
-            String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
-
-            ns.register(prefix,ans);
-
-        }
+        String av = DeserializerUtil.getAttributeValue(ns, xmlParser, "id");
 
         String text = jsonParser.getText();
 
-        if (Constants.PROPERTY_AT_TYPE.equals(text)) return PROV_TYPE;
         return unescapeQualifiedName(ns.stringToQualifiedName(text, pf));
     }
 
 
     public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
 
         JsonParser jsonParser=deserializationContext.getParser();
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 
         QName qName=xmlParser.getStaxReader().getName();
         ns.register(qName.getPrefix(),qName.getNamespaceURI());
-        if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;
+
         return unescapeQualifiedName(pf.newQualifiedName(qName));
     }
 }

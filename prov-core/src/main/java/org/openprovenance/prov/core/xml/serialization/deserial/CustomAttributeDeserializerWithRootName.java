@@ -9,7 +9,7 @@ import org.openprovenance.prov.core.vanilla.LangString;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
-import org.openprovenance.prov.core.xml.serialization.serial.CustomTypedValueSerializer;
+import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;

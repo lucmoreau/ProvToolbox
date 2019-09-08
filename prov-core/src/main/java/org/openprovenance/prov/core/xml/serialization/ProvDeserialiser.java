@@ -1,27 +1,14 @@
 package org.openprovenance.prov.core.xml.serialization;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
-import com.fasterxml.jackson.databind.deser.*;
-import com.fasterxml.jackson.databind.introspect.ClassIntrospector;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.databind.type.TypeModifier;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeSetDeserializer;
-import org.openprovenance.prov.core.xml.serialization.deserial.CustomNamespaceDeserializer;
 import org.openprovenance.prov.core.xml.serialization.deserial.StatementsHandler;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.io.*;
 import java.util.*;
@@ -52,7 +39,7 @@ public class ProvDeserialiser {
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();
-       CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
+        CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
    //    JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
    //     MapType mapType = typeFactory.constructMapType(Map.class, qnType, setType);
   //      module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
@@ -62,7 +49,7 @@ public class ProvDeserialiser {
 
 
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);
-        module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
+        //module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
 
 
         //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.vanilla.TypedValue.class);

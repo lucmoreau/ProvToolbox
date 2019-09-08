@@ -70,7 +70,7 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
      * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
      */
     @Override
-    public org.openprovenance.prov.model.Document newDocument(Namespace namespace, Collection<Statement> statements, Collection<Bundle> bundles) {
+    public org.openprovenance.prov.model.Document newDocument(Namespace namespace, Collection<Statement> statements, Collection<org.openprovenance.prov.model.Bundle> bundles) {
         return new Document(namespace,statements,bundles);
     }
 
@@ -101,7 +101,7 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
      */
     @Override
     public Bundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
-        throw new UnsupportedOperationException();
+        return new Bundle(id,namespace,statements);
     }
 
     /**

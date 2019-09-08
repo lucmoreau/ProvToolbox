@@ -113,6 +113,8 @@ public class RoundTripFromJavaTest extends TestCase {
         
         if (bundles!=null) {
             for (int j = 0; j < bundles.length; j++) {
+                System.out.println(bundles[j]);
+                System.out.println(bundles[j].getNamespace());
                 bundles[j].getNamespace().setParent(doc.getNamespace());
             }
         }
@@ -1954,6 +1956,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Statement[] statements = new Statement[] { end1, end2 };
         makeDocAndTest(statements, opt, "target/scruffy-end4");
     }
+    */
 
     public void testBundle1() {
         Used use1 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
@@ -2076,6 +2079,9 @@ public class RoundTripFromJavaTest extends TestCase {
     }
 
 
+    //TODO: issue with namespace not read properly when rereading a bundle!
+    // TODO: document namespace not restored at the end of creation of bundle! so bundle namespace would still be extant after reading bundle
+
     public void testBundle4() {
         Used use1 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
         Entity e1 = pFactory.newEntity(q("e1"));
@@ -2087,7 +2093,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
         Namespace ns1 = Namespace.gatherNamespaces(b1,pFactory);
         b1.setNamespace(ns1);
-        //System.out.println("bundle 1 ns " + ns1);
+        System.out.println("bundle 1 ns " + b1);
 
 
         Used use2 = pFactory.newUsed(another("use2"), another("aa1"), null, another("ee1"));
@@ -2100,7 +2106,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Bundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
         Namespace ns2 = Namespace.gatherNamespaces(b2,pFactory);
         b2.setNamespace(ns2);
-        //.out.println("bundle 2 ns " + ns2);
+        System.out.println("bundle 2 ns " + b2);
 
 
         Entity eb1 = pFactory.newEntity(pFactory.newQualifiedName(EX_NS, "bundle1", "foo"));
@@ -2117,6 +2123,7 @@ public class RoundTripFromJavaTest extends TestCase {
 
     }
 
+    /*
     public void testDictionaryInsertion1() {
         DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
                                                                        q("d2"),

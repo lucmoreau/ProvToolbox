@@ -70,8 +70,8 @@ public class DocumentEquality {
 				return false;
 			List<?> stmts1 = b1.getStatement();
 			List<?> stmts2 = b2.getStatement();
-			return statementListEqual((List<StatementOrBundle>) stmts1,
-					(List<StatementOrBundle>) stmts2);
+			return collectionEqual((Collection<?>) stmts1,
+					(Collection<?>) stmts2);
 		}
 		// Two normal statements
 		Class<?> class1 = r1.getClass();

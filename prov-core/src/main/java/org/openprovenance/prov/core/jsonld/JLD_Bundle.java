@@ -1,19 +1,20 @@
-package org.openprovenance.prov.core.jsonld11;
+package org.openprovenance.prov.core.jsonld;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.openprovenance.prov.core.jsonld11.serialization.Constants;
+import org.openprovenance.prov.core.jsonld.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.Statement;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "@context", "@graph"})
-public interface Document {
-  //  @JsonFilter("nsFilter")
+@JsonPropertyOrder({ "@context", "@id", "@graph" })
+
+public interface JLD_Bundle extends Identifiable, HasKind {
+
     @JsonProperty("@context")
     Namespace getNamespace();
 
@@ -35,10 +36,9 @@ public interface Document {
             @JsonSubTypes.Type(value = Activity.class,           name = Constants.PROPERTY_PROV_ACTIVITY),
             @JsonSubTypes.Type(value = Agent.class,              name = Constants.PROPERTY_PROV_AGENT),
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
-            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION),
-            @JsonSubTypes.Type(value = Bundle.class,             name = Constants.PROPERTY_PROV_BUNDLE)
-
+            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
     @JsonProperty("@graph")
-    List<StatementOrBundle> getStatementOrBundle();
+    List<Statement> getStatement();
+
 }

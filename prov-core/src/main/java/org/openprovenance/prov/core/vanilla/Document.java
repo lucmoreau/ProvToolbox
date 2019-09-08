@@ -14,17 +14,17 @@ import java.util.List;
 public class Document implements org.openprovenance.prov.model.Document, Equals, ToString, HashCode {
 
     private List<StatementOrBundle> statementsOrBundle;
-    private Namespace namespace;
+    private Namespace namespace=new Namespace();
 
     public Document(List<StatementOrBundle> statementsOrBundle) {
         this.statementsOrBundle=statementsOrBundle;
     }
     public Document(Namespace namespace, List<StatementOrBundle> statementsOrBundle) {
-        this.namespace=namespace;
+        if (namespace!=null) this.namespace=namespace;
         this.statementsOrBundle=statementsOrBundle;
     }
     public Document(Namespace namespace, Collection<Statement> statements, Collection<Bundle> bundles) {
-        this.namespace=namespace;
+        if (namespace!=null) this.namespace=namespace;
         this.statementsOrBundle=new LinkedList<>();
         if (statements!=null) statementsOrBundle.addAll(statements);
         if (bundles!=null) statementsOrBundle.addAll(bundles);

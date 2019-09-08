@@ -18,6 +18,7 @@ import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.ProvSerialiser;
 
@@ -727,6 +728,13 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return res;
     }
 
+    public org.openprovenance.prov.model.Bundle newNamedBundle(QualifiedName id, Collection<Statement> statements) {
+        return newNamedBundle(id,null,statements);
+    }
+    public org.openprovenance.prov.model.Bundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
+        org.openprovenance.prov.model.Bundle res= mc.newNamedBundle(id,namespace,statements);
+        return res;
+    }
 
 
 }

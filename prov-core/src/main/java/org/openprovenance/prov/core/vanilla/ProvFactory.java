@@ -1,32 +1,27 @@
 package org.openprovenance.prov.core.vanilla;
 
 import org.apache.log4j.Logger;
-
-import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
-import org.openprovenance.prov.model.Other;
+import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.Value;
 import org.openprovenance.prov.model.WasAssociatedWith;
 import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.ModelConstructor;
-import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.*;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
 
-public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension{
+public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension, AtomConstructor {
     static Logger logger = Logger.getLogger(ProvFactory.class);
 
     private final static ProvFactory oFactory = new ProvFactory();

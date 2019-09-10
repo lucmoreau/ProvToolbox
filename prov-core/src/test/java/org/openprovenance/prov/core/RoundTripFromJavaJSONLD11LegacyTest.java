@@ -115,5 +115,10 @@ public class RoundTripFromJavaJSONLD11LegacyTest extends RoundTripFromJavaJSONLD
 
     }
 
+    public void testBundle1() {}
+    public void testBundle2() {}
+    public void testBundle3() {}
+    public void testBundle4() {}
+
 
 }

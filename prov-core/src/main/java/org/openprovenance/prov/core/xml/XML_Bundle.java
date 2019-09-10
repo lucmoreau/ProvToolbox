@@ -5,19 +5,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.openprovenance.prov.core.vanilla.*;
+import org.openprovenance.prov.core.jsonld.HasKind;
 import org.openprovenance.prov.core.xml.serialization.Constants;
+import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.Statement;
 
 import java.util.List;
 
-//@JsonPropertyOrder({ "context", "statements"})
-@JacksonXmlRootElement(localName="document", namespace="http://www.w3.org/ns/prov#")
-public interface Document {
+//@JsonPropertyOrder({  "id"})
+@JacksonXmlRootElement(localName="bundleContent", namespace="http://www.w3.org/ns/prov#")
+public interface XML_Bundle extends Identifiable, HasKind {
 
     @JsonIgnore
     Namespace getNamespace();
+
+    @JsonIgnore
+    void setNamespace(Namespace ns);
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
     @JsonSubTypes({
@@ -37,14 +41,12 @@ public interface Document {
             @JsonSubTypes.Type(value = Activity.class,           name = Constants.PROPERTY_PROV_ACTIVITY),
             @JsonSubTypes.Type(value = Agent.class,              name = Constants.PROPERTY_PROV_AGENT),
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
-            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION),
-            @JsonSubTypes.Type(value = Bundle.class,             name = Constants.PROPERTY_PROV_BUNDLE)
+            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
+    @JsonProperty("statements")
     @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
+    //@JsonDeserialize(as=List.class)
     @JacksonXmlElementWrapper(useWrapping = false)
-   // @JsonUnwrapped
-   // @JsonValue
-   // @JsonRawValue
-    @JsonDeserialize(as=List.class)
-    List<StatementOrBundle> getStatementOrBundle();
+   List<Statement> getStatement();
+
 }

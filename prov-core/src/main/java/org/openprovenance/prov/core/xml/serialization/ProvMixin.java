@@ -34,7 +34,8 @@ public class ProvMixin {
         mapper.addMixIn(Value.class,                XML_Attribute.class);
         mapper.addMixIn(Location.class,             XML_Attribute.class);
         mapper.addMixIn(Other.class,                XML_Attribute.class);
-        mapper.addMixIn(Type.class,                XML_Attribute.class);
+        mapper.addMixIn(Type.class,                 XML_Attribute.class);
+        mapper.addMixIn(Bundle.class,               XML_Bundle.class);
 
     }
 }

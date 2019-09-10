@@ -26,4 +26,5 @@ public interface Constants {
     String PROPERTY_PROV_START = "wasStartedBy";
     String PROPERTY_PROV_END = "wasEndedBy";
     String PROPERTY_PROV_DELEGATION = "actedOnBehalfOf";
+    String PROPERTY_PROV_BUNDLE= "bundleContent";
 }

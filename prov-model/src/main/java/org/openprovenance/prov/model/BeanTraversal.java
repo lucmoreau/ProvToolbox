@@ -188,7 +188,7 @@ public class BeanTraversal implements StatementActionValue {
 
     public Bundle doAction(Bundle b, ProvUtilities u) {
         List<Statement> sRecords = new LinkedList<Statement>();
-        QualifiedName bundleId=b.getId();
+        QualifiedName bundleId=copyQ(b.getId());
 
 
         Namespace old=Namespace.getThreadNamespace();

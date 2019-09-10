@@ -9,6 +9,6 @@ package org.openprovenance.prov.model;
  *
  */
 
-public interface Label extends TypedValue {
+public interface Label extends TypedValue, Attribute {
 
 }

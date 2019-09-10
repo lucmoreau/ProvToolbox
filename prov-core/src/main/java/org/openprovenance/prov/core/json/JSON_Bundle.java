@@ -1,25 +1,26 @@
-package org.openprovenance.prov.core.xml;
+package org.openprovenance.prov.core.json;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.openprovenance.prov.core.jsonld.HasKind;
+import org.openprovenance.prov.core.jsonld.Identifiable;
+import org.openprovenance.prov.core.jsonld.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.*;
-import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.Statement;
 
 import java.util.List;
 
-//@JsonPropertyOrder({ "context", "statements"})
-@JacksonXmlRootElement(localName="document", namespace="http://www.w3.org/ns/prov#")
-public interface Document {
+@JsonPropertyOrder({ "@context", "@id", "@graph" })
 
-    @JsonIgnore
+public interface JSON_Bundle extends Identifiable, HasKind {
+
+    @JsonProperty("@context")
     Namespace getNamespace();
 
-    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = Constants.PROPERTY_BLOCK_TYPE)
     @JsonSubTypes({
             @JsonSubTypes.Type(value = WasEndedBy.class,         name = Constants.PROPERTY_PROV_END),
             @JsonSubTypes.Type(value = WasStartedBy.class,       name = Constants.PROPERTY_PROV_START),
@@ -37,14 +38,9 @@ public interface Document {
             @JsonSubTypes.Type(value = Activity.class,           name = Constants.PROPERTY_PROV_ACTIVITY),
             @JsonSubTypes.Type(value = Agent.class,              name = Constants.PROPERTY_PROV_AGENT),
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
-            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION),
-            @JsonSubTypes.Type(value = Bundle.class,             name = Constants.PROPERTY_PROV_BUNDLE)
+            @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION)
     })
-    @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
-    @JacksonXmlElementWrapper(useWrapping = false)
-   // @JsonUnwrapped
-   // @JsonValue
-   // @JsonRawValue
-    @JsonDeserialize(as=List.class)
-    List<StatementOrBundle> getStatementOrBundle();
+    @JsonProperty("@graph")
+    List<Statement> getStatement();
+
 }

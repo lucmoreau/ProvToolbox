@@ -8,10 +8,12 @@ import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.core.xml.serialization.Constants;
+import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class StatementsHandler extends SimpleModule{
@@ -29,56 +31,52 @@ public class StatementsHandler extends SimpleModule{
     }
 
 
-    static Map<String,Class<? extends StatementOrBundle>> setupTable() {
+    static Map<String,Class<? extends StatementOrBundle>> setupStatementOrBundleTable() {
         Map<String, Class<? extends StatementOrBundle>> result = new HashMap<>();
         result.put(Constants.PROPERTY_PROV_END, WasEndedBy.class);
         result.put(Constants.PROPERTY_PROV_START, WasStartedBy.class);
         result.put(Constants.PROPERTY_PROV_INVALIDATION, WasInvalidatedBy.class);
         result.put(Constants.PROPERTY_PROV_MEMBERSHIP, HadMember.class);
         result.put(Constants.PROPERTY_PROV_INFLUENCE, WasInfluencedBy.class);
-        result.put( Constants.PROPERTY_PROV_COMMUNICATION, WasInformedBy.class);
-        result.put( Constants.PROPERTY_PROV_DERIVATION, WasDerivedFrom.class);
-        result.put( Constants.PROPERTY_PROV_ALTERNATE, AlternateOf.class);
-        result.put( Constants.PROPERTY_PROV_SPECIALIZATION, SpecializationOf.class);
-        result.put( Constants.PROPERTY_PROV_ATTRIBUTION, WasAttributedTo.class);
-        result.put( Constants.PROPERTY_PROV_ASSOCIATION, WasAssociatedWith.class);
-        result.put( Constants.PROPERTY_PROV_GENERATION, WasGeneratedBy.class);
-        result.put( Constants.PROPERTY_PROV_USED, Used.class);
-        result.put( Constants.PROPERTY_PROV_ACTIVITY, Activity.class);
-        result.put( Constants.PROPERTY_PROV_AGENT, Agent.class);
+        result.put(Constants.PROPERTY_PROV_COMMUNICATION, WasInformedBy.class);
+        result.put(Constants.PROPERTY_PROV_DERIVATION, WasDerivedFrom.class);
+        result.put(Constants.PROPERTY_PROV_ALTERNATE, AlternateOf.class);
+        result.put(Constants.PROPERTY_PROV_SPECIALIZATION, SpecializationOf.class);
+        result.put(Constants.PROPERTY_PROV_ATTRIBUTION, WasAttributedTo.class);
+        result.put(Constants.PROPERTY_PROV_ASSOCIATION, WasAssociatedWith.class);
+        result.put(Constants.PROPERTY_PROV_GENERATION, WasGeneratedBy.class);
+        result.put(Constants.PROPERTY_PROV_USED, Used.class);
+        result.put(Constants.PROPERTY_PROV_ACTIVITY, Activity.class);
+        result.put(Constants.PROPERTY_PROV_AGENT, Agent.class);
+        result.put(Constants.PROPERTY_PROV_ENTITY, Entity.class);
+        result.put(Constants.PROPERTY_PROV_DELEGATION, ActedOnBehalfOf.class);
+        result.put(Constants.PROPERTY_PROV_BUNDLE, Bundle.class);
+        return result;
+    }
+    static Map<String,Class<? extends Statement>> setupStatementTable() {
+        Map<String, Class<? extends Statement>> result = new HashMap<>();
+        result.put(Constants.PROPERTY_PROV_END, WasEndedBy.class);
+        result.put(Constants.PROPERTY_PROV_START, WasStartedBy.class);
+        result.put(Constants.PROPERTY_PROV_INVALIDATION, WasInvalidatedBy.class);
+        result.put(Constants.PROPERTY_PROV_MEMBERSHIP, HadMember.class);
+        result.put(Constants.PROPERTY_PROV_INFLUENCE, WasInfluencedBy.class);
+        result.put(Constants.PROPERTY_PROV_COMMUNICATION, WasInformedBy.class);
+        result.put(Constants.PROPERTY_PROV_DERIVATION, WasDerivedFrom.class);
+        result.put(Constants.PROPERTY_PROV_ALTERNATE, AlternateOf.class);
+        result.put(Constants.PROPERTY_PROV_SPECIALIZATION, SpecializationOf.class);
+        result.put(Constants.PROPERTY_PROV_ATTRIBUTION, WasAttributedTo.class);
+        result.put(Constants.PROPERTY_PROV_ASSOCIATION, WasAssociatedWith.class);
+        result.put(Constants.PROPERTY_PROV_GENERATION, WasGeneratedBy.class);
+        result.put(Constants.PROPERTY_PROV_USED, Used.class);
+        result.put(Constants.PROPERTY_PROV_ACTIVITY, Activity.class);
+        result.put(Constants.PROPERTY_PROV_AGENT, Agent.class);
         result.put(Constants.PROPERTY_PROV_ENTITY, Entity.class);
         result.put(Constants.PROPERTY_PROV_DELEGATION, ActedOnBehalfOf.class);
         return result;
     }
-    final static Map<String,Class<? extends StatementOrBundle>> statementMap=setupTable();
+    final static Map<String,Class<? extends StatementOrBundle>> statementOrBundleMap = setupStatementOrBundleTable();
+    final static Map<String,Class<? extends Statement>> statementMap = setupStatementTable();
 
-    /*
-    static boolean aProvExpression(String s) {
-        switch (s) {
-            case Constants.PROPERTY_PROV_END:
-            case Constants.PROPERTY_PROV_START:
-            case Constants.PROPERTY_PROV_INVALIDATION:
-            case Constants.PROPERTY_PROV_MEMBERSHIP:
-            case Constants.PROPERTY_PROV_INFLUENCE:
-            case Constants.PROPERTY_PROV_COMMUNICATION:
-            case Constants.PROPERTY_PROV_DERIVATION:
-            case Constants.PROPERTY_PROV_ALTERNATE:
-            case Constants.PROPERTY_PROV_SPECIALIZATION:
-            case Constants.PROPERTY_PROV_ATTRIBUTION:
-            case Constants.PROPERTY_PROV_ASSOCIATION:
-            case Constants.PROPERTY_PROV_GENERATION:
-            case Constants.PROPERTY_PROV_USED:
-            case Constants.PROPERTY_PROV_ACTIVITY:
-            case Constants.PROPERTY_PROV_AGENT:
-            case Constants.PROPERTY_PROV_ENTITY:
-            case Constants.PROPERTY_PROV_DELEGATION:
-                return true;
-            default:
-            return false;
-        }
-    }
-    private static final Object STATEMENT_LIST = "STATEMENT_LIST";
-    */
 
 
     private static class MyDeserializationProblemHandler extends DeserializationProblemHandler {
@@ -110,11 +108,20 @@ public class StatementsHandler extends SimpleModule{
                 throws IOException {
 
             Class<? extends StatementOrBundle> cl;
-            if ((beanOrClass instanceof Document) && ((cl=statementMap.get(propertyName))!=null)) {
+            if ((beanOrClass instanceof Document) && ((cl= statementOrBundleMap.get(propertyName))!=null)) {
                 StatementOrBundle s=jp.readValueAs(cl);
                 Document doc=(Document) beanOrClass;
                 doc.getStatementOrBundle().add(s);
                 return true;
+            } else {
+                Class<? extends Statement> cl2;
+                if ((beanOrClass instanceof Bundle) && ((cl2 = statementMap.get(propertyName)) != null)) {
+                    System.out.println("########################" + propertyName);
+                    Statement s = jp.readValueAs(cl2);
+                    Bundle bun = (Bundle) beanOrClass;
+                    bun.getStatement().add(s);
+                    return true;
+                }
             }
             return super.handleUnknownProperty(ctxt, jp, deserializer, beanOrClass, propertyName);
         }

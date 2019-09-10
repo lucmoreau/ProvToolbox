@@ -6,16 +6,22 @@ import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
+import org.openprovenance.prov.model.LangString;
+import org.openprovenance.prov.model.Location;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.SpecializationOf;
+import org.openprovenance.prov.model.Type;
+import org.openprovenance.prov.model.Value;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ModelConstructor implements org.openprovenance.prov.model.ModelConstructor {
+public class ModelConstructor implements org.openprovenance.prov.model.ModelConstructor, AtomConstructor {
     /**
      * A factory method to create an instance of a delegation {@link ActedOnBehalfOf}
      *
@@ -295,5 +301,52 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
     @Override
     public void startDocument(Namespace namespace) {
 
+    }
+
+    @Override
+    public Role newRole(Object value, QualifiedName type) {
+        Role res =  new org.openprovenance.prov.core.vanilla.Role(type,value);
+        return res;
+    }
+
+    @Override
+    public Location newLocation(Object value, QualifiedName type) {
+        Location res =  new org.openprovenance.prov.core.vanilla.Location(type,value);
+        return res;
+    }
+
+    @Override
+    public Type newType(Object value, QualifiedName type) {
+        org.openprovenance.prov.model.Type res =  new org.openprovenance.prov.core.vanilla.Type(type,value);
+        return res;
+    }
+
+    @Override
+    public org.openprovenance.prov.model.Label newLabel(Object value, QualifiedName type) {
+        org.openprovenance.prov.model.Label res =  new org.openprovenance.prov.core.vanilla.Label(type, value);
+        return res;
+    }
+
+    @Override
+    public LangString newInternationalizedString(String s,String lang) {
+        LangString res = new org.openprovenance.prov.core.vanilla.LangString(s,lang);
+        return res;
+    }
+
+    @Override
+    public Value newValue(Object value, QualifiedName type) {
+        Value res =  new org.openprovenance.prov.core.vanilla.Value(type,value);
+        return res;
+    }
+
+    @Override
+    public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
+        return new org.openprovenance.prov.core.vanilla.Other(elementName,type,value);
+    }
+
+    @Override
+    public org.openprovenance.prov.model.LangString newInternationalizedString(String s) {
+        LangString res = new org.openprovenance.prov.core.vanilla.LangString(s);
+        return res;
     }
 }

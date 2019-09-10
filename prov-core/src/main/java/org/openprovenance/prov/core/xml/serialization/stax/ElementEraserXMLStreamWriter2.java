@@ -3,6 +3,7 @@ package org.openprovenance.prov.core.xml.serialization.stax;
 import org.codehaus.stax2.XMLStreamWriter2;
 
 import javax.xml.stream.XMLStreamException;
+import java.util.Stack;
 
 public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
 
@@ -11,13 +12,18 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
     }
 
     int count = 0;
-    int ignore = -1;
+    Stack<Integer> ignore = new Stack<Integer>();
+
 
     @Override
     public void writeEndElement() throws XMLStreamException {
         //      System.out.println(" count " + count + " ignore " + ignore);
-        if (count != ignore)
+        int valueToIgnore=(ignore.empty())?-5:ignore.peek();
+        if (count != valueToIgnore) {
             super.writeEndElement();
+        } else {
+            ignore.pop();
+        }
         count--;
     }
 
@@ -26,7 +32,7 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
         count++;
         if (localName.equals("statements")) {
             //    System.out.println(" * writeStartElement " + localName + " " + count);
-            ignore = count;
+            ignore.push(count);
         } else {
 
             super.writeStartElement(localName);
@@ -38,8 +44,9 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
         count++;
         if (localName.equals("statements")) {
             //      System.out.println(" * writeStartElement " + localName + " " + namespaceURI + " " + count);
-            ignore = count;
+            ignore.push(count);
         } else {
+           // System.out.println("localnaem " + localName);
             super.writeStartElement(namespaceURI, localName);
         }
     }
@@ -49,7 +56,7 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
         count++;
         if (localName.equals("statements")) {
             //       System.out.println(" * writeStartElement " + localName + " " + namespaceURI + " (pre " + prefix + " " + count);
-            ignore = count;
+            ignore.push(count);
         } else {
             super.writeStartElement(prefix, localName, namespaceURI);
         }

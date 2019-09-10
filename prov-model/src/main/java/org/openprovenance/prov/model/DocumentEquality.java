@@ -53,9 +53,9 @@ public class DocumentEquality {
 			bag1 = new HashBag(c1);
 			bag2 = new HashBag(c2);
 		}
-	//	System.out.println("bag1: " +bag1);
-	//	System.out.println("bag2: " +bag2);
-	//	System.out.println(bag1.equals(bag2));
+		System.out.println("bag1: " +bag1);
+		System.out.println("bag2: " +bag2);
+		System.out.println(bag1.equals(bag2));
 		return bag1.equals(bag2);
 	}
 
@@ -66,6 +66,7 @@ public class DocumentEquality {
 		if (r1 instanceof Bundle && r2 instanceof Bundle) {
 			Bundle b1 = (Bundle) r1;
 			Bundle b2 = (Bundle) r2;
+
 			if (!b1.getId().equals(b2.getId()))
 				return false;
 			List<?> stmts1 = b1.getStatement();

@@ -10,7 +10,7 @@ package org.openprovenance.prov.model;
  * <li>{@link HasOther}
  * </ul>
  */
-public interface Other extends TypedValue {
+public interface Other extends TypedValue, Attribute {
     
     /**
      * Get the element name

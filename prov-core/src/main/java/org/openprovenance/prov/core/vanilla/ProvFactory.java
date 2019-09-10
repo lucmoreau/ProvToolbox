@@ -36,20 +36,25 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     final org.openprovenance.prov.model.ModelConstructor mc;
+    final AtomConstructor ac;
 
     public ProvFactory(ObjectFactory of) {
         super(of);
         mc=new org.openprovenance.prov.core.vanilla.ModelConstructor();
+        ac=(AtomConstructor)mc;
     }
 
     public ProvFactory () {
         super(null);
         mc=new org.openprovenance.prov.core.vanilla.ModelConstructor();
+        ac=(AtomConstructor)mc;
     }
 
     public ProvFactory(ObjectFactory of, ModelConstructor mc) {
         super(of);
         this.mc=mc;
+        ac=(AtomConstructor)mc;
+
     }
 
 
@@ -79,13 +84,12 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
             return newRole(value, type);
         }
         if (elementName.equals(getName().PROV_LABEL)) {
-            return new Label(type, value);
+            return newLabel(value, type);
         }
         if (elementName.equals(getName().PROV_KEY)) {
             new UnsupportedOperationException("key not there yet");
-            //return newKey(value, type);
         }
-        return new org.openprovenance.prov.core.vanilla.Other(elementName, type, value);
+        return newOther(elementName, value, type);
     }
 
 
@@ -97,7 +101,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
             case PROV_TYPE:
                 return newType(value, type);
             case PROV_LABEL:
-                return new Label(type, value);
+                return newLabel(value, type);
             case PROV_ROLE:
                 return newRole(value, type);
             case PROV_LOCATION:
@@ -122,35 +126,34 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     @Override
     public org.openprovenance.prov.model.LangString newInternationalizedString(String s,
                                                                                String lang) {
-        LangString res = new org.openprovenance.prov.core.vanilla.LangString(s,lang);
+        LangString res = ac.newInternationalizedString(s,lang);
         return res;
     }
 
     @Override
     public org.openprovenance.prov.model.LangString newInternationalizedString(String s) {
-        LangString res = new org.openprovenance.prov.core.vanilla.LangString(s);
+        LangString res = ac.newInternationalizedString(s);
         return res;
     }
 
     @Override
     public org.openprovenance.prov.model.Type newType(Object value, org.openprovenance.prov.model.QualifiedName type) {
         if (value==null) return null;
-        org.openprovenance.prov.model.Type res =  new Type(type,value);
-        return res;
+        return ac.newType(value, type);
     }
 
     @Override
-    public Other newOther(org.openprovenance.prov.model.QualifiedName elementName,
+    public org.openprovenance.prov.model.Other newOther(org.openprovenance.prov.model.QualifiedName elementName,
                           Object value,
                           org.openprovenance.prov.model.QualifiedName type) {
-        return new org.openprovenance.prov.core.vanilla.Other(elementName,type,value);
+        return ac.newOther(elementName, value, type);
     }
 
 
     @Override
     public org.openprovenance.prov.model.Location newLocation(Object value, org.openprovenance.prov.model.QualifiedName type) {
         if (value==null) return null;
-        org.openprovenance.prov.model.Location res =  new Location(type,value);
+        org.openprovenance.prov.model.Location res =  ac.newLocation(value,type);
         return res;
     }
 
@@ -208,9 +211,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     public org.openprovenance.prov.model.Value newValue(Object value, org.openprovenance.prov.model.QualifiedName type) {
         if (value==null) return null;
-        Value res =  new org.openprovenance.prov.core.vanilla.Value(type,value);
-
-        return res;
+        return ac.newValue(value,type);
     }
 
 
@@ -314,9 +315,12 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     @Override
     public org.openprovenance.prov.model.Role newRole(Object value, org.openprovenance.prov.model.QualifiedName type) {
         if (value==null) return null;
-        Role res =  new org.openprovenance.prov.core.vanilla.Role(type,value);
-//        res.setValueFromObject(value);
-        return res;
+        return ac.newRole(value,type);
+    }
+
+    public org.openprovenance.prov.model.Label newLabel(Object value, org.openprovenance.prov.model.QualifiedName type) {
+        if (value==null) return null;
+        return ac.newLabel(value,type);
     }
 
     public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName id,

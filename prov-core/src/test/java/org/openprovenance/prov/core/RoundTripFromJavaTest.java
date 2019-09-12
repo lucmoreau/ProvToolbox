@@ -42,7 +42,7 @@ public class RoundTripFromJavaTest extends TestCase {
     static final org.openprovenance.prov.core.vanilla.ProvUtilities util = new org.openprovenance.prov.core.vanilla.ProvUtilities();
 
     public static org.openprovenance.prov.model.ProvFactory pFactory = new org.openprovenance.prov.core.vanilla.ProvFactory();
-    public static org.openprovenance.prov.model.Name name = pFactory.getName();
+    public static  org.openprovenance.prov.model.Name name = pFactory.getName();
 
     private DocumentEquality documentEquality;
 

@@ -13,10 +13,11 @@ public class RoundTripJavaToScalaBackToJavaTest extends RoundTripFromJavaTest {
     public RoundTripJavaToScalaBackToJavaTest(String testName) {
         super(testName);
         test=false;
+        pFactory=new ProvFactory();
     }
 
 
-    ProvFactory pFactory=new ProvFactory();
+
     ProvFactory pFactoryS=new org.openprovenance.prov.scala.immutable.ProvFactory();
 
     @Override

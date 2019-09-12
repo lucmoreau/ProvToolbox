@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.vanilla;
+package org.openprovenance.prov.model;
 
 import org.openprovenance.prov.model.QualifiedName;
 

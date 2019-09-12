@@ -53,9 +53,9 @@ public class DocumentEquality {
 			bag1 = new HashBag(c1);
 			bag2 = new HashBag(c2);
 		}
-		System.out.println("bag1: " +bag1);
-		System.out.println("bag2: " +bag2);
-		System.out.println(bag1.equals(bag2));
+		//System.out.println("bag1: " +bag1);
+		//System.out.println("bag2: " +bag2);
+		//System.out.println(bag1.equals(bag2));
 		return bag1.equals(bag2);
 	}
 

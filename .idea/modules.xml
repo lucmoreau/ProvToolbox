@@ -15,6 +15,7 @@
       <module fileurl="file://$PROJECT_DIR$/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/prov-model/prov-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-n/prov-n.iml" filepath="$PROJECT_DIR$/prov-n/prov-n.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-rdf/prov-rdf.iml" filepath="$PROJECT_DIR$/prov-rdf/prov-rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-scala/prov-scala.iml" filepath="$PROJECT_DIR$/prov-scala/prov-scala.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/prov-sql/prov-sql.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/prov-template/prov-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/prov-xml/prov-xml.iml" />

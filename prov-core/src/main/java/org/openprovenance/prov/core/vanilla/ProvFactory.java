@@ -156,7 +156,18 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     @Override
     public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a) {
-        Activity res = mc.newActivity(a,null,null,null);
+        Activity res = mc.newActivity(a,null,null,Collections.EMPTY_LIST);
+        return res;
+    }
+
+    @Override
+    public Activity newActivity(QualifiedName q, String label) {
+       Attribute attr=newAttribute(Attribute.AttributeKind.PROV_LABEL, newInternationalizedString(label), getName().PROV_LANG_STRING);
+       LinkedList<Attribute> attributes=new LinkedList<Attribute>();
+       attributes.add(attr);
+
+        Activity res = newActivity(q, null,null, attributes);
+
         return res;
     }
 

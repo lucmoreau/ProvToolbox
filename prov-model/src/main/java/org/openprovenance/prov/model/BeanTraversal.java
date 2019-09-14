@@ -215,6 +215,7 @@ public class BeanTraversal implements StatementActionValue {
 
 
     public SpecializationOf doAction(SpecializationOf o) {
+
         return c.newSpecializationOf(copyQ(o.getSpecificEntity()), copyQ(o.getGeneralEntity()));
     }
 
@@ -226,7 +227,10 @@ public class BeanTraversal implements StatementActionValue {
         convertAttributes(o,attrs);
         ModelConstructorExtension c2=(ModelConstructorExtension)c;
         List<Attribute> attrs2 = copyAttributes(attrs);
-        return c2.newQualifiedSpecializationOf(copyQ(o.getId()), copyQ(o.getSpecificEntity()), copyQ(o.getGeneralEntity()), attrs2);
+        return c2.newQualifiedSpecializationOf(copyQ(o.getId()),
+                                               copyQ(o.getSpecificEntity()),
+                                                copyQ(o.getGeneralEntity()),
+                                                attrs2);
     }
 
     @Override

@@ -76,8 +76,15 @@ public class DocumentEquality {
 		}
 		// Two normal statements
 		Class<?> class1 = r1.getClass();
-		if (class1 != r2.getClass()) {
-			return false;
+		Class<?> class2 = r2.getClass();
+		if (class1 != class2) {
+			if (!(((r1 instanceof UnqualifiedRelation) && (r2 instanceof QualifiedRelation))
+				||
+					((r2 instanceof UnqualifiedRelation) && (r1 instanceof  QualifiedRelation)))) {
+				return false;
+			}
+
+
 		}
 		if (r1.equals(r2)) {
 			return true;

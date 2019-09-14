@@ -5,4 +5,5 @@ import org.openprovenance.prov.model.QualifiedRelation;
 
 public interface QualifiedHadMember extends HadMember, QualifiedRelation {
 
+    boolean isUnqualified();
 }

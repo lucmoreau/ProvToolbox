@@ -43,7 +43,7 @@ import java.util.List;
  * @see <a href="http://www.w3.org/Submission/2013/SUBM-prov-json-20130424/#term-membership">PROV-JSON Membership</a>
  */
 
-public interface HadMember extends Relation {
+public interface HadMember extends Relation, UnqualifiedRelation {
 
     /**
      * Get an identifier for the collection whose member is asserted

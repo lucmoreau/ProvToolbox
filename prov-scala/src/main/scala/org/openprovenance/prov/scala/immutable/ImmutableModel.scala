@@ -1009,6 +1009,8 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
     val generalEntity: QualifiedName
     
     val specificEntity: QualifiedName
+
+    override def isUnqualified: Boolean = id == null && other.isEmpty && label.isEmpty && typex.isEmpty
     
     @BeanProperty
     val kind=PROV_SPECIALIZATION
@@ -1131,8 +1133,11 @@ trait ImmutableMentionOf extends Relation with org.openprovenance.prov.model.Men
     val specificEntity: QualifiedName
     
     val bundle: QualifiedName
-    
-    @BeanProperty
+
+  override def isUnqualified: Boolean = id == null && other.isEmpty && label.isEmpty && typex.isEmpty
+
+
+  @BeanProperty
     val kind=PROV_MENTION
     val enumType=Kind.men
 
@@ -1316,8 +1321,11 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
     val collection: QualifiedName
     
     val entity: Set[QualifiedName]
-    
-    @BeanProperty
+
+   override def isUnqualified: Boolean = id == null && other.isEmpty && label.isEmpty && typex.isEmpty
+
+
+  @BeanProperty
     val kind=PROV_MEMBERSHIP
     val enumType=Kind.mem
 
@@ -2076,6 +2084,13 @@ object SpecializationOf {
   def apply(e: org.openprovenance.prov.model.SpecializationOf):SpecializationOf = {
     e match {
       case e:SpecializationOf => e
+      case e:org.openprovenance.prov.model.extension.QualifiedSpecializationOf =>
+        new SpecializationOf(QualifiedName(e.getId()),
+          QualifiedName(e.getSpecificEntity),
+          QualifiedName(e.getGeneralEntity),
+          LangString(e.getLabel),
+          Type(e.getType),
+          Other(e.getOther))
       case _ =>
             new SpecializationOf(null,
             		                 QualifiedName(e.getSpecificEntity),

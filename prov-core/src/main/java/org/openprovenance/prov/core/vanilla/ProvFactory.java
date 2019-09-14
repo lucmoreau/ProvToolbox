@@ -16,6 +16,9 @@ import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
 import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
@@ -745,6 +748,27 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         org.openprovenance.prov.model.Bundle res= mc.newNamedBundle(id,namespace,statements);
         return res;
     }
+
+    @Override
+    public org.openprovenance.prov.model.extension.QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
+        org.openprovenance.prov.core.vanilla.QualifiedHadMember res=new org.openprovenance.prov.core.vanilla.QualifiedHadMember(id, c, e, attributes);
+        return res;
+    }
+
+
+
+    @Override
+    public org.openprovenance.prov.model.extension.QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
+        org.openprovenance.prov.core.vanilla.QualifiedSpecializationOf res=new org.openprovenance.prov.core.vanilla.QualifiedSpecializationOf(id, specific, general, attributes);
+        return res;
+    }
+
+    @Override
+    public org.openprovenance.prov.model.extension.QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName alt1, QualifiedName alt2, Collection<Attribute> attributes) {
+        QualifiedAlternateOf res=new org.openprovenance.prov.core.vanilla.QualifiedAlternateOf(id,alt1,alt2,attributes);
+        return res;
+    }
+
 
 
 }

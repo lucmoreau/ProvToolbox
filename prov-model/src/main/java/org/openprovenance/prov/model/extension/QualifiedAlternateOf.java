@@ -5,4 +5,5 @@ import org.openprovenance.prov.model.QualifiedRelation;
 
 public interface QualifiedAlternateOf extends AlternateOf, QualifiedRelation {
 
+    boolean isUnqualified();
 }

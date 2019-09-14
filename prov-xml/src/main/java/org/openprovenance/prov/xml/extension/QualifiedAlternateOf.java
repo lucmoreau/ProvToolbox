@@ -86,6 +86,10 @@ public class QualifiedAlternateOf extends AlternateOf implements Equals, HashCod
     @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(QualifiedNameAdapter.class)
     protected org.openprovenance.prov.model.QualifiedName id;
 
+    @Override
+    public boolean isUnqualified() {
+        return id==null && others.isEmpty() && label.isEmpty() && type.isEmpty();
+    }
 
     /**
      * Gets the value of the specific property.

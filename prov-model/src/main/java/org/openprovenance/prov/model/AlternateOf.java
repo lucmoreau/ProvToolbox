@@ -44,7 +44,7 @@ package org.openprovenance.prov.model;
  * @author lavm
  *
  */
-public interface AlternateOf extends Relation {
+public interface AlternateOf extends Relation, UnqualifiedRelation {
     
     /** Sets the identifier for the first of the two entities.
      * 

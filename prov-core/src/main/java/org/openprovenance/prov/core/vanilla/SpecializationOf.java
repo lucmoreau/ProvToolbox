@@ -65,11 +65,34 @@ public class SpecializationOf implements org.openprovenance.prov.model.Specializ
         }
         final SpecializationOf that = ((SpecializationOf) object);
         equalsBuilder.append(this.getSpecificEntity(), that.getSpecificEntity());
-        equalsBuilder.append(this.getGeneralEntity(), that.getGeneralEntity());
+        equalsBuilder.append(this.getGeneralEntity(),  that.getGeneralEntity());
+    }
+
+    public void equals2(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof QualifiedSpecializationOf)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final QualifiedSpecializationOf that = ((QualifiedSpecializationOf) object);
+        equalsBuilder.append(this.getSpecificEntity(), that.getSpecificEntity());
+        equalsBuilder.append(this.getGeneralEntity(),  that.getGeneralEntity());
     }
 
     public boolean equals(Object object) {
         if (!(object instanceof SpecializationOf)) {
+
+            if (object instanceof QualifiedSpecializationOf) {
+                QualifiedSpecializationOf qspec=(QualifiedSpecializationOf) object;
+                if (qspec.isUnqualified()) {
+                    final EqualsBuilder equalsBuilder2 = new EqualsBuilder();
+                    equals2(object, equalsBuilder2);
+                    return equalsBuilder2.isEquals();
+                }
+                return false;
+            }
             return false;
         }
         if (this == object) {
@@ -96,15 +119,15 @@ public class SpecializationOf implements org.openprovenance.prov.model.Specializ
 
 
         {
-            QualifiedName theEntity;
-            theEntity = this.getGeneralEntity();
-            toStringBuilder.append("generalEntity", theEntity);
+            QualifiedName theSpecificEntity;
+            theSpecificEntity = this.getSpecificEntity();
+            toStringBuilder.append("specificEntity", theSpecificEntity);
         }
 
         {
-            QualifiedName theAgent;
-            theAgent = this.getSpecificEntity();
-            toStringBuilder.append("specificEntity", theAgent);
+            QualifiedName theGeneralEntity;
+            theGeneralEntity = this.getGeneralEntity();
+            toStringBuilder.append("generalEntity", theGeneralEntity);
         }
 
 

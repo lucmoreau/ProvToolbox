@@ -18,23 +18,25 @@
   </scm>
 
   <modules>
-    <module>prov-model</module>
-    <module>prov-core</module>    
-    <module>prov-xml</module>
-    <module>prov-n</module>
-    <module>prov-dot</module>
-    <module>prov-json</module>
-    <module>prov-rdf</module>
-    <module>prov-template</module>
-    <module>prov-generator</module>
-    <module>prov-interop</module>
-    <module>toolbox</module>
-    <module>prov-sql</module>
-    <module>tutorial/tutorial1</module>
-    <module>tutorial/tutorial2</module>
-    <module>tutorial/tutorial3</module>
-    <module>tutorial/tutorial4</module>
-    <module>tutorial/tutorial5</module>
+	  <module>prov-model</module>
+	  <module>prov-core</module>
+	  <module>prov-scala</module>
+
+	  <module>prov-xml</module>
+	  <module>prov-n</module>
+	  <module>prov-dot</module>
+	  <module>prov-json</module>
+	  <module>prov-rdf</module>
+	  <module>prov-template</module>
+	  <module>prov-generator</module>
+	  <module>prov-interop</module>
+	  <module>toolbox</module>
+	  <module>prov-sql</module>
+	  <module>tutorial/tutorial1</module>
+	  <module>tutorial/tutorial2</module>
+	  <module>tutorial/tutorial3</module>
+	  <module>tutorial/tutorial4</module>
+	  <module>tutorial/tutorial5</module>
       <!-- <module>tutorial/tutorial6</module> -->
   </modules>
 

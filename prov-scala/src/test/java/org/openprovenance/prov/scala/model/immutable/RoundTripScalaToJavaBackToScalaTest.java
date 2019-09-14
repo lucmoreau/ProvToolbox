@@ -8,7 +8,7 @@ import org.openprovenance.prov.model.Document;
 /**
  * Unit test for PROV roundtrip conversion between Java represenations
  */
-public class RoundTripScalaToJavaBackToScalaTest extends RoundTripFromJavaTest {
+abstract public class RoundTripScalaToJavaBackToScalaTest extends RoundTripFromJavaTest {
 
     public RoundTripScalaToJavaBackToScalaTest(String testName) {
         super(testName);

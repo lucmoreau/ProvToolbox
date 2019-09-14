@@ -24,6 +24,9 @@ import org.openprovenance.prov.model.WasEndedBy;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Location;
 import org.openprovenance.prov.model.Role;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 import java.io.*;
 import java.util.*;
@@ -256,19 +259,40 @@ public class RoundTripFromJavaTest extends TestCase {
 
                 System.out.println("test: " + (doc.getStatementOrBundle().get(0)).equals((doc2.getStatementOrBundle().get(0))));
 
-                System.out.println("test2  (attr): " + compareSet(((org.openprovenance.prov.core.vanilla.HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((org.openprovenance.prov.core.vanilla.HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.core.vanilla.HasAttributes) {
+
+                    System.out.println("test2  (attr): " + compareSet(((org.openprovenance.prov.core.vanilla.HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((org.openprovenance.prov.core.vanilla.HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
+
+                }
+
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.Identifiable) {
 
 
-                System.out.println("test3  (I): " + compare(((org.openprovenance.prov.model.Identifiable) doc.getStatementOrBundle().get(0)).getId(), ((((org.openprovenance.prov.model.Identifiable) doc2.getStatementOrBundle().get(0)).getId()))));
+                    System.out.println("test3  (I): " + compare(((org.openprovenance.prov.model.Identifiable) doc.getStatementOrBundle().get(0)).getId(), ((((org.openprovenance.prov.model.Identifiable) doc2.getStatementOrBundle().get(0)).getId()))));
 
-                System.out.println("test4  (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel())));
-                System.out.println("test4  (L): " + compareSet(((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel(), ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel()));
-                System.out.println("test4a (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel());
-                System.out.println("test4b (L): " + ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel());
-                System.out.println("test5  (T): " + ((org.openprovenance.prov.model.HasType) doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.model.HasType) doc2.getStatementOrBundle().get(0)).getType())));
-                System.out.println("test6  (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther()));
-                System.out.println("test6b (O): " + ((org.openprovenance.prov.model.HasOther) doc.getStatementOrBundle().get(0)).getOther());
-                System.out.println("test6c (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther());
+                }
+
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLabel) {
+
+
+                    System.out.println("test4  (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel())));
+                    System.out.println("test4  (L): " + compareSet(((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel(), ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel()));
+                    System.out.println("test4a (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel());
+                    System.out.println("test4b (L): " + ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel());
+                }
+
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasType) {
+
+                    System.out.println("test5  (T): " + ((org.openprovenance.prov.model.HasType) doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.model.HasType) doc2.getStatementOrBundle().get(0)).getType())));
+                }
+
+                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasOther) {
+
+                    System.out.println("test6  (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther()));
+                    System.out.println("test6b (O): " + ((org.openprovenance.prov.model.HasOther) doc.getStatementOrBundle().get(0)).getOther());
+                    System.out.println("test6c (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther());
+                }
+
                 if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole) {
                     System.out.println("test7  (R): " + compareSet(((org.openprovenance.prov.model.HasRole) doc.getStatementOrBundle().get(0)).getRole(), ((((org.openprovenance.prov.model.HasRole) doc2.getStatementOrBundle().get(0)).getRole()))));
                 }
@@ -2405,4 +2429,72 @@ public class RoundTripFromJavaTest extends TestCase {
 
     }
 */
+
+
+
+    public void testQualifiedSpecializationOf1() {
+        QualifiedSpecializationOf gen = pFactory.newQualifiedSpecializationOf(q("spec1"), q("e1"),q("e2"), null);
+        try {
+            makeDocAndTest(gen, "target/qualified-specialization1");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+    public void testQualifiedSpecializationOf2() {
+        QualifiedSpecializationOf gen = pFactory.newQualifiedSpecializationOf(null, q("e1"),q("e2"), null);
+        try {
+            makeDocAndTest(gen, "target/qualified-specialization2");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+
+
+
+    public void testQualifiedAlternateOf1() {
+        QualifiedAlternateOf gen = pFactory.newQualifiedAlternateOf(q("alt1"), q("e1"),q("e2"), null);
+        try {
+            makeDocAndTest(gen, "target/qualified-alternate1");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+    public void testQualifiedAlternateOf2() {
+        QualifiedAlternateOf gen = pFactory.newQualifiedAlternateOf(null, q("e1"),q("e2"), null);
+        try {
+            makeDocAndTest(gen, "target/qualified-alternate2");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+
+
+
+    public void testQualifiedHadMemberf1() {
+        List<org.openprovenance.prov.model.QualifiedName> entities=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        entities.add(q("e2"));
+
+        QualifiedHadMember gen = pFactory.newQualifiedHadMember(q("mem"), q("e1"),entities, null);
+        try {
+            makeDocAndTest(gen, "target/qualified-member1");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
+    public void testQualifiedHadMember2() {
+        List<org.openprovenance.prov.model.QualifiedName> entities=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        entities.add(q("e2"));
+        QualifiedHadMember gen = pFactory.newQualifiedHadMember(null, q("e1"),entities, null);
+        try {
+            makeDocAndTest(gen, "target/qualified-member2");
+        } catch (RuntimeException e) {
+            assertTrue(true);
+        }
+    }
+
 }

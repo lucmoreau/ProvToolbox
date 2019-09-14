@@ -106,8 +106,30 @@ this.collection=collection;
         equalsBuilder.append(this.getCollection(), that.getCollection());
     }
 
+
+    public void equals2(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof QualifiedHadMember)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final QualifiedHadMember that = ((QualifiedHadMember) object);
+        equalsBuilder.append(this.getEntity(), that.getEntity());
+        equalsBuilder.append(this.getCollection(), that.getCollection());
+    }
+
     public boolean equals(Object object) {
         if (!(object instanceof HadMember)) {
+            if (object instanceof QualifiedHadMember) {
+                QualifiedHadMember qmem=(QualifiedHadMember) object;
+                if (qmem.isUnqualified()) {
+                    final EqualsBuilder equalsBuilder2 = new EqualsBuilder();
+                    equals2(object, equalsBuilder2);
+                    return equalsBuilder2.isEquals();
+                }
+            }
             return false;
         }
         if (this == object) {
@@ -131,18 +153,18 @@ this.collection=collection;
 
     public void toString(ToStringBuilder toStringBuilder) {
 
+        {
+            QualifiedName theCollection;
+            theCollection = this.getCollection();
+            toStringBuilder.append("collection", theCollection);
+        }
+
 
 
         {
             List<QualifiedName> theEntity;
             theEntity = this.getEntity();
             toStringBuilder.append("entity", theEntity);
-        }
-
-        {
-            QualifiedName theCollection;
-            theCollection = this.getCollection();
-            toStringBuilder.append("collection", theCollection);
         }
 
 

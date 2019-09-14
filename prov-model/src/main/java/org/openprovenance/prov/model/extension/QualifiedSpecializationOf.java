@@ -5,4 +5,5 @@ import org.openprovenance.prov.model.SpecializationOf;
 
 public interface QualifiedSpecializationOf extends SpecializationOf, QualifiedRelation {
 
+    boolean isUnqualified();
 }

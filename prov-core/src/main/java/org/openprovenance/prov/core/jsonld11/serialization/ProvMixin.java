@@ -37,5 +37,9 @@ public class ProvMixin extends org.openprovenance.prov.core.jsonld.serialization
         mapper.addMixIn(Other.class,                org.openprovenance.prov.core.jsonld11.JLD_Attribute.class);
         mapper.addMixIn(Type.class,                 org.openprovenance.prov.core.jsonld11.JLD_Attribute.class);
         mapper.addMixIn(Bundle.class,               org.openprovenance.prov.core.jsonld11.JLD_Bundle.class);
+        mapper.addMixIn(QualifiedSpecializationOf.class,  JLD_QualifiedSpecializationOf.class);
+        mapper.addMixIn(QualifiedAlternateOf.class,       JLD_QualifiedAlternateOf.class);
+        mapper.addMixIn(QualifiedHadMember.class,         JLD_QualifiedHadMember.class);
+
     }
 }

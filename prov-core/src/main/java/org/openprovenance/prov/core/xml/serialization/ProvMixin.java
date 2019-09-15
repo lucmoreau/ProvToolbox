@@ -37,5 +37,9 @@ public class ProvMixin {
         mapper.addMixIn(Type.class,                 XML_Attribute.class);
         mapper.addMixIn(Bundle.class,               XML_Bundle.class);
 
+        mapper.addMixIn(QualifiedSpecializationOf.class,  XML_QualifiedSpecializationOf.class);
+        mapper.addMixIn(QualifiedAlternateOf.class,       XML_QualifiedAlternateOf.class);
+        mapper.addMixIn(QualifiedHadMember.class,         XML_QualifiedHadMember.class);
+
     }
 }

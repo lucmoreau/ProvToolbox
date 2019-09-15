@@ -12,10 +12,9 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "collection", "entity"})
+@JsonPropertyOrder({ "@id", "collection", "entity"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
-public interface XML_HadMember extends HasKind {
+public interface XML_QualifiedHadMember extends XML_Generic2, XML_Qualified {
 
 
     @REF_Qualified_Name
@@ -26,4 +25,5 @@ public interface XML_HadMember extends HasKind {
     @JsonDeserialize(contentUsing = CustomQualifiedNameDeserializerAsXmlAttribute.class)
     @JacksonXmlProperty( namespace = NamespacePrefixMapper.PROV_NS)
     public List<QualifiedName> getEntity();
+
 }

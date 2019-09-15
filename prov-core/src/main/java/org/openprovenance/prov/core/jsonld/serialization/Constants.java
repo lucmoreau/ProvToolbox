@@ -27,4 +27,7 @@ public interface Constants {
     String PROPERTY_PROV_END = "prov:End";
     String PROPERTY_PROV_DELEGATION = "prov:Delegation";
     String PROPERTY_PROV_BUNDLE = "prov:Bundle";
+    String PROPERTY_PROV_QUALIFIED_SPECIALIZATION = "prov:QualifiedSpecialization";
+    String PROPERTY_PROV_QUALIFIED_ALTERNATE = "prov:QualifiedAlternate";
+    String PROPERTY_PROV_QUALIFIED_MEMBERSHIP = "prov:QualifiedMembership";
 }

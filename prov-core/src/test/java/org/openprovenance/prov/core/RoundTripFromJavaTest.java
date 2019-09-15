@@ -116,8 +116,8 @@ public class RoundTripFromJavaTest extends TestCase {
         
         if (bundles!=null) {
             for (int j = 0; j < bundles.length; j++) {
-                System.out.println(bundles[j]);
-                System.out.println(bundles[j].getNamespace());
+             //   System.out.println(bundles[j]);
+             //   System.out.println(bundles[j].getNamespace());
                 bundles[j].getNamespace().setParent(doc.getNamespace());
             }
         }
@@ -2117,7 +2117,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
         Namespace ns1 = Namespace.gatherNamespaces(b1,pFactory);
         b1.setNamespace(ns1);
-        System.out.println("bundle 1 ns " + b1);
+        //System.out.println("bundle 1 ns " + b1);
 
 
         Used use2 = pFactory.newUsed(another("use2"), another("aa1"), null, another("ee1"));
@@ -2130,7 +2130,7 @@ public class RoundTripFromJavaTest extends TestCase {
         Bundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
         Namespace ns2 = Namespace.gatherNamespaces(b2,pFactory);
         b2.setNamespace(ns2);
-        System.out.println("bundle 2 ns " + b2);
+        //System.out.println("bundle 2 ns " + b2);
 
 
         Entity eb1 = pFactory.newEntity(pFactory.newQualifiedName(EX_NS, "bundle1", "foo"));
@@ -2434,20 +2434,14 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testQualifiedSpecializationOf1() {
         QualifiedSpecializationOf gen = pFactory.newQualifiedSpecializationOf(q("spec1"), q("e1"),q("e2"), null);
-        try {
-            makeDocAndTest(gen, "target/qualified-specialization1");
-        } catch (RuntimeException e) {
-            assertTrue(true);
-        }
+        makeDocAndTest(gen, "target/qualified-specialization1");
+
     }
 
     public void testQualifiedSpecializationOf2() {
         QualifiedSpecializationOf gen = pFactory.newQualifiedSpecializationOf(null, q("e1"),q("e2"), null);
-        try {
-            makeDocAndTest(gen, "target/qualified-specialization2");
-        } catch (RuntimeException e) {
-            assertTrue(true);
-        }
+        makeDocAndTest(gen, "target/qualified-specialization2");
+
     }
 
 
@@ -2455,46 +2449,33 @@ public class RoundTripFromJavaTest extends TestCase {
 
     public void testQualifiedAlternateOf1() {
         QualifiedAlternateOf gen = pFactory.newQualifiedAlternateOf(q("alt1"), q("e1"),q("e2"), null);
-        try {
-            makeDocAndTest(gen, "target/qualified-alternate1");
-        } catch (RuntimeException e) {
-            assertTrue(true);
-        }
+        makeDocAndTest(gen, "target/qualified-alternate1");
     }
 
     public void testQualifiedAlternateOf2() {
         QualifiedAlternateOf gen = pFactory.newQualifiedAlternateOf(null, q("e1"),q("e2"), null);
-        try {
-            makeDocAndTest(gen, "target/qualified-alternate2");
-        } catch (RuntimeException e) {
-            assertTrue(true);
-        }
+        makeDocAndTest(gen, "target/qualified-alternate2");
+
     }
 
 
 
 
-    public void testQualifiedHadMemberf1() {
+    public void testQualifiedHadMember1() {
         List<org.openprovenance.prov.model.QualifiedName> entities=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
         entities.add(q("e2"));
 
         QualifiedHadMember gen = pFactory.newQualifiedHadMember(q("mem"), q("e1"),entities, null);
-        try {
-            makeDocAndTest(gen, "target/qualified-member1");
-        } catch (RuntimeException e) {
-            assertTrue(true);
-        }
+        makeDocAndTest(gen, "target/qualified-member1");
+
     }
 
     public void testQualifiedHadMember2() {
         List<org.openprovenance.prov.model.QualifiedName> entities=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
         entities.add(q("e2"));
         QualifiedHadMember gen = pFactory.newQualifiedHadMember(null, q("e1"),entities, null);
-        try {
-            makeDocAndTest(gen, "target/qualified-member2");
-        } catch (RuntimeException e) {
-            assertTrue(true);
-        }
+        makeDocAndTest(gen, "target/qualified-member2");
+
     }
 
 }

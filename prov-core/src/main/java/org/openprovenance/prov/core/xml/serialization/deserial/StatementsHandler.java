@@ -51,6 +51,9 @@ public class StatementsHandler extends SimpleModule{
         result.put(Constants.PROPERTY_PROV_ENTITY, Entity.class);
         result.put(Constants.PROPERTY_PROV_DELEGATION, ActedOnBehalfOf.class);
         result.put(Constants.PROPERTY_PROV_BUNDLE, Bundle.class);
+        result.put(Constants.PROPERTY_PROV_QUALIFIED_ALTERNATE, QualifiedAlternateOf.class);
+        result.put(Constants.PROPERTY_PROV_QUALIFIED_SPECIALIZATION, QualifiedSpecializationOf.class);
+        result.put(Constants.PROPERTY_PROV_QUALIFIED_MEMBERSHIP, QualifiedHadMember.class);
         return result;
     }
     static Map<String,Class<? extends Statement>> setupStatementTable() {
@@ -72,6 +75,9 @@ public class StatementsHandler extends SimpleModule{
         result.put(Constants.PROPERTY_PROV_AGENT, Agent.class);
         result.put(Constants.PROPERTY_PROV_ENTITY, Entity.class);
         result.put(Constants.PROPERTY_PROV_DELEGATION, ActedOnBehalfOf.class);
+        result.put(Constants.PROPERTY_PROV_QUALIFIED_ALTERNATE, QualifiedAlternateOf.class);
+        result.put(Constants.PROPERTY_PROV_QUALIFIED_SPECIALIZATION, QualifiedSpecializationOf.class);
+        result.put(Constants.PROPERTY_PROV_QUALIFIED_MEMBERSHIP, QualifiedHadMember.class);
         return result;
     }
     final static Map<String,Class<? extends StatementOrBundle>> statementOrBundleMap = setupStatementOrBundleTable();

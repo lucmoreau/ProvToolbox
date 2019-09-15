@@ -259,20 +259,24 @@ public class RoundTripFromJavaTest extends TestCase {
 
                 System.out.println("test: " + (doc.getStatementOrBundle().get(0)).equals((doc2.getStatementOrBundle().get(0))));
 
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.core.vanilla.HasAttributes) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.core.vanilla.HasAttributes)
+                &&
+                        (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.core.vanilla.HasAttributes)) {
 
                     System.out.println("test2  (attr): " + compareSet(((org.openprovenance.prov.core.vanilla.HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((org.openprovenance.prov.core.vanilla.HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
 
                 }
 
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.Identifiable) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.Identifiable)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.Identifiable)){
 
 
                     System.out.println("test3  (I): " + compare(((org.openprovenance.prov.model.Identifiable) doc.getStatementOrBundle().get(0)).getId(), ((((org.openprovenance.prov.model.Identifiable) doc2.getStatementOrBundle().get(0)).getId()))));
 
                 }
 
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLabel) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLabel)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLabel) ){
 
 
                     System.out.println("test4  (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel())));
@@ -281,27 +285,32 @@ public class RoundTripFromJavaTest extends TestCase {
                     System.out.println("test4b (L): " + ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel());
                 }
 
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasType) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasType)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasType)){
 
                     System.out.println("test5  (T): " + ((org.openprovenance.prov.model.HasType) doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.model.HasType) doc2.getStatementOrBundle().get(0)).getType())));
                 }
 
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasOther) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasOther)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasOther)){
 
                     System.out.println("test6  (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther()));
                     System.out.println("test6b (O): " + ((org.openprovenance.prov.model.HasOther) doc.getStatementOrBundle().get(0)).getOther());
                     System.out.println("test6c (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther());
                 }
 
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole)){
                     System.out.println("test7  (R): " + compareSet(((org.openprovenance.prov.model.HasRole) doc.getStatementOrBundle().get(0)).getRole(), ((((org.openprovenance.prov.model.HasRole) doc2.getStatementOrBundle().get(0)).getRole()))));
                 }
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLocation) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLocation)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLocation)){
                     System.out.println("test8  (Loc): " + compareSet(((org.openprovenance.prov.model.HasLocation) doc.getStatementOrBundle().get(0)).getLocation(), ((org.openprovenance.prov.model.HasLocation) doc2.getStatementOrBundle().get(0)).getLocation()));
                     System.out.println("test8a (Loc): " + ((org.openprovenance.prov.model.HasLocation) doc.getStatementOrBundle().get(0)).getLocation());
                     System.out.println("test8b (Loc): " + ((org.openprovenance.prov.model.HasLocation) doc2.getStatementOrBundle().get(0)).getLocation());
                 }
-                if (doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasValue) {
+                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasValue)
+                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasValue)){
                     System.out.println("test9  (V): " + compare(((org.openprovenance.prov.model.HasValue) doc.getStatementOrBundle().get(0)).getValue(), ((org.openprovenance.prov.model.HasValue) doc2.getStatementOrBundle().get(0)).getValue()));
                     System.out.println("test9a (V): " + ((org.openprovenance.prov.model.HasValue) doc.getStatementOrBundle().get(0)).getValue());
                     System.out.println("test9b (V): " + ((org.openprovenance.prov.model.HasValue) doc2.getStatementOrBundle().get(0)).getValue());

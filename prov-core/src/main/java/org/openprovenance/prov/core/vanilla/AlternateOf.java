@@ -66,8 +66,31 @@ public class AlternateOf implements org.openprovenance.prov.model.AlternateOf, E
         equalsBuilder.append(this.getAlternate2(), that.getAlternate2());
     }
 
+    public void equals2(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof QualifiedAlternateOf)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final QualifiedAlternateOf that = ((QualifiedAlternateOf) object);
+        equalsBuilder.append(this.getAlternate1(), that.getAlternate1());
+        equalsBuilder.append(this.getAlternate2(),  that.getAlternate2());
+    }
+
     public boolean equals(Object object) {
         if (!(object instanceof AlternateOf)) {
+
+            if (object instanceof QualifiedAlternateOf) {
+                QualifiedAlternateOf qalt=(QualifiedAlternateOf) object;
+                if (qalt.isUnqualified()) {
+                    final EqualsBuilder equalsBuilder2 = new EqualsBuilder();
+                    equals2(object, equalsBuilder2);
+                    return equalsBuilder2.isEquals();
+                }
+                return false;
+            }
             return false;
         }
         if (this == object) {

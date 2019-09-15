@@ -1067,13 +1067,16 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
 
 
 
-trait ImmutableAlternateOf extends Relation with org.openprovenance.prov.model.AlternateOf with Identifiable  with HasLabel with HasType with HasOther with HasAttributes with Hashable {
+trait ImmutableAlternateOf extends Relation with org.openprovenance.prov.model.AlternateOf with org.openprovenance.prov.model.extension.QualifiedAlternateOf with Identifiable  with HasLabel with HasType with HasOther with HasAttributes with Hashable {
   
     val alternate1: QualifiedName
     
     val alternate2: QualifiedName
-    
-    @BeanProperty
+
+  override def isUnqualified: Boolean = id == null && other.isEmpty && label.isEmpty && typex.isEmpty
+
+
+  @BeanProperty
     val kind=PROV_ALTERNATE
     val enumType=Kind.alt
 
@@ -1397,10 +1400,13 @@ object Statement {
 			case e: org.openprovenance.prov.model.ActedOnBehalfOf => ActedOnBehalfOf(e)
 			case e: org.openprovenance.prov.model.WasAssociatedWith => WasAssociatedWith(e)
 			case e: org.openprovenance.prov.model.WasAttributedTo => WasAttributedTo(e)
-			case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e)
-			case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e)
       case e: org.openprovenance.prov.model.WasStartedBy => WasStartedBy(e)
       case e: org.openprovenance.prov.model.WasEndedBy => WasEndedBy(e)
+      case e: org.openprovenance.prov.model.extension.QualifiedSpecializationOf => SpecializationOf(e)
+      case e: org.openprovenance.prov.model.extension.QualifiedAlternateOf => AlternateOf(e)
+      case e: org.openprovenance.prov.model.extension.QualifiedHadMember => HadMember(e)
+      case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e)
+      case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e)
 
       }
 	}
@@ -2129,6 +2135,13 @@ object AlternateOf {
   def apply(e: org.openprovenance.prov.model.AlternateOf):AlternateOf = {
     e match {
       case e:AlternateOf => e
+      case e:org.openprovenance.prov.model.extension.QualifiedAlternateOf =>
+        new AlternateOf(QualifiedName(e.getId),
+          QualifiedName(e.getAlternate1),
+          QualifiedName(e.getAlternate2),
+          LangString(e.getLabel),
+          Type(e.getType),
+          Other(e.getOther))
       case _ =>
             new AlternateOf(null,
             		                 QualifiedName(e.getAlternate1),
@@ -2211,6 +2224,13 @@ object HadMember {
   def apply(e: org.openprovenance.prov.model.HadMember):HadMember = {
     e match {
       case e:HadMember => e
+      case e: org.openprovenance.prov.model.extension.QualifiedHadMember =>
+        new HadMember(QualifiedName(e.getId),
+          QualifiedName(e.getCollection),
+          e.getEntity.map(QualifiedName(_)).toSet,
+          LangString(e.getLabel),
+          Type(e.getType),
+          Other(e.getOther))
       case _ =>
             new HadMember(null,
             		                 QualifiedName(e.getCollection),

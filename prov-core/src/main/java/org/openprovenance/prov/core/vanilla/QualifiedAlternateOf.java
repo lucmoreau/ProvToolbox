@@ -123,8 +123,32 @@ public class QualifiedAlternateOf implements org.openprovenance.prov.model.exten
         equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
     }
 
+    public void equals2(Object object, EqualsBuilder equalsBuilder) {
+        if (!(object instanceof QualifiedAlternateOf)) {
+            equalsBuilder.appendSuper(false);
+            return ;
+        }
+        if (this == object) {
+            return ;
+        }
+        final QualifiedAlternateOf that = ((QualifiedAlternateOf) object);
+      //  equalsBuilder.append(this.getId(), that.getId());
+        equalsBuilder.append(this.getAlternate1(), that.getAlternate1());
+        equalsBuilder.append(this.getAlternate2(), that.getAlternate2());
+      //  equalsBuilder.append(this.getIndexedAttributes(), that.getIndexedAttributes());
+    }
+
     public boolean equals(Object object) {
         if (!(object instanceof QualifiedAlternateOf)) {
+            if (object instanceof AlternateOf) {
+                if (this.isUnqualified()) {
+                    AlternateOf alt=(AlternateOf) object;
+                    final EqualsBuilder equalsBuilder2 = new EqualsBuilder();
+                    equals2(object, equalsBuilder2);
+                    return equalsBuilder2.isEquals();
+                }
+                return false;
+            }
             return false;
         }
         if (this == object) {
@@ -136,10 +160,15 @@ public class QualifiedAlternateOf implements org.openprovenance.prov.model.exten
     }
 
     public void hashCode(HashCodeBuilder hashCodeBuilder) {
-        hashCodeBuilder.append(this.getId());
+        final boolean unqualified=isUnqualified();
+        if (!unqualified) {
+            hashCodeBuilder.append(this.getId());
+        }
         hashCodeBuilder.append(this.getAlternate1());
         hashCodeBuilder.append(this.getAlternate2());
-        hashCodeBuilder.append(this.getIndexedAttributes());
+        if (!unqualified) {
+            hashCodeBuilder.append(this.getIndexedAttributes());
+        }
     }
 
     public int hashCode() {

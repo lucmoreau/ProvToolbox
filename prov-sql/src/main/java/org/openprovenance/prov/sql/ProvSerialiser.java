@@ -12,6 +12,7 @@ import javax.xml.bind.PropertyException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.xml.NamespacePrefixMapper;
 import org.w3c.dom.Node;
 
@@ -122,12 +123,15 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     }
     
 
-    public void serialiseDocument (OutputStream out, Document graph, boolean format)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.setProperty("jaxb.formatted.output",format);
-        configurePrefixes(m,graph.getNamespace());
-        m.marshal(of.createDocument(graph),out);
+    public void serialiseDocument (OutputStream out, Document graph, boolean format) {
+        try {
+            Marshaller m = jc.createMarshaller();
+            m.setProperty("jaxb.formatted.output", format);
+            configurePrefixes(m, graph.getNamespace());
+            m.marshal(of.createDocument(graph), out);
+        } catch (JAXBException e) {
+            throw new UncheckedException(e);
+        }
     }
     public void serialiseDocument (File file, Document graph, boolean format)
 	        throws JAXBException {

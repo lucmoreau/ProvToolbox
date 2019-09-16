@@ -2,64 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvDeserialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/Document.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasAttributes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasKind.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasLabel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasLocation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasOther.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasRole.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/HasType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/Identifiable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_ActedOnBehalfOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Activity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Agent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_AlternateOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Attribute.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Bundle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Entity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Generic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Generic2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_HadMember.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_LangString.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Qualified.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_QualifiedAlternateOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_QualifiedHadMember.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_QualifiedSpecializationOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_SpecializationOf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_Used.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasAssociatedWith.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasAttributedTo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasDerivedFrom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasEndedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasGeneratedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasInfluencedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasInformedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasInvalidatedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/JLD_WasStartedBy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvMixin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomAttributesSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomDateSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomKindSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomMapSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomMapSerializer2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomNamespaceSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomTypedValueSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prov-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaToJsonAndBackTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomDateSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomDateSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomKindDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomKindDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomKindSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomKindSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/Name.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/Name.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prov-xml/src/main/java/org/openprovenance/prov/xml/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-xml/src/main/java/org/openprovenance/prov/xml/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prov-sql/src/main/java/org/openprovenance/prov/sql/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/prov-sql/src/main/java/org/openprovenance/prov/sql/ProvSerialiser.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
@@ -121,14 +64,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvMixin.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+              <caret line="8" selection-start-line="8" selection-end-line="8" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/prov-sql/src/main/java/org/openprovenance/prov/sql/ProvSerialiser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="536">
+              <caret line="132" column="44" selection-start-line="132" selection-start-column="44" selection-end-line="132" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -147,18 +99,6 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomQualifiedNameSerializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7">
-              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomKindSerializer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-7">
               <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
@@ -273,7 +213,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedSpecializationOf.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvMixin.java" />
         <option value="$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld11/Document.java" />
@@ -324,6 +263,7 @@
         <option value="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvSerialiser.java" />
         <option value="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" />
         <option value="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvMixin.java" />
+        <option value="$PROJECT_DIR$/prov-sql/src/main/java/org/openprovenance/prov/sql/ProvSerialiser.java" />
       </list>
     </option>
   </component>
@@ -335,7 +275,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="586" />
+    <option name="x" value="329" />
     <option name="y" value="23" />
     <option name="width" value="2047" />
     <option name="height" value="1294" />
@@ -606,92 +546,37 @@
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-sql" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-sql" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-sql" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-sql" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="immutable" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="jsonld11" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="jsonld11" type="462c0819:PsiDirectoryNode" />
-              <item name="serialization" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-scala" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-sql" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="immutable" type="462c0819:PsiDirectoryNode" />
+              <item name="sql" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
@@ -1008,7 +893,7 @@
       <workItem from="1568526450161" duration="58000" />
       <workItem from="1568527272929" duration="10303000" />
       <workItem from="1568649088425" duration="9682000" />
-      <workItem from="1568665328032" duration="2998000" />
+      <workItem from="1568665328032" duration="3250000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1021,9 +906,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="RoundTripJavaToScalaToJsonAndBackTest - 2019.09.16 at 21h 57m 30s.xml">
-      <configuration name="RoundTripJavaToScalaToJsonAndBackTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="RoundTripJavaToScalaToJsonAndBackTest - 2019.09.16 at 21h 58m 53s.xml">
       <configuration name="RoundTripJavaToScalaToJsonAndBackTest" configurationId="JUnit" />
     </history-entry>
@@ -1051,9 +933,12 @@
     <history-entry file="RoundTripJavaToScalaToJsonAndBackTest - 2019.09.16 at 22h 10m 12s.xml">
       <configuration name="RoundTripJavaToScalaToJsonAndBackTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="RoundTripJavaToScalaToJsonAndBackTest - 2019.09.16 at 22h 12m 26s.xml">
+      <configuration name="RoundTripJavaToScalaToJsonAndBackTest" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="377229000" />
+    <option name="totallyTimeSpent" value="377481000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1065,7 +950,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="586" y="23" width="2047" height="1294" extended-state="0" />
+    <frame x="329" y="23" width="2047" height="1294" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19002494" />
@@ -1116,13 +1001,6 @@
     </SUITE>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/prov-model/src/main/java/org/openprovenance/prov/model/ProvDeserialiser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prov-core/src/main/java/org/openprovenance/prov/core/jsonld/serialization/ProvDeserialiser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1512,10 +1390,17 @@
     <entry file="file://$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvMixin.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prov-sql/src/main/java/org/openprovenance/prov/sql/ProvSerialiser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="536">
+          <caret line="132" column="44" selection-start-line="132" selection-start-column="44" selection-end-line="132" selection-end-column="44" />
         </state>
       </provider>
     </entry>

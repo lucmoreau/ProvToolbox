@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class CustomKindDeserializer extends StdDeserializer<StatementOrBundle.Kind> {
 
-    protected CustomKindDeserializer() {
+    public CustomKindDeserializer() {
         super(StatementOrBundle.Kind.class);
     }
 

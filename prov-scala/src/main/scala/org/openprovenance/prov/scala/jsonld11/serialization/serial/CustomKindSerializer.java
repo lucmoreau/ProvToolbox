@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.jsonld11.serialization;
+package org.openprovenance.prov.scala.jsonld11.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

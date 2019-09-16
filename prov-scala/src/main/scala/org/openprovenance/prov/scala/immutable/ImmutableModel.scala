@@ -27,7 +27,7 @@ import org.parboiled2.ParseError
 
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
-import org.openprovenance.prov.model.{DerivedByInsertionFrom, DerivedByRemovalFrom, DictionaryMembership, Entry, Key, Namespace, QualifiedNameUtils}
+import org.openprovenance.prov.model.{DerivedByInsertionFrom, DerivedByRemovalFrom, DictionaryMembership, Entry, Key, Name, Namespace, QualifiedNameUtils}
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf
 import org.openprovenance.prov.model.extension.QualifiedHadMember
@@ -39,7 +39,6 @@ import scala.collection.JavaConversions._
 import java.util.ArrayList
 
 import scala.collection.immutable.HashMap
-
 import java.io.File
 import java.io.FileWriter
 import java.io.BufferedWriter
@@ -137,6 +136,26 @@ trait Identifiable extends org.openprovenance.prov.model.Identifiable {
 trait HasAttributes {
   def getAttributes () :Set[Attribute]
   def addAttributes (attr: Set[Attribute]): Statement
+
+
+  val PLS = ProvFactory.pf.getName.XSD_STRING.asInstanceOf[QualifiedName]
+
+  def convertAttributes(label: Set[LangString],
+                        typex: Set[Type],
+                        vs: Option[Value],
+                        location: Set[Location],
+                        role: Set[Role],
+                        other: Map[QualifiedName, Set[Other]]): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    val other2=other.asInstanceOf[Map[QualifiedName,Set[Attribute]]] +
+      (ProvFactory.pf.prov_label -> label.map(l => new Label(PLS,l).asInstanceOf[Attribute]))  +
+      (ProvFactory.pf.prov_type -> typex.asInstanceOf[Set[Attribute]]) +
+      (ProvFactory.pf.prov_role -> role.asInstanceOf[Set[Attribute]]) +
+      (ProvFactory.pf.prov_location -> location.asInstanceOf[Set[Attribute]])
+    val other3=if (vs.isDefined)  other2 + (ProvFactory.pf.prov_value -> Set(vs.get.asInstanceOf[Attribute])) else other2
+    other3.map{case (k,v) => (k.asInstanceOf[model.QualifiedName],
+      v.map(_.asInstanceOf[model.Attribute]).asJava)}.asJava
+  }
+
 }
 
 trait Hashable {
@@ -1550,8 +1569,15 @@ class Entity(val id: QualifiedName,
 	def addAttributes (attr: Set[Attribute]) = {
       ProvFactory.pf.newEntity(id,getAttributes() ++ attr)
 	}
-  
-           
+
+  //override def setIndexedAttributes(qn: Any, attributes: util.Set[model.Attribute]): Unit = ???
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, value, location, Set(), other)
+  }
+
+
 }
 
 object Agent {
@@ -1587,9 +1613,16 @@ class Agent(val id: QualifiedName,
     
 	def addAttributes (attr: Set[Attribute]) = {
       ProvFactory.pf.newAgent(id,getAttributes() ++ attr)
-	}    
+	}
 
-           
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, value, location, Set(), other)
+  }
+
+
+
+
 }
 
 
@@ -1633,9 +1666,16 @@ class Activity(val id: QualifiedName,
       
       def addAttributes (attr: Set[Attribute]) = {
     		  ProvFactory.pf.newActivity(id, startTime, endTime, getAttributes() ++ attr)
-      }    
+      }
 
- 
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, location, Set(), other)
+  }
+
+
+
+
 }
 
 object WasDerivedFrom {
@@ -1698,6 +1738,13 @@ class WasDerivedFrom(val id: QualifiedName,
 	                        typex,
 	                        this.other)    
 	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, Set(), Set(), other)
+  }
+
+
 }
 
 object WasGeneratedBy {
@@ -1758,6 +1805,12 @@ class WasGeneratedBy(val id: QualifiedName,
 	                        other)    
 	   }
 
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, location, role, other)
+  }
+
+
 }
 
 object Used {
@@ -1817,6 +1870,10 @@ class Used(val id: QualifiedName,
 	    		      role,
 	    		      other)    
 	   }
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, location, role, other)
+  }
 }
 
 object WasInvalidatedBy {
@@ -1876,6 +1933,10 @@ class WasInvalidatedBy(val id: QualifiedName,
 	                        other)    
 	   }
 
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, location, role, other)
+  }
+
 }
 
 object WasStartedBy {
@@ -1912,7 +1973,13 @@ class WasStartedBy(val id: QualifiedName,
     		  ProvFactory.pf.newWasStartedBy(id, 
     				                             activity, trigger, starter, time,
     				                             getAttributes() ++ attr)
-	   } 
+	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, location, role, other)
+  }
+
 }
 
 object WasEndedBy {
@@ -1948,7 +2015,12 @@ class WasEndedBy(val id: QualifiedName,
     		  ProvFactory.pf.newWasEndedBy(id, 
     				                           activity, trigger, ender, time,
     				                           getAttributes() ++ attr)
-	   } 
+	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, location, role, other)
+  }
 }
 
 object ActedOnBehalfOf {
@@ -1990,7 +2062,12 @@ class ActedOnBehalfOf(val id: QualifiedName,
     		  ProvFactory.pf.newActedOnBehalfOf(id, 
     				                                delegate, responsible, activity,
     				                                getAttributes() ++ attr)
-	   } 
+	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, Set(), Set(), other)
+  }
 
 }
 
@@ -2030,12 +2107,19 @@ class WasAssociatedWith(val id: QualifiedName,
                         val label: Set[LangString],
                         val typex: Set[Type],
                         val role: Set[Role],           
-                        val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasAssociatedWith  {     
+                        val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasAssociatedWith {
      def addAttributes (attr: Set[Attribute]) = {
     		  ProvFactory.pf.newWasAssociatedWith(id, 
     				                                  activity, agent, plan,
     				                                  getAttributes() ++ attr)
-	   } 
+	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, Set(), role, other)
+  }
+
+
 
 }
 
@@ -2084,6 +2168,12 @@ class WasAttributedTo(val id: QualifiedName,
 	                         typex,
 	                         other)    
 	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, Set(), Set(), other)
+  }
+
 }
 
 object SpecializationOf {
@@ -2201,7 +2291,11 @@ class WasInformedBy(val id: QualifiedName,
     		  ProvFactory.pf.newWasInformedBy(id, 
     				                              informed, informant,
     				                              getAttributes() ++ attr)
-	   }     
+	   }
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, Set(), Set(), other)
+  }
 
 }
 
@@ -2216,7 +2310,12 @@ class WasInfluencedBy(val id: QualifiedName,
     		  ProvFactory.pf.newWasInfluencedBy(id, 
     				                                influencee, influencer,
     				                                getAttributes() ++ attr)
-	   }   
+	   }
+
+
+  def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
+    convertAttributes(label, typex, None, Set(), Set(), other)
+  }
 
 }
 
@@ -2875,7 +2974,9 @@ object LangString {
       private[immutable] def apply (str: org.openprovenance.prov.model.LangString):LangString = {
           str match {
             case v:LangString => v
-            case _ =>new LangString(str.getValue,str.getLang)
+            case _ =>
+              val lang = str.getLang
+              new LangString(str.getValue, if (lang==null) None else Some(lang))
           }
       }
       
@@ -2893,41 +2994,41 @@ object LangString {
 
 class LangString (@BeanProperty val value: String,
                   val lang: Option[String]) extends org.openprovenance.prov.model.LangString with Hashable{
-  
+
     override def getLang() = {
       lang match {
         case Some(l) => l
         case None => null
       }
     }
-    
+
     def this(value: String,lang: String) = {
       this(value, if (lang==null) None else Some(lang))
     }
 
-  def this(lg: org.openprovenance.prov.model.LangString) = {
-    this(lg.getValue(), lg.getLang())
-  }
+    def this(lg: org.openprovenance.prov.model.LangString) = {
+      this(lg.getValue(), lg.getLang())
+    }
 
   override def setValue(x: String) {
         throw new UnsupportedOperationException
     }
-   
+
     override def setLang(x: String) {
         throw new UnsupportedOperationException
     }
-    
+
     def canEqual(a: Any) = a.isInstanceOf[LangString]
 
     override def equals(that: Any): Boolean =
     that match {
-      case that: LangString => that.canEqual(this) && 
-                           this.lang == that.lang && 
-                           this.value == that.value                  
+      case that: LangString => that.canEqual(this) &&
+                           this.lang == that.lang &&
+                           this.value == that.value
       case _ => false
     }
-    
-    
+
+
     override val hashCode:Int = pr(h(lang),h(value))
     
     override def toString(): String = {
@@ -3114,8 +3215,8 @@ object QualifiedName {
     def apply(name: org.openprovenance.prov.model.QualifiedName): QualifiedName = {
         if (name==null) return null
     		name match {
-        case qn:QualifiedName => qn
-        case _ => new QualifiedName(name.getPrefix,name.getLocalPart,name.getNamespaceURI)
+          case qn:QualifiedName => qn
+          case _ => new QualifiedName(name.getPrefix,name.getLocalPart,name.getNamespaceURI)
     		}  
     }
   
@@ -3230,6 +3331,7 @@ class FooException extends Exception
 
 object ProvFactory {
   val pf=new ProvFactory
+  val getFactory=pf
 }
 
 trait ImmutableConstructorDelegator  extends ImmutableConstructorInterface {
@@ -3830,7 +3932,7 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
   }
 
   override def newInternationalizedString(s: String, lang: String): org.openprovenance.prov.model.LangString = {
-    new LangString(s,Some(lang))
+    new LangString(s,if (lang==null) None else Some(lang))
   }
 
 
@@ -4659,6 +4761,7 @@ class ProvFactory1 extends org.openprovenance.prov.core.vanilla.ProvFactory(new 
 class ProvFactory extends ProvFactory1  {
 
 
+
     override def getSerializer() = throw new UnsupportedOperationException
   override def newQualifiedName(x1: String, x2:String, x3: String, x4:org.openprovenance.prov.model.ProvUtilities.BuildFlag) = throw new UnsupportedOperationException
   override def newAttribute(kind: org.openprovenance.prov.model.Attribute.AttributeKind,
@@ -4714,7 +4817,7 @@ class ProvFactory extends ProvFactory1  {
   }
 
   override def newInternationalizedString(s: String, lang: String): org.openprovenance.prov.model.LangString = {
-    new LangString(s,Some(lang))
+    new LangString(s,if (lang==null) None else Some(lang))
   }
 
 

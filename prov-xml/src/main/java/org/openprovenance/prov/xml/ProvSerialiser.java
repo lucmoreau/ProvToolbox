@@ -11,6 +11,7 @@ import javax.xml.bind.PropertyException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.NamespaceGatherer;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.w3c.dom.Node;
 
 import java.io.OutputStream;
@@ -113,13 +114,18 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         return sw.toString();
     }
 
-    public void serialiseDocument (OutputStream out, Document document, boolean format)
-        throws JAXBException {
-        Marshaller m=jc.createMarshaller();
-        m.setProperty("jaxb.formatted.output",format);
-        prepareNamespaces(m, document);
-        m.marshal(of.createDocument(document),out);
+    public void serialiseDocument (OutputStream out, Document document, boolean format) {
+        Marshaller m= null;
+        try {
+            m = jc.createMarshaller();
+            m.setProperty("jaxb.formatted.output",format);
+            prepareNamespaces(m, document);
+            m.marshal(of.createDocument(document),out);
+        } catch (JAXBException e) {
+            throw new UncheckedException(e);
+        }
     }
+
     public void serialiseDocument (File file, Document document, boolean format)
 	        throws JAXBException {
 	Marshaller m=jc.createMarshaller();

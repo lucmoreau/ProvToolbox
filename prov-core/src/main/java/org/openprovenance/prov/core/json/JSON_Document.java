@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.StatementOrBundle;
 import java.util.List;
 
 @JsonPropertyOrder({ "context", "statements"})
-public interface Document {
+public interface JSON_Document {
     @JsonFilter("nsFilter")
     @JsonProperty("context")
     Namespace getNamespace();

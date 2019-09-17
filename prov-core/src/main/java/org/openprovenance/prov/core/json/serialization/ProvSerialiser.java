@@ -43,7 +43,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
 
         try {
-            mapper.writeValue(out,document);
+            mapper.writeValue(out,new SortedDocument(document));
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException(e);

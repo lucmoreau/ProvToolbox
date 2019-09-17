@@ -8,7 +8,8 @@ public class ProvMixin {
     }
 
     public void addProvMixin(ObjectMapper mapper) {
-        mapper.addMixIn(Document.class,             org.openprovenance.prov.core.json.Document.class);
+        mapper.addMixIn(Document.class,             org.openprovenance.prov.core.json.JSON_Document.class);
+        mapper.addMixIn(SortedDocument.class,       org.openprovenance.prov.core.json.JSON_SortedDocument.class);
         mapper.addMixIn(ActedOnBehalfOf.class,      org.openprovenance.prov.core.json.JSON_ActedOnBehalfOf.class);
         mapper.addMixIn(Activity.class,             org.openprovenance.prov.core.json.JSON_Activity.class);
         mapper.addMixIn(HadMember.class,            org.openprovenance.prov.core.json.JSON_HadMember.class);
@@ -33,7 +34,7 @@ public class ProvMixin {
         mapper.addMixIn(Location.class,             org.openprovenance.prov.core.json.JSON_Attribute.class);
         mapper.addMixIn(Other.class,                org.openprovenance.prov.core.json.JSON_Attribute.class);
         mapper.addMixIn(Type.class,                 org.openprovenance.prov.core.json.JSON_Attribute.class);
-        mapper.addMixIn(Bundle.class,               org.openprovenance.prov.core.json.JSON_Bundle.class);
+        mapper.addMixIn(SortedBundle.class,         org.openprovenance.prov.core.json.JSON_SortedBundle.class);
 
         mapper.addMixIn(QualifiedSpecializationOf.class,  org.openprovenance.prov.core.json.JSON_QualifiedSpecializationOf.class);
         mapper.addMixIn(QualifiedAlternateOf.class,       org.openprovenance.prov.core.json.JSON_QualifiedAlternateOf.class);

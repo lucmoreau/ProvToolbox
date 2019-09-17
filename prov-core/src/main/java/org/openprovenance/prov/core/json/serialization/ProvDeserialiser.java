@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.core.vanilla.Document;
+import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
@@ -16,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ProvDeserialiser {
+
+    ProvFactory pf=new ProvFactory();
 
     private final ProvMixin provMixin = new ProvMixin();
 
@@ -53,7 +56,9 @@ public class ProvDeserialiser {
 
         mapper.registerModule(module);
 
-        return mapper.readValue(in, Document.class);
+        SortedDocument doc= mapper.readValue(in, SortedDocument.class);
+
+        return doc.toDocument(pf);
 
     }
 

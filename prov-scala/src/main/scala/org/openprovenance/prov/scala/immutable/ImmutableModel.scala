@@ -36,13 +36,9 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model.Attribute.AttributeKind
 
 import scala.collection.JavaConversions._
-import java.util.ArrayList
 
 import scala.collection.immutable.HashMap
-import java.io.File
-import java.io.FileWriter
-import java.io.BufferedWriter
-import java.io.OutputStreamWriter
+
 import java.util
 
 import org.openprovenance.prov.model
@@ -1576,6 +1572,7 @@ class Entity(val id: QualifiedName,
   def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {
     convertAttributes(label, typex, value, location, Set(), other)
   }
+
 
 
 }

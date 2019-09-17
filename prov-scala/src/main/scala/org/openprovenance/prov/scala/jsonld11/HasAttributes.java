@@ -22,6 +22,7 @@ public interface HasAttributes extends org.openprovenance.prov.core.vanilla.HasA
     @JsonDeserialize(keyUsing= CustomKeyDeserializer.class)
     void setIndexedAttributes(Object qn, Set<Attribute> attributes);
 
+
     @JsonAnyGetter
     @JsonProperty("attributes")
     @JsonSerialize(keyUsing= CustomMapSerializer2.class, contentUsing = CustomAttributesSerializer.class)

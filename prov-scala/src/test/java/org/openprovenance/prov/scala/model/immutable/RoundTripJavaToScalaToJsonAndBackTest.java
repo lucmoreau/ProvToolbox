@@ -4,6 +4,7 @@ import org.openprovenance.prov.core.RoundTripFromJavaTest;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.scala.jsonld11.serialization.ProvSerialiser;
 
 import java.io.*;
@@ -23,6 +24,8 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
 
     ProvFactory pFactoryS=new org.openprovenance.prov.scala.immutable.ProvFactory();
 
+    ProvUtilities pu=new ProvUtilities();
+
     @Override
     public void compareDocAndFile(Document doc, String file, boolean check) {
         BeanTraversal bc=new BeanTraversal(pFactoryS, pFactoryS);
@@ -33,10 +36,12 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
         if (check)
             conditionalCheckSchema(file);
         Document doc3 = readDocument(file);
+        Document doc4=pFactoryS.newDocument(doc3.getNamespace(),pu.getStatement(doc3), pu.getBundle(doc3));
+
+        System.out.println(doc4);
 
 
-
-        compareDocuments(doc, doc3, check && checkTest(file));
+        compareDocuments(doc2, doc4, check && checkTest(file));
     }
 
 

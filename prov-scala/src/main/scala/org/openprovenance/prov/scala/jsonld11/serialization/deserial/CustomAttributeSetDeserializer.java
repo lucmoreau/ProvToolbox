@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -18,7 +17,6 @@ import java.util.Set;
 public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
 
 
-    static final ProvFactory pf=new ProvFactory();
 
 
     public CustomAttributeSetDeserializer(JavaType vc) {

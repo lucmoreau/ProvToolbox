@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
+import org.openprovenance.prov.scala.immutable.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -14,7 +14,7 @@ import java.io.IOException;
 public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedName> {
 
 
-    static final ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=ProvFactory.pf();
     static final QualifiedName PROV_TYPE=pf.getName().PROV_TYPE;
 
     public CustomQualifiedNameDeserializer() {

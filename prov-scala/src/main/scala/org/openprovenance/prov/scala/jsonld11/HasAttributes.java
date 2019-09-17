@@ -3,7 +3,7 @@ package org.openprovenance.prov.scala.jsonld11;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.openprovenance.prov.core.jsonld11.serialization.CustomKeyDeserializer;
+import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomKeyDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.serial.CustomAttributesSerializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.serial.CustomMapSerializer2;
 import org.openprovenance.prov.model.Attribute;

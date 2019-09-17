@@ -1422,6 +1422,8 @@ object Statement {
       case e: org.openprovenance.prov.model.extension.QualifiedHadMember => HadMember(e)
       case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e)
       case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e)
+      case e: org.openprovenance.prov.model.WasInformedBy => WasInformedBy(e)
+      case e: org.openprovenance.prov.model.WasInfluencedBy => WasInfluencedBy(e)
 
       }
 	}
@@ -1457,7 +1459,7 @@ object StatementOrBundle {
             case s: StatementOrBundle => s
             case e: org.openprovenance.prov.model.Entity => Entity(e)
             case a: org.openprovenance.prov.model.Activity => Activity(a)
-            case ag: org.openprovenance.prov.model.Agent => Agent(ag)
+            case a: org.openprovenance.prov.model.Agent => Agent(a)
             case u: org.openprovenance.prov.model.Used =>   Used(u)
             case w: org.openprovenance.prov.model.WasDerivedFrom => WasDerivedFrom(w)
             case w: org.openprovenance.prov.model.WasGeneratedBy => WasGeneratedBy(w)
@@ -1467,22 +1469,23 @@ object StatementOrBundle {
             case e: org.openprovenance.prov.model.WasAttributedTo => WasAttributedTo(e)
             case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e)
             case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e)
+            case e: org.openprovenance.prov.model.Bundle => Bundle(e)
 
           }
     }
 
     def apply(statements: java.util.Collection[org.openprovenance.prov.model.Statement]): Set[StatementOrBundle] = {
-         val statements2=statements.asScala.toSet
-         statements2.map(s => Statement(s))
+         val statements2=statements.asScala.toSeq
+         statements2.map(s => Statement(s)).toSet
     }
       
     def forBundle(statements: java.util.Collection[org.openprovenance.prov.model.Bundle]): Set[StatementOrBundle] = {
-         val statements2=statements.asScala.toSet
-         statements2.map(s => StatementOrBundle(s))
+         val statements2=statements.asScala.toSeq
+         statements2.map(s => StatementOrBundle(s)).toSet
     }
     def forStatementOrBundle(statements: java.util.Collection[org.openprovenance.prov.model.StatementOrBundle]): Set[StatementOrBundle] = {
-         val statements2=statements.asScala.toSet
-         statements2.map(s => StatementOrBundle(s))
+         val statements2=statements.asScala.toSeq
+         statements2.map(s => StatementOrBundle(s)).toSet
     }
 }
 
@@ -2278,6 +2281,33 @@ class MentionOf(val id: QualifiedName,
 	   }   
 }
 
+
+
+object WasInformedBy {
+  def apply(e: org.openprovenance.prov.model.WasInformedBy):WasInformedBy = {
+    e match {
+      case e:WasInformedBy => e
+      case _ =>
+        new WasInformedBy(QualifiedName(e.getId),
+                          QualifiedName(e.getInformed),
+                          QualifiedName(e.getInformant),
+                          LangString(e.getLabel),
+                          Type(e.getType),
+                          Other(e.getOther))
+    }
+  }
+
+  def apply(e: org.openprovenance.prov.model.WasInformedBy, gensym: () => org.openprovenance.prov.model.QualifiedName):WasInformedBy = {
+    new WasInformedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
+      QualifiedName(e.getInformed),
+      QualifiedName(e.getInformant),
+      LangString(e.getLabel),
+      Type(e.getType),
+      Other(e.getOther))
+  }
+}
+
+
 class WasInformedBy(val id: QualifiedName,
                     val informed: QualifiedName,
                     val informant: QualifiedName,
@@ -2295,6 +2325,31 @@ class WasInformedBy(val id: QualifiedName,
   }
 
 }
+
+object WasInfluencedBy {
+  def apply(e: org.openprovenance.prov.model.WasInfluencedBy):WasInfluencedBy = {
+    e match {
+      case e:WasInfluencedBy => e
+      case _ =>
+        new WasInfluencedBy(QualifiedName(e.getId),
+          QualifiedName(e.getInfluencee),
+          QualifiedName(e.getInfluencer),
+          LangString(e.getLabel),
+          Type(e.getType),
+          Other(e.getOther))
+    }
+  }
+
+  def apply(e: org.openprovenance.prov.model.WasInfluencedBy, gensym: () => org.openprovenance.prov.model.QualifiedName):WasInfluencedBy = {
+    new WasInfluencedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
+      QualifiedName(e.getInfluencee),
+      QualifiedName(e.getInfluencer),
+      LangString(e.getLabel),
+      Type(e.getType),
+      Other(e.getOther))
+  }
+}
+
 
 class WasInfluencedBy(val id: QualifiedName,
                       val influencee: QualifiedName,
@@ -2383,7 +2438,9 @@ object Bundle {
   def apply(bun: org.openprovenance.prov.model.Bundle): Bundle = {
     bun match {
       case b: Bundle => b
-      case e: org.openprovenance.prov.model.Bundle => throw new FooException
+      case b: org.openprovenance.prov.model.Bundle =>
+        val ss: Set[Statement] =b.getStatement.toSet.map((s: model.Statement) => Statement(s))
+        new Bundle(QualifiedName(b.getId),ss,b.getNamespace)
     }
   }
 }
@@ -2476,7 +2533,7 @@ trait HasNamespace {
 object Document {
   def apply(doc: Document, gensym: () => QualifiedName, prefix: String, uri: String): Document = {
     val ss=doc.statements.map(Statement(_,gensym))
-    val bb=doc.bundles()
+    val bb: Iterable[Bundle] =doc.bundles()
     val ns=new Namespace(doc.namespace)
     ns.register(prefix,uri)
     new Document(ss++bb,ns)

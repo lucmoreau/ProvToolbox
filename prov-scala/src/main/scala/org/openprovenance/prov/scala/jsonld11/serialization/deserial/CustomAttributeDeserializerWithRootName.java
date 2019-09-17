@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
-import org.openprovenance.prov.core.vanilla.LangString;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
+import org.openprovenance.prov.scala.immutable.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
@@ -18,7 +17,7 @@ import java.util.Map;
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
 
-    static final ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=ProvFactory.pf();
 
     static final QualifiedName XSD_STRING=pf.getName().XSD_STRING;
 
@@ -57,7 +56,6 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        //return pf.newAttribute(elementName, new LangString(astring,null), CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
         return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), PROV_QUALIFIED_NAME);
     }
 
@@ -85,7 +83,8 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
                 //System.out.println(" This is an object " + value);
                 // JsonNode theValue=value.get(Constants.PROPERTY_STRING_VALUE);
                 JsonNode theLang = vObj.get(Constants.PROPERTY_STRING_LANG);
-                valueObject = new LangString(value.textValue(), (theLang == null) ? null : theLang.textValue());
+                valueObject = pf.newInternationalizedString(value.textValue(), (theLang == null) ? null : theLang.textValue());
+
                 typeQN = (theLang == null) ? XSD_STRING : PROV_INTERNATIONALIZED_STRING;
             } else if (type.equals("prov:QUALIFIED_NAME")) {
                 valueObject = ns.stringToQualifiedName(value.textValue(), pf);

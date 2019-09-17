@@ -1,7 +1,6 @@
 package org.openprovenance.prov.scala.jsonld11.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openprovenance.prov.scala.immutable.Document;
 import org.openprovenance.prov.scala.immutable.*;
 import org.openprovenance.prov.scala.jsonld11.*;
 
@@ -11,7 +10,7 @@ public class ProvMixin extends org.openprovenance.prov.core.jsonld.serialization
     }
 
     public void addProvMixin(ObjectMapper mapper) {
-        mapper.addMixIn(Document.class,             org.openprovenance.prov.scala.jsonld11.Document.class);
+        mapper.addMixIn(Document.class,             JLD_Document.class);
         mapper.addMixIn(ActedOnBehalfOf.class,      JLD_ActedOnBehalfOf.class);
         mapper.addMixIn(Activity.class,             JLD_Activity.class);
         //mapper.addMixIn(HadMember.class,            JLD_HadMember.class);

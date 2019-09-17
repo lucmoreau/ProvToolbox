@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.scala.immutable.ProvFactory;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeMapDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeSetDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomKindDeserializer;
@@ -61,8 +63,14 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serial
 
         mapper.registerModule(module);
 
-        return mapper.readValue(in, Document.class);
+        Document doc= mapper.readValue(in, Document.class);
 
+        org.openprovenance.prov.model.Document doc4=pf.newDocument(doc.getNamespace(),pu.getStatement(doc), pu.getBundle(doc));
+
+        return doc4;
     }
+
+    static ProvUtilities pu=new ProvUtilities();
+    static ProvFactory pf=ProvFactory.pf();
 
 }

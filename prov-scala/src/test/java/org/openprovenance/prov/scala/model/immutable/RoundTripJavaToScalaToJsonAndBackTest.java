@@ -29,6 +29,7 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
     @Override
     public void compareDocAndFile(Document doc, String file, boolean check) {
         BeanTraversal bc=new BeanTraversal(pFactoryS, pFactoryS);
+
         Document doc2=bc.doAction(doc);
 
         file = file + extension();
@@ -36,12 +37,9 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
         if (check)
             conditionalCheckSchema(file);
         Document doc3 = readDocument(file);
-        Document doc4=pFactoryS.newDocument(doc3.getNamespace(),pu.getStatement(doc3), pu.getBundle(doc3));
-
-        System.out.println(doc4);
 
 
-        compareDocuments(doc2, doc4, check && checkTest(file));
+        compareDocuments(doc2, doc3, check && checkTest(file));
     }
 
 
@@ -72,7 +70,7 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
     public Document readXMLDocument(String file)
             throws IOException {
 
-        System.out.println("reading (scala?) from " + file);
+        System.out.println("reading (scala) from " + file);
 
         org.openprovenance.prov.model.ProvDeserialiser deserial=new  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser();
         deserial=new  org.openprovenance.prov.scala.jsonld11.serialization.ProvDeserialiser();

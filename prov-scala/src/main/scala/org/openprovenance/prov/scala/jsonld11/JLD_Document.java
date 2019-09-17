@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
+import org.openprovenance.prov.scala.immutable.*;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.StatementOrBundle;
-import org.openprovenance.prov.core.vanilla.*;
 
 import java.util.List;
 
 @JsonPropertyOrder({ "@context", "@graph"})
-public interface Document2 {
+public interface JLD_Document {
   //  @JsonFilter("nsFilter")
     @JsonProperty("@context")
     Namespace getNamespace();
@@ -37,9 +37,9 @@ public interface Document2 {
             @JsonSubTypes.Type(value = Entity.class,             name = Constants.PROPERTY_PROV_ENTITY),
             @JsonSubTypes.Type(value = ActedOnBehalfOf.class,    name = Constants.PROPERTY_PROV_DELEGATION),
             @JsonSubTypes.Type(value = Bundle.class,             name = Constants.PROPERTY_PROV_BUNDLE),
-            @JsonSubTypes.Type(value = QualifiedSpecializationOf.class,        name = Constants.PROPERTY_PROV_QUALIFIED_SPECIALIZATION),
-            @JsonSubTypes.Type(value = QualifiedAlternateOf.class,             name = Constants.PROPERTY_PROV_QUALIFIED_ALTERNATE),
-            @JsonSubTypes.Type(value = QualifiedHadMember.class,               name = Constants.PROPERTY_PROV_QUALIFIED_MEMBERSHIP)
+            @JsonSubTypes.Type(value = SpecializationOf.class,        name = Constants.PROPERTY_PROV_QUALIFIED_SPECIALIZATION),
+            @JsonSubTypes.Type(value = AlternateOf.class,             name = Constants.PROPERTY_PROV_QUALIFIED_ALTERNATE),
+            @JsonSubTypes.Type(value = HadMember.class,               name = Constants.PROPERTY_PROV_QUALIFIED_MEMBERSHIP)
 
     })
     @JsonProperty("@graph")

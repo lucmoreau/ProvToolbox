@@ -67,9 +67,10 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
     public Document readXMLDocument(String file)
             throws IOException {
 
-        System.out.println("reading from " + file);
+        System.out.println("reading (scala?) from " + file);
 
         org.openprovenance.prov.model.ProvDeserialiser deserial=new  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser();
+        deserial=new  org.openprovenance.prov.scala.jsonld11.serialization.ProvDeserialiser();
         return deserial.deserialiseDocument(new BufferedInputStream(new FileInputStream(file)));
 
     }

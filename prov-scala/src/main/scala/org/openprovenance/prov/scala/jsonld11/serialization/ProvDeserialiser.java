@@ -9,10 +9,10 @@ import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.openprovenance.prov.core.jsonld11.serialization.CustomAttributeMapDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.CustomAttributeSetDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.CustomKindDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.CustomNamespaceDeserializer;
+import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeMapDeserializer;
+import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeSetDeserializer;
+import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomKindDeserializer;
+import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
 import org.openprovenance.prov.core.vanilla.Document;
 import org.openprovenance.prov.model.Namespace;
 
@@ -25,8 +25,8 @@ import java.util.Set;
 public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser {
 
 
-    public ProvMixin provMixin() {
-        return new ProvMixin();
+    public ProvMixin2 provMixin() {
+        return new ProvMixin2();
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
@@ -35,12 +35,8 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serial
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
 
-        //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
         module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
 
-        // module.addDeserializer(Type.class, new CustomTypeDeserializer());
-        // module.addDeserializer(Location.class, new CustomLocationDeserializer());
-        // module.addDeserializer(Other.class, new CustomOtherDeserializer());
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();
@@ -48,10 +44,8 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serial
         JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
         module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
-        //module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(Namespace.class));
 
 
-        // CollectionType listType = typeFactory.constructCollectionType(List.class, qnType);
 
 
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
@@ -59,7 +53,6 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serial
         module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(arrayType));
 
 
-        //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.vanilla.TypedValue.class);
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 

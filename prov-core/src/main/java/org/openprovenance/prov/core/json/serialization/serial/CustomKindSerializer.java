@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.json.serialization;
+package org.openprovenance.prov.core.json.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class CustomKindSerializer extends StdSerializer<StatementOrBundle.Kind> {
 
-    protected CustomKindSerializer() {
+    public CustomKindSerializer() {
         super(StatementOrBundle.Kind.class);
     }
 

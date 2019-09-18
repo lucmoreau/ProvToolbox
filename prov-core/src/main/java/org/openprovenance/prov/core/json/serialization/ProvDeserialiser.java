@@ -7,13 +7,14 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.openprovenance.prov.core.vanilla.Document;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeSetDeserializer;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomKindDeserializer;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespaceDeserializer;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class ProvDeserialiser {

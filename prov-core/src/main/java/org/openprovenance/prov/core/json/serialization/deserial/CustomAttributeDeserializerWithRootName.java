@@ -1,10 +1,12 @@
-package org.openprovenance.prov.core.json.serialization;
+package org.openprovenance.prov.core.json.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.openprovenance.prov.core.json.serialization.Constants;
+import org.openprovenance.prov.core.json.serialization.serial.CustomTypedValueSerializer;
 import org.openprovenance.prov.core.vanilla.LangString;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
@@ -12,7 +14,6 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {

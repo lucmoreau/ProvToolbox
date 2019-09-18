@@ -1,12 +1,7 @@
 package org.openprovenance.prov.json;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.net.URLDecoder;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -285,13 +280,13 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    entity = optionalQualifiedName("prov:entity", attributeMap);
 	    activity = optionalQualifiedName("prov:activity", attributeMap);
 	    time = optionalTime("prov:time", attributeMap);
-	    WasGeneratedBy wGB = pf.newWasGeneratedBy(id);
-	    wGB.setEntity(entity);
-	    if (activity != null)
-		wGB.setActivity(activity);
-	    if (time != null) {
-		wGB.setTime(time);
-	    }
+	    WasGeneratedBy wGB = pf.newWasGeneratedBy(id,entity,activity,time,new LinkedList<>());
+	    //wGB.setEntity(entity);
+	   // if (activity != null)
+		//wGB.setActivity(activity);
+	   // if (time != null) {
+		//wGB.setTime(time);
+	   // }
 	    statement = wGB;
 	    break;
 	case wasInfluencedBy:
@@ -313,10 +308,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    QualifiedName collection = optionalQualifiedName("prov:collection", attributeMap);
 	    Collection<QualifiedName> entities = optionalQualifiedNames("prov:entity",
 							attributeMap);
-	    HadMember membership = pf.getObjectFactory().createHadMember();
-	    membership.setCollection(collection);
-	    if (entities != null)
-		membership.getEntity().addAll(entities);
+	    HadMember membership = pf.newHadMember(collection,entities);
+	    //membership.setCollection(collection);
+	    //if (entities != null)
+		//membership.getEntity().addAll(entities);
 	    statement = membership;
 	    break;
 	case mentionOf:
@@ -516,8 +511,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
     }
 
     private LangString decodeInternationalizedString(JsonElement element) {
-	LangString iString = pf.getObjectFactory()
-					    .createInternationalizedString();
+	LangString iString = pf.newInternationalizedString("s");
 	if (element.isJsonPrimitive()) {
 	    iString.setValue(element.getAsString());
 	} else {
@@ -543,10 +537,9 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    if (struct.has("lang")) {
 		// Internationalized strings
 		String lang = struct.get("lang").getAsString();
-		LangString iString = pf.getObjectFactory()
-			.createInternationalizedString();
-		iString.setValue(value);
-		iString.setLang(lang);
+		LangString iString = pf.newInternationalizedString(value,lang);
+		//iString.setValue(value);
+		//iString.setLang(lang);
 		return pf.newAttribute(elementName,
 				       iString,
 				       name.PROV_LANG_STRING);

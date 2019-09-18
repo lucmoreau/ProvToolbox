@@ -1,8 +1,9 @@
-package org.openprovenance.prov.core.json.serialization;
+package org.openprovenance.prov.core.json.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.openprovenance.prov.core.json.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.LangString;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.core.vanilla.TypedValue;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
 
-    static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
+    static final public QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
 
     protected CustomTypedValueSerializer() {
         super(TypedValue.class);
@@ -33,6 +34,9 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             throw new UnsupportedOperationException("should never be here");
             //jsonGenerator.writeString((String)attr.getValue());
+        } else if (attr.getValue() instanceof LangString) {
+            jsonGenerator.writeObject(attr.getValue());
+            return;
         } else {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField(PROPERTY_AT_TYPE, prnt(attr.getType()));

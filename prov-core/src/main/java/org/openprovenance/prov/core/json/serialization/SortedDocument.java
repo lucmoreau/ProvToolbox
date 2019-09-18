@@ -17,7 +17,6 @@ public class SortedDocument extends SortedBundle {
 
     public SortedDocument (org.openprovenance.prov.model.Document doc)  {
         this.namespace=doc.getNamespace();
-        namespace.register("bn",bnNS);
         for (StatementOrBundle s: doc.getStatementOrBundle()) {
             switch (s.getKind()) {
                 case PROV_ENTITY:
@@ -95,6 +94,10 @@ public class SortedDocument extends SortedBundle {
                     break;
             }
         }
+
+        if (count>0)
+        namespace.register("bn",bnNS);
+
     }
 
 

@@ -3,7 +3,7 @@ package org.openprovenance.prov.core.json;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.openprovenance.prov.core.json.serialization.CustomQualifiedNameDeserializer;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.util.List;

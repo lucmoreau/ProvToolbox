@@ -5,7 +5,7 @@ public interface Constants {
     String PROPERTY_AT_VALUE = "$";
 
     String PROPERTY_STRING_VALUE = "$";
-    String PROPERTY_STRING_LANG = "$lang";
+    String PROPERTY_STRING_LANG = "lang";
 
     String PROPERTY_BLOCK_TYPE = "prov:type";
 

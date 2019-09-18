@@ -249,7 +249,9 @@ public class SortedBundle {
     public <S extends Identifiable> Map<QualifiedName, S> reassignId(Map<QualifiedName, S> map) {
         for (Map.Entry<QualifiedName, S> entry: map.entrySet()) {
             QualifiedName name=entry.getKey();
-            if (!(name.getNamespaceURI().equals(bnNS)) ) {
+            if (name.getNamespaceURI().equals(bnNS)) {
+            }
+            else {
                 entry.getValue().setId(name);
             }
         }

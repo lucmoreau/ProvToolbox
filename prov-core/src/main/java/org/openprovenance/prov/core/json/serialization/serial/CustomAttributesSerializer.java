@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.json.serialization;
+package org.openprovenance.prov.core.json.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -8,7 +8,7 @@ import org.openprovenance.prov.core.vanilla.TypedValue;
 import java.io.IOException;
 import java.util.Set;
 
-import static org.openprovenance.prov.core.json.serialization.CustomMapSerializer2.CONTEXT_KEY_FOR_MAP;
+import static org.openprovenance.prov.core.json.serialization.serial.CustomMapSerializer2.CONTEXT_KEY_FOR_MAP;
 
 
 public class CustomAttributesSerializer extends StdSerializer<Object> {

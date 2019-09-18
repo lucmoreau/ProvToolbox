@@ -3,10 +3,10 @@ package org.openprovenance.prov.core.json;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.openprovenance.prov.core.json.serialization.CustomAttributeMapDeserializer;
-import org.openprovenance.prov.core.json.serialization.CustomAttributesSerializer;
-import org.openprovenance.prov.core.json.serialization.CustomKeyDeserializer;
-import org.openprovenance.prov.core.json.serialization.CustomMapSerializer2;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeMapDeserializer;
+import org.openprovenance.prov.core.json.serialization.serial.CustomAttributesSerializer;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializer;
+import org.openprovenance.prov.core.json.serialization.serial.CustomMapSerializer2;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 

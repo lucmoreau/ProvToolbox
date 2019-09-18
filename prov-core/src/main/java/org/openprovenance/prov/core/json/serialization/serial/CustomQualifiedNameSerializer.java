@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.json.serialization;
+package org.openprovenance.prov.core.json.serialization.serial;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -8,19 +8,19 @@ import org.openprovenance.prov.core.vanilla.QualifiedName;
 import java.io.IOException;
 
 
-public class CustomQualifiedNameSerializerAsField extends StdSerializer<QualifiedName> {
+public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> {
 
-    protected CustomQualifiedNameSerializerAsField() {
+    public CustomQualifiedNameSerializer() {
         super(QualifiedName.class);
     }
 
-    protected CustomQualifiedNameSerializerAsField(Class<QualifiedName> t) {
+    protected CustomQualifiedNameSerializer(Class<QualifiedName> t) {
         super(t);
     }
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=q.getPrefix() + ":" + q.getLocalPart();
-        jsonGenerator.writeFieldName(s);
+        jsonGenerator.writeString(s);
     }
 }

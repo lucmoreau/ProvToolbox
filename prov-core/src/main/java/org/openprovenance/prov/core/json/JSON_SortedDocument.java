@@ -11,94 +11,94 @@ import org.openprovenance.prov.model.StatementOrBundle;
 import java.util.List;
 import java.util.Map;
 
-@JsonPropertyOrder({ "context", "statements"})
+@JsonPropertyOrder({ "prefix", "defaultNamespace"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface JSON_SortedDocument {
-    @JsonFilter("nsFilter")
-    @JsonProperty("context")
-    Namespace getNamespace();
+   // @JsonFilter("nsFilter")
+   // @JsonProperty("context")
+   // Namespace getNamespace();
 
 
     @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Entity.class)
-    @JsonDeserialize(contentAs = Entity.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = Entity.class )
     public Map<org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.Entity> getEntity();
 
-    @JsonSerialize(contentAs = Activity.class)
-    @JsonDeserialize(contentAs = Activity.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Activity.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = Activity.class )
     public List<org.openprovenance.prov.model.Activity> getActivity();
 
-    @JsonSerialize(contentAs = Agent.class)
-    @JsonDeserialize(contentAs = Agent.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Agent.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = Agent.class )
     public List<org.openprovenance.prov.model.Agent> getAgent();
 
-    @JsonSerialize(contentAs = Used.class)
-    @JsonDeserialize(contentAs = Used.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Used.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = Used.class )
     public List<org.openprovenance.prov.model.Used> getUsed();
 
-    @JsonSerialize(contentAs = WasGeneratedBy.class)
-    @JsonDeserialize(contentAs = WasGeneratedBy.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasGeneratedBy.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasGeneratedBy.class )
     public List<org.openprovenance.prov.model.WasGeneratedBy> getWasGeneratedBy();
 
-    @JsonSerialize(contentAs = WasInvalidatedBy.class)
-    @JsonDeserialize(contentAs = WasInvalidatedBy.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasInvalidatedBy.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasInvalidatedBy.class )
     public List<org.openprovenance.prov.model.WasInvalidatedBy> getWasInvalidatedBy();
 
-    @JsonSerialize(contentAs = WasAssociatedWith.class)
-    @JsonDeserialize(contentAs = WasAssociatedWith.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasAssociatedWith.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasAssociatedWith.class )
     public List<WasAssociatedWith> getWasAssociatedWith();
 
-    @JsonSerialize(contentAs = WasAttributedTo.class)
-    @JsonDeserialize(contentAs = WasAttributedTo.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasAttributedTo.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasAttributedTo.class )
     public List<WasAttributedTo> getWasAttributedTo();
 
-    @JsonSerialize(contentAs = ActedOnBehalfOf.class)
-    @JsonDeserialize(contentAs = ActedOnBehalfOf.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = ActedOnBehalfOf.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = ActedOnBehalfOf.class )
     public List<ActedOnBehalfOf> getActedOnBehalfOf() ;
 
-    @JsonSerialize(contentAs = WasStartedBy.class)
-    @JsonDeserialize(contentAs = WasStartedBy.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasStartedBy.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasStartedBy.class )
     public List<WasStartedBy> getWasStartedBy();
 
-    @JsonSerialize(contentAs = WasEndedBy.class)
-    @JsonDeserialize(contentAs = WasEndedBy.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasEndedBy.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasEndedBy.class )
     public List<WasEndedBy> getWasEndedBy();
 
-    @JsonSerialize(contentAs = WasInformedBy.class)
-    @JsonDeserialize(contentAs = WasInformedBy.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasInformedBy.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasInformedBy.class )
     public List<WasInformedBy> getWasInformedBy();
 
-    @JsonSerialize(contentAs = WasInfluencedBy.class)
-    @JsonDeserialize(contentAs = WasInfluencedBy.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasInfluencedBy.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasInfluencedBy.class )
     public List<WasInfluencedBy> getWasInfluencedBy();
 
-    @JsonSerialize(contentAs = AlternateOf.class)
-    @JsonDeserialize(contentAs = AlternateOf.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = AlternateOf.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = AlternateOf.class )
     public List<AlternateOf> getAlternateOf();
 
-    @JsonSerialize(contentAs = SpecializationOf.class)
-    @JsonDeserialize(contentAs = SpecializationOf.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = SpecializationOf.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = SpecializationOf.class )
     public List<SpecializationOf> getSpecializationOf();
 
-    @JsonSerialize(contentAs = HadMember.class)
-    @JsonDeserialize(contentAs = HadMember.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = HadMember.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = HadMember.class )
     public List<HadMember> getHadMember();
 
-    @JsonSerialize(contentAs = WasDerivedFrom.class)
-    @JsonDeserialize(contentAs = WasDerivedFrom.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = WasDerivedFrom.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = WasDerivedFrom.class )
     public List<WasDerivedFrom> getWasDerivedFrom();
 
-    @JsonSerialize(contentAs = QualifiedSpecializationOf.class)
-    @JsonDeserialize(contentAs = QualifiedSpecializationOf.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = QualifiedSpecializationOf.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = QualifiedSpecializationOf.class )
     public List<QualifiedSpecializationOf> getQualifiedSpecializationOf();
 
 
-    @JsonSerialize(contentAs = QualifiedAlternateOf.class)
-    @JsonDeserialize(contentAs = QualifiedAlternateOf.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = QualifiedAlternateOf.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = QualifiedAlternateOf.class )
     public List<QualifiedAlternateOf> getQualifiedAlternateOf();
 
 
-    @JsonSerialize(contentAs = QualifiedHadMember.class)
-    @JsonDeserialize(contentAs = QualifiedHadMember.class)
+    @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = QualifiedHadMember.class)
+    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = QualifiedHadMember.class )
     public List<QualifiedHadMember> getQualifiedHadMember();
 
 

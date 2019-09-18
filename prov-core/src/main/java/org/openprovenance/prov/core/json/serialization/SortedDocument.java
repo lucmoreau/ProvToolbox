@@ -17,70 +17,71 @@ public class SortedDocument extends SortedBundle {
 
     public SortedDocument (org.openprovenance.prov.model.Document doc)  {
         this.namespace=doc.getNamespace();
+        namespace.register("bn",bnNS);
         for (StatementOrBundle s: doc.getStatementOrBundle()) {
             switch (s.getKind()) {
                 case PROV_ENTITY:
                     entity.put(((Entity) s).getId(), (Entity) s);
                     break;
                 case PROV_ACTIVITY:
-                    activity.add((Activity) s);
+                    put(activity,s);
                     break;
                 case PROV_AGENT:
-                    agent.add((Agent) s);
+                    put(agent,s);
                     break;
                 case PROV_USAGE:
-                    used.add((Used) s);
+                    put(used,s);
                     break;
                 case PROV_GENERATION:
-                    wgb.add((WasGeneratedBy)s);
+                    put(wgb,s);
                     break;
                 case PROV_INVALIDATION:
-                    wib.add((WasInvalidatedBy) s);
+                    put(wib,s);
                     break;
                 case PROV_START:
-                    wasStartedBy.add((WasStartedBy) s);
+                    put(wasStartedBy,s);
                     break;
                 case PROV_END:
-                    wasEndedBy.add((WasEndedBy)s);
+                    put(wasEndedBy,s);
                     break;
                 case PROV_COMMUNICATION:
-                    wasInformedBy.add((WasInformedBy)s);
+                    put(wasInformedBy,s);
                     break;
                 case PROV_DERIVATION:
-                    wasDerivedFrom.add((WasDerivedFrom)s);
+                    put(wasDerivedFrom,s);
                     break;
                 case PROV_ASSOCIATION:
-                    wasAssociatedWith.add((WasAssociatedWith)s);
+                    put(wasAssociatedWith,s);
                     break;
                 case PROV_ATTRIBUTION:
-                    wasAttributedTo.add((WasAttributedTo)s);
+                    put(wasAttributedTo,s);
                     break;
                 case PROV_DELEGATION:
-                    actedOnBehalfOf.add((ActedOnBehalfOf)s);
+                    put(actedOnBehalfOf,s);
                     break;
                 case PROV_INFLUENCE:
-                    wasInfluencedBy.add((WasInfluencedBy)s);
+                    put(wasInfluencedBy,s);
                     break;
                 case PROV_ALTERNATE:
                     if (s instanceof QualifiedRelation) {
-                        qualifiedAlternateOf.add((QualifiedAlternateOf) s);
+                        put(qualifiedAlternateOf,s);
                     } else {
-                        alternateOf.add((AlternateOf) s);
+                        put(alternateOf,s);
                     }
                     break;
                 case PROV_SPECIALIZATION:
                     if (s instanceof QualifiedRelation) {
-                        qualifiedSpecializationOf.add((QualifiedSpecializationOf) s);
+                        put(qualifiedSpecializationOf,s);
                     } else {
-                        specializationOf.add((SpecializationOf) s);
+                        put(specializationOf,s);
                     }
                 case PROV_MENTION:
                     break;
                 case PROV_MEMBERSHIP:
                     if (s instanceof QualifiedRelation) {
-                        qualifiedHadMember.add((QualifiedHadMember) s);
+                        put(qualifiedHadMember,s);
                     } else {
-                        hadMember.add((HadMember) s);
+                        put(hadMember,s);
                     }
                     break;
                 case PROV_BUNDLE:
@@ -103,28 +104,36 @@ public class SortedDocument extends SortedBundle {
 
 
 
+
     public Document toDocument(ProvFactory provFactory) {
+
+
         List<Statement> ss=new LinkedList<>();
-        ss.addAll(getEntity().values());
-        ss.addAll(getActivity());
-        ss.addAll(getAgent());
-        ss.addAll(getUsed());
-        ss.addAll(getWasGeneratedBy());
-        ss.addAll(getWasInvalidatedBy());
-        ss.addAll(getWasAssociatedWith());
-        ss.addAll(getWasAttributedTo());
-        ss.addAll(getActedOnBehalfOf());
-        ss.addAll(getWasStartedBy());
-        ss.addAll(getWasEndedBy());
-        ss.addAll(getWasInformedBy());
-        ss.addAll(getWasInfluencedBy());
-        ss.addAll(getAlternateOf());
-        ss.addAll(getSpecializationOf());
-        ss.addAll(getHadMember());
-        ss.addAll(getWasDerivedFrom());
-        ss.addAll(getQualifiedSpecializationOf());
-        ss.addAll(getQualifiedAlternateOf());
-        ss.addAll(getQualifiedHadMember());
+        ss.addAll(reassignId(getEntity()).values());
+        ss.addAll(reassignId(getActivity()).values());
+        ss.addAll(reassignId(getAgent()).values());
+        ss.addAll(reassignId(getUsed()).values());
+        ss.addAll(reassignId(getWasGeneratedBy()).values());
+        ss.addAll(reassignId(getWasInvalidatedBy()).values());
+
+        ss.addAll(reassignId(getWasAssociatedWith()).values());
+        ss.addAll(reassignId(getWasAttributedTo()).values());
+        ss.addAll(reassignId(getActedOnBehalfOf()).values());
+        ss.addAll(reassignId(getWasStartedBy()).values());
+        ss.addAll(reassignId(getWasEndedBy()).values());
+        ss.addAll(reassignId(getWasInformedBy()).values());
+        ss.addAll(reassignId(getWasInfluencedBy()).values());
+        ss.addAll(getAlternateOf().values());
+        ss.addAll(getSpecializationOf().values());
+        ss.addAll(getHadMember().values());
+        ss.addAll(reassignId(getWasDerivedFrom()).values());
+        ss.addAll(reassignId(getQualifiedSpecializationOf()).values());
+        ss.addAll(reassignId(getQualifiedAlternateOf()).values());
+        ss.addAll(reassignId(getQualifiedHadMember()).values());
+
+
+        System.out.println(" ===> toDocument " + getEntity());
+
         return provFactory.newDocument(namespace,ss, bundle);
     }
 }

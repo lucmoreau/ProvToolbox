@@ -3,6 +3,7 @@ package org.openprovenance.prov.core.json;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.openprovenance.prov.core.json.serialization.CustomAttributeMapDeserializer;
 import org.openprovenance.prov.core.json.serialization.CustomAttributesSerializer;
 import org.openprovenance.prov.core.json.serialization.CustomKeyDeserializer;
 import org.openprovenance.prov.core.json.serialization.CustomMapSerializer2;
@@ -25,6 +26,7 @@ public interface HasAttributes extends org.openprovenance.prov.core.vanilla.HasA
     @JsonAnyGetter
     @JsonProperty("attributes")
     @JsonSerialize(keyUsing= CustomMapSerializer2.class, contentUsing = CustomAttributesSerializer.class)
+    @JsonDeserialize(using = CustomAttributeMapDeserializer.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

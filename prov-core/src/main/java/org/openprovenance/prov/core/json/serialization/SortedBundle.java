@@ -13,26 +13,45 @@ import java.util.Map;
 public class SortedBundle {
     Map<QualifiedName,Entity> entity=new HashMap<>();
     Namespace namespace=new Namespace();
-    List<Activity> activity=new LinkedList();
-    List<Agent> agent=new LinkedList();
-    List<Used> used=new LinkedList();
-    List<WasGeneratedBy> wgb=new LinkedList();
-    List<WasInvalidatedBy> wib=new LinkedList();
+    Map<QualifiedName,Activity> activity= new HashMap<QualifiedName, Activity>();
+    Map<QualifiedName,Agent> agent= new HashMap<QualifiedName, Agent>();
+    Map<QualifiedName,Used> used= new HashMap<QualifiedName, Used>();
+    Map<QualifiedName,WasGeneratedBy> wgb= new HashMap<QualifiedName, WasGeneratedBy>();
+    Map<QualifiedName,WasInvalidatedBy> wib= new HashMap<QualifiedName, WasInvalidatedBy>();
 
-    List<WasAssociatedWith> wasAssociatedWith=new LinkedList<>();
-    List<WasAttributedTo> wasAttributedTo=new LinkedList<>();
-    List<ActedOnBehalfOf> actedOnBehalfOf=new LinkedList<>();
-    List<WasStartedBy> wasStartedBy=new LinkedList<>();
-    List<WasEndedBy> wasEndedBy=new LinkedList<>();
-    List<WasInformedBy> wasInformedBy=new LinkedList<>();
-    List<WasInfluencedBy> wasInfluencedBy=new LinkedList<>();
-    List<AlternateOf> alternateOf=new LinkedList<>();
-    List<SpecializationOf> specializationOf=new LinkedList<>();
-    List<HadMember> hadMember=new LinkedList<>();
-    List<WasDerivedFrom> wasDerivedFrom=new LinkedList<>();
-    List<QualifiedSpecializationOf> qualifiedSpecializationOf=new LinkedList<>();
-    List<QualifiedAlternateOf> qualifiedAlternateOf=new LinkedList<>();
-    List<QualifiedHadMember> qualifiedHadMember=new LinkedList<>();
+    Map<QualifiedName,WasAssociatedWith> wasAssociatedWith=new HashMap<>();
+    Map<QualifiedName,WasAttributedTo> wasAttributedTo=new HashMap<>();
+    Map<QualifiedName,ActedOnBehalfOf> actedOnBehalfOf=new HashMap<>();
+    Map<QualifiedName,WasStartedBy> wasStartedBy=new HashMap<>();
+    Map<QualifiedName,WasEndedBy> wasEndedBy=new HashMap<>();
+    Map<QualifiedName,WasInformedBy> wasInformedBy=new HashMap<>();
+    Map<QualifiedName,WasInfluencedBy> wasInfluencedBy=new HashMap<>();
+    Map<QualifiedName,AlternateOf> alternateOf=new HashMap<>();
+    Map<QualifiedName,SpecializationOf> specializationOf=new HashMap<>();
+    Map<QualifiedName,HadMember> hadMember=new HashMap<>();
+    Map<QualifiedName,WasDerivedFrom> wasDerivedFrom=new HashMap<>();
+    Map<QualifiedName,QualifiedSpecializationOf> qualifiedSpecializationOf=new HashMap<>();
+    Map<QualifiedName,QualifiedAlternateOf> qualifiedAlternateOf=new HashMap<>();
+    Map<QualifiedName,QualifiedHadMember> qualifiedHadMember=new HashMap<>();
+    public static String bnNS="https://openprovenance.org/blank#";
+    public static int count=0;
+
+    <T extends Statement> void put(Map<QualifiedName,T> map, StatementOrBundle s) {
+         if (s instanceof Identifiable) {
+             Identifiable iS = (Identifiable) s;
+             if (iS.getId()==null) {
+                 map.put(gensym(), (T) s);
+             } else {
+                 map.put(iS.getId(), (T) s);
+             }
+         } else {
+             map.put(gensym(), (T) s);
+         }
+    }
+
+    public QualifiedName gensym() {
+         return new org.openprovenance.prov.core.vanilla.QualifiedName(bnNS, "n" + (count++), "bn");
+    }
 
     private QualifiedName id;
 
@@ -44,67 +63,68 @@ public class SortedBundle {
         for (Statement s: bun.getStatement()) {
             switch (s.getKind()) {
                 case PROV_ENTITY:
-                    entity.put(((Entity) s).getId(), (Entity) s);
+                    //entity.put(((Entity) s).getId(), (Entity) s);
+                    put(entity,s);
                     break;
                 case PROV_ACTIVITY:
-                    activity.add((Activity) s);
+                    put(activity,s);
                     break;
                 case PROV_AGENT:
-                    agent.add((Agent) s);
+                    put(agent,s);
                     break;
                 case PROV_USAGE:
-                    used.add((Used) s);
+                    put(used,s);
                     break;
                 case PROV_GENERATION:
-                    wgb.add((WasGeneratedBy)s);
+                    put(wgb,s);
                     break;
                 case PROV_INVALIDATION:
-                    wib.add((WasInvalidatedBy) s);
+                    put(wib,s);
                     break;
                 case PROV_START:
-                    wasStartedBy.add((WasStartedBy) s);
+                    put(wasStartedBy,s);
                     break;
                 case PROV_END:
-                    wasEndedBy.add((WasEndedBy)s);
+                    put(wasEndedBy,s);
                     break;
                 case PROV_COMMUNICATION:
-                    wasInformedBy.add((WasInformedBy)s);
+                    put(wasInformedBy,s);
                     break;
                 case PROV_DERIVATION:
-                    wasDerivedFrom.add((WasDerivedFrom)s);
+                    put(wasDerivedFrom,s);
                     break;
                 case PROV_ASSOCIATION:
-                    wasAssociatedWith.add((WasAssociatedWith)s);
+                    put(wasAssociatedWith,s);
                     break;
                 case PROV_ATTRIBUTION:
-                    wasAttributedTo.add((WasAttributedTo)s);
+                    put(wasAttributedTo,s);
                     break;
                 case PROV_DELEGATION:
-                    actedOnBehalfOf.add((ActedOnBehalfOf)s);
+                    put(actedOnBehalfOf,s);
                     break;
                 case PROV_INFLUENCE:
-                    wasInfluencedBy.add((WasInfluencedBy)s);
+                    put(wasInfluencedBy,s);
                     break;
                 case PROV_ALTERNATE:
                     if (s instanceof QualifiedRelation) {
-                        qualifiedAlternateOf.add((QualifiedAlternateOf) s);
+                        put(qualifiedAlternateOf,s);
                     } else {
-                        alternateOf.add((AlternateOf) s);
+                        put(alternateOf,s);
                     }
                     break;
                 case PROV_SPECIALIZATION:
                     if (s instanceof QualifiedRelation) {
-                        qualifiedSpecializationOf.add((QualifiedSpecializationOf) s);
+                        put(qualifiedSpecializationOf,s);
                     } else {
-                        specializationOf.add((SpecializationOf) s);
+                        put(specializationOf,s);
                     }
                 case PROV_MENTION:
                     break;
                 case PROV_MEMBERSHIP:
                     if (s instanceof QualifiedRelation) {
-                        qualifiedHadMember.add((QualifiedHadMember) s);
+                        put(qualifiedHadMember,s);
                     } else {
-                        hadMember.add((HadMember) s);
+                        put(hadMember,s);
                     }
                     break;
                 case PROV_BUNDLE:
@@ -143,7 +163,7 @@ public class SortedBundle {
         this.namespace.setDefaultNamespace(name);
     }
 
-    public List<Activity> getActivity() {
+    public Map<QualifiedName, Activity> getActivity() {
         return activity;
     }
 
@@ -151,105 +171,115 @@ public class SortedBundle {
         return entity;
     }
 
-    public List<Agent> getAgent() {
+    public Map<QualifiedName, Agent> getAgent() {
         return agent;
     }
 
-    public List<Used> getUsed() {
+    public Map<QualifiedName, Used> getUsed() {
         return used;
     }
 
-    public List<WasGeneratedBy> getWasGeneratedBy() {
+    public Map<QualifiedName, WasGeneratedBy> getWasGeneratedBy() {
         return wgb;
     }
 
-    public List<WasInvalidatedBy> getWasInvalidatedBy() {
+    public Map<QualifiedName, WasInvalidatedBy> getWasInvalidatedBy() {
         return wib;
     }
 
 
-    public List<WasAssociatedWith> getWasAssociatedWith() {
+    public Map<QualifiedName,WasAssociatedWith> getWasAssociatedWith() {
         return wasAssociatedWith;
     }
 
-    public List<WasAttributedTo> getWasAttributedTo() {
+    public Map<QualifiedName,WasAttributedTo> getWasAttributedTo() {
         return wasAttributedTo;
     }
 
-    public List<ActedOnBehalfOf> getActedOnBehalfOf() {
+    public Map<QualifiedName,ActedOnBehalfOf> getActedOnBehalfOf() {
         return actedOnBehalfOf;
     }
 
-    public List<WasStartedBy> getWasStartedBy() {
+    public Map<QualifiedName,WasStartedBy> getWasStartedBy() {
         return wasStartedBy;
     }
 
-    public List<WasEndedBy> getWasEndedBy() {
+    public Map<QualifiedName,WasEndedBy> getWasEndedBy() {
         return wasEndedBy;
     }
 
-    public List<WasInformedBy> getWasInformedBy() {
+    public Map<QualifiedName,WasInformedBy> getWasInformedBy() {
         return wasInformedBy;
     }
 
-    public List<WasInfluencedBy> getWasInfluencedBy() {
+    public Map<QualifiedName,WasInfluencedBy> getWasInfluencedBy() {
         return wasInfluencedBy;
     }
 
-    public List<AlternateOf> getAlternateOf() {
+    public Map<QualifiedName,AlternateOf> getAlternateOf() {
         return alternateOf;
     }
 
-    public List<SpecializationOf> getSpecializationOf() {
+    public Map<QualifiedName,SpecializationOf> getSpecializationOf() {
         return specializationOf;
     }
 
-    public List<QualifiedSpecializationOf> getQualifiedSpecializationOf() {
+    public Map<QualifiedName,QualifiedSpecializationOf> getQualifiedSpecializationOf() {
         return qualifiedSpecializationOf;
     }
 
-    public List<HadMember> getHadMember() {
+    public Map<QualifiedName,HadMember> getHadMember() {
         return hadMember;
     }
 
-    public List<WasDerivedFrom> getWasDerivedFrom() {
+    public Map<QualifiedName,WasDerivedFrom> getWasDerivedFrom() {
         return wasDerivedFrom;
     }
 
-    public List<QualifiedAlternateOf> getQualifiedAlternateOf() {
+    public Map<QualifiedName,QualifiedAlternateOf> getQualifiedAlternateOf() {
         return qualifiedAlternateOf;
     }
 
 
-    public List<QualifiedHadMember> getQualifiedHadMember() {
+    public Map<QualifiedName,QualifiedHadMember> getQualifiedHadMember() {
         return qualifiedHadMember;
     }
 
+
+    public <S extends Identifiable> Map<QualifiedName, S> reassignId(Map<QualifiedName, S> map) {
+        for (Map.Entry<QualifiedName, S> entry: map.entrySet()) {
+            QualifiedName name=entry.getKey();
+            if (!(name.getNamespaceURI().equals(bnNS)) ) {
+                entry.getValue().setId(name);
+            }
+        }
+        return map;
+    }
 
 
 
     public Bundle toBundle(ProvFactory provFactory) {
         List<Statement> ss=new LinkedList<>();
-        ss.addAll(getEntity().values());
-        ss.addAll(getActivity());
-        ss.addAll(getAgent());
-        ss.addAll(getUsed());
-        ss.addAll(getWasGeneratedBy());
-        ss.addAll(getWasInvalidatedBy());
-        ss.addAll(getWasAssociatedWith());
-        ss.addAll(getWasAttributedTo());
-        ss.addAll(getActedOnBehalfOf());
-        ss.addAll(getWasStartedBy());
-        ss.addAll(getWasEndedBy());
-        ss.addAll(getWasInformedBy());
-        ss.addAll(getWasInfluencedBy());
-        ss.addAll(getAlternateOf());
-        ss.addAll(getSpecializationOf());
-        ss.addAll(getHadMember());
-        ss.addAll(getWasDerivedFrom());
-        ss.addAll(getQualifiedSpecializationOf());
-        ss.addAll(getQualifiedAlternateOf());
-        ss.addAll(getQualifiedHadMember());
+        ss.addAll(reassignId(getEntity()).values());
+        ss.addAll(reassignId(getActivity()).values());
+        ss.addAll(reassignId(getAgent()).values());
+        ss.addAll(reassignId(getUsed()).values());
+        ss.addAll(reassignId(getWasGeneratedBy()).values());
+        ss.addAll(reassignId(getWasInvalidatedBy()).values());
+        ss.addAll(reassignId(getWasAssociatedWith()).values());
+        ss.addAll(reassignId(getWasAttributedTo()).values());
+        ss.addAll(reassignId(getActedOnBehalfOf()).values());
+        ss.addAll(reassignId(getWasStartedBy()).values());
+        ss.addAll(reassignId(getWasEndedBy()).values());
+        ss.addAll(reassignId(getWasInformedBy()).values());
+        ss.addAll(reassignId(getWasInfluencedBy()).values());
+        ss.addAll(getAlternateOf().values());
+        ss.addAll(getSpecializationOf().values());
+        ss.addAll(getHadMember().values());
+        ss.addAll(reassignId(getWasDerivedFrom()).values());
+        ss.addAll(reassignId(getQualifiedSpecializationOf()).values());
+        ss.addAll(reassignId(getQualifiedAlternateOf()).values());
+        ss.addAll(reassignId(getQualifiedHadMember()).values());
         return provFactory.newNamedBundle(id,namespace,ss);
     }
 }

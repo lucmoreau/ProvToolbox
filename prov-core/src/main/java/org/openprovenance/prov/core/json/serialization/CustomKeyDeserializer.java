@@ -13,6 +13,7 @@ public class CustomKeyDeserializer extends KeyDeserializer {
     @Override
     public Object deserializeKey(String s, DeserializationContext deserializationContext) throws IOException {
         QualifiedName qn = new CustomQualifiedNameDeserializer().deserialize(s, deserializationContext);
+        System.out.println("--> CustomKeyDeserializer " + qn);
         deserializationContext.setAttribute(PROV_ATTRIBUTE_CONTEXT_KEY,qn);
         return qn;
     }

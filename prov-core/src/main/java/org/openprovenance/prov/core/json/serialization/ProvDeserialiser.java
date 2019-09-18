@@ -39,13 +39,15 @@ public class ProvDeserialiser {
         CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
         JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
-        module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
+       // module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
 
 
 
 
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);
         module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
+
+
 
 
 

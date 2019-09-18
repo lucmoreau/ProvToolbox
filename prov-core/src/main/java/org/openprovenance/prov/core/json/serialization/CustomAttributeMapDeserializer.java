@@ -44,8 +44,11 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
                 set.add(attr);
             }
             result.put(elementName,set);
-            System.out.println(vObj);
+            System.out.println("==> CustomAttributeMapDeserializer" + vObj  + " " + vObj.getClass());
         }
+
+        System.out.println("==> CustomAttributeMapDeserializer " + result  + " " + result.getClass());
+
         return result;
 
 

@@ -15,7 +15,7 @@
         <module name="ProvToolbox-Tutorial3" />
         <module name="ProvToolbox-Tutorial2" />
         <module name="ProvToolbox-Tutorial1" />
-        <module name="provcore" />
+        <module name="prov-jsonld-xml" />
         <module name="prov-interop" />
         <module name="prov-generator" />
         <module name="provconvert" />
@@ -31,6 +31,7 @@
       <module name="prov-generator" target="1.8" />
       <module name="prov-interop" target="1.8" />
       <module name="prov-json" target="1.8" />
+      <module name="prov-jsonld-xml" target="11" />
       <module name="prov-model" target="11" />
       <module name="prov-n" target="1.8" />
       <module name="prov-rdf" target="1.8" />
@@ -39,7 +40,6 @@
       <module name="prov-template" target="1.8" />
       <module name="prov-xml" target="1.8" />
       <module name="provconvert" target="1.8" />
-      <module name="provcore" target="11" />
       <module name="ProvToolbox" target="1.5" />
       <module name="ProvToolbox-Tutorial1" target="1.8" />
       <module name="ProvToolbox-Tutorial2" target="1.8" />

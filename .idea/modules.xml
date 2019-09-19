@@ -12,6 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/prov-generator/prov-generator.iml" filepath="$PROJECT_DIR$/prov-generator/prov-generator.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-interop/prov-interop.iml" filepath="$PROJECT_DIR$/prov-interop/prov-interop.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-json/prov-json.iml" filepath="$PROJECT_DIR$/prov-json/prov-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-jsonld-xml/prov-jsonld-xml.iml" filepath="$PROJECT_DIR$/prov-jsonld-xml/prov-jsonld-xml.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/prov-model/prov-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-n/prov-n.iml" filepath="$PROJECT_DIR$/prov-n/prov-n.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-rdf/prov-rdf.iml" filepath="$PROJECT_DIR$/prov-rdf/prov-rdf.iml" />
@@ -20,7 +21,6 @@
       <module fileurl="file://$PROJECT_DIR$/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/prov-template/prov-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/prov-xml/prov-xml.iml" />
       <module fileurl="file://$PROJECT_DIR$/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/toolbox/provconvert.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-core/provcore.iml" filepath="$PROJECT_DIR$/prov-core/provcore.iml" />
     </modules>
   </component>
 </project>

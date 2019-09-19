@@ -22,7 +22,7 @@
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.12" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.6" level="project" />
-    <orderEntry type="module" module-name="provcore" />
+    <orderEntry type="module" module-name="prov-jsonld-xml" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:17.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.9" level="project" />

@@ -1600,7 +1600,7 @@ public class RoundTripFromJavaTest extends TestCase {
     // ////////////////////////////////
 
     public void testAlternate1() {
-        AlternateOf alt = pFactory.newAlternateOf(q("e2"), q("e1"));
+        AlternateOf alt = pFactory.newAlternateOf(q("e1"), q("e2"));
         makeDocAndTest(alt, "target/alternate1");
     }
 

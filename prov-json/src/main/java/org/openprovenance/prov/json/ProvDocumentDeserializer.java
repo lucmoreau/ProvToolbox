@@ -207,7 +207,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	case alternateOf:
 	    QualifiedName alternate1 = optionalQualifiedName("prov:alternate1", attributeMap);
 	    QualifiedName alternate2 = optionalQualifiedName("prov:alternate2", attributeMap);
-	    statement = pf.newAlternateOf(alternate2, alternate1);
+	    statement = pf.newAlternateOf(alternate1, alternate2);
 	    break;
 	case wasAssociatedWith:
 	    QualifiedName activity = optionalQualifiedName("prov:activity", attributeMap);
@@ -231,11 +231,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 	    id = stringToQualifiedName(currentNamespace,idStr, pf, false);
 	    @SuppressWarnings("rawtypes")
 	    Collection statements = decodeBundle(attributeMap);
-	    Bundle namedBundle = pf.getObjectFactory().createNamedBundle();
-	    namedBundle.setId(id);
-	    namedBundle.setNamespace(ns);
-	    namedBundle.getStatement()
-		       .addAll((Collection<? extends Statement>) statements);
+	    Bundle namedBundle = pf.newNamedBundle(id,ns,statements);
+	   // namedBundle.setId(id);
+	    // namedBundle.setNamespace(ns);
+	    // namedBundle.getStatement()
+		   //    .addAll((Collection<? extends Statement>) statements);
 	    statement = namedBundle;
 	    
 	    // Restore the document's namespace as the current one

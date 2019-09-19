@@ -150,7 +150,7 @@ public class DocumentEquality {
 		for (StatementOrBundle stmt1 : list1) {
 			// Try to find the same in list2
 			StatementOrBundle found = null;
-			System.out.println(list2);
+			//System.out.println(list2);
 			for (StatementOrBundle stmt2 : list2) {
 				if (statementEqual(stmt1, stmt2)) {
 					found = stmt2;

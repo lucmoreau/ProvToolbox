@@ -1,17 +1,17 @@
 package org.openprovenance.prov.core.json.serialization;
 
-import org.openprovenance.apache.commons.lang.ArrayUtils;
-import org.openprovenance.prov.core.vanilla.QualifiedSpecializationOf;
-import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
-import org.openprovenance.prov.model.extension.QualifiedHadMember;
 
+import org.openprovenance.prov.model.*;
+
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SortedDocument extends SortedBundle {
 
-    List<Bundle> bundle=new LinkedList<>();
+    Map<QualifiedName,Bundle> theBundles = new HashMap<QualifiedName, Bundle>();
 
     private SortedDocument() {}
 
@@ -84,7 +84,7 @@ public class SortedDocument extends SortedBundle {
                     }
                     break;
                 case PROV_BUNDLE:
-                    bundle.add((Bundle)s);
+                    put(theBundles,(Bundle)s);
                     break;
                 case PROV_DICTIONARY_INSERTION:
                     break;
@@ -96,13 +96,13 @@ public class SortedDocument extends SortedBundle {
         }
 
         if (count>0)
-        namespace.register("bn",bnNS);
+        namespace.register(SortedBundle.bnPrefix,bnNS);
 
     }
 
 
-    public List<Bundle> getBundle() {
-        return bundle;
+    public Map<QualifiedName, Bundle> getBundle() {
+        return theBundles;
     }
 
 
@@ -135,8 +135,8 @@ public class SortedDocument extends SortedBundle {
         ss.addAll(reassignId(getQualifiedHadMember()).values());
 
 
-        System.out.println(" ===> toDocument " + getEntity());
+        //System.out.println(" ===> toDocument " + getEntity());
 
-        return provFactory.newDocument(namespace,ss, bundle);
+        return provFactory.newDocument(namespace,ss, reassignId(theBundles).values());
     }
 }

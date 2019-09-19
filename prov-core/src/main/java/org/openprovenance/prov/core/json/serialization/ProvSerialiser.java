@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.openprovenance.prov.core.json.serialization.serial.CustomBundleSerializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomDateSerializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomKindSerializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomQualifiedNameSerializer;
+import org.openprovenance.prov.core.vanilla.Bundle;
 import org.openprovenance.prov.core.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -35,6 +37,8 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
         //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
+
+        module.addSerializer(Bundle.class, new CustomBundleSerializer());
         mapper.registerModule(module);
 
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();

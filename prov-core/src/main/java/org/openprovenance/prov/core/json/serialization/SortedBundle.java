@@ -34,6 +34,7 @@ public class SortedBundle {
     Map<QualifiedName,QualifiedAlternateOf> qualifiedAlternateOf=new HashMap<>();
     Map<QualifiedName,QualifiedHadMember> qualifiedHadMember=new HashMap<>();
     public static String bnNS="https://openprovenance.org/blank#";
+    public static final String bnPrefix = "_";
     public static int count=0;
 
     <T extends Statement> void put(Map<QualifiedName,T> map, StatementOrBundle s) {
@@ -49,8 +50,12 @@ public class SortedBundle {
          }
     }
 
+    void put(Map<QualifiedName,Bundle> map, Bundle bun) {
+        map.put(bun.getId(), bun);
+    }
+
     public QualifiedName gensym() {
-         return new org.openprovenance.prov.core.vanilla.QualifiedName(bnNS, "n" + (count++), "bn");
+         return new org.openprovenance.prov.core.vanilla.QualifiedName(bnNS, "n" + (count++), bnPrefix);
     }
 
     private QualifiedName id;

@@ -1,23 +1,18 @@
 package org.openprovenance.prov.core.json;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.openprovenance.prov.core.jsonld.HasKind;
-import org.openprovenance.prov.core.jsonld.Identifiable;
-import org.openprovenance.prov.core.jsonld.serialization.Constants;
+import com.fasterxml.jackson.annotation.*;
+import org.openprovenance.prov.core.json.serialization.Constants;
 import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "@context", "@id", "@graph" })
+@JsonPropertyOrder({ "prefix", "statement" })
 
 public interface JSON_Bundle extends Identifiable, HasKind {
 
-    @JsonProperty("@context")
+    @JsonIgnore
     Namespace getNamespace();
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = Constants.PROPERTY_BLOCK_TYPE)

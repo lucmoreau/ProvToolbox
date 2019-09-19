@@ -183,8 +183,8 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
     }
 
     @Override
-    public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
-        writeln("alternateOf(" + idOrMarker(e2) + "," + idOrMarker(e1) + ")");
+    public AlternateOf newAlternateOf(QualifiedName e1, QualifiedName e2) {
+        writeln("alternateOf(" + idOrMarker(e1) + "," + idOrMarker(e2) + ")");
         return null;
     }
 

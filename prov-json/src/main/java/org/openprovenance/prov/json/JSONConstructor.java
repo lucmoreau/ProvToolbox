@@ -526,7 +526,7 @@ public class JSONConstructor implements ModelConstructor, ModelConstructorExtens
     }
 
     @Override
-    public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
+    public AlternateOf newAlternateOf(QualifiedName e1, QualifiedName e2) {
         List<Object[]> attrs = new ArrayList<Object[]>();
         if (e2 != null)
             attrs.add(tuple("prov:alternate2", qualifiedNameToString(currentNamespace,e2)));

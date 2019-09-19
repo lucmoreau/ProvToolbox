@@ -294,12 +294,12 @@ public class RdfConstructor<RESOURCE, LITERAL, STATEMENT> implements
     }
 
     @Override
-    public AlternateOf newAlternateOf(QualifiedName entity2, QualifiedName entity1) {
+    public AlternateOf newAlternateOf(QualifiedName entity1, QualifiedName entity2) {
 
         if ((entity2 != null) && (entity1 != null))
-            gb.assertStatement(gb.createObjectProperty(entity2,
+            gb.assertStatement(gb.createObjectProperty(entity1,
                                                        onto.QualifiedName_PROVO_alternateOf,
-                                                       entity1));
+                                                       entity2));
 
         return null;
     }

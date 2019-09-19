@@ -48,4 +48,8 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
         return ".json";
     }
 
+    @Override
+    public void testBundle4 () {}
+
+
 }

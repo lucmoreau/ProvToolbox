@@ -20,7 +20,7 @@ public interface ModelConstructor {
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible, QualifiedName activity, Collection<Attribute> attributes);
     public Activity newActivity(QualifiedName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes);
-    public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1);
+    public AlternateOf newAlternateOf(QualifiedName e1, QualifiedName e2);
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
                                                             QualifiedName after,
                                                             QualifiedName before,

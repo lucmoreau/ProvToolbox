@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeSetDeserializer;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomBundleDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKindDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.core.vanilla.Bundle;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 
@@ -49,6 +51,7 @@ public class ProvDeserialiser {
         module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
 
 
+        module.addDeserializer(Bundle.class, new CustomBundleDeserializer());
 
 
 

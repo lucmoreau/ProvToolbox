@@ -19,14 +19,16 @@
 
   <modules>
 	  <module>prov-model</module>
-	  <module>prov-core</module>
-	  <module>prov-scala</module>
-
 	  <module>prov-xml</module>
 	  <module>prov-n</module>
 	  <module>prov-dot</module>
 	  <module>prov-json</module>
 	  <module>prov-rdf</module>
+
+	  <module>prov-core</module>
+	  <module>prov-scala</module>
+
+	  
 	  <module>prov-template</module>
 	  <module>prov-generator</module>
 	  <module>prov-interop</module>

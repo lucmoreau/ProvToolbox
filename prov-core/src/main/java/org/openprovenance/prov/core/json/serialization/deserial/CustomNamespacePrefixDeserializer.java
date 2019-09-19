@@ -31,8 +31,6 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
     public Map<String, String> deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
 
 
-        System.out.println("---< deserialize prefix");
-
         JsonNode prefixes=jp.readValueAsTree();
 
         Namespace ns=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
@@ -46,12 +44,9 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
         for (Iterator<String> it = prefixes.fieldNames(); it.hasNext(); ) {
             String prefix = it.next();
             String namespace=prefixes.get(prefix).textValue();
-            System.out.println(" registering " + prefix + " " + namespace);
             map.put(prefix,namespace);
             ns.register(prefix,namespace);
         }
-
-        System.out.println("---< deserialize prefix " + map);
 
         return map;
     }

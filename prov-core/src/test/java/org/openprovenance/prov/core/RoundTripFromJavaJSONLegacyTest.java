@@ -37,4 +37,26 @@ public class RoundTripFromJavaJSONLegacyTest extends RoundTripFromJavaJSONTest {
         return "_b.json";
     }
 
+    @Override
+    public void testQualifiedSpecializationOf1 () {}
+
+    @Override
+    public void testQualifiedSpecializationOf2 () {}
+
+    @Override
+    public void testQualifiedAlternateOf1 () {}
+
+    @Override
+    public void testQualifiedAlternateOf2 () {}
+
+    @Override
+    public void testQualifiedHadMember1 () {}
+
+    @Override
+    public void testQualifiedHadMember2 () {}
+
+    @Override
+    public void testBundle4 () {}
+
+
 }

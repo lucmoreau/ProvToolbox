@@ -48,8 +48,8 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
     }
 
     @Override
-    public AlternateOf newAlternateOf(QualifiedName e2, QualifiedName e1) {
-        return new org.openprovenance.prov.core.vanilla.AlternateOf(e2,e1);
+    public AlternateOf newAlternateOf(QualifiedName e1, QualifiedName e2) {
+        return new org.openprovenance.prov.core.vanilla.AlternateOf(e1,e2);
     }
 
     @Override

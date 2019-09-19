@@ -104,6 +104,7 @@ public interface JSON_SortedBundle {
     public List<QualifiedHadMember> getQualifiedHadMember();
 
 
+    @JsonIgnore
     @JsonProperty("@id")
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     public QualifiedName getId();

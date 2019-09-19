@@ -66,6 +66,14 @@
 	
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+	    <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
             <version>0.8.1-SNAPSHOT</version>
             <scope>test</scope>

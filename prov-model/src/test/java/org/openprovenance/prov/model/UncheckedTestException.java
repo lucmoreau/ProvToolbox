@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.model;
 
 
 public class UncheckedTestException extends RuntimeException {

@@ -3,6 +3,7 @@ package org.openprovenance.prov.core;
 import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.RoundTripFromJavaTest;
 
 import java.io.File;
 import java.io.FileOutputStream;

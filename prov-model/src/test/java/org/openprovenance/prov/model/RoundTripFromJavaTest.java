@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.model;
 
 import junit.framework.TestCase;
 

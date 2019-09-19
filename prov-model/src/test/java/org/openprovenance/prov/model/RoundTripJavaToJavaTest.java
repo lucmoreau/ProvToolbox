@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.model;
 
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;

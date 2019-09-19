@@ -1,9 +1,11 @@
 package org.openprovenance.prov.scala.model.immutable;
 
-import org.openprovenance.prov.core.RoundTripFromJavaTest;
+import org.openprovenance.prov.model.RoundTripFromJavaTest;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
+
+import static org.openprovenance.prov.core.PC1FullTest.pFactory;
 
 /**
  * Unit test for PROV roundtrip conversion between Java represenations

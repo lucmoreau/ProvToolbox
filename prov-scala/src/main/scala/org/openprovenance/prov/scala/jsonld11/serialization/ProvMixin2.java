@@ -1,11 +1,10 @@
 package org.openprovenance.prov.scala.jsonld11.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.scala.jsonld11.*;
 import org.openprovenance.prov.vanilla.*;
 
-public class ProvMixin2 extends org.openprovenance.prov.core.jsonld.serialization.ProvMixin {
+public class ProvMixin2 extends org.openprovenance.prov.core.jsonld11.serialization.ProvMixin {
 
     public ProvMixin2() {
     }

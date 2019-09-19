@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Document;
 import org.openprovenance.prov.model.Namespace;
 
@@ -26,7 +27,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         return new ProvMixin();
     }
 
-    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
+    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
         ObjectMapper mapper = new ObjectMapper();
 
         SimpleModule module =
@@ -65,7 +66,12 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
         mapper.registerModule(module);
 
-        return mapper.readValue(in, Document.class);
+        try {
+            return mapper.readValue(in, Document.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
 
     }
 

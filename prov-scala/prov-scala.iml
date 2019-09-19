@@ -36,7 +36,7 @@
     <orderEntry type="library" name="Maven: org.parboiled:parboiled_2.12:2.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.chuusai:shapeless_2.12:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.typelevel:macro-compat_2.12:1.1.1" level="project" />
-    <orderEntry type="module" module-name="provcore" scope="TEST" production-on-test="" />
+    <orderEntry type="module" module-name="prov-model" scope="TEST" production-on-test="" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />

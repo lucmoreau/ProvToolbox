@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.openprovenance.prov.core.jsonld.HasKind;
-import org.openprovenance.prov.core.jsonld.Identifiable;
-import org.openprovenance.prov.core.jsonld.serialization.Constants;
+
+import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.vanilla.*;
 
 

@@ -11,6 +11,7 @@ import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeS
 import org.openprovenance.prov.core.json.serialization.deserial.CustomBundleDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKindDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
@@ -19,7 +20,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Set;
 
-public class ProvDeserialiser {
+public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeserialiser{
 
     ProvFactory pf=new ProvFactory();
 
@@ -29,7 +30,7 @@ public class ProvDeserialiser {
     public org.openprovenance.prov.model.Document deserialiseDocument (File serialised) throws IOException {
         return deserialiseDocument(new FileInputStream(serialised));
     }
-    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
+    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
         ObjectMapper mapper = new ObjectMapper();
 
         SimpleModule module =
@@ -62,7 +63,13 @@ public class ProvDeserialiser {
 
         mapper.registerModule(module);
 
-        SortedDocument doc= mapper.readValue(in, SortedDocument.class);
+        SortedDocument doc= null;
+        try {
+            doc = mapper.readValue(in, SortedDocument.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
 
         return doc.toDocument(pf);
 

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeMapDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeSetDeserializer;
@@ -24,14 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser {
+public class ProvDeserialiser extends org.openprovenance.prov.core.json.serialization.ProvDeserialiser {
 
 
     public ProvMixin2 provMixin() {
         return new ProvMixin2();
     }
 
-    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
+    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) {
         ObjectMapper mapper = new ObjectMapper();
 
         SimpleModule module =
@@ -63,7 +64,13 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serial
 
         mapper.registerModule(module);
 
-        Document doc= mapper.readValue(in, Document.class);
+        Document doc= null;
+        try {
+            doc = mapper.readValue(in, Document.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
 
         org.openprovenance.prov.model.Document doc4=pf.newDocument(doc.getNamespace(),pu.getStatement(doc), pu.getBundle(doc));
 

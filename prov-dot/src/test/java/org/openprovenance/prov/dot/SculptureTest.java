@@ -31,7 +31,7 @@ public class SculptureTest extends TestCase {
     }
 
     public void testSculptureToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
-        sculptureToDot("../prov-n/src/test/resources/prov/sculpture.prov-asn",
+        sculptureToDot("../legacy/prov-n/src/test/resources/prov/sculpture.prov-asn",
                        "target/sculpture.prov-xml",
                        "target/sculpture.dot",
                        "target/sculpture.pdf",

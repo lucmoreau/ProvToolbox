@@ -8,19 +8,22 @@
       <module fileurl="file://$PROJECT_DIR$/tutorial/tutorial3/ProvToolbox-Tutorial3.iml" filepath="$PROJECT_DIR$/tutorial/tutorial3/ProvToolbox-Tutorial3.iml" />
       <module fileurl="file://$PROJECT_DIR$/tutorial/tutorial4/ProvToolbox-Tutorial4.iml" filepath="$PROJECT_DIR$/tutorial/tutorial4/ProvToolbox-Tutorial4.iml" />
       <module fileurl="file://$PROJECT_DIR$/tutorial/tutorial5/ProvToolbox-Tutorial5.iml" filepath="$PROJECT_DIR$/tutorial/tutorial5/ProvToolbox-Tutorial5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/legacy.iml" filepath="$PROJECT_DIR$/legacy/legacy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-core/prov-core.iml" filepath="$PROJECT_DIR$/prov-core/prov-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-dot/prov-dot.iml" filepath="$PROJECT_DIR$/prov-dot/prov-dot.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-generator/prov-generator.iml" filepath="$PROJECT_DIR$/prov-generator/prov-generator.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-interop/prov-interop.iml" filepath="$PROJECT_DIR$/prov-interop/prov-interop.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-json/prov-json.iml" filepath="$PROJECT_DIR$/prov-json/prov-json.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-jsonld-xml/prov-jsonld-xml.iml" filepath="$PROJECT_DIR$/prov-jsonld-xml/prov-jsonld-xml.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/prov-model/prov-model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-n/prov-n.iml" filepath="$PROJECT_DIR$/prov-n/prov-n.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-rdf/prov-rdf.iml" filepath="$PROJECT_DIR$/prov-rdf/prov-rdf.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-scala/prov-scala.iml" filepath="$PROJECT_DIR$/prov-scala/prov-scala.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/prov-sql/prov-sql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/prov-json/prov-json.iml" filepath="$PROJECT_DIR$/legacy/prov-json/prov-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-core/prov-jsonld-xml/prov-jsonld-xml.iml" filepath="$PROJECT_DIR$/prov-core/prov-jsonld-xml/prov-jsonld-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-core/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/prov-core/prov-model/prov-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/prov-n/prov-n.iml" filepath="$PROJECT_DIR$/legacy/prov-n/prov-n.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/prov-rdf/prov-rdf.iml" filepath="$PROJECT_DIR$/legacy/prov-rdf/prov-rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prov-core/prov-scala/prov-scala.iml" filepath="$PROJECT_DIR$/prov-core/prov-scala/prov-scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/legacy/prov-sql/prov-sql.iml" />
       <module fileurl="file://$PROJECT_DIR$/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/prov-template/prov-template.iml" />
-      <module fileurl="file://$PROJECT_DIR$/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/prov-xml/prov-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/legacy/prov-xml/prov-xml.iml" />
       <module fileurl="file://$PROJECT_DIR$/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/toolbox/provconvert.iml" />
+      <module fileurl="file://$PROJECT_DIR$/legacy/roundtrip/roundtrip.iml" filepath="$PROJECT_DIR$/legacy/roundtrip/roundtrip.iml" />
     </modules>
   </component>
 </project>

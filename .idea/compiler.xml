@@ -18,6 +18,7 @@
         <module name="prov-jsonld-xml" />
         <module name="prov-interop" />
         <module name="prov-generator" />
+        <module name="roundtrip" />
         <module name="provconvert" />
         <module name="prov-sql" />
         <module name="prov-rdf" />
@@ -27,6 +28,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="legacy" target="1.5" />
+      <module name="prov-core" target="1.5" />
       <module name="prov-dot" target="1.8" />
       <module name="prov-generator" target="1.8" />
       <module name="prov-interop" target="1.8" />
@@ -47,6 +50,7 @@
       <module name="ProvToolbox-Tutorial4" target="1.8" />
       <module name="ProvToolbox-Tutorial5" target="1.8" />
       <module name="ProvToolbox-Tutorial6" target="1.8" />
+      <module name="roundtrip" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

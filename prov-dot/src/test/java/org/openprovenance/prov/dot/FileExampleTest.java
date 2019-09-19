@@ -32,7 +32,7 @@ public class FileExampleTest extends TestCase {
     }
 
     public void testFileExampleToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
-        fileToDot("../prov-n/src/test/resources/prov/prov-dm-example1.prov-asn",
+        fileToDot("../legacy/prov-n/src/test/resources/prov/prov-dm-example1.prov-asn",
                   "target/file.prov-xml",
                   "target/file.dot",
                   "target/file.pdf",

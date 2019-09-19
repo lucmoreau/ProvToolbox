@@ -4,7 +4,7 @@
 
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox</artifactId>
-  <name>ProvToolbox: Java for W3C PROV</name>
+  <name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
   <version>0.8.1-SNAPSHOT</version>
   <url>http://lucmoreau.github.io/ProvToolbox/</url>
   <packaging>pom</packaging>
@@ -18,28 +18,21 @@
   </scm>
 
   <modules>
-	  <module>prov-model</module>
-	  <module>prov-xml</module>
-	  <module>prov-n</module>
+    <module>prov-core</module>
+    <module>legacy</module>    
+
 	  <module>prov-dot</module>
-	  <module>prov-json</module>
-	  <module>prov-rdf</module>
-
-	  <module>prov-core</module>
-	  <module>prov-scala</module>
-
-	  
 	  <module>prov-template</module>
 	  <module>prov-generator</module>
 	  <module>prov-interop</module>
 	  <module>toolbox</module>
-	  <module>prov-sql</module>
 	  <module>tutorial/tutorial1</module>
 	  <module>tutorial/tutorial2</module>
 	  <module>tutorial/tutorial3</module>
 	  <module>tutorial/tutorial4</module>
 	  <module>tutorial/tutorial5</module>
-      <!-- <module>tutorial/tutorial6</module> -->
+
+	  <!-- <module>tutorial/tutorial6</module> -->
   </modules>
 
 
@@ -340,10 +333,12 @@
   </build>
 
   <properties>
+    
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <jackson.version>2.9.9</jackson.version>    
+    <sesame.version>4.1.2</sesame.version> 
 
     <scm.version>1.3</scm.version>
 

@@ -20,7 +20,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -33,10 +32,10 @@ public class PC1FullTest extends TestCase {
 	public static final String PRIM_NS = "http://openprovenance.org/primitives#";
 	public static final String PRIM_PREFIX = "prim";
 
-	static final org.openprovenance.prov.core.vanilla.ProvUtilities util=new org.openprovenance.prov.core.vanilla.ProvUtilities();
+	static final org.openprovenance.prov.vanilla.ProvUtilities util=new org.openprovenance.prov.vanilla.ProvUtilities();
 
 
-	public static org.openprovenance.prov.core.vanilla.ProvFactory pFactory=new org.openprovenance.prov.core.vanilla.ProvFactory();
+	public static org.openprovenance.prov.vanilla.ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 	public static Name name=pFactory.getName();
 	private final String filename = "target/pc1-full.json";
 
@@ -102,7 +101,7 @@ public class PC1FullTest extends TestCase {
 	static QualifiedName PRIMITIVE_CONVERT = pFactory.newQualifiedName(PRIM_NS,"convert", PRIM_PREFIX);
 	static QualifiedName PRIMITIVE_SLICER = pFactory.newQualifiedName(PRIM_NS,"slicer", PRIM_PREFIX);
 
-	public Entity newFile(org.openprovenance.prov.core.vanilla.ProvFactory pFactory, String id, String label,
+	public Entity newFile(org.openprovenance.prov.vanilla.ProvFactory pFactory, String id, String label,
                           String file, String location) {
 
 		Entity a = pFactory.newEntity(q(id), label);
@@ -113,7 +112,7 @@ public class PC1FullTest extends TestCase {
 		return a;
 	}
 
-	public Entity newParameter(org.openprovenance.prov.core.vanilla.ProvFactory pFactory, String id, String label,
+	public Entity newParameter(org.openprovenance.prov.vanilla.ProvFactory pFactory, String id, String label,
                                String value) {
 
 		Entity a = pFactory.newEntity(q(id), label);
@@ -124,7 +123,7 @@ public class PC1FullTest extends TestCase {
 		return a;
 	}
 
-	public Document makePC1FullGraph(org.openprovenance.prov.core.vanilla.ProvFactory pFactory) {
+	public Document makePC1FullGraph(org.openprovenance.prov.vanilla.ProvFactory pFactory) {
 		if (urlFlag) {
 			return makePC1FullGraph(pFactory, URL_LOCATION, URL_LOCATION);
 		} else {
@@ -158,7 +157,7 @@ public class PC1FullTest extends TestCase {
 	}
 
 
-	public Document makePC1FullGraph(org.openprovenance.prov.core.vanilla.ProvFactory pFactory, String inputLocation,
+	public Document makePC1FullGraph(org.openprovenance.prov.vanilla.ProvFactory pFactory, String inputLocation,
                                      String outputLocation) {
 
 		//Activity p0 = pFactory.newActivity("a0", "PC1Full Workflow");
@@ -471,7 +470,7 @@ public class PC1FullTest extends TestCase {
 
 	public void subtestCopyPC1Full() throws FileNotFoundException,
 			IOException {
-		org.openprovenance.prov.core.vanilla.ProvFactory pFactory = new org.openprovenance.prov.core.vanilla.ProvFactory();
+		org.openprovenance.prov.vanilla.ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
 
 		Document c = pFactory.newDocument(graph1);
 

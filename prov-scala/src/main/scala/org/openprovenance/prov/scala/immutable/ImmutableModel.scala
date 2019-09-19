@@ -36,12 +36,10 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model.Attribute.AttributeKind
 
 import scala.collection.JavaConversions._
-
 import scala.collection.immutable.HashMap
-
 import java.util
 
-import org.openprovenance.prov.model
+import org.openprovenance.prov.{model, vanilla}
 import org.openprovenance.prov.scala.immutable.Attribute.split
 
 
@@ -4807,7 +4805,7 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
 class ICons extends ImmutableConstructor
 
 
-class ProvFactory1 extends org.openprovenance.prov.core.vanilla.ProvFactory(new ObjectFactory, new ProvConstructor(new ICons)) {}
+class ProvFactory1 extends vanilla.ProvFactory(new ObjectFactory, new ProvConstructor(new ICons)) {}
 
 
 //TODO: code duplication between ProvConstructor (Delegated) and ProvFactory. Requires refactoring

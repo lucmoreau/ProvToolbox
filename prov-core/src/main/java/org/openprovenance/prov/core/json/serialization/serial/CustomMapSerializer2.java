@@ -3,8 +3,7 @@ package org.openprovenance.prov.core.json.serialization.serial;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.openprovenance.prov.core.json.serialization.Constants;
-import org.openprovenance.prov.core.vanilla.QualifiedName;
+import org.openprovenance.prov.vanilla.QualifiedName;
 
 import java.io.IOException;
 

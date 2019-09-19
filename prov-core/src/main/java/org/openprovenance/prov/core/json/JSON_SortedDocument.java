@@ -3,12 +3,10 @@ package org.openprovenance.prov.core.json;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.openprovenance.prov.core.json.serialization.*;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomQualifiedNameSerializerAsField;
-import org.openprovenance.prov.core.vanilla.*;
+import org.openprovenance.prov.vanilla.*;
 
-import java.util.List;
 import java.util.Map;
 
 @JsonPropertyOrder({ "prefix", "defaultNamespace"})

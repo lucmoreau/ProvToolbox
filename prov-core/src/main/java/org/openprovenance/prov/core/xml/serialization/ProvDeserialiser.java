@@ -6,9 +6,10 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomAttributeSetDeserializer;
 import org.openprovenance.prov.core.xml.serialization.deserial.StatementsHandler;
+import org.openprovenance.prov.vanilla.Document;
+import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.*;
 import java.util.*;

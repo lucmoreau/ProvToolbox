@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.json.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openprovenance.prov.core.vanilla.*;
+import org.openprovenance.prov.vanilla.*;
 
 public class ProvMixin {
     public ProvMixin() {

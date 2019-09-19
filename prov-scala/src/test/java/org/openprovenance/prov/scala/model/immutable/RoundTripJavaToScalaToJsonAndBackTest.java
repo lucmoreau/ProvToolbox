@@ -1,7 +1,7 @@
 package org.openprovenance.prov.scala.model.immutable;
 
 import org.openprovenance.prov.core.RoundTripFromJavaTest;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
+import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvUtilities;

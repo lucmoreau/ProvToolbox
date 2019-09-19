@@ -15,7 +15,7 @@ import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttri
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttributeSetDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomKindDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
-import org.openprovenance.prov.core.vanilla.Document;
+import org.openprovenance.prov.vanilla.Document;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;

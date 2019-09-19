@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public interface HasAttributes extends org.openprovenance.prov.core.vanilla.HasAttributes {
+public interface HasAttributes extends org.openprovenance.prov.vanilla.HasAttributes {
 
     @JsonIgnore
     Collection<Attribute> getAttributes();

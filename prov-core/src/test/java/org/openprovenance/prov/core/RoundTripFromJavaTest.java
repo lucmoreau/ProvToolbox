@@ -1,8 +1,7 @@
 package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
-import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
-import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
+
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
@@ -26,6 +25,7 @@ import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+import org.openprovenance.prov.vanilla.HasAttributes;
 
 import java.io.*;
 import java.util.*;
@@ -41,9 +41,9 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     public static final String EX2_PREFIX = "ex2";
     public static final String EX3_NS = "http://example3.org/";
 
-    static final org.openprovenance.prov.core.vanilla.ProvUtilities util = new org.openprovenance.prov.core.vanilla.ProvUtilities();
+    static final org.openprovenance.prov.vanilla.ProvUtilities util = new org.openprovenance.prov.vanilla.ProvUtilities();
 
-    public static org.openprovenance.prov.model.ProvFactory pFactory = new org.openprovenance.prov.core.vanilla.ProvFactory();
+    public static org.openprovenance.prov.model.ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
     public static  org.openprovenance.prov.model.Name name = pFactory.getName();
 
     private DocumentEquality documentEquality;
@@ -259,11 +259,11 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
                 System.out.println("test: " + (doc.getStatementOrBundle().get(0)).equals((doc2.getStatementOrBundle().get(0))));
 
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.core.vanilla.HasAttributes)
+                if ((doc.getStatementOrBundle().get(0) instanceof HasAttributes)
                 &&
-                        (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.core.vanilla.HasAttributes)) {
+                        (doc2.getStatementOrBundle().get(0) instanceof HasAttributes)) {
 
-                    System.out.println("test2  (attr): " + compareSet(((org.openprovenance.prov.core.vanilla.HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((org.openprovenance.prov.core.vanilla.HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
+                    System.out.println("test2  (attr): " + compareSet(((HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
 
                 }
 
@@ -361,8 +361,10 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
         System.out.println("reading from " + file);
 
-        ProvDeserialiser deserial=new ProvDeserialiser();
-        return deserial.deserialiseDocument(new File(file));
+      //  ProvDeserialiser deserial=new ProvDeserialiser();
+      //  return deserial.deserialiseDocument(new File(file));
+
+        return null;
 
     }
 
@@ -375,9 +377,8 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         System.out.println("writing to " + file);
 
 
-        ProvSerialiser serial=new ProvSerialiser();
-        serial.serialiseDocument(new FileOutputStream(file), doc, true);
-
+      //  ProvSerialiser serial=new ProvSerialiser();
+       // serial.serialiseDocument(new FileOutputStream(file), doc, true);
 
 
     }
@@ -931,13 +932,13 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testGeneration6() {
-        WasGeneratedBy gen = pFactory.newWasGeneratedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasGeneratedBy gen = pFactory.newWasGeneratedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                         q("e1"), null, q("a1"));
         makeDocAndTest(gen, "target/generation6");
     }
 
     public void testGeneration7() {
-        WasGeneratedBy gen = pFactory.newWasGeneratedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasGeneratedBy gen = pFactory.newWasGeneratedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                         q("e1"), "somerole",
                                                         q("a1"));
         gen.setTime(pFactory.newTimeNow());
@@ -989,14 +990,14 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testUsage6() {
-        Used use = pFactory.newUsed((org.openprovenance.prov.core.vanilla.QualifiedName) null, q("a1"), null,
+        Used use = pFactory.newUsed((org.openprovenance.prov.vanilla.QualifiedName) null, q("a1"), null,
                                     q("e1"));
 
         makeDocAndTest(use, "target/usage6");
     }
 
     public void testUsage7() {
-        Used use = pFactory.newUsed((org.openprovenance.prov.core.vanilla.QualifiedName) null, q("a1"), "somerole",
+        Used use = pFactory.newUsed((org.openprovenance.prov.vanilla.QualifiedName) null, q("a1"), "somerole",
                                     q("e1"));
         use.setTime(pFactory.newTimeNow());
         addTypes(use);
@@ -1054,13 +1055,13 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testInvalidation6() {
-        WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                             q("e1"), q("a1"));
         makeDocAndTest(inv, "target/invalidation6");
     }
 
     public void testInvalidation7() {
-        WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasInvalidatedBy inv = pFactory.newWasInvalidatedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                             q("e1"), q("a1"));
         inv.getRole().add(pFactory.newRole("someRole", name.XSD_STRING));
         inv.setTime(pFactory.newTimeNow());
@@ -1148,14 +1149,14 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testStart9() {
-        WasStartedBy start = pFactory.newWasStartedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasStartedBy start = pFactory.newWasStartedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                       q("a1"), q("e1"));
 
         makeDocAndTest(start, "target/start9");
     }
 
     public void testStart10() {
-        WasStartedBy start = pFactory.newWasStartedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasStartedBy start = pFactory.newWasStartedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                       q("a1"), null);
         start.setStarter(q("a2"));
         start.setTime(pFactory.newTimeNow());
@@ -1237,14 +1238,14 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testEnd9() {
-        WasEndedBy end = pFactory.newWasEndedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null, q("a1"),
+        WasEndedBy end = pFactory.newWasEndedBy((org.openprovenance.prov.vanilla.QualifiedName) null, q("a1"),
                                                 q("e1"));
 
         makeDocAndTest(end, "target/end9");
     }
 
     public void testEnd10() {
-        WasEndedBy end = pFactory.newWasEndedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null, q("a1"),
+        WasEndedBy end = pFactory.newWasEndedBy((org.openprovenance.prov.vanilla.QualifiedName) null, q("a1"),
                                                 null);
         end.setEnder(q("a2"));
         end.setTime(pFactory.newTimeNow());
@@ -1322,14 +1323,14 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testDerivation9() {
-        WasDerivedFrom der = pFactory.newWasDerivedFrom((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasDerivedFrom der = pFactory.newWasDerivedFrom((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                         q("e2"), null);
         addTypes(der);
         makeDocAndTest(der, "target/derivation9");
     }
 
     public void testDerivation10() {
-        WasDerivedFrom der = pFactory.newWasDerivedFrom((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasDerivedFrom der = pFactory.newWasDerivedFrom((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                         q("e2"), q("e1"));
         der.setActivity(q("a"));
         der.setUsage(q("u"));
@@ -1398,7 +1399,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAssociation5() {
-        WasAssociatedWith assoc = pFactory.newWasAssociatedWith((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasAssociatedWith assoc = pFactory.newWasAssociatedWith((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                                 q("a1"),
                                                                 q("ag1"));
         makeDocAndTest(assoc, "target/association5");
@@ -1477,7 +1478,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testAttribution5() {
-        WasAttributedTo attr = pFactory.newWasAttributedTo((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasAttributedTo attr = pFactory.newWasAttributedTo((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                            q("e1"), q("ag1"));
         makeDocAndTest(attr, "target/attribution5");
     }
@@ -1585,7 +1586,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testCommunication4() {
-        WasInformedBy inf = pFactory.newWasInformedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasInformedBy inf = pFactory.newWasInformedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                       q("a2"), q("a1"));
         makeDocAndTest(inf, "target/communication4");
     }
@@ -1635,7 +1636,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void testInfluence4() {
-        WasInfluencedBy inf = pFactory.newWasInfluencedBy((org.openprovenance.prov.core.vanilla.QualifiedName) null,
+        WasInfluencedBy inf = pFactory.newWasInfluencedBy((org.openprovenance.prov.vanilla.QualifiedName) null,
                                                           q("a2"), q("a1"));
         makeDocAndTest(inf, "target/influence4");
     }

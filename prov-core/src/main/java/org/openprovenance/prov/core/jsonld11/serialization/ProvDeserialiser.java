@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import org.openprovenance.prov.core.vanilla.Document;
+import org.openprovenance.prov.vanilla.Document;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;

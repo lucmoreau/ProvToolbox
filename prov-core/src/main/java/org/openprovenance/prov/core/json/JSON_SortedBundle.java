@@ -7,7 +7,7 @@ import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeseria
 import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespacePrefixDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomQualifiedNameDeserializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomQualifiedNameSerializerAsField;
-import org.openprovenance.prov.core.vanilla.*;
+import org.openprovenance.prov.vanilla.*;
 
 import java.util.List;
 import java.util.Map;

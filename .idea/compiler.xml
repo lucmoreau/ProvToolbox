@@ -31,7 +31,7 @@
       <module name="prov-generator" target="1.8" />
       <module name="prov-interop" target="1.8" />
       <module name="prov-json" target="1.8" />
-      <module name="prov-model" target="9" />
+      <module name="prov-model" target="11" />
       <module name="prov-n" target="1.8" />
       <module name="prov-rdf" target="1.8" />
       <module name="prov-scala" target="9" />

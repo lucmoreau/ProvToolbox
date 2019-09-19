@@ -10,6 +10,7 @@ import org.openprovenance.prov.core.jsonld.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.core.vanilla.*;
+import org.openprovenance.prov.vanilla.*;
 
 
 import java.util.List;

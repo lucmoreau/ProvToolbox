@@ -1,6 +1,6 @@
 package org.openprovenance.prov.core.json.serialization;
 
-import org.openprovenance.prov.core.vanilla.QualifiedSpecializationOf;
+import org.openprovenance.prov.vanilla.QualifiedSpecializationOf;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -55,7 +55,7 @@ public class SortedBundle {
     }
 
     public QualifiedName gensym() {
-         return new org.openprovenance.prov.core.vanilla.QualifiedName(bnNS, "n" + (count++), bnPrefix);
+         return new org.openprovenance.prov.vanilla.QualifiedName(bnNS, "n" + (count++), bnPrefix);
     }
 
     private QualifiedName id;

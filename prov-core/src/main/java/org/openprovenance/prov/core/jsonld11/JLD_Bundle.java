@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.openprovenance.prov.core.json.serialization.Constants;
-import org.openprovenance.prov.core.vanilla.*;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
+import org.openprovenance.prov.vanilla.*;
 
 import java.util.List;
 

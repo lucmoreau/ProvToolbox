@@ -11,8 +11,8 @@ import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeS
 import org.openprovenance.prov.core.json.serialization.deserial.CustomBundleDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKindDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespaceDeserializer;
-import org.openprovenance.prov.core.vanilla.Bundle;
-import org.openprovenance.prov.core.vanilla.ProvFactory;
+import org.openprovenance.prov.vanilla.Bundle;
+import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.*;

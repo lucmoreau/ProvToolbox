@@ -1,8 +1,7 @@
 package org.openprovenance.prov.core.xml.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openprovenance.prov.core.vanilla.*;
-import org.openprovenance.prov.core.vanilla.Document;
+import org.openprovenance.prov.vanilla.*;
 import org.openprovenance.prov.core.xml.*;
 
 public class ProvMixin {
@@ -10,7 +9,7 @@ public class ProvMixin {
     }
 
     public void addProvMixin(ObjectMapper mapper) {
-        mapper.addMixIn(Document.class,             org.openprovenance.prov.core.xml.Document.class);
+        mapper.addMixIn(org.openprovenance.prov.vanilla.Document.class,             org.openprovenance.prov.core.xml.Document.class);
         mapper.addMixIn(ActedOnBehalfOf.class,      XML_ActedOnBehalfOf.class);
         mapper.addMixIn(Activity.class,             XML_Activity.class);
         mapper.addMixIn(HadMember.class,            XML_HadMember.class);

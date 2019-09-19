@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.openprovenance.prov.core.json.serialization.SortedBundle;
-import org.openprovenance.prov.core.vanilla.Bundle;
+import org.openprovenance.prov.vanilla.Bundle;
 
 import java.io.IOException;
 

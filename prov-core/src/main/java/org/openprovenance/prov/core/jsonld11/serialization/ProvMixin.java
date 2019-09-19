@@ -2,8 +2,7 @@ package org.openprovenance.prov.core.jsonld11.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.core.jsonld11.*;
-import org.openprovenance.prov.core.vanilla.Document;
-import org.openprovenance.prov.core.vanilla.*;
+import org.openprovenance.prov.vanilla.*;
 
 public class ProvMixin extends org.openprovenance.prov.core.json.serialization.ProvMixin {
 
@@ -11,7 +10,7 @@ public class ProvMixin extends org.openprovenance.prov.core.json.serialization.P
     }
 
     public void addProvMixin(ObjectMapper mapper) {
-        mapper.addMixIn(Document.class,             org.openprovenance.prov.core.jsonld11.Document.class);
+        mapper.addMixIn(org.openprovenance.prov.vanilla.Document.class,             org.openprovenance.prov.core.jsonld11.Document.class);
         mapper.addMixIn(ActedOnBehalfOf.class,      JLD_ActedOnBehalfOf.class);
         mapper.addMixIn(Activity.class,             JLD_Activity.class);
         mapper.addMixIn(HadMember.class,            JLD_HadMember.class);

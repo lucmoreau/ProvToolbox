@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.openprovenance.prov.core.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.HasType;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -22,14 +21,12 @@ public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest 
     }
 
     ProvFactory pf=new ProvFactory();
-    public Document readXMLDocument(String file)
+    public Document readDocumentFromFile(String file)
             throws IOException {
 
         System.out.println("reading (xml) from " + file);
 
 
-      //  ProvDeserialiser deserial=new ProvDeserialiser();
-       // return deserial.deserialiseDocument(new File(file));
 
         Document doc= null;
         try {

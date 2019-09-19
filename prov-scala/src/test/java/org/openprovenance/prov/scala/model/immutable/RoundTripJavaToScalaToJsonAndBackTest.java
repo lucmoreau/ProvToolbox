@@ -53,7 +53,7 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
     }
 
     @Override
-    public void writeXMLDocument(Document doc, String file)
+    public void writeDocumentToFile(Document doc, String file)
             throws IOException {
 
 
@@ -67,7 +67,7 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
 
     }
 
-    public Document readXMLDocument(String file)
+    public Document readDocumentFromFile(String file)
             throws IOException {
 
         System.out.println("reading (scala) from " + file);

@@ -16,7 +16,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
         super(testName);
     }
 
-    public Document readXMLDocument(String file)
+    public Document readDocumentFromFile(String file)
             throws IOException {
 
    //     System.out.println("reading from " + file);
@@ -28,7 +28,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
 
 
-    public void writeXMLDocument(Document doc, String file)
+    public void writeDocumentToFile(Document doc, String file)
             throws IOException {
 
 

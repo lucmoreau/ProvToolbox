@@ -18,7 +18,7 @@ public class RoundTripFromJavaJSONLegacyTest extends RoundTripFromJavaJSONTest {
         super(testName);
     }
 
-    public Document readXMLDocument(String file)
+    public Document readDocumentFromFile(String file)
             throws IOException {
 
         System.out.println("reading from " + file);
@@ -30,7 +30,7 @@ public class RoundTripFromJavaJSONLegacyTest extends RoundTripFromJavaJSONTest {
 
 
 //    @Override
- //   public void writeXMLDocument(Document doc, String file) throws IOException {
+ //   public void writeDocumentToFile(Document doc, String file) throws IOException {
   //  }
 
     public String extension() {

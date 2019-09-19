@@ -26,7 +26,7 @@ public class RoundTripFromJavaJSONLD11LegacyTest extends RoundTripFromJavaJSONLD
 
 
 
-    public Document readXMLDocument(String file)
+    public Document readDocumentFromFile(String file)
             throws IOException {
 
         String ttl = turtleFile(file);
@@ -50,7 +50,7 @@ public class RoundTripFromJavaJSONLD11LegacyTest extends RoundTripFromJavaJSONLD
     }
 
 
-    public void writeXMLDocument(Document doc, String file)
+    public void writeDocumentToFile(Document doc, String file)
             throws IOException {
 
 

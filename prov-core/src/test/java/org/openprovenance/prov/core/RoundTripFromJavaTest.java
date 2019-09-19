@@ -1,7 +1,6 @@
 package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
-import org.jetbrains.annotations.NotNull;
 import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
@@ -228,7 +227,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
     public Document readDocument(String file1) {
         try {
-            return readXMLDocument(file1);
+            return readDocumentFromFile(file1);
         } catch (IOException e) {
             throw new UncheckedTestException(e);
         }
@@ -237,7 +236,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     public void writeDocument(Document doc, String file2) {
         Namespace.withThreadNamespace(doc.getNamespace());
         try {
-            writeXMLDocument(doc, file2);
+            writeDocumentToFile(doc, file2);
         } catch (IOException e) {
             throw new UncheckedTestException(e);
         }
@@ -357,7 +356,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         return false;
     }
 
-    public Document readXMLDocument(String file)
+    public Document readDocumentFromFile(String file)
             throws IOException {
 
         System.out.println("reading from " + file);
@@ -369,7 +368,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
 
 
-    public void writeXMLDocument(Document doc, String file)
+    public void writeDocumentToFile(Document doc, String file)
             throws IOException {
 
 
@@ -466,7 +465,6 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
     }
 
-    @NotNull
     public String get0tagWithDigit() {
         return "0tagWithDigit";
     }

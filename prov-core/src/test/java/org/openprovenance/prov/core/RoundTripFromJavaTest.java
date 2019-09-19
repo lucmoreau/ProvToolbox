@@ -2,8 +2,8 @@ package org.openprovenance.prov.core;
 
 import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
-import org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser;
-import org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser;
+import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
+import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Agent;
@@ -32,9 +32,9 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Unit test for PROV roundtrip conversion between Java and XML
+ * Unit test for PROV roundtrip conversion starting from Java
  */
-public class RoundTripFromJavaTest extends TestCase {
+abstract public class RoundTripFromJavaTest extends TestCase {
 
     public static final String EX_NS = "http://example.org/";
     public static final String EX2_NS = "http://example2.org/";

@@ -17,15 +17,16 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ProvSerialiser extends org.openprovenance.prov.core.jsonld.serialization.ProvSerialiser {
+public class ProvSerialiser extends org.openprovenance.prov.core.json.serialization.ProvSerialiser {
 
+    protected final boolean embedContext;
 
     public ProvSerialiser () {
-        this(true);
+        embedContext=true;
     }
 
     public ProvSerialiser (boolean embedContext) {
-        super(embedContext);
+        this.embedContext=embedContext;
     }
 
     public ProvMixin provMixin() {

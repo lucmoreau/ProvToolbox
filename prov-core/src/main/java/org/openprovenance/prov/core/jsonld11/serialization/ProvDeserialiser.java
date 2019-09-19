@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ProvDeserialiser extends org.openprovenance.prov.core.jsonld.serialization.ProvDeserialiser {
+public class ProvDeserialiser extends org.openprovenance.prov.core.json.serialization.ProvDeserialiser {
 
 
     public ProvMixin provMixin() {

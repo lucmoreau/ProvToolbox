@@ -5,7 +5,7 @@ import org.openprovenance.prov.core.jsonld11.*;
 import org.openprovenance.prov.core.vanilla.Document;
 import org.openprovenance.prov.core.vanilla.*;
 
-public class ProvMixin extends org.openprovenance.prov.core.jsonld.serialization.ProvMixin {
+public class ProvMixin extends org.openprovenance.prov.core.json.serialization.ProvMixin {
 
     public ProvMixin() {
     }

@@ -2582,10 +2582,10 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
        sb.toString()
     }
     
-    def toNormalForm () : org.openprovenance.prov.scala.nf.DocumentProxy = {
-      var res=new org.openprovenance.prov.scala.nf.DocumentProxy(namespace)
-      statementOrBundle.foreach{ x => res=res.add(x.asInstanceOf[Statement]) }
-      res
+    def toNormalForm (in: org.openprovenance.prov.scala.nf.DocumentProxyInterface) : org.openprovenance.prov.scala.nf.DocumentProxyInterface = {
+      var accumulator=in
+      statementOrBundle.foreach{ x => accumulator=accumulator.add(x.asInstanceOf[Statement]) }
+      accumulator
     }
     
     def map(f: StatementOrBundle=>StatementOrBundle): Document = {

@@ -17,23 +17,20 @@
     <tag>HEAD</tag>
   </scm>
 
-  <modules>
-    <module>prov-core</module>
-    <module>legacy</module>    
+	<modules>
+		<module>modules-core</module>
+		<module>modules-legacy</module>
+		<module>modules-misc</module>
+		<module>modules-template</module>
+		<module>modules-executable</module>
 
-	  <module>prov-dot</module>
-	  <module>prov-template</module>
-	  <module>prov-generator</module>
-	  <module>prov-interop</module>
-	  <module>toolbox</module>
-	  <module>tutorial/tutorial1</module>
-	  <module>tutorial/tutorial2</module>
-	  <module>tutorial/tutorial3</module>
-	  <module>tutorial/tutorial4</module>
-	  <module>tutorial/tutorial5</module>
 
-	  <!-- <module>tutorial/tutorial6</module> -->
-  </modules>
+		<module>modules-tutorial</module>
+		<module>modules-services</module>
+
+
+		<!-- <module>tutorial/tutorial6</module> -->
+	</modules>
 
 
   <developers>

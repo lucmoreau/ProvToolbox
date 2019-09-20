@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.openprovenance.prov</groupId>
-    <artifactId>ProvToolbox</artifactId>
+    <artifactId>modules-core</artifactId>
     <version>0.8.1-SNAPSHOT</version>
   </parent>
   <artifactId>prov-model</artifactId>

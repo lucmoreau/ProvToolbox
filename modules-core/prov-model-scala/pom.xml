@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>ProvToolbox</artifactId>
+    <artifactId>modules-core</artifactId>
     <groupId>org.openprovenance.prov</groupId>
     <version>0.8.1-SNAPSHOT</version>
   </parent>
@@ -12,7 +12,7 @@
   <artifactId>prov-model-scala</artifactId>
   <name>PROV-MODEL-SCALA</name>
   <description>A scala implementation of the PROV Data Model</description>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
@@ -52,11 +52,11 @@
       <artifactId>scala-library</artifactId>
       <version>2.12.10</version> <!-- 2.12.1 -->
     </dependency>
-    
+
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>scalatest_2.12</artifactId>
-     <!--  <version>3.0.8</version>-->
+      <!--  <version>3.0.8</version>-->
       <version>3.1.0-RC3</version>
       <scope>test</scope>
     </dependency>
@@ -65,7 +65,7 @@
 	 <artifactId>scalatest-funsuite_2.11</artifactId>
 	 <version>3.0.0-SNAP13</version>
 	 </dependency> -->
-    
+
     <dependency>
       <groupId>org.parboiled</groupId>
       <artifactId>parboiled_2.12</artifactId>
@@ -75,13 +75,21 @@
 
     <!-- testing -->
 
-    
+
     <dependency>
-    	<groupId>org.openprovenance.prov</groupId>
-    	<artifactId>prov-model</artifactId>
-    	<scope>test</scope>
-    	<version>0.8.1-SNAPSHOT</version>
-    	<classifier>tests</classifier>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-model</artifactId>
+      <scope>test</scope>
+      <version>0.8.1-SNAPSHOT</version>
+      <classifier>tests</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-n</artifactId>
+      <scope>test</scope>
+      <version>0.8.1-SNAPSHOT</version>
+      <classifier>tests</classifier>
     </dependency>
 
 
@@ -101,7 +109,7 @@
       <artifactId>woodstox-core-asl</artifactId>
       <version>4.4.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
@@ -109,7 +117,7 @@
       <scope>test</scope>
     </dependency>
 
-    
+
   </dependencies>
 
 
@@ -120,38 +128,38 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    
+
     <plugins>
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
         <executions>
           <execution>
-	    <id>scala-compile-first</id>
-	    <phase>process-resources</phase>
+            <id>scala-compile-first</id>
+            <phase>process-resources</phase>
             <goals>
-	      <goal>add-source</goal>
+              <goal>add-source</goal>
               <goal>compile</goal>
             </goals>
           </execution>
           <execution>
-	    <id>scala-test-compile</id>
-	    <phase>process-test-resources</phase>
+            <id>scala-test-compile</id>
+            <phase>process-test-resources</phase>
             <goals>
               <goal>testCompile</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-	  <!--          <sourceDir>src/main/scala</sourceDir> -->
+          <!--          <sourceDir>src/main/scala</sourceDir> -->
           <jvmArgs>
             <jvmArg>-Xms64m</jvmArg>
             <jvmArg>-Xmx1024m</jvmArg>
           </jvmArgs>
-	  <!--	  <args>
-              <arg>-Ymacro-debug-lite</arg>
-	      </args>
-	  -->
+          <!--	  <args>
+                  <arg>-Ymacro-debug-lite</arg>
+              </args>
+          -->
         </configuration>
       </plugin>
 
@@ -166,23 +174,23 @@
 
       <!-- enable scalatest -->
       <plugin>
-	<groupId>org.scalatest</groupId>
-	<artifactId>scalatest-maven-plugin</artifactId>
-	<version>1.0</version>
-	<configuration>
-	  <reportsDirectory>target/surefire-reports</reportsDirectory>
-	  <junitxml>.</junitxml>
-	  <filereports>WDF TestSuite.txt</filereports>
-	  <!--	  <argLine>-Xmx1500m -Xms32M -Xprof</argLine>  -->
-	</configuration>
-	<executions>
-	  <execution>
-	    <id>test</id>
-	    <goals>
-	      <goal>test</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-maven-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <reportsDirectory>target/surefire-reports</reportsDirectory>
+          <junitxml>.</junitxml>
+          <filereports>WDF TestSuite.txt</filereports>
+          <!--	  <argLine>-Xmx1500m -Xms32M -Xprof</argLine>  -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

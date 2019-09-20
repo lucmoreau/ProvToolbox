@@ -6,6 +6,7 @@
     <content url="file://$MODULE_DIR$/../modules-core/prov-model-scala">
       <sourceFolder url="file://$MODULE_DIR$/../modules-core/prov-model-scala/src/main/scala" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../modules-core/prov-model-scala/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../modules-core/prov-model-scala/src/test/scala" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../modules-core/prov-model-scala/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -36,6 +37,10 @@
     <orderEntry type="library" name="Maven: com.chuusai:shapeless_2.12:2.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.typelevel:macro-compat_2.12:1.1.1" level="project" />
     <orderEntry type="module" module-name="prov-model" scope="TEST" production-on-test="" />
+    <orderEntry type="module" module-name="prov-n" scope="TEST" production-on-test="" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.antlr:antlr-runtime:3.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: antlr:antlr:2.7.7" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.antlr:stringtemplate:4.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />

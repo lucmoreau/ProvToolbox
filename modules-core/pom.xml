@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
     <name>|___ core modules</name>
 
-    <artifactId>prov-core</artifactId>
+    <artifactId>modules-core</artifactId>
     <modules>
       <module>prov-model</module>
       <module>prov-jsonld-xml</module>

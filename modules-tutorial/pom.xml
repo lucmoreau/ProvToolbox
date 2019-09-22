@@ -11,7 +11,6 @@
     <packaging>pom</packaging>
 
     <name>|___ MODULES: TUTORIAL</name>
-
     <artifactId>modules-tutorial</artifactId>
 
     <modules>

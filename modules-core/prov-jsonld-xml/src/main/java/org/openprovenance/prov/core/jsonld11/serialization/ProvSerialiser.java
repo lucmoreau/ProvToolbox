@@ -76,4 +76,11 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
         }
     }
 
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        serialiseDocument(out, document, formatted);
+    }
+
+
+
 }

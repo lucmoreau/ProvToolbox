@@ -3,9 +3,7 @@ package org.openprovenance.prov.pservice;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.service.core.DocumentResource;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.validation.Validate;
-import org.openprovenance.prov.service.validation.ValidationResource;
-import org.openprovenance.prov.service.validation.ValidationServiceUtils;
+
 import org.openprovenance.prov.xml.ProvFactory;
 import org.apache.log4j.Logger;
 import java.io.FileNotFoundException;
@@ -44,17 +42,15 @@ public class ViewService {
     static Logger logger = Logger.getLogger(ViewService.class);
 
 
-    public static final String longVersion = Validate.longVersion + ", " + ServiceUtils.longContainerVersion;
+    public static final String longVersion =  ServiceUtils.longContainerVersion;
 
 
 
     final ProvFactory f;
-    final ValidationServiceUtils utils;
 
 
     public ViewService() {
         f = ProvFactory.getFactory();
-        utils = new ValidationServiceUtils(f,new Namespace());
     }
 
     @GET
@@ -142,36 +138,6 @@ public class ViewService {
 
 
   */
-
-    @GET
-    @Path("/documents/{docId}/validation/report.html")
-    @Produces("text/html")
-    @Operation(summary = "Validation Report --- html representation",
-               responses = { @ApiResponse(responseCode = "404", description = "Document not found") })
-    @Tag(name="view")
-    public void getValidationReportAsHtml(@Context HttpServletResponse response,
-                                          @Context HttpServletRequest request,
-                                          @PathParam("docId") String msg)
-            throws ServletException, IOException, JAXBException {
-
-        DocumentResource vr = ValidationResource.table.get(msg);
-    	if (!(vr instanceof ValidationResource) ){
-
-    	    logger.debug(msg);
-
-    		utils.composeResponseNotFoundType(msg);  //TODO: how to return my response?
-    		throw new NullPointerException();
-    	}
-
-    	ValidationResource vr2=(ValidationResource)vr;
-
-        utils.performValidation(vr.document, vr2);
-
-        request.setAttribute("event", msg);
-        request.getRequestDispatcher("../../../../validationReport.jsp") // note: using jsp (instead of html) seems to fail on jetty
-                .forward(request, response);
-    }
-
 
     
     @GET

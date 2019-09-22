@@ -1,14 +1,6 @@
 package org.openprovenance.prov.json;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Writer;
+import java.io.*;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
@@ -17,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import org.openprovenance.prov.model.exception.UncheckedException;
 
 public class Converter {
     final private ProvFactory pFactory;
@@ -58,15 +51,25 @@ public class Converter {
     }
 
     public void writeDocument(Document doc, String file) throws IOException {
-	BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-	gson.toJson(doc, writer);
-	writer.close();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        gson.toJson(doc, writer);
+        writer.close();
     }
 
     public void writeDocument(Document doc, Writer out) throws IOException {
-	BufferedWriter writer = new BufferedWriter(out);
-	gson.toJson(doc, writer);
-	writer.close();
+        BufferedWriter writer = new BufferedWriter(out);
+        gson.toJson(doc, writer);
+        writer.close();
+    }
+
+    public void writeDocument(Document doc, OutputStream out)  {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+        gson.toJson(doc, writer);
+        try {
+            writer.close();
+        } catch (IOException e) {
+           throw new UncheckedException(e);
+        }
     }
 
     public String getString(Document doc) {

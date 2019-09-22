@@ -13,10 +13,11 @@ public interface ProvSerialiser {
      * @param out an {@link OutputStream}
      * @param document a {@link Document}
      * @param formatted  a boolean indicating whether the output should be pretty-printed
-     * @throws IOException
      */
-    public void serialiseDocument (OutputStream out, Document document, boolean formatted)
-	        throws IOException;
+    public void serialiseDocument (OutputStream out, Document document, boolean formatted);
+
+    public void serialiseDocument (OutputStream out, Document document, String mediaType, boolean formatted);
+
 
     public Collection<String> mediaTypes();
     

@@ -144,6 +144,12 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
             throw new UncheckedException(e);
         }
     }
+
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        serialiseDocument(out, document, formatted);
+    }
+
     public void serialiseDocument (File file, Document graph, boolean format)
 	        throws JAXBException {
 	Marshaller m=jc.createMarshaller();

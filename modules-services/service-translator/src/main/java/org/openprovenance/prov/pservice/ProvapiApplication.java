@@ -8,6 +8,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
 
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
+import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.DocumentMessageBodyWriter;
 import org.openprovenance.prov.service.core.NodeMessageBodyWriter;
@@ -76,7 +77,7 @@ public class ProvapiApplication extends Application {
 		
 		//singletons.add(new io.swagger.jaxrs.listing.SwaggerSerializers());
 		//singletons.add(new io.swagger.jaxrs.listing.ApiListingResource());
-		singletons.add(new DocumentMessageBodyWriter());
+		singletons.add(new DocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());			
 		
 	    CorsFilter corsFilter = new CorsFilter();

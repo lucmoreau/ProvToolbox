@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jboss.resteasy:resteasy-jaxrs-services:4.0.0.Beta5">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/resteasy/resteasy-jaxrs-services/4.0.0.Beta5/resteasy-jaxrs-services-4.0.0.Beta5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/resteasy/resteasy-jaxrs-services/4.0.0.Beta5/resteasy-jaxrs-services-4.0.0.Beta5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/resteasy/resteasy-jaxrs-services/4.0.0.Beta5/resteasy-jaxrs-services-4.0.0.Beta5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

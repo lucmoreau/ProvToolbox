@@ -60,6 +60,12 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final public boolean WRAP_ERASE;
 
+
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        serialiseDocument(out, document, formatted);
+    }
+
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
 

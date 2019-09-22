@@ -14,12 +14,7 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
@@ -52,6 +47,8 @@ import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.apache.log4j.Logger;
 
+import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
+
 /**
  * The interoperability framework for PROV, with utility methods to write and read documents to files and streams, 
  * according to media types, format (specified as {@link ProvFormat}). The class also provides helper functions to support content 
@@ -62,7 +59,7 @@ import org.apache.log4j.Logger;
  * @author lavm, dtm
  *
  */
-public class InteropFramework implements InteropMediaType {
+public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvSerialiser {
 
 
 
@@ -86,6 +83,7 @@ public class InteropFramework implements InteropMediaType {
 
     
     final private CommandLineArguments config;
+    final private Map<ProvFormat, SerializerFunction> serializerMap;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
@@ -114,6 +112,8 @@ public class InteropFramework implements InteropMediaType {
         provTypeMap = new Hashtable<ProvFormat, ProvFormatType>();
 
         initializeExtensionMap(extensionMap, extensionRevMap);
+
+        serializerMap = createSerializerMap();
     }
 
     /**
@@ -332,16 +332,16 @@ public class InteropFramework implements InteropMediaType {
                 provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
                 break;
             case PROVN:
-                extensionMap.put(ProvFormat.PROVN, EXTENSION_PROVN);
-                extensionRevMap.put(EXTENSION_PROVN, ProvFormat.PROVN);
-                extensionRevMap.put("pn", ProvFormat.PROVN);
-                extensionRevMap.put("asn", ProvFormat.PROVN);
-                extensionRevMap.put("prov-asn", ProvFormat.PROVN);
-                mimeTypeMap.put(ProvFormat.PROVN,
+                extensionMap.put(PROVN, EXTENSION_PROVN);
+                extensionRevMap.put(EXTENSION_PROVN, PROVN);
+                extensionRevMap.put("pn", PROVN);
+                extensionRevMap.put("asn", PROVN);
+                extensionRevMap.put("prov-asn", PROVN);
+                mimeTypeMap.put(PROVN,
                                 MEDIA_TEXT_PROVENANCE_NOTATION);
                 mimeTypeRevMap.put(MEDIA_TEXT_PROVENANCE_NOTATION,
-                                   ProvFormat.PROVN);
-                provTypeMap.put(ProvFormat.PROVN, ProvFormatType.INPUTOUTPUT);
+                                   PROVN);
+                provTypeMap.put(PROVN, ProvFormatType.INPUTOUTPUT);
                 break;
             case RDFXML:
                 extensionMap.put(ProvFormat.RDFXML, EXTENSION_RDF);
@@ -380,14 +380,14 @@ public class InteropFramework implements InteropMediaType {
                 provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
                 break;
             case XML:
-                extensionMap.put(ProvFormat.XML, EXTENSION_PROVX);
-                extensionRevMap.put(EXTENSION_PROVX, ProvFormat.XML);
-                extensionRevMap.put(EXTENSION_XML, ProvFormat.XML);
-                mimeTypeMap.put(ProvFormat.XML,
+                extensionMap.put(XML, EXTENSION_PROVX);
+                extensionRevMap.put(EXTENSION_PROVX, XML);
+                extensionRevMap.put(EXTENSION_XML, XML);
+                mimeTypeMap.put(XML,
                                 MEDIA_APPLICATION_PROVENANCE_XML);
                 mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML,
-                                   ProvFormat.XML);
-                provTypeMap.put(ProvFormat.XML, ProvFormatType.INPUTOUTPUT);
+                                   XML);
+                provTypeMap.put(XML, ProvFormatType.INPUTOUTPUT);
                 break;
             default:
                 break;
@@ -805,6 +805,34 @@ public class InteropFramework implements InteropMediaType {
     }
     
     static String SEPARATOR=",";
+
+    /**
+     * Serializes a document to a stream
+     *
+     * @param out       an {@link OutputStream}
+     * @param document  a {@link Document}
+     * @param formatted a boolean indicating whether the output should be pretty-printed
+     */
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
+        throw new UnsupportedOperationException("InteropFramework()  serialize Document requires a media type");
+    }
+
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        ProvFormat format=mimeTypeRevMap.get(mediaType);
+        if (format==null) {
+            throw new UnsupportedOperationException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
+        }
+        SerializerFunction fun=serializerMap.get(format);
+        fun.apply();
+    }
+
+    @Override
+    public Collection<String> mediaTypes() {
+        return mimeTypeRevMap.keySet();
+    }
+
     enum FileKind { FILE , URL };
     
     class ToRead {
@@ -1188,11 +1216,34 @@ public class InteropFramework implements InteropMediaType {
             }
         writeDocument(filename, format, document);
     }
+
+
+
+    Map<ProvFormat, SerializerFunction> createSerializerMap() {
+        Map<ProvFormat, SerializerFunction> serializer =
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
+                        XML,     () -> ProvSerialiser.getThreadProvSerialiser(),
+                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory,RDFFormat.TURTLE),
+                        JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.JSONLD),
+                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.RDFXML),
+                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.TRIG),
+                        JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory)
+                        //TODO: JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG))
+
+                                ) ;
+
+        return serializer;
+    }
+
+
+
+
     /**
      * Write a {@link Document} to file, serialized according to the file extension
      * @param filename path of the file to write the Document to
      * @param document a {@link Document} to serialize
      */
+
 
     public void writeDocument(String filename, ProvFormat format, Document document) {
         Namespace.withThreadNamespace(document.getNamespace());

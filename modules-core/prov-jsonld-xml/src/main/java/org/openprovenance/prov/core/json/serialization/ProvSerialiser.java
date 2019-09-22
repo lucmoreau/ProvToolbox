@@ -68,4 +68,10 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     }
 
 
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        serialiseDocument(out, document, formatted);
+    }
+
+
 }

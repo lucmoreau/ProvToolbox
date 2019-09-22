@@ -31,6 +31,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public Collection<String> mediaTypes() {
         return myMedia;
     }
+
     private ObjectFactory2 of=new ObjectFactory2();
 	static DocumentBuilder docBuilder;
 
@@ -134,6 +135,11 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         } catch (JAXBException e) {
             throw new UncheckedException(e);
         }
+    }
+
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        serialiseDocument(out,document,formatted);
     }
 
     public void serialiseDocument (File file, Document document, boolean format)

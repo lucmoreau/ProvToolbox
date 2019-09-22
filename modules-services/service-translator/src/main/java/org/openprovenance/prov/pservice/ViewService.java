@@ -66,18 +66,6 @@ public class ViewService {
                                                                   response);
     }
 
-    @GET
-    @Path("/validator")
-    @Produces("text/html")
-    @Operation(summary = "Validator entry point")
-    @Tag(name="view")
-    public void validator(@Context HttpServletResponse response,
-                          @Context HttpServletRequest request)
-            throws ServletException, IOException {
-
-        request.getRequestDispatcher("../validator.jsp").forward(request,
-                                                                 response);
-    }
 
     @GET
     @Path("/expander")

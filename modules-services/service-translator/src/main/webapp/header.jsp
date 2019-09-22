@@ -10,7 +10,6 @@
       </a>
       <div class="nav-collapse">
         <ul class="nav">
-          <li id="header-validator"><a href="${param.adjust}validator">Validate</a></li>
           <li id="header-translator"><a href="${param.adjust}translator">Translate</a></li>
           <li id="header-expander"><a href="${param.adjust}expander">Expand</a></li>	  
           <li id="header-api"><a href="${param.adjust}api">API</a></li>

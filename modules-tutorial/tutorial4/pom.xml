@@ -8,9 +8,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openprovenance.prov</groupId>
   <artifactId>ProvToolbox-Tutorial4</artifactId>
-  <name>ProvToolbox Tutorial 4</name>
+  <name> o ProvToolbox Tutorial 4</name>
   <description>ProvToolbox Tutorial 4</description>
 
   <developers>

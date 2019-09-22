@@ -1220,21 +1220,26 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
     Map<ProvFormat, SerializerFunction> createSerializerMap() {
-        Map<ProvFormat, SerializerFunction> serializer =
+
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
+        serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
                         XML,     () -> ProvSerialiser.getThreadProvSerialiser(),
                         TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory,RDFFormat.TURTLE),
                         JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.JSONLD),
                         RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.RDFXML),
                         TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.TRIG),
-                        JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory),
-                        JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)) /*,
-                        ProvFormat.PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))*/
+                        JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory)));
 
-                                ) ;
+        serializer.putAll(
+                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)),
+                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))
+
+                                ) );
 
         return serializer;
     }

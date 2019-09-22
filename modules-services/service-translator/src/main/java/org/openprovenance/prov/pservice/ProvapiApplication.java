@@ -39,7 +39,6 @@ import io.swagger.v3.oas.annotations.info.Info;
 		),
 		tags = {
 				@Tag(name = "documents",  description = "provenance api (documents)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = "validation", description = "provenance api (validation)",    externalDocs = @ExternalDocumentation(description = "docs desc")),
 				@Tag(name = "provapi",    description = "provenance api",                 externalDocs = @ExternalDocumentation(description = "docs desc")),
 				@Tag(name = "vis",        description = "provenance api (visualisation)", externalDocs = @ExternalDocumentation(description = "docs desc")),
 				@Tag(name = "random",     description = "provenance api (random)",        externalDocs = @ExternalDocumentation(description = "docs desc")),

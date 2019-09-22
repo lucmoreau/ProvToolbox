@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.openprovenance.prov</groupId>
-  <artifactId>ProvToolbox</artifactId>
-  <name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-  <version>0.8.1-SNAPSHOT</version>
-  <url>http://lucmoreau.github.io/ProvToolbox/</url>
-  <packaging>pom</packaging>
-  <description>Java toolbox to create and convert W3C PROV data model representations.</description>
+	<groupId>org.openprovenance.prov</groupId>
+	<artifactId>ProvToolbox</artifactId>
+	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
+	<version>0.8.1-SNAPSHOT</version>
+	<url>http://lucmoreau.github.io/ProvToolbox/</url>
+	<packaging>pom</packaging>
+	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
 
-  <scm>
-    <connection>scm:git:git://github.com/lucmoreau/ProvToolbox.git</connection>
-    <developerConnection>scm:git:git@github.com:lucmoreau/ProvToolbox.git</developerConnection>
-    <url>git:git@github.com:lucmoreau/ProvToolbox.git</url>
-    <tag>HEAD</tag>
-  </scm>
+	<scm>
+		<connection>scm:git:git://github.com/lucmoreau/ProvToolbox.git</connection>
+		<developerConnection>scm:git:git@github.com:lucmoreau/ProvToolbox.git</developerConnection>
+		<url>git:git@github.com:lucmoreau/ProvToolbox.git</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<modules>
 		<module>modules-core</module>
@@ -33,130 +33,113 @@
 	</modules>
 
 
-  <developers>
-    <developer>
-      <id>lucmoreau</id>
-      <name>Luc Moreau</name>
-      <email>l.moreau@ecs.soton.ac.uk</email>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <organization>University of Southampton</organization>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>lavm</id>
-      <name>Luc Moreau</name>
-      <email>lavm@ecs.soton.ac.uk</email>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <organization>University of Southampton</organization>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>trungdong</id>
-      <name>Trung Dong</name>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <organization>University of Southampton</organization>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>mikejewell</id>
-      <name>Mike Jewell</name>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <organization>University of Southampton</organization>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>jamalhussein</id>
-      <name>Jamal Hussein</name>
-      <roles>
-	<role>Developer</role>
-      </roles>
-      <organization>University of Southampton</organization>
-      <timezone>0</timezone>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<id>lucmoreau</id>
+			<name>Luc Moreau</name>
+			<email>l.moreau@ecs.soton.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>lavm</id>
+			<name>Luc Moreau</name>
+			<email>lavm@ecs.soton.ac.uk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>trungdong</id>
+			<name>Trung Dong</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>mikejewell</id>
+			<name>Mike Jewell</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<id>jamalhussein</id>
+			<name>Jamal Hussein</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>University of Southampton</organization>
+			<timezone>0</timezone>
+		</developer>
+	</developers>
 
-  <ciManagement>
-    <system>continuum</system>
-    <url>http://continuum.pat.ecs.soton.ac.uk/</url>
-    <notifiers>
-      <notifier>
-	<type>mail</type>
-	<sendOnError>true</sendOnError>
-	<sendOnFailure>true</sendOnFailure>
-	<sendOnSuccess>true</sendOnSuccess>
-	<sendOnWarning>fail</sendOnWarning>
-	<configuration>
-	  <committers>true</committers>
-	</configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<!--    <repository>
+              <id>repo</id>
+              <name>Repository Name</name>
+              <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-releases</url>
+            </repository>
+        -->
 
-  <distributionManagement>
-    <!-- use the following if you're not using a snapshot version. -->
-<!--    <repository>
-      <id>repo</id>
-      <name>Repository Name</name>
-      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-releases</url>
-    </repository>
--->
+		<!-- use the following if you ARE using a snapshot version. -->
+		<!-- <snapshotRepository>
+          <id>snapshot-repo</id>
+          <name>Snapshot Repository</name>
+          <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-snapshots</url>
+        </snapshotRepository> -->
 
-    <!-- use the following if you ARE using a snapshot version. -->
-    <!-- <snapshotRepository>
-      <id>snapshot-repo</id>
-      <name>Snapshot Repository</name>
-      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/maven-snapshots</url>
-    </snapshotRepository> -->
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
+		<site>
+			<id>websites1.ecs.soton.ac.uk</id>
+			<name>Site Deployment location</name>
+			<url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov</url>
+		</site>
+	</distributionManagement>
 
-    <site>
-      <id>websites1.ecs.soton.ac.uk</id>
-      <name>Site Deployment location</name>
-      <url>scp://openprovenance@websites1.ecs.soton.ac.uk/home/openprovenance/openprovenance.org/htdocs/java/site/prov</url>
-    </site>
-  </distributionManagement>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>license.txt</url>
+		</license>
+	</licenses>
 
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>license.txt</url>
-    </license>
-  </licenses>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
 
 
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-	  <!--
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>2.12.0</version>
-            </dependency>-->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<!--
+              <dependency>
+                  <groupId>org.apache.logging.log4j</groupId>
+                  <artifactId>log4j-core</artifactId>
+                  <version>2.12.0</version>
+              </dependency>-->
 
-  </dependencies>
+	</dependencies>
 
 	<profiles>
 		<profile>
@@ -208,7 +191,7 @@
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>3.1.1</version>
 						<configuration>
-						  <source>1.8</source>
+							<source>1.8</source>
 						</configuration>
 						<executions>
 							<execution>
@@ -290,6 +273,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
 					<configuration>
 						<source>1.8</source>
 						<target>1.8</target>
@@ -327,127 +311,39 @@
 		</pluginManagement>
 
 
-  </build>
+	</build>
 
-  <properties>
-    
-    <java.version>1.8</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<properties>
 
-    <jackson.version>2.9.9</jackson.version>    
-    <sesame.version>4.1.2</sesame.version> 
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <scm.version>1.3</scm.version>
+		<jackson.version>2.9.9</jackson.version>
+		<sesame.version>4.1.2</sesame.version>
 
-    <!-- log4j -->
-    <log4j.version>1.2.17</log4j.version>
+		<scm.version>1.3</scm.version>
 
-    <!-- jaxb -->
-    <jaxb.impl.version>2.3.1</jaxb.impl.version>  <!-- 2.2.11, 2.2.6 -->
-    <jaxb.api.version>2.3.1</jaxb.api.version>   <!-- 2.2.12, 2.2.4 -->
-    <jaxb.xjc.version>2.2.4</jaxb.xjc.version>
-    <jaxb.common.version>0.4.1.5</jaxb.common.version>
-    <maven.jaxb.plugin.version>0.8.2</maven.jaxb.plugin.version>
+		<!-- log4j -->
+		<log4j.version>1.2.17</log4j.version>
 
-    <!-- hibernate -->
-    <hibernate.version>4.3.10.Final</hibernate.version>
-    <hibernate3.plugin.version>3.0</hibernate3.plugin.version>
+		<!-- jaxb -->
+		<jaxb.impl.version>2.3.1</jaxb.impl.version>  <!-- 2.2.11, 2.2.6 -->
+		<jaxb.api.version>2.3.1</jaxb.api.version>   <!-- 2.2.12, 2.2.4 -->
+		<jaxb.xjc.version>2.2.4</jaxb.xjc.version>
+		<jaxb.common.version>0.4.1.5</jaxb.common.version>
+		<maven.jaxb.plugin.version>0.8.2</maven.jaxb.plugin.version>
 
-    <!-- hsqldb -->
-    <hsqldb.version>2.3.2</hsqldb.version>
+		<!-- hibernate -->
+		<hibernate.version>4.3.10.Final</hibernate.version>
+		<hibernate3.plugin.version>3.0</hibernate3.plugin.version>
 
-    <!-- postgres -->
-    <postgres.version>9.3-1102-jdbc41</postgres.version>
-  </properties>
+		<!-- hsqldb -->
+		<hsqldb.version>2.3.2</hsqldb.version>
 
-
-  <reporting>
-    <excludeDefaults>true</excludeDefaults>
-    <outputDirectory>${project.build.directory}/site</outputDirectory>
-
-    <plugins>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-project-info-reports-plugin</artifactId>
-	<version>2.4</version>
-	<configuration>
-	  <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-	  <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-	</configuration>
-	<reportSets>
-	  <reportSet>
-	    <id>default-cli</id>
-	    <reports>
-	      <report>dependencies</report>
-	      <report>scm</report>
-	    </reports>
-	  </reportSet>
-	</reportSets>
-      </plugin>
-
-      <plugin>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>2.10.4</version>
-	<configuration>
-          <additionalparam>-Xdoclint:none</additionalparam> <!-- see http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html -->
-
-	  <aggregate>true</aggregate>
-
-	  <groups>
-	    <group>
-	      <title>PROV Packages</title>
-	      <packages>org.openprovenance.prov.*</packages>
-	    </group>
-	  </groups>
+		<!-- postgres -->
+		<postgres.version>9.3-1102-jdbc41</postgres.version>
+	</properties>
 
 
-	  <links>
-	    <link>http://docs.oracle.com/javase/7/docs/api/</link>
-	    <link>http://java.sun.com/products/servlet/2.3/javadoc/</link>
-	    <link>http://www.oracle.com/technology/documentation/berkeley-db/je/java/</link>
-	    <link>http://prefuse.org/doc/api/</link>
-	    <link>http://ws.apache.org/axis/java/apiDocs/</link>
-	    <link>http://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
-	    <link>http://commons.apache.org/proper/commons-io/javadocs/api-2.4/</link>
-	    <link>http://commons.apache.org/proper/commons-lang/apidocs/</link>
-	    <link>http://commons.apache.org/proper/commons-logging/javadocs/api-release/</link>
-	    <link>http://commons.apache.org/proper/commons-pool/apidocs/</link>
-	    <link>http://xerces.apache.org/xerces-j/apiDocs/</link>
-	    <link>http://junit.sourceforge.net/javadoc/</link>
-	    <link>http://aopalliance.sourceforge.net/doc/</link>
-	  </links>
-	</configuration>
-      </plugin>
-
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jxr-plugin</artifactId>
-	<version>2.3</version>
-      </plugin>
-
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-report-plugin</artifactId>
-	<version>2.12.3</version>
-	<configuration>
-	  <forkMode>once</forkMode>
-	  <argLine>-Xss1024k</argLine>
-	  <!-- <argLine>-Xmx1500m</argLine> -->
-	</configuration>
-      </plugin>
-
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-pmd-plugin</artifactId>
-	<version>2.7.1</version>
-	<configuration>
-	  <linkXref>true</linkXref>
-	  <sourceEncoding>utf-8</sourceEncoding>
-	  <minimumTokens>100</minimumTokens>
-	  <targetJdk>1.6</targetJdk>
-	</configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
 </project>

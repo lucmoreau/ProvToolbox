@@ -1,89 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>modules-template</artifactId>
-    <groupId>org.openprovenance.prov</groupId>
-    <version>0.8.1-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <artifactId>modules-template</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>0.8.1-SNAPSHOT</version>
+    </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>prov-template</artifactId>
-  <name> o PROV-TEMPLATE</name>
-  <packaging>jar</packaging>
-  <description>A template system for PROV bundles.</description>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>prov-template</artifactId>
+    <name> o PROV-TEMPLATE</name>
+    <packaging>jar</packaging>
+    <description>A template system for PROV bundles.</description>
 
 
-   <properties>
+    <properties>
         <jackson.version>2.9.9</jackson.version>
-   </properties>
+    </properties>
 
 
-  <dependencies>
-    <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-model</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-xml</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
-    </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-xml</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-n</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-n</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.version}</version>  
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <version>${jackson.version}</version>  <!-- 2.7.3??? -->
-    </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>  <!-- 2.7.3??? -->
+        </dependency>
 
-    <dependency>
-      <groupId>com.squareup</groupId>
-      <artifactId>javapoet</artifactId>
-      <version>1.11.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>19.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
-      <version>3.6.1</version>
-    </dependency>
-
-
- </dependencies>
-
-  <build>
-
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+            <version>1.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.6.1</version>
+        </dependency>
 
 
-    <testResources>
-       <testResource>
-         <directory>src/test/resources</directory>
-         <filtering>true</filtering>
-       </testResource>
-    </testResources>
-  </build>
+    </dependencies>
+
+    <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+    </build>
 
 
 

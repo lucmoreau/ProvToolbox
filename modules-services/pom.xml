@@ -11,7 +11,7 @@
 
 
     <packaging>pom</packaging>
-    <name>|___ MODULES: SERVICES</name>
+    <name>|---- MODULES: SERVICES</name>
     <artifactId>modules-services</artifactId>
 
     <modules>

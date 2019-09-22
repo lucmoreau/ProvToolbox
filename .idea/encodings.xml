@@ -20,6 +20,9 @@
     <file url="file://$PROJECT_DIR$/modules-misc/prov-dot" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-generator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/prov-log" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/prov-service-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/prov-service-translation" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-template" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tutorial" charset="UTF-8" />

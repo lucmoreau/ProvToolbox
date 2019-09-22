@@ -10,6 +10,7 @@ import org.openprovenance.prov.core.json.serialization.serial.CustomBundleSerial
 import org.openprovenance.prov.core.json.serialization.serial.CustomDateSerializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomKindSerializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomQualifiedNameSerializer;
+import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
@@ -19,8 +20,17 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Set;
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
+
+    final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_JSON);
+
+    @Override
+    public Collection<String> mediaTypes() {
+        return myMedia;
+    }
 
     private final ProvMixin provMixin = new ProvMixin();
 

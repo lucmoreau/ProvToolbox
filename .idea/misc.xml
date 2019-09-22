@@ -5,6 +5,9 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/prov-scala/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-log/pom.xml" />
       </list>
     </option>
   </component>

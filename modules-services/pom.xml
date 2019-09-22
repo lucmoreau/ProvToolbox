@@ -9,7 +9,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+
+    <packaging>pom</packaging>
+    <name>|___ MODULES: SERVICES</name>
     <artifactId>modules-services</artifactId>
 
+    <modules>
+        <module>prov-log</module>
+        <module>prov-service-core</module>
+        <module>prov-service-translation</module>
+    </modules>
+
+
+    <properties>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <resteasy.version>4.3.0.Final</resteasy.version>
+
+    </properties>
 
 </project>

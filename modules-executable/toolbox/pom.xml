@@ -7,7 +7,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>provconvert</artifactId>
-  <name>provconvert tool</name>
+  <name> o provconvert tool</name>
   <packaging>jar</packaging>
   <description>A tool to manipulate PROV representations from the command line.</description>
 

@@ -9,9 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
-
+    <name>|---- MODULES: MISC</name>
     <artifactId>modules-misc</artifactId>
-    <name>|___ misc modules</name>
 
 
     <modules>

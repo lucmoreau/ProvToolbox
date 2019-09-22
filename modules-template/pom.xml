@@ -10,9 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
+    <name>|---- MODULES: TEMPLATE</name>
     <artifactId>modules-template</artifactId>
-
-    <name>|___ template modules</name>
 
     <modules>
         <module>prov-template</module>

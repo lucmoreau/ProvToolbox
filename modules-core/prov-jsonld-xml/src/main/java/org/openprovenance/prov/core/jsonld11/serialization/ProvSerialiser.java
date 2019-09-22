@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
@@ -16,8 +17,17 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Set;
 
 public class ProvSerialiser extends org.openprovenance.prov.core.json.serialization.ProvSerialiser {
+
+    final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_JSONLD);
+
+    @Override
+    public Collection<String> mediaTypes() {
+        return myMedia;
+    }
 
     protected final boolean embedContext;
 

@@ -7,7 +7,7 @@
     <version>0.8.1-SNAPSHOT</version>
   </parent>
   <artifactId>prov-json</artifactId>
-  <name>PROV-JSON</name>
+  <name> o PROV-JSON</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

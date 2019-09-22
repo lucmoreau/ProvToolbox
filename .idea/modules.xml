@@ -20,11 +20,14 @@
       <module fileurl="file://$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" filepath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-json/prov-json.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-json/prov-json.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" filepath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" filepath="$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" filepath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-n/prov-n.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-n/prov-n.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-rdf/prov-rdf.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-rdf/prov-rdf.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model-scala/prov-scala.iml" filepath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" />

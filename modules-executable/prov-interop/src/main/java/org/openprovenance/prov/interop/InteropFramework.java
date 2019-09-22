@@ -25,13 +25,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.DocumentEquality;
-import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
@@ -68,16 +66,6 @@ public class InteropFramework implements InteropMediaType {
 
 
 
-    /** An enumerated type for all the PROV serializations supported by ProvToolbox. 
-     * Some of these serializations can be input, output, or both. */
-    
-    static public enum ProvFormat {
-        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, JSONLD, DOT, JPEG, PNG, SVG, PDF
-    }
-
-    static public enum ProvFormatType {
-        INPUT, OUTPUT, INPUTOUTPUT
-    }
 
 
     static Logger logger = Logger.getLogger(InteropFramework.class);
@@ -89,10 +77,10 @@ public class InteropFramework implements InteropMediaType {
     final Ontology onto;
 
     public final Hashtable<ProvFormat, String> extensionMap;
-    public final Hashtable<String, ProvFormat> extensionRevMap;
-    public final Hashtable<ProvFormat, String> mimeTypeMap;
+    public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
+    public final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
 
-    public final Hashtable<String, ProvFormat> mimeTypeRevMap;
+    public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
 
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
 
@@ -119,11 +107,11 @@ public class InteropFramework implements InteropMediaType {
         this.onto = new Ontology(pFactory);
         this.config=config;
         
-        extensionMap = new Hashtable<InteropFramework.ProvFormat, String>();
-        extensionRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
-        mimeTypeMap = new Hashtable<InteropFramework.ProvFormat, String>();
-        mimeTypeRevMap = new Hashtable<String, InteropFramework.ProvFormat>();
-        provTypeMap = new Hashtable<InteropFramework.ProvFormat, InteropFramework.ProvFormatType>();
+        extensionMap = new Hashtable<ProvFormat, String>();
+        extensionRevMap = new Hashtable<String, ProvFormat>();
+        mimeTypeMap = new Hashtable<ProvFormat, String>();
+        mimeTypeRevMap = new Hashtable<String, ProvFormat>();
+        provTypeMap = new Hashtable<ProvFormat, ProvFormatType>();
 
         initializeExtensionMap(extensionMap, extensionRevMap);
     }
@@ -303,7 +291,7 @@ public class InteropFramework implements InteropMediaType {
      * @param extensionRevMap reverse mapping of extensions to {@link ProvFormat}
      */
     public void initializeExtensionMap(Hashtable<ProvFormat, String> extensionMap,
-                                       Hashtable<String, InteropFramework.ProvFormat> extensionRevMap) {
+                                       Hashtable<String, ProvFormat> extensionRevMap) {
         for (ProvFormat f : ProvFormat.values()) {
             switch (f) {
             case DOT:
@@ -732,7 +720,7 @@ public class InteropFramework implements InteropMediaType {
     public java.util.List<java.util.Map<String, String>>getSupportedFormats() {
         java.util.List<java.util.Map<String, String>> tripleList = new java.util.ArrayList<>();
         java.util.Map<String, String>trip;
-        for (InteropFramework.ProvFormat pt:  provTypeMap.keySet()) {
+        for (ProvFormat pt:  provTypeMap.keySet()) {
             for (String mt:  mimeTypeRevMap.keySet()) {
                 if (mimeTypeRevMap.get(mt) == pt) {
                     for (String ext: extensionRevMap.keySet()) {

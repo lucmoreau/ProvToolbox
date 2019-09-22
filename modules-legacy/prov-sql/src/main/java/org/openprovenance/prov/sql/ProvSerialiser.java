@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
+import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 
@@ -19,10 +20,20 @@ import org.w3c.dom.Node;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 
 /** Serialiser of PROV Graphs. */
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
+
+    final static private java.util.Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_SQL);
+
+    @Override
+    public Collection<String> mediaTypes() {
+        return myMedia;
+    }
+
     private ObjectFactory2 of=new ObjectFactory2();
 	static DocumentBuilder docBuilder;
 

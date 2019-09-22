@@ -7,7 +7,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>prov-n</artifactId>
-  <name>PROV-N</name>
+  <name> o PROV-N</name>
   <packaging>jar</packaging>
   <description>A Parser for PROV-N Provenance Notation.</description>
 

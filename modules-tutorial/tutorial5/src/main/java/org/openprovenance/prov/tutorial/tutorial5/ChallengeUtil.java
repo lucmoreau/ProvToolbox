@@ -2,7 +2,7 @@ package org.openprovenance.prov.tutorial.tutorial5;
 
 
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;

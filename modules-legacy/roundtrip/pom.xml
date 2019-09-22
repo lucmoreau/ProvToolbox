@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
 
   <artifactId>roundtrip</artifactId>
-  <name>ROUNDTRIP</name>
+  <name> o ROUNDTRIP</name>
 
   <dependencies>
     <dependency>

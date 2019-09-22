@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.vanilla.TypedValue;
@@ -28,8 +29,18 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Set;
 
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
+
+    final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_XML);
+
+    @Override
+    public Collection<String> mediaTypes() {
+        return myMedia;
+    }
+
 
     static final public ProvFactory pf = ProvFactory.getFactory();
 
@@ -115,6 +126,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
             throw new UncheckedException(e);
         }
     }
+
 
 
 }

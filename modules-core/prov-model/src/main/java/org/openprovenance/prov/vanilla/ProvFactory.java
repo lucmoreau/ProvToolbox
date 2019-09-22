@@ -5,6 +5,7 @@ import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
 import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.ModelConstructor;
@@ -739,13 +740,28 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return res;
     }
 
+    @Override
     public org.openprovenance.prov.model.Bundle newNamedBundle(QualifiedName id, Collection<Statement> statements) {
         return newNamedBundle(id,null,statements);
     }
+
+    @Override
     public org.openprovenance.prov.model.Bundle newNamedBundle(QualifiedName id, Namespace namespace, Collection<Statement> statements) {
         org.openprovenance.prov.model.Bundle res= mc.newNamedBundle(id,namespace,statements);
         return res;
     }
+
+
+    @Override
+    public Bundle newNamedBundle(QualifiedName id, Collection<Activity> ps, Collection<Entity> as, Collection<Agent> ags, Collection<Statement> lks) {
+        Collection<Statement> attr=new LinkedList<>();
+        attr.addAll(ps);
+        attr.addAll(as);
+        attr.addAll(ags);
+        attr.addAll(lks);
+        return newNamedBundle(id,attr);
+    }
+
 
     @Override
     public org.openprovenance.prov.model.extension.QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {

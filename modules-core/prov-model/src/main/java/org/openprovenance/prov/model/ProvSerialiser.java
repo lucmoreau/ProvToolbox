@@ -2,6 +2,7 @@ package org.openprovenance.prov.model;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 
 /** A low-level interface for JAXB-compatible serialization of documents. 
  */
@@ -16,5 +17,7 @@ public interface ProvSerialiser {
      */
     public void serialiseDocument (OutputStream out, Document document, boolean formatted)
 	        throws IOException;
+
+    public Collection<String> mediaTypes();
     
 }

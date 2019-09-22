@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
+    <name>|---- MODULES: executable</name>
     <artifactId>modules-executable</artifactId>
-    <name>|___ executable modules</name>
 
     <modules>
         <module>prov-interop</module>

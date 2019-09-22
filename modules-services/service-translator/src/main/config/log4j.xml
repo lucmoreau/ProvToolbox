@@ -21,12 +21,13 @@
   </appender> 
 
   
-
+<!--
   <appender name="AppenderWrapper"
 	    class="org.openprovenance.prov.service.validation.JobWrapper">
     <appender-ref ref="stdout"/>
     <appender-ref ref="file"/>
   </appender>
+-->
 
   <category name="org.openprovenance">   
     <priority value="PROV" class="org.openprovenance.prov.log.ProvLevel" />   

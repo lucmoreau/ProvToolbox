@@ -1227,8 +1227,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.JSONLD),
                         RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.RDFXML),
                         TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.TRIG),
-                        JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory)
-                        //TODO: JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG))
+                        JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory),
+                        JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)) /*,
+                        ProvFormat.PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))*/
 
                                 ) ;
 

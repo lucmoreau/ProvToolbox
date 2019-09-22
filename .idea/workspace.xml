@@ -2,12 +2,561 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/service_light_war.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/service_light_war_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_base_2_9_9.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider_2_9_9.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_mchange_c3p0_0_9_5_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_mchange_mchange_commons_java_0_2_11.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_zaxxer_HikariCP_java6_2_3_13.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_5.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_json_javax_json_api_1_1_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_javax_servlet_api_4_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_resteasy_resteasy_jaxrs_4_3_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_resteasy_resteasy_servlet_initializer_4_3_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_ws_rs_jboss_jaxrs_api_2_1_spec_1_0_3_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_quartz_scheduler_quartz_2_3_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_12.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_nop_1_7_12.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/TODO.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/resources/bindings-plps-log1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/resources/bindingsCheneyTRENDDB09.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/resources/bindingsMoreauOPM101.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/resources/plps-log-template.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/resources/template-attribution.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/resources/test-template.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/license/THIRD-PARTY.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/license/tree.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/config/log4j.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/SwaggerBootstrap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ViewApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ViewService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/db.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/defaultConfigWithRoleNoLabel.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/persistence.hsqldb.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/persistence.postgres.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/templates/post-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/templates/provapi/post-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/templates/provapi/translate-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/templates/put-first-named-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/templates/put-named-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/WEB-INF/web.xml.gz" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/about.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/css/bootstrap-responsive.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/css/bootstrap-responsive.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/css/bootstrap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/img/glyphicons-halflings-white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/img/glyphicons-halflings.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap-collapse.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap-dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap-popover.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap-tab.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap-tooltip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap-transition.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/bootstrap/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/contact.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/css/XMLPrettyPrint/XMLMonoPrint.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/css/XMLPrettyPrint/XMLPrettyPrint.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/css/XMLPrettyPrint/XMLPrettyPrint.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/css/XMLPrettyPrint/viewsource.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/css/validation.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/document.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/expander.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/files/w3c-publication1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/files/w3c-publication2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/footer.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-analytics.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/CHANGES.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/COPYING" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/README-zh-Hans.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/README.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/closure-compiler/COPYING" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/closure-compiler/README" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/closure-compiler/console-externs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-apollo.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-clj.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-css.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-go.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-hs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-lisp.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-lua.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-ml.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-n.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-proto.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-scala.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-sql.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-tex.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-vb.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-vhdl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-wiki.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-xq.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/lang-yaml.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/prettify.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/distrib/google-code-prettify/prettify.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/combinePrefixPatterns.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/externs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/extractSourceSpans.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/extractSourceSpans_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/numberLines.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/numberLines_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/prettify.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/recombineTagsAndDecorations.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/recombineTagsAndDecorations_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/js-modules/regexpPrecederPatterns.pl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-apollo.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-clj.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-css.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-go.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-hs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-lisp.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-lua.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-ml.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-n.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-proto.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-scala.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-sql.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-tex.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-vb.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-vhdl.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-wiki.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-xq.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/lang-yaml.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/prettify.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/src/prettify.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/styles/demo.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/styles/desert.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/styles/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/styles/sunburst.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/tests/ie-newline-copy-paste.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/tests/large_input_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/tests/prettify_test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/tests/prettify_test_2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/tests/test_base.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/tests/test_styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/yui-compressor/LICENSE.TXT" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/google-code-prettify/yui-compressor/README" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/header.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/images/Warning_32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/images/agt_action_success-256.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/images/agt_action_success-32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/images/button_cancel-32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/index.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/jquery/jquery-1.7.2.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/jquery/jquery.xslTransform.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/jquery/sarissa.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/jquery/sarissa_ieemu_xpath.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/luc.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/.npmignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/absolute-path.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/favicon-16x16.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/favicon-32x32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/oauth2-redirect.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui-bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui-bundle.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui-standalone-preset.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui-standalone-preset.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui-dist/swagger-ui.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/.npmignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/Cakefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/CoffeeScript.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/jasmine-1.1.0/MIT.LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/jasmine-1.1.0/jasmine-html.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/jasmine-1.1.0/jasmine.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/jasmine-1.1.0/jasmine.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/jasmine-1.1.0/jasmine.sass" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/jasmine-1.1.0/jasmine_favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/bin/yuicompressor-2.4.7.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/css/hightlight.default.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/css/screen.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/images/logo_small.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/images/pet_store_api.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/images/throbber.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/images/wordnik_api.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/backbone-min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/handlebars-1.0.rc.1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/highlight.7.3.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/jquery-1.8.0.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/jquery.ba-bbq.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/jquery.slideto.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/jquery.wiggle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/swagger.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/lib/underscore-min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/swagger-ui.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/dist/swagger-ui.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/backbone-min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/handlebars-1.0.rc.1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/highlight.7.3.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/jquery-1.8.0.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/jquery.ba-bbq.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/jquery.slideto.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/jquery.wiggle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/lib/underscore-min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/SwaggerUi.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/ContentTypeView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/HeaderView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/MainView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/OperationView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/ParameterView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/ResourceView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/SignatureView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/coffeescript/view/StatusCodeView.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/css/hightlight.default.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/css/screen.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/images/logo_small.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/images/pet_store_api.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/images/throbber.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/images/wordnik_api.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/html/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/javascript/doc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/content_type.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/main.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/operation.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/param.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/param_list.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/param_readonly.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/param_readonly_required.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/param_required.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/resource.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/signature.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/main/template/status_code.handlebars" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/test/spec.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/src/test/swagger-ui-spec.coffee" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui/swagger-ui.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/favicon-16x16.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/favicon-32x32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/backbone-min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/handlebars-2.0.0.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/highlight.7.3.pack.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/jquery-1.8.0.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/jquery.ba-bbq.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/jquery.slideto.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/jquery.wiggle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/lib/marked.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/oauth2-redirect.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui-bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui-bundle.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui-standalone-preset.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui-standalone-preset.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui2/swagger-ui.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/favicon-16x16.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/favicon-32x32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/oauth2-redirect.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui-bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui-bundle.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui-standalone-preset.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui-standalone-preset.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/swagger-ui3/swagger-ui.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/terms.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/test_js.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/translate.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/translator.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/css/bootstrap-responsive.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/css/bootstrap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/css/docs.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/ico/apple-touch-icon-144-precomposed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/ico/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/bird.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/bootstrap-mdo-sfmoma-01.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/bootstrap-mdo-sfmoma-02.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/bootstrap-mdo-sfmoma-03.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/browsers.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/example-sites/fleetio.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/example-sites/jshint.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/example-sites/kippt.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/example-sites/soundready.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/examples/bootstrap-example-fluid.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/examples/bootstrap-example-hero.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/examples/bootstrap-example-starter.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/github-16px.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons-halflings-white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons-halflings.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_009_magic.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_042_group.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_079_podium.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_082_roundabout.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_155_show_thumbnails.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_163_iphone.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_214_resize_small.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/glyphicons/glyphicons_266_book_open.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/grid-18px-masked.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/icon-css3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/icon-github.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/icon-html5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/icon-twitter.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/less-logo-large.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/less-small.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/img/responsive-illustrations.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/application.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-alert.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-button.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-carousel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-collapse.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-modal.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-popover.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-scrollspy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-tab.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-tooltip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-transition.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap-typeahead.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/google-code-prettify/prettify.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/google-code-prettify/prettify.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/assets/js/jquery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/base-css.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/build/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/build/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/components.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/download.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/examples.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/examples/fluid.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/examples/hero.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/examples/starter-template.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/javascript.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/less.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/scaffolding.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/layout.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/base-css.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/components.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/download.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/examples.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/index.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/javascript.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/less.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/scaffolding.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/templates/pages/upgrading.mustache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/docs/upgrading.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/img/glyphicons-halflings-white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/img/glyphicons-halflings.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/.jshintrc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-alert.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-button.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-carousel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-collapse.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-modal.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-scrollspy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-tab.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-tooltip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-transition.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/bootstrap-typeahead.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/phantom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/server.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-alert.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-button.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-carousel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-collapse.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-dropdown.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-modal.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-phantom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-popover.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-scrollspy.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-tab.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-tooltip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-transition.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/unit/bootstrap-typeahead.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/vendor/jquery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/vendor/qunit.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/js/tests/vendor/qunit.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/accordion.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/alerts.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/bootstrap.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/breadcrumbs.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/button-groups.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/buttons.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/carousel.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/close.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/code.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/component-animations.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/dropdowns.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/forms.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/grid.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/hero-unit.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/labels-badges.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/layouts.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/mixins.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/modals.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/navbar.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/navs.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/pager.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/pagination.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/popovers.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/progress-bars.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/reset.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/responsive-1200px-min.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/responsive-767px-max.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/responsive-768px-979px.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/responsive-navbar.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/responsive-utilities.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/responsive.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/scaffolding.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/sprites.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/tables.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/tests/css-tests.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/tests/css-tests.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/tests/forms.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/tests/navbar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/thumbnails.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/tooltip.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/type.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/utilities.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/variables.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/less/wells.less" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/twitter-bootstrap/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/validationReport.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/validationReport.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/validator.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/vis.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/vkbeautify.0.98.01.beta.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/xslt/XMLPrettyPrint.xsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/xslt/XMLPrettyPrintSimple.xsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/xslt/validation.xsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/config/log4j.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/pservice/DocumentMessageBodyReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/pservice/StreamMessageBodyReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/pservice/ValidationReportMessageBodyReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/pservice/roundtrip/IT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/pservice/template/IT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/pservice/validator/IT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindings-plps-log1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindings1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindingsCheneyTRENDDB09.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindingsMoreauOPM101.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/doc-tovalidate.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/picaso-file.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/picaso-file2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/report-start-fail4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/small.ttl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/template-attribution.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/.project" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/.settings/org.eclipse.core.resources.prefs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/.settings/org.eclipse.m2e.core.prefs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentConcatenatorProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentDiscarderProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentMergerProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/Runner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/awk/tobindings.awk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/bindings1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/bindings2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/bindings3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/bindings4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/bindings4.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/bindings4.ttl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/expanded-a1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/expanded-a2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/expanded-a3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/expanded-a4.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/org/openprovenance/prov/template/compiler/script.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/spec/v1/prov-magic.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/spec/v1/prov-template.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/spec/v2/prov-magic.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/spec/v2/prov-template.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/template-a.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/template-b.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/template-c.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/example/TestBindingsBean.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/BindingTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/ExpandTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/GroupingsTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/a_binding.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/a_template.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/bindings10.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/bindings25.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/csv/csv1.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/csv/template_block.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template10.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template20.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template21.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template22.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template23.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template24.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template25.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/template3.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/BindingsBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/BindingsBeanGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompilerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompilerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/compiler/TemplatesCompilerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplatesCompilerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/log2prov/DocumentConcatenatorProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/log2prov/DocumentDiscarderProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/log2prov/DocumentMergerProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/log2prov/DocumentProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/log2prov/Runner.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingGenerationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/BindingGenerationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
@@ -71,6 +620,8 @@
     <ignored path="$PROJECT_DIR$/modules-services/prov-service-core/target/" />
     <ignored path="$PROJECT_DIR$/modules-services/prov-service-translation/target/" />
     <ignored path="$PROJECT_DIR$/modules-services/prov-log/target/" />
+    <ignored path="$PROJECT_DIR$/modules-template/prov-template-compiler/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/service-translator/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,64 +637,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-legacy/prov-rdf/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="30" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-legacy/prov-sql/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-legacy/prov-xml/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="30" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="24" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-misc/prov-dot/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="28" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-misc/prov-generator/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="28" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules-template/prov-template/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+            <state relative-caret-position="480">
+              <caret line="32" selection-start-line="32" selection-end-line="38" />
             </state>
           </provider>
         </entry>
@@ -151,26 +648,83 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules-template/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="300">
+              <caret line="20" column="10" selection-start-line="20" selection-start-column="10" selection-end-line="20" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules-executable/toolbox/pom.xml">
+        <entry file="file://$PROJECT_DIR$/modules-services/service-translator/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
+            <state relative-caret-position="970">
+              <caret line="213" selection-start-line="213" selection-end-line="213" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="435">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="906">
+              <caret line="78" column="52" selection-start-line="78" selection-start-column="27" selection-end-line="78" selection-end-column="52" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="765">
+              <caret line="51" selection-start-line="51" selection-end-line="57" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/pom.xml">
+        <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
+            <state relative-caret-position="840">
+              <caret line="56" selection-start-line="56" selection-end-line="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentDiscarderProcessor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentConcatenatorProcessor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/Runner.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -234,9 +788,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/modules-executable/toolbox/src/main/resources/toolbox-assembly.xml" />
-        <option value="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/ParserSpec.scala" />
-        <option value="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/ModelSpec.scala" />
         <option value="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala/ModelSpec.scala" />
         <option value="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" />
         <option value="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/streaming/DocBuilder.scala" />
@@ -261,7 +812,6 @@
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/src/main/java/org/openprovenance/prov/tutorial/tutorial2/ReadWrite.java" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ChallengeUtil.java" />
         <option value="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" />
-        <option value="$PROJECT_DIR$/modules-services/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/pom.xml" />
         <option value="$PROJECT_DIR$/modules-core/prov-model/pom.xml" />
         <option value="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" />
@@ -269,8 +819,6 @@
         <option value="$PROJECT_DIR$/modules-executable/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/prov-log/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-template/pom.xml" />
         <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
         <option value="$PROJECT_DIR$/modules-core/pom.xml" />
         <option value="$PROJECT_DIR$/modules-misc/pom.xml" />
@@ -284,7 +832,13 @@
         <option value="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml" />
         <option value="$PROJECT_DIR$/modules-template/prov-template/pom.xml" />
         <option value="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-template/pom.xml" />
         <option value="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java" />
+        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" />
       </list>
     </option>
   </component>
@@ -330,64 +884,53 @@
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-executable" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-interop" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-executable" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-interop" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-executable" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-interop" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-executable" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-interop" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="interop" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-executable" type="462c0819:PsiDirectoryNode" />
-              <item name="toolbox" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-misc" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-misc" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-dot" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-misc" type="462c0819:PsiDirectoryNode" />
-              <item name="prov-generator" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-services" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
               <item name="modules-services" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-service-translation" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-services" type="462c0819:PsiDirectoryNode" />
+              <item name="service-translator" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-services" type="462c0819:PsiDirectoryNode" />
+              <item name="service-translator" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-services" type="462c0819:PsiDirectoryNode" />
+              <item name="service-translator" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-services" type="462c0819:PsiDirectoryNode" />
+              <item name="service-translator" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-services" type="462c0819:PsiDirectoryNode" />
+              <item name="service-translator" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="pservice" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
@@ -403,34 +946,23 @@
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-tutorial" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-tutorial" type="462c0819:PsiDirectoryNode" />
-              <item name="tutorial1" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-tutorial" type="462c0819:PsiDirectoryNode" />
-              <item name="tutorial1" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-tutorial" type="462c0819:PsiDirectoryNode" />
-              <item name="tutorial1" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-tutorial" type="462c0819:PsiDirectoryNode" />
-              <item name="tutorial1" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
@@ -438,12 +970,91 @@
             <path>
               <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
               <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
-              <item name="modules-tutorial" type="462c0819:PsiDirectoryNode" />
-              <item name="tutorial1" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="org" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="org" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template-compiler" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template-compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template-compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template-compiler" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="tutorial1" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template-compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+              <item name="modules-template" type="462c0819:PsiDirectoryNode" />
+              <item name="prov-template-compiler" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+              <item name="log2prov" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -493,10 +1104,10 @@
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services" />
+      <recent name="$PROJECT_DIR$/modules-template" />
       <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala" />
       <recent name="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/deserial" />
       <recent name="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/immutable/jsonld11/serialization" />
-      <recent name="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/immutable/serialization/serial" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json" />
@@ -679,7 +1290,7 @@
       <workItem from="1568929320509" duration="85000" />
       <workItem from="1568929432614" duration="17903000" />
       <workItem from="1568998999272" duration="844000" />
-      <workItem from="1569007511430" duration="10202000" />
+      <workItem from="1569007511430" duration="11507000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -724,7 +1335,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="453683000" />
+    <option name="totallyTimeSpent" value="454988000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -739,6 +1350,7 @@
     <frame x="33" y="26" width="2504" height="1333" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Web" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29772544" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
@@ -788,71 +1400,6 @@
     </SUITE>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ForwardedUriInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="56" column="19" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/JobManagement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
-          <caret line="82" column="59" selection-start-line="82" selection-start-column="59" selection-end-line="82" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NodeMessageBodyWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="34" column="45" selection-start-line="34" selection-start-column="45" selection-end-line="34" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="36" column="66" selection-start-line="36" selection-start-column="66" selection-end-line="36" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="50" selection-start-line="4" selection-start-column="50" selection-end-line="4" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/JacksonJsonProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvSerialiser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentMessageBodyWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="64" selection-start-line="64" selection-end-line="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -1051,20 +1598,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="37" selection-start-line="13" selection-start-column="37" selection-end-line="13" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules-services/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules-misc/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -1149,17 +1682,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules-template/prov-template/pom.xml">
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentProcessor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
+        <state relative-caret-position="60">
+          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules-template/pom.xml">
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentMergerProcessor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        <state relative-caret-position="60">
+          <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentDiscarderProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/DocumentConcatenatorProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="5" column="19" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/Runner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="825">
+          <caret line="55" column="40" selection-start-line="55" selection-start-column="40" selection-end-line="55" selection-end-column="40" />
         </state>
       </provider>
     </entry>
@@ -1170,10 +1731,55 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/pom.xml">
+    <entry file="file://$PROJECT_DIR$/modules-template/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
+        <state relative-caret-position="300">
+          <caret line="20" column="10" selection-start-line="20" selection-start-column="10" selection-end-line="20" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="51" selection-start-line="51" selection-end-line="57" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/service-translator/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="970">
+          <caret line="213" selection-start-line="213" selection-end-line="213" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="906">
+          <caret line="78" column="52" selection-start-line="78" selection-start-column="27" selection-end-line="78" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" selection-start-line="32" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="56" selection-start-line="56" selection-end-line="56" />
         </state>
       </provider>
     </entry>

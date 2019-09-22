@@ -30,9 +30,11 @@
       <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" filepath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" filepath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" />
     </modules>
   </component>
 </project>

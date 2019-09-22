@@ -23,8 +23,10 @@
     <file url="file://$PROJECT_DIR$/modules-services/prov-log" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-core" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/prov-service-translation" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/service-translator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-template" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-template/prov-template-compiler" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tutorial" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tutorial/tutorial1" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tutorial/tutorial2" charset="UTF-8" />

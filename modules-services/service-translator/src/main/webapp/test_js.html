@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ProvValidator Javascript API test page</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- Le styles -->
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+	<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+	</style>
+	<script src="jquery/jquery-1.7.2.min.js"></script>
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+	<!-- Le fav and touch icons -->
+	<link rel="shortcut icon" href="bootstrap/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootstrap/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootstrap/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="api.js"></script>
+	<script>
+//<!--
+var validator;
+function do_validate_url()
+{
+	validator.validate(
+            {'url': $('#url').val()},
+	    function(jqXHR){ $('#thingie').html(jqXHR.responseText); }
+	    );
+}
+
+function do_translate_url()
+{
+	validator.translate(
+            {'url': $('#url').val()},
+	    "application/json",
+	    function(jqXHR){ $('#thingie').html(jqXHR.responseText); }
+	    );
+}
+
+
+function do_translate_statements()
+{
+	var type="provn";
+	statements=$('#statements').val();
+	$('#thingie').html(statements);
+	validator.translate(
+	    {'statements': statements, 'type': 'provn'},
+	    "application/json",
+	    function(jqXHR) { $('#thingie').html(jqXHR.responseText);}
+	    );
+}
+function do_validate_statements()
+{
+	var type="provn";
+	statements=$('#statements').val();
+	$('#thingie').html(statements);
+	validator.validate(
+	    {'statements': statements, 'type': 'provn'},
+	    function(jqXHR) { $('#thingie').html(jqXHR.responseText);}
+	    );
+}
+$(document).ready(function(){
+	var my_loc = document.location.toString();
+	var val_endpoint = my_loc.substring(0, my_loc.lastIndexOf("/"))+"/";
+	validator = new ProvService(val_endpoint);
+});
+//-->
+	</script>
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li><a href="validator.html">ProvValidator</a></li>
+              <li><a href="translator.html">ProvTranslator</a></li>
+              <li class="active"><a href="api.html">API</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div class="span12 row-fluid">
+	<h2>ProvValidator Javascript API test page</h2>
+<p>
+<form>
+URL: <input id="url" type="text" value="http://www.w3.org/2011/prov/provenance/prov-dm"></input>
+<ul>
+<li>validate this url <a href="javascript:do_validate_url()">test</a><span id="url_response"></span></li>
+<li>translate this url to json <a href="javascript:do_translate_url()">test</a><span id="url_response"></span></li>
+</ul>
+</p>
+</ul>
+</form>
+<p>
+<form>
+Statements: <textarea style="vertical-align: text-top" id="statements" type="text" rows="10" cols="80">entity(a)</textarea>
+<ul>
+<li>validate these statements <a href="javascript:do_validate_statements()">test</a><span id="statements_response"></span>
+<li>translate these statements to json <a href="javascript:do_translate_statements()">test</a><span id="statements_response"></span>
+</li>
+</ul>
+</form>
+</p>
+<hr>
+<div id="thingie">
+</div>
+</div>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="bootstrap/js/jquery.js"></script>
+    <script src="bootstrap/js/bootstrap-transition.js"></script>
+    <script src="bootstrap/js/bootstrap-alert.js"></script>
+    <script src="bootstrap/js/bootstrap-modal.js"></script>
+    <script src="bootstrap/js/bootstrap-scrollspy.js"></script>
+    <script src="bootstrap/js/bootstrap-tab.js"></script>
+    <script src="bootstrap/js/bootstrap-tooltip.js"></script>
+    <script src="bootstrap/js/bootstrap-popover.js"></script>
+    <script src="bootstrap/js/bootstrap-button.js"></script>
+    <script src="bootstrap/js/bootstrap-collapse.js"></script>
+    <script src="bootstrap/js/bootstrap-carousel.js"></script>
+    <script src="bootstrap/js/bootstrap-typeahead.js"></script>
+-->
+</body>
+</html>

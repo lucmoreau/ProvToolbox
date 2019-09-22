@@ -53,6 +53,12 @@
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-template-compiler</artifactId>
+      <version>0.8.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-generator</artifactId>
       <version>0.8.1-SNAPSHOT</version>
     </dependency>

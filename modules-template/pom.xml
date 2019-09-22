@@ -15,6 +15,7 @@
 
     <modules>
         <module>prov-template</module>
+        <module>prov-template-compiler</module>
     </modules>
 
 </project>

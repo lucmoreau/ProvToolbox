@@ -1,0 +1,201 @@
+
+- fix missing dereferencing on activities and accounts
+- fix constructor for prov renderer.
+- running the two IT sequentially seems a problem (runnig out memory) 
+
+- submitted template/bindings have no prov link
+
+1. Use http://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Link.html#REL to create links.
+
+0.      See	//FIXME: I need a template/log/provenance, so that we can navigate this resource too.
+      The initial cdocument (for an idocument) doesn't have provenance
+
+0. Define provenance template for all initial documents (template,binding)
+   and find a way of capturing their provenance (maybe add a provenance link to each sql.Document?)
+
+2. Allow templates to be referred to by name in compact documents
+    I think the solution is to resolve the name at compact document creation time.
+
+
+3. http://localhost:8080/ptm/idocuments/336/original
+returns provapi uris (see org.openprovenance.prov.pservice.IncrementalDocumentMessageBodyWriter.SimplifiedDocument)
+
+4. Get /ptm/templates: shouldn't have an accept?
+
+
+
+6. Make sure that the agent is ptms when initializing the database, as opposed to guest.
+     
+
+7. Make sure this deploys with tomcat,
+  Probably needs to disable jetty-jsp?
+  
+8 configure build to work with jetty and tomcat, by setting profiles.
+
+
+
+----------------------------------------------------------------------
+
+/provpai/documents/{docId}/transformation/core  -> a new document
+/provpai/documents/{docId}/transformation/core.{type}
+
+/transformation/core?url='input.xxx' -> output.yyy
+                                          output
+
+/transformation/core.yyy?url='input.xxx' -> output.yyy
+
+----------------------------------------------------------------------
+
+/provpai/documents/{docId}/transformation/descendant? id={...}
+
+/transformation/descendant? url='input.xxx' id={...}
+
+
+----------------------------------------------------------------------
+
+jsp for validationReport seems to lead to except on jetty
+
+
+Caused by: java.lang.IllegalStateException: Committed or content written
+
+
+----------------------------------------------------------------------
+
+Check
+
+test_js.html is up to date
+
+----------------------------------------------------------------------
+
+post: time to live parameter
+ 
+touch a resource extends ttl for 30mins
+use Expire http header
+
+
+----------------------------------------------------------------------
+
+I think after a direc tpost ....
+
+
+22:59:41,292 DEBUG JobManagement:51 - deleting ... /home/uploads/graph6795995701429703959.provn
+22:59:41,293 ERROR JobRunShell:222 - Job graph.graph6795995701429703959 threw an unhandled Exception: 
+java.lang.NullPointerException
+	at org.openprovenance.prov.xml.ProvFactory.newEntityRef(ProvFactory.java:868)
+	at org.openprovenance.prov.log4j.ObjectManager.getInvalidation(ObjectManager.java:210)
+	at org.openprovenance.prov.pservice.JobManagement$DeleteJob.execute(JobManagement.java:54)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:213)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:557)
+22:59:41,296 ERROR ErrorLogger:2361 - Job (graph.graph6795995701429703959 threw an exception.
+org.quartz.SchedulerException: Job threw an unhandled exception. [See nested exception: java.lang.NullPointerException]
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:224)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:557)
+Caused by: java.lang.NullPointerException
+	at org.openprovenance.prov.xml.ProvFactory.newEntityRef(ProvFactory.java:868)
+	at org.openprovenance.prov.log4j.ObjectManager.getInvalidation(ObjectManager.java:210)
+	at org.openprovenance.prov.pservice.JobManagement$DeleteJob.execute(JobManagement.java:54)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:213)
+	... 1 more
+23:0
+
+----------------------------------------------------------------------
+
+/documents -> /document
+
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+DONE
+----------------------------------------------------------------------
+
+Remove validate step
+
+
+Introduce
+/provapi/documents/{docId}/normalForm.{type}
+with same types as for graphs
+ 
+----------------------------------------------------------------------
+move all landing pages to
+  /view/translation
+  /view/document
+ 
+...
+
+----------------------------------------------------------------------
+
+Problems:
+
+direct post.
+make post3 ok
+make post2 fails because application/provenance+xml is not registered in the toolbox
+make post fails
+ The file, when read, seems to have lost all cr/lf
+
+fixed in curl
+
+----------------------------------------------------------------------
+
+add / for post (it;s a collection)
+
+----------------------------------------------------------------------
+
+translation.{type} instead translation/{type}
+
+----------------------------------------------------------------------
+
+
+post
+ -  should allow a form content, but also the resource directly
+ -  posting a url is through the form
+
+----------------------------------------------------------------------
+
+add /vis/hive
+
+<html>
+
+<iframe width="100%" height="100%" scrolling="no" src="http://provenance.ecs.soton.ac.uk/vis/hive/?url=http://www.provbook.org/graph/b000/datajournalism.json">
+
+</html>
+
+----------------------------------------------------------------------
+
+jsp for all jsp, and for validationReport.html
+
+about.html
+api.html
+contact.html
+
+----------------------------------------------------------------------
+
+swagger documentation, make jsp, add header, footer
+
+have both /view and /provapi on same page
+
+----------------------------------------------------------------------
+
+swagger update with dynamic configuration, to be able to deploy on
+local host and provenance, without reconfiguring files
+
+
+----------------------------------------------------------------------
+
+/validation/report.{type}
+
+----------------------------------------------------------------------
+
+/validation/report
+/validation/matrix
+/validation/normalFrom
+
+
+----------------------------------------------------------------------
+
+jsp for all jsp, and for validationReport.html
+
+about.html
+api.html
+contact.html
+

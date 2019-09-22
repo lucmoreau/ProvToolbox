@@ -11,7 +11,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Document;
 
 @Provider

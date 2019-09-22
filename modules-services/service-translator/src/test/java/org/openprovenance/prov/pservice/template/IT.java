@@ -22,11 +22,9 @@ import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.pservice.DocumentMessageBodyReader;
-import org.openprovenance.prov.pservice.ValidationReportMessageBodyReader;
-import org.openprovenance.prov.xml.validation.ValidationReport;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
@@ -141,18 +139,6 @@ System.out.println(resource);
                 return o;
     }
     
-    public ValidationReport readValidationReport(String location, String media) {
-        Client client=ClientBuilder.newBuilder().build();
-        client.register(ValidationReportMessageBodyReader.class);
-        WebTarget target=client.target(location);
-        Response response2=target.request(media).get(); 
-        System.out.println(" *** found response2 ");
-
-        ValidationReport o=response2.readEntity(ValidationReport.class);
-        System.out.println(" *** found o ");
-        client.close();
-        return o;
-    }
 
     public Response getResource(String location, String media) {
         Client client=ClientBuilder.newBuilder().build();
@@ -166,22 +152,6 @@ System.out.println(resource);
         client.close();
         return response2;
     }
-    /*
-    public SimplifiedDocument getOriginal(String location, String media) {
-        Client client=ClientBuilder.newBuilder().build();
-        WebTarget target=client.target(location);
-        client.register(SimplifiedDocumentMessageBodyReader.class);
 
-        Response response2;
-        if (media==null) {
-            response2=target.request().get(); 
-        } else {
-            response2=target.request(media).get(); 
-        }
-        SimplifiedDocument doc= response2.readEntity(SimplifiedDocument.class);
-        client.close();
-        return doc;
-    }*/
-     
 
 }

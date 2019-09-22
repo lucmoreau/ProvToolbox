@@ -18,6 +18,7 @@
         <module>prov-log</module>
         <module>prov-service-core</module>
         <module>prov-service-translation</module>
+        <module>service-translator</module>
     </modules>
 
 
@@ -25,10 +26,39 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <resteasy.version>4.3.0.Final</resteasy.version>
-        <jetty.version>9.4.10.v20180503</jetty.version>
+        <jetty.version>9.4.20.v20190813</jetty.version>
         <servletapi.version>4.0.0</servletapi.version>
         <swagger.version>2.0.8</swagger.version>
 
     </properties>
+
+
+
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <isdocker></isdocker>
+                <upload.directory>target/</upload.directory>
+                <validation.log.location>target/</validation.log.location>
+                <validation.prov.log.location>target/</validation.prov.log.location>
+                <hsqldb.location>target/test-database/database</hsqldb.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>global</id>
+            <properties>
+                <upload.directory>/home/uploads/files/</upload.directory>
+                <validation.log.location>/home/uploads/log/</validation.log.location>
+                <validation.prov.log.location>/home/uploads/log/</validation.prov.log.location>
+                <hsqldb.location>target/test-database/database</hsqldb.location>
+            </properties>
+        </profile>
+    </profiles>
+
 
 </project>

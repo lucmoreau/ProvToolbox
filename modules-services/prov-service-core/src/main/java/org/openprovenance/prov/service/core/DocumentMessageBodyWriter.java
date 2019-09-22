@@ -14,8 +14,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.ProvSerialiser;
-import org.openprovenance.prov.vanilla.Document;
-import org.openprovenance.prov.vanilla.ProvFactory;
+import org.openprovenance.prov.xml.Document;
 
 @Provider
 @Produces({ InteropMediaType.MEDIA_TEXT_TURTLE, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION,
@@ -56,9 +55,11 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
     		            MultivaluedMap<String, Object> httpHeaders,
 						OutputStream entityStream) throws IOException, WebApplicationException {
 
-		System.out.println(" ---- writeTo doc " + mediaType);
+		String media=trimCharSet(mediaType);
 
-		serializer.serialiseDocument(entityStream, doc, true);
+		System.out.println(" ---- writeTo doc " + media);
+
+		serializer.serialiseDocument(entityStream, doc, media, true);
 	}
 
 }

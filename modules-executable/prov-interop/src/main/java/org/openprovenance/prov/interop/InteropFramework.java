@@ -824,8 +824,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (format==null) {
             throw new UnsupportedOperationException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
         }
-        SerializerFunction fun=serializerMap.get(format);
-        fun.apply();
+        SerializerFunction serializerMaker=serializerMap.get(format);
+        serializerMaker.apply().serialiseDocument(out,document,mediaType,formatted);
     }
 
     @Override

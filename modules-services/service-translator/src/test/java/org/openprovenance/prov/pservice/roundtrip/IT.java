@@ -23,8 +23,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.FileUtils;
-import org.netlib.util.intW;
-import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;

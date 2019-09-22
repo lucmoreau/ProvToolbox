@@ -2,7 +2,7 @@
 
 
   <parent>
-    <artifactId>ProvToolbox</artifactId>
+    <artifactId>modules-legacy</artifactId>
     <groupId>org.openprovenance.prov</groupId>
     <version>0.8.1-SNAPSHOT</version>
   </parent>

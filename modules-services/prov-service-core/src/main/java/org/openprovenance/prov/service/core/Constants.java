@@ -17,6 +17,7 @@ public interface Constants {
 
 
     public static final String EXPANSION = "expansion";
+    public static final String TEMPLATE_EXPANSION = "templateExpansion";
     public static final String SUMMARISATION = "summarisation";
 
 

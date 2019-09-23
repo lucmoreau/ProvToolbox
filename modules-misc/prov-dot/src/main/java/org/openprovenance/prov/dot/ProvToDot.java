@@ -60,8 +60,8 @@ public class ProvToDot {
 
     ProvUtilities u=new ProvUtilities();
     ProvFactory pf=new ProvFactory();
-    
-    QualifiedName SUM_SIZE=pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX); 
+
+    QualifiedName SUM_SIZE=pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
 
     public String qualifiedNameToString(QualifiedName qName) {
         return qName.getNamespaceURI()+qName.getLocalPart();
@@ -73,7 +73,7 @@ public class ProvToDot {
     }
 
     public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
-    
+
     public static void main(String [] args) throws Exception {
         if ((args==null) || (args.length==0) || (args.length>4)) {
             System.out.println(USAGE);
@@ -90,7 +90,7 @@ public class ProvToDot {
         converter.convert(opmFile,outDot,outPdf,null);
     }
 
- 
+
 
     public ProvToDot() {
         InputStream is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
@@ -108,21 +108,21 @@ public class ProvToDot {
     public ProvToDot(Config config) {
         InputStream is=null;
         switch (config) {
-        case DEFAULT:
-	    System.out.println("ProvToDot DEFAULT");
-            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
-            break;
-        case ROLE:
-	    System.out.println("ProvToDot role");
-            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
-            break;
+            case DEFAULT:
+                System.out.println("ProvToDot DEFAULT");
+                is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
+                break;
+            case ROLE:
+                System.out.println("ProvToDot role");
+                is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
+                break;
 
-        case ROLE_NO_LABEL:
-	    //System.out.println("ProvToDot role no label");
-        default:
-	    //System.out.println("ProvToDot role no label (by default)");
-            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL);
-            break;
+            case ROLE_NO_LABEL:
+                //System.out.println("ProvToDot role no label");
+            default:
+                //System.out.println("ProvToDot role no label (by default)");
+                is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL);
+                break;
         }
         init(is);
     }
@@ -140,7 +140,7 @@ public class ProvToDot {
     public ProvPrinterConfigDeserialiser getDeserialiser() {
         return ProvPrinterConfigDeserialiser.getThreadProvPrinterConfigDeserialiser();
     }
-    
+
     public void init(String configurationFile) {
         ProvPrinterConfigDeserialiser printerDeserial=getDeserialiser();
         try {
@@ -168,7 +168,7 @@ public class ProvToDot {
             if (configuration.getRelations().getDefault()!=null) {
                 defaultRelationStyle=configuration.getRelations().getDefault();
             }
-            
+
             for (RelationStyleMapEntry edge: configuration.getRelations().getRelation()) {
                 edgeStyleMap.put(edge.getType(),edge);
             }
@@ -229,48 +229,49 @@ public class ProvToDot {
     }
 
     public void convert(String opmFile, String dotFile, String pdfFile, String title)
-        throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
+            throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
         convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile,title);
     }
 
     public void convert(Document graph, String dotFile, String pdfFile, String title)
-	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile), title);
-	        Runtime runtime = Runtime.getRuntime();
-	        @SuppressWarnings("unused")
-	        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
+            throws java.io.FileNotFoundException, java.io.IOException {
+        convert(graph,new File(dotFile), title);
+        Runtime runtime = Runtime.getRuntime();
+        @SuppressWarnings("unused")
+        java.lang.Process proc = runtime.exec("dot -o " + pdfFile + " -Tpdf " + dotFile);
     }
-    
+
     public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
-	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile), title);
-	        Runtime runtime = Runtime.getRuntime();
-	        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
-	        InputStream is=proc.getInputStream();
-                org.apache.commons.io.IOUtils.copy(is, pdfStream);            
+            throws java.io.FileNotFoundException, java.io.IOException {
+        convert(graph,new File(dotFile), title);
+        Runtime runtime = Runtime.getRuntime();
+        java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
+        InputStream is=proc.getInputStream();
+        org.apache.commons.io.IOUtils.copy(is, pdfStream);
     }
     public void convert(Document graph, String dotFile, String title)
-	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile),title);        
+            throws java.io.FileNotFoundException, java.io.IOException {
+        convert(graph,new File(dotFile),title);
     }
-	     
+
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
-	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile),title);
+            throws java.io.FileNotFoundException, java.io.IOException {
+        convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
-	        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
-	        try {
-	        	BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-			String s_error=errorReader.readLine();
-			if (s_error!=null) {
-			    System.out.println("Error:  " + s_error);
-			}
-			proc.waitFor();
-			//System.err.println("exit value " + proc.exitValue());
-		} catch (InterruptedException e){};
+        java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
+        try {
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            String s_error=errorReader.readLine();
+            if (s_error!=null) {
+                System.out.println("Error:  " + s_error);
+            }
+            proc.waitFor();
+            //System.err.println("exit value " + proc.exitValue());
+        } catch (InterruptedException e){};
     }
 
     public void convert(Document graph, OutputStream os, String type, String title) {
+
         try {
             File dotFile=File.createTempFile("temp", ".dot");
             convert(graph, dotFile ,title);
@@ -278,7 +279,7 @@ public class ProvToDot {
             java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
             InputStream is=proc.getInputStream();
             org.apache.commons.io.IOUtils.copy(is, os);
-            //dotFile.delete();
+            dotFile.delete();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -290,13 +291,13 @@ public class ProvToDot {
     }
 
     public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
-	        throws java.io.FileNotFoundException, java.io.IOException {
-	        convert(graph,new File(dotFile),title);
-	        Runtime runtime = Runtime.getRuntime();
-	        
-	        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
-	        InputStream is=proc.getInputStream();
-                org.apache.commons.io.IOUtils.copy(is, os);         
+            throws java.io.FileNotFoundException, java.io.IOException {
+        convert(graph,new File(dotFile),title);
+        Runtime runtime = Runtime.getRuntime();
+
+        java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
+        InputStream is=proc.getInputStream();
+        org.apache.commons.io.IOUtils.copy(is, os);
 
     }
 
@@ -333,7 +334,7 @@ public class ProvToDot {
                 emitAgent(p,out);
             }
         }
-        
+
         if (u.getBundle(doc)!=null) {
             for (Bundle bun: u.getBundle(doc)) {
                 convert(bun,out);
@@ -343,10 +344,10 @@ public class ProvToDot {
         for (Relation e: edges) {
             emitDependency(e,out);
         }
-        
+
 
         postlude(doc, out);
-       
+
     }
 
     public void convert(Bundle bun, PrintStream out) {
@@ -375,10 +376,10 @@ public class ProvToDot {
         for (Relation e: edges) {
             emitDependency(e,out);
         }
-        
+
 
         postlude(bun, out);
-       
+
     }
 
     boolean collapseAnnotations=true;
@@ -400,19 +401,19 @@ public class ProvToDot {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(p.getId(),
-                    addURL(p.getId(), addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties)))),
-                    out);
+                addURL(p.getId(), addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties)))),
+                out);
 
         emitAnnotations("", p,out);
     }
 
-   
+
     public void emitEntity(Entity a, PrintStream out) {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(a.getId(),
-                    addURL(a.getId(), addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties)))),
-                    out);
+                addURL(a.getId(), addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties)))),
+                out);
 
         emitAnnotations("", a,out);
     }
@@ -421,8 +422,8 @@ public class ProvToDot {
         HashMap<String,String> properties=new HashMap<String, String>();
 
         emitElement(ag.getId(),
-                    addURL(ag.getId(), addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties)))),
-                    out);
+                addURL(ag.getId(), addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties)))),
+                out);
 
         emitAnnotations("", ag,out);
 
@@ -430,28 +431,28 @@ public class ProvToDot {
 
     public void emitAnnotations(String id, HasOther statement, PrintStream out) {
 
-        if (((statement.getOther()==null) 
-        	|| (statement.getOther().isEmpty()) 
-        	|| (countOthers(statement)==0))	
-            &&
-            (((HasType)statement).getType().isEmpty())
-            &&
-            (! (statement instanceof HasValue) || ((HasValue)statement).getValue()==null)
-            &&
-            (! (statement instanceof HasRole) || ((HasRole)statement).getRole().isEmpty())
-	    &&
-            (((HasLabel)statement).getLabel().isEmpty())
-	    ) return;
+        if (((statement.getOther()==null)
+                || (statement.getOther().isEmpty())
+                || (countOthers(statement)==0))
+                &&
+                (((HasType)statement).getType().isEmpty())
+                &&
+                (! (statement instanceof HasValue) || ((HasValue)statement).getValue()==null)
+                &&
+                (! (statement instanceof HasRole) || ((HasRole)statement).getRole().isEmpty())
+                &&
+                (((HasLabel)statement).getLabel().isEmpty())
+        ) return;
 
         HashMap<String,String> properties=new HashMap<String, String>();
         QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
         emitElement(newId,
-                    addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
-                    out);
+                addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
+                out);
         HashMap<String,String> linkProperties=new HashMap<String, String>();
         emitRelation(qualifiedNameToString(newId),
-                     qualifiedNameToString(((Identifiable)statement).getId()),
-                     addAnnotationLinkProperties(statement,linkProperties),out,true);
+                qualifiedNameToString(((Identifiable)statement).getId()),
+                addAnnotationLinkProperties(statement,linkProperties),out,true);
     }
 
 
@@ -459,18 +460,18 @@ public class ProvToDot {
     int annotationCount=0;
     @SuppressWarnings("unused")
     public QualifiedName annotationId(QualifiedName id,String node) {
-	
+
         if (true || id==null) {
             return pf.newQualifiedName("-","attrs" + node + (annotationCount++),null);
         } else {
             return id;
         }
     }
-    
+
     public HashMap<String, String> addURL(QualifiedName id,
                                           HashMap<String, String> properties) {
-	if (id!=null) properties.put("URL", htmlify(id.getNamespaceURI()+id.getLocalPart()));
-	return properties;
+        if (id!=null) properties.put("URL", htmlify(id.getNamespaceURI()+id.getLocalPart()));
+        return properties;
     }
 
 
@@ -480,7 +481,7 @@ public class ProvToDot {
         properties.put("color","gray");
         return properties;
     }
-    
+
     public HashMap<String,String> addActivityShape(Activity p, HashMap<String,String> properties) {
         properties.put("shape","polygon");
         properties.put("sides","4");
@@ -504,8 +505,8 @@ public class ProvToDot {
             properties.put("color",processColor(p));
             properties.put("fontcolor",processColor(p));
         } else {
-        	properties.put("fillcolor","#9FB1FC"); //blue
-        	properties.put("color","#0000FF"); //blue
+            properties.put("fillcolor","#9FB1FC"); //blue
+            properties.put("color","#0000FF"); //blue
             properties.put("style", "filled");
         }
         addColors(p,properties);
@@ -513,41 +514,41 @@ public class ProvToDot {
     }
 
     public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
-	Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
+        Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
 
-	List<Other> o=table.get("fillcolor");
-	if (o!=null && !o.isEmpty()) {
-	    properties.put("fillcolor", o.get(0).getValue().toString());
-	    properties.put("style", "filled");
-	}
-	o=table.get("color");
-	if (o!=null && !o.isEmpty()) {
-	    properties.put("color", o.get(0).getValue().toString());
-	}
-	o=table.get("url");
-	if (o!=null && !o.isEmpty()) {
-	    properties.put("URL", htmlify(o.get(0).getValue().toString()));
-	}
-	o=table.get("size");
-	if (o!=null && !o.isEmpty()) {
-	    if ((object instanceof QualifiedRelation)) {
-		String val=o.get(0).getValue().toString();
-		properties.put("penwidth", val);
-	    } else {
-		if (object instanceof Element) {
-		    properties.put("width", "" + Double.valueOf(o.get(0).getValue().toString()) * 0.75);
-		}
-	    }
-	}
-	o=table.get("tooltip");
-	if (o!=null && !o.isEmpty()) {
-	    String val=o.get(0).getValue().toString();
-	    if (val.length()>MAX_TOOLTIP_LENGTH) {
-		val=val.substring(0,Math.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
-	    }
-	    properties.put("tooltip", val);
-	}
-	return properties;
+        List<Other> o=table.get("fillcolor");
+        if (o!=null && !o.isEmpty()) {
+            properties.put("fillcolor", o.get(0).getValue().toString());
+            properties.put("style", "filled");
+        }
+        o=table.get("color");
+        if (o!=null && !o.isEmpty()) {
+            properties.put("color", o.get(0).getValue().toString());
+        }
+        o=table.get("url");
+        if (o!=null && !o.isEmpty()) {
+            properties.put("URL", htmlify(o.get(0).getValue().toString()));
+        }
+        o=table.get("size");
+        if (o!=null && !o.isEmpty()) {
+            if ((object instanceof QualifiedRelation)) {
+                String val=o.get(0).getValue().toString();
+                properties.put("penwidth", val);
+            } else {
+                if (object instanceof Element) {
+                    properties.put("width", "" + Double.valueOf(o.get(0).getValue().toString()) * 0.75);
+                }
+            }
+        }
+        o=table.get("tooltip");
+        if (o!=null && !o.isEmpty()) {
+            String val=o.get(0).getValue().toString();
+            if (val.length()>MAX_TOOLTIP_LENGTH) {
+                val=val.substring(0,Math.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
+            }
+            properties.put("tooltip", val);
+        }
+        return properties;
     }
 
 
@@ -559,8 +560,8 @@ public class ProvToDot {
             if (type.getValue() instanceof QualifiedName) {
                 QualifiedName name=(QualifiedName) type.getValue();
                 if (("Dictionary".equals(name.getLocalPart()))
-                    ||
-                    ("EmptyDictionary".equals(name.getLocalPart()))) {
+                        ||
+                        ("EmptyDictionary".equals(name.getLocalPart()))) {
                     properties.put("shape","folder");
                 }
             }
@@ -587,12 +588,12 @@ public class ProvToDot {
     }
 
     public String displaySize(HasOther p) {
-	for (Other o: p.getOther()) {
-	    if (SUM_SIZE.equals(o.getElementName())) {
-		return " (" + o.getConvertedValue() + ")";
-	    }
-	}
-	return "";
+        for (Other o: p.getOther()) {
+            if (SUM_SIZE.equals(o.getElementName())) {
+                return " (" + o.getConvertedValue() + ")";
+            }
+        }
+        return "";
     }
 
     public HashMap<String,String> addAgentShape(Agent p, HashMap<String,String> properties) {
@@ -611,8 +612,8 @@ public class ProvToDot {
             properties.put("color",agentColor(a));
             properties.put("fontcolor",agentColor(a));
         } else {
-           properties.put("fillcolor","#FDB266"); //orange
-           properties.put("style", "filled");
+            properties.put("fillcolor","#FDB266"); //orange
+            properties.put("style", "filled");
         }
         addColors(a,properties);
         return properties;
@@ -624,45 +625,45 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addAnnotationLabel(HasOther ann, HashMap<String,String> properties) {
-	
-	    String label="";
-	    label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
-	    for (Type type: ((HasType)ann).getType()) {
-		label=label+"	<TR>\n";
-		label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(type) + "</TD>\n";  //FIXME: could we have URL in <a></a>?
-		label=label+"	</TR>\n";
-	    }
-	    for (LangString lab: ((HasLabel)ann).getLabel()) {
-		label=label+"	<TR>\n";
-		label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + htmlify(lab.getValue()) + "</TD>\n";
-		label=label+"	</TR>\n";
-	    }
-	    if (ann instanceof HasValue) {
-		Value val=((HasValue)ann).getValue();
-		if (val!=null) {
-		    label=label+"	<TR>\n";
-		    label=label+"	    <TD align=\"left\">" + "value" + ":</TD>\n";
-		    label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(val) + "</TD>\n";
-		    label=label+"	</TR>\n";
-		}
-		
-	    }
-	    if (ann instanceof HasRole) {
-		for (Role role: ((HasRole)ann).getRole()) {
-			label=label+"	<TR>\n";
-			label=label+"	    <TD align=\"left\">" + "role" + ":</TD>\n";
-			label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(role) + "</TD>\n";
-			label=label+"	</TR>\n";
-		    }
-	    }
-	    for (Other prop: ann.getOther()) {
-		
-		if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX)) {
-		    // no need to display this attribute
-		    continue;
-		}
+
+        String label="";
+        label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
+        for (Type type: ((HasType)ann).getType()) {
+            label=label+"	<TR>\n";
+            label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
+            label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(type) + "</TD>\n";  //FIXME: could we have URL in <a></a>?
+            label=label+"	</TR>\n";
+        }
+        for (LangString lab: ((HasLabel)ann).getLabel()) {
+            label=label+"	<TR>\n";
+            label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
+            label=label+"	    <TD align=\"left\">" + htmlify(lab.getValue()) + "</TD>\n";
+            label=label+"	</TR>\n";
+        }
+        if (ann instanceof HasValue) {
+            Value val=((HasValue)ann).getValue();
+            if (val!=null) {
+                label=label+"	<TR>\n";
+                label=label+"	    <TD align=\"left\">" + "value" + ":</TD>\n";
+                label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(val) + "</TD>\n";
+                label=label+"	</TR>\n";
+            }
+
+        }
+        if (ann instanceof HasRole) {
+            for (Role role: ((HasRole)ann).getRole()) {
+                label=label+"	<TR>\n";
+                label=label+"	    <TD align=\"left\">" + "role" + ":</TD>\n";
+                label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(role) + "</TD>\n";
+                label=label+"	</TR>\n";
+            }
+        }
+        for (Other prop: ann.getOther()) {
+
+            if (prop.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX)) {
+                // no need to display this attribute
+                continue;
+            }
 		
 		/*
 		if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
@@ -679,54 +680,54 @@ public class ProvToDot {
 		    continue;
 		}
 		*/
-		
-		label=label+"	<TR>\n";
-		label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
-		label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl((Attribute)prop) + "</TD>\n";
-		label=label+"	</TR>\n";
-	    }
-	    label=label+"    </TABLE>>\n";
-	    properties.put("label",label);
-	    properties.put("fontsize","10");
-	
+
+            label=label+"	<TR>\n";
+            label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
+            label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl((Attribute)prop) + "</TD>\n";
+            label=label+"	</TR>\n";
+        }
+        label=label+"    </TABLE>>\n";
+        properties.put("label",label);
+        properties.put("fontsize","10");
+
         return properties;
     }
 
     public int countOthers(HasOther ann) {
-	int count=0;
-	for (Other obj: ann.getOther()) {
-	    if (!(obj.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX))) {
-		count++;
-	    }
-	}
-	return count;
+        int count=0;
+        for (Other obj: ann.getOther()) {
+            if (!(obj.getElementName().getNamespaceURI().startsWith(NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX))) {
+                count++;
+            }
+        }
+        return count;
     }
 
-   public String convertValue(Attribute v) {
-       if (v.getValue() instanceof QualifiedName) {
-           QualifiedName name=(QualifiedName) v.getValue();
-           return htmlify(nonEmptyLocalName(name));
-       }
-       String label=getPropertyValueFromAny(v);
-       int i=label.lastIndexOf("#");
-       int j=label.lastIndexOf("/");
-       return htmlify(label.substring(Math.max(i,j)+1, label.length()));
-   }
+    public String convertValue(Attribute v) {
+        if (v.getValue() instanceof QualifiedName) {
+            QualifiedName name=(QualifiedName) v.getValue();
+            return htmlify(nonEmptyLocalName(name));
+        }
+        String label=getPropertyValueFromAny(v);
+        int i=label.lastIndexOf("#");
+        int j=label.lastIndexOf("/");
+        return htmlify(label.substring(Math.max(i,j)+1, label.length()));
+    }
 
-   public String nonEmptyLocalName(QualifiedName name) {
-       final String localPart = name.getLocalPart();
-       if ("".equals(localPart)) {
-	   // we are in this case for url finishing with /
-	   String uri=name.getNamespaceURI();
-	   String label=uri.substring(0, uri.length()-1);
-	   int i=label.lastIndexOf("#");
-	   int j=label.lastIndexOf("/");
-	   return uri.substring(Math.max(i,j)+1, uri.length());
-	   
-       } else {
-	   return localPart;
-       }
-   }
+    public String nonEmptyLocalName(QualifiedName name) {
+        final String localPart = name.getLocalPart();
+        if ("".equals(localPart)) {
+            // we are in this case for url finishing with /
+            String uri=name.getNamespaceURI();
+            String label=uri.substring(0, uri.length()-1);
+            int i=label.lastIndexOf("#");
+            int j=label.lastIndexOf("/");
+            return uri.substring(Math.max(i,j)+1, uri.length());
+
+        } else {
+            return localPart;
+        }
+    }
 
 
     public String convertProperty(Attribute oLabel) {
@@ -746,10 +747,10 @@ public class ProvToDot {
             QualifiedName q=(QualifiedName)val;
             return q.getNamespaceURI() + q.getLocalPart();
         } else {
-                return "" +  val;
+            return "" +  val;
         }
     }
-    
+
     public String getPropertyValueWithUrl (Attribute t) {
         Object val=t.getValue();
         if (val instanceof QualifiedName) {
@@ -758,7 +759,7 @@ public class ProvToDot {
             //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
             //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
         } else {
-                return htmlify(""+val);
+            return htmlify(""+val);
         }
     }
     public String getPropertyValueFromAny (Attribute o) {
@@ -767,7 +768,7 @@ public class ProvToDot {
             QualifiedName q=(QualifiedName)val;
             return q.getNamespaceURI() + q.getLocalPart();
         } else {
-                return "" +  val;
+            return "" +  val;
         }
     }
 
@@ -817,7 +818,7 @@ public class ProvToDot {
         }
         return tr;
     }
-        
+
     public String entityLabel(Entity p) {
         if (displayEntityValue) {
             return convertEntityName(""+pf.getLabel(p));
@@ -825,6 +826,7 @@ public class ProvToDot {
             return localnameToString(p.getId());
         }
     }
+
     public String entityColor(Entity p) {
         // Note, I should compute effective account membership
         List<String> colors=new LinkedList<String>();
@@ -897,7 +899,7 @@ public class ProvToDot {
         if (others !=null) { // n-ary case
             String bnid="bn" + (bncounter++);
 
-	    
+
             emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
 
             HashMap<String,String> properties2=new HashMap<String, String>();
@@ -905,133 +907,133 @@ public class ProvToDot {
 
             String arrowTail=getArrowShapeForRelation(e);
             if (arrowTail!=null) {
-        	properties2.put("arrowtail",arrowTail);
-        	properties2.put("dir","back");
+                properties2.put("arrowtail",arrowTail);
+                properties2.put("dir","back");
             }
-	    if (e instanceof HasOther) {
-        	addColors((HasOther)e,properties2);
+            if (e instanceof HasOther) {
+                addColors((HasOther)e,properties2);
             }
             HashMap<String,String> properties3=new HashMap<String, String>();
 
             QualifiedName effect=u.getEffect(e);
             if (effect!=null) {
-        	emitRelation( qualifiedNameToString(effect),
-        	              bnid,
-        	              properties2,
-        	              out,
-        	              true);
+                emitRelation( qualifiedNameToString(effect),
+                        bnid,
+                        properties2,
+                        out,
+                        true);
             }
 
             relationName(e, properties3);
             if (e instanceof HasOther) {
-        	addColors((HasOther)e,properties3);
+                addColors((HasOther)e,properties3);
             }
 
             if (e instanceof DerivedByInsertionFrom) {
                 properties3.put("arrowhead","onormal");
             }
-            
+
             if (u.getCause(e)!=null) {
-        	emitRelation( bnid,
-        	              qualifiedNameToString(u.getCause(e)),
-        	              properties3,
-        	              out,
-        	              true);
+                emitRelation( bnid,
+                        qualifiedNameToString(u.getCause(e)),
+                        properties3,
+                        out,
+                        true);
             }
 
             HashMap<String,String> properties4=new HashMap<String, String>();
             if (e instanceof HasOther) {
-        	addColors((HasOther)e,properties4);
+                addColors((HasOther)e,properties4);
             }
             for (QualifiedName other: others) {
-		if (other!=null) {
-		    emitRelation( bnid,
-				  qualifiedNameToString(other),
-				  properties4,
-				  out,
-				  true);
-		}
+                if (other!=null) {
+                    emitRelation( bnid,
+                            qualifiedNameToString(other),
+                            properties4,
+                            out,
+                            true);
+                }
             }
 
         } else { // binary case
-	    if (u.getCause(e)!=null) { // make sure there is a cuase
-		relationName(e, properties);
-		if (e instanceof QualifiedRelation) {
-		    addColors((QualifiedRelation)e,properties);
-		}
-		
-		String arrowTail=getArrowShapeForRelation(e);
-		if (arrowTail!=null) {
-		    properties.put("arrowtail",arrowTail);
-		    properties.put("dir","both");
-		}
+            if (u.getCause(e)!=null) { // make sure there is a cuase
+                relationName(e, properties);
+                if (e instanceof QualifiedRelation) {
+                    addColors((QualifiedRelation)e,properties);
+                }
 
-		QualifiedName effect=u.getEffect(e);
-		QualifiedName cause=u.getCause(e);
-		if (effect!=null && cause!=null) {
-		    emitRelation( qualifiedNameToString(effect),
-		                  qualifiedNameToString(cause),
-		                  properties,
-		                  out,
-		                  true);
-		}
-	    }
+                String arrowTail=getArrowShapeForRelation(e);
+                if (arrowTail!=null) {
+                    properties.put("arrowtail",arrowTail);
+                    properties.put("dir","both");
+                }
+
+                QualifiedName effect=u.getEffect(e);
+                QualifiedName cause=u.getCause(e);
+                if (effect!=null && cause!=null) {
+                    emitRelation( qualifiedNameToString(effect),
+                            qualifiedNameToString(cause),
+                            properties,
+                            out,
+                            true);
+                }
+            }
         }
     }
 
     void relationName(Relation e, HashMap<String,String> properties) {
-	String l=getShortLabelForRelation(e);
-	if (l!=null) {
-	    properties.put("taillabel",l);
-	    properties.put("labelangle", "60.0");
-	    properties.put("labeldistance", "1.5");
-	    properties.put("rotation", "20");
-	    properties.put("labelfontsize", "8");
-	}
+        String l=getShortLabelForRelation(e);
+        if (l!=null) {
+            properties.put("taillabel",l);
+            properties.put("labelangle", "60.0");
+            properties.put("labeldistance", "1.5");
+            properties.put("rotation", "20");
+            properties.put("labelfontsize", "8");
+        }
     }
-    
+
     String getArrowShapeForRelation(Relation e) {
-  	if (e instanceof WasStartedBy)      return "oinv";
- 	if (e instanceof WasEndedBy)        return "odiamond";
- 	if (e instanceof WasInvalidatedBy)  return "odiamond";
- 	return null;
+        if (e instanceof WasStartedBy)      return "oinv";
+        if (e instanceof WasEndedBy)        return "odiamond";
+        if (e instanceof WasInvalidatedBy)  return "odiamond";
+        return null;
     }
-     
+
 
     String getLabelForRelation(Relation e) {
-	if (e instanceof Used)              return "used";
-	if (e instanceof WasGeneratedBy)    return "wasGeneratedBy";
-	if (e instanceof WasDerivedFrom)    return "wasDerivedFrom";
-	if (e instanceof WasStartedBy)      return "wasStartedBy";
-	if (e instanceof WasEndedBy)        return "wasEndedBy";
-	if (e instanceof WasInvalidatedBy)  return "wasInvalidatedBy";
-	if (e instanceof WasInformedBy)     return "wasInformedBy";
-	if (e instanceof WasAssociatedWith) return "wasAssociatedWith";
-	if (e instanceof WasAttributedTo)   return "wasAttributedTo";
-	if (e instanceof WasInfluencedBy)   return "wasInfluencedBy";
-	if (e instanceof ActedOnBehalfOf)   return "actedOnBehalfOf";
-	if (e instanceof SpecializationOf)  return "specializationOf";
-	if (e instanceof AlternateOf)       return "alternateOf";
-	return null;
+        if (e instanceof Used)              return "used";
+        if (e instanceof WasGeneratedBy)    return "wasGeneratedBy";
+        if (e instanceof WasDerivedFrom)    return "wasDerivedFrom";
+        if (e instanceof WasStartedBy)      return "wasStartedBy";
+        if (e instanceof WasEndedBy)        return "wasEndedBy";
+        if (e instanceof WasInvalidatedBy)  return "wasInvalidatedBy";
+        if (e instanceof WasInformedBy)     return "wasInformedBy";
+        if (e instanceof WasAssociatedWith) return "wasAssociatedWith";
+        if (e instanceof WasAttributedTo)   return "wasAttributedTo";
+        if (e instanceof WasInfluencedBy)   return "wasInfluencedBy";
+        if (e instanceof ActedOnBehalfOf)   return "actedOnBehalfOf";
+        if (e instanceof SpecializationOf)  return "specializationOf";
+        if (e instanceof AlternateOf)       return "alternateOf";
+        return null;
     }
     String getShortLabelForRelation(Relation e) {
-	if (e instanceof Used)              return "use";
-	if (e instanceof WasGeneratedBy)    return "gen";
-	if (e instanceof WasDerivedFrom)    return "der";
-	if (e instanceof WasStartedBy)      return "start";
-	if (e instanceof WasEndedBy)        return "end";
-	if (e instanceof WasInvalidatedBy)  return "inv";
-	if (e instanceof WasInformedBy)     return "inf";
-	if (e instanceof WasAssociatedWith) return "assoc";
-	if (e instanceof WasAttributedTo)   return "att";
-	if (e instanceof WasInfluencedBy)   return "inf";
-	if (e instanceof ActedOnBehalfOf)   return "del";
-	if (e instanceof SpecializationOf)  return "spe";
-	if (e instanceof AlternateOf)       return "alt";
-	return null;
+        if (e instanceof Used)              return "use";
+        if (e instanceof WasGeneratedBy)    return "gen";
+        if (e instanceof WasDerivedFrom)    return "der";
+        if (e instanceof WasStartedBy)      return "start";
+        if (e instanceof WasEndedBy)        return "end";
+        if (e instanceof WasInvalidatedBy)  return "inv";
+        if (e instanceof WasInformedBy)     return "inf";
+        if (e instanceof WasAssociatedWith) return "assoc";
+        if (e instanceof WasAttributedTo)   return "att";
+        if (e instanceof WasInfluencedBy)   return "inf";
+        if (e instanceof ActedOnBehalfOf)   return "del";
+        if (e instanceof SpecializationOf)  return "spe";
+        if (e instanceof AlternateOf)       return "alt";
+        return null;
     }
 
-    
+
 
     public HashMap<String,String> addRelationAttributes(String accountLabel,
                                                         Relation e,
@@ -1086,7 +1088,7 @@ public class ProvToDot {
 
     String defaultRelationStyle;
     HashMap<String,RelationStyleMapEntry> edgeStyleMap=new HashMap<String,RelationStyleMapEntry>();
-    
+
     public String getRelationStyle(Relation edge) {
         String name=edge.getClass().getName();
         RelationStyleMapEntry style=edgeStyleMap.get(name);
@@ -1106,34 +1108,34 @@ public class ProvToDot {
         }
     }
 
-    
+
     //////////////////////////////////////////////////////////////////////
     ///
     ///                              DOT FORMAT GENERATION
     ///
     //////////////////////////////////////////////////////////////////////
-    
-    
+
+
     String name;
     String defaultAccountLabel;
     String defaultAccountColor;
     private String layout;
 
     /* make name compatible with dot notation*/
-    
+
     public String OLDdotify(String name) {
         return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace('&','_').replace('=','_').replace('?','_');
     }
     public String dotify(String name) {
         //return name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace("&","&amp;").replace('=','_').replace('?','_');
         //return htmlify(name);
-	return "\"" + name + "\"";
+        return "\"" + name + "\"";
     }
 
     public String htmlify(String name) {
         return name.replace("&","&amp;")
-        	.replace("<","&lt;")
-        	.replace(">","&gt;");
+                .replace("<","&lt;")
+                .replace(">","&gt;");
     }
 
     public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {
@@ -1146,7 +1148,7 @@ public class ProvToDot {
 
     public void emitBlankNode(String bnid, HashMap<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
-	sb.append(bnid);
+        sb.append(bnid);
         emitProperties(sb,properties);
         out.println(sb.toString());
     }
@@ -1213,15 +1215,15 @@ public class ProvToDot {
     }
 
     public void setLayout(String layout) {
-	this.layout=layout;
-	
+        this.layout=layout;
+
     }
 
 
-    
 
 
-    
+
+
 }
 
 

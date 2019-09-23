@@ -12,6 +12,7 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.DocumentMessageBodyWriter;
 import org.openprovenance.prov.service.core.NodeMessageBodyWriter;
+import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
@@ -28,18 +29,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.info.Info;
+import org.openprovenance.prov.service.translation.VisService;
 
 @OpenAPIDefinition(
 		info = @Info(
 				title = "Provenance API",
 				version = "0.0",
 				description = "An API to process provenance",
-				license = @License(name = "MIT License for ProvToolbox", url = "http://foo.bar"),
-				contact = @Contact(url = "https://openprovenance.org/", name = "Luc Moreau", email = "provenance@kcl.ac.uk")
+				license = @License(name = "MIT License for ProvToolbox",
+						           url = "https://github.com/lucmoreau/ProvToolbox/blob/master/license.txt"),
+				contact = @Contact(url = "https://openprovenance.org/",
+						           name = "Luc Moreau",
+						           email = "provenance@kcl.ac.uk")
 		),
 		tags = {
 				@Tag(name = "documents",  description = "provenance api (documents)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = "provapi",    description = "provenance api",                 externalDocs = @ExternalDocumentation(description = "docs desc")),
+			//	@Tag(name = "provapi",    description = "provenance api",                 externalDocs = @ExternalDocumentation(description = "docs desc")),
 				@Tag(name = "vis",        description = "provenance api (visualisation)", externalDocs = @ExternalDocumentation(description = "docs desc")),
 				@Tag(name = "random",     description = "provenance api (random)",        externalDocs = @ExternalDocumentation(description = "docs desc")),
 				@Tag(name = "view",       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "NOTE: /provapi is incorrect and should be /view"))
@@ -71,6 +76,8 @@ public class ProvapiApplication extends Application {
 		PostService ps=new PostService();
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
+		singletons.add(new TemplateService(ps));
+		//singletons.add(new VisService());
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		

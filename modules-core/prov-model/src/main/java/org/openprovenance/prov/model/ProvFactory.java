@@ -249,9 +249,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	/* Return the first label, it it exists */
-	public String getLabel(HasOther e) {
+	public String getLabel(HasLabel e) {
 
-		List<LangString> labels = ((HasLabel) e).getLabel();
+		List<LangString> labels = e.getLabel();
 		if ((labels == null) || (labels.isEmpty()))
 			return null;
 		if (e instanceof HasLabel)

@@ -7,7 +7,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>service-translator</artifactId>
-    <name> o SERVICE-TRANSLATOR</name>
+    <name> |---- SERVICE-TRANSLATOR</name>
     <packaging>war</packaging>
     <description>A REST service for PROV provenance</description>
 

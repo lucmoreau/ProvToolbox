@@ -7,7 +7,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>prov-interop</artifactId>
-  <name> o PROV-INTEROP</name>
+  <name> |---- PROV-INTEROP</name>
   <packaging>jar</packaging>
   <description>A package aimed at systematic testing convertibility of prov representations.</description>
 

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
-    <name>|---- MODULES: CORE</name>
+    <name>|>- MODULES: CORE</name>
     <artifactId>modules-core</artifactId>
     <modules>
       <module>prov-model</module>

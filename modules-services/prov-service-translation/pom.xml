@@ -11,7 +11,7 @@
 
     <groupId>org.openprovenance.prov</groupId>
     <artifactId>prov-service-translation</artifactId>
-    <name> o PROV-SERVICE-TRANSLATION</name>
+    <name> |---- PROV-SERVICE-TRANSLATION</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

@@ -6,7 +6,7 @@
     <version>0.8.1-SNAPSHOT</version>
   </parent>
   <artifactId>prov-model</artifactId>
-  <name> o PROV-MODEL</name>
+  <name> |---- PROV-MODEL</name>
   <description>A generic implementation of the PROV Data  Model as Java Beans Interfaces, irrespective of the underlying bean implementation</description>
 
   <dependencies>

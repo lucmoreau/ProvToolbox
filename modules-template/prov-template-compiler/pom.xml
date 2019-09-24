@@ -7,7 +7,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>prov-template-compiler</artifactId>
-  <name> o PROV-TEMPLATE-COMPILER</name>
+  <name> |---- PROV-TEMPLATE-COMPILER</name>
   <packaging>jar</packaging>
   <description>A template system for PROV bundles.</description>
 

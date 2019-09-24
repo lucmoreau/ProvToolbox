@@ -1,5 +1,4 @@
 
-TARGET_IMAGE=tomcat.alpine.prov
 TARGET_IMAGE=tomcat.open9j.prov
 
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
@@ -13,8 +12,12 @@ DOCKER=docker
 
 build.all: copy.war build
 
-copy.war:
+generate.docker.war:
+	rm $(TARGET_IMAGE)/service*.war
 	cd ../service-translator ; mvn clean install -Pdocker
+
+copy.war:
+	$(MAKE) generate.docker.war
 	cp ../service-translator/target/service-translator-0.8.1-SNAPSHOT-docker.war $(TARGET_IMAGE)
 
 

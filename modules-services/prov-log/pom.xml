@@ -11,7 +11,7 @@
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>prov-log</artifactId>
   <version>0.8.1-SNAPSHOT</version>
-  <name> o PROV-LOG</name>
+  <name> |---- PROV-LOG</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -11,7 +11,7 @@
 
 
     <packaging>pom</packaging>
-    <name>|---- MODULES: SERVICES</name>
+    <name>|>- MODULES: SERVICES</name>
     <artifactId>modules-services</artifactId>
 
     <modules>
@@ -19,6 +19,7 @@
         <module>prov-service-core</module>
         <module>prov-service-translation</module>
         <module>service-translator</module>
+        <module>docker-service-translator</module>
     </modules>
 
 

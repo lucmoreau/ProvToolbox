@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
-    <name>|---- MODULES: TUTORIAL</name>
+    <name>|>- MODULES: TUTORIAL</name>
     <artifactId>modules-tutorial</artifactId>
 
     <modules>

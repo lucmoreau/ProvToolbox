@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.openprovenance.prov</groupId>
     <artifactId>prov-service-core</artifactId>
-    <name> o PROV-SERVICE-CORE</name>
+    <name> |----- PROV-SERVICE-CORE</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

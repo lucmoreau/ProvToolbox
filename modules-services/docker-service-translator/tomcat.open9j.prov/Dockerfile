@@ -1,17 +1,22 @@
 # Use latest alpine/tomcat image as the base
-FROM tomcat:8.5-jre8-alpine
-#FROM tomcat:9.0.22-jdk12-openjdk-oracle 
+#FROM tomcat:8.5-jre8-alpine
+#FROM tomcat:9-jdk13-openjdk-oracle
+#FROM tomcat:9-jdk11-openjdk-slim
+FROM tomcat:9-jdk12-adoptopenjdk-openj9
 
 
 MAINTAINER Luc Moreau "luc.moreau@kcl.ac.uk"
 
-#RUN apk add --no-cache java-1.8.0-openjdk-devel
 
 # install dependencies
-RUN apk add --no-cache graphviz
+RUN apt-get update; \
+	apt-get install -y --no-install-recommends curl graphviz ; \
+        apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+
+
 
 # install dependencies
-RUN apk add --no-cache curl
+#RUN apk add --no-cache curl
 
 # Expose the port we're interested in
 EXPOSE 8080
@@ -21,7 +26,6 @@ RUN mkdir -p /home/pservice/log/ /home/pservice/files/ /home/pservice/database/
 
 #
 VOLUME /home/pservice
-
 
 RUN rm -r -f /usr/local/tomcat/webapps/ROOT
 

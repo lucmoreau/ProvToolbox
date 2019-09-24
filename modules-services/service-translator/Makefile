@@ -2,6 +2,10 @@ FILE=/home/lavm/workspace/validation-project/prov-validation/src/test/resources/
 URL=https://raw.github.com/lucmoreau/ProvToolbox/master/prov-n/src/test/resources/prov/primer.pn
 OUT=target/primer
 
+tomcat:
+	mvn tomcat7:run -Ptomcat  -X
+
+
 build.docker:
 	mvn clean install -Ptomcat,hsqldb,docker
 

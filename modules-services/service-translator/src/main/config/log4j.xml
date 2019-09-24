@@ -31,8 +31,11 @@
 
   <category name="org.openprovenance">   
     <priority value="PROV" class="org.openprovenance.prov.log.ProvLevel" />   
-    <appender-ref ref="AppenderWrapper"/>
+    <appender-ref ref="stdout"/>
+    <appender-ref ref="file"/>    
   </category> 
+
+
 
   <category name="org.quartz-scheduler">   
     <priority value="INFO"/>   

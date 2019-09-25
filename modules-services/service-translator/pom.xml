@@ -152,14 +152,14 @@
             <artifactId>resteasy-servlet-initializer</artifactId>
             <version>${resteasy.version}</version>
 
-	    <!-- required to exclude to run in tomcat7
-	    <exclusions>
-	      <exclusion>
-		<groupId>javax.el</groupId>
-		<artifactId>javax.el-api</artifactId>
-	      </exclusion>
-	    </exclusions>
--->
+            <!-- required to exclude to run in tomcat7
+            <exclusions>
+              <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+              </exclusion>
+            </exclusions>
+    -->
         </dependency>
 
         <dependency>
@@ -294,169 +294,169 @@
 
 
 
-        </dependencies>
+    </dependencies>
 
 
 
 
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.18.1</version>
-                </plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+            </plugin>
 
-                <plugin>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.3</version>
-                    <configuration>
-                        <failOnMissingWebXml>false</failOnMissingWebXml>
-                    </configuration>
-                </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
 
-            </plugins>
+        </plugins>
 
-            <resources>
-                <resource>
-                    <directory>src/main/resources</directory>
-                    <filtering>true</filtering>
-                </resource>
-                <resource>
-                    <directory>src/main/config</directory>
-                    <filtering>true</filtering>
-                    <includes>
-                        <include>log4j.xml</include>
-                    </includes>
-                </resource>
-            </resources>
-
-
-            <testResources>
-                <testResource>
-                    <directory>src/test/resources</directory>
-                    <filtering>true</filtering>
-                </testResource>
-                <testResource>
-                    <directory>src/test/config</directory>
-                    <filtering>true</filtering>
-                    <includes>
-                        <include>log4j.xml</include>
-                    </includes>
-                </testResource>
-            </testResources>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j.xml</include>
+                </includes>
+            </resource>
+        </resources>
 
 
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
 
-        </build>
 
-        <profiles>
 
-            <profile>
-                <id>local</id>
-                <activation>
-                    <activeByDefault>true</activeByDefault>
-                </activation>
-                <properties>
-                    <isdocker></isdocker>
-                    <upload.directory>target/</upload.directory>
-                    <validation.log.location>target/</validation.log.location>
-                    <validation.prov.log.location>target/</validation.prov.log.location>
-                    <hsqldb.location>target/test-database/database</hsqldb.location>
-                </properties>
-            </profile>
+    </build>
 
-            <profile>
-                <id>docker</id>
-                <properties>
-                    <isdocker>docker</isdocker>
-                    <upload.directory>/home/pservice/</upload.directory>
-                    <validation.log.location>/home/pservice/log/</validation.log.location>
-                    <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
-                    <hsqldb.location>target/test-database/database</hsqldb.location>
-                </properties>
-                <build>
+    <profiles>
 
-                    <plugins>
-                        <plugin>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                                <skip>true</skip>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-war-plugin</artifactId>
-                            <configuration>
-                                <failOnMissingWebXml>false</failOnMissingWebXml>
-                                <classifier>docker</classifier>
-                            </configuration>
-                        </plugin>
-                        <!--<plugin>
-                            <artifactId>maven-jar-plugin</artifactId>
-                            <configuration>
-                                <classifier>docker</classifier>
-                            </configuration>
-                        </plugin> -->
-                    </plugins>
-                </build>
-            </profile>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <isdocker></isdocker>
+                <upload.directory>target/</upload.directory>
+                <validation.log.location>target/</validation.log.location>
+                <validation.prov.log.location>target/</validation.prov.log.location>
+                <hsqldb.location>target/test-database/database</hsqldb.location>
+            </properties>
+        </profile>
 
-	    <profile>
-              <id>mac</id>
-              <properties>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <isdocker>docker</isdocker>
+                <upload.directory>/home/pservice/</upload.directory>
+                <validation.log.location>/home/pservice/log/</validation.log.location>
+                <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
+                <hsqldb.location>target/test-database/database</hsqldb.location>
+            </properties>
+            <build>
+
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <classifier>docker</classifier>
+                        </configuration>
+                    </plugin>
+                    <!--<plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <classifier>docker</classifier>
+                        </configuration>
+                    </plugin> -->
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>mac</id>
+            <properties>
                 <isdocker>mac</isdocker>
                 <upload.directory>/Users/luc/docker/log-dir/</upload.directory>
                 <validation.log.location>/Users/luc/docker/log-dir/log/</validation.log.location>
                 <validation.prov.log.location>/Users/luc/docker/log-dir/log/</validation.prov.log.location>
                 <hsqldb.location>target/test-database/database</hsqldb.location>
-              </properties>
-              <build>
+            </properties>
+            <build>
 
                 <plugins>
-                  <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                      <skip>true</skip>
-                    </configuration>
-                  </plugin>
-                  <plugin>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <configuration>
-                      <failOnMissingWebXml>false</failOnMissingWebXml>
-                      <classifier>mac</classifier>
-                    </configuration>
-                  </plugin>
-                  <!--<plugin>
-                      <artifactId>maven-jar-plugin</artifactId>
-                      <configuration>
-                      <classifier>docker</classifier>
-                      </configuration>
-                      </plugin> -->
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <classifier>mac</classifier>
+                        </configuration>
+                    </plugin>
+                    <!--<plugin>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                        <classifier>docker</classifier>
+                        </configuration>
+                        </plugin> -->
                 </plugins>
-              </build>
-            </profile>
+            </build>
+        </profile>
 
-            <profile>
-                <id>jetty</id>
-                <activation>
-                    <activeByDefault>true</activeByDefault>
-                </activation>
-                <dependencies>
-                    <dependency>
+        <profile>
+            <id>jetty</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-util</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
                         <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-util</artifactId>
+                        <artifactId>jetty-maven-plugin</artifactId>
                         <version>${jetty.version}</version>
-                    </dependency>
-                </dependencies>
-                <build>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.eclipse.jetty</groupId>
-                            <artifactId>jetty-maven-plugin</artifactId>
-                            <version>${jetty.version}</version>
-                            <configuration>
-                                <httpConnector>
-                                    <!--host>localhost</host-->
+                        <configuration>
+                            <httpConnector>
+                                <!--host>localhost</host-->
                                 <port>7070</port> <!-- port hard coded in IT.java files in prov-service/test/ ... -->
                             </httpConnector>
                             <!--<scanIntervalSeconds>10</scanIntervalSeconds> -->
@@ -505,50 +505,50 @@
         </profile>
 
 
-            <profile>
-                <id>tomcat</id>
-                <build>
-                    <plugins>
-                        <plugin>
+        <profile>
+            <id>tomcat</id>
+            <build>
+                <plugins>
+                    <plugin>
 
-                            <groupId>org.apache.tomcat.maven</groupId>
-                            <artifactId>tomcat7-maven-plugin</artifactId>
-                            <version>2.2</version>
-                            <configuration>
-                                <server>local.tomcat</server> <!-- see .m2/settings.xml -->
-                                <port>7070</port>
-                                <path>/</path>
-                            </configuration>
-                            <executions>
-                                <execution>
-                                    <id>start-tomcat</id>
-                                    <phase>pre-integration-test</phase>
-                                    <goals>
-                                        <goal>run</goal>
-                                    </goals>
-                                    <configuration>
-                                        <fork>true</fork>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>stop-tomcat</id>
-                                    <phase>post-integration-test</phase>
-                                    <goals>
-                                        <goal>shutdown</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>org.apache.tomcat</groupId>
-                                    <artifactId>tomcat-el-api</artifactId>
-                                    <version>8.0.9</version>
-                                </dependency>
-                            </dependencies>
-                        </plugin>
-                    </plugins>
-                </build>
-            </profile>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.2</version>
+                        <configuration>
+                            <server>local.tomcat</server> <!-- see .m2/settings.xml -->
+                            <port>7070</port>
+                            <path>/</path>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-tomcat</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <fork>true</fork>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-tomcat</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>shutdown</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.tomcat</groupId>
+                                <artifactId>tomcat-el-api</artifactId>
+                                <version>8.0.9</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
     </profiles>
 

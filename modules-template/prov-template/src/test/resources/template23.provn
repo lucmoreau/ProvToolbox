@@ -1,0 +1,27 @@
+
+document
+
+prefix var <http://openprovenance.org/var#>
+prefix vargen <http://openprovenance.org/vargen#>
+prefix bun <http://example.org/bun#>
+prefix ex <http://example.org/>
+prefix tmpl <http://openprovenance.org/tmpl#>
+
+bundle vargen:123
+entity(vargen:123, [prov:type='prov:Bundle'])
+entity(var:a)
+
+wasDerivedFrom(var:a,vargen:e)
+entity(vargen:e)
+
+entity(vargen:f)
+wasDerivedFrom(var:a,vargen:f)
+
+
+entity(var:b, [tmpl:label='var:label', ex:email='var:d', tmpl:linked='var:a',ex:hi='vargen:hi'])
+wasAttributedTo(var:b, var:a, [ex:foo='var:e'])
+
+
+endBundle
+
+endDocument

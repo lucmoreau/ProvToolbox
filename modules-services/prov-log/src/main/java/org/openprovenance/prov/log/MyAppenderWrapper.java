@@ -1,0 +1,119 @@
+package org.openprovenance.prov.log;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+
+public class MyAppenderWrapper extends AppenderSkeleton implements AppenderAttachable {
+    private EventAction action;
+    
+    public MyAppenderWrapper(EventAction action) {
+        this.action=action;
+    }
+    public MyAppenderWrapper() {
+        this.action=null;
+    }   
+    private final List<Appender> appenders = new ArrayList<Appender>();
+
+    public void close() {
+        synchronized (appenders) {
+            for (Appender appender : appenders) {
+                appender.close();
+            }
+        }
+    }
+
+    public boolean requiresLayout() {
+        return false;
+    }
+
+    public void addAppender(Appender appender) {
+        synchronized (appenders) {
+            appenders.add(appender);
+        }
+    }
+
+    public Enumeration getAllAppenders() {
+        return Collections.enumeration(appenders);
+    }
+
+    public Appender getAppender(String name) {
+        synchronized (appenders) {
+            for (Appender appender : appenders) {
+                if (appender.getName().equals(name)) {
+                    return appender;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isAttached(Appender appender) {
+        synchronized (appenders) {
+            for (Appender wrapped : appenders) {
+                if (wrapped.equals(appender)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public void removeAllAppenders() {
+        synchronized (appenders) {
+            appenders.clear();
+        }
+    }
+
+    public void removeAppender(Appender appender) {
+        synchronized (appenders) {
+            for (Iterator<Appender> i = appenders.iterator(); i.hasNext(); ) {
+                if (i.next().equals(appender)) {
+                    i.remove();
+                }
+            }
+        }
+    }
+
+    public void removeAppender(String name) {
+        synchronized (appenders) {
+            for (Iterator<Appender> i = appenders.iterator(); i.hasNext(); ) {
+                if (i.next().getName().equals(name)) {
+                    i.remove();
+                }
+            }
+        }
+    }
+
+    
+    protected void append_original(LoggingEvent event) {
+        String modifiedMessage = String.format("**** Message modified by MyAppenderWrapper ****\n\n%s\n\n**** Finished modified message ****", event.getMessage());
+        LoggingEvent modifiedEvent = new LoggingEvent(event.getFQNOfLoggerClass(), event.getLogger(), event.getTimeStamp(), event.getLevel(), modifiedMessage,
+                                                      event.getThreadName(), event.getThrowableInformation(), event.getNDC(), event.getLocationInformation(),
+                                                      event.getProperties());
+
+        synchronized (appenders) {
+            for (Appender appender : appenders) {
+                appender.doAppend(modifiedEvent);
+            }
+        }
+    }
+    
+    @Override
+    protected void append(LoggingEvent event) {
+        if (action!=null) action.perform(event);
+        synchronized (appenders) {
+            for (Appender appender : appenders) {
+                appender.doAppend(event);
+            }
+        }
+    }
+
+}

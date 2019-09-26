@@ -1,0 +1,61 @@
+<assembly>
+  <id>release</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <files>
+    <file>
+      <source>../../license.txt</source>
+      <outputDirectory>/ProvToolbox/</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+
+    <file>
+      <source>target/provconvert.1</source>
+      <outputDirectory>/ProvToolbox/doc</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/provconvert.txt</source>
+      <outputDirectory>/ProvToolbox/doc</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/classes/README.txt</source>
+      <outputDirectory>/ProvToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    <file>
+      <source>target/generated-sources/license/THIRD-PARTY.txt</source>
+      <outputDirectory>/ProvToolbox/doc</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+
+  </files>
+
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/appassembler/bin</directory>
+      <outputDirectory>/ProvToolbox/bin</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>prov2dotBAK</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/appassembler/repo</directory>
+      <outputDirectory>/ProvToolbox/repo</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/classes/licenses</directory>
+      <outputDirectory>/ProvToolbox/doc/licenses</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+  </fileSets>
+
+
+</assembly>
+

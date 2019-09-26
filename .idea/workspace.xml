@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/classes/" />
+    <ignored path="$PROJECT_DIR$/tutorial/tutorial6/target/" />
+    <ignored path="$PROJECT_DIR$/prov-n/target/" />
+    <ignored path="$PROJECT_DIR$/prov-sql/target/" />
+    <ignored path="$PROJECT_DIR$/target/" />
+    <ignored path="$PROJECT_DIR$/tutorial/tutorial3/target/" />
+    <ignored path="$PROJECT_DIR$/prov-dot/target/" />
+    <ignored path="$PROJECT_DIR$/tutorial/tutorial4/target/" />
+    <ignored path="$PROJECT_DIR$/prov-rdf/target/" />
+    <ignored path="$PROJECT_DIR$/tutorial/tutorial5/target/" />
+    <ignored path="$PROJECT_DIR$/toolbox/target/" />
+    <ignored path="$PROJECT_DIR$/prov-template/target/" />
+    <ignored path="$PROJECT_DIR$/tutorial/tutorial1/target/" />
+    <ignored path="$PROJECT_DIR$/tutorial/tutorial2/target/" />
+    <ignored path="$PROJECT_DIR$/prov-json/target/" />
+    <ignored path="$PROJECT_DIR$/prov-generator/target/" />
+    <ignored path="$PROJECT_DIR$/prov-interop/target/" />
+    <ignored path="$PROJECT_DIR$/prov-xml/target/" />
+    <ignored path="$PROJECT_DIR$/prov-model/target/" />
+    <ignored path="$PROJECT_DIR$/prov-core/target/" />
+    <ignored path="$PROJECT_DIR$/prov-scala/target/" />
+    <ignored path="$PROJECT_DIR$/prov-core/prov-scala/target/" />
+    <ignored path="$PROJECT_DIR$/prov-core/prov-model/target/" />
+    <ignored path="$PROJECT_DIR$/prov-core/prov-jsonld-xml/target/" />
+    <ignored path="$PROJECT_DIR$/prov-core/prov-n/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/prov-n/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/roundtrip/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/prov-xml/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/prov-rdf/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/prov-json/target/" />
+    <ignored path="$PROJECT_DIR$/legacy/prov-sql/target/" />
+    <ignored path="$PROJECT_DIR$/prov-core/prov-model-scala/target/" />
+    <ignored path="$PROJECT_DIR$/modules-executable/target/" />
+    <ignored path="$PROJECT_DIR$/modules-core/target/" />
+    <ignored path="$PROJECT_DIR$/modules-core/prov-model-scala/target/" />
+    <ignored path="$PROJECT_DIR$/modules-core/prov-model/target/" />
+    <ignored path="$PROJECT_DIR$/modules-core/prov-jsonld-xml/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/prov-xml/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/prov-n/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/prov-rdf/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/roundtrip/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/prov-sql/target/" />
+    <ignored path="$PROJECT_DIR$/modules-legacy/prov-json/target/" />
+    <ignored path="$PROJECT_DIR$/modules-tutorial/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/target/" />
+    <ignored path="$PROJECT_DIR$/modules-misc/target/" />
+    <ignored path="$PROJECT_DIR$/modules-template/target/" />
+    <ignored path="$PROJECT_DIR$/modules-misc/prov-dot/target/" />
+    <ignored path="$PROJECT_DIR$/modules-misc/prov-generator/target/" />
+    <ignored path="$PROJECT_DIR$/modules-executable/toolbox/target/" />
+    <ignored path="$PROJECT_DIR$/modules-executable/prov-interop/target/" />
+    <ignored path="$PROJECT_DIR$/modules-template/prov-template/target/" />
+    <ignored path="$PROJECT_DIR$/modules-tutorial/tutorial5/target/" />
+    <ignored path="$PROJECT_DIR$/modules-tutorial/tutorial4/target/" />
+    <ignored path="$PROJECT_DIR$/modules-tutorial/tutorial2/target/" />
+    <ignored path="$PROJECT_DIR$/modules-tutorial/tutorial1/target/" />
+    <ignored path="$PROJECT_DIR$/modules-tutorial/tutorial3/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/prov-service-core/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/prov-service-translation/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/prov-log/target/" />
+    <ignored path="$PROJECT_DIR$/modules-template/prov-template-compiler/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/service-translator/target/" />
+    <ignored path="$PROJECT_DIR$/modules-services/docker-service-translator/target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="315" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="335">
+              <caret line="24" selection-start-line="24" selection-end-line="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/service-translator/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="319" selection-start-line="319" selection-end-line="349" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="313">
+              <caret line="54" column="43" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentMessageBodyWriter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="645">
+              <caret line="274" column="20" selection-start-line="274" selection-start-column="20" selection-end-line="274" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="129">
+              <caret line="42" column="2" selection-start-line="42" selection-start-column="2" selection-end-line="42" selection-end-column="2" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1878#1879#0" expanded="true" />
+                <element signature="e#1949#1950#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Package Object" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>testal</find>
+      <find>alter</find>
+      <find>provs</find>
+      <find>jet</find>
+      <find>lice</find>
+      <find>license.txt</find>
+      <find>inde</find>
+      <find>xml</find>
+      <find>new pro</find>
+      <find>par</find>
+      <find>normal</find>
+      <find>b</find>
+      <find>newnam</find>
+      <find>format</find>
+      <find>write</find>
+      <find>toj</find>
+      <find>interop</find>
+      <find>writedo</find>
+      <find>serializedo</find>
+      <find>serialised</find>
+      <find>dot</find>
+      <find>provser</find>
+      <find>svg</find>
+      <find>jpe</find>
+      <find>jpeg</find>
+      <find>namesp</find>
+      <find>label</find>
+      <find>system.</find>
+      <find>upl</find>
+      <find>swag</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>json.JSON</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="development" />
+      </map>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentMessageBodyWriter.java" />
+        <option value="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/validator.jsp" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/index.jsp" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/header.jsp" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ViewService.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateResource.java" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/VisService.java" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" />
+        <option value="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" />
+        <option value="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" />
+        <option value="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" />
+        <option value="$PROJECT_DIR$/modules-services/docker-service-translator/tomcat.alpine.prov/Dockerfile" />
+        <option value="$PROJECT_DIR$/modules-services/prov-log/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-template/prov-template/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-executable/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-template/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-misc/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-core/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-core/prov-model/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/prov-xml/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/prov-sql/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/prov-rdf/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/prov-n/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-legacy/prov-json/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial6/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java" />
+        <option value="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" />
+        <option value="$PROJECT_DIR$/modules-services/service-translator/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
+    <option name="width" value="2560" />
+    <option name="height" value="1337" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ProvToolbox" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="extract.method.default.visibility" value="public" />
+    <property name="extractMethod.generateAnnotations" value="false" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-services/docker-service-translator" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="project.propDebugger" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
+      <recent name="org.openprovenance.prov.json" />
+      <recent name="org.openprovenance.prov.core.json.serialization.serial" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.openprovenance.prov.core.json" />
+      <recent name="org.openprovenance.prov.core" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala" />
+      <recent name="$PROJECT_DIR$/modules-tutorial" />
+      <recent name="$PROJECT_DIR$/modules-template" />
+      <recent name="$PROJECT_DIR$/modules-executable" />
+      <recent name="$PROJECT_DIR$/modules-misc" />
+    </key>
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.serialization.Constants" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.scala" />
+      <recent name="org.openprovenance.prov.core" />
+      <recent name="org.openprovenance.prov.model" />
+      <recent name="org.openprovenance.prov.core.json.serialization" />
+      <recent name="org.openprovenance.prov.scala.jsonld11" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/docker-service-translator" />
+      <recent name="$PROJECT_DIR$/modules-services" />
+      <recent name="$PROJECT_DIR$/modules-template" />
+      <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala" />
+      <recent name="$PROJECT_DIR$/prov-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/deserial" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.core.json" />
+      <recent name="org.openprovenance.prov.core.json.serialization" />
+      <recent name="org.openprovenance.prov.core" />
+      <recent name="org.openprovenance.prov.scala.jsonld11" />
+    </key>
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
+      <recent name="org.openprovenance.prov.core.serialization.Constants" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Docker.tomcat.alpine.prov/Dockerfile">
+    <configuration name="All in service-translator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-jsonld-xml" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.core.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.RoundTripFromJavaJSONTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripJavaToJavaTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.RoundTripJavaToJavaTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
+      <module name="prov-model-scala" />
+      <setting name="path" value="org.openprovenance.prov.scala.ModelSpec" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <setting name="searchForTest" value="In single module" />
+      <setting name="showProgressMessages" value="true" />
+      <setting name="useSbt" value="false" />
+      <setting name="useUiWithSbt" value="false" />
+      <setting name="jrePath" value="" />
+      <envs />
+      <setting name="testKind" value="Class" />
+      <setting name="path" value="org.openprovenance.prov.scala.ModelSpec" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ParserSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+      <module name="prov-model-scala" />
+      <setting name="path" value="org.openprovenance.prov.scala.ParserSpec" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="showProgressMessages" value="true" />
+      <setting name="useSbt" value="false" />
+      <setting name="useUiWithSbt" value="false" />
+      <setting name="jrePath" value="" />
+      <envs />
+      <setting name="testKind" value="Class" />
+      <setting name="path" value="org.openprovenance.prov.scala.ParserSpec" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="tomcat.alpine.prov/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="modules-services/docker-service-translator/tomcat.alpine.prov/Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.RoundTripJavaToJavaTest (1)" />
+      <item itemvalue="JUnit.All in service-translator" />
+      <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="ScalaTest.ParserSpec" />
+      <item itemvalue="Docker.tomcat.alpine.prov/Dockerfile" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Docker.tomcat.alpine.prov/Dockerfile" />
+        <item itemvalue="JUnit.All in service-translator" />
+        <item itemvalue="ScalaTest.ParserSpec" />
+        <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+        <item itemvalue="JUnit.RoundTripJavaToJavaTest (1)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="" />
+      <created>1563129022141</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1563129022141</updated>
+      <workItem from="1563129024345" duration="6916000" />
+      <workItem from="1563224680560" duration="1867000" />
+      <workItem from="1563296369837" duration="3522000" />
+      <workItem from="1563618542241" duration="2475000" />
+      <workItem from="1563716775188" duration="447000" />
+      <workItem from="1563737915342" duration="255000" />
+      <workItem from="1564838129931" duration="24000" />
+      <workItem from="1565514544963" duration="70858000" />
+      <workItem from="1566512383366" duration="19334000" />
+      <workItem from="1566920367084" duration="2951000" />
+      <workItem from="1566929460594" duration="2272000" />
+      <workItem from="1567007361993" duration="19002000" />
+      <workItem from="1567075018595" duration="89860000" />
+      <workItem from="1567440900973" duration="89368000" />
+      <workItem from="1568128965781" duration="16768000" />
+      <workItem from="1568294817392" duration="715000" />
+      <workItem from="1568304454117" duration="4238000" />
+      <workItem from="1568395314496" duration="12031000" />
+      <workItem from="1568526450161" duration="58000" />
+      <workItem from="1568527272929" duration="10303000" />
+      <workItem from="1568649088425" duration="9682000" />
+      <workItem from="1568665328032" duration="5510000" />
+      <workItem from="1568727939431" duration="2625000" />
+      <workItem from="1568731407888" duration="2180000" />
+      <workItem from="1568735664509" duration="15177000" />
+      <workItem from="1568822475377" duration="24926000" />
+      <workItem from="1568929320509" duration="85000" />
+      <workItem from="1568929432614" duration="17903000" />
+      <workItem from="1568998999272" duration="844000" />
+      <workItem from="1569007511430" duration="27969000" />
+      <workItem from="1569238166374" duration="30379000" />
+    </task>
+    <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
+      <created>1566430960720</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1566430960720</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="RoundTripJavaToJavaTest - 2019.09.19 at 22h 09m 22s.xml">
+      <configuration name="RoundTripJavaToJavaTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripJavaToJavaTest_(1) - 2019.09.19 at 22h 11m 19s.xml">
+      <configuration name="RoundTripJavaToJavaTest (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripJavaToJavaTest_(1) - 2019.09.19 at 22h 46m 41s.xml">
+      <configuration name="RoundTripJavaToJavaTest (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RoundTripFromJavaJSONTest - 2019.09.19 at 23h 00m 00s.xml">
+      <configuration name="RoundTripFromJavaJSONTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="ModelSpec - 2019.09.20 at 09h 48m 19s.xml">
+      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="ModelSpec - 2019.09.20 at 09h 52m 26s.xml">
+      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="ParserSpec - 2019.09.20 at 09h 53m 02s.xml">
+      <configuration name="ParserSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="ModelSpec - 2019.09.20 at 09h 53m 22s.xml">
+      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="ModelSpec - 2019.09.22 at 17h 19m 04s.xml">
+      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="All_in_service-translator - 2019.09.22 at 17h 35m 34s.xml">
+      <configuration name="All in service-translator" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="501829000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="23" width="2560" height="1337" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15766482" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info id="Web" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32393232" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3716312" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39965248" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3292789" />
+      <window_info anchor="bottom" id="Docker" order="7" visible="true" weight="0.06987952" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3298153" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.3292789" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Java Enterprise" order="12" weight="0.3292789" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.18533441" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Maven" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Database" order="8" />
+      <window_info anchor="right" id="Bean Validation" order="9" />
+      <window_info anchor="right" id="Maven Projects" order="10" />
+      <window_info anchor="right" id="Coverage" order="11" side_tool="true" weight="0.3299679" />
+      <window_info anchor="right" id="CDI" order="12" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First cut of json-ld serialisation for activities" />
+    <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.openprovenance.prov.core.*</FILTER>
+    </SUITE>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="567">
+          <caret line="1236" column="85" selection-start-line="1236" selection-start-column="71" selection-end-line="1236" selection-end-column="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="53" selection-start-line="27" selection-start-column="53" selection-end-line="27" selection-end-column="53" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="272" column="22" selection-start-line="272" selection-start-column="22" selection-end-line="272" selection-end-column="22" />
+          <folding>
+            <element signature="e#26527#26528#0" expanded="true" />
+            <element signature="e#26577#26578#0" expanded="true" />
+            <element signature="e#31038#31053#0" expanded="true" />
+            <element signature="e#38029#38030#0" expanded="true" />
+            <element signature="e#38068#38069#0" expanded="true" />
+            <element signature="e#38124#38125#0" expanded="true" />
+            <element signature="e#38200#38201#0" expanded="true" />
+            <element signature="e#42616#42617#0" expanded="true" />
+            <element signature="e#42648#42649#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="618">
+          <caret line="111" column="53" selection-start-line="111" selection-start-column="40" selection-end-line="111" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ViewService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="44" column="79" selection-start-line="44" selection-start-column="59" selection-end-line="44" selection-end-column="79" />
+          <folding>
+            <element signature="e#1506#1507#0" expanded="true" />
+            <element signature="e#1550#1551#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="148">
+          <caret line="42" column="18" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/docker-service-translator/tomcat.alpine.prov/Dockerfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="12" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ActionPerformer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-log/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/resources/org/openprovenance/prov/service/core/config.properties">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-executable/toolbox/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-executable/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-template/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-misc/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-misc/prov-generator/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-misc/prov-dot/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-core/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-core/prov-model/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/prov-xml/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/prov-sql/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/prov-rdf/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/prov-n/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-legacy/prov-json/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/tutorial6/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="14" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-tutorial/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="825">
+          <caret line="55" column="30" selection-start-line="55" selection-start-column="23" selection-end-line="55" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="335">
+          <caret line="24" selection-start-line="24" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="42" column="2" selection-start-line="42" selection-start-column="2" selection-end-line="42" selection-end-column="2" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1878#1879#0" expanded="true" />
+            <element signature="e#1949#1950#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/service-translator/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="319" selection-start-line="319" selection-end-line="349" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="274" column="20" selection-start-line="274" selection-start-column="20" selection-end-line="274" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/pservice/ProvapiApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="54" column="43" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ByteArrayMessageBodyWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentMessageBodyWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="25" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>scala-sdk-2.12.1</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>12.0.1</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>modules-services</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>12</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: antlr:antlr:2.7.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

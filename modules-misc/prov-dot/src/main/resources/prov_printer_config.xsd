@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Author: Luc Moreau -->
+
+
+<xs:schema targetNamespace="http://openprovenance.org/model/opmPrinterConfig"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+           xmlns:opc="http://openprovenance.org/model/opmPrinterConfig"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           jxb:version="2.0">
+
+
+  <xs:element name="configuration" type="opc:ProvPrinterConfiguration">
+	<xs:annotation>
+	  <xs:documentation>A configuration for Prov Graph printer</xs:documentation>
+	</xs:annotation>
+  </xs:element>
+
+  <xs:complexType name="ProvPrinterConfiguration">
+	<xs:sequence>
+	  <xs:element name="relations"             type="opc:RelationStyleMap" minOccurs="0"/>
+	  <xs:element name="activities"            type="opc:ActivityMap"   minOccurs="0"/>
+	  <xs:element name="entities"             type="opc:EntityMap"  minOccurs="0"/>
+	  <xs:element name="agents"               type="opc:AgentMap"     minOccurs="0"/>
+	  <xs:element name="accounts"             type="opc:AccountMap"   minOccurs="0"/>
+	  <xs:element name="displayEntityValue" type="xs:boolean"       minOccurs="0"/>
+	  <xs:element name="graphName"            type="xs:string"        minOccurs="0"/>
+	</xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="RelationStyleMap">
+	<xs:sequence>
+      <xs:element name="relation" type="opc:RelationStyleMapEntry" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute name="default"  type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="RelationStyleMapEntry">
+	<xs:attribute name="type"  type="xs:string"/>
+	<xs:attribute name="style" type="xs:string"/>
+	<xs:attribute name="printRole" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="AccountMap">
+	<xs:sequence>
+      <xs:element name="account" type="opc:AccountColorMapEntry" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute name="defaultAccount"  type="xs:string"/>
+	<xs:attribute name="defaultColor"  type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="AccountColorMapEntry">
+	<xs:attribute name="name"  type="xs:string"/>
+	<xs:attribute name="color" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ActivityMap">
+	<xs:sequence>
+      <xs:element name="activity" type="opc:ActivityMapEntry" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute name="displayValue"   type="xs:boolean"/>
+	<xs:attribute name="coloredAsAccount" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="ActivityMapEntry">
+	<xs:attribute name="value"   type="xs:string"/>
+	<xs:attribute name="display" type="xs:string"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="EntityMap">
+	<xs:sequence>
+      <xs:element name="entity" type="opc:EntityMapEntry" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute name="displayValue"  type="xs:boolean"/>
+	<xs:attribute name="coloredAsAccount" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="EntityMapEntry">
+	<xs:attribute name="value"   type="xs:string"/>
+	<xs:attribute name="display" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="AgentMap">
+	<xs:sequence>
+      <xs:element name="agent" type="opc:AgentMapEntry" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+	<xs:attribute name="displayValue"  type="xs:boolean"/>
+	<xs:attribute name="coloredAsAccount" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="AgentMapEntry">
+	<xs:attribute name="value"   type="xs:string"/>
+	<xs:attribute name="display" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Map">
+	<xs:sequence>
+      <xs:element name="map" type="opc:MapEntry" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MapEntry">
+	<xs:attribute name="name"  type="xs:string"/>
+	<xs:attribute name="value" type="xs:string"/>
+  </xs:complexType>
+
+
+</xs:schema>

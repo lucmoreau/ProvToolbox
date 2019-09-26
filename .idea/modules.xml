@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ProvToolbox.iml" filepath="$PROJECT_DIR$/ProvToolbox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" filepath="$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-core/modules-core.iml" filepath="$PROJECT_DIR$/modules-core/modules-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-executable/modules-executable.iml" filepath="$PROJECT_DIR$/modules-executable/modules-executable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/modules-legacy.iml" filepath="$PROJECT_DIR$/modules-legacy/modules-legacy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-misc/modules-misc.iml" filepath="$PROJECT_DIR$/modules-misc/modules-misc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/modules-services.iml" filepath="$PROJECT_DIR$/modules-services/modules-services.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/modules-template.iml" filepath="$PROJECT_DIR$/modules-template/modules-template.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/modules-tutorial.iml" filepath="$PROJECT_DIR$/modules-tutorial/modules-tutorial.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" filepath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-misc/prov-generator/prov-generator.iml" filepath="$PROJECT_DIR$/modules-misc/prov-generator/prov-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" filepath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-json/prov-json.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-json/prov-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" filepath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" filepath="$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" filepath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-n/prov-n.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-n/prov-n.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-rdf/prov-rdf.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-rdf/prov-rdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model-scala/prov-scala.iml" filepath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" filepath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" filepath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,47 @@
+
+document
+
+prefix var <http://openprovenance.org/var#>
+prefix bun <http://example.org/bun#>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix ex <http://example.org/>
+
+
+bundle bun:123
+entity(var:e)
+agent(var:ag)
+activity(var:a,-,-)
+activity(var:a,2014-04-29T22:02:13.975+01:00,-)
+activity(var:a,-,2014-04-29T22:02:13.975+01:00)
+activity(var:a,2014-04-29T22:02:13.975+01:00,2014-04-29T22:02:13.975+01:00)
+activity(var:a,-,-,[tmpl:startTime='var:start',tmpl:endTime='var:end'])
+wasAttributedTo(var:e, var:ag, [ex:email='var:d'])
+
+used(var:a, var:e,-, [ex:email='var:d'])
+used(var:a, var:e,2014-04-29T22:02:13.975+01:00, [ex:email='var:d'])
+
+
+wasGeneratedBy(var:e, var:a,-, [ex:email='var:d'])
+wasGeneratedBy(var:e, var:a,2014-04-29T22:02:13.975+01:00, [ex:email='var:d'])
+wasInvalidatedBy(var:e, var:a,-, [ex:email='var:d'])
+wasInvalidatedBy(var:e, var:a,2014-04-29T22:02:13.975+01:00, [ex:email='var:d'])
+
+wasAssociatedWith(var:a, var:ag, -, [ex:email='var:d'])
+wasAssociatedWith(var:a, var:ag, var:pl, [ex:email='var:d'])
+
+alternateOf(var:e, var:e2)
+specializationOf(var:e, var:e2)
+
+wasDerivedFrom(var:e, var:e2, [ex:email='var:d'])
+wasDerivedFrom(var:e, var:e2, -, -, -, [ex:email='var:d'])
+wasDerivedFrom(var:e, var:e2, var:a, -, -, [ex:email='var:d'])
+wasDerivedFrom(var:e, var:e2, var:a, var:a, var:a, [ex:email='var:d'])
+
+wasInformedBy(var:e, var:e2, [ex:email='var:d'])
+
+actedOnBehalfOf(var:e, var:e2, -, [ex:email='var:d'])
+actedOnBehalfOf(var:e, var:e2, var:a, [ex:email='var:d'])
+
+endBundle
+
+endDocument

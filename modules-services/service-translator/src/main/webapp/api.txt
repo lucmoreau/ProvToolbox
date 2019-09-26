@@ -1,0 +1,128 @@
+
+
+/provapi/validator.html
+/provapi/translator.html
+/provapi/transformer.html
+
+POST
+/provapi/documents/
+ content-type: graph type: then it's just a restful post,
+     redirects to
+       /provapi/documents/g012
+ content-type: multipart .., then it's a browser post
+    validate=w3c, ++, ...
+    translate=json,... , + ...
+
+  g012 is a conceptual graph
+   /provapi/documents/g012 content negotiation
+       accept html: landing page
+   /provapi/documents/g012/original
+
+
+  g012 is the uploaded graph
+   /provapi/documents/g012 -> the original
+   /provapi/documents/g012/translation content negotaion
+
+
+  g012 is the landing page
+   /provapi/documents/g012 -> landing page html, xml (with xlink), json, etc
+                              essentially linking to resources
+                              and uploade metadata
+   /provapi/documents/g012/original NO content negotaion
+   /provapi/documents/g012/document content negotation
+
+
+  /provapi/documents/g0123/validationReport
+              triggers validation
+              content negotation for result
+  /provapi/documents/g0123/normalizedDocument
+  /provapi/documents/g0123/metrics
+  /provapi/documents/g0123/matrix
+     /provapi/documents/g0123/matrix.txt
+     /provapi/documents/g0123/matrix.png
+
+
+-> /provapi/g0123/validate
+  -> /provapi/g0123/validation
+    -> /provapi/g0123/validation.xml
+    -> /provapi/g0123/validation.html
+
+  -> /provapi/g0123/normalized
+  -> /provapi/g0256/translate
+   
+
+    -> /provapi/g0123/normalizedOld/
+    -> /provapi/g0123/normalizedOld/xml
+    -> /provapi/g0123/normalizedOld/provn
+    -> /provapi/g0123/normalizedOld/json
+    -> /provapi/g0123/normalizedOld/svg
+
+-> /provapi/g0123/metrics
+
+-> /provapi/g0123/matrix
+-> /provapi/g0123/matrix.txt
+-> /provapi/g0123/matrix.png
+-> /provapi/g0123/matrix/diagonal
+
+
+-> /provapi/g0123/translate
+-> /provapi/g0123/translate/xml
+-> /provapi/g0123/translate/trig
+-> /provapi/g0123/translate/turtle
+-> /provapi/g0123/translate/provn
+-> /provapi/g0123/translate/json
+-> /provapi/g0123/translate/svg
+
+-> /provapi/g0123/deposit
+
+
+-> /provapi/g0123/renew (renew lease)
+-> /provapi/g0123/destroy (renew lease)
+
+
+   to provenance store
+
+-> /provapi/g0123/transform
+  ???
+
+
+
+
+
+
+----------------------------------------------------------------------
+
+
+POST
+/provapi/submit
+
+ -> /provapi/g0123
+ Landing page for the submitted graph
+
+ -> /provapi/g0123/original
+ Returns the original contents, in the submittedformat
+
+
+-> /provapi/g0123/validate
+
+-> /provapi/g0123/resources/validation
+  -> /provapi/g0123/resources/validation.xml
+  -> /provapi/g0123/resources/validation.html
+
+-> /provapi/g0123/resources/validation/cycle
+-> /provapi/g0123/resources/validation/failedMerge
+-> /provapi/g0123/resources/validation/successfulMerge
+-> /provapi/g0123/resources/validation/qualifiedNameMismatch
+
+-> /provapi/g0123/resources/normalized
+   -> /provapi/g0123/resources/normalized/xml
+   -> /provapi/g0123/resources/normalized/provn
+   -> /provapi/g0123/resources/normalized/json
+   -> /provapi/g0123/resources/normalized/svg
+
+-> /provapi/g0123/resources/matrix
+-> /provapi/g0123/resources/matrix.txt
+-> /provapi/g0123/resources/matrix.png
+-> /provapi/g0123/resources/matrix/diagonal
+
+-> /provapi/g0123/resources/metrics

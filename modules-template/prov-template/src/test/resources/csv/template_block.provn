@@ -1,0 +1,21 @@
+document
+ prefix tmpl <http://openprovenance.org/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+
+
+ bundle vargen:b
+  activity(var:operation,
+           [ prov:type='var:operation_type' ] )
+  agent(var:agent)
+  wasAssociatedWith(var:operation,var:agent,-)
+  entity(var:consumed1,[prov:value='var:consumed_value1'])
+  entity(var:consumed2,[prov:value='var:consumed_value2'])
+  used(var:operation, var:consumed1, - )
+  used(var:operation, var:consumed2, - )  
+  entity(var:produced,[prov:type='var:produced_type',prov:value='var:produced_value'])
+  wasGeneratedBy(var:produced, var:operation, - )
+  wasDerivedFrom(var:produced, var:consumed1)
+  wasDerivedFrom(var:produced, var:consumed2)
+ endBundle
+endDocument

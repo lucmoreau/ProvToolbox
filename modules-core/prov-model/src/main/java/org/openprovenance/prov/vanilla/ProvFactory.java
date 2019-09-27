@@ -523,8 +523,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     public Document newDocument(Document graph) {
         Document res = newDocument();
-        res.getStatementOrBundle()
-                .addAll(graph.getStatementOrBundle());
+        res.getStatementOrBundle().addAll(graph.getStatementOrBundle());
         if (graph.getNamespace()!=null) {
             res.setNamespace(new Namespace(graph.getNamespace()));
         }

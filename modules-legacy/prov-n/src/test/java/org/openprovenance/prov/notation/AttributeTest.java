@@ -23,8 +23,6 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
 	public Document readDocument(String file1) {
 		try {
 			return (Document) u.convertASNToJavaBean(file1,pFactory);
-		} catch (IOException e) {
-		    throw new UncheckedTestException(e);
 		} catch (Throwable e) {
 			throw new UncheckedTestException(e);
 		}

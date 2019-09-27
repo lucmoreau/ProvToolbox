@@ -4,6 +4,7 @@ import java.io.StringWriter;
 
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
@@ -64,7 +65,7 @@ public class RoundTripFromJavaTest extends
 	{
 		try
 		{
-			u.dumpRDF(doc, RDFFormat.TRIG, file);
+			u.dumpRDF(doc, Formats.ProvFormat.TRIG, file);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

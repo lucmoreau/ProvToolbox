@@ -54,16 +54,12 @@ public class PubTest
         graph1.setNamespace(Namespace.gatherNamespaces(graph1));
 
 
-        try {
-            ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
-            Namespace.withThreadNamespace(graph1.getNamespace());
+        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        Namespace.withThreadNamespace(graph1.getNamespace());
 
-            serial.serialiseDocument(new File(file2),(Document)o2,true);
+        serial.serialiseDocument(new File(file2),(Document)o2,true);
 
-            assertTrue(true);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        assertTrue(true);
     }
 
 }

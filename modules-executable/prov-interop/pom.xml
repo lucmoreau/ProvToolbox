@@ -17,12 +17,14 @@
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
 
@@ -30,18 +32,21 @@
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-dot</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-json</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-rdf</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
 
@@ -49,18 +54,21 @@
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-template</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-template-compiler</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-generator</artifactId>
       <version>0.8.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -94,7 +102,7 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <!-- <version>3.1.4.Final</version> -->
-      <version>3.8.0.Final</version>
+      <version>4.0.0.Beta5</version>
     </dependency>
 
 

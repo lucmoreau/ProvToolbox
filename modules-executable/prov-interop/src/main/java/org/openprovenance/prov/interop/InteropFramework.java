@@ -18,7 +18,6 @@ import java.util.*;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
-import javax.xml.bind.JAXBException;
 
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
@@ -26,21 +25,14 @@ import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.xml.ProvDeserialiser;
 import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.rdf.Ontology;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.TemplateCompiler;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTree;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
@@ -70,8 +62,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     final Utility u = new Utility();
 
     final ProvFactory pFactory;
-    
-    final Ontology onto;
 
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
@@ -102,7 +92,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public InteropFramework(CommandLineArguments config,
                             ProvFactory pFactory) {
         this.pFactory=pFactory;
-        this.onto = new Ontology(pFactory);
         this.config=config;
         
         extensionMap = new Hashtable<ProvFormat, String>();
@@ -430,14 +419,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         try {
             Utility u = new Utility();
-            CommonTree tree = u.convertASNToTree(filename);
-            Object o = u.convertTreeToJavaBean(tree, pFactory);
+            Object o = u.convertTreeToJavaBean(u.convertASNToTree(filename), pFactory);
             if (o != null) {
                 return o;
             }
-        } catch (RecognitionException t1) {
-            // OK, we failed, let's try next format.
-        } catch (IOException e) {
+        } catch (RuntimeException t1) {
             // OK, we failed, let's try next format.
         }
         try {
@@ -448,7 +434,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             if (c != null) {
                 return c;
             }
-        } catch (JAXBException t2) {
+        } catch (RuntimeException t2) {
             // OK, we failed, let's try next format.
         }
 
@@ -462,18 +448,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             // OK, we failed, let's try next format.
 
         }
-        try {
-            org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                    pFactory, onto);
-            Document doc = rdfU.parseRDF(filename);
-            if (doc != null) {
-                return doc;
-            }
-        } catch (RDFParseException e) {
-        } catch (RDFHandlerException e) {
-        } catch (IOException e) {
-        } catch (JAXBException e) {
+        org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
+                pFactory);
+        Document doc = rdfU.parseRDF(filename);
+        if (doc != null) {
+            return doc;
         }
+
         System.out.println("Unparseable format " + filename);
         throw new UnsupportedOperationException();
 
@@ -488,8 +469,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return org.openprovenance.prov.xml.ProvFactory.getFactory();
     }
     
-    public void provn2html(String file, String file2)
-            throws java.io.IOException, JAXBException, RecognitionException {
+    public void provn2html(String file, String file2)  {
         Document doc = (Document) u.convertASNToJavaBean(file, pFactory);
         String s = u.convertBeanToHTML(doc, pFactory);
         u.writeTextToFile(s, file2);
@@ -537,32 +517,27 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             case PROVN: {
                 Utility u = new Utility();
-                CommonTree tree = u.convertASNToTree(is);
-                Object o = u.convertTreeToJavaBean(tree, pFactory);
+                Object o = u.convertTreeToJavaBean(u.convertASNToTree(is), pFactory);
                 Document doc = (Document) o;
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
                 return doc;
             }
             case RDFXML: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.RDFXML, baseuri);
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
+                return rdfU.parseRDF(is, RDFXML, baseuri);
             }
             case TRIG: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.TRIG,baseuri);
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
+                return rdfU.parseRDF(is, TRIG,baseuri);
             }
             case TURTLE: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.TURTLE,baseuri);
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
+                return rdfU.parseRDF(is, TURTLE,baseuri);
             }
             case JSONLD: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory, onto);
-                return rdfU.parseRDF(is, RDFFormat.JSONLD,baseuri);
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
+                return rdfU.parseRDF(is, JSONLD,baseuri);
             }
             case XML: {
                 ProvDeserialiser deserial = ProvDeserialiser
@@ -576,14 +551,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             }
         } catch (IOException e) {
-            throw new InteropException(e);
-        } catch (JAXBException e) {
-            throw new InteropException(e);
-        } catch (RecognitionException e) {
-            throw new InteropException(e);
-        } catch (RDFParseException e) {
-            throw new InteropException(e);
-        } catch (RDFHandlerException e) {
             throw new InteropException(e);
         }
 
@@ -676,8 +643,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             case PROVN: {
                 Utility u = new Utility();
-                CommonTree tree = u.convertASNToTree(filename);
-                Object o = u.convertTreeToJavaBean(tree, pFactory);
+                Object o = u.convertTreeToJavaBean(u.convertASNToTree(filename), pFactory);
                 Document doc = (Document) o;
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
@@ -688,7 +654,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case JSONLD:
             case TURTLE: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory, onto);
+                        pFactory);
                 Document doc = rdfU.parseRDF(filename);
                 return doc;
             }
@@ -706,13 +672,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
         } catch (IOException e) {
             throw new InteropException(e);
-        } catch (RDFParseException e) {
-            throw new InteropException(e);
-        } catch (RDFHandlerException e) {
-            throw new InteropException(e);
-        } catch (JAXBException e) {
-            throw new InteropException(e);
-        } catch (RecognitionException e) {
+        } catch (RuntimeException e) {
             throw new InteropException(e);
         }
 
@@ -1016,18 +976,18 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
       }
         
         if (config.template!=null  && config.builder) {
-            JsonNode bindings_schema=null;
+            TemplateCompiler tbg=new TemplateCompiler(pFactory);
+
             if (config.bindings != null && config.bindingsVersion>=3) {
                 try {
-                    bindings_schema = mapper.readTree(new File(config.bindings));
+                    tbg.generate(doc, config.template, config.packge, config.outfile, config.location,config.location,tbg.readTree(new File(config.bindings)));
+                    return CommandLineArguments.STATUS_OK;
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            TemplateCompiler tbg=new TemplateCompiler(pFactory);
-            
-            tbg.generate(doc, config.template, config.packge, config.outfile, config.location,config.location,bindings_schema);
-            return CommandLineArguments.STATUS_OK;
+
         }
 
         if (config.index != null) {
@@ -1062,7 +1022,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return CommandLineArguments.STATUS_OK;
 
     }
-    static ObjectMapper mapper = new ObjectMapper();
 
     private int doCompare(Document doc1, Document doc2) {
         if (doc1==null) return CommandLineArguments.STATUS_COMPARE_NO_ARG1;
@@ -1141,13 +1100,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
 
             case RDFXML: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.RDFXML, os);
+                new org.openprovenance.prov.rdf.Utility(pFactory)
+                        .dumpRDF(document, RDFXML, os);
                 break;
             }
             case TRIG: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.TRIG, os);
+                new org.openprovenance.prov.rdf.Utility(pFactory)
+                        .dumpRDF(document, TRIG, os);
                 break;
             }
             case JSON: {
@@ -1188,7 +1147,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             default:
                 break;
             }
-        } catch (JAXBException e) {
+        } catch (RuntimeException e) {
             if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);
@@ -1226,10 +1185,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
                         XML,     () -> ProvSerialiser.getThreadProvSerialiser(),
-                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory,RDFFormat.TURTLE),
-                        JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.JSONLD),
-                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.RDFXML),
-                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFFormat.TRIG),
+                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
+                        JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, JSONLD),
+                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
+                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
                         JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory)));
 
         serializer.putAll(
@@ -1273,23 +1232,23 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 break;
             }
             case TURTLE: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.TURTLE, filename);
+                new org.openprovenance.prov.rdf.Utility(pFactory)
+                        .dumpRDF(document, TURTLE, filename);
                 break;
             }
             case JSONLD: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.JSONLD, filename);
+                new org.openprovenance.prov.rdf.Utility(pFactory)
+                        .dumpRDF(document, JSONLD, filename);
                 break;
             }
             case RDFXML: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.RDFXML, filename);
+                new org.openprovenance.prov.rdf.Utility(pFactory)
+                        .dumpRDF(document, RDFXML, filename);
                 break;
             }
             case TRIG: {
-                new org.openprovenance.prov.rdf.Utility(pFactory, onto)
-                        .dumpRDF(document, RDFFormat.TRIG, filename);
+                new org.openprovenance.prov.rdf.Utility(pFactory)
+                        .dumpRDF(document, TRIG, filename);
                 break;
             }
             case JSON: {
@@ -1331,7 +1290,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             default:
                 break;
             }
-        } catch (JAXBException e) {
+        } catch (RuntimeException e) {
             if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);

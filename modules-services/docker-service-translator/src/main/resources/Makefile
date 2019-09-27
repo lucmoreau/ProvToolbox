@@ -1,14 +1,14 @@
 
-ORIGIN=service-translator
+ORIGIN=${origin.project}
 
-SERVICE=docker-service-translator
+SERVICE=${project.artifactId}
 
 TARGET_IMAGE=$(SERVICE).open9j
 LOCATION_IMAGE=target/$(TARGET_IMAGE)
 
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 
-WAR_VERSION=0.8.1-SNAPSHOT
+WAR_VERSION=${project.version}
 WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
 
 
@@ -25,13 +25,13 @@ mk.dir:
 
 generate.docker.war:
 	rm -f $(LOCATION_IMAGE)/*.war
-	cd /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/../$(ORIGIN) ; mvn clean install -Pdocker
+	cd ${project.basedir}/../$(ORIGIN) ; mvn clean install -Pdocker
 
 copy.war:
-	cp /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/../$(ORIGIN)/target/$(WAR_FILE).war $(LOCATION_IMAGE)
+	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE).war $(LOCATION_IMAGE)
 
 dck.file:
-	cp /Users/luc/IdeaProjects/ProvToolbox/modules-services/docker-service-translator/tomcat.open9j.prov/Dockerfile $(LOCATION_IMAGE)
+	cp ${project.basedir}/tomcat.open9j.prov/Dockerfile $(LOCATION_IMAGE)
 
 build:
 	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}

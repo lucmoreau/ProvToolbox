@@ -142,15 +142,18 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         serialiseDocument(out,document,formatted);
     }
 
-    public void serialiseDocument (File file, Document document, boolean format)
-	        throws JAXBException {
-	Marshaller m=jc.createMarshaller();
-	m.setProperty("jaxb.formatted.output",format);
-	//m.setProperty("jaxb.encoding","UTF-16");
-	//m.setProperty("jaxb.encoding","Unicode");
+    public void serialiseDocument (File file, Document document, boolean format) {
+        try {
+            Marshaller m = jc.createMarshaller();
+            m.setProperty("jaxb.formatted.output", format);
+            //m.setProperty("jaxb.encoding","UTF-16");
+            //m.setProperty("jaxb.encoding","Unicode");
 
-	prepareNamespaces(m, document);
-	m.marshal(of.createDocument(document),file);
+            prepareNamespaces(m, document);
+            m.marshal(of.createDocument(document), file);
+        } catch (JAXBException e) {
+            throw new UncheckedException(e);
+        }
     }
 
 

@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.exception.UncheckedException;
 
 
 public  class Utility {
@@ -52,14 +53,22 @@ public  class Utility {
 	
     }
 
-    public PROV_NParser getParserForFile(String file) throws java.io.IOException {
-        CharStream input = new ANTLRFileStream(file);
-        return getParserForCharStream(input);     
+    public PROV_NParser getParserForFile(String file) {
+        try {
+            CharStream input = new ANTLRFileStream(file);
+            return getParserForCharStream(input);
+        } catch (IOException e) {
+            throw new UncheckedException(e);
+        }
     }
-    
-    public PROV_NParser getParserForStream(InputStream is) throws java.io.IOException {
-        CharStream input = new ANTLRInputStream(is);
-        return getParserForCharStream(input);     
+
+    public PROV_NParser getParserForStream(InputStream is) {
+        try {
+            CharStream input = new ANTLRInputStream(is);
+            return getParserForCharStream(input);
+        } catch (IOException e) {
+            throw new UncheckedException(e);
+        }
     }
     public PROV_NParser getParserForCharStream(CharStream input) throws java.io.IOException {
 
@@ -77,19 +86,25 @@ public  class Utility {
             }
     };
 
-    public CommonTree convertASNToTree(String file) throws java.io.IOException, RecognitionException {
+    public CommonTree convertASNToTree(String file)  {
         PROV_NParser parser=getParserForFile(file);
         return convertASNToTree(parser);
     }
    
 
-    public CommonTree convertASNToTree(InputStream is) throws java.io.IOException, RecognitionException {
+    public CommonTree convertASNToTree(InputStream is){
         PROV_NParser parser=getParserForStream(is);
         return convertASNToTree(parser);
     }
-    private CommonTree convertASNToTree(PROV_NParser parser) throws java.io.IOException, RecognitionException {
+
+    private CommonTree convertASNToTree(PROV_NParser parser){
         parser.setTreeAdaptor(adaptor);
-        PROV_NParser.document_return ret = parser.document();
+        PROV_NParser.document_return ret = null;
+        try {
+            ret = parser.document();
+        } catch (RecognitionException e) {
+            throw new UncheckedException(e);
+        }
         CommonTree tree = (CommonTree)ret.getTree();
         return tree;
     }
@@ -114,7 +129,7 @@ public  class Utility {
         return s;
     }
 
-    public Object convertASNToJavaBean(String file, ProvFactory pFactory) throws java.io.IOException, RecognitionException {
+    public Object convertASNToJavaBean(String file, ProvFactory pFactory) {
         CommonTree tree=convertASNToTree(file);
         Object o=convertTreeToJavaBean(tree,pFactory);
         return o;

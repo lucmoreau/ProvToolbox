@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.rdf.collector.QualifiedCollector;
 import org.openprovenance.prov.rdf.collector.RdfCollector;
 import org.openprovenance.prov.model.Document;
@@ -37,28 +40,66 @@ public class Utility {
 
     }
 
-    public Document parseRDF(String filename) throws RDFParseException, RDFHandlerException,
-                                             IOException, JAXBException {
-        // System.out.println("**** Parse "+filename);
-        File file = new File(filename);
-        URL documentURL = file.toURI().toURL();
-        InputStream inputStream = documentURL.openStream();
-        RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()).orElse(null));
-        String streamName = documentURL.toString();
+    public Utility(ProvFactory pFactory) {
+        this.pFactory = pFactory;
+        this.onto = new Ontology(pFactory);
+    }
 
-        return parseRDF(inputStream, rdfParser, streamName);
+    public Document parseRDF(String filename)  {
+        try {
+            // System.out.println("**** Parse "+filename);
+            File file = new File(filename);
+            URL documentURL = file.toURI().toURL();
+            InputStream inputStream = documentURL.openStream();
+            RDFParser rdfParser = Rio.createParser(Rio.getParserFormatForFileName(file.getName()).orElse(null));
+            String streamName = documentURL.toString();
+
+            return parseRDF(inputStream, rdfParser, streamName);
+        } catch (RuntimeException e) {
+            throw new UncheckedException(e);
+        } catch (MalformedURLException e) {
+            throw new UncheckedException(e);
+        } catch (IOException e) {
+            throw new UncheckedException(e);
+        }
     }
 
     /** Parse from input stream, no base uri specified. */
 
     public Document parseRDF(InputStream inputStream,
-                             RDFFormat format, 
+                             Formats.ProvFormat format,
                              String baseuri)
                                      throws RDFParseException,
                                      RDFHandlerException,
                                      IOException {
-        RDFParser rdfParser = Rio.createParser(format);
+        RDFFormat rioFormat = getRdfFormat(format);
+        return parseRDF(inputStream, rioFormat, baseuri);
+    }
+
+    public Document parseRDF(InputStream inputStream, RDFFormat rioFormat, String baseuri) throws IOException {
+        RDFParser rdfParser = Rio.createParser(rioFormat);
         return parseRDF(inputStream, rdfParser, baseuri);
+    }
+
+    public RDFFormat getRdfFormat(Formats.ProvFormat format) {
+        RDFFormat rioFormat=null;
+        switch (format) {
+            case TURTLE:
+                rioFormat=RDFFormat.TURTLE;
+                break;
+            case RDFXML:
+                rioFormat=RDFFormat.RDFXML;
+                break;
+            case TRIG:
+                rioFormat=RDFFormat.TRIG;
+                break;
+            case JSONLD:
+                rioFormat=RDFFormat.JSONLD;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + format);
+        }
+        return rioFormat;
     }
 
     /** Parse from input stream passing base uri . */
@@ -77,12 +118,16 @@ public class Utility {
         return doc;
     }
 
+    public void dumpRDF(Document document, Formats.ProvFormat format, String filename) {
+        dumpRDFInternal(document, getRdfFormat(format), filename);
+    }
+
     public void dumpRDF(Document document, RDFFormat format, String filename) {
         dumpRDFInternal(document, format, filename);
     }
 
-    public void dumpRDF(Document document, RDFFormat format, OutputStream os) {
-        dumpRDFInternal(document, format, os);
+    public void dumpRDF(Document document, Formats.ProvFormat format, OutputStream os) {
+        dumpRDFInternal(document, getRdfFormat(format), os);
 
     }
 

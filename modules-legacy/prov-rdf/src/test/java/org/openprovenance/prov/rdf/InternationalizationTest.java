@@ -1,5 +1,6 @@
 package org.openprovenance.prov.rdf;
 
+import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.xml.UncheckedTestException;
@@ -43,7 +44,7 @@ public class InternationalizationTest extends
 	{
 		try
 		{
-			u.dumpRDF(doc, RDFFormat.TRIG, file);
+			u.dumpRDF(doc, Formats.ProvFormat.TRIG, file);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

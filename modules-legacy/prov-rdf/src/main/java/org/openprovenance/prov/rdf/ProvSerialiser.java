@@ -1,5 +1,6 @@
 package org.openprovenance.prov.rdf;
 
+import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openrdf.rio.RDFFormat;
@@ -12,9 +13,9 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     private final ProvFactory pFactory;
     private final Ontology onto;
-    private final RDFFormat format;
+    private final Formats.ProvFormat format;
 
-    public ProvSerialiser(ProvFactory pFactory, RDFFormat format) {
+    public ProvSerialiser(ProvFactory pFactory, Formats.ProvFormat format) {
         this.pFactory=pFactory;
         this.onto=new Ontology(pFactory);
         this.format=format;

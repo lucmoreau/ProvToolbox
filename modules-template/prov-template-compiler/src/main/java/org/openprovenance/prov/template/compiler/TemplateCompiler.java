@@ -2,10 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import javax.lang.model.element.Modifier;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -37,10 +34,14 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TemplateCompiler {
     
     final private ProvFactory pFactory;
+
+    static ObjectMapper mapper = new ObjectMapper();
+
 
 
     public TemplateCompiler(ProvFactory pFactory) {
@@ -889,4 +890,7 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        }
    }
 
+    public JsonNode readTree(File file) throws IOException {
+       return mapper.readTree(file);
+    }
 }

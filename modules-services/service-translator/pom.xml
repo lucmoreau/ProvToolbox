@@ -32,6 +32,24 @@
             <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-dot</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-json</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-generator</artifactId>
+            <version>0.8.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>

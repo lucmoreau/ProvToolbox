@@ -20,20 +20,14 @@ public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest 
     }
 
     ProvFactory pf=new ProvFactory();
-    public Document readDocumentFromFile(String file)
-            throws IOException {
+    public Document readDocumentFromFile(String file) {
 
         System.out.println("reading (xml) from " + file);
 
 
 
         Document doc= null;
-        try {
-            doc = org.openprovenance.prov.xml.ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(file));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            throw new IOException(e);
-        }
+        doc = org.openprovenance.prov.xml.ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(file));
 
         BeanTraversal bc=new BeanTraversal(RoundTripFromJavaTest.pFactory, RoundTripFromJavaTest.pFactory);
         org.openprovenance.prov.model.Document doc2=bc.doAction(doc);

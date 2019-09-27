@@ -11,110 +11,110 @@ import org.openprovenance.prov.xml.ProvFactory;
 import org.openprovenance.prov.xml.ProvSerialiser;
 
 public class RoundTripFromProvnTest extends TestCase {
-    final Utility u = new Utility();
-    static ProvFactory pFactory=ProvFactory.getFactory();
+	final Utility u = new Utility();
+	static ProvFactory pFactory=ProvFactory.getFactory();
 
-    public RoundTripFromProvnTest(String name) {
-	super(name);
-    }
-
-    public String extension() {
-	return ".provn";
-    }
-
-    public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
-	System.out.println("-------------- File: " + file);
-	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
-	DocumentEquality de = new DocumentEquality(true,null);
-
-	Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
-	file = file.replace('/', '_');
-	u.writeDocument(doc1, "target/" + file,pFactory);
-	Document doc2 = u.readDocument("target/" + file,pFactory);
-
-	boolean result = de.check(doc1, doc2);
-
-	if (!result && compare) {
-	    System.out.println(doc1);
-	    System.out.println("------------------");
-	    System.out.println(doc2);
+	public RoundTripFromProvnTest(String name) {
+		super(name);
 	}
-	if (compare) {
-	    assertTrue(result);
+
+	public String extension() {
+		return ".provn";
 	}
-	System.out.println("result is " + result);
 
-	ProvSerialiser.getThreadProvSerialiser()
-		      .serialiseDocument(new File("target/" + file + ".xml"),
-					 doc2, true);
-	u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
+	public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
+		System.out.println("-------------- File: " + file);
+		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
+		DocumentEquality de = new DocumentEquality(true,null);
 
-    }
+		Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
+		file = file.replace('/', '_');
+		u.writeDocument(doc1, "target/" + file,pFactory);
+		Document doc2 = u.readDocument("target/" + file,pFactory);
 
-    public void loadFromProvnSaveToXmlAndReload(String file, Boolean compare) throws Throwable {
-	System.out.println("-------------- File: " + file);
-	org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
-	DocumentEquality de = new DocumentEquality(true,null);
+		boolean result = de.check(doc1, doc2);
 
-	Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
-	file = file.replace('/', '_');
-	ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+		if (!result && compare) {
+			System.out.println(doc1);
+			System.out.println("------------------");
+			System.out.println(doc2);
+		}
+		if (compare) {
+			assertTrue(result);
+		}
+		System.out.println("result is " + result);
 
-	System.out.println("1. xxx");
+		ProvSerialiser.getThreadProvSerialiser()
+				.serialiseDocument(new File("target/" + file + ".xml"),
+						doc2, true);
+		u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
 
-	serial.serialiseDocument(new File("target/xml_" + file + ".xml"), doc1, true);
-	ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
-	
-	Document doc2 = deserial.deserialiseDocument(new File("target/xml_" + file + ".xml"));
-	
-	System.out.println("2. xxx");
-
-	boolean result = de.check(doc1, doc2);
-
-	if (!result && compare) {
-	    System.out.println(doc1);
-	    System.out.println("------------------");
-	    System.out.println(doc2);
 	}
-	if (compare) {
-	    assertTrue(result);
+
+	public void loadFromProvnSaveToXmlAndReload(String file, Boolean compare) throws Throwable {
+		System.out.println("-------------- File: " + file);
+		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
+		DocumentEquality de = new DocumentEquality(true,null);
+
+		Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
+		file = file.replace('/', '_');
+		ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+
+		System.out.println("1. xxx");
+
+		serial.serialiseDocument(new File("target/xml_" + file + ".xml"), doc1, true);
+		ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+
+		Document doc2 = deserial.deserialiseDocument(new File("target/xml_" + file + ".xml"));
+
+		System.out.println("2. xxx");
+
+		boolean result = de.check(doc1, doc2);
+
+		if (!result && compare) {
+			System.out.println(doc1);
+			System.out.println("------------------");
+			System.out.println(doc2);
+		}
+		if (compare) {
+			assertTrue(result);
+		}
+		System.out.println("result is " + result);
+		System.out.println("3. xxx");
+
+		ProvSerialiser.getThreadProvSerialiser()
+				.serialiseDocument(new File("target/" + file + ".xml"),
+						doc2, true);
+		System.out.println("4. xxx");
+
+		u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
+
 	}
-	System.out.println("result is " + result);
-	System.out.println("3. xxx");
 
-	ProvSerialiser.getThreadProvSerialiser()
-		      .serialiseDocument(new File("target/" + file + ".xml"),
-					 doc2, true);
-	System.out.println("4. xxx");
+	private void testIssue(String issueName) throws Throwable {
+		loadFromProvnSaveAndReload("issues/" + issueName + ".provn", true);
+	}
 
-	u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
+	private void testCrossIssue(String issueName) throws Throwable {
+		loadFromProvnSaveToXmlAndReload("issues/" + issueName + ".provn", true);
+	}
 
-    }
+	public void testMembership() throws Throwable {
+		testIssue("unification-membership-f1-FAIL-DM");
+		testIssue("unification-membership-f2-FAIL-DM");
+	}
 
-    private void testIssue(String issueName) throws Throwable {
-	loadFromProvnSaveAndReload("issues/" + issueName + ".provn", true);
-    }
-    
-    private void testCrossIssue(String issueName) throws Throwable {
-	loadFromProvnSaveToXmlAndReload("issues/" + issueName + ".provn", true);
-    }
+	public void testBundles() throws Throwable {
+		//testCrossIssue("unification-membership-f1-FAIL-DM");
 
-    public void testMembership() throws Throwable {
-	testIssue("unification-membership-f1-FAIL-DM");
-	testIssue("unification-membership-f2-FAIL-DM");
-    }
+		testCrossIssue("picaso-file");
+	}
 
-    public void testBundles() throws Throwable {
-	//testCrossIssue("unification-membership-f1-FAIL-DM");
-
-	testCrossIssue("picaso-file");
-    }
-    
-    public void testQualifiedName() throws Throwable {
-	testIssue("issue-qualified-name");
-    }
-    public void testEscape() throws Throwable {
-	testIssue("issue-string");
-    }
+	public void testQualifiedName() throws Throwable {
+		testIssue("issue-qualified-name");
+	}
+	public void testEscape() throws Throwable {
+		testIssue("issue-string");
+	}
 
 }

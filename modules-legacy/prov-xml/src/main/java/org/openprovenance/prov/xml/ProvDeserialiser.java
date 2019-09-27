@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBElement;
 
 import org.openprovenance.prov.model.Namespace;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
@@ -63,15 +64,18 @@ public class ProvDeserialiser {
     }
 
 
-    public Document deserialiseDocument (File serialised)
-	        throws JAXBException {
-	        Unmarshaller u=jc.createUnmarshaller();
-	        Object root= u.unmarshal(serialised);
-	        @SuppressWarnings("unchecked")
-	        Document res=(Document)((JAXBElement<Document>) root).getValue();
-	        utils.updateNamespaces(res);
-		return res;
-    }
+	public Document deserialiseDocument (File serialised) {
+		try {
+			Unmarshaller u = jc.createUnmarshaller();
+			Object root = u.unmarshal(serialised);
+			@SuppressWarnings("unchecked")
+			Document res = (Document) ((JAXBElement<Document>) root).getValue();
+			utils.updateNamespaces(res);
+			return res;
+		} catch (JAXBException e) {
+			throw new UncheckedException(e);
+		}
+	}
 
     /**
      * After reading a document, this method should be called to ensure that Namespaces are properly chained.
@@ -92,14 +96,17 @@ public class ProvDeserialiser {
 	}
     }
   */
-    public Document deserialiseDocument (InputStream is)
-	        throws JAXBException {
-	        Unmarshaller u=jc.createUnmarshaller();
-	        Object root= u.unmarshal(is);
-	        @SuppressWarnings("unchecked")
-	        Document res=(Document)((JAXBElement<Document>) root).getValue();
-	        utils.updateNamespaces(res);
-	        return res;
+    public Document deserialiseDocument (InputStream is) {
+    	try {
+			Unmarshaller u = jc.createUnmarshaller();
+			Object root = u.unmarshal(is);
+			@SuppressWarnings("unchecked")
+			Document res = (Document) ((JAXBElement<Document>) root).getValue();
+			utils.updateNamespaces(res);
+			return res;
+		} catch (JAXBException e) {
+    		throw new UncheckedException(e);
+		}
     }
 
  

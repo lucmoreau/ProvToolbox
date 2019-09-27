@@ -12,70 +12,77 @@
     <description>A Docker image for the Translator service</description>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>service-translator</artifactId>
-            <version>0.8.1-SNAPSHOT</version>
-            <classifier>docker</classifier>
-            <type>war</type>
-        </dependency>
 
-    </dependencies>
-
-
-
+    <properties>
+        <origin.project>service-translator</origin.project>
+    </properties>
 
     <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+
+
         <plugins>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
                         <id>exec1</id>
-                        <phase>generate-sources</phase>
+                        <phase>compile</phase>
                         <goals><goal>exec</goal></goals>
                         <configuration>
+                            <workingDirectory>${project.build.directory}</workingDirectory>
                             <executable>make</executable>
                             <arguments>
-                                <argument>generate.docker.war</argument>
+                                <argument>-f</argument>
+                                <argument>classes/Makefile</argument>
+                                <argument>build.all</argument>
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.openprovenance.prov</groupId>
-                                    <artifactId>service-translator</artifactId>
-                                  <!--  <version>0.8.1-SNAPSHOT</version>-->
-                                    <type>war</type>
-                                    <classifier>docker</classifier>
-                                    <overWrite>yes</overWrite>
-                                    <outputDirectory>tomcat.open9j.prov</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
+            <!--
 
-            </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.1</version>
+                    <executions>
+                        <execution>
+                            <id>copy</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.openprovenance.prov</groupId>
+                                        <artifactId>service-translator</artifactId>
+                                        <type>war</type>
+                                        <classifier>docker</classifier>
+                                        <overWrite>yes</overWrite>
+                                        <outputDirectory>tomcat.open9j.prov</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                    </executions>
+
+                </plugin>
+
+    -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -83,6 +90,7 @@
                 <version>2.18.1</version>
             </plugin>
 
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -101,58 +109,30 @@
                     </execution>
                 </executions>
             </plugin>
-
-<!--
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>make</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="make">
-                                <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath"/>
-                                <exec executable="make" args="foo" failonerror="true" dir="${project.basedir}"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 -->
 
+            <!--
+                        <plugin>
+                            <artifactId>maven-antrun-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>make</id>
+                                    <phase>generate-sources</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target name="make">
+                                            <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath"/>
+                                            <exec executable="make" args="foo" failonerror="true" dir="${project.basedir}"/>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+            -->
+
         </plugins>
-
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/config</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>log4j.xml</include>
-                </includes>
-            </resource>
-        </resources>
-
-
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>src/test/config</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>log4j.xml</include>
-                </includes>
-            </testResource>
-        </testResources>
 
 
 

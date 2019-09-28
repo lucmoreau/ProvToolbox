@@ -219,7 +219,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
     }
 
     @Override
-    public ProvSerialiser getSerializer() throws JAXBException {
+    public ProvSerialiser getSerializer()  {
         return new org.openprovenance.prov.xml.ProvSerialiser();
     }
 

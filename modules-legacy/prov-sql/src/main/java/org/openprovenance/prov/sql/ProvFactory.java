@@ -368,7 +368,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
       }
 
 	@Override
-	public ProvSerialiser getSerializer() throws JAXBException {
+	public ProvSerialiser getSerializer() {
 		return new org.openprovenance.prov.sql.ProvSerialiser();
 	}
     

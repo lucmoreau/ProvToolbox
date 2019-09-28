@@ -320,6 +320,7 @@
 		<jetty.version>9.4.20.v20190813</jetty.version>
 		<servletapi.version>4.0.0</servletapi.version>
 		<swagger.version>2.0.8</swagger.version>
+		<woodstox.version>5.1.0</woodstox.version>
 
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -53,13 +53,8 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     private static ThreadLocal<ProvSerialiser> threadSerialiser =
         new ThreadLocal<ProvSerialiser> () {
         protected synchronized ProvSerialiser initialValue () {
-                try {
-                    return new ProvSerialiser();
-                } catch (JAXBException jxb) {
-		    jxb.printStackTrace();
-                    throw new RuntimeException("ProvSerialiser: serialiser init failure()");
-                }
-            }
+            return new ProvSerialiser();
+        }
     };
 
     public static ProvSerialiser getThreadProvSerialiser() {
@@ -73,8 +68,12 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     }
     protected JAXBContext jc;
 
-    public ProvSerialiser () throws JAXBException {
-        jc = JAXBContext.newInstance( ProvFactory.packageList );
+    public ProvSerialiser () {
+        try {
+            jc = JAXBContext.newInstance( ProvFactory.packageList );
+        } catch (JAXBException e) {
+            throw new UncheckedException(e);
+        }
         //System.out.println("JAXBContext => " + jc.getClass());
     }
 

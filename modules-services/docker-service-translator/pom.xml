@@ -15,6 +15,7 @@
 
     <properties>
         <origin.project>service-translator</origin.project>
+        <upload.directory>/home/pservice</upload.directory>  <!-- same folder as in docker profile in service-translator -->
     </properties>
 
     <build>
@@ -52,37 +53,6 @@
                 </executions>
             </plugin>
 
-            <!--
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <executions>
-                        <execution>
-                            <id>copy</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>copy</goal>
-                            </goals>
-                            <configuration>
-                                <artifactItems>
-                                    <artifactItem>
-                                        <groupId>org.openprovenance.prov</groupId>
-                                        <artifactId>service-translator</artifactId>
-                                        <type>war</type>
-                                        <classifier>docker</classifier>
-                                        <overWrite>yes</overWrite>
-                                        <outputDirectory>tomcat.open9j.prov</outputDirectory>
-                                    </artifactItem>
-                                </artifactItems>
-                            </configuration>
-                        </execution>
-                    </executions>
-
-                </plugin>
-
-    -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -90,47 +60,6 @@
                 <version>2.18.1</version>
             </plugin>
 
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <id>exec2</id>
-                        <phase>compile</phase>
-                        <goals><goal>exec</goal></goals>
-                        <configuration>
-                            <executable>make</executable>
-                            <arguments>
-                                <argument>build</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
-
-            <!--
-                        <plugin>
-                            <artifactId>maven-antrun-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>make</id>
-                                    <phase>generate-sources</phase>
-                                    <goals>
-                                        <goal>run</goal>
-                                    </goals>
-                                    <configuration>
-                                        <target name="make">
-                                            <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath"/>
-                                            <exec executable="make" args="foo" failonerror="true" dir="${project.basedir}"/>
-                                        </target>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-            -->
 
         </plugins>
 

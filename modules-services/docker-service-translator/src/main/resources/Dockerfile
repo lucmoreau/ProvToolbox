@@ -22,14 +22,14 @@ RUN apt-get update; \
 EXPOSE 8080
 
 # Directories used by the service
-RUN mkdir -p /home/pservice/log/ /home/pservice/files/ /home/pservice/database/
+RUN mkdir -p ${upload.directory}/log/ ${upload.directory}/files/ ${upload.directory}/database/
 
 #
-VOLUME /home/pservice
+VOLUME ${upload.directory}
 
 RUN rm -r -f /usr/local/tomcat/webapps/ROOT
 
-ADD service-translator-0.8.1-SNAPSHOT-docker.war /usr/local/tomcat/webapps/ROOT.war
+ADD ${origin.project}-${project.version}-docker.war /usr/local/tomcat/webapps/ROOT.war
 
 
 CMD ["catalina.sh", "run"]

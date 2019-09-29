@@ -186,7 +186,6 @@
           <element id="library" level="project" name="Maven: io.swagger.core.v3:swagger-core:2.0.8" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8" />
           <element id="library" level="project" name="Maven: org.yaml:snakeyaml:1.23" />
-          <element id="library" level="project" name="Maven: io.swagger.core.v3:swagger-jaxrs2-servlet-initializer:2.0.8" />
           <element id="library" level="project" name="Maven: org.webjars:swagger-ui:3.23.0" />
           <element id="library" level="project" name="Maven: org.webjars:jquery:3.3.1" />
           <element id="library" level="project" name="Maven: org.webjars:bootstrap-table:1.9.1" />

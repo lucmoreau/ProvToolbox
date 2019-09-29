@@ -180,7 +180,6 @@
     <orderEntry type="library" name="Maven: io.swagger.core.v3:swagger-core:2.0.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.23" level="project" />
-    <orderEntry type="library" name="Maven: io.swagger.core.v3:swagger-jaxrs2-servlet-initializer:2.0.8" level="project" />
     <orderEntry type="library" name="Maven: org.webjars:swagger-ui:3.23.0" level="project" />
     <orderEntry type="library" name="Maven: org.webjars:jquery:3.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.webjars:bootstrap-table:1.9.1" level="project" />

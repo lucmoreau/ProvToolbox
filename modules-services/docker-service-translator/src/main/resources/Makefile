@@ -31,7 +31,7 @@ copy.war:
 	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE).war $(LOCATION_IMAGE)
 
 dck.file:
-	cp ${project.basedir}/tomcat.open9j.prov/Dockerfile $(LOCATION_IMAGE)
+	cp ${project.basedir}/target/classes/Dockerfile $(LOCATION_IMAGE)
 
 build:
 	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}

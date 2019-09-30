@@ -419,7 +419,7 @@
             <id>docker</id>
             <properties>
                 <isdocker>docker</isdocker>
-                <upload.directory>/home/pservice/</upload.directory>
+                <upload.directory>/home/pservice/files</upload.directory>
                 <validation.log.location>/home/pservice/log/</validation.log.location>
                 <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
                 <hsqldb.location>target/test-database/database</hsqldb.location>

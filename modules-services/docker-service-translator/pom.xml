@@ -15,7 +15,7 @@
 
     <properties>
         <origin.project>service-translator</origin.project>
-        <upload.directory>/home/pservice</upload.directory>  <!-- same folder as in docker profile in service-translator -->
+        <upload.directory>/home/pservice/files</upload.directory>  <!-- same folder as in docker profile in service-translator -->
     </properties>
 
     <build>

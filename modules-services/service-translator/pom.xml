@@ -2,7 +2,7 @@
     <parent>
         <artifactId>modules-services</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.8.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>  <!-- using the jboss version instead -->
                     <artifactId>jaxb-api</artifactId>
@@ -28,39 +28,39 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-log</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-dot</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-json</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-generator</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-rdf</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.log4j</groupId>
@@ -85,13 +85,13 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.activation</groupId>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <exclusions>
@@ -284,7 +284,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -416,7 +416,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <isdocker />
+                <isdocker></isdocker>
                 <upload.directory>target/</upload.directory>
                 <validation.log.location>target/</validation.log.location>
                 <validation.prov.log.location>target/</validation.prov.log.location>

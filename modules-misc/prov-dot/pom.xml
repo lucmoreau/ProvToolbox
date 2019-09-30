@@ -2,7 +2,7 @@
     <parent>
         <artifactId>modules-misc</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.8.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -18,19 +18,19 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>test</scope>
             <classifier>tests</classifier>
         </dependency>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>test</scope>
             <classifier>tests</classifier>
         </dependency>

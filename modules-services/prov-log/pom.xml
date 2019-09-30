@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.openprovenance.prov</groupId>
     <artifactId>modules-services</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openprovenance.prov</groupId>
   <artifactId>prov-log</artifactId>
-  <version>0.9.0</version>
+  <version>0.9.1-SNAPSHOT</version>
   <name> |---- PROV-LOG</name>
 
   <properties>

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>modules-core</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.8.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,13 +17,13 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -78,7 +80,7 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
             <scope>test</scope>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <classifier>tests</classifier>
         </dependency>
 
@@ -86,7 +88,7 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
             <scope>test</scope>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <classifier>tests</classifier>
         </dependency>
 
@@ -113,7 +115,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
+            <version>0.8.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 

@@ -17,7 +17,7 @@
       <name>Luc Moreau</name>
       <email>l.moreau@ecs.soton.ac.uk</email>
       <roles>
-	<role>Developer</role>
+        <role>Developer</role>
       </roles>
       <organization>University of Southampton</organization>
       <timezone>0</timezone>
@@ -27,7 +27,7 @@
       <name>Luc Moreau</name>
       <email>lavm@ecs.soton.ac.uk</email>
       <roles>
-	<role>Developer</role>
+        <role>Developer</role>
       </roles>
       <organization>University of Southampton</organization>
       <timezone>0</timezone>
@@ -35,13 +35,13 @@
   </developers>
 
   <repositories>
-<!--
-    <repository>
-      <id>mvn.prov.toolbox</id>
-      <name>maven repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-releases/</url>
-    </repository>
--->
+    <!--
+        <repository>
+          <id>mvn.prov.toolbox</id>
+          <name>maven repository for PROV toolbox</name>
+          <url>http://openprovenance.org/java/maven-releases/</url>
+        </repository>
+    -->
 
     <repository>
       <id>mvn.prov.toolbox.snapshots</id>
@@ -76,13 +76,13 @@
 
   <build>
     <plugins>
-      <plugin>                       
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<version>2.2-beta-3</version>  
-	<!-- there exists a more recent version, but it sets wrong
-	     permission on directory
-	     https://jira.codehaus.org/browse/MASSEMBLY-449 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-3</version>
+        <!-- there exists a more recent version, but it sets wrong
+             permission on directory
+             https://jira.codehaus.org/browse/MASSEMBLY-449 -->
         <configuration>
           <descriptors>
             <descriptor>target/classes/assembly.xml</descriptor>
@@ -98,13 +98,23 @@
           </execution>
         </executions>
       </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+          <source>1.8</source>
+        </configuration>
+      </plugin>
     </plugins>
 
 
     <resources>
       <resource>
-	<directory>src/main/resources</directory>
-	<filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
       </resource>
     </resources>
 

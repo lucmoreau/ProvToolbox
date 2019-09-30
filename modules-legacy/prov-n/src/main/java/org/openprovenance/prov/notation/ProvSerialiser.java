@@ -24,7 +24,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
      * @param out       an {@link OutputStream}
      * @param document  a {@link Document}
      * @param formatted a boolean indicating whether the output should be pretty-printed
-     * @throws IOException
      */
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted)  {

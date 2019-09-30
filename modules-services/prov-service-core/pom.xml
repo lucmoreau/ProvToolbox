@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-services</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1-SNAPSHOT</version>
     </parent>
     <groupId>org.openprovenance.prov</groupId>
     <artifactId>prov-service-core</artifactId>
@@ -16,24 +16,24 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-log</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.1-SNAPSHOT</version>
         </dependency>
 
 

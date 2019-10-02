@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="service-translator:war exploded">
-    <output-path>$PROJECT_DIR$/modules-services/service-translator/target/service-translator-0.8.1-SNAPSHOT</output-path>
+    <output-path>$PROJECT_DIR$/modules-services/service-translator/target/service-translator-0.9.1-SNAPSHOT</output-path>
     <properties id="maven-jee-properties">
       <options>
         <exploded>true</exploded>
@@ -14,10 +14,10 @@
           <element id="module-output" name="service-translator" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="prov-xml-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-xml-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-xml" />
           </element>
-          <element id="archive" name="prov-model-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-model-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-model" />
           </element>
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.9" />
@@ -32,26 +32,26 @@
           <element id="library" level="project" name="Maven: javax.activation:javax.activation-api:1.2.0" />
           <element id="library" level="project" name="Maven: xerces:xercesImpl:2.12.0" />
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
-          <element id="archive" name="prov-log-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-log-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-log" />
           </element>
-          <element id="archive" name="prov-n-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-n-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-n" />
           </element>
           <element id="library" level="project" name="Maven: org.antlr:antlr-runtime:3.4" />
           <element id="library" level="project" name="Maven: antlr:antlr:2.7.7" />
           <element id="library" level="project" name="Maven: org.antlr:stringtemplate:4.0.2" />
-          <element id="archive" name="prov-dot-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-dot-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-dot" />
           </element>
-          <element id="archive" name="prov-json-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-json-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-json" />
           </element>
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.5" />
-          <element id="archive" name="prov-generator-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-generator-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-generator" />
           </element>
-          <element id="archive" name="prov-rdf-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-rdf-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-rdf" />
           </element>
           <element id="library" level="project" name="Maven: org.openrdf.sesame:sesame-runtime:4.1.2" />
@@ -122,12 +122,12 @@
           <element id="library" level="project" name="Maven: org.openrdf.sesame:sesame-rio-rdfxml:4.1.2" />
           <element id="library" level="project" name="Maven: org.openrdf.sesame:sesame-util:4.1.2" />
           <element id="library" level="project" name="Maven: org.openrdf.sesame:sesame-rio-trig:4.1.2" />
-          <element id="archive" name="prov-interop-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-interop-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-interop" />
           </element>
           <element id="library" level="project" name="Maven: commons-cli:commons-cli:1.4" />
           <element id="library" level="project" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.0.Final" />
-          <element id="archive" name="prov-service-core-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-service-core-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-service-core" />
           </element>
           <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-multipart-provider:4.3.0.Final" />
@@ -164,10 +164,10 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.9" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.9.9" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.9" />
-          <element id="archive" name="prov-service-translation-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-service-translation-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-service-translation" />
           </element>
-          <element id="archive" name="prov-template-0.8.1-SNAPSHOT.jar">
+          <element id="archive" name="prov-template-0.9.1-SNAPSHOT.jar">
             <element id="module-output" name="prov-template" />
           </element>
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9" />
@@ -197,7 +197,7 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/modules-services/service-translator/target/service-translator-0.8.1-SNAPSHOT/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/modules-services/service-translator/target/service-translator-0.9.1-SNAPSHOT/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="service-translator/web/Web" />
     </root>

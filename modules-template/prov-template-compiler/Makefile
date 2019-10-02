@@ -28,3 +28,6 @@ wfl:
 	$(MAKE) LINE=4 do.csv
 	$(MAKE) LINE=5 do.csv
 	printf "file, target/block3.provn, provn\nfile, target/block4.provn, provn\nfile, target/block5.provn, provn\n" | provconvert -merge - -flatten -outfile target/wfl.png
+
+clash:
+	cd target/output;javac org/issue/ClashBindingsBean.java -cp ../../../prov-template/target/prov-template-0.9.1-SNAPSHOT.jar:../../../../modules-core/prov-model/target/prov-model-0.9.1-SNAPSHOT.jar 

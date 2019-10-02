@@ -101,7 +101,7 @@ public class BindingsBeanGenerator {
         }
         
         for (QualifiedName q: allAtts) {
-            builder.addMethod(generateAttMutator(q,QualifiedName.class));
+            if (!(allVars.contains(q))) builder.addMethod(generateAttMutator(q,QualifiedName.class));
             builder.addMethod(generateAttMutator(q,String.class));
         }
         

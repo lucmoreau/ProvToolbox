@@ -1,18 +1,17 @@
 package org.openprovenance.prov.template;
 
-import java.io.IOException;
-
+import junit.framework.TestCase;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 
-import junit.framework.TestCase;
+import java.io.IOException;
 
-public class BindingGenerationTest extends TestCase {
+public class BindingGeneration2Test extends TestCase {
     ProvFactory pf=org.openprovenance.prov.xml.ProvFactory.getFactory();
 
-    public BindingGenerationTest(String testName) {
+    public BindingGeneration2Test(String testName) {
         super(testName);
     }
     
@@ -21,14 +20,14 @@ public class BindingGenerationTest extends TestCase {
         
         
         System.out.println("++++++++++++++++++++++++");
-        assertTrue(new BindingsBeanGenerator(pf).generate(doc,"clash","org.issue", "target/output", "my/template"));
+        assertTrue(new BindingsBeanGenerator(pf).generate(doc,"test","org.example", "target", "my/template")); 
 
 
         System.out.println("++++++++++++++++++++++++");
     }
     
     public void testTemplate() throws IOException, Throwable {
-        testTemplate("src/test/resources/issue/clash.provn",
+        testTemplate("src/main/resources/template-c.provn",
                      null);
     }
     

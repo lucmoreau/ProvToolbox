@@ -3,7 +3,7 @@ build:
 
 extract:
 	docker run --name extract --rm provtoolboxbuild sleep 1000 &
-	sleep 5
-	-docker cp extract:/src/toolbox/target/provconvert-0.7.4-SNAPSHOT-release.zip .
+	sleep 1
+	FILE=$$(docker exec extract sh -c 'ls /src/modules-executable/toolbox/target/provconvert-*-release.zip'|tail -1) ;\
+	docker cp extract:$$FILE .
 	docker kill extract
-	[ -e provconvert-0.7.4-SNAPSHOT-release.zip ]

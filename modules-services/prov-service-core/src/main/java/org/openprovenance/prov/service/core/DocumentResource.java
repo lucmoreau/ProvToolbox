@@ -1,6 +1,8 @@
 package org.openprovenance.prov.service.core;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Document;
@@ -37,5 +39,7 @@ public class DocumentResource {
 
 
     public Date expires;
+
+    public Map<String,Object> extension=new HashMap<>();
     
 }

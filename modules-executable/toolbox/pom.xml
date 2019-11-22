@@ -52,6 +52,11 @@
             <version>0.9.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-json</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>

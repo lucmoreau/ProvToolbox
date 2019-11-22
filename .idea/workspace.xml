@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_scala_library_2_12_10.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_scala_library_2_12_10.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
   </component>
   <component name="CoverageViewManager">
     <option name="myElementSize" value="315" />
@@ -43,43 +48,6 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>namesp</find>
-      <find>label</find>
-      <find>system.</find>
-      <find>upl</find>
-      <find>jaxr</find>
-      <find>rdfpar</find>
-      <find>common</find>
-      <find>objectm</find>
-      <find>mapper</find>
-      <find>ontolog</find>
-      <find>ontol</find>
-      <find>dum</find>
-      <find>onto</find>
-      <find>reco</find>
-      <find>jsonn</find>
-      <find>setter</find>
-      <find>newdo</find>
-      <find>newdocu</find>
-      <find>newst</find>
-      <find>jaxb</find>
-      <find>restea</find>
-      <find>swag</find>
-      <find>home</find>
-      <find>upload</find>
-      <find>javado</find>
-      <find>template</find>
-      <find>templa</find>
-      <find>produc</find>
-      <find>@ope</find>
-      <find>random</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>json.JSON</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -94,6 +62,9 @@
         <option name="importAutomatically" value="true" />
       </MavenImportingSettings>
     </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1Sn3wNZbfFqwhTxNiyaVJ58yqRM" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -210,38 +181,42 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
+    <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
-      <setting name="path" value="org.openprovenance.prov.scala.ModelSpec" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$/modules-core/prov-model-scala" />
-      <setting name="searchForTest" value="In single module" />
-      <setting name="showProgressMessages" value="true" />
-      <setting name="useSbt" value="false" />
-      <setting name="useUiWithSbt" value="false" />
-      <setting name="jrePath" value="" />
-      <envs />
-      <setting name="testKind" value="Class" />
-      <setting name="path" value="org.openprovenance.prov.scala.ModelSpec" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" value="" />
+      <option name="searchTest" value="In single module" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ParserSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+    <configuration name="ParserSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
-      <setting name="path" value="org.openprovenance.prov.scala.ParserSpec" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="showProgressMessages" value="true" />
-      <setting name="useSbt" value="false" />
-      <setting name="useUiWithSbt" value="false" />
-      <setting name="jrePath" value="" />
-      <envs />
-      <setting name="testKind" value="Class" />
-      <setting name="path" value="org.openprovenance.prov.scala.ParserSpec" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" value="" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.ParserSpec" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -259,6 +234,8 @@
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.All in service-translator" />
       <item itemvalue="JUnit.BindingGeneration2Test" />
+      <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="ScalaTest.ParserSpec" />
     </list>
     <recent_temporary>
       <list>
@@ -318,6 +295,9 @@
       <workItem from="1571676632473" duration="1565000" />
       <workItem from="1571990355693" duration="598000" />
       <workItem from="1572185772303" duration="293000" />
+      <workItem from="1573329086015" duration="1469000" />
+      <workItem from="1573771459162" duration="1660000" />
+      <workItem from="1574428320336" duration="83000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -372,6 +352,19 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First cut of json-ld serialisation for activities" />

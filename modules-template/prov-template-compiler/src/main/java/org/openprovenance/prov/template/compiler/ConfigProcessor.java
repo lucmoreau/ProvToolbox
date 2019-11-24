@@ -1,17 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,10 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Iterator;
 
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Parent;
+import org.apache.maven.model.*;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -209,6 +199,9 @@ public class ConfigProcessor {
         model.addModule(cli_lib);
         model.addModule(l2p_lib);
 
+        addCompilerDeclaration(model);
+
+
         try {
             new MavenXpp3Writer().write(new FileWriter(root_dir + "/pom.xml"),model);
             return true;
@@ -233,9 +226,11 @@ public class ConfigProcessor {
         model.setModelVersion("4.0.0");
         
         if (dependencies) {
-            
+
             addProvDependency("prov-model", model);
-            addProvDependency("prov-template", model);
+            addProvDependency("prov-n", model);
+            //addProvDependency("prov-json", model);
+            addProvDependency("prov-template-compiler", model);
             addProvDependency("prov-interop", model);
             addJunitDependency(model);
 
@@ -274,10 +269,40 @@ public class ConfigProcessor {
         dep.setVersion("4.11"); 
         dep.setScope("test");
         model.addDependency(dep);
-    } 
+    }
+
+    public void addCompilerDeclaration(Model model) {
+        Plugin plugin=new Plugin();
+        plugin.setGroupId("org.apache.maven.plugins");
+        plugin.setArtifactId("maven-compiler-plugin");
+        plugin.setVersion("3.8.1");
+
+        StringBuilder configString = new StringBuilder()
+                .append("<configuration>")
+                .append("<source>1.8</source>")
+                .append("<target>1.8</target>")
+                .append("</configuration>");
+
+        Xpp3Dom config = null;
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating cofig for enforcer plugin", ex);
+        }
+
+        PluginManagement pm=new PluginManagement();
+        pm.addPlugin(plugin);
+        plugin.setConfiguration(config);
+
+        Build build=new Build();
+        model.setBuild(build);
+
+        build.setPluginManagement(pm);
+
+    }
     
     public String getProvVersion() {
-        return "0.7.4-SNAPSHOT"; // need to get actual version
+        return "0.9.1-SNAPSHOT"; // TODO: need to get actual version
     }
     
     final CompilerUtil cu=new CompilerUtil();

@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -297,7 +297,9 @@
       <workItem from="1572185772303" duration="293000" />
       <workItem from="1573329086015" duration="1469000" />
       <workItem from="1573771459162" duration="1660000" />
-      <workItem from="1574428320336" duration="83000" />
+      <workItem from="1574428320336" duration="709000" />
+      <workItem from="1574457129683" duration="14264000" />
+      <workItem from="1574594291845" duration="1407000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -308,38 +310,6 @@
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
-  </component>
-  <component name="TestHistory">
-    <history-entry file="ModelSpec - 2019.09.20 at 09h 52m 26s.xml">
-      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="ParserSpec - 2019.09.20 at 09h 53m 02s.xml">
-      <configuration name="ParserSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="ModelSpec - 2019.09.20 at 09h 53m 22s.xml">
-      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="ModelSpec - 2019.09.22 at 17h 19m 04s.xml">
-      <configuration name="ModelSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="All_in_service-translator - 2019.09.22 at 17h 35m 34s.xml">
-      <configuration name="All in service-translator" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="BindingGeneration2Test - 2019.10.02 at 06h 53m 38s.xml">
-      <configuration name="BindingGeneration2Test" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="BindingGeneration2Test - 2019.10.02 at 06h 54m 37s.xml">
-      <configuration name="BindingGeneration2Test" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="BindingGeneration2Test - 2019.10.02 at 07h 00m 59s.xml">
-      <configuration name="BindingGeneration2Test" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="BindingGeneration2Test - 2019.10.02 at 07h 06m 57s.xml">
-      <configuration name="BindingGeneration2Test" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="BindingGeneration2Test - 2019.10.02 at 07h 07m 32s.xml">
-      <configuration name="BindingGeneration2Test" configurationId="JUnit" />
-    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">

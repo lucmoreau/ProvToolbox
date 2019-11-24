@@ -38,6 +38,7 @@ import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.apache.log4j.Logger;
+import org.openrdf.rio.RDFFormat;
 
 import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
 
@@ -1108,6 +1109,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 new org.openprovenance.prov.rdf.Utility(pFactory)
                         .dumpRDF(document, TRIG, os);
                 break;
+            }
+            case TURTLE: {
+                    new org.openprovenance.prov.rdf.Utility(pFactory)
+                            .dumpRDF(document, TURTLE, os);
+                    break;
             }
             case JSON: {
                 new org.openprovenance.prov.json.Converter(pFactory)

@@ -609,7 +609,7 @@ public boolean noNode(final JsonNode jsonNode2) {
            if (the_var.get(key).get(0).get("@id")!=null) {
 
 
-               Set<QualifiedName> successors=null;
+               Set<QualifiedName> successors=new HashSet<>();
                for (QualifiedName qn: allVars) {
                    if (key.equals(qn.getLocalPart())) {
                        successors=indexed.traverseDerivations(qn);
@@ -802,10 +802,11 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
                args=args + ", " + key; 
            }
        }
+
+
        
        builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
-       
-       builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)"); //TODO make it load dynamically
+       builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)"); //TODO make it load dynamically
             
 
        if (bindings_schema!=null) {
@@ -826,7 +827,7 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
            }
            
            builder.addStatement("document=me.make(" + args + ")");
-           builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.InteropFramework.ProvFormat.PROVN,document)");
+           builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)");
 
            
        }

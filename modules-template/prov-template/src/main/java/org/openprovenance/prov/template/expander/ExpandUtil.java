@@ -108,6 +108,7 @@ public class ExpandUtil {
         return result;
     }
 
+
     static public HashSet<QualifiedName> freeAttributeVariables(Statement statement, ProvFactory pf) {
         HashSet<QualifiedName> result = new HashSet<QualifiedName>();
         Collection<Attribute> ll = pf.getAttributes(statement);
@@ -118,7 +119,7 @@ public class ExpandUtil {
                                                   // properly, this test should
                                                   // always return true
                     QualifiedName qn = (QualifiedName) o;
-                    if (isVariable(qn))
+                    if (isVariable(qn)  && (!attr.getElementName().getUri().equals(LINKED_URI)))  // ignore occurrence of linked variables
                         result.add(qn);
                 }
             }

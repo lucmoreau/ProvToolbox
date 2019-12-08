@@ -150,7 +150,7 @@ public class TemplateCompiler {
         
         builder.addMethod(gu.generateConstructor2(vmap));
         
-        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc,vmap));
+        builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc,vmap, bindings_schema));
         
         builder.addMethod(nameAccessorGenerator(templateName));
         
@@ -235,7 +235,7 @@ public class TemplateCompiler {
  
        
    
-   public MethodSpec generateTemplateGenerator(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap) {
+   public MethodSpec generateTemplateGenerator(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Document doc, Hashtable<QualifiedName, String> vmap, JsonNode bindings_schema) {
               
 
        MethodSpec.Builder builder = MethodSpec.methodBuilder("generator")
@@ -264,7 +264,7 @@ public class TemplateCompiler {
        }
 
        
-       StatementCompilerAction action=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "document.getStatementOrBundle()");
+       StatementCompilerAction action=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "document.getStatementOrBundle()", bindings_schema);
        for (StatementOrBundle s: doc.getStatementOrBundle()) {
            u.doAction(s, action);
            
@@ -347,14 +347,25 @@ public class TemplateCompiler {
                args=args + ", " + newName; 
            }
        }
-       
+
+       System.out.println(allAtts);
+
        for (QualifiedName q: allAtts) {
            final String key = q.getLocalPart();
+           String newName = key;
+           final JsonNode entry = the_var.path(key);
+           JsonNode jentry;
+           if (entry!=null && !(entry instanceof MissingNode)  && ((jentry=entry.get(0).get("@id"))!=null)) {
+               String s=jentry.textValue();
+               String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
+               newName="__"+key;
+               builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key,key);
+           }
            if (first) {
                first=false;
-               args=key;
+               args=newName;
            } else {
-               args=args + ", " + key; 
+               args=args + ", " + newName;
            }
        }
        

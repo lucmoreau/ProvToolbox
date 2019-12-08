@@ -2,10 +2,10 @@ package org.openprovenance.prov.template.compiler;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
@@ -17,7 +17,6 @@ import org.openprovenance.prov.model.DerivedByRemovalFrom;
 import org.openprovenance.prov.model.DictionaryMembership;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.HasOther;
 import org.openprovenance.prov.model.MentionOf;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
@@ -47,6 +46,7 @@ import com.squareup.javapoet.TypeName;
 
 public class StatementCompilerAction implements StatementAction {
 
+    private final JsonNode bindings_schema;
     private Set<QualifiedName> allVars;
     private Set<QualifiedName> allAtts;
     private Builder builder;
@@ -62,13 +62,14 @@ public class StatementCompilerAction implements StatementAction {
     static final TypeName  cl_listOfAttributes = ParameterizedTypeName.get(cl_list, cl_attribute);
     static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementCompilerAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target) {
+    public StatementCompilerAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
         this.builder=builder;
         this.target=target;
         this.vmap=vmap;
+        this.bindings_schema=bindings_schema;
     }
 
     public String local(QualifiedName id) {
@@ -208,11 +209,14 @@ public class StatementCompilerAction implements StatementAction {
                             doReservedAttributeAction(builder,element,vq,typeq);
                         } else {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
-                            builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
-                                                 vq.getLocalPart(),
-                                                 vmap.get(element),
-                                                 vq.getLocalPart(),
-                                                 vq.getLocalPart());
+                            String localPart = vq.getLocalPart();
+
+                                builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                                    localPart,
+                                                    vmap.get(element),
+                                                    localPart,
+                                                    localPart);
+
                         }
 
                     } else {
@@ -357,7 +361,7 @@ public class StatementCompilerAction implements StatementAction {
         builder.addStatement(target + ".add($N)", id_);
 
         String target2 = id_+".getStatement()";
-        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2);
+        StatementCompilerAction action2=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, target2, bindings_schema);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

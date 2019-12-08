@@ -347,9 +347,7 @@ public class TemplateCompiler {
                args=args + ", " + newName; 
            }
        }
-
-       System.out.println(allAtts);
-
+       
        for (QualifiedName q: allAtts) {
            final String key = q.getLocalPart();
            String newName = key;

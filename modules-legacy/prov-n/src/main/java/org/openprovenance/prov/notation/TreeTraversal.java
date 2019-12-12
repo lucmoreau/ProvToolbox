@@ -455,13 +455,17 @@ public class TreeTraversal {
             //System.out.println("+++ namespace" + nss);
             @SuppressWarnings("unchecked")
             List<Statement> records2=(List<Statement>)convert(ast.getChild(1));
+            List<Statement> records4=new LinkedList<>();
+            for (Statement s: records2) {
+                if (s!=null) records4.add(s);
+            }
             List<Bundle> bundles=null;
             if (ast.getChild(2)!=null) {
 	        @SuppressWarnings("unchecked")
                 List<Bundle> tmp = (List<Bundle>)convert(ast.getChild(2));
 	        bundles=tmp;
             }
-            return c.newDocument(nss,records2, bundles);
+            return c.newDocument(nss,records4, bundles);
 
         case PROV_NParser.BUNDLE:
 	    
@@ -482,10 +486,14 @@ public class TreeTraversal {
 
             @SuppressWarnings("unchecked")
             List<Statement> records3=(List<Statement>)convert(ast.getChild(2));
+            List<Statement> records5=new LinkedList<>();
+            for (Statement s: records3) {
+                if (s!=null) records5.add(s);
+            }
             
             //restore the parent namespace
             namespace=localNamespace.getParent();
-            return c.newNamedBundle(bundleId,localNamespace,records3);
+            return c.newNamedBundle(bundleId,localNamespace,records5);
             
         case PROV_NParser.ATTRIBUTES:
             List<Attribute> attributes=new LinkedList<Attribute>();
@@ -609,6 +617,7 @@ public class TreeTraversal {
         case PROV_NParser.FALSE:
             return false;
         case PROV_NParser.UNKNOWN:
+            // returning null now, will be ignored when building document/bundle
             return null;
 
         }

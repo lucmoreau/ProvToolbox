@@ -25,6 +25,7 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.exception.ParserException;
 
 public class ServiceUtils {
 
@@ -434,7 +435,7 @@ public class ServiceUtils {
             return vr;
         } catch (Throwable e) {
             e.printStackTrace();
-            return null;
+            throw new ParserException(e);
         }
 
     }
@@ -530,11 +531,11 @@ public class ServiceUtils {
 
             } catch (Throwable e) {
                 e.printStackTrace();
-                return null;
+                throw new ParserException(e);
             }
 
         }
-        return null;
+        throw new RuntimeException("Not properly structured input parts");
     }
 
 
@@ -555,7 +556,7 @@ public class ServiceUtils {
                 fileName = getFileName(header);
                 System.out.println("---------- filename " + fileName);
                 if ((fileName == null) || (fileName.equals("")))
-                    return null;
+                    new RuntimeException("Not properly structured file in header");
 
 
                 // convert the uploaded file to inputstream
@@ -601,11 +602,11 @@ public class ServiceUtils {
 
             } catch (Throwable e) {
                 e.printStackTrace();
-                return null;
+                throw new ParserException(e);
             }
 
         }
-        return null;
+        throw new RuntimeException("Not properly structured input parts");
     }
 
 
@@ -631,13 +632,13 @@ public class ServiceUtils {
                 inputStream.close();
 
                 if ((url == null) || (url.equals("")))
-                    return null;
+                    new RuntimeException("Not properly structured url in header");
 
                 InteropFramework interop = new InteropFramework();
                 URL theURL = new URL(url);
                 URLConnection conn = interop.connectWithRedirect(theURL);
                 if (conn == null)
-                    return null;
+                    new RuntimeException("Failed to connect to url");
 
                 Formats.ProvFormat format = null;
                 String content_type = conn.getContentType();
@@ -702,11 +703,11 @@ public class ServiceUtils {
 
             } catch (Throwable e) {
                 e.printStackTrace();
-                return null;
+                throw new ParserException(e);
             }
 
         }
-        return null;
+        throw new RuntimeException("Not properly structured input parts");
     }
 
 
@@ -741,6 +742,7 @@ public class ServiceUtils {
                 return finalFileName;
             }
         }
+        // return null, exception thrown elsewhere
         return null;
     }
 

@@ -1,46 +1,21 @@
 package org.openprovenance.prov.scala.immutable
 
 
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_AGENT
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_ENTITY
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_ACTIVITY
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_USAGE
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_GENERATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_DERIVATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_SPECIALIZATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_ALTERNATE
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_ATTRIBUTION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_ASSOCIATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_DELEGATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_INVALIDATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_START
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_END
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_MEMBERSHIP
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_COMMUNICATION
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_INFLUENCE
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE
-import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_MENTION
-
-import scala.util.Failure
-import scala.util.Success
-import org.parboiled2.ParseError
-
-import scala.beans.BeanProperty
-import scala.collection.JavaConverters._
-import org.openprovenance.prov.model.{DerivedByInsertionFrom, DerivedByRemovalFrom, DictionaryMembership, Entry, Key, Name, Namespace, QualifiedNameUtils}
-import org.openprovenance.prov.model.extension.QualifiedSpecializationOf
-import org.openprovenance.prov.model.extension.QualifiedAlternateOf
-import org.openprovenance.prov.model.extension.QualifiedHadMember
-import org.openprovenance.prov.model.exception.QualifiedNameException
-import javax.xml.datatype.XMLGregorianCalendar
-import org.openprovenance.prov.model.Attribute.AttributeKind
-
-import scala.collection.JavaConversions._
-import scala.collection.immutable.HashMap
 import java.util
 
-import org.openprovenance.prov.{model, vanilla}
+import javax.xml.datatype.XMLGregorianCalendar
+import org.openprovenance.prov.model.Attribute.AttributeKind
+import org.openprovenance.prov.model.StatementOrBundle.Kind._
+import org.openprovenance.prov.model.exception.QualifiedNameException
+import org.openprovenance.prov.model.extension.QualifiedHadMember
+import org.openprovenance.prov.model._
 import org.openprovenance.prov.scala.immutable.Attribute.split
+import org.openprovenance.prov.{model, vanilla}
+
+import scala.beans.BeanProperty
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import scala.collection.immutable.HashMap
 
 
 trait HasLocation {
@@ -1465,6 +1440,10 @@ object StatementOrBundle {
             case e: org.openprovenance.prov.model.ActedOnBehalfOf => ActedOnBehalfOf(e)
             case e: org.openprovenance.prov.model.WasAssociatedWith => WasAssociatedWith(e)
             case e: org.openprovenance.prov.model.WasAttributedTo => WasAttributedTo(e)
+            case e: org.openprovenance.prov.model.WasStartedBy => WasStartedBy(e)
+            case e: org.openprovenance.prov.model.WasEndedBy => WasEndedBy(e)
+            case e: org.openprovenance.prov.model.WasInformedBy => WasInformedBy(e)
+            case e: org.openprovenance.prov.model.WasInfluencedBy => WasInfluencedBy(e)
             case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e)
             case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e)
             case e: org.openprovenance.prov.model.Bundle => Bundle(e)
@@ -3994,8 +3973,6 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
   override def newQualifiedName(namespace: String, local: String, prefix: String): org.openprovenance.prov.model.QualifiedName = {
     new QualifiedName(prefix,local,namespace)
   }
-
-  import Attribute.split
 
   override def newEntity(id: org.openprovenance.prov.model.QualifiedName,
                          attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.Entity= {

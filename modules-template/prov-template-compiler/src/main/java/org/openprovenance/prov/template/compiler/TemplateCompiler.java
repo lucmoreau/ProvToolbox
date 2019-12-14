@@ -388,9 +388,35 @@ public class TemplateCompiler {
        }
    }
 
-       
-   
-   public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var) {
+
+    public String getConverterForDeclaredType(Class cl) {
+       if  (cl!=null) {
+            String keyType=cl.getName();
+            switch (keyType) {
+                case "java.lang.Integer":
+                    return "toInt";
+                case "java.lang.Long":
+                    return "toLong";
+                case "java.lang.String":
+                    return null;
+                case "java.lang.Boolean":
+                    return "toBoolean";
+                case "java.lang.Float":
+                    return "toFloat";
+                case "java.lang.Double":
+                    return "toDouble";
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var) {
        Iterator<String> iter=the_var.fieldNames();
        while(iter.hasNext()){
            String key=iter.next();
@@ -678,8 +704,14 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        while(iter.hasNext()){
            String key=iter.next();
            final Class<?> atype = getJavaTypeForDeclaredType(the_var, key);
-           String statement="$T $N=($T)record[" + count + "]";
-           builder.addStatement(statement, atype, key,atype); 
+           final String converter=getConverterForDeclaredType(atype);
+           if (converter==null) {
+               String statement = "$T $N=($T) record[" + count + "]";
+               builder.addStatement(statement, atype,  key, atype);
+           } else {
+               String statement = "$T $N=$N(record[" + count + "])";
+               builder.addStatement(statement, atype, key, converter);
+           }
            if (count > 1) args=args + ", ";
            args=args+key;
            count++;

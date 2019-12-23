@@ -19,7 +19,7 @@
         <module name="prov-jsonld-xml" />
         <module name="prov-interop" />
         <module name="prov-generator" />
-        <module name="prov-model" />
+        <module name="roundtrip" />
         <module name="provconvert" />
         <module name="prov-sql" />
         <module name="prov-rdf" />
@@ -30,7 +30,7 @@
         <module name="prov-log" />
         <module name="prov-template" />
         <module name="prov-template-compiler" />
-        <module name="roundtrip" />
+        <module name="prov-model" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
@@ -74,7 +74,7 @@
       <module name="ProvToolbox-Tutorial5" target="1.5" />
       <module name="ProvToolbox-Tutorial6" target="1.8" />
       <module name="roundtrip" target="1.5" />
-      <module name="service-translator" target="1.5" />
+      <module name="service-translator" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

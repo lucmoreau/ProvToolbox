@@ -15,6 +15,8 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.exception.ParserException;
+import org.openprovenance.prov.model.exception.UncheckedException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -176,7 +178,12 @@ public class PostService implements Constants, InteropMediaType {
 
 
 
-            } catch (Throwable t) {
+            } catch (UncheckedException e) {
+                return utils.composeResponseBadRequest("URI problem (" + e.getCause() + ")",e);
+            } catch (ParserException e) {
+                return utils.composeResponseBadRequest("Parser problem",e);
+            }
+            catch (Throwable t) {
                 t.printStackTrace();
                 String result = "exception occurred";
                 return utils.composeResponseInternalServerError(result,t);

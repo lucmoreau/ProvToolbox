@@ -26,6 +26,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
+import org.openprovenance.prov.model.exception.UncheckedException;
 
 public class ServiceUtils {
 
@@ -556,7 +557,7 @@ public class ServiceUtils {
                 fileName = getFileName(header);
                 System.out.println("---------- filename " + fileName);
                 if ((fileName == null) || (fileName.equals("")))
-                    new RuntimeException("Not properly structured file in header");
+                    return null;
 
 
                 // convert the uploaded file to inputstream
@@ -632,13 +633,13 @@ public class ServiceUtils {
                 inputStream.close();
 
                 if ((url == null) || (url.equals("")))
-                    new RuntimeException("Not properly structured url in header");
+                    return null;
 
                 InteropFramework interop = new InteropFramework();
                 URL theURL = new URL(url);
                 URLConnection conn = interop.connectWithRedirect(theURL);
                 if (conn == null)
-                    new RuntimeException("Failed to connect to url");
+                    throw new RuntimeException("Failed to connect to url");
 
                 Formats.ProvFormat format = null;
                 String content_type = conn.getContentType();
@@ -701,6 +702,8 @@ public class ServiceUtils {
 
                 return vr;
 
+            } catch (java.net.UnknownHostException e) {
+                throw new UncheckedException("UnknownHostException", e);
             } catch (Throwable e) {
                 e.printStackTrace();
                 throw new ParserException(e);

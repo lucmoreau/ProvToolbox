@@ -97,6 +97,11 @@ abstract public class FileBuilder {
         if (v instanceof Integer) return (Integer)v;
         return Integer.valueOf(v.toString());
     }
+    public Long toLong(Object v) {
+        if (v==null) return 0L;
+        if (v instanceof Long) return (Long)v;
+        return Long.valueOf(v.toString());
+    }
     public Float toFloat(Object v) {
         if (v==null) return 0.0f;
         if (v instanceof Float) return (Float) v;
@@ -112,7 +117,6 @@ abstract public class FileBuilder {
         if (v instanceof Boolean) return (Boolean) v;
         return Boolean.valueOf(v.toString());
     }
-
     public void register(Map<String, FileBuilder> m) {
         m.put(getName(),this);
     }

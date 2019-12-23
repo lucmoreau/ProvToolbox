@@ -10,5 +10,5 @@ before_install:
  - sudo apt-get -qq install genisoimage > /dev/null
  - sudo wget https://repo1.maven.org/maven2/org/openprovenance/prov/provconvert/0.7.3/provconvert-0.7.3.deb > /dev/null
  - sudo dpkg --install provconvert-0.7.3.deb > /dev/null
- - sudo gem update --system --force
- - sudo gem install json-ld
+ - sudo gem install rdf -v 3.0.13
+ - sudo gem install json-ld -v 3.0.2

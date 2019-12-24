@@ -334,8 +334,15 @@ public class TemplateCompiler {
            final JsonNode entry = the_var.path(key);
            if (entry!=null && !(entry instanceof MissingNode)) {
                String s=entry.get(0).get("@id").textValue();
+               JsonNode toEscapeEntry=entry.get(0).get("@escape");
+               boolean toEscape=toEscapeEntry!=null && toEscapeEntry.textValue()!=null && "true".equals(toEscapeEntry.textValue());
                String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
-               builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key,key);
+               if (toEscape) {
+                   builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
+               } else {
+                   builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+
+               }
            } else {
                // TODO: check if it was a gensym, because then i can generate it!
                builder.addStatement("$T $N=null", QualifiedName.class, newName);

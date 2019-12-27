@@ -361,35 +361,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>create-staging-area</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <  !  -  -<copy todir="${izpack.staging}">
-                                          <fileset dir="${basedir}/src/izpack" />
-                                </copy>
-                                -  -  >
-                                <copy file="${basedir}/../../license.txt" tofile="${izpack.staging}/license.txt">
-                                </copy>
-                                <copy file="${project.build.directory}/provconvert.txt" tofile="${izpack.staging}/Readme.txt">
-                                </copy>
-                                <copy todir="${izpack.staging}">
-                                    <fileset dir="${project.build.directory}/appassembler" />
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
 
             <plugin>
                 <groupId>org.codehaus.izpack</groupId>

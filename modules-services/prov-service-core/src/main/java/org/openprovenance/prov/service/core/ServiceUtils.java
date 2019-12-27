@@ -23,8 +23,6 @@ import org.openprovenance.prov.interop.CommandLineArguments;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
@@ -429,7 +427,7 @@ public class ServiceUtils {
             vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
                     .lastIndexOf("."));
             vr.mimeType = null;
-            DocumentResource.table.put(graphId, vr);
+            DocumentResource.getResourceIndex().put(graphId, vr);
 
             doProcessFile(vr, true);
 
@@ -524,7 +522,7 @@ public class ServiceUtils {
                 vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
                         .lastIndexOf("."));
                 // vr.mimeType=mimeType;
-                DocumentResource.table.put(graphId, vr);
+                DocumentResource.getResourceIndex().put(graphId, vr);
 
                 // doProcessFile(vr, true, om);
 
@@ -595,7 +593,7 @@ public class ServiceUtils {
                 vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
                         .lastIndexOf("."));
                 vr.mimeType = null;
-                DocumentResource.table.put(graphId, vr);
+                DocumentResource.getResourceIndex().put(graphId, vr);
 
                 // doProcessFile(vr, true, om);
 
@@ -695,7 +693,7 @@ public class ServiceUtils {
                 vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
                         .lastIndexOf("."));
                 vr.mimeType = null;
-                DocumentResource.table.put(graphId, vr);
+                DocumentResource.getResourceIndex().put(graphId, vr);
                 vr.url = url;
 
                 // doProcessFile(vr, true, om);

@@ -11,22 +11,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -120,7 +114,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                                  + " for resource : " + msg);
         }
 
-        DocumentResource vr = DocumentResource.table.get(msg);
+        DocumentResource vr = DocumentResource.getResourceIndex().get(msg);
 
         if (vr == null) {
             return utils.composeResponseNotFoundResource(msg);
@@ -174,7 +168,7 @@ public class TranslationService implements Constants, InteropMediaType {
 																	IOException,
 																	ServletException {
 
-	DocumentResource vr = DocumentResource.table.get(msg);
+	DocumentResource vr = DocumentResource.getResourceIndex().get(msg);
 
 	if (vr == null) {
 	    return utils.composeResponseNotFoundResource(msg);

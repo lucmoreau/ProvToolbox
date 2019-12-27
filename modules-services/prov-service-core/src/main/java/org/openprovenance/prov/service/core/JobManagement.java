@@ -43,7 +43,7 @@ public class JobManagement {
 			if (graphId == null) {
 				logger.error("no graphId " + arg0);
 			} else {
-				DocumentResource vr = DocumentResource.table.get(graphId);
+				DocumentResource vr = DocumentResource.getResourceIndex().get(graphId);
 
 				if (vr == null) {
 					logger.error("no validation resource for " + graphId);
@@ -80,7 +80,7 @@ public class JobManagement {
 						new File(vr.pdfFilepath).delete();
 						vr.pdfFilepath = null;
 					}
-					DocumentResource.table.remove(graphId);
+					DocumentResource.getResourceIndex().remove(graphId);
 				}
 			}
 		}

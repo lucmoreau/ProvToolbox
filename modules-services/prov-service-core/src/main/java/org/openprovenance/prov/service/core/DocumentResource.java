@@ -9,7 +9,13 @@ import org.openprovenance.prov.model.Document;
 
 
 public class DocumentResource {
-    final static public Hashtable<String,DocumentResource> table=new Hashtable<String,DocumentResource>();
+    final static private Map<String,DocumentResource> table=new HashMap<String,DocumentResource>();
+    private static ResourceIndex theIndexer=new ResourceIndexAsMap(table);
+
+
+    static public ResourceIndex getResourceIndex() {
+        return theIndexer;
+    }
 
     public String graphId;
     public Document bundle;

@@ -43,7 +43,7 @@ public class ActionExpand implements ActionPerformer {
     @Override
     public Response doAction(Map<String, List<InputPart>> formData, DocumentResource vr, Date date) throws IOException {
         TemplateResource vr2=new TemplateResource(vr);
-        DocumentResource.table.put(vr.graphId, vr2);
+        DocumentResource.getResourceIndex().put(vr.graphId, vr2);
 
 
         ServiceUtils.Destination destination = utils.getDestination(formData);

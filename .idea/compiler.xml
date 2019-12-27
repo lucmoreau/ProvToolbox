@@ -21,6 +21,7 @@
         <module name="prov-generator" />
         <module name="prov-model" />
         <module name="provconvert" />
+        <module name="toolbox" />
         <module name="prov-sql" />
         <module name="prov-rdf" />
         <module name="service-translator" />
@@ -40,7 +41,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="docker-service-translator" target="1.5" />
+      <module name="docker-service-translator" target="1.8" />
       <module name="modules-core" target="1.5" />
       <module name="modules-executable" target="1.5" />
       <module name="modules-legacy" target="1.5" />
@@ -53,14 +54,14 @@
       <module name="prov-interop" target="1.5" />
       <module name="prov-json" target="1.5" />
       <module name="prov-jsonld-xml" target="1.5" />
-      <module name="prov-log" target="1.5" />
+      <module name="prov-log" target="1.8" />
       <module name="prov-model" target="1.5" />
       <module name="prov-model-scala" target="1.5" />
       <module name="prov-n" target="1.5" />
       <module name="prov-rdf" target="1.5" />
       <module name="prov-scala" target="9" />
       <module name="prov-service-core" target="1.8" />
-      <module name="prov-service-translation" target="1.5" />
+      <module name="prov-service-translation" target="8" />
       <module name="prov-sql" target="1.5" />
       <module name="prov-template" target="1.5" />
       <module name="prov-template-compiler" target="1.5" />
@@ -75,6 +76,7 @@
       <module name="ProvToolbox-Tutorial6" target="1.8" />
       <module name="roundtrip" target="1.5" />
       <module name="service-translator" target="1.8" />
+      <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -444,6 +444,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
+                        <version>3.2.3</version>
                         <configuration>
                             <failOnMissingWebXml>false</failOnMissingWebXml>
                             <classifier>docker</classifier>

@@ -77,7 +77,7 @@ public class ProvapiApplication extends Application {
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new TemplateService(ps));
-		singletons.add(new VisService());
+		singletons.add(new VisService(ps));
 		//singletons.add(new VisService());
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());

@@ -21,6 +21,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,11 +39,12 @@ import org.openprovenance.prov.interop.InteropMediaType;
 public class TranslationService implements Constants, InteropMediaType {
 	
     static Logger logger = Logger.getLogger(TranslationService.class);
-    static final TranslationServiceUtils utils=new TranslationServiceUtils();
+    final ServiceUtils utils;
 
 
 	public TranslationService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
-		postService.addToPerformers(PostService.addToList(new ActionTranslate(new ServiceUtils()), performers));
+        utils=postService.getServiceUtils();
+        postService.addToPerformers(PostService.addToList(new ActionTranslate(utils), performers));
 		postService.addOtherPerformer(otherPerformer);
 	}
 
@@ -106,7 +108,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                                   JAXBException,
                                                   IOException,
                                                   ServletException {
-        logger.debug("translate to " + type);
+        logger.info("translate to " + type);
 
 
         if ((type == null) || (!translationExtensions.contains(type))) {
@@ -114,42 +116,24 @@ public class TranslationService implements Constants, InteropMediaType {
                                                  + " for resource : " + msg);
         }
 
-        DocumentResource vr = DocumentResource.getResourceIndex().get(msg);
+        DocumentResource vr = utils.getResourceIndex().get(msg);
+
 
         if (vr == null) {
             return utils.composeResponseNotFoundResource(msg);
         }
 
-        if (vr.document() == null) {
+        Document doc=utils.getStorageManager().readDocument(vr.storageId,true);
+        if (doc == null) {
             return utils.composeResponseNotFoundDocument(msg);
         }
 
-      //  vr.dotFilepath = vr.graphpath + ".dot";
-       // vr.svgFilepath = vr.graphpath + ".svg";
-       // vr.pdfFilepath = vr.graphpath + ".pdf";
-
-
-            InteropFramework intF = new InteropFramework();
-            String mimeType = intF.convertExtensionToMediaType(type);
-            return utils.composeResponseOK(vr.document()).type(mimeType).build();
-
-    }
-/*
-    final boolean respondWithFile=false;
-
-    public Response getResponseThroughFile(String type, DocumentResource vr) {
-        String outFile = vr.graphpath + "." + type;
         InteropFramework intF = new InteropFramework();
-        intF.writeDocument(outFile, vr.document());
-
-        File f = new File(outFile);
-
         String mimeType = intF.convertExtensionToMediaType(type);
-        logger.debug("setting mimeType " + mimeType + " for " + type);
+        return utils.composeResponseOK(doc).type(mimeType).build();
 
-        return utils.composeResponseOK((Object) f).type(mimeType).build();
     }
-*/
+
     @GET
     @Path("/documents/{docId}/original")
     @Tag(name="documents")
@@ -165,7 +149,7 @@ public class TranslationService implements Constants, InteropMediaType {
 																	IOException,
 																	ServletException {
 
-	DocumentResource vr = DocumentResource.getResourceIndex().get(msg);
+	DocumentResource vr = utils.getResourceIndex().get(msg);
 
 	if (vr == null) {
 	    return utils.composeResponseNotFoundResource(msg);

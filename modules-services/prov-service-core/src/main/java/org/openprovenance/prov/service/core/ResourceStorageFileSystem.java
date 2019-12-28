@@ -39,6 +39,12 @@ public class ResourceStorageFileSystem implements ResourceStorage {
     }
 
     @Override
+    public Document readDocument(String id) throws IOException {
+        return readDocument(id,true);
+
+    }
+
+    @Override
     public Document readDocument(String id, boolean known) throws IOException {
         Document doc;
         if (known) {

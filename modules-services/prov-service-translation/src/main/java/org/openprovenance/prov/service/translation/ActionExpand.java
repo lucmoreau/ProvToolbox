@@ -26,10 +26,10 @@ import java.util.Map;
 public class ActionExpand implements ActionPerformer {
     static Logger logger = Logger.getLogger(ActionExpand.class);
 
-    private final TranslationServiceUtils utils;
+    private final ServiceUtils utils;
 
     public ActionExpand(ServiceUtils utils) {
-        this.utils=(TranslationServiceUtils) utils;
+        this.utils= utils;
     }
 
     @Override public String toString () {

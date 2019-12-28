@@ -56,19 +56,41 @@ public class ServiceUtils {
 
     private final ResourceIndex resourceIndex;
 
+    boolean redis=false;
     public ServiceUtils() {
-         storageManager=new ResourceStorageFileSystem();
-        resourceIndex=DocumentResource.getResourceIndex();
+        storageManager=new ResourceStorageFileSystem();
+        ResourceIndex myIndex=DocumentResource.getResourceIndex();
+        if (redis) {
+            resourceIndex=getRedisIndex(myIndex);
+        } else {
+            resourceIndex=myIndex;
+        }
     }
+
+    public static ResourceIndex getRedisIndex(ResourceIndex myIndex) {
+        try {
+            Class<?> cl= ServiceUtils.class.forName("org.openprovenance.prov.redis.RedisIndex");
+            Object object=cl.newInstance();
+            myIndex=(ResourceIndex)object;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return myIndex;
+    }
+
     public ServiceUtils(ResourceStorage storageManager, ResourceIndex resourceIndex) {
         this.storageManager=storageManager;
         this.resourceIndex=resourceIndex;
     }
-    public ResourceIndex getResourceIndex() {
+    final public ResourceIndex getResourceIndex() {
         return resourceIndex;
     }
 
-    public ResourceStorage getStorageManager() {
+    final public ResourceStorage getStorageManager() {
         return storageManager;
     }
 

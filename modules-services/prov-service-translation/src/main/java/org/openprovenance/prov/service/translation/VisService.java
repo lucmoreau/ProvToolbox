@@ -14,6 +14,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.Constants;
+import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.xml.ProvUtilities;
 
@@ -36,9 +37,13 @@ public class VisService implements Constants, InteropMediaType {
     static Logger logger = Logger.getLogger(VisService.class);
 
 
-    static final TranslationServiceUtils utils=new TranslationServiceUtils();
+    private final ServiceUtils utils;
 
     static final ProvFactory f=org.openprovenance.prov.xml.ProvFactory.getFactory();
+
+    public VisService(PostService postService) {
+        this.utils=postService.getServiceUtils();
+    }
 
 
 

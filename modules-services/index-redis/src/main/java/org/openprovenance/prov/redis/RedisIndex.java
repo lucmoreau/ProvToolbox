@@ -38,27 +38,35 @@ public class RedisIndex implements ResourceIndex {
 
     @Override
     public DocumentResource get(String key) {
+        logger.info("get " + key );
         List<String> values=client.hmget(key, FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND);
+        logger.info("get " + key + values);
         DocumentResource dr=new DocumentResource();
         dr.visibleId =key;
         dr.storageId =values.get(0);
         try {
-            dr.expires= dateFormat.parse(values.get(1));
+            String dateString = values.get(1);
+            if (dateString!=null) dr.expires= dateFormat.parse(dateString);
         } catch (ParseException e) {
             e.printStackTrace();
             dr.expires=null;
         }
-        dr.kind=StorageKind.valueOf(values.get(2));
+        String kindString = values.get(2);
+        if (kindString!=null) dr.kind=StorageKind.valueOf(kindString);
+        logger.info("get " + key + " " + dr);
         return dr;
     }
 
     @Override
     public void put(String key, DocumentResource dr) {
+        logger.info("put " + key );
         Map<String,String> m=new HashMap<>();
         m.put(FIELD_STORE_ID,dr.storageId);
-        m.put(FIELD_EXPIRES,dateFormat.format(dr.expires));
-        m.put(FIELD_KIND,dr.kind.name());
+        if (dr.expires!=null) m.put(FIELD_EXPIRES,dateFormat.format(dr.expires));
+        if (dr.kind!=null) m.put(FIELD_KIND,dr.kind.name());
         client.hmset(key,m);
+        logger.info("put done " + key );
+
     }
 
     @Override

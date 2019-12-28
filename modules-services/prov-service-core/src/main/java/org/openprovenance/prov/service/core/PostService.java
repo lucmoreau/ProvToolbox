@@ -14,6 +14,7 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.quartz.SchedulerException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -49,6 +50,11 @@ public class PostService implements Constants, InteropMediaType {
     public PostService(List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
 
         jobManager.setupScheduler();
+        try {
+            jobManager.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
         this.performers=performers;
         this.otherPerformer=otherPerformer;
 
@@ -58,6 +64,10 @@ public class PostService implements Constants, InteropMediaType {
         this(new LinkedList<>(),Optional.empty());
     }
 
+
+    public ServiceUtils getServiceUtils() {
+        return utils;
+    }
 
     public void addToPerformers(List<ActionPerformer> newPerformers) {
         performers.addAll(newPerformers);

@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.Document;
 
 public class DocumentResource {
     final static private Map<String,DocumentResource> table=new HashMap<String,DocumentResource>();
+    //private static ResourceIndex theIndexer=new ResourceIndexAsMap(table);
     private static ResourceIndex theIndexer=new ResourceIndexAsMap(table);
 
     static public ResourceIndex getResourceIndex() {

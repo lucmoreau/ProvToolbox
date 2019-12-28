@@ -42,7 +42,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     final ActionExpand actionExpand;
 
-    static final TranslationServiceUtils utils=new TranslationServiceUtils();
+    private final ServiceUtils utils;
 
     static final ProvFactory f=org.openprovenance.prov.xml.ProvFactory.getFactory();
 
@@ -52,12 +52,10 @@ public class TemplateService  implements Constants, InteropMediaType {
     }
 
     public TemplateService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
+        utils=postService.getServiceUtils();
         postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
-
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
-
         actionExpand=new ActionExpand(utils);
-
     }
 
 

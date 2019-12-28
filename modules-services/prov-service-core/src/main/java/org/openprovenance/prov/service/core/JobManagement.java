@@ -7,17 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.quartz.DateBuilder;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import org.quartz.*;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -26,8 +16,9 @@ public class JobManagement {
     public static final String LOG_JOB = "logJob";
     public static final String LOG_URL = "logUrl";
     public static final String LOG_SOURCE = "logSource";
-    
-    static Logger logger = Logger.getLogger(JobManagement.class);
+	public static final String UTILS_KEY = "utils";
+
+	static Logger logger = Logger.getLogger(JobManagement.class);
 
 	static public class DeleteJob implements Job {
 
@@ -35,23 +26,33 @@ public class JobManagement {
 		}
 
 		@Override
-		public void execute(JobExecutionContext arg0)
-				throws JobExecutionException {
-			System.out.println("==========> delete job called " + arg0.getTrigger());
+		public void execute(JobExecutionContext context){
+			System.out.println("==========> delete job called " + context.getTrigger());
 
-			String graphId = arg0.getJobDetail().getKey().getName();
-			if (graphId == null) {
-				logger.error("no graphId " + arg0);
+			ServiceUtils utils=new ServiceUtils();
+			try {
+				SchedulerContext schedulerContext = context.getScheduler().getContext();
+				utils=(ServiceUtils)schedulerContext.getOrDefault(UTILS_KEY,utils);
+			} catch (SchedulerException e) {
+				e.printStackTrace();
+			}
+
+
+			String visibleId = context.getJobDetail().getKey().getName();
+			if (visibleId == null) {
+				logger.error("no visibleId " + context);
 			} else {
-				DocumentResource vr = DocumentResource.getResourceIndex().get(graphId);
+				DocumentResource vr = utils.getResourceIndex().get(visibleId);
 
 				if (vr == null) {
-					logger.error("no validation resource for " + graphId);
+					logger.error("no validation resource for " + visibleId);
 				} else {
 
-					logger.debug("deleting ... " + graphId);
+					logger.debug("deleting ... " + visibleId);
+					utils.getResourceIndex().remove(visibleId);
+
 					if (vr.storageId != null) {
-						logger.debug("deleting ... " + vr.storageId);
+						logger.info("TODO: need to update storage backend: deleting ... " + vr.storageId);
 						new File(vr.storageId).delete();
 						vr.storageId = null;
 					}
@@ -72,7 +73,6 @@ public class JobManagement {
 
 					 */
 
-					DocumentResource.getResourceIndex().remove(graphId);
 				}
 			}
 		}
@@ -163,14 +163,14 @@ public class JobManagement {
 		}
 	}
 
-	public Date scheduleJob(String graphId) {
+	public Date scheduleJob(String visibleId) {
 
 		JobDetail job = JobBuilder.newJob(DeleteJob.class)
-				.withIdentity(graphId, "graph").build();
+				.withIdentity(visibleId, "graph").build();
 
 		// Trigger the job to run on the next 10 round minute
 		Trigger trigger = TriggerBuilder.newTrigger()
-				.withIdentity(graphId + "-trigger", "graph")
+				.withIdentity(visibleId + "-trigger", "graph")
 				.startAt(DateBuilder.futureDate(10, IntervalUnit.MINUTE))
 				.build();
 		try {

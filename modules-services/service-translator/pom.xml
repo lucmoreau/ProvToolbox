@@ -100,6 +100,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>index-redis</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+        </dependency>
+
 
         <!-- for testing -->
         <dependency>

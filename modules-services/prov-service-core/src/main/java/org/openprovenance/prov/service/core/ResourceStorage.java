@@ -11,5 +11,6 @@ public interface ResourceStorage {
     void copyInputStreamToStore(InputStream inputStream, String id) throws IOException;
     void copyStringToStore(CharSequence str, String id) throws IOException;
     Document readDocument(String id, boolean known) throws IOException;
+    Document readDocument(String id) throws IOException;
     void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException;
 }

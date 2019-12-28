@@ -120,30 +120,27 @@ public class TranslationService implements Constants, InteropMediaType {
             return utils.composeResponseNotFoundResource(msg);
         }
 
-        if (vr.document == null) {
+        if (vr.document() == null) {
             return utils.composeResponseNotFoundDocument(msg);
         }
 
-        vr.dotFilepath = vr.graphpath + ".dot";
-        vr.svgFilepath = vr.graphpath + ".svg";
-        vr.pdfFilepath = vr.graphpath + ".pdf";
+      //  vr.dotFilepath = vr.graphpath + ".dot";
+       // vr.svgFilepath = vr.graphpath + ".svg";
+       // vr.pdfFilepath = vr.graphpath + ".pdf";
 
-        if (respondWithFile && vr.document instanceof org.openprovenance.prov.xml.Document) {
 
-            return getResponseThroughFile(type, vr);
-        } else {
             InteropFramework intF = new InteropFramework();
             String mimeType = intF.convertExtensionToMediaType(type);
-            return utils.composeResponseOK(vr.document).type(mimeType).build();
-        }
-    }
+            return utils.composeResponseOK(vr.document()).type(mimeType).build();
 
+    }
+/*
     final boolean respondWithFile=false;
 
     public Response getResponseThroughFile(String type, DocumentResource vr) {
         String outFile = vr.graphpath + "." + type;
         InteropFramework intF = new InteropFramework();
-        intF.writeDocument(outFile, vr.document);
+        intF.writeDocument(outFile, vr.document());
 
         File f = new File(outFile);
 
@@ -152,7 +149,7 @@ public class TranslationService implements Constants, InteropMediaType {
 
         return utils.composeResponseOK((Object) f).type(mimeType).build();
     }
-
+*/
     @GET
     @Path("/documents/{docId}/original")
     @Tag(name="documents")
@@ -174,18 +171,22 @@ public class TranslationService implements Constants, InteropMediaType {
 	    return utils.composeResponseNotFoundResource(msg);
 	}
 
-	if (vr.document == null) {
+	if (vr.document() == null) {
 	    return utils.composeResponseNotFoundDocument(msg);
 	}
 
 	InteropFramework intf = new InteropFramework();
 
-	String mimeType = intf.mimeTypeMap.get(vr.format);
+	String format=vr.storageId.substring(0, vr.storageId.lastIndexOf(".")+1);
 
-	File f = new File(vr.filepath);
 
-	logger.debug("setting mimeType " + mimeType + " for  original "
-		+ vr.filepath);
+
+	String mimeType = intf.mimeTypeMap.get(format);
+
+	File f = new File(vr.storageId);
+
+	logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original "
+		+ vr.storageId);
 
 	return utils.composeResponseOK((Object) f).type(mimeType).build();
     }

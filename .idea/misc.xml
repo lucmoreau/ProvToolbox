@@ -17,6 +17,7 @@
         <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/service-translator/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/index-redis/pom.xml" />
       </list>
     </option>
   </component>

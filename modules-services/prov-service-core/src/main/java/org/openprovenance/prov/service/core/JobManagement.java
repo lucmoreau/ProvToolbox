@@ -50,36 +50,28 @@ public class JobManagement {
 				} else {
 
 					logger.debug("deleting ... " + graphId);
-					if (vr.filepath != null) {
-						logger.debug("deleting ... " + vr.filepath);
-						new File(vr.filepath).delete();
-						vr.filepath = null;
+					if (vr.storageId != null) {
+						logger.debug("deleting ... " + vr.storageId);
+						new File(vr.storageId).delete();
+						vr.storageId = null;
 					}
+					/*
 					if (vr.reportFile != null) {
 						logger.debug("deleting ... " + vr.reportFile);
 						new File(vr.reportFile).delete();
 						vr.reportFile = null;
 					}
+
+					 */
+					/*
 					if (vr.complete != null) {
 						logger.debug("deleting ... " + vr.complete);
 						new File(vr.complete).delete();
 						vr.complete = null;
 					}
-					if (vr.dotFilepath != null) {
-						logger.debug("deleting ... " + vr.dotFilepath);
-						new File(vr.dotFilepath).delete();
-						vr.dotFilepath = null;
-					}
-					if (vr.svgFilepath != null) {
-						logger.debug("deleting ... " + vr.svgFilepath);
-						new File(vr.svgFilepath).delete();
-						vr.svgFilepath = null;
-					}
-					if (vr.pdfFilepath != null) {
-						logger.debug("deleting ... " + vr.pdfFilepath);
-						new File(vr.pdfFilepath).delete();
-						vr.pdfFilepath = null;
-					}
+
+					 */
+
 					DocumentResource.getResourceIndex().remove(graphId);
 				}
 			}

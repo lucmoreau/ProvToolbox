@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="docker-service-translator" />
+        <module name="index-redis" />
         <module name="prov-service-core" />
         <module name="prov-json" />
         <module name="prov-n" />
@@ -19,7 +20,7 @@
         <module name="prov-jsonld-xml" />
         <module name="prov-interop" />
         <module name="prov-generator" />
-        <module name="prov-model" />
+        <module name="roundtrip" />
         <module name="provconvert" />
         <module name="toolbox" />
         <module name="prov-sql" />
@@ -31,7 +32,7 @@
         <module name="prov-log" />
         <module name="prov-template" />
         <module name="prov-template-compiler" />
-        <module name="roundtrip" />
+        <module name="prov-model" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
@@ -42,6 +43,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="docker-service-translator" target="1.8" />
+      <module name="index-redis" target="1.8" />
       <module name="modules-core" target="1.5" />
       <module name="modules-executable" target="1.5" />
       <module name="modules-legacy" target="1.5" />

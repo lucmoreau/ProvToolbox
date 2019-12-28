@@ -10,11 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
@@ -122,14 +119,14 @@ public class PostService implements Constants, InteropMediaType {
                     return utils.composeResponseBadRequest(result, vr.thrown);
                 }
 
-                if (vr.bundle == null && vr.document == null) {
+                if (/*vr.bundle == null && */vr.document() == null) {
                     String result = "No provenance was found (empty document), and therefore failed to create resource for validation service";
                     return utils.composeResponseNotFOUND(result);
                 }
 
 
 
-                Date date = jobManager.scheduleJob(vr.graphId);
+                Date date = jobManager.scheduleJob(vr.visibleId);
                 vr.expires = date;
 
                 final ServiceUtils.Action action = utils.getAction(formData);
@@ -167,7 +164,7 @@ public class PostService implements Constants, InteropMediaType {
                 }
 
                 //default
-                String location = "view/documents/" + vr.graphId
+                String location = "view/documents/" + vr.visibleId
                         + "/translation.html"; // alternatively, go to
                 // document the landing
                 // page
@@ -239,16 +236,16 @@ public class PostService implements Constants, InteropMediaType {
 
         vr = utils.doProcessFile(input, type);
 
-        Date date = jobManager.scheduleJob(vr.graphId);
+        Date date = jobManager.scheduleJob(vr.visibleId);
         vr.expires = date;
 
         // TODO: maybe not return content directly
 
         if (true) {
-            return utils.contentNegotiationForDocument(request,vr.graphId,".");
+            return utils.contentNegotiationForDocument(request,vr.visibleId,".");
         }
 
-        return utils.composeResponseSeeOther("documents/" + vr.graphId).header("Expires",
+        return utils.composeResponseSeeOther("documents/" + vr.visibleId).header("Expires",
                 date)
                 .build();
 
@@ -294,9 +291,8 @@ public class PostService implements Constants, InteropMediaType {
     public  void doLog(String action, DocumentResource vr) {
         logger.log(ProvLevel.PROV,
                 "" + action + ","
-                        + vr.graphId + ","
-                        + vr.filepath + ","
-                        + vr.format);
+                        + vr.visibleId + ","
+                        + vr.storageId);
     }
 
 

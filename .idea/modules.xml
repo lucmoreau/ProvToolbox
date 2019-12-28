@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" filepath="$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/index-redis/index-redis.iml" filepath="$PROJECT_DIR$/modules-services/index-redis/index-redis.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/modules-core.iml" filepath="$PROJECT_DIR$/modules-core/modules-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-executable/modules-executable.iml" filepath="$PROJECT_DIR$/modules-executable/modules-executable.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/modules-legacy.iml" filepath="$PROJECT_DIR$/modules-legacy/modules-legacy.iml" />

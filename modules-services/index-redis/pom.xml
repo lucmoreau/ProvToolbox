@@ -6,8 +6,9 @@
         <artifactId>modules-services</artifactId>
         <version>0.9.1-SNAPSHOT</version>
     </parent>
-    <artifactId>prov-service-core</artifactId>
-    <name> |---- PROV-SERVICE-CORE</name>
+    <groupId>org.openprovenance.prov</groupId>
+    <artifactId>index-redis</artifactId>
+    <name> |---- INDEX-REDIS</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -18,37 +19,6 @@
             <version>0.9.1-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-interop</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-log</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servletapi.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -64,19 +34,16 @@
         </dependency>
 
         <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-jaxrs2</artifactId>
-            <version>${swagger.version}</version>
-            <scope>provided</scope>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.8.1</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-log</artifactId>
-            <version>0.7.3-SNAPSHOT</version>
+            <artifactId>prov-service-core</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        -->
 
     </dependencies>
 
@@ -87,13 +54,6 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/config</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>log4j.xml</include>
-                </includes>
             </resource>
         </resources>
         <plugins>

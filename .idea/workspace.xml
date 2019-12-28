@@ -5,7 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_4_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__redis_clients_jedis_2_8_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/index-redis/index-redis.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/index-redis/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/index-redis/src/main/java/org/openprovenance/prov/redis/RedisIndex.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceStorage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceStorageFileSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/JobManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/JobManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceIndexAsMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceIndexAsMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionTranslate.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionTranslate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -73,19 +97,17 @@
     <property name="extract.method.default.visibility" value="public" />
     <property name="extractMethod.generateAnnotations" value="false" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-services/index-redis" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="project.propDebugger" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.dot" />
-      <recent name="org.openprovenance.prov.json" />
-      <recent name="org.openprovenance.prov.core.json.serialization.serial" />
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
+      <recent name="org.openprovenance.prov.core.serialization.Constants" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.core.json" />
@@ -109,11 +131,11 @@
       <recent name="org.openprovenance.prov.scala.jsonld11" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/index-redis" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator" />
       <recent name="$PROJECT_DIR$/modules-services" />
       <recent name="$PROJECT_DIR$/modules-template" />
-      <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template" />
@@ -122,10 +144,12 @@
       <recent name="org.openprovenance.prov.core.json.serialization" />
       <recent name="org.openprovenance.prov.core" />
     </key>
-    <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
-      <recent name="org.openprovenance.prov.core.serialization.Constants" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
+      <recent name="org.openprovenance.prov.json" />
+      <recent name="org.openprovenance.prov.core.json.serialization.serial" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -140,11 +164,26 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.BindingGeneration2Test">
+  <component name="RunManager" selected="JUnit.AppTest">
     <configuration name="All in service-translator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-translator" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-service-core" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.prov.service.core.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.prov.service.core" />
+      <option name="MAIN_CLASS_NAME" value="org.prov.service.core.AppTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -199,26 +238,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ParserSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="prov-model-scala" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="testKind" value="Class" />
-      <option name="envs">
-        <map />
-      </option>
-      <option name="javaOptions" value="" />
-      <option name="jrePath" value="" />
-      <option name="searchTest" value="Across module dependencies" />
-      <option name="showProgressMessages" value="true" />
-      <option name="testArgs" value="" />
-      <option name="testClassPath" value="org.openprovenance.prov.scala.ParserSpec" />
-      <option name="useSbt" value="false" />
-      <option name="useUiWithSbt" value="false" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="tomcat.alpine.prov/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -233,10 +252,11 @@
       <item itemvalue="JUnit.All in service-translator" />
       <item itemvalue="JUnit.BindingGeneration2Test" />
       <item itemvalue="ScalaTest.ModelSpec" />
-      <item itemvalue="ScalaTest.ParserSpec" />
+      <item itemvalue="JUnit.AppTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AppTest" />
         <item itemvalue="JUnit.BindingGeneration2Test" />
         <item itemvalue="Docker.tomcat.alpine.prov/Dockerfile" />
         <item itemvalue="JUnit.All in service-translator" />
@@ -305,7 +325,7 @@
       <workItem from="1576785833100" duration="6665000" />
       <workItem from="1577174772445" duration="593000" />
       <workItem from="1577175806683" duration="11173000" />
-      <workItem from="1577478646976" duration="133000" />
+      <workItem from="1577478646976" duration="16666000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -350,94 +370,5 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>scala-sdk-2.12.1</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>12.0.1</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>modules-services</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectJDKs.UI">
-        <settings>
-          <last-edited>12</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>Maven: antlr:antlr:2.7.7</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>

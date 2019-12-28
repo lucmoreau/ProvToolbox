@@ -18,31 +18,32 @@ public class TemplateResource extends DocumentResource implements Cloneable {
     public TemplateResource(DocumentResource d) {
 
 
-        this.graphId=d.graphId;
-        this.bundle=d.bundle;
-        this.mimeType=d.mimeType;
-        this.filepath=d.filepath;
-        this.graphpath=d.graphpath;
+        this.visibleId =d.visibleId;
+        this.storageId =d.storageId;
 
-        this.dotFilepath=d.dotFilepath;
-        this.svgFilepath=d.svgFilepath;
-        this.pdfFilepath=d.pdfFilepath;
-        this.url=d.url;
+        //this.bundle=d.bundle;
+        //this.mimeType=d.mimeType;
+        //this.graphpath=d.graphpath;
+
+       // this.dotFilepath=d.dotFilepath;
+       // this.svgFilepath=d.svgFilepath;
+       // this.pdfFilepath=d.pdfFilepath;
+        //this.url=d.url;
 
         this.thrown=d.thrown;
 
-        this.format=d.format;
+       // this.format=d.format;
 
-        this.document=d.document;
+        this.setDocument(d.document());
 
 
-        this.complete=d.complete;
+     //   this.complete=d.complete;
 
-        this.reportFile=d.reportFile;
+      //  this.reportFile=d.reportFile;
 
-        this.jsonFile=d.jsonFile;
+    //    this.jsonFile=d.jsonFile;
 
-        this.deposited=d.deposited;
+        //this.deposited=d.deposited;
 
 
         this.expires=d.expires;

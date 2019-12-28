@@ -8,7 +8,6 @@
         <version>0.9.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.openprovenance.prov</groupId>
     <artifactId>prov-service-translation</artifactId>
     <name> |---- PROV-SERVICE-TRANSLATION</name>
     <properties>

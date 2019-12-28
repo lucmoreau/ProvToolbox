@@ -3,6 +3,7 @@ package org.openprovenance.prov.service.core;
 import java.util.Map;
 
 public class ResourceIndexAsMap implements  ResourceIndex {
+    static int count=100000;
     private final Map<String, DocumentResource> table;
 
     public ResourceIndexAsMap(Map<String,DocumentResource> table) {
@@ -22,4 +23,16 @@ public class ResourceIndexAsMap implements  ResourceIndex {
     public void remove(String key) {
         table.remove(key);
     }
+
+    @Override
+    synchronized public String newId() {
+        return "m" + count++;
+    }
+
+    @Override
+    public StorageKind kind() {
+        return StorageKind.ME;
+    }
+
+
 }

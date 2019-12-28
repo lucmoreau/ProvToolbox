@@ -10,7 +10,7 @@ MAINTAINER Luc Moreau "luc.moreau@kcl.ac.uk"
 
 # install dependencies
 RUN apt-get update; \
-	apt-get install -y --no-install-recommends curl graphviz ; \
+	apt-get install -y --no-install-recommends curl graphviz redis; \
         apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
 

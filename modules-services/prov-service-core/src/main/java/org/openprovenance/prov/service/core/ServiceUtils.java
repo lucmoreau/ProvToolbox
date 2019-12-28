@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -28,25 +28,16 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 
 public class ServiceUtils {
 
+
+
     public static final String DOCUMENT_NOT_FOUND = "Document not found";
     public static final String WILDCARD = "*";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
     public static final String HEADER_PARAM_ACCEPT = "Accept";
 
-    static Logger logger = Logger.getLogger(ServiceUtils.class);
-
-  //  final public ProvFactory f;
-
-   // final protected Namespace ns;
-
-    public ServiceUtils() {
-   //     this.f = f;
-  //      this.ns = ns;
-    }
-
     private static String fileName = "config.properties";
 
-    public final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(fileName).getProperty("upload.directory");
+    public static final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(fileName).getProperty("upload.directory");
 
     public static final String containerVersion = getPropertiesFromClasspath(fileName).getProperty("container.version");
     public static final String containerClassifier = getPropertiesFromClasspath(fileName).getProperty("container.classifier");
@@ -56,6 +47,33 @@ public class ServiceUtils {
     private static Properties getPropertiesFromClasspath(String propFileName) {
         return CommandLineArguments.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
+
+    static Logger logger = Logger.getLogger(ServiceUtils.class);
+
+
+
+    private final ResourceStorage storageManager;
+
+    private final ResourceIndex resourceIndex;
+
+    public ServiceUtils() {
+         storageManager=new ResourceStorageFileSystem();
+        resourceIndex=DocumentResource.getResourceIndex();
+    }
+    public ServiceUtils(ResourceStorage storageManager, ResourceIndex resourceIndex) {
+        this.storageManager=storageManager;
+        this.resourceIndex=resourceIndex;
+    }
+    public ResourceIndex getResourceIndex() {
+        return resourceIndex;
+    }
+
+    public ResourceStorage getStorageManager() {
+        return storageManager;
+    }
+
+
+
 
     public Destination getDestination(Map<String, List<InputPart>> formData) throws IOException {
         if (formData.get("translate") != null) {
@@ -120,7 +138,7 @@ public class ServiceUtils {
         UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), EXPAND("EXPAND"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
         // JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
 
-        private Action(String text) {
+        Action(String text) {
             this.text = text;
         }
 
@@ -129,7 +147,7 @@ public class ServiceUtils {
         public String toString() {
             return text;
         }
-    };
+    }
 
     public enum Destination {
         UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
@@ -167,25 +185,6 @@ public class ServiceUtils {
 
         if (formData.get("translate") != null) {
             return Action.TRANSLATE;
-            /*
-            String val = getFormDataValue(formData, "translate");
-            if (val != null) {
-                if ("json".equals(val))
-                    return Action.JSON;
-                if ("provx".equals(val))
-                    return Action.XML;
-                if ("provn".equals(val))
-                    return Action.PROVN;
-                if ("turtle".equals(val))
-                    return Action.TURTLE;
-                if ("trig".equals(val))
-                    return Action.TRIG;
-                if ("svg".equals(val))
-                    return Action.SVG;
-                if ("jpg".equals(val))
-                    return Action.JPG;
-                return Action.UNKNOWN;
-            } */
         }
 
         if (formData.get("sign") != null) {
@@ -224,47 +223,13 @@ public class ServiceUtils {
 
         if (formData.get("expand") != null) {
             return Action.EXPAND;
-            /*
-            String val = getFormDataValue(formData, "expand");
-            if (val != null) {
-                if ("json".equals(val))
-                    return Action.JSON;
-                if ("provx".equals(val))
-                    return Action.XML;
-                if ("provn".equals(val))
-                    return Action.PROVN;
-                if ("turtle".equals(val))
-                    return Action.TURTLE;
-                if ("trig".equals(val))
-                    return Action.TRIG;
-                if ("svg".equals(val))
-                    return Action.SVG;
-                return Action.UNKNOWN;
-            }
-
-             */
         }
-        // legacy
-        /*
-         * if (formData.get("validate") != null) return Action.VALIDATE; if
-         * (formData.get("json") != null) return Action.JSON; if
-         * (formData.get("xml") != null) return Action.XML; if
-         * (formData.get("provn") != null) return Action.PROVN; if
-         * (formData.get("turtle") != null) return Action.TURTLE; if
-         * (formData.get("trig") != null) return Action.TRIG; if
-         * (formData.get("svg") != null) return Action.SVG;
-         */
         return Action.UNKNOWN;
     }
 
 
     static public String getRequestURL(HttpServletRequest request, String api,
                                        String docId, String action) {
-        // <%
-        // out.print( request.getRemoteAddr() );
-        // out. print( request.getRemoteHost() );
-        // %>
-
         String name = request.getLocalName();
         if (name.startsWith("0:0:0:0:0:0:0:1"))
             name = "localhost"; // HACK: since this is the value returned by
@@ -380,7 +345,6 @@ public class ServiceUtils {
                 + msg);
     }
 
-
     public Response composeResponseNotFoundType(String msg) {
         return composeResponseNotFOUND("Not found validation resource for : "
                 + msg);
@@ -396,69 +360,61 @@ public class ServiceUtils {
                                           String mediaType) {
         try {
 
-            String absoluteFilePath = "";
+            String storedResourceIdentifier = "";
 
             InteropFramework interop = new InteropFramework();
 
-            Formats.ProvFormat format = interop.mimeTypeRevMap
-                    .get(mediaType.toString());
-            String extension = interop.getExtension(format);
+            Formats.ProvFormat format = interop.mimeTypeRevMap.get(mediaType.toString());
 
-            File temp = createTempFile(extension);
-            absoluteFilePath = temp.getAbsolutePath();
+            storedResourceIdentifier=storageManager.newStore(format);
+            logger.info("storage Id: " + storedResourceIdentifier);
 
-            String s = temp.getName();
-            String graphId = s.substring(0, s.lastIndexOf("."));
 
-            System.out.println("---------- Destination name " + graphId);
-            System.out.println("---------- Temp file name " + absoluteFilePath);
-            // System.out.println("---------- mime type " + mimeType);
+            String visibleId=resourceIndex.newId();
+            logger.info("visible Id: " + visibleId);
 
-            // new InputStreamReader(inputStream,"UTF-8")
-            FileUtils.copyInputStreamToFile(inputStream, temp);
+            storageManager.copyInputStreamToStore(inputStream,storedResourceIdentifier);
+
 
             System.out.println("----------- Done");
 
 
-            DocumentResource vr = new DocumentResource();
-            vr.format = format;
-            vr.graphId = graphId;
-            vr.filepath = absoluteFilePath;
-            vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
-                    .lastIndexOf("."));
-            vr.mimeType = null;
-            DocumentResource.getResourceIndex().put(graphId, vr);
+            DocumentResource dr = new DocumentResource();
+            dr.visibleId = visibleId;
+            dr.storageId = storedResourceIdentifier;
+            resourceIndex.put(visibleId, dr);
 
-            doProcessFile(vr, true);
+            doProcessFile(dr, true);
 
-            return vr;
+            return dr;
         } catch (Throwable e) {
+
             e.printStackTrace();
             throw new ParserException(e);
         }
 
     }
 
-    public boolean doProcessFile(DocumentResource vr, boolean known) {
+    public boolean doProcessFile(DocumentResource dr, boolean known) {
         try {
             InteropFramework interop = new InteropFramework();
 
             Document doc;
-            if (known) {
-                doc = (Document) interop.readDocumentFromFile(vr.filepath);
-            } else {
-                doc = (Document) interop.loadProvUnknownGraph(vr.filepath);
-            }
+
+            logger.info("doProcessFile for " + dr.visibleId + " " + dr.storageId);
+
+            doc=storageManager.readDocument(dr.storageId,known);
+
 
             if (doc == null)
-                throw new NullPointerException("read document returned null for " + vr.filepath);
+                throw new NullPointerException("read document returned null for " + dr.storageId);
 
-            vr.document = (org.openprovenance.prov.xml.Document) doc;
+            dr.setDocument((org.openprovenance.prov.xml.Document) doc);
 
             return true;
         } catch (Throwable e) {
             e.printStackTrace();
-            vr.thrown = e;
+            dr.thrown = e;
             return false;
         }
 
@@ -467,7 +423,7 @@ public class ServiceUtils {
 
     public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
                                                     List<InputPart> type) {
-        String absoluteFilePath = "";
+        String storedResourceIdentifier = "";
         for (InputPart inputPart : inputParts) {
 
             try {
@@ -477,56 +433,41 @@ public class ServiceUtils {
                 System.out.println("Header " + header.values());
                 System.out.println("Header " + header.keySet());
 
-                // convert the uploaded file to inputstream
-                // InputStream inputStream =
-                // inputPart.getBody(InputStream.class,null);
-                // DOESN'T WORK????
 
                 String mybody = inputPart.getBodyAsString();
-                // System.out.println("Body is " +mybody);
 
                 String mytype = type.get(0).getBodyAsString();
 
                 InteropFramework interop = new InteropFramework();
                 Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
-                String extension = interop.getExtension(format);
+
+                storedResourceIdentifier=storageManager.newStore(format);
+                logger.info("storage Id: " + storedResourceIdentifier);
 
                 logger.debug("processStatementsForm: type is " + mytype);
-                logger.debug("processStatementsForm: extension is " + extension);
 
 
-                File temp = createTempFile(extension);
 
-                absoluteFilePath = temp.getAbsolutePath();
+                String visibleId=resourceIndex.newId();
 
-                String s = temp.getName();
-                String graphId = s.substring(0, s.lastIndexOf("."));
+                logger.info("visible Id: " + visibleId);
+                System.out.println("---------- Temp file name " + storedResourceIdentifier);
 
-                System.out.println("---------- Destination name " + graphId);
-                System.out.println("---------- Temp file name "
-                        + absoluteFilePath);
-                // System.out.println("---------- mime type " + mimeType);
-
-                FileUtils.write(temp, mybody);
+                storageManager.copyStringToStore(mybody,storedResourceIdentifier);
+                //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
                 // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
                 // WORK??
 
                 System.out.println("----------- Done");
 
 
-                DocumentResource vr = new DocumentResource();
-                vr.format = format;
+                DocumentResource dr = new DocumentResource();
 
-                vr.graphId = graphId;
-                vr.filepath = absoluteFilePath;
-                vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
-                        .lastIndexOf("."));
-                // vr.mimeType=mimeType;
-                DocumentResource.getResourceIndex().put(graphId, vr);
+                dr.visibleId = visibleId;
+                dr.storageId = storedResourceIdentifier;
+                resourceIndex.put(visibleId, dr);
 
-                // doProcessFile(vr, true, om);
-
-                return vr;
+                return dr;
 
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -540,8 +481,8 @@ public class ServiceUtils {
 
     public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
         String fileName = "";
-        String absoluteFilePath = "";
-        DocumentResource vr;
+        String storedResourceIdentifier = "";
+        DocumentResource dr;
 
         for (InputPart inputPart : inputParts) {
 
@@ -557,47 +498,38 @@ public class ServiceUtils {
                 if ((fileName == null) || (fileName.equals("")))
                     return null;
 
-
                 // convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class,
-                        null);
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
                 // constructs upload file path
-                fileName = UPLOADED_FILE_PATH + fileName;
+                //fileName = UPLOADED_FILE_PATH + fileName;
 
                 InteropFramework interop = new InteropFramework();
                 Formats.ProvFormat format = interop.getTypeForFile(fileName);
-                String extension = interop.getExtension(format);
 
-                File temp = createTempFile(extension);
-                absoluteFilePath = temp.getAbsolutePath();
+                storedResourceIdentifier=storageManager.newStore(format);
 
-                String s = temp.getName();
-                String graphId = s.substring(0, s.lastIndexOf("."));
 
-                System.out.println("---------- Destination name " + graphId);
-                System.out.println("---------- Temp file name "
-                        + absoluteFilePath);
-                // System.out.println("---------- mime type " + mimeType);
+                String visibleId=resourceIndex.newId();
 
-                FileUtils.copyInputStreamToFile(inputStream, temp);
+
+                logger.info("storage Id: " + storedResourceIdentifier);
+                logger.info("visible Id: " + visibleId);
+
+                storageManager.copyInputStreamToStore(inputStream,storedResourceIdentifier);
+                //FileUtils.copyInputStreamToFile(inputStream, temp);
 
                 System.out.println("----------- Done");
                 String formatString=(format != null) ? format.toString() : "unknown";
 
-                vr = new DocumentResource();
+                dr = new DocumentResource();
 
-                vr.format = format;
-                vr.graphId = graphId;
-                vr.filepath = absoluteFilePath;
-                vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
-                        .lastIndexOf("."));
-                vr.mimeType = null;
-                DocumentResource.getResourceIndex().put(graphId, vr);
+                dr.visibleId = visibleId;
+                dr.storageId = storedResourceIdentifier;
 
-                // doProcessFile(vr, true, om);
+                resourceIndex.put(visibleId, dr);
 
-                return vr;
+                return dr;
 
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -611,7 +543,7 @@ public class ServiceUtils {
 
 
     public DocumentResource doProcessURLForm(List<InputPart> inputParts) {
-        String absoluteFilePath = "";
+        String storedResourceIdentifier = "";
         for (InputPart inputPart : inputParts) {
 
             try {
@@ -622,22 +554,22 @@ public class ServiceUtils {
                 System.out.println("Header " + header.keySet());
 
                 // convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class,
-                        null);
+                InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
-                String url = IOUtils.toString(inputStream).trim();
+                String url = IOUtils.toString(inputStream, Charset.defaultCharset()).trim();
 
                 System.out.println("---------- URL " + url);
                 inputStream.close();
 
-                if ((url == null) || (url.equals("")))
+                if ((url == null) || (url.equals(""))) {
+                    //OK, it's not a URL we have received, let's return null, and try other option
                     return null;
+                }
 
                 InteropFramework interop = new InteropFramework();
                 URL theURL = new URL(url);
                 URLConnection conn = interop.connectWithRedirect(theURL);
-                if (conn == null)
-                    throw new RuntimeException("Failed to connect to url");
+                if (conn == null) throw new RuntimeException("Failed to connect to url");
 
                 Formats.ProvFormat format = null;
                 String content_type = conn.getContentType();
@@ -650,12 +582,10 @@ public class ServiceUtils {
                     if (end < 0) {
                         end = content_type.length();
                     }
-                    String actual_content_type = content_type.substring(0, end)
-                            .trim();
+                    String actual_content_type = content_type.substring(0, end).trim();
                     logger.debug("Found Content-type: " + actual_content_type);
                     // TODO: might be worth skipping if text/plain as that seems
-                    // to be the
-                    // default returned by unconfigured web servers
+                    // to be the default returned by unconfigured web servers
                     format = interop.mimeTypeRevMap.get(actual_content_type);
                 }
                 logger.debug("Format after Content-type: " + format);
@@ -665,40 +595,29 @@ public class ServiceUtils {
                 }
                 logger.debug("Format after extension: " + format);
 
-                String formatString=(format != null) ? format.toString() : "unknown";
 
-                String extension = interop.getExtension(format);
-
-                File temp = createTempFile(extension);
+                storedResourceIdentifier=storageManager.newStore(format);
 
                 InputStream content_stream = conn.getInputStream();
-                FileUtils.copyInputStreamToFile(content_stream, temp);
 
-                absoluteFilePath = temp.getAbsolutePath();
+                storageManager.copyInputStreamToStore(content_stream,storedResourceIdentifier);
+               // FileUtils.copyInputStreamToFile(content_stream, temp);
 
-                String s = temp.getName();
-                String graphId = s.substring(0, s.lastIndexOf("."));
 
-                System.out.println("---------- Destination name " + graphId);
-                System.out.println("---------- Temp file name "
-                        + absoluteFilePath);
+                String visibleId=resourceIndex.newId();
 
-                System.out.println("----------- Done");
+                logger.info("storage Id: " + storedResourceIdentifier);
+                logger.info("visible Id: " + visibleId);
 
-                DocumentResource vr = new DocumentResource();
+                DocumentResource dr = new DocumentResource();
 
-                vr.format = format;
-                vr.graphId = graphId;
-                vr.filepath = absoluteFilePath;
-                vr.graphpath = absoluteFilePath.substring(0, absoluteFilePath
-                        .lastIndexOf("."));
-                vr.mimeType = null;
-                DocumentResource.getResourceIndex().put(graphId, vr);
-                vr.url = url;
+                dr.visibleId = visibleId;
 
-                // doProcessFile(vr, true, om);
+                dr.storageId = storedResourceIdentifier;
 
-                return vr;
+                resourceIndex.put(visibleId, dr);
+
+                return dr;
 
             } catch (java.net.UnknownHostException e) {
                 throw new UncheckedException("UnknownHostException", e);
@@ -709,18 +628,6 @@ public class ServiceUtils {
 
         }
         throw new RuntimeException("Not properly structured input parts");
-    }
-
-
-
-    public File createTempFile(String extension) throws IOException {
-        return File.createTempFile("graph", "." + extension, new File(
-                UPLOADED_FILE_PATH));
-    }
-
-    public File createConfigurationFile() throws IOException {
-        return File.createTempFile("config", "." + "json", new File(
-                UPLOADED_FILE_PATH));
     }
 
 

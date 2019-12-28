@@ -28,7 +28,7 @@ public final class ActionTranslate implements ActionPerformer {
     public Response doAction(Map<String, List<InputPart>> formData, DocumentResource vr, Date date) throws IOException {
 
         ServiceUtils.Destination destination = utils.getDestination(formData);
-        String location = "documents/" + vr.graphId + "."
+        String location = "documents/" + vr.visibleId + "."
                 + destination;
 
         return utils.composeResponseSeeOther(location).header("Expires",

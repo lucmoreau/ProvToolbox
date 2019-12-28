@@ -43,12 +43,12 @@ public class ActionExpand implements ActionPerformer {
     @Override
     public Response doAction(Map<String, List<InputPart>> formData, DocumentResource vr, Date date) throws IOException {
         TemplateResource vr2=new TemplateResource(vr);
-        DocumentResource.getResourceIndex().put(vr.graphId, vr2);
+        DocumentResource.getResourceIndex().put(vr.visibleId, vr2);
 
 
         ServiceUtils.Destination destination = utils.getDestination(formData);
 
-        String location= "documents/" + vr.graphId + "." + destination;
+        String location= "documents/" + vr.visibleId + "." + destination;
         List<InputPart> inputParts = formData.get("statements");
         String bindings = inputParts.get(0).getBodyAsString();
         System.out.println("bindings " + bindings);
@@ -76,10 +76,10 @@ public class ActionExpand implements ActionPerformer {
         Bindings bb= BindingsJson.fromBean(BindingsJson.importBean(stream),pFactory);
         ((TemplateResource)vr).bindings=bb;
 
-        expanded = myExpand.expander(vr.document,
+        expanded = myExpand.expander(vr.document(),
                 bb);
 
-        vr.document=(org.openprovenance.prov.xml.Document)expanded;
+        vr.setDocument((org.openprovenance.prov.xml.Document)expanded);
     }
 
 
@@ -96,10 +96,10 @@ public class ActionExpand implements ActionPerformer {
                     if (!JobManagement.logJobp) return;
 
                     InteropFramework interop = new InteropFramework();
-                    String myfile=vr2.filepath+"_expanded.provn";
-                    vr2.filepath=myfile;
-                    vr2.url=vr2.url+"_expanded";
-                    interop.writeDocument(myfile, vr2.document);
+                    String myfile=vr2.storageId +"_expanded.provn";
+                    vr2.storageId =myfile;
+                   // vr2.url=vr2.url+"_expanded";
+                    interop.writeDocument(myfile, vr2.document());
 
                     doLog(TemplateService.TEMPLATE_EXPANSION,vr2);
                 }
@@ -117,9 +117,8 @@ public class ActionExpand implements ActionPerformer {
     public  void doLog(String action, TemplateResource vr) {
         logger.log(ProvLevel.PROV,
                 "" + action + ","
-                        + vr.graphId + ","
-                        + vr.filepath + ","
-                        + vr.format);
+                        + vr.visibleId + ","
+                        + vr.storageId);
     }
 
 

@@ -438,6 +438,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.19.1</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -480,6 +481,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
+                        <version>3.2.3</version>
                         <configuration>
                             <failOnMissingWebXml>false</failOnMissingWebXml>
                             <classifier>mac</classifier>

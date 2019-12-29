@@ -17,10 +17,42 @@ public class DocumentResource {
         return theIndexer;
     }
 
-    public String visibleId;
-    public String storageId;
-    public Date expires;
-    public ResourceIndex.StorageKind kind;
+    public String getVisibleId() {
+        return visibleId;
+    }
+
+    public void setVisibleId(String visibleId) {
+        this.visibleId = visibleId;
+    }
+
+    public String getStorageId() {
+        return storageId;
+    }
+
+    public void setStorageId(String storageId) {
+        this.storageId = storageId;
+    }
+
+    public Date getExpires() {
+        return expires;
+    }
+
+    public void setExpires(Date expires) {
+        this.expires = expires;
+    }
+
+    public ResourceIndex.StorageKind getKind() {
+        return kind;
+    }
+
+    public void setKind(ResourceIndex.StorageKind kind) {
+        this.kind = kind;
+    }
+
+    private String visibleId;
+    private String storageId;
+    private Date expires;
+    private ResourceIndex.StorageKind kind;
 
     // transient
     public Throwable thrown;

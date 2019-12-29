@@ -123,7 +123,7 @@ public class TranslationService implements Constants, InteropMediaType {
             return utils.composeResponseNotFoundResource(msg);
         }
 
-        Document doc=utils.getStorageManager().readDocument(vr.storageId,true);
+        Document doc=utils.getStorageManager().readDocument(vr.getStorageId(),true);
         if (doc == null) {
             return utils.composeResponseNotFoundDocument(msg);
         }
@@ -147,35 +147,31 @@ public class TranslationService implements Constants, InteropMediaType {
                                                throws FileNotFoundException,
 																	JAXBException,
 																	IOException,
-																	ServletException {
+            ServletException {
 
-	DocumentResource vr = utils.getResourceIndex().get(msg);
+        DocumentResource vr = utils.getResourceIndex().get(msg);
 
-	if (vr == null) {
-	    return utils.composeResponseNotFoundResource(msg);
-	}
+        if (vr == null) {
+            return utils.composeResponseNotFoundResource(msg);
+        }
 
-	if (vr.document() == null) {
-	    return utils.composeResponseNotFoundDocument(msg);
-	}
+        if (vr.document() == null) {
+            return utils.composeResponseNotFoundDocument(msg);
+        }
 
-	InteropFramework intf = new InteropFramework();
+        InteropFramework intf = new InteropFramework();
 
-	String format=vr.storageId.substring(0, vr.storageId.lastIndexOf(".")+1);
+        String format=vr.getStorageId().substring(0, vr.getStorageId().lastIndexOf(".")+1);
 
 
 
-	String mimeType = intf.mimeTypeMap.get(format);
+        String mimeType = intf.mimeTypeMap.get(format);
 
-	File f = new File(vr.storageId);
+        File f = new File(vr.getStorageId());
 
-	logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original "
-		+ vr.storageId);
+        logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + vr.getStorageId());
 
-	return utils.composeResponseOK((Object) f).type(mimeType).build();
+        return utils.composeResponseOK((Object) f).type(mimeType).build();
     }
-
-
-
 
 }

@@ -42,17 +42,17 @@ public class RedisIndex implements ResourceIndex {
         List<String> values=client.hmget(key, FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND);
         logger.info("get " + key + values);
         DocumentResource dr=new DocumentResource();
-        dr.visibleId =key;
-        dr.storageId =values.get(0);
+        dr.setVisibleId(key);
+        dr.setStorageId(values.get(0));
         try {
             String dateString = values.get(1);
-            if (dateString!=null) dr.expires= dateFormat.parse(dateString);
+            if (dateString!=null) dr.setExpires(dateFormat.parse(dateString));
         } catch (ParseException e) {
             e.printStackTrace();
-            dr.expires=null;
+            dr.setExpires(null);
         }
         String kindString = values.get(2);
-        if (kindString!=null) dr.kind=StorageKind.valueOf(kindString);
+        if (kindString!=null) dr.setKind(StorageKind.valueOf(kindString));
         logger.info("get " + key + " " + dr);
         return dr;
     }
@@ -61,9 +61,9 @@ public class RedisIndex implements ResourceIndex {
     public void put(String key, DocumentResource dr) {
         logger.info("put " + key );
         Map<String,String> m=new HashMap<>();
-        m.put(FIELD_STORE_ID,dr.storageId);
-        if (dr.expires!=null) m.put(FIELD_EXPIRES,dateFormat.format(dr.expires));
-        if (dr.kind!=null) m.put(FIELD_KIND,dr.kind.name());
+        m.put(FIELD_STORE_ID,dr.getStorageId());
+        if (dr.getExpires()!=null) m.put(FIELD_EXPIRES,dateFormat.format(dr.getExpires()));
+        if (dr.getKind()!=null) m.put(FIELD_KIND,dr.getKind().name());
         client.hmset(key,m);
         logger.info("put done " + key );
 

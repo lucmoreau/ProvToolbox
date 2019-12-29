@@ -402,8 +402,8 @@ public class ServiceUtils {
 
 
             DocumentResource dr = new DocumentResource();
-            dr.visibleId = visibleId;
-            dr.storageId = storedResourceIdentifier;
+            dr.setVisibleId(visibleId);
+            dr.setStorageId(storedResourceIdentifier);
             resourceIndex.put(visibleId, dr);
 
             doProcessFile(dr, true);
@@ -423,13 +423,13 @@ public class ServiceUtils {
 
             Document doc;
 
-            logger.info("doProcessFile for " + dr.visibleId + " " + dr.storageId);
+            logger.info("doProcessFile for " + dr.getVisibleId() + " " + dr.getStorageId());
 
-            doc=storageManager.readDocument(dr.storageId,known);
+            doc=storageManager.readDocument(dr.getStorageId(),known);
 
 
             if (doc == null)
-                throw new NullPointerException("read document returned null for " + dr.storageId);
+                throw new NullPointerException("read document returned null for " + dr.getStorageId());
 
             dr.setDocument((org.openprovenance.prov.xml.Document) doc);
 
@@ -485,8 +485,8 @@ public class ServiceUtils {
 
                 DocumentResource dr = new DocumentResource();
 
-                dr.visibleId = visibleId;
-                dr.storageId = storedResourceIdentifier;
+                dr.setVisibleId(visibleId);
+                dr.setStorageId(storedResourceIdentifier);
                 resourceIndex.put(visibleId, dr);
 
                 return dr;
@@ -546,8 +546,8 @@ public class ServiceUtils {
 
                 dr = new DocumentResource();
 
-                dr.visibleId = visibleId;
-                dr.storageId = storedResourceIdentifier;
+                dr.setVisibleId(visibleId);
+                dr.setStorageId(storedResourceIdentifier);
 
                 resourceIndex.put(visibleId, dr);
 
@@ -633,9 +633,9 @@ public class ServiceUtils {
 
                 DocumentResource dr = new DocumentResource();
 
-                dr.visibleId = visibleId;
+                dr.setVisibleId(visibleId);
 
-                dr.storageId = storedResourceIdentifier;
+                dr.setStorageId(storedResourceIdentifier);
 
                 resourceIndex.put(visibleId, dr);
 

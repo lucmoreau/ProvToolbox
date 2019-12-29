@@ -136,8 +136,8 @@ public class PostService implements Constants, InteropMediaType {
 
 
 
-                Date date = jobManager.scheduleJob(vr.visibleId);
-                vr.expires = date;
+                Date date = jobManager.scheduleJob(vr.getVisibleId());
+                vr.setExpires(date);
 
                 final ServiceUtils.Action action = utils.getAction(formData);
                 doLog(action,vr);
@@ -174,16 +174,10 @@ public class PostService implements Constants, InteropMediaType {
                 }
 
                 //default
-                String location = "view/documents/" + vr.visibleId
-                        + "/translation.html"; // alternatively, go to
-                // document the landing
-                // page
+                String location = "view/documents/" + vr.getVisibleId() + "/translation.html";
+                // alternatively, go to document the landing page
 
-                return utils.composeResponseSeeOther(location).header("Expires",
-                        date)
-                        .build();
-
-
+                return utils.composeResponseSeeOther(location).header("Expires", date).build();
 
             } catch (UncheckedException e) {
                 return utils.composeResponseBadRequest("URI problem (" + e.getCause() + ")",e);
@@ -239,26 +233,22 @@ public class PostService implements Constants, InteropMediaType {
         System.out.println(">>> post media type is " + type);
         //System.out.println("content type header is" + contentType);
 
-        System.out.println("accept header is"
-                + headers.getAcceptableMediaTypes());
+        System.out.println("accept header is" + headers.getAcceptableMediaTypes());
 
         DocumentResource vr = null;
 
         vr = utils.doProcessFile(input, type);
 
-        Date date = jobManager.scheduleJob(vr.visibleId);
-        vr.expires = date;
+        Date date = jobManager.scheduleJob(vr.getVisibleId());
+        vr.setExpires(date);
 
         // TODO: maybe not return content directly
 
         if (true) {
-            return utils.contentNegotiationForDocument(request,vr.visibleId,".");
+            return utils.contentNegotiationForDocument(request,vr.getVisibleId(),".");
         }
 
-        return utils.composeResponseSeeOther("documents/" + vr.visibleId).header("Expires",
-                date)
-                .build();
-
+        return utils.composeResponseSeeOther("documents/" + vr.getVisibleId()).header("Expires", date).build();
     }
 
 
@@ -301,8 +291,8 @@ public class PostService implements Constants, InteropMediaType {
     public  void doLog(String action, DocumentResource vr) {
         logger.log(ProvLevel.PROV,
                 "" + action + ","
-                        + vr.visibleId + ","
-                        + vr.storageId);
+                        + vr.getVisibleId() + ","
+                        + vr.getStorageId());
     }
 
 

@@ -51,10 +51,10 @@ public class JobManagement {
 					logger.debug("deleting ... " + visibleId);
 					utils.getResourceIndex().remove(visibleId);
 
-					if (vr.storageId != null) {
-						logger.info("TODO: need to update storage backend: deleting ... " + vr.storageId);
-						new File(vr.storageId).delete();
-						vr.storageId = null;
+					if (vr.getStorageId() != null) {
+						logger.info("TODO: need to update storage backend: deleting ... " + vr.getStorageId());
+						new File(vr.getStorageId()).delete();
+						vr.setStorageId(null);
 					}
 					/*
 					if (vr.reportFile != null) {

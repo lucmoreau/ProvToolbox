@@ -43,12 +43,12 @@ public class ActionExpand implements ActionPerformer {
     @Override
     public Response doAction(Map<String, List<InputPart>> formData, DocumentResource vr, Date date) throws IOException {
         TemplateResource vr2=new TemplateResource(vr);
-        DocumentResource.getResourceIndex().put(vr.visibleId, vr2);
+        DocumentResource.getResourceIndex().put(vr.getVisibleId(), vr2);
 
 
         ServiceUtils.Destination destination = utils.getDestination(formData);
 
-        String location= "documents/" + vr.visibleId + "." + destination;
+        String location= "documents/" + vr.getVisibleId() + "." + destination;
         List<InputPart> inputParts = formData.get("statements");
         String bindings = inputParts.get(0).getBodyAsString();
         System.out.println("bindings " + bindings);
@@ -96,8 +96,8 @@ public class ActionExpand implements ActionPerformer {
                     if (!JobManagement.logJobp) return;
 
                     InteropFramework interop = new InteropFramework();
-                    String myfile=vr2.storageId +"_expanded.provn";
-                    vr2.storageId =myfile;
+                    String myfile=vr2.getStorageId() +"_expanded.provn";
+                    vr2.setStorageId(myfile);
                    // vr2.url=vr2.url+"_expanded";
                     interop.writeDocument(myfile, vr2.document());
 
@@ -113,15 +113,11 @@ public class ActionExpand implements ActionPerformer {
         }
     }
 
-
     public  void doLog(String action, TemplateResource vr) {
         logger.log(ProvLevel.PROV,
                 "" + action + ","
-                        + vr.visibleId + ","
-                        + vr.storageId);
+                        + vr.getVisibleId() + ","
+                        + vr.getStorageId());
     }
-
-
-
 
 }

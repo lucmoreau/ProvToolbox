@@ -15,7 +15,7 @@ public final class ActionTranslate implements ActionPerformer {
 
     private final ServiceUtils utils;
 
-    public ActionTranslate(ServiceUtils utils) {
+    ActionTranslate(ServiceUtils utils) {
         this.utils=utils;
     }
 

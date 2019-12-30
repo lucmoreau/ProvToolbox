@@ -4,8 +4,8 @@ import org.openprovenance.prov.service.core.DocumentResource;
 import org.openprovenance.prov.template.expander.Bindings;
 
 public interface TemplateResource extends DocumentResource, Cloneable{
-     public static final String TEMPLATE = "TEMPLATE";
-     static public String getResourceKind() {
+     String TEMPLATE = "TEMPLATE";
+     static String getResourceKind() {
           return TEMPLATE;
      }
 

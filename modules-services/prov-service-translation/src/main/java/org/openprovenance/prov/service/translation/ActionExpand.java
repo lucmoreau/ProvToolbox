@@ -8,7 +8,6 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory;
-import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -28,13 +27,13 @@ public class ActionExpand implements ActionPerformer {
     private final ServiceUtils utils;
     private final ResourceIndex<TemplateResource> resourceIndex;
 
-    public ActionExpand(ServiceUtils utils) {
+    ActionExpand(ServiceUtils utils) {
         this.utils= utils;
 
         Instantiable<?> expander=utils.getExtensionMap().get(TemplateResource.getResourceKind());
         Instantiable<TemplateResource> expander2=(Instantiable<TemplateResource>) expander;
 
-        ExtendedDocumentResourceIndexFactory<TemplateResource> tmp=utils.getDocumentResourceIndex().getExtender(expander2);
+        //ExtendedDocumentResourceIndexFactory<TemplateResource> tmp=utils.getDocumentResourceIndex().getExtender(expander2);
 
 
         logger.info("FIXING FIXME FIXME: teplate resource index in memory must be discovered dynamically");

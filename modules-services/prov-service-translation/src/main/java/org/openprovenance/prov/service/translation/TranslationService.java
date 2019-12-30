@@ -1,13 +1,17 @@
 package org.openprovenance.prov.service.translation;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.log4j.Logger;
+import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.service.core.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -17,32 +21,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBException;
-
-import org.apache.log4j.Logger;
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.*;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.openprovenance.prov.interop.InteropMediaType;
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Path("")
 //@Api(value = "", description = "Provenance API")
 public class TranslationService implements Constants, InteropMediaType {
 	
-    static Logger logger = Logger.getLogger(TranslationService.class);
-    final ServiceUtils utils;
+    private static Logger logger = Logger.getLogger(TranslationService.class);
+    private final ServiceUtils utils;
 
 
-	public TranslationService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
+	private TranslationService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
         postService.addToPerformers(PostService.addToList(new ActionTranslate(utils), performers));
 		postService.addOtherPerformer(otherPerformer);
@@ -104,10 +98,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                           @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
                                           @Parameter(name = "type", description = "serialization type", example = "provn", 
                                                      schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg"}), required = true) @PathParam("type") String type)
-                                                  throws FileNotFoundException,
-                                                  JAXBException,
-                                                  IOException,
-                                                  ServletException {
+                                                  throws IOException {
         logger.info("translate to " + type);
 
 
@@ -143,11 +134,7 @@ public class TranslationService implements Constants, InteropMediaType {
                              @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
     public Response getOriginalDocumen(@Context HttpServletResponse response,
                                        @Context HttpServletRequest request,
-                                       @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg)
-                                               throws FileNotFoundException,
-																	JAXBException,
-																	IOException,
-            ServletException {
+                                       @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg) {
 
         DocumentResource vr = utils.getDocumentResourceIndex().get(msg);
 
@@ -165,7 +152,7 @@ public class TranslationService implements Constants, InteropMediaType {
 
 
 
-        String mimeType = intf.mimeTypeMap.get(format);
+        String mimeType = intf.mimeTypeMap.get(format); //TODO: fix me, domain is not a string
 
         File f = new File(vr.getStorageId());
 

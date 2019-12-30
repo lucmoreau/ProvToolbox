@@ -12,7 +12,7 @@ public class TemplateResourceIndexInMemory extends ExtendedDocumentResourceIndex
         super(ri, factory);
     }
 
-    public static Instantiable<TemplateResource> itr=new Instantiable<TemplateResource>() {
+    public static Instantiable<TemplateResource> factory =new Instantiable<TemplateResource>() {
         @Override
         public TemplateResource newResource(DocumentResource dr) {
             return new TemplateResourceInMemory(dr);
@@ -25,7 +25,7 @@ public class TemplateResourceIndexInMemory extends ExtendedDocumentResourceIndex
     };
 
     public static TemplateResourceIndexInMemory make (ResourceIndex<DocumentResource> ri) {
-        return new TemplateResourceIndexInMemory(ri, itr);
+        return new TemplateResourceIndexInMemory(ri, factory);
     }
 
     @Override
@@ -33,8 +33,10 @@ public class TemplateResourceIndexInMemory extends ExtendedDocumentResourceIndex
         return new ExtendedDocumentResourceIndexFactory(this,factory);
     }
 
-    static void register (Map<String,Instantiable<?>> m) {
-        // m.put(TemplateResource.getResourceKind(),TemplateResourceInMemory::new);  // FIXME
+
+    public static void register(Map<String,Instantiable<?>> m) {
+        m.put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
     }
+
 
 }

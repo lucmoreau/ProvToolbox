@@ -16,6 +16,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -53,6 +54,8 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     public TemplateService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
+        logger.info("FIXME FIXME: registering template index (in memory)");
+        utils.getExtensionMap().put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
         postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
         actionExpand=new ActionExpand(utils);

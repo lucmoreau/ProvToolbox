@@ -127,7 +127,7 @@ public class PostService implements Constants, InteropMediaType {
                     return utils.composeResponseBadRequest(result, vr.getThrown());
                 }
 
-                if (/*vr.bundle == null && */vr.document() == null) {
+                if (/*vr.bundle == null && */vr.document() == null) {  //TODO: what about bundle?
                     String result = "No provenance was found (empty document), and therefore failed to create resource for validation service";
                     return utils.composeResponseNotFOUND(result);
                 }
@@ -150,19 +150,6 @@ public class PostService implements Constants, InteropMediaType {
                     }
 
                 }
-
-
-/*
-                if (action.equals(ServiceUtils.Action.VALIDATE)) {
-                    return actionValidate.doAction(null, vr, date);
-                }
-                if ((action.equals(ServiceUtils.Action.EXPAND))) {
-                    return actionExpand.doAction(formData, vr, date);
-                }
-                if ((action.equals(ServiceUtils.Action.TRANSLATE))) {
-                    return actionTranslate.doAction(formData, vr, date);
-                }
-                */
 
 
                 logger.info("checking other performer " );

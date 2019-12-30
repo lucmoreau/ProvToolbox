@@ -25,6 +25,7 @@ public class RedisDocumentResource implements DocumentResource {
     public RedisDocumentResource(Map<String, String> m) {
         this.m = m;
     }
+
     public RedisDocumentResource() {
         this.m=new HashMap<>();
     }

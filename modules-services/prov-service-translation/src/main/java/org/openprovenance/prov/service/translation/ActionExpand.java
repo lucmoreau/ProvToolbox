@@ -37,10 +37,10 @@ public class ActionExpand implements ActionPerformer {
         ExtendedDocumentResourceIndexFactory<TemplateResource> tmp=utils.getDocumentResourceIndex().getExtender(expander2);
 
 
+        logger.info("FIXING FIXME FIXME: teplate resource index in memory must be discovered dynamically");
 
-        //this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
-        logger.info("FIXME FIXME FIXME: teplate resource index in memory must be discovered dynamically");
-        this.resourceIndex=new TemplateResourceIndexInMemory(utils.getDocumentResourceIndex(),TemplateResourceIndexInMemory.itr);
+        this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
+        //this.resourceIndex=new TemplateResourceIndexInMemory(utils.getDocumentResourceIndex(),TemplateResourceIndexInMemory.factory);
     }
 
     @Override public String toString () {

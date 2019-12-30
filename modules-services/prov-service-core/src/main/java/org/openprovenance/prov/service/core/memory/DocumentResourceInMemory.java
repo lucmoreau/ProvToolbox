@@ -10,9 +10,6 @@ import java.util.Map;
 
 
 public class DocumentResourceInMemory implements DocumentResource {
-    final static private Map<String, DocumentResource> table = new HashMap<>();
-    //private static ResourceIndex theIndexer=new ResourceIndexAsMap(table);
-    private static ResourceIndex<DocumentResource> theIndexer = new DocumentResourceIndexInMemory(table);
 
     public Throwable getThrown() {
         return thrown;
@@ -30,9 +27,6 @@ public class DocumentResourceInMemory implements DocumentResource {
         this.extension = extension;
     }
 
-    static public ResourceIndex<DocumentResource> getResourceIndex() {
-        return theIndexer;
-    }
 
     public String getVisibleId() {
         return visibleId;
@@ -81,8 +75,6 @@ public class DocumentResourceInMemory implements DocumentResource {
     public Document document() {
         return doc;
     }
-
-
 
     public void setDocument(Document doc) {
         this.doc = doc;

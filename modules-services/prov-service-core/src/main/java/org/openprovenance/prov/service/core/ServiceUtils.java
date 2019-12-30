@@ -27,6 +27,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.core.memory.DocumentResourceInMemory;
+import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 
 public class ServiceUtils {
 
@@ -58,23 +59,19 @@ public class ServiceUtils {
 
     private final ResourceIndex<DocumentResource> documentResourceIndex;
 
-    private final Map<String,Instantiable<?>> extensionMap=new HashMap<>();
+    static public final Map<String,Instantiable<?>> extensionMap=new HashMap<>();
 
 
     boolean redis=false;
     public ServiceUtils() {
         storageManager=new ResourceStorageFileSystem();
-        ResourceIndex<DocumentResource> myIndex= DocumentResourceInMemory.getResourceIndex();
-        if (redis) {
-            documentResourceIndex =getRedisIndex(myIndex);
-        } else {
-            documentResourceIndex =myIndex;
-        }
+        //documentResourceIndex= new DocumentResourceIndexInMemory();
+        documentResourceIndex=getRedisIndex(null);
     }
 
     public static ResourceIndex<DocumentResource> getRedisIndex(ResourceIndex<DocumentResource> myIndex) {
         try {
-            Class<?> cl= ServiceUtils.class.forName("org.openprovenance.prov.redis.RedisIndex");
+            Class<?> cl= ServiceUtils.class.forName("org.openprovenance.prov.redis.RedisDocumentResourceIndex");
             Object object=cl.newInstance();
             myIndex=(ResourceIndex<DocumentResource>)object;
         } catch (ClassNotFoundException e) {
@@ -622,9 +619,12 @@ public class ServiceUtils {
 
                 DocumentResource dr= documentResourceIndex.newResource();
                 dr.setStorageId(storedResourceIdentifier);
+                documentResourceIndex.put(dr.getVisibleId(), dr);
+
 
                 logger.info("storage Id: " + storedResourceIdentifier);
                 logger.info("visible Id: " + dr.getVisibleId());
+
 
 
                 return dr;

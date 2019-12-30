@@ -29,13 +29,11 @@ public class ResourceStorageFileSystem implements ResourceStorage {
     @Override
     public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {
         FileUtils.copyInputStreamToFile(inputStream, new File(id));
-
     }
 
     @Override
     public void copyStringToStore(CharSequence str, String id) throws IOException {
         FileUtils.write(new File(id), str, StandardCharsets.UTF_8);
-
     }
 
     @Override
@@ -58,11 +56,9 @@ public class ResourceStorageFileSystem implements ResourceStorage {
     @Override
     public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
         interop.writeDocument(id,format,doc);
-
     }
 
     public File createTempFile(String extension) throws IOException {
-        return File.createTempFile("graph", "." + extension, new File(
-                ServiceUtils.UPLOADED_FILE_PATH));
+        return File.createTempFile("graph", "." + extension, new File(ServiceUtils.UPLOADED_FILE_PATH));
     }
 }

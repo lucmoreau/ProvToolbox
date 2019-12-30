@@ -7,6 +7,10 @@ import java.util.Map;
 
 
 public interface DocumentResource {
+    public static final String DOCUMENT = "DOCUMENT";
+    static public String getResourceKind() {
+        return DOCUMENT;
+    }
 
     String getVisibleId() ;
 

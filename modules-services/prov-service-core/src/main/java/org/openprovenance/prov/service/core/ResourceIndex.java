@@ -1,10 +1,14 @@
 package org.openprovenance.prov.service.core;
 
-public interface ResourceIndex {
-    DocumentResource get(String key);
-    void put(String key, DocumentResource dr);
+public interface ResourceIndex<T extends DocumentResource> {
+    T get(String key);
+    T newResource();
+    T newResource(DocumentResource dr);
+    void put(String key, T dr);
+    <EXTENDED_RESOURCE extends T> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> factory);
     void remove(String key);
     String newId();
     StorageKind kind();
-    public enum StorageKind { ME, RE; }
+    enum StorageKind { ME, RE; }
+
 }

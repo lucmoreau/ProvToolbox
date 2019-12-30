@@ -42,14 +42,14 @@ public class JobManagement {
 			if (visibleId == null) {
 				logger.error("no visibleId " + context);
 			} else {
-				DocumentResource vr = utils.getResourceIndex().get(visibleId);
+				DocumentResource vr = utils.getDocumentResourceIndex().get(visibleId);
 
 				if (vr == null) {
 					logger.error("no validation resource for " + visibleId);
 				} else {
 
 					logger.debug("deleting ... " + visibleId);
-					utils.getResourceIndex().remove(visibleId);
+					utils.getDocumentResourceIndex().remove(visibleId);
 
 					if (vr.getStorageId() != null) {
 						logger.info("TODO: need to update storage backend: deleting ... " + vr.getStorageId());

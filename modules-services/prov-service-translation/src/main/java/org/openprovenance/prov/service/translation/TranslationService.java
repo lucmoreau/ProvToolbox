@@ -116,7 +116,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                                  + " for resource : " + msg);
         }
 
-        DocumentResource vr = utils.getResourceIndex().get(msg);
+        DocumentResource vr = utils.getDocumentResourceIndex().get(msg);
 
 
         if (vr == null) {
@@ -149,7 +149,7 @@ public class TranslationService implements Constants, InteropMediaType {
 																	IOException,
             ServletException {
 
-        DocumentResource vr = utils.getResourceIndex().get(msg);
+        DocumentResource vr = utils.getDocumentResourceIndex().get(msg);
 
         if (vr == null) {
             return utils.composeResponseNotFoundResource(msg);

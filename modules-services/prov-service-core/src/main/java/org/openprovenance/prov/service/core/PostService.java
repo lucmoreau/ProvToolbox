@@ -79,8 +79,6 @@ public class PostService implements Constants, InteropMediaType {
     }
 
 
-
-
     @POST
     @Path("/documents/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -113,7 +111,7 @@ public class PostService implements Constants, InteropMediaType {
                 Map<String, List<InputPart>> formData = input.getFormDataMap();
                 logger.debug("submitted " + formData);
 
-                DocumentResource vr = null;
+                DocumentResource vr;
                 vr = processFileInForm(formData);
                 if (vr == null) vr = processUrlInForm(formData);
                 if (vr == null) vr = processStatementsInForm(formData);
@@ -126,7 +124,7 @@ public class PostService implements Constants, InteropMediaType {
                 }
                 if (!success) {
                     String result = "Failed to parse provenance";
-                    return utils.composeResponseBadRequest(result, vr.thrown);
+                    return utils.composeResponseBadRequest(result, vr.getThrown());
                 }
 
                 if (/*vr.bundle == null && */vr.document() == null) {
@@ -235,7 +233,7 @@ public class PostService implements Constants, InteropMediaType {
 
         System.out.println("accept header is" + headers.getAcceptableMediaTypes());
 
-        DocumentResource vr = null;
+        DocumentResource vr;
 
         vr = utils.doProcessFile(input, type);
 
@@ -284,11 +282,11 @@ public class PostService implements Constants, InteropMediaType {
         return vr;
     }
 
-    public  void doLog(ServiceUtils.Action action, DocumentResource vr) {
+    private void doLog(ServiceUtils.Action action, DocumentResource vr) {
         doLog(action.toString(),vr);
     }
 
-    public  void doLog(String action, DocumentResource vr) {
+    private void doLog(String action, DocumentResource vr) {
         logger.log(ProvLevel.PROV,
                 "" + action + ","
                         + vr.getVisibleId() + ","

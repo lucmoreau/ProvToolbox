@@ -6,10 +6,9 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.service.core.ActionPerformer;
-import org.openprovenance.prov.service.core.DocumentResource;
-import org.openprovenance.prov.service.core.JobManagement;
-import org.openprovenance.prov.service.core.ServiceUtils;
+import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory;
+import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -24,12 +23,24 @@ import java.util.List;
 import java.util.Map;
 
 public class ActionExpand implements ActionPerformer {
-    static Logger logger = Logger.getLogger(ActionExpand.class);
+    private static Logger logger = Logger.getLogger(ActionExpand.class);
 
     private final ServiceUtils utils;
+    private final ResourceIndex<TemplateResource> resourceIndex;
 
     public ActionExpand(ServiceUtils utils) {
         this.utils= utils;
+
+        Instantiable<?> expander=utils.getExtensionMap().get(TemplateResource.getResourceKind());
+        Instantiable<TemplateResource> expander2=(Instantiable<TemplateResource>) expander;
+
+        ExtendedDocumentResourceIndexFactory<TemplateResource> tmp=utils.getDocumentResourceIndex().getExtender(expander2);
+
+
+
+        //this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
+        logger.info("FIXME FIXME FIXME: teplate resource index in memory must be discovered dynamically");
+        this.resourceIndex=new TemplateResourceIndexInMemory(utils.getDocumentResourceIndex(),TemplateResourceIndexInMemory.itr);
     }
 
     @Override public String toString () {
@@ -41,69 +52,58 @@ public class ActionExpand implements ActionPerformer {
     }
 
     @Override
-    public Response doAction(Map<String, List<InputPart>> formData, DocumentResource vr, Date date) throws IOException {
-        TemplateResource vr2=new TemplateResource(vr);
-        DocumentResource.getResourceIndex().put(vr.getVisibleId(), vr2);
+    public Response doAction(Map<String, List<InputPart>> formData, DocumentResource dr, Date date) throws IOException {
+        TemplateResource tr=resourceIndex.newResource(dr);
 
 
         ServiceUtils.Destination destination = utils.getDestination(formData);
 
-        String location= "documents/" + vr.getVisibleId() + "." + destination;
+        String location= "documents/" + dr.getVisibleId() + "." + destination;
         List<InputPart> inputParts = formData.get("statements");
         String bindings = inputParts.get(0).getBodyAsString();
-        System.out.println("bindings " + bindings);
+        logger.info("bindings " + bindings);
 
+        expandTemplateWithBindings(tr, bindings);
+        storeExpandedDocument(tr);
 
-        expandTemplateWithBindings(vr2, bindings);
-
-        doLogExpansion(vr2);
-        return utils.composeResponseSeeOther(location).header("Expires",
-                date)
-                .build();
+        return utils.composeResponseSeeOther(location).header("Expires", date).build();
     }
 
-    public void expandTemplateWithBindings(DocumentResource vr, String bindings) {
+    private void expandTemplateWithBindings(TemplateResource tr, String bindings) {
         boolean allExpanded=false;
         ProvFactory pFactory=org.openprovenance.prov.xml.ProvFactory.getFactory();
         boolean addOrderp=false;
 
         Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
-        Document expanded;
 
         InputStream stream = new ByteArrayInputStream(bindings.getBytes(StandardCharsets.UTF_8));
 
 
         Bindings bb= BindingsJson.fromBean(BindingsJson.importBean(stream),pFactory);
-        ((TemplateResource)vr).bindings=bb;
+        tr.setBindings(bb);
 
-        expanded = myExpand.expander(vr.document(),
-                bb);
+        Document expanded = myExpand.expander(tr.document(), bb);
 
-        vr.setDocument((org.openprovenance.prov.xml.Document)expanded);
+        tr.setDocument(expanded);
     }
 
 
-    public void doLogExpansion(DocumentResource vr) {
+    private void storeExpandedDocument(DocumentResource vr) {
 
         try {
-            final TemplateResource vr2=(TemplateResource)((TemplateResource)vr).clone();
+            final TemplateResource tr=(TemplateResource)((TemplateResourceInMemory)vr).clone();
 
-            Runnable run=new Runnable() {
+            Runnable run= () -> {
+                logger.debug("========================> " + JobManagement.logJobp);
+                if (!JobManagement.logJobp) return;
 
-                @Override
-                public void run() {
-                    logger.debug("========================> " + JobManagement.logJobp);
-                    if (!JobManagement.logJobp) return;
+                InteropFramework interop = new InteropFramework();
+                String myfile=tr.getStorageId() +"_expanded.provn";
+                tr.setStorageId(myfile);
+               // tr.url=tr.url+"_expanded";
+                interop.writeDocument(myfile, tr.document());
 
-                    InteropFramework interop = new InteropFramework();
-                    String myfile=vr2.getStorageId() +"_expanded.provn";
-                    vr2.setStorageId(myfile);
-                   // vr2.url=vr2.url+"_expanded";
-                    interop.writeDocument(myfile, vr2.document());
-
-                    doLog(TemplateService.TEMPLATE_EXPANSION,vr2);
-                }
-
+                doLog(tr);
             };
 
             run.run();
@@ -113,11 +113,11 @@ public class ActionExpand implements ActionPerformer {
         }
     }
 
-    public  void doLog(String action, TemplateResource vr) {
+    private void doLog(TemplateResource tr) {
         logger.log(ProvLevel.PROV,
-                "" + action + ","
-                        + vr.getVisibleId() + ","
-                        + vr.getStorageId());
+                "" + Constants.TEMPLATE_EXPANSION + ","
+                        + tr.getVisibleId() + ","
+                        + tr.getStorageId());
     }
 
 }

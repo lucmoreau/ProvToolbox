@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,6 +26,7 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.service.core.memory.DocumentResourceInMemory;
 
 public class ServiceUtils {
 
@@ -54,24 +56,27 @@ public class ServiceUtils {
 
     private final ResourceStorage storageManager;
 
-    private final ResourceIndex resourceIndex;
+    private final ResourceIndex<DocumentResource> documentResourceIndex;
+
+    private final Map<String,Instantiable<?>> extensionMap=new HashMap<>();
+
 
     boolean redis=false;
     public ServiceUtils() {
         storageManager=new ResourceStorageFileSystem();
-        ResourceIndex myIndex=DocumentResource.getResourceIndex();
+        ResourceIndex<DocumentResource> myIndex= DocumentResourceInMemory.getResourceIndex();
         if (redis) {
-            resourceIndex=getRedisIndex(myIndex);
+            documentResourceIndex =getRedisIndex(myIndex);
         } else {
-            resourceIndex=myIndex;
+            documentResourceIndex =myIndex;
         }
     }
 
-    public static ResourceIndex getRedisIndex(ResourceIndex myIndex) {
+    public static ResourceIndex<DocumentResource> getRedisIndex(ResourceIndex<DocumentResource> myIndex) {
         try {
             Class<?> cl= ServiceUtils.class.forName("org.openprovenance.prov.redis.RedisIndex");
             Object object=cl.newInstance();
-            myIndex=(ResourceIndex)object;
+            myIndex=(ResourceIndex<DocumentResource>)object;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -82,19 +87,19 @@ public class ServiceUtils {
         return myIndex;
     }
 
-    public ServiceUtils(ResourceStorage storageManager, ResourceIndex resourceIndex) {
+    public ServiceUtils(ResourceStorage storageManager, ResourceIndex<DocumentResource> documentResourceIndex) {
         this.storageManager=storageManager;
-        this.resourceIndex=resourceIndex;
+        this.documentResourceIndex = documentResourceIndex;
     }
-    final public ResourceIndex getResourceIndex() {
-        return resourceIndex;
+    final public ResourceIndex<DocumentResource> getDocumentResourceIndex() {
+        return documentResourceIndex;
     }
 
     final public ResourceStorage getStorageManager() {
         return storageManager;
     }
 
-
+    final public Map<String, Instantiable<?>> getExtensionMap() { return extensionMap;}
 
 
     public Destination getDestination(Map<String, List<InputPart>> formData) throws IOException {
@@ -182,7 +187,7 @@ public class ServiceUtils {
         public String toString() {
             return text;
         }
-    };
+    }
 
     public String getFormDataValue(Map<String, List<InputPart>> formData,
                                    String name) throws IOException {
@@ -389,22 +394,18 @@ public class ServiceUtils {
             Formats.ProvFormat format = interop.mimeTypeRevMap.get(mediaType.toString());
 
             storedResourceIdentifier=storageManager.newStore(format);
+
             logger.info("storage Id: " + storedResourceIdentifier);
 
+            DocumentResource dr= documentResourceIndex.newResource();
 
-            String visibleId=resourceIndex.newId();
-            logger.info("visible Id: " + visibleId);
+            dr.setStorageId(storedResourceIdentifier);
+
+            logger.info("visible Id: " + dr.getVisibleId());
 
             storageManager.copyInputStreamToStore(inputStream,storedResourceIdentifier);
 
-
-            System.out.println("----------- Done");
-
-
-            DocumentResource dr = new DocumentResource();
-            dr.setVisibleId(visibleId);
-            dr.setStorageId(storedResourceIdentifier);
-            resourceIndex.put(visibleId, dr);
+            logger.info("----------- Done");
 
             doProcessFile(dr, true);
 
@@ -431,12 +432,12 @@ public class ServiceUtils {
             if (doc == null)
                 throw new NullPointerException("read document returned null for " + dr.getStorageId());
 
-            dr.setDocument((org.openprovenance.prov.xml.Document) doc);
+            dr.setDocument(doc);
 
             return true;
         } catch (Throwable e) {
             e.printStackTrace();
-            dr.thrown = e;
+            dr.setThrown(e);
             return false;
         }
 
@@ -468,11 +469,12 @@ public class ServiceUtils {
 
                 logger.debug("processStatementsForm: type is " + mytype);
 
+                DocumentResource dr= documentResourceIndex.newResource();
 
+                dr.setStorageId(storedResourceIdentifier);
 
-                String visibleId=resourceIndex.newId();
+                logger.info("visible Id: " + dr.getVisibleId());
 
-                logger.info("visible Id: " + visibleId);
                 System.out.println("---------- Temp file name " + storedResourceIdentifier);
 
                 storageManager.copyStringToStore(mybody,storedResourceIdentifier);
@@ -481,13 +483,6 @@ public class ServiceUtils {
                 // WORK??
 
                 System.out.println("----------- Done");
-
-
-                DocumentResource dr = new DocumentResource();
-
-                dr.setVisibleId(visibleId);
-                dr.setStorageId(storedResourceIdentifier);
-                resourceIndex.put(visibleId, dr);
 
                 return dr;
 
@@ -502,7 +497,7 @@ public class ServiceUtils {
 
 
     public DocumentResource doProcessFileForm(List<InputPart> inputParts) {
-        String fileName = "";
+        String fileName;
         String storedResourceIdentifier = "";
         DocumentResource dr;
 
@@ -532,11 +527,14 @@ public class ServiceUtils {
                 storedResourceIdentifier=storageManager.newStore(format);
 
 
-                String visibleId=resourceIndex.newId();
+                dr= documentResourceIndex.newResource();
+
+                dr.setStorageId(storedResourceIdentifier);
+
 
 
                 logger.info("storage Id: " + storedResourceIdentifier);
-                logger.info("visible Id: " + visibleId);
+                logger.info("visible Id: " + dr.getVisibleId());
 
                 storageManager.copyInputStreamToStore(inputStream,storedResourceIdentifier);
                 //FileUtils.copyInputStreamToFile(inputStream, temp);
@@ -544,12 +542,8 @@ public class ServiceUtils {
                 System.out.println("----------- Done");
                 String formatString=(format != null) ? format.toString() : "unknown";
 
-                dr = new DocumentResource();
 
-                dr.setVisibleId(visibleId);
-                dr.setStorageId(storedResourceIdentifier);
 
-                resourceIndex.put(visibleId, dr);
 
                 return dr;
 
@@ -626,18 +620,12 @@ public class ServiceUtils {
                // FileUtils.copyInputStreamToFile(content_stream, temp);
 
 
-                String visibleId=resourceIndex.newId();
-
-                logger.info("storage Id: " + storedResourceIdentifier);
-                logger.info("visible Id: " + visibleId);
-
-                DocumentResource dr = new DocumentResource();
-
-                dr.setVisibleId(visibleId);
-
+                DocumentResource dr= documentResourceIndex.newResource();
                 dr.setStorageId(storedResourceIdentifier);
 
-                resourceIndex.put(visibleId, dr);
+                logger.info("storage Id: " + storedResourceIdentifier);
+                logger.info("visible Id: " + dr.getVisibleId());
+
 
                 return dr;
 

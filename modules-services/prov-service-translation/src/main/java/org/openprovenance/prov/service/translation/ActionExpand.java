@@ -65,6 +65,8 @@ public class ActionExpand implements ActionPerformer {
 
         DocumentResource theTemplate=resourceIndex.getAncestor().newResource();
         final String originalStorageId = tr.getStorageId();
+        utils.getJobManager().scheduleJob(theTemplate.getVisibleId());
+
         theTemplate.setStorageId(originalStorageId);
         logger.info("is it necessary for template to be exposed as " + theTemplate.getVisibleId() + " " + theTemplate.getStorageId());  // TODO: Should not if the template already existed in store
 
@@ -74,6 +76,7 @@ public class ActionExpand implements ActionPerformer {
         resourceIndex.put(tr.getVisibleId(),tr);
 
         // TODO TODO: store bindings in a resource file
+
 
         doLog(tr);
 

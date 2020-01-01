@@ -29,7 +29,7 @@ public class JobManagement {
 		public void execute(JobExecutionContext context){
 			System.out.println("==========> delete job called " + context.getTrigger());
 
-			ServiceUtils utils=new ServiceUtils();
+			ServiceUtils utils=null;
 			try {
 				SchedulerContext schedulerContext = context.getScheduler().getContext();
 				utils=(ServiceUtils)schedulerContext.getOrDefault(UTILS_KEY,utils);

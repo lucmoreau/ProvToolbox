@@ -47,11 +47,13 @@ public class ServiceUtils {
 
     public static final String longContainerVersion = "ProvToolbox/modules-services ... " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
 
+    private final JobManagement jobManager;
+
     private static Properties getPropertiesFromClasspath(String propFileName) {
         return CommandLineArguments.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
 
-    static Logger logger = Logger.getLogger(ServiceUtils.class);
+    private static Logger logger = Logger.getLogger(ServiceUtils.class);
 
 
 
@@ -63,9 +65,10 @@ public class ServiceUtils {
 
 
     boolean redis=false;
-    public ServiceUtils() {
+    public ServiceUtils(PostService postService) {
         storageManager=new ResourceStorageFileSystem();
         documentResourceIndex= new DocumentResourceIndexInMemory();
+        jobManager=postService.getJobManager();
         //documentResourceIndex=getRedisIndex(null);
     }
 
@@ -84,9 +87,10 @@ public class ServiceUtils {
         return myIndex;
     }
 
-    public ServiceUtils(ResourceStorage storageManager, ResourceIndex<DocumentResource> documentResourceIndex) {
+    public ServiceUtils(PostService postService, ResourceStorage storageManager, ResourceIndex<DocumentResource> documentResourceIndex) {
         this.storageManager=storageManager;
         this.documentResourceIndex = documentResourceIndex;
+        this.jobManager=postService.getJobManager();
     }
     public ResourceIndex<DocumentResource> getDocumentResourceIndex() {
         return documentResourceIndex;
@@ -156,6 +160,10 @@ public class ServiceUtils {
             }
         }
         return Destination.UNKNOWN;
+    }
+
+    public JobManagement getJobManager() {
+        return jobManager;
     }
 
     public enum Action {

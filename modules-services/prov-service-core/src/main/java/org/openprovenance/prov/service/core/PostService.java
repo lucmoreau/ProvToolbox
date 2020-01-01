@@ -35,7 +35,7 @@ public class PostService implements Constants, InteropMediaType {
         return jobManager;
     }
 
-    final protected ServiceUtils utils=new ServiceUtils();
+    final protected ServiceUtils utils=new ServiceUtils(this);
 
     private final List<ActionPerformer> performers;
     private Optional<OtherActionPerformer> otherPerformer;

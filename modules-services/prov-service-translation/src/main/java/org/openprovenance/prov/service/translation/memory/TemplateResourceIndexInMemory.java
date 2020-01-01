@@ -8,8 +8,8 @@ import java.util.Map;
 
 
 public class TemplateResourceIndexInMemory extends ExtendedDocumentResourceIndexFactory<TemplateResource> implements ResourceIndex<TemplateResource> {
-    public TemplateResourceIndexInMemory(ResourceIndex<DocumentResource> ri, Instantiable<TemplateResource> factory) {
-        super(ri, factory);
+    public TemplateResourceIndexInMemory(ResourceIndex<DocumentResource> dri, Instantiable<TemplateResource> factory) {
+        super(dri, factory);
     }
 
     public static Instantiable<TemplateResource> factory =new Instantiable<TemplateResource>() {
@@ -31,6 +31,11 @@ public class TemplateResourceIndexInMemory extends ExtendedDocumentResourceIndex
     @Override
     public <EXTENDED_RESOURCE extends TemplateResource> ExtendedDocumentResourceIndexFactory getExtender(Instantiable<EXTENDED_RESOURCE> factory) {
         return new ExtendedDocumentResourceIndexFactory(this,factory);
+    }
+
+    @Override
+    public ResourceIndex<DocumentResource> getAncestor() {
+        return dri;
     }
 
 

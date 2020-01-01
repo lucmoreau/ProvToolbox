@@ -10,5 +10,6 @@ public interface ResourceIndex<T extends DocumentResource> {
     String newId();
     StorageKind kind();
     enum StorageKind { ME, RE; }
+    ResourceIndex<DocumentResource> getAncestor();
 
 }

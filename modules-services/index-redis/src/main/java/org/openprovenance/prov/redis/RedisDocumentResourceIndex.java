@@ -92,4 +92,9 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     public StorageKind kind() {
         return StorageKind.RE;
     }
+
+    @Override
+    public ResourceIndex<DocumentResource> getAncestor() {
+        throw new UnsupportedOperationException("No ancestor to Root Index");
+    }
 }

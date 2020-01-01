@@ -70,6 +70,11 @@ public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentReso
         return StorageKind.ME;
     }
 
+    @Override
+    public ResourceIndex<DocumentResource> getAncestor() {
+        throw new UnsupportedOperationException("No ancestor to root Index");
+    }
+
 
     @Override
     public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> factory) {

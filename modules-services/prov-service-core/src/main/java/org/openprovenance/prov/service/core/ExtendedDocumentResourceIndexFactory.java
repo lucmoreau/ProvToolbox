@@ -4,7 +4,7 @@ public class ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends Docu
 
     private final ResourceIndex<EXTENDED_RESOURCE> eri;
     private final Instantiable<EXTENDED_RESOURCE> factory;
-    private final ResourceIndex<DocumentResource> dri;
+    protected final ResourceIndex<DocumentResource> dri;
 
     public ExtendedDocumentResourceIndexFactory(ResourceIndex<DocumentResource> dri, Instantiable<EXTENDED_RESOURCE> factory) {
         this.dri=dri;
@@ -48,6 +48,10 @@ public class ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends Docu
         return eri.kind();
     }
 
+    @Override
+    public ResourceIndex<DocumentResource> getAncestor() {
+        return dri;
+    }
 
     @Override
     public <R2 extends EXTENDED_RESOURCE> ExtendedDocumentResourceIndexFactory<R2> getExtender(Instantiable<R2> factory2) {

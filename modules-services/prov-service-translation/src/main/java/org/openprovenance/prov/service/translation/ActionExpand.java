@@ -2,12 +2,12 @@ package org.openprovenance.prov.service.translation;
 
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -57,19 +57,31 @@ public class ActionExpand implements ActionPerformer {
 
         ServiceUtils.Destination destination = utils.getDestination(formData);
 
-        String location= "documents/" + dr.getVisibleId() + "." + destination;
         List<InputPart> inputParts = formData.get("statements");
         String bindings = inputParts.get(0).getBodyAsString();
-        logger.info("bindings " + bindings);
+        logger.debug("bindings " + bindings);
 
-        expandTemplateWithBindings(tr, bindings);
+        Document expanded=expandTemplateWithBindings(tr, bindings);
+
+        DocumentResource theTemplate=resourceIndex.getAncestor().newResource();
+        final String originalStorageId = tr.getStorageId();
+        theTemplate.setStorageId(originalStorageId);
+        logger.info("is it necessary for template to be exposed as " + theTemplate.getVisibleId() + " " + theTemplate.getStorageId());  // TODO: Should not if the template already existed in store
+
+        String expandedStoreId=storeExpandedDocument(expanded);
+        tr.setStorageId(expandedStoreId);
+        tr.setTemplateStorageId(originalStorageId);
         resourceIndex.put(tr.getVisibleId(),tr);
-        storeExpandedDocument(tr);
 
+        // TODO TODO: store bindings in a resource file
+
+        doLog(tr);
+
+        String location= "documents/" + tr.getVisibleId() + "." + destination;
         return utils.composeResponseSeeOther(location).header("Expires", date).build();
     }
 
-    private void expandTemplateWithBindings(TemplateResource tr, String bindings) {
+    private Document expandTemplateWithBindings(TemplateResource tr, String bindings) {
         boolean allExpanded=false;
         ProvFactory pFactory=org.openprovenance.prov.xml.ProvFactory.getFactory();
         boolean addOrderp=false;
@@ -84,33 +96,16 @@ public class ActionExpand implements ActionPerformer {
 
         Document expanded = myExpand.expander(tr.document(), bb);
 
-        tr.setDocument(expanded);
+        return expanded;
     }
 
 
-    private void storeExpandedDocument(DocumentResource vr) {
+    private String storeExpandedDocument(Document doc) throws IOException {
+        InteropFramework interop = new InteropFramework();
+        String storeId=utils.getStorageManager().newStore(Formats.ProvFormat.PROVN);
+        interop.writeDocument(storeId, doc);
+        return storeId;
 
-        try {
-            final TemplateResource tr=(TemplateResource)((TemplateResourceInMemory)vr).clone();
-
-            Runnable run= () -> {
-                logger.debug("========================> " + JobManagement.logJobp);
-                if (!JobManagement.logJobp) return;
-
-                InteropFramework interop = new InteropFramework();
-                String myfile=tr.getStorageId() +"_expanded.provn";
-                tr.setStorageId(myfile);
-               // tr.url=tr.url+"_expanded";
-                interop.writeDocument(myfile, tr.document());
-
-                doLog(tr);
-            };
-
-            run.run();
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
     }
 
     private void doLog(TemplateResource tr) {

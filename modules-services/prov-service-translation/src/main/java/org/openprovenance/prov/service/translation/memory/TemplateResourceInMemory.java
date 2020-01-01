@@ -13,6 +13,8 @@ public class TemplateResourceInMemory implements TemplateResource, Cloneable {
 
     private final DocumentResource d;
 
+    private String templateStorageId;
+
     public Bindings getBindings() {
         return bindings;
     }
@@ -20,6 +22,7 @@ public class TemplateResourceInMemory implements TemplateResource, Cloneable {
     public void setBindings(Bindings bindings) {
         this.bindings = bindings;
     }
+
 
     private Bindings bindings;
 
@@ -106,5 +109,14 @@ public class TemplateResourceInMemory implements TemplateResource, Cloneable {
     @Override
     public void setExtension(Map<String, Object> extension) {
         d.setExtension(extension);
+    }
+
+    @Override
+    public String getTemplateStorageId() {
+        return templateStorageId;
+    }
+    @Override
+    public void setTemplateStorageId(String templateStorageId) {
+        this.templateStorageId = templateStorageId;
     }
 }

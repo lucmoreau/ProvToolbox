@@ -63,6 +63,7 @@ public class ActionExpand implements ActionPerformer {
         logger.info("bindings " + bindings);
 
         expandTemplateWithBindings(tr, bindings);
+        resourceIndex.put(tr.getVisibleId(),tr);
         storeExpandedDocument(tr);
 
         return utils.composeResponseSeeOther(location).header("Expires", date).build();

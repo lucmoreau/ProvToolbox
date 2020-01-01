@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentResource> {
     static int count=100000;
-    private final Map<String, DocumentResource> table;
+    public final Map<String, DocumentResource> table;
 
     public static Instantiable<DocumentResource> factory =new Instantiable<DocumentResource>() {
         @Override
@@ -36,11 +36,13 @@ public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentReso
 
     @Override
     public void put(String key, DocumentResource dr) {
+        System.out.println("DocumentResourceIndexInMemory.put() " + key + " " + dr);
         table.put(key,dr);
     }
 
     @Override
     public void remove(String key) {
+        System.out.println("DocumentResourceIndexInMemory.remove() " + key);
         table.remove(key);
     }
 

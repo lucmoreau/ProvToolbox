@@ -57,8 +57,10 @@ public class PostService implements Constants, InteropMediaType {
         }
         this.performers=performers;
         this.otherPerformer=otherPerformer;
-
+        findMe=this;  // HACK: How to pass service utils to view application???
     }
+
+    public static PostService findMe;
 
     public PostService() {
         this(new LinkedList<>(),Optional.empty());

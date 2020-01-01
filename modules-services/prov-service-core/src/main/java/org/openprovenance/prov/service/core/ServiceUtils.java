@@ -65,8 +65,8 @@ public class ServiceUtils {
     boolean redis=false;
     public ServiceUtils() {
         storageManager=new ResourceStorageFileSystem();
-        //documentResourceIndex= new DocumentResourceIndexInMemory();
-        documentResourceIndex=getRedisIndex(null);
+        documentResourceIndex= new DocumentResourceIndexInMemory();
+        //documentResourceIndex=getRedisIndex(null);
     }
 
     public static ResourceIndex<DocumentResource> getRedisIndex(ResourceIndex<DocumentResource> myIndex) {
@@ -88,11 +88,11 @@ public class ServiceUtils {
         this.storageManager=storageManager;
         this.documentResourceIndex = documentResourceIndex;
     }
-    final public ResourceIndex<DocumentResource> getDocumentResourceIndex() {
+    public ResourceIndex<DocumentResource> getDocumentResourceIndex() {
         return documentResourceIndex;
     }
 
-    final public ResourceStorage getStorageManager() {
+    public ResourceStorage getStorageManager() {
         return storageManager;
     }
 

@@ -67,7 +67,7 @@ public class ServiceUtils {
     boolean redis=false;
     public ServiceUtils(PostService postService) {
         storageManager=new ResourceStorageFileSystem();
-        documentResourceIndex= new DocumentResourceIndexInMemory();
+        documentResourceIndex= new DocumentResourceIndexInMemory(100);
         jobManager=postService.getJobManager();
         //documentResourceIndex=getRedisIndex(null);
     }

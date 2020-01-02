@@ -4,6 +4,7 @@ import org.openprovenance.prov.service.core.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentResource> {
     static int count=100000;
@@ -25,8 +26,12 @@ public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentReso
         this.table=table;
     }
 
-    public DocumentResourceIndexInMemory() {
-        this.table=new HashMap<>();
+    public DocumentResourceIndexInMemory(int limit) {
+        this.table=new LRUHashMap<>(limit);
+    }
+
+    public DocumentResourceIndexInMemory () {
+        this.table = new HashMap<>();
     }
 
     @Override

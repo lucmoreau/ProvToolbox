@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Consumer;
 
 @Path("")
 public class PostService implements Constants, InteropMediaType {
@@ -31,11 +32,15 @@ public class PostService implements Constants, InteropMediaType {
 
     private final JobManagement jobManager = new JobManagement();
 
+    public PostService(ServiceUtilsConfig config) {
+        this(config,new LinkedList<>(),Optional.empty());
+    }
+
     public JobManagement getJobManager() {
         return jobManager;
     }
 
-    final protected ServiceUtils utils=new ServiceUtils(this);
+    final protected ServiceUtils utils;
 
     private final List<ActionPerformer> performers;
     private Optional<OtherActionPerformer> otherPerformer;
@@ -47,8 +52,8 @@ public class PostService implements Constants, InteropMediaType {
         return result;
     }
 
-    public PostService(List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
-
+    public PostService(ServiceUtilsConfig config,List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
+        utils=new ServiceUtils(this,config);
         jobManager.setupScheduler();
         try {
             jobManager.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
@@ -61,11 +66,13 @@ public class PostService implements Constants, InteropMediaType {
     }
 
     public static PostService findMe;
-
+/*
     public PostService() {
         this(new LinkedList<>(),Optional.empty());
     }
 
+
+ */
 
     public ServiceUtils getServiceUtils() {
         return utils;
@@ -129,7 +136,8 @@ public class PostService implements Constants, InteropMediaType {
                     return utils.composeResponseBadRequest(result, vr.getThrown());
                 }
 
-                if (/*vr.bundle == null && */vr.document() == null) {  //TODO: what about bundle?
+
+                if (/*vr.bundle == null && */  !utils.documentCache.containsKey(vr.getStorageId())) {  //TODO: what about bundle?
                     String result = "No provenance was found (empty document), and therefore failed to create resource for validation service";
                     return utils.composeResponseNotFOUND(result);
                 }

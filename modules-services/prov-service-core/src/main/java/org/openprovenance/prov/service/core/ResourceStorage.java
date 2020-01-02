@@ -13,4 +13,6 @@ public interface ResourceStorage {
     Document readDocument(String id, boolean known) throws IOException;
     Document readDocument(String id) throws IOException;
     void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException;
+
+    boolean delete(String storageId);
 }

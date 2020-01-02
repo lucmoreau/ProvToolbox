@@ -10,12 +10,17 @@ import org.apache.log4j.Logger;
 
 public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResource> {
 
-    static Logger logger = Logger.getLogger(RedisDocumentResourceIndex.class);
+    private static Logger logger = Logger.getLogger(RedisDocumentResourceIndex.class);
 
-     static final String FIELD_VISIBLE_ID ="_vid_";
-     static final String FIELD_STORE_ID ="_id_";
-     static final String FIELD_EXPIRES ="_expires_";
-     static final String FIELD_KIND ="_kind_";
+    static final String FIELD_VISIBLE_ID ="_vid_";
+    static final String FIELD_STORE_ID ="_id_";
+    static final String FIELD_EXPIRES ="_expires_";
+    static final String FIELD_KIND ="_kind_";
+    static final String FIELD_BINDINGS_ID="_bid_";
+    static final String FIELD_TEMPLATE_ID="_tid_";
+
+    private final String[] myKeyArray = {FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND};
+
 
     final Locale loc = new Locale("en", "UK");
     final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, loc);
@@ -33,8 +38,20 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
         client = new Jedis(host, port);
     }
 
-    public String[] myKeys()  { return new String[] {FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND} ; }
+    public String[] myKeys()  { return myKeyArray; }
 
+
+    public static Instantiable<DocumentResource> factory =new Instantiable<DocumentResource>() {
+        @Override
+        public DocumentResource newResource(DocumentResource dr) {
+            throw new UnsupportedOperationException("Should not attempt to create a Document Resource from a Document Resource");
+        }
+
+        @Override
+        public DocumentResource newResource() {
+            return new RedisDocumentResource(new HashMap<>());
+        }
+    };
 
     @Override
     public DocumentResource get(String key) {
@@ -60,8 +77,8 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     }
 
     @Override
-    public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> factory) {
-        return new ExtendedDocumentResourceIndexFactory(this,factory);
+    public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> f) {
+        return new ExtendedDocumentResourceIndexFactory(this,f);
     }
 
     @Override

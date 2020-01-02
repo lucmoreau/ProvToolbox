@@ -1,5 +1,6 @@
 package org.openprovenance.prov.service.translation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.interop.Formats;
@@ -36,7 +37,7 @@ public class ActionExpand implements ActionPerformer {
         //ExtendedDocumentResourceIndexFactory<TemplateResource> tmp=utils.getDocumentResourceIndex().getExtender(expander2);
 
 
-        logger.info("FIXING FIXME FIXME: teplate resource index in memory must be discovered dynamically");
+        logger.info("FIXING FIXME FIXME: template resource index in memory must be discovered dynamically");
 
         this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
         //this.resourceIndex=new TemplateResourceIndexInMemory(utils.getDocumentResourceIndex(),TemplateResourceIndexInMemory.factory);
@@ -54,6 +55,7 @@ public class ActionExpand implements ActionPerformer {
     public Response doAction(Map<String, List<InputPart>> formData, DocumentResource dr, Date date) throws IOException {
         TemplateResource tr=resourceIndex.newResource(dr);
 
+        Document templateDocument=utils.getDocumentFromCacheOrStore(tr.getStorageId());
 
         ServiceUtils.Destination destination = utils.getDestination(formData);
 
@@ -61,7 +63,7 @@ public class ActionExpand implements ActionPerformer {
         String bindings = inputParts.get(0).getBodyAsString();
         logger.debug("bindings " + bindings);
 
-        Document expanded=expandTemplateWithBindings(tr, bindings);
+        Document expanded=expandTemplateWithBindings(templateDocument, tr, bindings);
 
         DocumentResource theTemplate=resourceIndex.getAncestor().newResource();
         final String originalStorageId = tr.getStorageId();
@@ -75,8 +77,6 @@ public class ActionExpand implements ActionPerformer {
         tr.setTemplateStorageId(originalStorageId);
         resourceIndex.put(tr.getVisibleId(),tr);
 
-        // TODO TODO: store bindings in a resource file
-
 
         doLog(tr);
 
@@ -84,7 +84,7 @@ public class ActionExpand implements ActionPerformer {
         return utils.composeResponseSeeOther(location).header("Expires", date).build();
     }
 
-    private Document expandTemplateWithBindings(TemplateResource tr, String bindings) {
+    private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindings) throws IOException {
         boolean allExpanded=false;
         ProvFactory pFactory=org.openprovenance.prov.xml.ProvFactory.getFactory();
         boolean addOrderp=false;
@@ -94,12 +94,30 @@ public class ActionExpand implements ActionPerformer {
         InputStream stream = new ByteArrayInputStream(bindings.getBytes(StandardCharsets.UTF_8));
 
 
-        Bindings bb= BindingsJson.fromBean(BindingsJson.importBean(stream),pFactory);
-        tr.setBindings(bb);
+        final BindingsJson.BindingsBean bean = BindingsJson.importBean(stream);
+        Bindings bb= BindingsJson.fromBean(bean,pFactory);
 
-        Document expanded = myExpand.expander(tr.document(), bb);
+        Document expanded = myExpand.expander(templateDocument, bb);
+
+
+        storeBindings(tr, bean);
+
 
         return expanded;
+    }
+
+    private void storeBindings(TemplateResource tr, BindingsJson.BindingsBean bean) throws IOException {
+        final NonDocumentResourceIndex<NonDocumentResource> ndIndex = utils.getNonDocumentResourceIndex();
+        NonDocumentResource ndr= ndIndex.newResource();
+        ndr.setMediaType("application/json");
+        final NonDocumentResourceStorage nonDocumentResourceStorage = utils.getNonDocumentResourceStorage();
+        String bindingsStoreId= nonDocumentResourceStorage.newStore("json", ndr.getMediaType());
+        ndr.setStorageId(bindingsStoreId);
+        nonDocumentResourceStorage.serializeObjectToStore(new ObjectMapper(),bean,bindingsStoreId);
+        ndIndex.put(ndr.getVisibleId(),ndr);
+        logger.info("saving bindings " + ndr.getVisibleId() + " " + bindingsStoreId);
+        tr.setBindingsStorageId(ndr.getVisibleId());
+        utils.getJobManager().scheduleJob(ndr.getVisibleId());
     }
 
 

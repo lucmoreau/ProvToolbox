@@ -1,5 +1,23 @@
 package org.openprovenance.prov.service.core;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.openprovenance.prov.interop.CommandLineArguments;
+import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.exception.ParserException;
+import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.service.core.filesystem.DocumentResourceStorageFileSystem;
+import org.openprovenance.prov.service.core.filesystem.NonDocumentResourceStorageFileSystem;
+import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
+import org.openprovenance.prov.service.core.memory.LRUHashMap;
+import org.openprovenance.prov.service.core.memory.NonDocumentResourceIndexInMemory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -13,25 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.openprovenance.prov.interop.CommandLineArguments;
-import org.openprovenance.prov.interop.Formats;
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.exception.ParserException;
-import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.service.core.memory.DocumentResourceInMemory;
-import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 
 public class ServiceUtils {
-
-
 
     public static final String DOCUMENT_NOT_FOUND = "Document not found";
     public static final String WILDCARD = "*";
@@ -49,6 +50,11 @@ public class ServiceUtils {
 
     private final JobManagement jobManager;
 
+
+
+    private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
+    private final NonDocumentResourceStorage nonDocumentResourceStorage;
+
     private static Properties getPropertiesFromClasspath(String propFileName) {
         return CommandLineArguments.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
@@ -61,37 +67,23 @@ public class ServiceUtils {
 
     private final ResourceIndex<DocumentResource> documentResourceIndex;
 
-    static public final Map<String,Instantiable<?>> extensionMap=new HashMap<>();
+    public final Map<String,Instantiable<?>> extensionMap;
 
 
-    boolean redis=false;
-    public ServiceUtils(PostService postService) {
-        storageManager=new ResourceStorageFileSystem();
-        documentResourceIndex= new DocumentResourceIndexInMemory(100);
+    public ServiceUtils(PostService postService, ServiceUtilsConfig config) {
+        this.storageManager=config.storageManager;
+        this.documentResourceIndex=config.documentResourceIndex;
+        this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
+        this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
+        this.extensionMap=config.extensionMap;
         jobManager=postService.getJobManager();
-        //documentResourceIndex=getRedisIndex(null);
+        documentCache=new LRUHashMap<>(config.documentCacheSize);
     }
 
-    public static ResourceIndex<DocumentResource> getRedisIndex(ResourceIndex<DocumentResource> myIndex) {
-        try {
-            Class<?> cl= ServiceUtils.class.forName("org.openprovenance.prov.redis.RedisDocumentResourceIndex");
-            Object object=cl.newInstance();
-            myIndex=(ResourceIndex<DocumentResource>)object;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-        return myIndex;
+    public NonDocumentResourceStorage getNonDocumentResourceStorage() {
+        return nonDocumentResourceStorage;
     }
 
-    public ServiceUtils(PostService postService, ResourceStorage storageManager, ResourceIndex<DocumentResource> documentResourceIndex) {
-        this.storageManager=storageManager;
-        this.documentResourceIndex = documentResourceIndex;
-        this.jobManager=postService.getJobManager();
-    }
     public ResourceIndex<DocumentResource> getDocumentResourceIndex() {
         return documentResourceIndex;
     }
@@ -102,6 +94,9 @@ public class ServiceUtils {
 
     final public Map<String, Instantiable<?>> getExtensionMap() { return extensionMap;}
 
+    public NonDocumentResourceIndex<NonDocumentResource> getNonDocumentResourceIndex() {
+        return nonDocumentResourceIndex;
+    }
 
     public Destination getDestination(Map<String, List<InputPart>> formData) throws IOException {
         if (formData.get("translate") != null) {
@@ -423,6 +418,8 @@ public class ServiceUtils {
 
     }
 
+    public LRUHashMap<String,Document> documentCache;
+
     public boolean doProcessFile(DocumentResource dr, boolean known) {
         try {
             InteropFramework interop = new InteropFramework();
@@ -431,13 +428,14 @@ public class ServiceUtils {
 
             logger.info("doProcessFile for " + dr.getVisibleId() + " " + dr.getStorageId());
 
-            doc=storageManager.readDocument(dr.getStorageId(),known);
+            doc=getDocumentFromCacheOrStore(dr.getStorageId());
+           // doc=storageManager.readDocument(dr.getStorageId(),known);
 
 
             if (doc == null)
                 throw new NullPointerException("read document returned null for " + dr.getStorageId());
 
-            dr.setDocument(doc);
+           // documentCache.put(dr.getStorageId(),doc);
 
             return true;
         } catch (Throwable e) {
@@ -446,6 +444,28 @@ public class ServiceUtils {
             return false;
         }
 
+    }
+
+    // TODO: concurrency???
+    // TODO: job scheduler should remove entry from cache before deleting files
+    public Document getDocumentFromCacheOrStore(String storageId) throws IOException {
+        Document doc;
+        synchronized (this) {
+            doc = documentCache.get(storageId);
+        }
+        if (doc!=null) {
+            logger.info("Retrieved document from cache: " + storageId);
+            return doc;
+        }
+        logger.info("Retrieving document from store: " + storageId);
+        doc=storageManager.readDocument(storageId,true);
+        if (doc!=null) {
+            synchronized (this) {
+                documentCache.put(storageId, doc);
+            }
+            logger.info("Stored document in cache: " + storageId);
+        }
+        return doc;
     }
 
 

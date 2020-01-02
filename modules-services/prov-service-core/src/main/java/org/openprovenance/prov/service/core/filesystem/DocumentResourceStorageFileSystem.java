@@ -1,20 +1,22 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.service.core.filesystem;
 
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.service.core.ResourceStorage;
+import org.openprovenance.prov.service.core.ServiceUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class ResourceStorageFileSystem implements ResourceStorage {
+public class DocumentResourceStorageFileSystem implements ResourceStorage {
 
     private final InteropFramework interop;
 
-    public ResourceStorageFileSystem() {
+    public DocumentResourceStorageFileSystem() {
         this.interop=new InteropFramework();
     }
 
@@ -58,7 +60,12 @@ public class ResourceStorageFileSystem implements ResourceStorage {
         interop.writeDocument(id,format,doc);
     }
 
+    @Override
+    public boolean delete(String storageId) {
+        return new File(storageId).delete();
+    }
+
     public File createTempFile(String extension) throws IOException {
-        return File.createTempFile("graph", "." + extension, new File(ServiceUtils.UPLOADED_FILE_PATH));
+        return File.createTempFile("doc", "." + extension, new File(ServiceUtils.UPLOADED_FILE_PATH));
     }
 }

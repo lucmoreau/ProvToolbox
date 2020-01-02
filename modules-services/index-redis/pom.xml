@@ -44,6 +44,18 @@
             <version>0.9.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-translation</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-translation</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

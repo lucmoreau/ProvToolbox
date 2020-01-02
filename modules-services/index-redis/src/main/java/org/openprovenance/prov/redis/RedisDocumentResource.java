@@ -76,16 +76,6 @@ public class RedisDocumentResource implements DocumentResource {
     }
 
     @Override
-    public Document document() {
-        return doc;
-    }
-
-    @Override
-    public void setDocument(Document doc) {
-        this.doc=doc;
-    }
-
-    @Override
     public Throwable getThrown() {
         return thrown;
     }

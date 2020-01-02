@@ -3,15 +3,20 @@ package org.openprovenance.prov.pservice;
 
  
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
 
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.service.core.PostService;
-import org.openprovenance.prov.service.core.DocumentMessageBodyWriter;
-import org.openprovenance.prov.service.core.NodeMessageBodyWriter;
+import org.openprovenance.prov.redis.RedisDocumentResource;
+import org.openprovenance.prov.redis.RedisDocumentResourceIndex;
+import org.openprovenance.prov.redis.RedisTemplateResourceIndex;
+import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
+import org.openprovenance.prov.service.translation.TemplateResource;
 import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
 
@@ -30,6 +35,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.openprovenance.prov.service.translation.VisService;
+import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -71,9 +77,16 @@ import org.openprovenance.prov.service.translation.VisService;
 @ApplicationPath("/provapi")
 public class ProvapiApplication extends Application {
 	private Set<Object> singletons = new HashSet<Object>();
- 
+
+
+
+	ServiceUtilsConfig config=new ServiceUtilsConfig();
+
 	public ProvapiApplication() {
-		PostService ps=new PostService();
+		initRedis();
+		config.documentCacheSize=200;
+		
+		PostService ps=new PostService(config);
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new TemplateService(ps));
@@ -95,7 +108,29 @@ public class ProvapiApplication extends Application {
 
 
 	}
- 
+
+	public void initInMemory() {
+		Consumer<Map<String, Instantiable<?>>> inMemoryInit = extensionMap -> {
+			extensionMap.put(DocumentResource.getResourceKind(), DocumentResourceIndexInMemory.factory);
+			extensionMap.put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
+		};
+		inMemoryInit.accept(config.extensionMap);
+		config.documentResourceIndex=new DocumentResourceIndexInMemory();
+	}
+
+
+	public void initRedis() {
+
+		Consumer<Map<String, Instantiable<?>>> redisInit = extensionMap -> {
+			extensionMap.put(DocumentResource.getResourceKind(), RedisDocumentResourceIndex.factory);
+			extensionMap.put(TemplateResource.getResourceKind(), RedisTemplateResourceIndex.factory);
+		};
+
+		redisInit.accept(config.extensionMap);
+		config.documentResourceIndex=new RedisDocumentResourceIndex();
+	}
+
+
 	@Override
 	public Set<Object> getSingletons() {
 		return singletons;

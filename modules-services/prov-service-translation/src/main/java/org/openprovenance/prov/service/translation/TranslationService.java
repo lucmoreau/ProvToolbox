@@ -114,7 +114,7 @@ public class TranslationService implements Constants, InteropMediaType {
             return utils.composeResponseNotFoundResource(msg);
         }
 
-        Document doc=utils.getStorageManager().readDocument(vr.getStorageId(),true);
+        Document doc=utils.getDocumentFromCacheOrStore(vr.getStorageId());
         if (doc == null) {
             return utils.composeResponseNotFoundDocument(msg);
         }
@@ -136,27 +136,27 @@ public class TranslationService implements Constants, InteropMediaType {
                                        @Context HttpServletRequest request,
                                        @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg) {
 
-        DocumentResource vr = utils.getDocumentResourceIndex().get(msg);
+        DocumentResource dr = utils.getDocumentResourceIndex().get(msg);
 
-        if (vr == null) {
+        if (dr == null) {
             return utils.composeResponseNotFoundResource(msg);
         }
 
-        if (vr.document() == null) {
-            return utils.composeResponseNotFoundDocument(msg);
-        }
+       // if (dr.document() == null) {
+       //     return utils.composeResponseNotFoundDocument(msg);
+       // }
 
         InteropFramework intf = new InteropFramework();
 
-        String format=vr.getStorageId().substring(0, vr.getStorageId().lastIndexOf(".")+1);
+        String format=dr.getStorageId().substring(0, dr.getStorageId().lastIndexOf(".")+1);
 
 
 
         String mimeType = intf.mimeTypeMap.get(format); //TODO: fix me, domain is not a string
 
-        File f = new File(vr.getStorageId());
+        File f = new File(dr.getStorageId());
 
-        logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + vr.getStorageId());
+        logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + dr.getStorageId());
 
         return utils.composeResponseOK((Object) f).type(mimeType).build();
     }

@@ -27,7 +27,7 @@ public class JobManagement {
 
 		@Override
 		public void execute(JobExecutionContext context){
-			System.out.println("==========> delete job called " + context.getTrigger());
+			logger.info("delete job called " + context.getTrigger());
 
 			ServiceUtils utils=null;
 			try {
@@ -37,46 +37,35 @@ public class JobManagement {
 				e.printStackTrace();
 			}
 
-
 			String visibleId = context.getJobDetail().getKey().getName();
 			if (visibleId == null) {
 				logger.error("no visibleId " + context);
 			} else {
-				DocumentResource vr = utils.getDocumentResourceIndex().get(visibleId);
+				DocumentResource dr = utils.getDocumentResourceIndex().get(visibleId);
 
-				if (vr == null) {
-					logger.error("no validation resource for " + visibleId);
+				if (dr == null) {
+					NonDocumentResource ndr = utils.getNonDocumentResourceIndex().get(visibleId);
+					if (ndr==null) {
+						logger.info("resource no longer exists in DocumentResourceIndex and NonDocumentResourceIndex:  " + visibleId);
+					} else {
+						if (ndr.getStorageId() !=null) {
+							logger.info("deleting NonDocumentResource... " + ndr.getStorageId());
+							utils.getNonDocumentResourceStorage().delete(ndr.getStorageId());
+							ndr.setStorageId(null);
+						}
+					}
 				} else {
 
-					logger.debug("deleting ... " + visibleId);
 					utils.getDocumentResourceIndex().remove(visibleId);
-
-					if (vr.getStorageId() != null) {
-						logger.info("TODO: need to update storage backend: deleting ... " + vr.getStorageId());
-						new File(vr.getStorageId()).delete();
-						vr.setStorageId(null);
+					if (dr.getStorageId() != null) {
+						logger.info("deleting DocumentResource... " + visibleId);
+						utils.getStorageManager().delete(dr.getStorageId());
+						dr.setStorageId(null);
 					}
-					/*
-					if (vr.reportFile != null) {
-						logger.debug("deleting ... " + vr.reportFile);
-						new File(vr.reportFile).delete();
-						vr.reportFile = null;
-					}
-
-					 */
-					/*
-					if (vr.complete != null) {
-						logger.debug("deleting ... " + vr.complete);
-						new File(vr.complete).delete();
-						vr.complete = null;
-					}
-
-					 */
 
 				}
 			}
 		}
-
 	}
 	
     public static final String LOGGED_MESSAGE = "loggedMessage";

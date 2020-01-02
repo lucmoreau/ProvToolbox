@@ -54,8 +54,10 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     public TemplateService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
-        logger.info("FIXME FIXME: registering template index (in memory)");
-        utils.getExtensionMap().put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
+        //logger.info("FIXME FIXME: registering template index (in memory)");
+        //utils.getExtensionMap().put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
+        //utils.getExtensionMap().put(TemplateResource.getResourceKind(), RedisTemplateResourceIndex.factory);
+        logger.info("Template service: " + utils.getExtensionMap());
         postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
         actionExpand=new ActionExpand(utils);

@@ -10,9 +10,9 @@ public interface TemplateResource extends DocumentResource, Cloneable{
           return TEMPLATE;
      }
 
-     Bindings getBindings() ;
+     String getBindingsStorageId() ;
 
-     void setBindings(Bindings bindings);
+     void setBindingsStorageId(String bindingsStorageId);
 
      String getTemplateStorageId();
 

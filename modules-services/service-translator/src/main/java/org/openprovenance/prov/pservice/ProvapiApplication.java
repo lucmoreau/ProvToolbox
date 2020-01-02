@@ -85,7 +85,7 @@ public class ProvapiApplication extends Application {
 	public ProvapiApplication() {
 		initRedis();
 		config.documentCacheSize=200;
-		
+
 		PostService ps=new PostService(config);
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));

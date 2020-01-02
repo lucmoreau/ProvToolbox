@@ -54,6 +54,7 @@ public class ServiceUtils {
 
     private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
     private final NonDocumentResourceStorage nonDocumentResourceStorage;
+    private final ServiceUtilsConfig config;
 
     private static Properties getPropertiesFromClasspath(String propFileName) {
         return CommandLineArguments.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
@@ -71,6 +72,7 @@ public class ServiceUtils {
 
 
     public ServiceUtils(PostService postService, ServiceUtilsConfig config) {
+        this.config=config;
         this.storageManager=config.storageManager;
         this.documentResourceIndex=config.documentResourceIndex;
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;

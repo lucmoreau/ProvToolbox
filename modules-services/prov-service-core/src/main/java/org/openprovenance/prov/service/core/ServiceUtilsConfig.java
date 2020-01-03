@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceUtilsConfig {
-    public Map<String,Instantiable<?>> extensionMap=new HashMap<>();
     public Map<String,ResourceIndex<?>> extensionMap2=new HashMap<>();
     public NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
     public NonDocumentResourceStorage nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem();

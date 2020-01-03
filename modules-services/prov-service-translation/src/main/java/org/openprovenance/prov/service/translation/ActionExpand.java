@@ -30,17 +30,12 @@ public class ActionExpand implements ActionPerformer {
 
     ActionExpand(ServiceUtils utils) {
         this.utils= utils;
+        //Instantiable<?> expander=utils.getExtensionMap().get(TemplateResource.getResourceKind());
+        //Instantiable<TemplateResource> expander2=(Instantiable<TemplateResource>) expander;
+        //this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
+        ResourceIndex<?> indexer=utils.getExtensionMap2().get(TemplateResource.getResourceKind());
+        this.resourceIndex=(ResourceIndex<TemplateResource>) indexer;
 
-        Instantiable<?> expander=utils.getExtensionMap().get(TemplateResource.getResourceKind());
-        Instantiable<TemplateResource> expander2=(Instantiable<TemplateResource>) expander;
-
-        //ExtendedDocumentResourceIndexFactory<TemplateResource> tmp=utils.getDocumentResourceIndex().getExtender(expander2);
-
-
-        logger.info("FIXING FIXME FIXME: template resource index in memory must be discovered dynamically");
-
-        this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
-        //this.resourceIndex=new TemplateResourceIndexInMemory(utils.getDocumentResourceIndex(),TemplateResourceIndexInMemory.factory);
     }
 
     @Override public String toString () {

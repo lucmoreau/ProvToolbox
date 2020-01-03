@@ -52,10 +52,11 @@ public class ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends Docu
     public ResourceIndex<DocumentResource> getAncestor() {
         return dri;
     }
-
+/*
     @Override
     public <R2 extends EXTENDED_RESOURCE> ExtendedDocumentResourceIndexFactory<R2> getExtender(Instantiable<R2> factory2) {
         return new ExtendedDocumentResourceIndexFactory(dri,factory2);
     }
 
+ */
 }

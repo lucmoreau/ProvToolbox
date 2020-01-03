@@ -54,6 +54,11 @@ public class ServiceUtils {
 
     private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
     private final NonDocumentResourceStorage nonDocumentResourceStorage;
+
+    public ServiceUtilsConfig getConfig() {
+        return config;
+    }
+
     private final ServiceUtilsConfig config;
 
     private static Properties getPropertiesFromClasspath(String propFileName) {
@@ -69,6 +74,7 @@ public class ServiceUtils {
     private final ResourceIndex<DocumentResource> documentResourceIndex;
 
     public final Map<String,Instantiable<?>> extensionMap;
+    private final Map<String, ResourceIndex<?>> extensionMap2;
 
 
     public ServiceUtils(PostService postService, ServiceUtilsConfig config) {
@@ -78,6 +84,7 @@ public class ServiceUtils {
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
         this.extensionMap=config.extensionMap;
+        this.extensionMap2=config.extensionMap2;
         jobManager=postService.getJobManager();
         documentCache=new LRUHashMap<>(config.documentCacheSize);
     }
@@ -95,6 +102,7 @@ public class ServiceUtils {
     }
 
     final public Map<String, Instantiable<?>> getExtensionMap() { return extensionMap;}
+    final public Map<String, ResourceIndex<?>> getExtensionMap2() { return extensionMap2;}
 
     public NonDocumentResourceIndex<NonDocumentResource> getNonDocumentResourceIndex() {
         return nonDocumentResourceIndex;

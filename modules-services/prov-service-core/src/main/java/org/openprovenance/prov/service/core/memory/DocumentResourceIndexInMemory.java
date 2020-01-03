@@ -80,12 +80,14 @@ public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentReso
         throw new UnsupportedOperationException("No ancestor to root Index");
     }
 
-
+/*
     @Override
     public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> factory) {
         return new ExtendedDocumentResourceIndexFactory(this,factory);
     }
 
+
+ */
     public static void register(Map<String,Instantiable<?>> m) {
         m.put(DocumentResource.getResourceKind(),DocumentResourceIndexInMemory.factory);
     }

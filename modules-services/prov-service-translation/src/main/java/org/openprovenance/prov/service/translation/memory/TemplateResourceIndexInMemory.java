@@ -27,12 +27,14 @@ public class TemplateResourceIndexInMemory extends ExtendedDocumentResourceIndex
     public static TemplateResourceIndexInMemory make (ResourceIndex<DocumentResource> ri) {
         return new TemplateResourceIndexInMemory(ri, factory);
     }
-
+/*
     @Override
     public <EXTENDED_RESOURCE extends TemplateResource> ExtendedDocumentResourceIndexFactory getExtender(Instantiable<EXTENDED_RESOURCE> factory) {
         return new ExtendedDocumentResourceIndexFactory(this,factory);
     }
 
+
+ */
     @Override
     public ResourceIndex<DocumentResource> getAncestor() {
         return dri;

@@ -33,11 +33,14 @@ public class RedisExtendedResourceIndex<EXTENDED_RESOURCE extends DocumentResour
 
     }
 
+    /*
     @Override
     public <EXTENDED_RESOURCE2 extends EXTENDED_RESOURCE> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE2> getExtender(Instantiable<EXTENDED_RESOURCE2> factory) {
         return null;
     }
 
+
+     */
     @Override
     public void remove(String key) {
 

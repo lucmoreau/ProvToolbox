@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.log4j.Logger;
@@ -22,12 +24,14 @@ import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.xml.ProvUtilities;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -35,15 +39,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Path("")
 public class TemplateService  implements Constants, InteropMediaType {
 
     ProvUtilities u = new ProvUtilities();
 
-    static Logger logger = Logger.getLogger(TemplateService.class);
+    private static Logger logger = Logger.getLogger(TemplateService.class);
 
     final ActionExpand actionExpand;
 
     private final ServiceUtils utils;
+    private final ResourceIndex<TemplateResource> resourceIndex;
 
     static final ProvFactory f=org.openprovenance.prov.xml.ProvFactory.getFactory();
 
@@ -54,22 +60,23 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     public TemplateService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
-        //logger.info("FIXME FIXME: registering template index (in memory)");
-        //utils.getExtensionMap().put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
-        //utils.getExtensionMap().put(TemplateResource.getResourceKind(), RedisTemplateResourceIndex.factory);
-        logger.info("Template service: " + utils.getExtensionMap());
-        postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
+           postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
         actionExpand=new ActionExpand(utils);
+        ResourceIndex<?> indexer=utils.getExtensionMap2().get(TemplateResource.getResourceKind());
+        this.resourceIndex=(ResourceIndex<TemplateResource>) indexer;
+
     }
 
 
-
+/*
     public static final String [] ALL_OUTPUT_MEDIA
             =new String[] { MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
             MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG};
     public static final String ALL_OUTPUT_MEDIA_AS_STRING= Arrays.toString(ALL_OUTPUT_MEDIA);
+ */
+
 
     @GET
     @Path("/documents/random/{nodes}/{degree}")
@@ -251,5 +258,75 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     }
 
+
+    @GET
+    @Path("/documents/{docId}/template.{type}")
+    @Tag(name="documents")
+    @Operation(summary = "Representation of the template used to generate the current document into given serialization format",
+            description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
+            responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),
+                          @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
+    public Response getTemplate(@Context HttpServletResponse response,
+                                @Context HttpServletRequest request,
+                                @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
+                                @Parameter(name = "type", description = "serialization type", example = "provn",
+                                        schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg"}), required = true) @PathParam("type") String type)
+    throws IOException {
+
+        logger.info("Retrieving template");
+
+        TemplateResource tr=resourceIndex.get(msg);
+
+
+        if (tr == null) {
+            return utils.composeResponseNotFoundResource(msg);
+        }
+
+        String template_storageId=tr.getTemplateStorageId();
+
+        Document doc=utils.getDocumentFromCacheOrStore(template_storageId);
+        if (doc == null) {
+            return utils.composeResponseNotFoundDocument(msg);
+        }
+        InteropFramework intF = new InteropFramework();
+        String mimeType = intF.convertExtensionToMediaType(type);
+        return utils.composeResponseOK(doc).type(mimeType).build();
+
+    }
+
+
+    @GET
+    @Path("/documents/{docId}/bindings")
+    @Tag(name="documents")
+    @Operation(summary = "Representation of the bindings used to generate the current document into given serialization format",
+            description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
+            responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),
+                    @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
+    public Response getBindings(@Context HttpServletResponse response,
+                                @Context HttpServletRequest request,
+                                @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg)
+            throws IOException {
+
+        logger.info("Retrieving template");
+
+        TemplateResource tr=resourceIndex.get(msg);
+
+
+        if (tr == null) {
+            return utils.composeResponseNotFoundResource(msg);
+        }
+
+        String bindings_Id=tr.getBindingsStorageId();
+        logger.info("Retrieving template, found bindings resource " + bindings_Id);
+        NonDocumentResource bindingsRecord=utils.getNonDocumentResourceIndex().get(bindings_Id);
+        String bindings_storageId=bindingsRecord.getStorageId();
+        logger.info("Retrieving template, found bindings file " + bindings_storageId);
+
+        //utils.getNonDocumentResourceStorage().copyStoreToOutputStream(bindings_storageId,response.getOutputStream());
+
+
+        return utils.composeResponseOK(new File(bindings_storageId)).type(MediaType.APPLICATION_JSON_TYPE).build();
+
+    }
 
 }

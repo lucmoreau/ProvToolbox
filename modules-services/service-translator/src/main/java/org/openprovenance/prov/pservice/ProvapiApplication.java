@@ -114,7 +114,14 @@ public class ProvapiApplication extends Application {
 			extensionMap.put(DocumentResource.getResourceKind(), DocumentResourceIndexInMemory.factory);
 			extensionMap.put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
 		};
+		Consumer<Map<String, ResourceIndex<?>>> inMemoryInit2 = extensionMap -> {
+			DocumentResourceIndexInMemory di=new DocumentResourceIndexInMemory();
+			extensionMap.put(DocumentResource.getResourceKind(), di);
+			extensionMap.put(TemplateResource.getResourceKind(), new TemplateResourceIndexInMemory(di,TemplateResourceIndexInMemory.factory));
+		};
+
 		inMemoryInit.accept(config.extensionMap);
+		inMemoryInit2.accept(config.extensionMap2);
 		config.documentResourceIndex=new DocumentResourceIndexInMemory();
 	}
 
@@ -125,7 +132,12 @@ public class ProvapiApplication extends Application {
 			extensionMap.put(DocumentResource.getResourceKind(), RedisDocumentResourceIndex.factory);
 			extensionMap.put(TemplateResource.getResourceKind(), RedisTemplateResourceIndex.factory);
 		};
-
+		Consumer<Map<String, ResourceIndex<?>>> redisInit2 = extensionMap -> {
+			RedisDocumentResourceIndex di=new RedisDocumentResourceIndex();
+			extensionMap.put(DocumentResource.getResourceKind(), di);
+			extensionMap.put(TemplateResource.getResourceKind(), new RedisTemplateResourceIndex(di,RedisTemplateResourceIndex.factory));
+		};
+		redisInit2.accept(config.extensionMap2);
 		redisInit.accept(config.extensionMap);
 		config.documentResourceIndex=new RedisDocumentResourceIndex();
 	}

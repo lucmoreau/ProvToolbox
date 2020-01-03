@@ -26,7 +26,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, loc);
 
 
-    private final Jedis client;
+    protected final Jedis client;
 
     public RedisDocumentResourceIndex() {
         client=new Jedis();
@@ -56,7 +56,8 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     @Override
     public DocumentResource get(String key) {
         logger.info("get " + key );
-        List<String> values=client.hmget(key, FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND);
+        //List<String> values=client.hmget(key, FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND);
+        List<String> values=client.hmget(key, myKeys());
         logger.info("get " + key + values);
         Map<String,String> m=new HashMap<>();
         for (int i=0; i<myKeys().length; i++) {
@@ -75,11 +76,13 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
         logger.info("put done " + key );
 
     }
-
+/*
     @Override
     public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> f) {
         return new ExtendedDocumentResourceIndexFactory(this,f);
     }
+    
+ */
 
     @Override
     public void remove(String key) {

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.redis;
 
+import org.apache.log4j.Logger;
 import org.openprovenance.apache.commons.lang.ArrayUtils;
 import org.openprovenance.prov.service.core.DocumentResource;
 import org.openprovenance.prov.service.core.Instantiable;
@@ -11,8 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RedisTemplateResourceIndex extends RedisExtendedDocumentResourceIndexFactory<TemplateResource> implements ResourceIndex<TemplateResource> {
+
+    private static Logger logger = Logger.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
+
+    static String[] extra=new String[]{ RedisDocumentResourceIndex.FIELD_BINDINGS_ID, RedisDocumentResourceIndex.FIELD_TEMPLATE_ID};
     public RedisTemplateResourceIndex(RedisDocumentResourceIndex dri, Instantiable<TemplateResource> factory) {
-        super(dri, factory);
+        super(dri, factory,extra);
     }
 
     private final String[] myKeyArray = concat(dri.myKeys(),new String[] {RedisDocumentResourceIndex.FIELD_BINDINGS_ID, RedisDocumentResourceIndex.FIELD_TEMPLATE_ID});
@@ -39,11 +44,15 @@ public class RedisTemplateResourceIndex extends RedisExtendedDocumentResourceInd
         return new RedisTemplateResourceIndex((RedisDocumentResourceIndex)ri, factory);
     }
 
+    /*
     @Override
     public <EXTENDED_RESOURCE extends TemplateResource> RedisExtendedDocumentResourceIndexFactory getExtender(Instantiable<EXTENDED_RESOURCE> f) {
-        return new RedisExtendedDocumentResourceIndexFactory(this.dri,f);
+        logger.info("need to specify extra");
+        return new RedisExtendedDocumentResourceIndexFactory(this.dri,f,null);
     }
 
+
+     */
     @Override
     public ResourceIndex<DocumentResource> getAncestor() {
         return dri;

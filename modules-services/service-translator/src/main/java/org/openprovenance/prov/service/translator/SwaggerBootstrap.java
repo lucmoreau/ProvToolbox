@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.openprovenance.prov.pservice;
+package org.openprovenance.prov.service.translator;
 
 
 import javax.servlet.http.HttpServlet;

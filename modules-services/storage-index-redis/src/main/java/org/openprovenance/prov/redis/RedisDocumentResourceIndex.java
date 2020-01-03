@@ -81,7 +81,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> f) {
         return new ExtendedDocumentResourceIndexFactory(this,f);
     }
-    
+
  */
 
     @Override

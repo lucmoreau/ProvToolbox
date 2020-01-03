@@ -16,7 +16,7 @@
         <module>prov-log</module>
         <module>prov-service-core</module>
         <module>prov-service-translation</module>
-        <module>index-redis</module>
+        <module>storage-index-redis</module>
         <module>service-translator</module>
         <module>docker-service-translator</module>
     </modules>

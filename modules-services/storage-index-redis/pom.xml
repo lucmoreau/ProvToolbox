@@ -6,9 +6,8 @@
         <artifactId>modules-services</artifactId>
         <version>0.9.1-SNAPSHOT</version>
     </parent>
-    <groupId>org.openprovenance.prov</groupId>
-    <artifactId>index-redis</artifactId>
-    <name> |---- INDEX-REDIS</name>
+    <artifactId>storage-index-redis</artifactId>
+    <name> |---- STORAGE-INDEX-REDIS</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

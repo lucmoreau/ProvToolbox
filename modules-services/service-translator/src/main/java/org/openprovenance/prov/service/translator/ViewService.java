@@ -1,20 +1,16 @@
-package org.openprovenance.prov.pservice;
+package org.openprovenance.prov.service.translator;
 
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.service.core.DocumentResource;
 import org.openprovenance.prov.service.core.ServiceUtils;
 
 import org.openprovenance.prov.xml.ProvFactory;
 import org.apache.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.ApplicationPath;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletException;
@@ -25,16 +21,8 @@ import javax.xml.bind.JAXBException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.servers.Server;
-import io.swagger.v3.oas.annotations.info.Info;
-
-
 
 
 @Path("")

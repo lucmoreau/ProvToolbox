@@ -1,4 +1,4 @@
-package org.openprovenance.prov.pservice;
+package org.openprovenance.prov.service.translator;
 
 import java.io.IOException;
 import java.io.InputStream;

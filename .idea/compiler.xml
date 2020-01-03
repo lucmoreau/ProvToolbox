@@ -7,7 +7,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="docker-service-translator" />
-        <module name="index-redis" />
         <module name="prov-service-core" />
         <module name="prov-json" />
         <module name="prov-n" />
@@ -29,6 +28,7 @@
         <module name="prov-dot" />
         <module name="prov-model-scala" />
         <module name="prov-service-translation" />
+        <module name="storage-index-redis" />
         <module name="prov-log" />
         <module name="prov-template" />
         <module name="prov-template-compiler" />
@@ -43,7 +43,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="docker-service-translator" target="1.8" />
-      <module name="index-redis" target="1.8" />
       <module name="modules-core" target="1.5" />
       <module name="modules-executable" target="1.5" />
       <module name="modules-legacy" target="1.5" />
@@ -78,6 +77,7 @@
       <module name="ProvToolbox-Tutorial6" target="1.8" />
       <module name="roundtrip" target="1.5" />
       <module name="service-translator" target="1.8" />
+      <module name="storage-index-redis" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

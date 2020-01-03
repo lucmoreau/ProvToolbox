@@ -1,14 +1,10 @@
-package org.openprovenance.prov.pservice.roundtrip;
+package org.openprovenance.prov.service.translator.roundtrip;
 
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_IMAGE_SVG_XML;
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_PROVENANCE_NOTATION;
-import static org.openprovenance.prov.interop.InteropFramework.MEDIA_APPLICATION_RDF_XML;
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_APPLICATION_TRIG;
-import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_TURTLE;
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_APPLICATION_PROVENANCE_XML;
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_APPLICATION_JSON;
-import static org.openprovenance.prov.interop.InteropFramework.MEDIA_APPLICATION_PDF;
-import static org.openprovenance.prov.interop.InteropFramework.MEDIA_APPLICATION_FORM_URLENCODED;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -22,16 +18,11 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.pservice.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.translator.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.DocumentMessageBodyWriter;
 import org.openprovenance.prov.model.DocumentEquality;
-import org.openprovenance.prov.xml.UncheckedTestException;
-import org.openprovenance.prov.service.core.DocumentMessageBodyWriter;
 
 abstract 
 public class IT extends

@@ -1,8 +1,8 @@
-
+<%@ page import="org.openprovenance.prov.service.translator.ViewService" %>
 
 <div class="row">
 <div class="span12">
-<%=  org.openprovenance.prov.pservice.ViewService.longVersion %>
+<%=  ViewService.longVersion %>
 </div>
 </div>
 

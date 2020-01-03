@@ -1,9 +1,5 @@
-package org.openprovenance.prov.pservice.template;
+package org.openprovenance.prov.service.translator.template;
 
-import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_HTML;
-import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_XML;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -22,9 +18,7 @@ import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.pservice.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.translator.DocumentMessageBodyReader;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;

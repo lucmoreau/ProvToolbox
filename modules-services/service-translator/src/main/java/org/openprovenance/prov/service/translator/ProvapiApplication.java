@@ -15,9 +15,7 @@ import org.openprovenance.prov.redis.RedisDocumentResourceIndex;
 import org.openprovenance.prov.redis.RedisTemplateResourceIndex;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
-import org.openprovenance.prov.service.translation.TemplateResource;
-import org.openprovenance.prov.service.translation.TemplateService;
-import org.openprovenance.prov.service.translation.TranslationService;
+import org.openprovenance.prov.service.translation.*;
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -30,7 +28,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.openprovenance.prov.service.translation.VisService;
 import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 
 @OpenAPIDefinition(
@@ -86,6 +83,8 @@ public class ProvapiApplication extends Application {
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new TemplateService(ps));
+		singletons.add(new RandomService(ps));
+
 		singletons.add(new VisService(ps));
 		//singletons.add(new VisService());
 		singletons.add(new OpenApiResource());

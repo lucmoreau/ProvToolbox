@@ -11,7 +11,6 @@ import javax.ws.rs.ApplicationPath;
 
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.redis.RedisDocumentResource;
 import org.openprovenance.prov.redis.RedisDocumentResourceIndex;
 import org.openprovenance.prov.redis.RedisTemplateResourceIndex;
 import org.openprovenance.prov.service.core.*;
@@ -24,11 +23,8 @@ import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -110,36 +106,26 @@ public class ProvapiApplication extends Application {
 	}
 
 	public void initInMemory() {
-		Consumer<Map<String, Instantiable<?>>> inMemoryInit = extensionMap -> {
-			extensionMap.put(DocumentResource.getResourceKind(), DocumentResourceIndexInMemory.factory);
-			extensionMap.put(TemplateResource.getResourceKind(), TemplateResourceIndexInMemory.factory);
-		};
-		Consumer<Map<String, ResourceIndex<?>>> inMemoryInit2 = extensionMap -> {
+
+		Consumer<Map<String, ResourceIndex<?>>> inMemoryInit = extensionMap -> {
 			DocumentResourceIndexInMemory di=new DocumentResourceIndexInMemory();
 			extensionMap.put(DocumentResource.getResourceKind(), di);
 			extensionMap.put(TemplateResource.getResourceKind(), new TemplateResourceIndexInMemory(di,TemplateResourceIndexInMemory.factory));
 		};
 
 		inMemoryInit.accept(config.extensionMap);
-		inMemoryInit2.accept(config.extensionMap2);
-		config.documentResourceIndex=new DocumentResourceIndexInMemory();
 	}
 
 
 	public void initRedis() {
 
-		Consumer<Map<String, Instantiable<?>>> redisInit = extensionMap -> {
-			extensionMap.put(DocumentResource.getResourceKind(), RedisDocumentResourceIndex.factory);
-			extensionMap.put(TemplateResource.getResourceKind(), RedisTemplateResourceIndex.factory);
-		};
-		Consumer<Map<String, ResourceIndex<?>>> redisInit2 = extensionMap -> {
+
+		Consumer<Map<String, ResourceIndex<?>>> redisInit = extensionMap -> {
 			RedisDocumentResourceIndex di=new RedisDocumentResourceIndex();
 			extensionMap.put(DocumentResource.getResourceKind(), di);
 			extensionMap.put(TemplateResource.getResourceKind(), new RedisTemplateResourceIndex(di,RedisTemplateResourceIndex.factory));
 		};
-		redisInit2.accept(config.extensionMap2);
 		redisInit.accept(config.extensionMap);
-		config.documentResourceIndex=new RedisDocumentResourceIndex();
 	}
 
 

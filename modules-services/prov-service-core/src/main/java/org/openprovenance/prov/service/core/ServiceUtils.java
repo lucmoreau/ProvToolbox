@@ -9,11 +9,7 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.service.core.filesystem.DocumentResourceStorageFileSystem;
-import org.openprovenance.prov.service.core.filesystem.NonDocumentResourceStorageFileSystem;
-import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 import org.openprovenance.prov.service.core.memory.LRUHashMap;
-import org.openprovenance.prov.service.core.memory.NonDocumentResourceIndexInMemory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.*;
@@ -26,7 +22,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -73,18 +68,16 @@ public class ServiceUtils {
 
     private final ResourceIndex<DocumentResource> documentResourceIndex;
 
-    public final Map<String,Instantiable<?>> extensionMap;
-    private final Map<String, ResourceIndex<?>> extensionMap2;
+    private final Map<String, ResourceIndex<?>> extensionMap;
 
 
     public ServiceUtils(PostService postService, ServiceUtilsConfig config) {
         this.config=config;
         this.storageManager=config.storageManager;
-        this.documentResourceIndex=config.documentResourceIndex;
+        this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(DocumentResource.getResourceKind());
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
-        this.extensionMap=config.extensionMap;
-        this.extensionMap2=config.extensionMap2;
+        this.extensionMap =config.extensionMap;
         jobManager=postService.getJobManager();
         documentCache=new LRUHashMap<>(config.documentCacheSize);
     }
@@ -101,8 +94,7 @@ public class ServiceUtils {
         return storageManager;
     }
 
-    final public Map<String, Instantiable<?>> getExtensionMap() { return extensionMap;}
-    final public Map<String, ResourceIndex<?>> getExtensionMap2() { return extensionMap2;}
+    final public Map<String, ResourceIndex<?>> getExtensionMap() { return extensionMap;}
 
     public NonDocumentResourceIndex<NonDocumentResource> getNonDocumentResourceIndex() {
         return nonDocumentResourceIndex;

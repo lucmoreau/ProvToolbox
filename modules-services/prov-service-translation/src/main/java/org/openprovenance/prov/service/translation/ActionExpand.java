@@ -30,10 +30,8 @@ public class ActionExpand implements ActionPerformer {
 
     ActionExpand(ServiceUtils utils) {
         this.utils= utils;
-        //Instantiable<?> expander=utils.getExtensionMap().get(TemplateResource.getResourceKind());
-        //Instantiable<TemplateResource> expander2=(Instantiable<TemplateResource>) expander;
-        //this.resourceIndex=utils.getDocumentResourceIndex().getExtender(expander2);
-        ResourceIndex<?> indexer=utils.getExtensionMap2().get(TemplateResource.getResourceKind());
+
+        ResourceIndex<?> indexer=utils.getExtensionMap().get(TemplateResource.getResourceKind());
         this.resourceIndex=(ResourceIndex<TemplateResource>) indexer;
 
     }

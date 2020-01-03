@@ -18,7 +18,6 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -34,7 +33,6 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +61,7 @@ public class TemplateService  implements Constants, InteropMediaType {
            postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
         actionExpand=new ActionExpand(utils);
-        ResourceIndex<?> indexer=utils.getExtensionMap2().get(TemplateResource.getResourceKind());
+        ResourceIndex<?> indexer=utils.getExtensionMap().get(TemplateResource.getResourceKind());
         this.resourceIndex=(ResourceIndex<TemplateResource>) indexer;
 
     }

@@ -64,7 +64,7 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
         logger.info("put " + key );
         RedisDocumentResource rdr=(RedisDocumentResource)er;
         dri.client.hmset(key,rdr.getMap());
-        logger.info("put done " + key );
+        logger.info("put done " + key + " " + rdr.getMap());
     }
 
 

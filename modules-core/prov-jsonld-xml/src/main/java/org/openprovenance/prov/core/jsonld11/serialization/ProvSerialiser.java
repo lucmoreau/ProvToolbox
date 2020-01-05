@@ -48,6 +48,19 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
         ObjectMapper mapper = new ObjectMapper();
+        customize(mapper,formatted);
+
+
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+
+    public ObjectMapper customize(ObjectMapper mapper,boolean formatted) {
+
         if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         SimpleModule module =
@@ -66,14 +79,7 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
         mapper.setFilterProvider(filterProvider);
 
         provMixin().addProvMixin(mapper);
-
-
-        try {
-            mapper.writeValue(out,document);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException(e);
-        }
+        return mapper;
     }
 
     @Override

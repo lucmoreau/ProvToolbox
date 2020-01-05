@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="prov-interop-0.9.1-SNAPSHOT.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="com.baeldung.osgi.sample.activator.HelloWorld" bundleSymbolicName="org.openprovenance.prov.prov-interop" bundleVersion="0.9.1-SNAPSHOT" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Bundle-Description" value="A package aimed at systematic testing convertibility of prov representations." />
+          <property key="Bundle-Name" value="|---- PROV-INTEROP" />
+          <property key="Private-Package" value="com.baeldung.osgi.sample.activator" />
+          <property key="Include-Resource" value="{org/openprovenance/prov/interop/config.properties=$MODULE_DIR$/src/main/resources/org/openprovenance/prov/interop/config.properties}" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="Osmorc" url="file://$PROJECT_DIR$/modules-executable/prov-interop" />
     <file type="web" url="file://$PROJECT_DIR$/modules-services/service-translator" />
   </component>
   <component name="JavadocGenerationManager">
@@ -18,6 +19,7 @@
         <option value="$PROJECT_DIR$/modules-services/service-translator/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/index-redis/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" />
       </list>
     </option>
   </component>

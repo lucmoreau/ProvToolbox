@@ -19,6 +19,7 @@
         <module name="prov-jsonld-xml" />
         <module name="prov-interop" />
         <module name="prov-generator" />
+        <module name="storage-mongodb" />
         <module name="roundtrip" />
         <module name="provconvert" />
         <module name="toolbox" />
@@ -52,11 +53,11 @@
       <module name="modules-tutorial" target="1.5" />
       <module name="prov-dot" target="1.5" />
       <module name="prov-generator" target="1.5" />
-      <module name="prov-interop" target="1.5" />
+      <module name="prov-interop" target="9" />
       <module name="prov-json" target="1.5" />
-      <module name="prov-jsonld-xml" target="1.5" />
+      <module name="prov-jsonld-xml" target="11" />
       <module name="prov-log" target="1.8" />
-      <module name="prov-model" target="1.5" />
+      <module name="prov-model" target="11" />
       <module name="prov-model-scala" target="1.5" />
       <module name="prov-n" target="1.5" />
       <module name="prov-rdf" target="1.5" />
@@ -78,6 +79,7 @@
       <module name="roundtrip" target="1.5" />
       <module name="service-translator" target="1.8" />
       <module name="storage-index-redis" target="1.8" />
+      <module name="storage-mongodb" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

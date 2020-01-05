@@ -37,6 +37,7 @@
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" filepath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" filepath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" filepath="$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" filepath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" />
     </modules>
   </component>

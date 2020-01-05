@@ -30,8 +30,21 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
         ObjectMapper mapper = new ObjectMapper();
 
+        customize(mapper);
+
+        try {
+            return mapper.readValue(in, Document.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+
+    }
+
+    public void customize(ObjectMapper mapper) {
+
         SimpleModule module =
-                new SimpleModule("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
+                new SimpleModule("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
 
         //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
         module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
@@ -65,14 +78,6 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
 
         mapper.registerModule(module);
-
-        try {
-            return mapper.readValue(in, Document.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException(e);
-        }
-
     }
 
 }

@@ -20,12 +20,12 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
 
     Map<String, String> m=new HashMap<>();
 
-    static MongoDocumentResourceStorage docS=new MongoDocumentResourceStorage();
+    static MongoDocumentResourceStorage docS=new MongoDocumentResourceStorage("provtest");
 
     @Override
     public void writeDocumentToFile(Document doc, String file) throws IOException {
 
-        System.out.println("storing " + file);
+       // System.out.println("storing " + file);
 
 
         String loc=docS.newStore(Formats.ProvFormat.JSONLD);
@@ -42,6 +42,9 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
         assertNotNull(loc);
 
         Document doc=docS.readDocument(loc);
+
+        assertNotNull(doc);
+
         return doc;
     }
 }

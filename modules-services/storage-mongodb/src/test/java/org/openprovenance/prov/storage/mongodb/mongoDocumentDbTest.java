@@ -13,7 +13,7 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
 
-public class mongoDbTest extends TestCase {
+public class mongoDocumentDbTest extends TestCase {
 
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";
@@ -21,7 +21,7 @@ public class mongoDbTest extends TestCase {
     public void testMongoStorage() throws IOException {
      //   System.out.println("Creating a DS");
 
-        MongoDocumentResourceStorage ds=new MongoDocumentResourceStorage();
+        MongoDocumentResourceStorage ds=new MongoDocumentResourceStorage("provtest");
      //   System.out.println("Creating a new storeID");
 
         String id=ds.newStore(Formats.ProvFormat.JSONLD);
@@ -52,7 +52,7 @@ public class mongoDbTest extends TestCase {
         org.openprovenance.prov.model.Entity e0 = pf.newEntity(pf.newQualifiedName(EX_NS, "e0", EX_PREFIX));
         e0.getOther()
                 .add(pf.newOther(pf.newQualifiedName(EX_NS, "tag2", EX_PREFIX),
-                        new LangString("bonjour", "fr"),
+                        pf.newInternationalizedString("bonjour", "fr"),
                         pf.getName().PROV_LANG_STRING));
         e0.getOther()
                 .add(pf.newOther(pf.newQualifiedName(EX_NS, "tag2", EX_PREFIX),

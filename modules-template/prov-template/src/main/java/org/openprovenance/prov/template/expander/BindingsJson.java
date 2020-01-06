@@ -30,7 +30,7 @@ public class BindingsJson {
 		public Hashtable<String, String> context;
 	    public String template;
 	}
-	
+
 	public static Object convertValueToBean(Object o, QualifiedName type, Hashtable<String, String> context) {
 		if (o instanceof Integer) return o;
 		if (o instanceof Float) return o;

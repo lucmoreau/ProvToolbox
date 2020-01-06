@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NonDocumentGenericResourceStorage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/BindingsWrapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoBindingsResourceStorage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDocumentDbTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/resources/bindings1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/MyLangString.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDb2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDb2Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDbTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoBindingsDbTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,8 +55,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Package Object" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -90,14 +102,15 @@
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.service.core" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.dot" />
-      <recent name="org.openprovenance.prov.json" />
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
+      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
+      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
+      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.openprovenance.prov.storage.mongodb" />
       <recent name="org.openprovenance.prov.core.json" />
       <recent name="org.openprovenance.prov.core" />
     </key>
@@ -127,17 +140,17 @@
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.storage.mongodb" />
+      <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.translation" />
       <recent name="org.openprovenance.prov.redis" />
-      <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.core.memory" />
     </key>
-    <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
-      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
-      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
-      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service.core" />
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
+      <recent name="org.openprovenance.prov.json" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.mongoDbTest">
@@ -316,7 +329,7 @@
       <workItem from="1577478646976" duration="134106000" />
       <workItem from="1578298009919" duration="4074000" />
       <workItem from="1578309962716" duration="198000" />
-      <workItem from="1578311468149" duration="6842000" />
+      <workItem from="1578311468149" duration="12758000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -363,25 +376,29 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="748" y="336" key="#Project_Structure/0.23.2560.1338@0.23.2560.1338" timestamp="1578317593651" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1578319386505">
+    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1578346818914">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1578319386505" />
-    <state width="1870" height="413" key="GridCell.Tab.0.bottom" timestamp="1578322279651">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1578346818914" />
+    <state width="756" height="398" key="GridCell.Tab.0.bottom" timestamp="1578328383857">
+      <screen x="0" y="23" width="1440" height="830" />
     </state>
+    <state width="756" height="398" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1578328383857" />
     <state width="1870" height="413" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279651" />
-    <state width="1870" height="413" key="GridCell.Tab.0.center" timestamp="1578322279651">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="756" height="398" key="GridCell.Tab.0.center" timestamp="1578328383855">
+      <screen x="0" y="23" width="1440" height="830" />
     </state>
+    <state width="756" height="398" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
     <state width="1870" height="413" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279651" />
-    <state width="1870" height="413" key="GridCell.Tab.0.left" timestamp="1578322279650">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="756" height="398" key="GridCell.Tab.0.left" timestamp="1578328383855">
+      <screen x="0" y="23" width="1440" height="830" />
     </state>
+    <state width="756" height="398" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
     <state width="1870" height="413" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279650" />
-    <state width="1870" height="413" key="GridCell.Tab.0.right" timestamp="1578322279651">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="756" height="398" key="GridCell.Tab.0.right" timestamp="1578328383856">
+      <screen x="0" y="23" width="1440" height="830" />
     </state>
+    <state width="756" height="398" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1578328383856" />
     <state width="1870" height="413" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279651" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">

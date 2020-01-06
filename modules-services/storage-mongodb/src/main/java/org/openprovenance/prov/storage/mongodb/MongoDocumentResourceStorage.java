@@ -17,21 +17,20 @@ import org.openprovenance.prov.service.core.ResourceStorage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MongoDocumentResourceStorage implements ResourceStorage {
+public class MongoDocumentResourceStorage implements ResourceStorage, Constants {
     private static Logger logger = Logger.getLogger(MongoDocumentResourceStorage.class);
 
-    private static final String COLLECTION_DOCUMENTS = "DOCUMENTS";
     private final DB db;
     private final JacksonDBCollection<DocumentWrapper, String> documentCollection;
     private final ProvSerialiser serialiser;
     private final ProvDeserialiser deserialiser;
     private final ObjectMapper mapper;
 
-    MongoDocumentResourceStorage() {
+    MongoDocumentResourceStorage(String dbname) {
 
         //System.out.println("Creating a client");
         MongoClient mongoClient = new MongoClient("localhost", 27017);
-        DB db = mongoClient.getDB("provservice");
+        DB db = mongoClient.getDB(dbname);
         this.db=db;
 
         //mongoClient.getDatabaseNames().forEach(System.out::println);
@@ -80,16 +79,13 @@ public class MongoDocumentResourceStorage implements ResourceStorage {
 
     @Override
     public Document readDocument(String id) throws IOException {
-      //  logger.info("reading doc " + id);
         DocumentWrapper wrapper=documentCollection.findOneById(id);
         return wrapper.document;
     }
 
     @Override
     public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
-       // logger.info("writing doc " + id);
         documentCollection.updateById(id, DBUpdate.set("document", doc));
-
     }
 
     @Override

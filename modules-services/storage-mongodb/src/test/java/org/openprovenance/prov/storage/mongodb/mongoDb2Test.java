@@ -10,7 +10,7 @@ public class mongoDb2Test extends TestCase {
     public void testMongoStorage() throws IOException {
       //  System.out.println("Creating a NDS");
 
-        MongoNonDocumentResourceStorage nds=new MongoNonDocumentResourceStorage();
+        MongoNonDocumentResourceStorage nds=new MongoNonDocumentResourceStorage("provtest");
       //  System.out.println("Creating a new storeID");
 
         String id=nds.newStore("ttl","rdf");

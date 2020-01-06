@@ -13,24 +13,17 @@ https://howtodoinjava.com/mongodb/java-mongodb-getsave-image-using-gridfs-apis/
 */
 
 
-public class MongoNonDocumentResourceStorage implements NonDocumentResourceStorage {
+public class MongoNonDocumentResourceStorage implements NonDocumentResourceStorage, Constants {
 
-    public static final String COLLECTION_FILES = "files";
-    private static final String KEY_EXTENSION = "EXTENSION";
-    private static final String KEY_MIME_TYPE = "MIME_TYPE";
-    private static final String KEY_CONTENTS = "CONTENTS";
     private final DB db;
 
-    MongoNonDocumentResourceStorage() {
+    MongoNonDocumentResourceStorage(String dbname) {
 
-       // System.out.println("Creating a client");
         MongoClient mongoClient = new MongoClient("localhost", 27017);
 
-        DB db = mongoClient.getDB("provservice");
+        DB db = mongoClient.getDB(dbname);
         this.db=db;
-       // mongoClient.getDatabaseNames().forEach(System.out::println);
         db.createCollection(COLLECTION_FILES, null);
-       // db.getCollectionNames().forEach(System.out::println);
     }
 
     MongoNonDocumentResourceStorage(DB db) {

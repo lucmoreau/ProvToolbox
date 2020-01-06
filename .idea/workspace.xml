@@ -5,43 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/config/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/MyLangString.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDb2Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_scala_library_2_12_10.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_scala_library_2_12_10.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/CustomTypedValueSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-rdf/prov-rdf.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-rdf/prov-rdf.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-generator/prov-generator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-generator/prov-generator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDbTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDbTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -351,7 +316,7 @@
       <workItem from="1577478646976" duration="134106000" />
       <workItem from="1578298009919" duration="4074000" />
       <workItem from="1578309962716" duration="198000" />
-      <workItem from="1578311468149" duration="6754000" />
+      <workItem from="1578311468149" duration="6842000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

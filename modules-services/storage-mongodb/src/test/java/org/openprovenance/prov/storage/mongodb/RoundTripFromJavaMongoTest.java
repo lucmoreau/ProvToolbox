@@ -25,6 +25,9 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
     @Override
     public void writeDocumentToFile(Document doc, String file) throws IOException {
 
+        System.out.println("storing " + file);
+
+
         String loc=docS.newStore(Formats.ProvFormat.JSONLD);
         m.put(file,loc);
 

@@ -19,6 +19,7 @@
         <module>storage-index-redis</module>
         <module>service-translator</module>
         <module>docker-service-translator</module>
+      <!--  <module>storage-mongodb</module> -->
     </modules>
 
 

@@ -19,8 +19,8 @@
         <module name="prov-jsonld-xml" />
         <module name="prov-interop" />
         <module name="prov-generator" />
-        <module name="storage-mongodb" />
-        <module name="roundtrip" />
+        <module name="prov-model" />
+        <module name="storage-index-redis" />
         <module name="provconvert" />
         <module name="toolbox" />
         <module name="prov-sql" />
@@ -29,11 +29,11 @@
         <module name="prov-dot" />
         <module name="prov-model-scala" />
         <module name="prov-service-translation" />
-        <module name="storage-index-redis" />
+        <module name="storage-mongodb" />
         <module name="prov-log" />
         <module name="prov-template" />
         <module name="prov-template-compiler" />
-        <module name="prov-model" />
+        <module name="roundtrip" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
@@ -43,7 +43,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="docker-service-translator" target="1.8" />
+      <module name="docker-service-translator" target="11" />
       <module name="modules-core" target="1.5" />
       <module name="modules-executable" target="1.5" />
       <module name="modules-legacy" target="1.5" />
@@ -51,35 +51,35 @@
       <module name="modules-services" target="1.5" />
       <module name="modules-template" target="1.5" />
       <module name="modules-tutorial" target="1.5" />
-      <module name="prov-dot" target="1.5" />
-      <module name="prov-generator" target="1.5" />
+      <module name="prov-dot" target="11" />
+      <module name="prov-generator" target="11" />
       <module name="prov-interop" target="9" />
-      <module name="prov-json" target="1.5" />
+      <module name="prov-json" target="9" />
       <module name="prov-jsonld-xml" target="11" />
-      <module name="prov-log" target="1.8" />
+      <module name="prov-log" target="11" />
       <module name="prov-model" target="11" />
-      <module name="prov-model-scala" target="1.5" />
-      <module name="prov-n" target="1.5" />
-      <module name="prov-rdf" target="1.5" />
+      <module name="prov-model-scala" target="9" />
+      <module name="prov-n" target="9" />
+      <module name="prov-rdf" target="11" />
       <module name="prov-scala" target="9" />
-      <module name="prov-service-core" target="1.8" />
-      <module name="prov-service-translation" target="8" />
-      <module name="prov-sql" target="1.5" />
-      <module name="prov-template" target="1.5" />
-      <module name="prov-template-compiler" target="1.5" />
-      <module name="prov-xml" target="1.5" />
-      <module name="provconvert" target="1.8" />
+      <module name="prov-service-core" target="9" />
+      <module name="prov-service-translation" target="9" />
+      <module name="prov-sql" target="9" />
+      <module name="prov-template" target="11" />
+      <module name="prov-template-compiler" target="11" />
+      <module name="prov-xml" target="9" />
+      <module name="provconvert" target="11" />
       <module name="ProvToolbox" target="1.5" />
-      <module name="ProvToolbox-Tutorial1" target="1.5" />
-      <module name="ProvToolbox-Tutorial2" target="1.5" />
-      <module name="ProvToolbox-Tutorial3" target="1.5" />
-      <module name="ProvToolbox-Tutorial4" target="1.5" />
-      <module name="ProvToolbox-Tutorial5" target="1.5" />
+      <module name="ProvToolbox-Tutorial1" target="11" />
+      <module name="ProvToolbox-Tutorial2" target="11" />
+      <module name="ProvToolbox-Tutorial3" target="11" />
+      <module name="ProvToolbox-Tutorial4" target="11" />
+      <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="1.8" />
-      <module name="roundtrip" target="1.5" />
-      <module name="service-translator" target="1.8" />
-      <module name="storage-index-redis" target="1.8" />
-      <module name="storage-mongodb" target="1.8" />
+      <module name="roundtrip" target="11" />
+      <module name="service-translator" target="11" />
+      <module name="storage-index-redis" target="11" />
+      <module name="storage-mongodb" target="11" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

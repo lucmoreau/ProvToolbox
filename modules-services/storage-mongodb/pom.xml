@@ -55,7 +55,6 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
             <version>0.9.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- TESTING -->
@@ -75,6 +74,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.12</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -87,13 +92,26 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>

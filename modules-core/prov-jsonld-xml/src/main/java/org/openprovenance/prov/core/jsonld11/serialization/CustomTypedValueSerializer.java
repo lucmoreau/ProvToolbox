@@ -3,6 +3,7 @@ package org.openprovenance.prov.core.jsonld11.serialization;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.apache.log4j.Logger;
 import org.openprovenance.prov.vanilla.LangString;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.TypedValue;
@@ -12,6 +13,7 @@ import java.io.IOException;
 
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
+   // private static Logger logger = Logger.getLogger(CustomTypedValueSerializer.class);
 
     static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
 
@@ -28,15 +30,34 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
         if ((attr.getValue() instanceof LangString) &&
                 ((LangString)attr.getValue()).getLang()==null &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
-           // jsonGenerator.writeString(((LangString)attr.getValue()).getValue().toString());
-            jsonGenerator.writeObject(attr.getValue());
+            //jsonGenerator.writeString(((LangString)attr.getValue()).getValue().toString());
+
+            //jsonGenerator.writeObject(attr.getValue());
+
+            LangString me=(LangString)attr.getValue();
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField(Constants.PROPERTY_STRING_VALUE, me.getValue());
+            jsonGenerator.writeEndObject();
+
         } else if ((attr.getValue() instanceof String) &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
             throw new UnsupportedOperationException("should never be here");
             //jsonGenerator.writeString((String)attr.getValue());
         } else if ((attr.getValue() instanceof LangString) &&
                 ((LangString)attr.getValue()).getLang()!=null ) {
-            jsonGenerator.writeObject(attr.getValue());
+
+            //logger.info("serializeing here ?????????");
+            LangString me=(LangString)attr.getValue();
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField(Constants.PROPERTY_STRING_VALUE, me.getValue());
+            jsonGenerator.writeStringField(Constants.PROPERTY_STRING_LANG,  me.getLang());
+            jsonGenerator.writeEndObject();
+
+
+            //jsonGenerator.getCodec().writeValue(jsonGenerator,attr.getValue()); // Luc,mongojack?
+
+
+           // jsonGenerator.writeObject(attr.getValue());
         } else if ((attr.getValue() instanceof QualifiedName)  ) {
             jsonGenerator.writeObject(prnt((QualifiedName)attr.getValue()));
         } else {

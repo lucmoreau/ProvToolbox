@@ -1,5 +1,12 @@
 <component name="libraryTable">
-  <library name="Maven: org.scala-lang:scala-library:2.12.10">
+  <library name="Maven: org.scala-lang:scala-library:2.12.10" type="Scala">
+    <properties>
+      <compiler-classpath>
+        <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.12.10/scala-compiler-2.12.10.jar" />
+        <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.12.10/scala-library-2.12.10.jar" />
+        <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/scala-reflect/2.12.10/scala-reflect-2.12.10.jar" />
+      </compiler-classpath>
+    </properties>
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.12.10/scala-library-2.12.10.jar!/" />
     </CLASSES>

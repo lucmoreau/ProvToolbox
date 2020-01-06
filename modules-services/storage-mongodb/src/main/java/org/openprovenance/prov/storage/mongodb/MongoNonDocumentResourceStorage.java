@@ -23,14 +23,14 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     MongoNonDocumentResourceStorage() {
 
-        System.out.println("Creating a client");
+       // System.out.println("Creating a client");
         MongoClient mongoClient = new MongoClient("localhost", 27017);
 
         DB db = mongoClient.getDB("provservice");
         this.db=db;
-        mongoClient.getDatabaseNames().forEach(System.out::println);
+       // mongoClient.getDatabaseNames().forEach(System.out::println);
         db.createCollection(COLLECTION_FILES, null);
-        db.getCollectionNames().forEach(System.out::println);
+       // db.getCollectionNames().forEach(System.out::println);
     }
 
     MongoNonDocumentResourceStorage(DB db) {

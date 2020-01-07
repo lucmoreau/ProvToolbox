@@ -5,20 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NonDocumentGenericResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/BindingsWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoBindingsResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDocumentDbTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/resources/bindings1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_csv_1_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/CSVWrapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoCSVDbTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/resources/test1.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/MyLangString.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDb2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDb2Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDbTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoBindingsDbTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,15 +148,7 @@
       <recent name="org.openprovenance.prov.json" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.mongoDbTest">
-    <configuration name="All in service-translator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-translator" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.mongoCSVDbTest">
     <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-service-core" />
       <extension name="coverage">
@@ -187,6 +174,21 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.BindingGeneration2Test" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mongoCSVDbTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="storage-mongodb" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.mongoCSVDbTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -237,19 +239,19 @@
     </configuration>
     <list>
       <item itemvalue="Docker.tomcat.alpine.prov/Dockerfile" />
-      <item itemvalue="JUnit.All in service-translator" />
       <item itemvalue="JUnit.BindingGeneration2Test" />
       <item itemvalue="JUnit.AppTest" />
       <item itemvalue="JUnit.mongoDbTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="JUnit.mongoCSVDbTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.mongoCSVDbTest" />
         <item itemvalue="JUnit.mongoDbTest" />
         <item itemvalue="JUnit.AppTest" />
         <item itemvalue="JUnit.BindingGeneration2Test" />
         <item itemvalue="Docker.tomcat.alpine.prov/Dockerfile" />
-        <item itemvalue="JUnit.All in service-translator" />
       </list>
     </recent_temporary>
   </component>
@@ -329,7 +331,8 @@
       <workItem from="1577478646976" duration="134106000" />
       <workItem from="1578298009919" duration="4074000" />
       <workItem from="1578309962716" duration="198000" />
-      <workItem from="1578311468149" duration="12758000" />
+      <workItem from="1578311468149" duration="17010000" />
+      <workItem from="1578432397613" duration="1995000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -376,30 +379,46 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="748" y="336" key="#Project_Structure/0.23.2560.1338@0.23.2560.1338" timestamp="1578317593651" />
+    <state x="291" y="128" width="1987" height="1087" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1578433247771">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="291" y="128" width="1987" height="1087" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578433247771" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1578346818914">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1578346818914" />
-    <state width="756" height="398" key="GridCell.Tab.0.bottom" timestamp="1578328383857">
-      <screen x="0" y="23" width="1440" height="830" />
+    <state width="2143" height="180" key="GridCell.Tab.0.bottom" timestamp="1578434612033">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1578328383857" />
-    <state width="1870" height="413" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279651" />
-    <state width="756" height="398" key="GridCell.Tab.0.center" timestamp="1578328383855">
-      <screen x="0" y="23" width="1440" height="830" />
+    <state width="2143" height="180" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612033" />
+    <state width="2143" height="180" key="GridCell.Tab.0.center" timestamp="1578434612032">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
-    <state width="1870" height="413" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279651" />
-    <state width="756" height="398" key="GridCell.Tab.0.left" timestamp="1578328383855">
-      <screen x="0" y="23" width="1440" height="830" />
+    <state width="2143" height="180" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612032" />
+    <state width="2143" height="180" key="GridCell.Tab.0.left" timestamp="1578434612031">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
-    <state width="1870" height="413" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279650" />
-    <state width="756" height="398" key="GridCell.Tab.0.right" timestamp="1578328383856">
-      <screen x="0" y="23" width="1440" height="830" />
+    <state width="2143" height="180" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612031" />
+    <state width="2143" height="180" key="GridCell.Tab.0.right" timestamp="1578434612032">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1578328383856" />
-    <state width="1870" height="413" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1578322279651" />
+    <state width="2143" height="180" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612032" />
+    <state x="822" y="335" key="Maven.ArtifactSearchDialog" timestamp="1578430433215">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578430433215" />
+    <state x="1022" y="432" key="extract.method.dialog" timestamp="1578434360672">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="1022" y="432" key="extract.method.dialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578434360672" />
+    <state x="949" y="316" key="run.anything.popup" timestamp="1578430643139">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="949" y="316" key="run.anything.popup/0.23.2560.1338@0.23.2560.1338" timestamp="1578430643139" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

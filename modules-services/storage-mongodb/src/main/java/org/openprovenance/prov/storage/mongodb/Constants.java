@@ -7,4 +7,5 @@ public interface Constants {
     String KEY_CONTENTS = "CONTENTS";
     String COLLECTION_DOCUMENTS = "DOCUMENTS";
     String COLLECTION_BINDINGS = "BINDINGS";
+    String COLLECTION_CSV = "CSV";
 }

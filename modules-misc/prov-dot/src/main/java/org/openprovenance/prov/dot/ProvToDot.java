@@ -33,8 +33,7 @@ import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.DerivedByInsertionFrom;
 import org.openprovenance.prov.model.Value;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.xml.ProvDeserialiser;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.SpecializationOf;
 import org.openprovenance.prov.model.Used;
@@ -59,9 +58,12 @@ public class ProvToDot {
     public int MAX_TOOLTIP_LENGTH = 2000;
 
     ProvUtilities u=new ProvUtilities();
-    ProvFactory pf=new ProvFactory();
+    final ProvFactory pf;
+    QualifiedName makeSumSize(){
+        return pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
+    }
 
-    QualifiedName SUM_SIZE=pf.newQualifiedName(NamespacePrefixMapper.SUMMARY_NS, "size", NamespacePrefixMapper.SUMMARY_PREFIX);
+    final QualifiedName SUM_SIZE;
 
     public String qualifiedNameToString(QualifiedName qName) {
         return qName.getNamespaceURI()+qName.getLocalPart();
@@ -74,6 +76,7 @@ public class ProvToDot {
 
     public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
 
+    /*
     public static void main(String [] args) throws Exception {
         if ((args==null) || (args.length==0) || (args.length>4)) {
             System.out.println(USAGE);
@@ -90,13 +93,19 @@ public class ProvToDot {
         converter.convert(opmFile,outDot,outPdf,null);
     }
 
+     */
 
 
-    public ProvToDot() {
+
+    public ProvToDot(ProvFactory pf) {
+        this.pf=pf;
+        SUM_SIZE=makeSumSize();
         InputStream is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
         init(is);
     }
-    public ProvToDot(boolean withRoleFlag) {
+    public ProvToDot(ProvFactory pf,boolean withRoleFlag) {
+        this.pf=pf;
+        SUM_SIZE=makeSumSize();
         InputStream is;
         if (withRoleFlag) {
             is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
@@ -105,7 +114,9 @@ public class ProvToDot {
         }
         init(is);
     }
-    public ProvToDot(Config config) {
+    public ProvToDot(ProvFactory pf,Config config) {
+        this.pf=pf;
+        SUM_SIZE=makeSumSize();
         InputStream is=null;
         switch (config) {
             case DEFAULT:
@@ -127,12 +138,14 @@ public class ProvToDot {
         init(is);
     }
 
-    public ProvToDot(String configurationFile) {
-        this();
+    public ProvToDot(ProvFactory pf,String configurationFile) {
+        this(pf);
         init(configurationFile);
     }
 
-    public ProvToDot(String configurationFile, String other) {
+    public ProvToDot(ProvFactory pf,String configurationFile, String other) {
+        this.pf=pf;
+        SUM_SIZE=makeSumSize();
         InputStream is=this.getClass().getClassLoader().getResourceAsStream(configurationFile);
         init(is);
     }
@@ -228,11 +241,13 @@ public class ProvToDot {
 
     }
 
+    /*
     public void convert(String opmFile, String dotFile, String pdfFile, String title)
             throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
         convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile,title);
     }
 
+     */
     public void convert(Document graph, String dotFile, String pdfFile, String title)
             throws java.io.FileNotFoundException, java.io.IOException {
         convert(graph,new File(dotFile), title);
@@ -758,6 +773,14 @@ public class ProvToDot {
             return htmlify(q.getPrefix() +  ":" + q.getLocalPart());
             //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
             //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
+        } if (val instanceof LangString) {
+            LangString ls=(LangString)val;
+            if (ls.getLang()==null) {
+                return htmlify(ls.getValue());
+            } else {
+                return htmlify(ls.getValue()) + "@" + ls.getLang();
+
+            }
         } else {
             return htmlify(""+val);
         }

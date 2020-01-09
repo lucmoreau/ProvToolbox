@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
+import org.openprovenance.prov.xml.ProvFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -31,7 +32,7 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
 	/** Produces a dot representation
 	 * of created graph. */
 
-        ProvToDot toDot=new ProvToDot(true); // with roles
+        ProvToDot toDot=new ProvToDot(ProvFactory.getFactory(),true); // with roles
 
 	if (graph1==null) System.out.println("doToDot with null ");
         

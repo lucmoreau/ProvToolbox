@@ -5,15 +5,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_csv_1_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/CSVWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoCSVDbTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/test/resources/test1.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/CompilerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/config1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates/generic_binaryop.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates/generic_binaryop_b4.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongo_java_driver_3_4_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AccountColorMapEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AccountColorMapEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AccountMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AccountMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ActivityMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ActivityMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ActivityMapEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ActivityMapEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AgentMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AgentMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AgentMapEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/AgentMapEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/EntityMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/EntityMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/EntityMapEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/EntityMapEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/Map.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/MapEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/MapEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvPrinterConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvPrinterConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/RelationStyleMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/RelationStyleMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/RelationStyleMapEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/RelationStyleMapEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PubTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PubTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/filesystem/DocumentResourceStorageFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/filesystem/DocumentResourceStorageFileSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/csv/template_block.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/csv/template_block.provn" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,12 +128,12 @@
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
-      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
-      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
-      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service.core" />
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
+      <recent name="org.openprovenance.prov.json" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.storage.mongodb" />
@@ -134,18 +165,18 @@
       <recent name="$PROJECT_DIR$/modules-template" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.storage.mongodb" />
+      <recent name="org.openprovenance.prov.template" />
       <recent name="org.openprovenance.prov.service.core" />
+      <recent name="org.openprovenance.prov.storage.mongodb" />
       <recent name="org.openprovenance.prov.service.translation" />
       <recent name="org.openprovenance.prov.redis" />
-      <recent name="org.openprovenance.prov.service.core.memory" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.service.core" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.dot" />
-      <recent name="org.openprovenance.prov.json" />
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
+      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
+      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
+      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+      <recent name="org.openprovenance.prov.core.xml.serialization.CustomTypedValueSerializer" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.mongoCSVDbTest">
@@ -332,7 +363,7 @@
       <workItem from="1578298009919" duration="4074000" />
       <workItem from="1578309962716" duration="198000" />
       <workItem from="1578311468149" duration="17010000" />
-      <workItem from="1578432397613" duration="1995000" />
+      <workItem from="1578432397613" duration="14243000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -379,6 +410,10 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="748" y="336" key="#Project_Structure/0.23.2560.1338@0.23.2560.1338" timestamp="1578317593651" />
+    <state x="1022" y="446" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1578523162005">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1022" y="446" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1578523162005" />
     <state x="291" y="128" width="1987" height="1087" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1578433247771">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
@@ -387,29 +422,34 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1578346818914" />
-    <state width="2143" height="180" key="GridCell.Tab.0.bottom" timestamp="1578434612033">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="2143" height="180" key="GridCell.Tab.0.bottom" timestamp="1578518115148">
+      <screen x="0" y="23" width="2560" height="1337" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1578328383857" />
+    <state width="2143" height="180" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1578518115147" />
     <state width="2143" height="180" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612033" />
-    <state width="2143" height="180" key="GridCell.Tab.0.center" timestamp="1578434612032">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="2143" height="180" key="GridCell.Tab.0.center" timestamp="1578518115146">
+      <screen x="0" y="23" width="2560" height="1337" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
+    <state width="2143" height="180" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1578518115146" />
     <state width="2143" height="180" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612032" />
-    <state width="2143" height="180" key="GridCell.Tab.0.left" timestamp="1578434612031">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="2143" height="180" key="GridCell.Tab.0.left" timestamp="1578518115146">
+      <screen x="0" y="23" width="2560" height="1337" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
+    <state width="2143" height="180" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1578518115146" />
     <state width="2143" height="180" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612031" />
-    <state width="2143" height="180" key="GridCell.Tab.0.right" timestamp="1578434612032">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state width="2143" height="180" key="GridCell.Tab.0.right" timestamp="1578518115147">
+      <screen x="0" y="23" width="2560" height="1337" />
     </state>
     <state width="756" height="398" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1578328383856" />
+    <state width="2143" height="180" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1578518115147" />
     <state width="2143" height="180" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612032" />
-    <state x="822" y="335" key="Maven.ArtifactSearchDialog" timestamp="1578430433215">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state x="822" y="335" key="Maven.ArtifactSearchDialog" timestamp="1578519666386">
+      <screen x="0" y="23" width="2560" height="1337" />
     </state>
+    <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1578519666386" />
     <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578430433215" />
     <state x="1022" y="432" key="extract.method.dialog" timestamp="1578434360672">
       <screen x="0" y="23" width="2560" height="1338" />

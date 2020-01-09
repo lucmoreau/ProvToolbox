@@ -13,16 +13,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.openprovenance.apache.commons.lang.builder.Equals;
+import org.openprovenance.apache.commons.lang.builder.ToString;
+import org.openprovenance.apache.commons.lang.builder.HashCode;
 import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
 import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
-import org.openprovenance.prov.xml.builder.Equals;
-import org.openprovenance.prov.xml.builder.HashCode;
-import org.openprovenance.prov.xml.builder.ToString;
-import org.openprovenance.prov.xml.builder.JAXBEqualsBuilder;
-import org.openprovenance.prov.xml.builder.JAXBHashCodeBuilder;
-import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
-
 
 
 /**
@@ -272,7 +268,7 @@ public class ProvPrinterConfiguration
         if (this == object) {
             return true;
         }
-        final EqualsBuilder equalsBuilder = new JAXBEqualsBuilder();
+        final EqualsBuilder equalsBuilder = new EqualsBuilder();
         equals(object, equalsBuilder);
         return equalsBuilder.isEquals();
     }
@@ -288,7 +284,7 @@ public class ProvPrinterConfiguration
     }
 
     public int hashCode() {
-        final HashCodeBuilder hashCodeBuilder = new JAXBHashCodeBuilder();
+        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
         hashCode(hashCodeBuilder);
         return hashCodeBuilder.toHashCode();
     }
@@ -332,7 +328,7 @@ public class ProvPrinterConfiguration
     }
 
     public String toString() {
-        final ToStringBuilder toStringBuilder = new JAXBToStringBuilder(this);
+        final ToStringBuilder toStringBuilder = new ToStringBuilder(this);
         toString(toStringBuilder);
         return toStringBuilder.toString();
     }

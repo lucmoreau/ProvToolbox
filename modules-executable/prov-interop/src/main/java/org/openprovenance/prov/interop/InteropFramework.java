@@ -22,8 +22,6 @@ import javax.ws.rs.core.Variant;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
-import org.openprovenance.prov.xml.ProvDeserialiser;
-import org.openprovenance.prov.xml.ProvSerialiser;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
@@ -38,7 +36,6 @@ import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.apache.log4j.Logger;
-import org.openrdf.rio.RDFFormat;
 
 import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
 
@@ -60,7 +57,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     static Logger logger = Logger.getLogger(InteropFramework.class);
     public static final String UNKNOWN = "unknown";
-    final Utility u = new Utility();
 
     final ProvFactory pFactory;
 
@@ -429,7 +425,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
         try {
             File in = new File(filename);
-            ProvDeserialiser deserial = ProvDeserialiser
+            org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
                     .getThreadProvDeserialiser();
             Document c = deserial.deserialiseDocument(in);
             if (c != null) {
@@ -469,12 +465,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     static public ProvFactory newXMLProvFactory() {
         return org.openprovenance.prov.xml.ProvFactory.getFactory();
     }
-    
+
+    /*
     public void provn2html(String file, String file2)  {
         Document doc = (Document) u.convertASNToJavaBean(file, pFactory);
         String s = u.convertBeanToHTML(doc, pFactory);
         u.writeTextToFile(s, file2);
     }
+
+     */
     
     /**
      * Reads a Document from an input stream, using the parser specified by the format argument.
@@ -541,7 +540,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 return rdfU.parseRDF(is, JSONLD,baseuri);
             }
             case XML: {
-                ProvDeserialiser deserial = ProvDeserialiser
+                org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
                         .getThreadProvDeserialiser();
                 Document doc = deserial.deserialiseDocument(is);
                 return doc;
@@ -661,7 +660,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             case XML: {
                 File in = new File(filename);
-                ProvDeserialiser deserial = ProvDeserialiser
+                org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
                         .getThreadProvDeserialiser();
                 Document doc = deserial.deserialiseDocument(in);
                 return doc;
@@ -1089,7 +1088,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             setNamespaces(document);
             switch (format) {
             case PROVN: {
-                u.writeDocument(document, os, pFactory);
+                new Utility().writeDocument(document, os, pFactory);
                 break;
             }
             case XML: {
@@ -1122,9 +1121,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             case DOT: {
                 String configFile = null; // TODO: get it as option
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(
-                        ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
-                        configFile);
+                ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory,configFile);
                 toDot.convert(document, os, config.title);
                 break;
             }
@@ -1140,9 +1137,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                                            // create tmp file
                 ProvToDot toDot;
                 if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
+                    toDot = new ProvToDot(pFactory,configFile);
                 } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+                    toDot = new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL);
                 }
 
                 toDot.convert(document, dotFileOut, os, extensionMap.get(format), config.title);
@@ -1190,7 +1187,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
-                        XML,     () -> ProvSerialiser.getThreadProvSerialiser(),
+                        XML,     () -> org.openprovenance.prov.xml.ProvSerialiser.getThreadProvSerialiser(),
                         TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
                         JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, JSONLD),
                         RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
@@ -1227,11 +1224,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             setNamespaces(document);
             switch (format) {
             case PROVN: {
-                u.writeDocument(document, filename, pFactory);
+                new Utility().writeDocument(document, filename, pFactory);
                 break;
             }
             case XML: {
-                ProvSerialiser serial = ProvSerialiser
+                org.openprovenance.prov.xml.ProvSerialiser serial = org.openprovenance.prov.xml.ProvSerialiser
                         .getThreadProvSerialiser();
                 logger.debug("namespaces " + document.getNamespace());
                 serial.serialiseDocument(new File(filename), document, true);
@@ -1264,9 +1261,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             case DOT: {
                 String configFile = null; // TODO: get it as option
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(
-                        ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(
-                        configFile);
+                ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory, configFile);
                 toDot.setLayout(config.layout);
                 toDot.convert(document, filename, config.title);
                 break;
@@ -1283,9 +1278,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                                            // create tmp file
                 ProvToDot toDot;
                 if (configFile != null) {
-                    toDot = new ProvToDot(configFile);
+                    toDot = new ProvToDot(pFactory,configFile);
                 } else {
-                    toDot = new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL);
+                    toDot = new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL);
                 }
                 toDot.setLayout(config.layout);
                 toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);

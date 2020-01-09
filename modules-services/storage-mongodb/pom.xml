@@ -34,12 +34,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.4.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
             <version>0.9.1-SNAPSHOT</version>
@@ -86,6 +80,8 @@
             <artifactId>commons-csv</artifactId>
             <version>1.7</version>
         </dependency>
+
+
     </dependencies>
 
 

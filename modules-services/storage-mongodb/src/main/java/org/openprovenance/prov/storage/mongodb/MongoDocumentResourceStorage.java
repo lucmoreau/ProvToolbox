@@ -11,6 +11,7 @@ import org.mongojack.WriteResult;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.ResourceStorage;
 
@@ -26,7 +27,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     private final ProvDeserialiser deserialiser;
     private final ObjectMapper mapper;
 
-    MongoDocumentResourceStorage(String dbname) {
+    public MongoDocumentResourceStorage(String dbname) {
 
         //System.out.println("Creating a client");
         MongoClient mongoClient = new MongoClient("localhost", 27017);
@@ -62,9 +63,11 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
         return id;
     }
 
+    InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
     @Override
-    public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {
-
+    public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {  // TODO: need to receive format
+        Document doc=interop.readDocument(inputStream, Formats.ProvFormat.PROVN, "");  //TODO: can we improve?
+        writeDocument(id, Formats.ProvFormat.PROVN,doc);
     }
 
     @Override
@@ -74,7 +77,8 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public Document readDocument(String id, boolean known) throws IOException {
-        return null;
+        DocumentWrapper wrapper=documentCollection.findOneById(id);
+        return wrapper.document;
     }
 
     @Override
@@ -85,6 +89,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
+        logger.info("write document " + id);
         documentCollection.updateById(id, DBUpdate.set("document", doc));
     }
 

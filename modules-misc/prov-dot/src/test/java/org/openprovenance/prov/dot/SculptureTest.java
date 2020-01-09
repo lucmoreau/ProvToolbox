@@ -25,7 +25,7 @@ public class SculptureTest extends TestCase {
         
         serial.serialiseDocument(new File(xmlFile),o,true);
 
-        ProvToDot toDot=new ProvToDot("src/main/resources/defaultConfigWithRoleNoLabel.xml"); 
+        ProvToDot toDot=new ProvToDot(pFactory,"src/main/resources/defaultConfigWithRoleNoLabel.xml");
         
         toDot.convert(o,dotFile,pdfFile,title);
     }

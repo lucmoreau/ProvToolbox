@@ -11,7 +11,7 @@ public class ServiceUtilsConfig {
     public Map<String,ResourceIndex<?>> extensionMap =new HashMap<>();
     public NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
     public NonDocumentResourceStorage nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem();
-    public ResourceStorage storageManager=new DocumentResourceStorageFileSystem();
+    public ResourceStorage storageManager;
     public int documentCacheSize;
 
 }

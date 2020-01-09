@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ResourceStorage;
 import org.openprovenance.prov.service.core.ServiceUtils;
 
@@ -16,8 +17,8 @@ public class DocumentResourceStorageFileSystem implements ResourceStorage {
 
     private final InteropFramework interop;
 
-    public DocumentResourceStorageFileSystem() {
-        this.interop=new InteropFramework();
+    public DocumentResourceStorageFileSystem(ProvFactory provFactory) {
+        this.interop=new InteropFramework(provFactory);
     }
 
     @Override

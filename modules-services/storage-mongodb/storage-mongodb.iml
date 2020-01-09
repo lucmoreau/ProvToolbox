@@ -28,7 +28,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.7" level="project" />
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.9.2" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.1" level="project" />
     <orderEntry type="module" module-name="prov-service-core" />
     <orderEntry type="module" module-name="prov-xml" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />

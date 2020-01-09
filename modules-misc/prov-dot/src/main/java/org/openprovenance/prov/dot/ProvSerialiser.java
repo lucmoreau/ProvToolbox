@@ -25,7 +25,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
 
-        new ProvToDot(ProvToDot.Config.ROLE_NO_LABEL).convert(document, out, extension, "title");
+        new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL).convert(document, out, extension, "title");
 
     }
 

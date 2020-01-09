@@ -14,6 +14,7 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.redis.RedisDocumentResourceIndex;
 import org.openprovenance.prov.redis.RedisTemplateResourceIndex;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.filesystem.DocumentResourceStorageFileSystem;
 import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 import org.openprovenance.prov.service.translation.*;
 
@@ -29,6 +30,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
+import org.openprovenance.prov.xml.ProvFactory;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -76,8 +78,10 @@ public class ProvapiApplication extends Application {
 	ServiceUtilsConfig config=new ServiceUtilsConfig();
 
 	public ProvapiApplication() {
+		final ProvFactory factory = ProvFactory.getFactory();
 		initRedis();
 		config.documentCacheSize=200;
+		config.storageManager=new DocumentResourceStorageFileSystem(factory);
 
 		PostService ps=new PostService(config);
 		singletons.add(ps);

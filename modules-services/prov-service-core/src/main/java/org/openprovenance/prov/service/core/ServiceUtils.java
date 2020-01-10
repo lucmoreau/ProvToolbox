@@ -412,7 +412,7 @@ public class ServiceUtils {
 
             logger.info("visible Id: " + dr.getVisibleId());
 
-            storageManager.copyInputStreamToStore(inputStream,storedResourceIdentifier);
+            storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
 
             logger.info("----------- Done");
 
@@ -511,7 +511,7 @@ public class ServiceUtils {
 
                 System.out.println("---------- Temp file name " + storedResourceIdentifier);
 
-                storageManager.copyStringToStore(mybody,storedResourceIdentifier);
+                storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
                 //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
                 // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
                 // WORK??
@@ -570,7 +570,7 @@ public class ServiceUtils {
                 logger.info("storage Id: " + storedResourceIdentifier);
                 logger.info("visible Id: " + dr.getVisibleId());
 
-                storageManager.copyInputStreamToStore(inputStream,storedResourceIdentifier);
+                storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
                 //FileUtils.copyInputStreamToFile(inputStream, temp);
 
                 System.out.println("----------- Done");
@@ -650,7 +650,7 @@ public class ServiceUtils {
 
                 InputStream content_stream = conn.getInputStream();
 
-                storageManager.copyInputStreamToStore(content_stream,storedResourceIdentifier);
+                storageManager.copyInputStreamToStore(content_stream,format, storedResourceIdentifier);
                // FileUtils.copyInputStreamToFile(content_stream, temp);
 
 

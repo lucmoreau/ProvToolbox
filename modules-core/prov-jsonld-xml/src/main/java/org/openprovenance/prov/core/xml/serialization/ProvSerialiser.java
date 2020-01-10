@@ -71,6 +71,50 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         serialiseDocument(out,document,formatted,false);
     }
     public void serialiseDocument(OutputStream out, Object document, boolean formatted, boolean ignore) {
+        XmlMapper mapper = getXmlMapper();
+
+        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        SimpleModule module = makeModule();
+        mapper.registerModule(module);
+
+        SimpleFilterProvider filterProvider = makeFilter();
+        mapper.setFilterProvider(filterProvider);
+
+        provMixin.addProvMixin(mapper);
+
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+
+    public SimpleFilterProvider makeFilter() {
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.addFilter("nsFilter",
+                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
+        return filterProvider;
+    }
+
+    public SimpleModule makeModule() {
+        SimpleModule module =
+                new SimpleModule("CustomKindSerializer",
+                        new Version(1, 0, 0, null, null, null));
+
+        // module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
+        module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
+        module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
+        module.addSerializer(TypedValue.class, new CustomTypedValueSerializer());
+
+        //mapper.setDefaultUseWrapper(false); //NO, use annotation instead
+
+        //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
+        return module;
+    }
+
+    public XmlMapper getXmlMapper() {
         XMLInputFactory2 inputFactory2 =  new WstxInputFactory();
         XMLOutputFactory2 outputFactory2 = new WstxOutputFactory() {
 
@@ -98,42 +142,8 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         XmlFactory xmlFactory = new XmlFactory(inputFactory2,outputFactory2);
 
 
-        XmlMapper mapper = new XmlMapper(xmlFactory);
-
-
-
-        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        SimpleModule module =
-                new SimpleModule("CustomKindSerializer",
-                        new Version(1, 0, 0, null, null, null));
-
-       // module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
-        module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
-        module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
-        module.addSerializer(TypedValue.class, new CustomTypedValueSerializer());
-
-        //mapper.setDefaultUseWrapper(false); //NO, use annotation instead
-
-        //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
-        mapper.registerModule(module);
-
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("nsFilter",
-                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
-        mapper.setFilterProvider(filterProvider);
-
-        provMixin.addProvMixin(mapper);
-
-
-        try {
-            mapper.writeValue(out,document);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException(e);
-        }
+        return new XmlMapper(xmlFactory);
     }
-
 
 
 }

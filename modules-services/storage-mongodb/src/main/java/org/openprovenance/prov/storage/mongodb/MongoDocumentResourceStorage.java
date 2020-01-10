@@ -13,8 +13,10 @@ import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.ResourceStorage;
+import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +32,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     private final ProvSerialiser serialiser;
     private final ProvDeserialiser deserialiser;
     private final ObjectMapper mapper;
+    final ProvFactory factory = ProvFactory.getFactory();
 
     public MongoDocumentResourceStorage(String dbname) {
 
@@ -67,19 +70,26 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
         return id;
     }
 
-    InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
+    InteropFramework interop= new InteropFramework(factory);
+
+
     @Override
-    public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {  // TODO: need to receive format
+    public void copyInputStreamToStore(InputStream inputStream, Formats.ProvFormat format, String id) throws IOException {
         logger.info("copyStrcopyInputStreamToStore  " + id);
-        Document doc=interop.readDocument(inputStream, Formats.ProvFormat.PROVN, "");  //TODO: can we improve?
+        Document doc=interop.readDocument(inputStream, format, "");  //TODO: can we improve?
+        if (!(doc instanceof org.openprovenance.prov.vanilla.Document)) {
+            // if it was constructed with a different factory, convert to vanilla
+            BeanTraversal bc=new BeanTraversal(factory, factory);
+            doc=bc.doAction(doc);
+        }
         writeDocument(id, Formats.ProvFormat.PROVN,doc);
     }
 
     @Override
-    public void copyStringToStore(CharSequence str, String id) throws IOException {
+    public void copyStringToStore(CharSequence str, Formats.ProvFormat format, String id) throws IOException {
         logger.info("copyStringToStore " + id);
         InputStream stream = IOUtils.toInputStream(str, Charset.defaultCharset());
-        copyInputStreamToStore(stream,id);
+        copyInputStreamToStore(stream,format, id);
     }
 
     @Override

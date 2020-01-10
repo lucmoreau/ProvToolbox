@@ -30,12 +30,12 @@ public class DocumentResourceStorageFileSystem implements ResourceStorage {
     }
 
     @Override
-    public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {
+    public void copyInputStreamToStore(InputStream inputStream, Formats.ProvFormat format, String id) throws IOException {
         FileUtils.copyInputStreamToFile(inputStream, new File(id));
     }
 
     @Override
-    public void copyStringToStore(CharSequence str, String id) throws IOException {
+    public void copyStringToStore(CharSequence str, Formats.ProvFormat format, String id) throws IOException {
         FileUtils.write(new File(id), str, StandardCharsets.UTF_8);
     }
 

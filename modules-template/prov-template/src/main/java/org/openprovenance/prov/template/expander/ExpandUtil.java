@@ -53,16 +53,16 @@ public class ExpandUtil {
     	case PROV_ASSOCIATION: return 4;
     	case PROV_ATTRIBUTION: return 3;
     	case PROV_BUNDLE:
-    		throw new InvalidCaseException("ProvUtilities.getFirstTimeIndex() for " + kind);
+    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
     	case PROV_COMMUNICATION: return 3;
     	case PROV_DELEGATION: return 4;
     	case PROV_DERIVATION: return 6;
     	case PROV_DICTIONARY_INSERTION:
-    		throw new InvalidCaseException("ProvUtilities.getFirstTimeIndex() for " + kind);
+    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
     	case PROV_DICTIONARY_MEMBERSHIP:
-    		throw new InvalidCaseException("ProvUtilities.getFirstTimeIndex() for " + kind);
+    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
     	case PROV_DICTIONARY_REMOVAL:
-    		throw new InvalidCaseException("ProvUtilities.getFirstTimeIndex() for " + kind);
+    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
     	case PROV_END: return 4;
     	case PROV_ENTITY: return 1;
     	case PROV_GENERATION: return 3;
@@ -74,7 +74,7 @@ public class ExpandUtil {
     	case PROV_START: return 4;
     	case PROV_USAGE: return 3;
     	default:
-    		throw new InvalidCaseException("ProvUtilities.getFirstTimeIndex() for " + kind);     
+    		throw new InvalidCaseException("ExpandUtil.getFirstTimeIndex() for " + kind);
     	}
     }
 

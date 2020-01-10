@@ -20,7 +20,7 @@ import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.template.expander.Using.UsingIterator;
-import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities;
 
 public class Expand {
     static Logger logger = Logger.getLogger(Expand.class);

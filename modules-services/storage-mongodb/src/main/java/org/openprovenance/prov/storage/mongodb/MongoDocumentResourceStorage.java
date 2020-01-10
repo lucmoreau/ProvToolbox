@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
@@ -17,6 +18,9 @@ import org.openprovenance.prov.service.core.ResourceStorage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
+import java.nio.charset.Charset;
 
 public class MongoDocumentResourceStorage implements ResourceStorage, Constants {
     private static Logger logger = Logger.getLogger(MongoDocumentResourceStorage.class);
@@ -66,13 +70,16 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
     @Override
     public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {  // TODO: need to receive format
+        logger.info("copyStrcopyInputStreamToStore  " + id);
         Document doc=interop.readDocument(inputStream, Formats.ProvFormat.PROVN, "");  //TODO: can we improve?
         writeDocument(id, Formats.ProvFormat.PROVN,doc);
     }
 
     @Override
     public void copyStringToStore(CharSequence str, String id) throws IOException {
-
+        logger.info("copyStringToStore " + id);
+        InputStream stream = IOUtils.toInputStream(str, Charset.defaultCharset());
+        copyInputStreamToStore(stream,id);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
-        logger.info("write document " + id);
+        logger.info("writeDocument " + id);
         documentCollection.updateById(id, DBUpdate.set("document", doc));
     }
 

@@ -6,9 +6,14 @@
 		"@id": "ex:*"
 	    }
 	],
+	"operation_type": [
+	    {
+		"@id": "ex:type/*"
+	    }
+	],
 	"agent": [
 	    {
-		"@id": "ex:*"
+		"@id": "ex:agent/*"
 	    }
 	],
 	"consumed1": [

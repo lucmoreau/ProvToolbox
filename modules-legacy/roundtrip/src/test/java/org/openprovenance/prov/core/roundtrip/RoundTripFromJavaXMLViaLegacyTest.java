@@ -1,5 +1,6 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.roundtrip;
 
+import org.openprovenance.prov.core.RoundTripFromJavaXMLTest;
 import org.openprovenance.prov.model.RoundTripFromJavaTest;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;

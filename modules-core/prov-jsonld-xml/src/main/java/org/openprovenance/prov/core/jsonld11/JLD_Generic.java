@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "@id" })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public interface JLD_Generic extends Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
+public interface JLD_Generic extends JLD_Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
 
 
 

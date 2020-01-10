@@ -39,10 +39,11 @@ public class VisService implements Constants, InteropMediaType {
 
     private final ServiceUtils utils;
 
-    static final ProvFactory f=org.openprovenance.prov.xml.ProvFactory.getFactory();
+    final ProvFactory f;
 
     public VisService(PostService postService) {
         this.utils=postService.getServiceUtils();
+        this.f=utils.getProvFactory();
     }
 
 

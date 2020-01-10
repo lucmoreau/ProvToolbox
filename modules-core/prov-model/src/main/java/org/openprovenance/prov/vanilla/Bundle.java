@@ -25,7 +25,7 @@ public class Bundle implements org.openprovenance.prov.model.Bundle, Equals, ToS
         if (statements!=null) this.statements.addAll(statements);
     }
 
-    private Bundle(){}
+    public Bundle(){}
 
 
     @Override
@@ -92,7 +92,7 @@ public class Bundle implements org.openprovenance.prov.model.Bundle, Equals, ToS
     }
 
     public boolean equals(Object object) {
-        if (!(object instanceof Document)) {
+        if (!(object instanceof Bundle)) {
             return false;
         }
         if (this == object) {

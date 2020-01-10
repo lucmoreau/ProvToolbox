@@ -79,7 +79,7 @@ public class ActionExpand implements ActionPerformer {
 
     private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindings) throws IOException {
         boolean allExpanded=false;
-        ProvFactory pFactory=org.openprovenance.prov.xml.ProvFactory.getFactory();
+        ProvFactory pFactory=utils.getProvFactory();
         boolean addOrderp=false;
 
         Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
@@ -115,11 +115,15 @@ public class ActionExpand implements ActionPerformer {
 
 
     private String storeExpandedDocument(Document doc) throws IOException {
-        InteropFramework interop = new InteropFramework();
+        InteropFramework interop = new InteropFramework(utils.getProvFactory());
         String storeId=utils.getStorageManager().newStore(Formats.ProvFormat.PROVN);
-        interop.writeDocument(storeId, doc);
-        return storeId;
 
+        synchronized (utils.documentCache) {
+            utils.documentCache.put(storeId,doc);
+        }
+        utils.getStorageManager().writeDocument(storeId, Formats.ProvFormat.PROVN,doc);
+       // interop.writeDocument(storeId, doc);
+        return storeId;
     }
 
     private void doLog(TemplateResource tr) {

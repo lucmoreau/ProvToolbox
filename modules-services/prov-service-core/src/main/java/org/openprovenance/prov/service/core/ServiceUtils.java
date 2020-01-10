@@ -7,6 +7,7 @@ import org.openprovenance.prov.interop.CommandLineArguments;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.core.memory.LRUHashMap;
@@ -71,9 +72,12 @@ public class ServiceUtils {
     private final Map<String, ResourceIndex<?>> extensionMap;
 
 
+    private final ProvFactory pFactory;
+
     public ServiceUtils(PostService postService, ServiceUtilsConfig config) {
         this.config=config;
         this.storageManager=config.storageManager;
+        this.pFactory=config.pFactory;
         this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(DocumentResource.getResourceKind());
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
@@ -100,6 +104,9 @@ public class ServiceUtils {
         return nonDocumentResourceIndex;
     }
 
+    public ProvFactory getProvFactory() {
+        return pFactory;
+    }
     public Destination getDestination(Map<String, List<InputPart>> formData) throws IOException {
         if (formData.get("translate") != null) {
             String val = getFormDataValue(formData, "translate");

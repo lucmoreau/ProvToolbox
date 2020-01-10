@@ -1,5 +1,6 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.roundtrip;
 
+import org.openprovenance.prov.core.RoundTripFromJavaJSONTest;
 import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;

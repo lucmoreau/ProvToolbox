@@ -13,7 +13,7 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
 
-public class mongoDocumentDbTest extends TestCase {
+public class mongoJLDDocumentDbTest extends TestCase {
 
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";
@@ -78,7 +78,29 @@ public class mongoDocumentDbTest extends TestCase {
 
         assertEquals(doc1,doc3);
 
+
+
+       // Template_blockBuilder maker=new Template_blockBuilder(org.openprovenance.prov.xml.ProvFactory.getFactory());
+        Template_blockBuilder maker=new Template_blockBuilder(pf);
+        Document graph1=maker.make("op", "Adder", "john", "co1", 10, "co2", 20, "prod", "T", 30);
+
+
+
+        String id5=ds.newStore(Formats.ProvFormat.JSONLD);
+        ds.writeDocument(id5, Formats.ProvFormat.JSONLD, graph1);
+
+
+        Document graph2=ds.readDocument(id5);
+
+        assertNotNull(graph2);
+
+        assertEquals(graph1,graph2);
+
+
+
     }
+
+
 
 
 }

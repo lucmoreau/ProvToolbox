@@ -107,7 +107,7 @@ public class RandomService implements Constants, InteropMediaType {
                               @PathParam("degree") Integer degree,
                               @PathParam("seed") Long seed) {
 
-        InteropFramework intF = new InteropFramework();
+        InteropFramework intF = new InteropFramework(utils.getProvFactory());
         List<Variant> vs = intF.getVariants();
         Variant v = request.selectVariant(vs);
         MediaType mt = v.getMediaType();

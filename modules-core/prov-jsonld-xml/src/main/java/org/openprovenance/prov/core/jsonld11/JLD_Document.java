@@ -12,7 +12,7 @@ import org.openprovenance.prov.vanilla.*;
 import java.util.List;
 
 @JsonPropertyOrder({ "@context", "@graph"})
-public interface Document {
+public interface JLD_Document {
   //  @JsonFilter("nsFilter")
     @JsonProperty("@context")
     Namespace getNamespace();

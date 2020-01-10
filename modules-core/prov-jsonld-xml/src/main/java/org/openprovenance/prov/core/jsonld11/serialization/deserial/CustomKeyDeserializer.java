@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.jsonld11.serialization;
+package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;

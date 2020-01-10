@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomDateSerializer;
+import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomKindSerializer;
+import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomNamespaceSerializer;
+import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomQualifiedNameSerializer;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
@@ -76,7 +80,7 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter("nsFilter",
                 SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
-        mapper.setFilterProvider(filterProvider);
+         mapper.setFilterProvider(filterProvider);
 
         provMixin().addProvMixin(mapper);
         return mapper;

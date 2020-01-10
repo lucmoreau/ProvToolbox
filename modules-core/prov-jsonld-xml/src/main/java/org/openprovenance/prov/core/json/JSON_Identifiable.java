@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomQualifiedNameDeserializer;
 
-public interface Identifiable extends org.openprovenance.prov.model.Identifiable {
+public interface JSON_Identifiable extends org.openprovenance.prov.model.Identifiable {
     @JsonIgnore
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
     @JsonProperty("@id")

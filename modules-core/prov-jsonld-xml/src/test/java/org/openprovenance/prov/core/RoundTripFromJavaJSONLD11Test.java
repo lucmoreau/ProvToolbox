@@ -36,7 +36,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
         System.out.println("writing to " + file);
 
 
-        ProvSerialiser serial=new ProvSerialiser();
+        ProvSerialiser serial=new ProvSerialiser(false);
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
     }
 

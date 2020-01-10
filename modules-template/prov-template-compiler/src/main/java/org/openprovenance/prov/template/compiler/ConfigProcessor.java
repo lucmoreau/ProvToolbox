@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.maven.model.*;
@@ -153,7 +154,10 @@ public class ConfigProcessor {
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
-            e.printStackTrace();
+           System.out.println("could not find Interop Framework");
+           e.printStackTrace();
+
+           System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource",bindings_schema));
         }
      
      

@@ -10,7 +10,7 @@ import java.util.List;
 
 @JsonPropertyOrder({ "prefix", "statement" })
 
-public interface JSON_Bundle extends Identifiable, HasKind {
+public interface JSON_Bundle extends JSON_Identifiable, HasKind {
 
     @JsonIgnore
     Namespace getNamespace();

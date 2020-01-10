@@ -38,7 +38,39 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
         ObjectMapper mapper = new ObjectMapper();
         if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        registerModule(mapper);
+        registerFilter(mapper);
+        provMixin.addProvMixin(mapper);
+        try {
+            mapper.writeValue(out,new SortedDocument(document));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
 
+    public void serialiseObject(OutputStream out, Object document, boolean formatted) {
+        ObjectMapper mapper = new ObjectMapper();
+        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        registerModule(mapper);
+        registerFilter(mapper);
+        provMixin.addProvMixin(mapper);
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+
+    public void registerFilter(ObjectMapper mapper) {
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.addFilter("nsFilter",
+                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
+        mapper.setFilterProvider(filterProvider);
+    }
+
+    public void registerModule(ObjectMapper mapper) {
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer",
                         new Version(1, 0, 0, null, null, null));
@@ -50,21 +82,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
         module.addSerializer(Bundle.class, new CustomBundleSerializer());
         mapper.registerModule(module);
-
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("nsFilter",
-                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
-        mapper.setFilterProvider(filterProvider);
-
-        provMixin.addProvMixin(mapper);
-
-
-        try {
-            mapper.writeValue(out,new SortedDocument(document));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException(e);
-        }
     }
 
 

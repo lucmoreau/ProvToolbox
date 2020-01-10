@@ -1,5 +1,6 @@
-package org.openprovenance.prov.core;
+package org.openprovenance.prov.core.roundtrip;
 
+import org.openprovenance.prov.core.RoundTripFromJavaJSONLD11Test;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.BeanTraversal;
@@ -114,10 +115,21 @@ public class RoundTripFromJavaJSONLD11LegacyTest extends RoundTripFromJavaJSONLD
 
     }
 
-    public void testBundle1() {}
-    public void testBundle2() {}
-    public void testBundle3() {}
-    public void testBundle4() {}
+
+    public void testBundle1() {
+        System.out.println(" ========== TEST missing testBundle1 ()");
+    }
+    public void testBundle2() {
+        System.out.println(" ========== TEST missing testBundle1 ()");
+    }
+    public void testBundle3() {
+        System.out.println(" ========== TEST missing testBundle1 ()");
+    }
+    public void testBundle4() {
+        System.out.println(" ========== TEST missing testBundle1 ()");
+    }
+
+
 
     public void testQualifiedSpecializationOf1 () {}
     public void testQualifiedSpecializationOf2 () {}

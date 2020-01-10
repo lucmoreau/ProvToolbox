@@ -68,8 +68,9 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-
-
+        serialiseDocument(out,document,formatted,false);
+    }
+    public void serialiseDocument(OutputStream out, Object document, boolean formatted, boolean ignore) {
         XMLInputFactory2 inputFactory2 =  new WstxInputFactory();
         XMLOutputFactory2 outputFactory2 = new WstxOutputFactory() {
 

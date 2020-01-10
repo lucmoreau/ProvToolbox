@@ -69,10 +69,9 @@ public class DocumentEquality {
 
 			if (!b1.getId().equals(b2.getId()))
 				return false;
-			List<?> stmts1 = b1.getStatement();
-			List<?> stmts2 = b2.getStatement();
-			return collectionEqual((Collection<?>) stmts1,
-					(Collection<?>) stmts2);
+			List<Statement> stmts1 = b1.getStatement();
+			List<Statement> stmts2 = b2.getStatement();
+			return collectionEqual( stmts1, stmts2);
 		}
 		// Two normal statements
 		Class<?> class1 = r1.getClass();

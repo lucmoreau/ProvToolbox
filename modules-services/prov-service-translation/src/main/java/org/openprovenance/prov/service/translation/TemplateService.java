@@ -49,7 +49,7 @@ public class TemplateService  implements Constants, InteropMediaType {
     private final ServiceUtils utils;
     private final ResourceIndex<TemplateResource> resourceIndex;
 
-    static final ProvFactory f=org.openprovenance.prov.xml.ProvFactory.getFactory();
+    final ProvFactory f;
 
 
     public TemplateService (PostService postService) {
@@ -58,7 +58,8 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     public TemplateService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
-           postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
+        this.f=utils.getProvFactory();
+        postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
         actionExpand=new ActionExpand(utils);
         ResourceIndex<?> indexer=utils.getExtensionMap().get(TemplateResource.getResourceKind());

@@ -8,7 +8,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 @JsonPropertyOrder({ "@id", "prov:startTime", "prov:endTime" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public interface JSON_Activity extends Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
+public interface JSON_Activity extends JSON_Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
 
 
     @JsonProperty("prov:startTime")

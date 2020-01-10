@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.jsonld11.serialization;
+package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

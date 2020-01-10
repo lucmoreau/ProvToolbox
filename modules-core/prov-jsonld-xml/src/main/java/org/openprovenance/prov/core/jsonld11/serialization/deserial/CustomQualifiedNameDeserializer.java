@@ -1,9 +1,10 @@
-package org.openprovenance.prov.core.jsonld11.serialization;
+package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;

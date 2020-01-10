@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import org.openprovenance.prov.core.json.serialization.Constants;
+import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.vanilla.*;
@@ -14,8 +14,7 @@ import java.util.List;
 
 @JsonPropertyOrder({ "@context", "@id", "@graph" })
 
-public interface JLD_Bundle extends Identifiable, HasKind {
-
+public interface JLD_Bundle extends JLD_Identifiable, HasKind {
     @JsonProperty("@context")
     Namespace getNamespace();
 

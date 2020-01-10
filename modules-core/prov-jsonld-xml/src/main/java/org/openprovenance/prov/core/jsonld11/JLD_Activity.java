@@ -7,7 +7,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 @JsonPropertyOrder({ "@id", "startTime", "endTime" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public interface JLD_Activity extends Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
+public interface JLD_Activity extends JLD_Identifiable, HasKind, HasLabel, HasLocation, HasType, HasOther, HasAttributes {
 
 
     XMLGregorianCalendar getStartTime();

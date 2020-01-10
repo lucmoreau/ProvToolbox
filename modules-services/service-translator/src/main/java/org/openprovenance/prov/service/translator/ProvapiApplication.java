@@ -82,6 +82,7 @@ public class ProvapiApplication extends Application {
 		initRedis();
 		config.documentCacheSize=200;
 		config.storageManager=new DocumentResourceStorageFileSystem(factory);
+		config.pFactory=ProvFactory.getFactory();
 
 		PostService ps=new PostService(config);
 		singletons.add(ps);

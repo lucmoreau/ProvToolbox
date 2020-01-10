@@ -12,6 +12,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.quartz.SchedulerException;
@@ -71,7 +72,6 @@ public class PostService implements Constants, InteropMediaType {
     public void addToPerformers(List<ActionPerformer> newPerformers) {
         performers.addAll(newPerformers);
     }
-
 
     public void addOtherPerformer(Optional<OtherActionPerformer> newOtherPerformer) {
       otherPerformer=newOtherPerformer;

@@ -3,6 +3,10 @@ language: java
 jdk:
   - openjdk12
 
+services:
+- redis-server
+- mongodb
+
 before_install:
  - sudo apt-get -qq update > /dev/null
  - sudo apt-get -qq install graphviz > /dev/null

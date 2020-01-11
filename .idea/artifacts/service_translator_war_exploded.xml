@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="service-translator:war exploded">
-    <output-path>$PROJECT_DIR$/modules-services/service-translator/target/service-translator-0.9.1-SNAPSHOT</output-path>
+    <output-path>$PROJECT_DIR$/modules-services/service-translator/target/modules-services-0.9.1-SNAPSHOT</output-path>
     <properties id="maven-jee-properties">
       <options>
         <exploded>true</exploded>
@@ -199,7 +199,7 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/modules-services/service-translator/target/service-translator-0.9.1-SNAPSHOT/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/modules-services/service-translator/target/modules-services-0.9.1-SNAPSHOT/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="service-translator/web/Web" />
     </root>

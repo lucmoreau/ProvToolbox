@@ -22,7 +22,7 @@ public class CompilerTest extends TestCase {
 	super(testName);
     }
     
-    ProvFactory pf=new org.openprovenance.prov.xml.ProvFactory();
+    ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
     QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");
     QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");
     QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");

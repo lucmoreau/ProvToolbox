@@ -10,7 +10,7 @@ import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import junit.framework.TestCase;
 
 public class BindingGenerationTest extends TestCase {
-    ProvFactory pf=org.openprovenance.prov.xml.ProvFactory.getFactory();
+    ProvFactory pf=org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     public BindingGenerationTest(String testName) {
         super(testName);

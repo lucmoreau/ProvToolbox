@@ -70,7 +70,19 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
         serialiseDocument(out,document,formatted,false);
     }
+
     public void serialiseDocument(OutputStream out, Object document, boolean formatted, boolean ignore) {
+        XmlMapper mapper = getMapper(formatted);
+
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+
+    public XmlMapper getMapper(boolean formatted) {
         XmlMapper mapper = getXmlMapper();
 
         if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -82,13 +94,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         mapper.setFilterProvider(filterProvider);
 
         provMixin.addProvMixin(mapper);
-
-        try {
-            mapper.writeValue(out,document);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException(e);
-        }
+        return mapper;
     }
 
     public SimpleFilterProvider makeFilter() {

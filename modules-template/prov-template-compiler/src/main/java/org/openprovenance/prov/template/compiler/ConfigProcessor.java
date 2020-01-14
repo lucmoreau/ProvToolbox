@@ -330,7 +330,7 @@ public class ConfigProcessor {
             block.addStatement("$N[$L]=$S",BUILDERS,count,config.package_+"."+tc.templateNameClass(config.name));
             count++;
         }    
-        block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.xml.ProvFactory.class);
+        block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.vanilla.ProvFactory.class);
 
         
         

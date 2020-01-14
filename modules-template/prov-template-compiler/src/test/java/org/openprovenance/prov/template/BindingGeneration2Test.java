@@ -9,7 +9,7 @@ import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import java.io.IOException;
 
 public class BindingGeneration2Test extends TestCase {
-    ProvFactory pf=org.openprovenance.prov.xml.ProvFactory.getFactory();
+    ProvFactory pf=org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     public BindingGeneration2Test(String testName) {
         super(testName);

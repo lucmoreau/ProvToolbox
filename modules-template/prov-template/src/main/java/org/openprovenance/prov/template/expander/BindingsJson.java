@@ -45,7 +45,7 @@ public class BindingsJson {
 		if (o instanceof LangString) {
 			LangString qn=(LangString)o;
 			Hashtable<String,String> table=new Hashtable<String,String>();
-			table.put("@language",qn.getLang());
+			if (qn.getLang()!=null)	table.put("@language",qn.getLang());
 			table.put("@value",qn.getValue());
 			return table;
 		}

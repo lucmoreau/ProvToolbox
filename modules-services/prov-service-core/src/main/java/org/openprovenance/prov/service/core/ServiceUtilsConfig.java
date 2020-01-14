@@ -12,6 +12,7 @@ public class ServiceUtilsConfig {
     public Map<String,ResourceIndex<?>> extensionMap =new HashMap<>();
     public NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
     public NonDocumentResourceStorage nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem();
+    public Map<String,NonDocumentGenericResourceStorage<?>> genericResourceStorageMap=new HashMap<>();
     public ResourceStorage storageManager;
     public int documentCacheSize;
     public ProvFactory pFactory;

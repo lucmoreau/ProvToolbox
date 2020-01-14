@@ -51,6 +51,12 @@ public class ServiceUtils {
     private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
     private final NonDocumentResourceStorage nonDocumentResourceStorage;
 
+    public Map<String, NonDocumentGenericResourceStorage<?>> getGenericResourceStorageMap() {
+        return genericResourceStorageMap;
+    }
+
+    private final Map<String, NonDocumentGenericResourceStorage<?>> genericResourceStorageMap;
+
     public ServiceUtilsConfig getConfig() {
         return config;
     }
@@ -81,6 +87,7 @@ public class ServiceUtils {
         this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(DocumentResource.getResourceKind());
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
+        this.genericResourceStorageMap=config.genericResourceStorageMap;
         this.extensionMap =config.extensionMap;
         jobManager=postService.getJobManager();
         documentCache=new LRUHashMap<>(config.documentCacheSize);

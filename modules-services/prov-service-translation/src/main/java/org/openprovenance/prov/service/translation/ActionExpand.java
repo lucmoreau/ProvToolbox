@@ -103,10 +103,10 @@ public class ActionExpand implements ActionPerformer {
         final NonDocumentResourceIndex<NonDocumentResource> ndIndex = utils.getNonDocumentResourceIndex();
         NonDocumentResource ndr= ndIndex.newResource();
         ndr.setMediaType("application/json");
-        final NonDocumentResourceStorage nonDocumentResourceStorage = utils.getNonDocumentResourceStorage();
-        String bindingsStoreId= nonDocumentResourceStorage.newStore("json", ndr.getMediaType());
+        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get("bindings");
+        String bindingsStoreId= bindingsStorage.newStore("json", ndr.getMediaType());
         ndr.setStorageId(bindingsStoreId);
-        nonDocumentResourceStorage.serializeObjectToStore(new ObjectMapper(),bean,bindingsStoreId);
+        bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
         ndIndex.put(ndr.getVisibleId(),ndr);
         logger.info("saving bindings " + ndr.getVisibleId() + " " + bindingsStoreId);
         tr.setBindingsStorageId(ndr.getVisibleId());

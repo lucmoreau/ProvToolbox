@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
 import com.mongodb.client.MongoDatabase;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.openprovenance.prov.service.core.NonDocumentResourceStorage;
 
@@ -14,10 +15,11 @@ https://howtodoinjava.com/mongodb/java-mongodb-getsave-image-using-gridfs-apis/
 
 
 public class MongoNonDocumentResourceStorage implements NonDocumentResourceStorage, Constants {
+    private static Logger logger = Logger.getLogger(MongoNonDocumentResourceStorage.class);
 
     private final DB db;
 
-    MongoNonDocumentResourceStorage(String dbname) {
+    public MongoNonDocumentResourceStorage(String dbname) {
 
         MongoClient mongoClient = new MongoClient("localhost", 27017);
 
@@ -26,7 +28,7 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
         db.createCollection(COLLECTION_FILES, null);
     }
 
-    MongoNonDocumentResourceStorage(DB db) {
+    public MongoNonDocumentResourceStorage(DB db) {
         this.db=db;
     }
     
@@ -43,12 +45,14 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     @Override
     public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {
+        logger.info("copyInputStreamToStore: " + id);
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
         IOUtils.copy(inputStream,baos);
         copyStringToStore(baos.toString(),id);
     }
 
     public DBObject findDocumentById(DBCollection collection, String id) {
+        logger.info("findDocumentById: " + id);
 
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
@@ -59,6 +63,8 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     @Override
     public void copyStringToStore(CharSequence str, String id) throws IOException {
+        logger.info("copyStringToStore: " + id);
+
         DBCollection collection = db.getCollection(COLLECTION_FILES);
 
         BasicDBObject query = new BasicDBObject();

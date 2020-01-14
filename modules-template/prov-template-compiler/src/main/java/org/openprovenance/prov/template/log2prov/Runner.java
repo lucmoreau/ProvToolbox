@@ -22,7 +22,7 @@ public class Runner {
         String out=args[1];
         String flag=args[2];
         if (debug) System.out.println("Start main"); 
-        new Runner(org.openprovenance.prov.xml.ProvFactory.getFactory()).processLogWithTime(in, out, flag); 
+        new Runner(org.openprovenance.prov.vanilla.ProvFactory.getFactory()).processLogWithTime(in, out, flag);
         if (debug) System.out.println("End main"); 
     }
 

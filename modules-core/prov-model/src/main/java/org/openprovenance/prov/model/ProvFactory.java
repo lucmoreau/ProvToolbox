@@ -1,15 +1,10 @@
 package org.openprovenance.prov.model;
 
-import java.util.Collection;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Date;
-import java.util.Properties;
+import java.math.BigInteger;
+import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.GregorianCalendar;
 
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -235,7 +230,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	public byte [] base64Decoding(String s) {
-		return org.apache.commons.codec.binary.Base64.decodeBase64(s);
+		return Base64.getDecoder().decode(s);
 	}
 
 
@@ -243,7 +238,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public String base64Encoding(byte [] b) {
-		return org.apache.commons.codec.binary.Base64.encodeBase64String(b);
+		return Base64.getEncoder().encodeToString(b);
 	}
 
 
@@ -294,15 +289,25 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	public byte [] hexDecoding(String s) {
+		byte[] byteArray = new BigInteger(s, 16).toByteArray();
+		if (byteArray[0] == 0) {
+			byte[] output = new byte[byteArray.length - 1];
+			System.arraycopy(byteArray, 1, output, 0, output.length);
+			return output;
+		}
+		return byteArray;
+		/*
 		try {
 			return org.apache.commons.codec.binary.Hex.decodeHex(s.toCharArray());
 		} catch  (Exception e) {
 			return s.getBytes(); // fall back, but obviously, this is not converted
 		}
-
+		 */
 	}
 	public String hexEncoding(byte [] b) {
-		return org.apache.commons.codec.binary.Hex.encodeHexString(b);
+		BigInteger bigInteger = new BigInteger(1, b);
+		return bigInteger.toString(16);
+		//return org.apache.commons.codec.binary.Hex.encodeHexString(b);
 	}
 
 

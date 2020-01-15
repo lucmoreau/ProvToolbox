@@ -31,6 +31,11 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     private final JacksonDBCollection<DocumentWrapper, String> documentCollection;
     private final ProvSerialiser serialiser;
     private final ProvDeserialiser deserialiser;
+
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
     private final ObjectMapper mapper;
     final ProvFactory factory = ProvFactory.getFactory();
 

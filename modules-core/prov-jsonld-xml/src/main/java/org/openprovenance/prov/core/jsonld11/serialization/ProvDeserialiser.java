@@ -50,12 +50,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         SimpleModule module =
                 new SimpleModule("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
 
-        //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
         module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
-
-        // module.addDeserializer(Type.class, new CustomTypeDeserializer());
-        // module.addDeserializer(Location.class, new CustomLocationDeserializer());
-        // module.addDeserializer(Other.class, new CustomOtherDeserializer());
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();
@@ -63,18 +58,12 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
         module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
-        //module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(Namespace.class));
-
-
-        // CollectionType listType = typeFactory.constructCollectionType(List.class, qnType);
 
 
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
         ArrayType arrayType=typeFactory.constructArrayType(mapType2);
         module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(arrayType));
 
-
-        //CollectionType setType2 = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.core.vanilla.TypedValue.class);
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 

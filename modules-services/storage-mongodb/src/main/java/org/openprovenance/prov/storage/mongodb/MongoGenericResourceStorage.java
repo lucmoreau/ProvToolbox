@@ -48,6 +48,10 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
         this.mapper=mapper;
     }
 
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
     @Override
     public String newStore(String _suggestedExtension, String _mimeType) {
         TypeWrapper<TYPE> gw= wmake.get();
@@ -71,13 +75,15 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
     @Override
     public void serializeObjectToStore(TYPE o, String id) {
         logger.info("serializeObjectToStore " + id);
-        logger.info("serializeObjectToStore " + o);
         genericCollection.updateById(id, DBUpdate.set(TypeWrapper.VALUE, o));
     }
 
     @Override
-    public void copyStoreToOutputStream(String id, OutputStream outputStream) {
-        throw new UnsupportedOperationException("yet");
+    public void copyStoreToOutputStream(String id, OutputStream outputStream) throws IOException {
+        logger.info("copyStoreToOutputStream: deserializeObjectFromStore " + id);
+        TYPE object=deserializeObjectFromStore(id);
+        logger.info("copyStoreToOutputStream: writeValue  " + id);
+        mapper.writeValue(outputStream,object);
     }
 
     @Override

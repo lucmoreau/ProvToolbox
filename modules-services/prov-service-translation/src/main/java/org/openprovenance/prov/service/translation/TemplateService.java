@@ -317,14 +317,14 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         String bindings_Id=tr.getBindingsStorageId();
         logger.info("Retrieving template, found bindings resource " + bindings_Id);
-        NonDocumentResource bindingsRecord=utils.getNonDocumentResourceIndex().get(bindings_Id);
-        String bindings_storageId=bindingsRecord.getStorageId();
-        logger.info("Retrieving template, found bindings file " + bindings_storageId);
+        //NonDocumentResource bindingsRecord=utils.getNonDocumentResourceIndex().get(bindings_Id);
+        //String bindings_storageId=bindingsRecord.getStorageId();
+        //logger.info("Retrieving template, found bindings file " + bindings_storageId);
 
-        //utils.getNonDocumentResourceStorage().copyStoreToOutputStream(bindings_storageId,response.getOutputStream());
+        StreamingOutput promise= out -> utils.getGenericResourceStorageMap().get(ActionExpand.BINDINGS_KEY).copyStoreToOutputStream(bindings_Id,out);
 
 
-        return utils.composeResponseOK(new File(bindings_storageId)).type(MediaType.APPLICATION_JSON_TYPE).build();
+        return utils.composeResponseOK(promise).type(MediaType.APPLICATION_JSON_TYPE).build();
 
     }
 

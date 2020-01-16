@@ -32,7 +32,6 @@
     <orderEntry type="module" module-name="prov-model" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.3_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />
@@ -146,6 +145,7 @@
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.3.2.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-servlet-initializer:4.3.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-core:4.3.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.3_spec:1.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec:1.0.1.Final" level="project" />

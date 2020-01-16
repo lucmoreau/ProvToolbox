@@ -24,33 +24,38 @@
       <artifactId>prov-jsonld-xml</artifactId>
       <version>0.9.1-SNAPSHOT</version>
       <classifier>tests</classifier>
-      <scope>test</scope>      
+      <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
       <version>0.9.1-SNAPSHOT</version>
-      <classifier>tests</classifier>      
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-rdf</artifactId>
       <version>0.9.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-xml</artifactId>
       <version>0.9.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-json</artifactId>
       <version>0.9.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-rio-api</artifactId>

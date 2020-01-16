@@ -355,7 +355,7 @@
                                 </resource>
                             </resources>
                             <filters>
-                                <filter>${basedir}/../prov-interop/target/classes/org/openprovenance/prov/interop/config.properties</filter>
+                                <filter>${basedir}/../../modules-core/prov-model/target/classes/org/openprovenance/prov/interop/config.properties</filter>
                             </filters>
                         </configuration>
                     </execution>

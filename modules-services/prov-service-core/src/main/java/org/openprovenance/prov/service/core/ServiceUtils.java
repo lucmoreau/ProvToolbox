@@ -3,7 +3,7 @@ package org.openprovenance.prov.service.core;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.openprovenance.prov.interop.CommandLineArguments;
+import org.openprovenance.prov.interop.Configuration;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
@@ -64,7 +64,7 @@ public class ServiceUtils {
     private final ServiceUtilsConfig config;
 
     private static Properties getPropertiesFromClasspath(String propFileName) {
-        return CommandLineArguments.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
+        return Configuration.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
 
     private static Logger logger = Logger.getLogger(ServiceUtils.class);

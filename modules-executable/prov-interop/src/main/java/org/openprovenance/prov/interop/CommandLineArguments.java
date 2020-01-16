@@ -1,9 +1,5 @@
 package org.openprovenance.prov.interop;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -243,34 +239,8 @@ public class CommandLineArguments implements ErrorCodes {
         return options;
 
     }
-    
-    private static String fileName = "config.properties";
-    
-    public static Properties getPropertiesFromClasspath(@SuppressWarnings("rawtypes") Class clazz, String propFileName) {
-        Properties props = new Properties();
-        InputStream inputStream = clazz.getResourceAsStream(propFileName);
-        if (inputStream == null) {
-            return null;
-        }
-        try {
-            props.load(inputStream);
-        } catch (IOException ee) {
-            return null;
-        }
-        return props;
-    }
 
-    public static Properties getPropertiesFromClasspath(String propFileName) {
-        return getPropertiesFromClasspath(CommandLineArguments.class, propFileName);
-    }
 
-    
-    static public final String toolboxVersion = getPropertiesFromClasspath(fileName)
-            .getProperty("toolbox.version");
-    
-    static public final String longToolboxVersion = toolboxVersion + " (" + 
-            getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
-    
     public static void main(String[] args) {
         mainExit(args,true);
     }
@@ -372,7 +342,7 @@ public class CommandLineArguments implements ErrorCodes {
             }
 
             if (version!=null) {
-            	System.out.println("provconvert version " + longToolboxVersion);
+            	System.out.println("provconvert version " + Configuration.longToolboxVersion);
             	return;
             }
 	    

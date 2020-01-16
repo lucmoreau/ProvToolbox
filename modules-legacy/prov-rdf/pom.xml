@@ -60,14 +60,7 @@
             <version>${sesame.version}</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-xml</artifactId>
-            <version>0.9.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
+        <!-- testing -->
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -76,6 +69,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-xml</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>

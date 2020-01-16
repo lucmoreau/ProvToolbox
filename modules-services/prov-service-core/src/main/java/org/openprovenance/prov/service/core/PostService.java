@@ -12,7 +12,6 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
-import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.quartz.SchedulerException;
@@ -24,7 +23,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Consumer;
 
 @Path("")
 public class PostService implements Constants, InteropMediaType {

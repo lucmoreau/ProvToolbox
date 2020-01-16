@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ActionExpand implements ActionPerformer {
+    public static final String BINDINGS_KEY = "bindings";
     private static Logger logger = Logger.getLogger(ActionExpand.class);
 
     private final ServiceUtils utils;
@@ -100,10 +101,25 @@ public class ActionExpand implements ActionPerformer {
     }
 
     private void storeBindings(TemplateResource tr, BindingsJson.BindingsBean bean) throws IOException {
+        //final NonDocumentResourceIndex<NonDocumentResource> ndIndex = utils.getNonDocumentResourceIndex();
+        //NonDocumentResource ndr= ndIndex.newResource();
+        //ndr.setMediaType("application/json");
+        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
+        String bindingsStoreId= bindingsStorage.newStore("json", "application/json");
+        //ndr.setStorageId(bindingsStoreId);
+        bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
+        //ndIndex.put(ndr.getVisibleId(),ndr);
+        logger.info("saving bindings " + " " + bindingsStoreId);
+        tr.setBindingsStorageId(bindingsStoreId);
+        //utils.getJobManager().scheduleJob(ndr.getVisibleId());
+    }
+
+    /*
+    private void storeBindings_ORIGINAL(TemplateResource tr, BindingsJson.BindingsBean bean) throws IOException {
         final NonDocumentResourceIndex<NonDocumentResource> ndIndex = utils.getNonDocumentResourceIndex();
         NonDocumentResource ndr= ndIndex.newResource();
         ndr.setMediaType("application/json");
-        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get("bindings");
+        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
         String bindingsStoreId= bindingsStorage.newStore("json", ndr.getMediaType());
         ndr.setStorageId(bindingsStoreId);
         bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
@@ -112,6 +128,8 @@ public class ActionExpand implements ActionPerformer {
         tr.setBindingsStorageId(ndr.getVisibleId());
         utils.getJobManager().scheduleJob(ndr.getVisibleId());
     }
+
+     */
 
 
     private String storeExpandedDocument(Document doc) throws IOException {

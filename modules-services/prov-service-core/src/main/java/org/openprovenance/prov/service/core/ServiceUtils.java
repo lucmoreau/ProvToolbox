@@ -120,6 +120,8 @@ public class ServiceUtils {
             if (val != null) {
                 if ("json".equals(val))
                     return Destination.JSON;
+                if ("jsonld".equals(val))
+                    return Destination.JSONLD;
                 if ("provx".equals(val))
                     return Destination.XML;
                 if ("provn".equals(val))
@@ -139,6 +141,8 @@ public class ServiceUtils {
             if (val != null) {
                 if ("json".equals(val))
                     return Destination.JSON;
+                if ("jsonld".equals(val))
+                    return Destination.JSONLD;
                 if ("provx".equals(val))
                     return Destination.XML;
                 if ("provn".equals(val))
@@ -193,7 +197,7 @@ public class ServiceUtils {
     }
 
     public enum Destination {
-        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
+        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
         private Destination(String text) {
             this.text = text;
         }

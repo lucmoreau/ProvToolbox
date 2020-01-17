@@ -67,8 +67,9 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
     }
 
     @Override
-    public void copyStoreToOutputStream(String id, OutputStream outputStream) {
-        throw new UnsupportedOperationException("yet");
+    public void copyStoreToOutputStream(String id, OutputStream outputStream) throws IOException {
+        String contents=deserializeObjectFromStore(id);
+        outputStream.write(contents.getBytes());
     }
 
     @Override

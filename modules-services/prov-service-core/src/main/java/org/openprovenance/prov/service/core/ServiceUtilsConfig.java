@@ -1,7 +1,7 @@
 package org.openprovenance.prov.service.core;
 
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.service.core.filesystem.DocumentResourceStorageFileSystem;
+import org.openprovenance.prov.model.ProvSerialiser;
 import org.openprovenance.prov.service.core.filesystem.NonDocumentResourceStorageFileSystem;
 import org.openprovenance.prov.service.core.memory.NonDocumentResourceIndexInMemory;
 
@@ -16,5 +16,7 @@ public class ServiceUtilsConfig {
     public ResourceStorage storageManager;
     public int documentCacheSize;
     public ProvFactory pFactory;
+    public ObjectSerialiser serialiser;
+
 
 }

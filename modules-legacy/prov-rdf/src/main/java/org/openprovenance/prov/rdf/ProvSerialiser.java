@@ -30,8 +30,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
      */
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        new Utility(pFactory, onto)
-                .dumpRDF(document, format, out);
+        new Utility(pFactory, onto).dumpRDF(document, format, out);
     }
 
     @Override

@@ -20,7 +20,8 @@ import java.lang.reflect.Type;
 	        InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_TRIG,
 	        InteropMediaType.MEDIA_APPLICATION_RDF_XML, InteropMediaType.MEDIA_APPLICATION_JSON,
 	        InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF,
-		    InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG })
+		    InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG,
+		    InteropMediaType.MEDIA_APPLICATION_JSONLD})
 public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
 	private final ProvSerialiser serializer;
@@ -59,7 +60,11 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 
 		System.out.println(" ---- writeTo doc " + media);
 
-		serializer.serialiseDocument(entityStream, doc, media, true);
+		if (InteropMediaType.MEDIA_APPLICATION_JSONLD.equals(media)) {
+			new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(entityStream,doc,false);
+		} else {
+			serializer.serialiseDocument(entityStream, doc, media, true);
+		}
 	}
 
 }

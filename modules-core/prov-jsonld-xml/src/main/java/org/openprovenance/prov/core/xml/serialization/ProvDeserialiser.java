@@ -27,26 +27,34 @@ public class ProvDeserialiser {
 
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
+        XmlMapper mapper = getMapper();
+
+
+        return mapper.readValue(in, Document.class);
+
+    }
+
+    public XmlMapper getMapper() {
         XmlMapper mapper = new XmlMapper();
 
         SimpleModule module =
                 new StatementsHandler("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
 
-     //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
-     //   module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
-       // module.addDeserializer(Type.class, new CustomTypeDeserializer());
-       // module.addDeserializer(Location.class, new CustomLocationDeserializer());
-       // module.addDeserializer(Other.class, new CustomOtherDeserializer());
+        //   module.addDeserializer(org.openprovenance.prov.model.QualifiedName.class, new CustomQualifiedNameDeserializer());
+        //   module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
+        // module.addDeserializer(Type.class, new CustomTypeDeserializer());
+        // module.addDeserializer(Location.class, new CustomLocationDeserializer());
+        // module.addDeserializer(Other.class, new CustomOtherDeserializer());
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();
         CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
-   //    JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
-   //     MapType mapType = typeFactory.constructMapType(Map.class, qnType, setType);
-  //      module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
+        //    JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
+        //     MapType mapType = typeFactory.constructMapType(Map.class, qnType, setType);
+        //      module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
 
 
-       // CollectionType listType = typeFactory.constructCollectionType(List.class, qnType);
+        // CollectionType listType = typeFactory.constructCollectionType(List.class, qnType);
 
 
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);
@@ -58,16 +66,11 @@ public class ProvDeserialiser {
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 
 
-
         provMixin.addProvMixin(mapper);
 
 
         mapper.registerModule(module);
-
-
-
-        return mapper.readValue(in, Document.class);
-
+        return mapper;
     }
 
 }

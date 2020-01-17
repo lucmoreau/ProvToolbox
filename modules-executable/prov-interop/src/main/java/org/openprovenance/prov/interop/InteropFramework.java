@@ -653,8 +653,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case TRIG:
             case JSONLD:
             case TURTLE: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                        pFactory);
+                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
                 Document doc = rdfU.parseRDF(filename);
                 return doc;
             }
@@ -1181,7 +1180,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    Map<ProvFormat, SerializerFunction> createSerializerMap() {
+    public Map<ProvFormat, SerializerFunction> createSerializerMap() {
 
         //NOTE: Syntax restricted to 10 entries
         Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
@@ -1240,8 +1239,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 break;
             }
             case JSONLD: {
-                new org.openprovenance.prov.rdf.Utility(pFactory)
-                        .dumpRDF(document, JSONLD, filename);
+                new org.openprovenance.prov.rdf.Utility(pFactory).dumpRDF(document, JSONLD, filename);
                 break;
             }
             case RDFXML: {

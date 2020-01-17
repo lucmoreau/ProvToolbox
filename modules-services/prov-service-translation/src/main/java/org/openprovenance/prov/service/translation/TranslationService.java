@@ -97,7 +97,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                           @Context HttpServletRequest request,
                                           @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
                                           @Parameter(name = "type", description = "serialization type", example = "provn", 
-                                                     schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg"}), required = true) @PathParam("type") String type)
+                                                     schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg", "jsonld"}), required = true) @PathParam("type") String type)
                                                   throws IOException {
         logger.info("translate to " + type);
 

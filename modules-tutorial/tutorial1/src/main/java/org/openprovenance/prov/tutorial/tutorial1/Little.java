@@ -1,7 +1,9 @@
 package org.openprovenance.prov.tutorial.tutorial1;
 
+import java.io.InputStream;
 import java.util.Arrays;
 
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Agent;
@@ -47,33 +49,20 @@ public class Little {
 
     public Document makeDocument() {     
         Entity quote = pFactory.newEntity(qn("a-little-provenance-goes-a-long-way"));
-        quote.setValue(pFactory.newValue("A little provenance goes a long way",
-                                         pFactory.getName().XSD_STRING));
+        quote.setValue(pFactory.newValue("A little provenance goes a long way", pFactory.getName().XSD_STRING));
         
         Entity original = pFactory.newEntity(ns.qualifiedName(JIM_PREFIX,"LittleSemanticsWeb.html",pFactory));
 
         Agent paul = pFactory.newAgent(qn("Paul"), "Paul Groth");
         Agent luc = pFactory.newAgent(qn("Luc"), "Luc Moreau");
 
-        WasAttributedTo attr1 = pFactory.newWasAttributedTo(null,
-                                                            quote.getId(),
-                                                            paul.getId());
-        WasAttributedTo attr2 = pFactory.newWasAttributedTo(null,
-                                                            quote.getId(),
-                                                            luc.getId());
+        WasAttributedTo attr1 = pFactory.newWasAttributedTo(null,quote.getId(), paul.getId());
+        WasAttributedTo attr2 = pFactory.newWasAttributedTo(null,quote.getId(),luc.getId());
 
-        WasDerivedFrom wdf = pFactory.newWasDerivedFrom(quote.getId(),
-                                                        original.getId());
+        WasDerivedFrom wdf = pFactory.newWasDerivedFrom(quote.getId(), original.getId());
 
         Document document = pFactory.newDocument();
-        document.getStatementOrBundle()
-                .addAll(Arrays.asList(new StatementOrBundle[] { quote, 
-                                                                paul,
-                                                                luc, 
-                                                                attr1,
-                                                                attr2, 
-                                                                original,
-                                                                wdf }));
+        document.getStatementOrBundle().addAll(Arrays.asList(quote, paul, luc, attr1, attr2, original, wdf));
         document.setNamespace(ns);
         return document;
     }
@@ -85,7 +74,6 @@ public class Little {
     }
 
     public void closingBanner() {
-        System.out.println("");
         System.out.println("*************************");
     }
 
@@ -99,7 +87,7 @@ public class Little {
         if (args.length!=1) throw new UnsupportedOperationException("main to be called with filename");
         String file=args[0];
         
-        Little little=new Little(InteropFramework.newXMLProvFactory());
+        Little little=new Little(InteropFramework.getDefaultFactory());
         little.openingBanner();
         Document document = little.makeDocument();
         little.doConversions(document, file);

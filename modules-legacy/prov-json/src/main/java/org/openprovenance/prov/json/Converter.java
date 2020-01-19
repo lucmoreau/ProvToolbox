@@ -18,36 +18,36 @@ public class Converter {
     final Class class1;
 
     public Converter(ProvFactory pFactory) {
-	this.pFactory = pFactory;
+        this.pFactory = pFactory;
 
-	class1 = pFactory.newDocument().getClass();
+        class1 = pFactory.newDocument().getClass();
 
-	gson = new GsonBuilder().registerTypeAdapter(class1,
-						     new ProvDocumentDeserializer(pFactory))
-				.registerTypeAdapter(class1,
-						     new ProvDocumentSerializer(pFactory))
-				.setPrettyPrinting().create();
+        gson = new GsonBuilder().registerTypeAdapter(class1,
+                new ProvDocumentDeserializer(pFactory))
+                .registerTypeAdapter(class1,
+                        new ProvDocumentSerializer(pFactory))
+                .setPrettyPrinting().create();
 
     }
 
     @SuppressWarnings("unchecked")
     public Document readDocument(String file) throws JsonSyntaxException,
-					     JsonIOException,
-					     IOException {
-	final BufferedReader buf = new BufferedReader(new FileReader(file));
-    Document doc = (Document) gson.fromJson(buf,class1);
-    buf.close();
-	return doc;
+            JsonIOException,
+            IOException {
+        final BufferedReader buf = new BufferedReader(new FileReader(file));
+        Document doc = (Document) gson.fromJson(buf,class1);
+        buf.close();
+        return doc;
     }
 
     @SuppressWarnings("unchecked")
     public Document readDocument(InputStream is) throws JsonSyntaxException,
-						JsonIOException,
-						IOException {
-	final BufferedReader buf = new BufferedReader(new InputStreamReader(is));
-    Document doc = (Document) gson.fromJson(buf,class1);
-    buf.close();
-	return doc;
+            JsonIOException,
+            IOException {
+        final BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+        Document doc = (Document) gson.fromJson(buf,class1);
+        buf.close();
+        return doc;
     }
 
     public void writeDocument(Document doc, String file) throws IOException {
@@ -68,17 +68,17 @@ public class Converter {
         try {
             writer.close();
         } catch (IOException e) {
-           throw new UncheckedException(e);
+            throw new UncheckedException(e);
         }
     }
 
     public String getString(Document doc) {
-	return gson.toJson(doc);
+        return gson.toJson(doc);
     }
 
     @SuppressWarnings("unchecked")
     public Document fromString(String jsonStr) {
-	return (Document) gson.fromJson(jsonStr, class1);
+        return (Document) gson.fromJson(jsonStr, class1);
     }
 
 }

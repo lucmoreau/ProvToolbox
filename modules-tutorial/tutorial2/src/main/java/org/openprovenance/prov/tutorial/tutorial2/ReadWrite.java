@@ -46,7 +46,7 @@ public class ReadWrite {
         InteropFramework intF=new InteropFramework();
         Document document=intF.readDocumentFromFile(filein);
         intF.writeDocument(fileout, document);     
-        intF.writeDocument(System.out, ProvFormat.XML, document);
+//       / intF.writeDocument(System.out, ProvFormat.XML, document);
     }
 
     public void closingBanner() {
@@ -65,7 +65,7 @@ public class ReadWrite {
         String filein=args[0];
         String fileout=args[1];
         
-        ReadWrite tutorial=new ReadWrite(InteropFramework.newXMLProvFactory());
+        ReadWrite tutorial=new ReadWrite(InteropFramework.getDefaultFactory());
         tutorial.openingBanner();
         tutorial.doConversions(filein, fileout);
         tutorial.closingBanner();

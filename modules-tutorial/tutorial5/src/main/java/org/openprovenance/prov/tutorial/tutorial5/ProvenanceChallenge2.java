@@ -294,7 +294,7 @@ public class ProvenanceChallenge2 extends ChallengeCommon<Collection<StatementOr
         String file1 = args[0];
         String file2 = args[1];
 
-        ProvenanceChallenge2 pc1 = new ProvenanceChallenge2(InteropFramework.newXMLProvFactory());
+        ProvenanceChallenge2 pc1 = new ProvenanceChallenge2(InteropFramework.getDefaultFactory());
         pc1.openingBanner();
         Document document = pc1.makeDocument();
         pc1.doConversions(document, file1);

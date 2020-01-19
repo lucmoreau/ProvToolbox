@@ -23,7 +23,7 @@ import javax.xml.transform.Source;
 
 
 /** Deserialiser of OPM Graphs. */
-public class ProvDeserialiser {
+public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeserialiser {
     
     static ProvUtilities utils=new ProvUtilities();
 

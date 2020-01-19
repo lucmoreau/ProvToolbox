@@ -324,7 +324,7 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         String file2 = args[1];
         String bind = args[2];
 
-        ProvenanceChallenge1Template pc1 = new ProvenanceChallenge1Template(InteropFramework.newXMLProvFactory());
+        ProvenanceChallenge1Template pc1 = new ProvenanceChallenge1Template(InteropFramework.getDefaultFactory());
         pc1.openingBanner();
         Document document = pc1.makeDocument(bind);
         pc1.doConversions(document, file1);

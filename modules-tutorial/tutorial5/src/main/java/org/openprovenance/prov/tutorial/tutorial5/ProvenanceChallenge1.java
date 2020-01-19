@@ -330,7 +330,7 @@ public class ProvenanceChallenge1 extends ChallengeUtil implements ChallengeCons
         String file1 = args[0];
         String file2 = args[1];
 
-        ProvenanceChallenge1 pc1 = new ProvenanceChallenge1(InteropFramework.newXMLProvFactory());
+        ProvenanceChallenge1 pc1 = new ProvenanceChallenge1(InteropFramework.getDefaultFactory());
         pc1.openingBanner();
         Document document = pc1.makeDocument();
         pc1.doConversions(document, file1);

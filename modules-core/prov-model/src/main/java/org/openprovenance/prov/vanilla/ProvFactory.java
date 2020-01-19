@@ -491,6 +491,19 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return res;
     }
 
+    /** A factory method to create an instance of a derivation {@link org.openprovenance.prov.model.WasDerivedFrom}
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @return an instance of {@link org.openprovenance.prov.model.WasDerivedFrom}
+     */
+    public org.openprovenance.prov.model.WasDerivedFrom newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName e2,
+                                                                          org.openprovenance.prov.model.QualifiedName e1) {
+        WasDerivedFrom res =mc.newWasDerivedFrom(null,e2,e1,null,null,null,Collections.EMPTY_LIST);
+        return res;
+    }
+
+
+
     /*
      * (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)

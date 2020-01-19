@@ -5,33 +5,180 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/DeserializerFunction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/ProvDeserialiser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-rdf/src/main/java/org/openprovenance/prov/rdf/ProvDeserialiser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_ws_rs_jboss_jaxrs_api_2_1_spec_1_0_3_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/context-jsonld.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/context-jsonld11.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop-light/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop-light/prov-interop-light.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop-light/src/main/resources/org/openprovenance/prov/interop/config.interop.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvDeserialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvMixin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasKind.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasKind.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasLabel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasLocation.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasLocation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasOther.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasOther.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/HasType.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/HasType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_ActedOnBehalfOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_ActedOnBehalfOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_AlternateOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_AlternateOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Attribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Attribute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Bundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Bundle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Document.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Generic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Generic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Generic2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Generic2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_HadMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_HadMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Identifiable.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Identifiable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_LangString.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_LangString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Qualified.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Qualified.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_QualifiedAlternateOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_QualifiedAlternateOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_QualifiedHadMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_QualifiedHadMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_QualifiedSpecializationOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_QualifiedSpecializationOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_SortedBundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_SortedBundle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_SortedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_SortedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_SpecializationOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_SpecializationOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_Used.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_Used.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasAssociatedWith.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasAssociatedWith.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasAttributedTo.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasAttributedTo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasDerivedFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasDerivedFrom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasEndedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasEndedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasGeneratedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasGeneratedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasInfluencedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasInfluencedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasInformedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasInformedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasInvalidatedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasInvalidatedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/JSON_WasStartedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_WasStartedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvMixin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundleDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundleDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundleSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundleSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/SortedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomAttributeDeserializerWithRootName.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomAttributeDeserializerWithRootName.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomAttributeMapDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomAttributeMapDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomAttributeSetDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomAttributeSetDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomBundleDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomBundleDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomKeyDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomKeyDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomKindDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomKindDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomNamespaceDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomNamespaceDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomNamespacePrefixDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomNamespacePrefixDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomQualifiedNameDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomQualifiedNameDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomAttributesSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomAttributesSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomBundleSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomBundleSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomDateSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomDateSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomKindSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomKindSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomMapSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomMapSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomMapSerializer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomMapSerializer2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializerAsField.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializerAsField.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomTypedValueSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasAttributes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasKind.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasKind.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasLabel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasLocation.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasLocation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasOther.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasOther.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/HasType.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_ActedOnBehalfOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_ActedOnBehalfOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_AlternateOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_AlternateOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Attribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Attribute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Bundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Bundle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Document.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Generic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Generic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Generic2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Generic2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_HadMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_HadMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Identifiable.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Identifiable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_LangString.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_LangString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Qualified.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Qualified.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedAlternateOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedAlternateOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedHadMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedHadMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedSpecializationOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_QualifiedSpecializationOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_SpecializationOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_SpecializationOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Used.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Used.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasAssociatedWith.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasAssociatedWith.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasAttributedTo.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasAttributedTo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasDerivedFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasDerivedFrom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasEndedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasEndedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasGeneratedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasGeneratedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasInfluencedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasInfluencedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasInformedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasInformedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasInvalidatedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasInvalidatedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasStartedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_WasStartedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvDeserialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvMixin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomAttributeDeserializerWithRootName.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomAttributeDeserializerWithRootName.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomAttributeMapDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomAttributeMapDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomAttributeSetDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomAttributeSetDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomKeyDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomKeyDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomKindDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomKindDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomNamespaceDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomNamespaceDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomQualifiedNameDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/deserial/CustomQualifiedNameDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributesSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributesSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomDateSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomDateSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomKindSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomKindSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomMapSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomMapSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomMapSerializer2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomMapSerializer2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomNamespaceSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomNamespaceSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomQualifiedNameSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomTypedValueSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONLD11Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONLD11Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/resources/org/openprovenance/prov/interop/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/resources/org/openprovenance/prov/configuration/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/src/izpack/install.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/izpack/install.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/Converter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/Converter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvDocumentDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvDocumentDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-xml/src/main/java/org/openprovenance/prov/xml/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-xml/src/main/java/org/openprovenance/prov/xml/ProvDeserialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/src/main/java/org/openprovenance/prov/tutorial/tutorial1/Little.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/src/main/java/org/openprovenance/prov/tutorial/tutorial1/Little.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial2/src/main/java/org/openprovenance/prov/tutorial/tutorial2/ReadWrite.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/src/main/java/org/openprovenance/prov/tutorial/tutorial2/ReadWrite.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ProvenanceChallenge1.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ProvenanceChallenge1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ProvenanceChallenge1Template.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ProvenanceChallenge1Template.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ProvenanceChallenge2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/src/main/java/org/openprovenance/prov/tutorial/tutorial5/ProvenanceChallenge2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,8 +255,8 @@
     <property name="extract.method.default.visibility" value="public" />
     <property name="extractMethod.generateAnnotations" value="false" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-services/index-redis" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-executable/prov-interop-light/src/main" />
+    <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
@@ -146,18 +293,18 @@
       <recent name="org.openprovenance.prov.core.json.serialization" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable/prov-interop-light/src/main" />
+      <recent name="$PROJECT_DIR$/modules-executable/prov-interop-light" />
+      <recent name="$PROJECT_DIR$/modules-core/prov-jsonld" />
+      <recent name="$PROJECT_DIR$/modules-core" />
       <recent name="$PROJECT_DIR$/modules-services/index-redis" />
-      <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-services/docker-service-translator" />
-      <recent name="$PROJECT_DIR$/modules-services" />
-      <recent name="$PROJECT_DIR$/modules-template" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.json" />
       <recent name="org.openprovenance.prov.interop" />
       <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.service.core.filesystem" />
       <recent name="org.openprovenance.prov.storage.mongodb" />
-      <recent name="org.openprovenance.prov.template" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.service.core" />
@@ -167,7 +314,20 @@
       <recent name="org.openprovenance.prov.json" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.BindingTest">
+  <component name="RunManager" selected="Application.Little">
+    <configuration name="Little" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.tutorial.tutorial1.Little" />
+      <module name="ProvToolbox-Tutorial1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.tutorial.tutorial1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-service-core" />
       <extension name="coverage">
@@ -178,21 +338,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.prov.service.core" />
       <option name="MAIN_CLASS_NAME" value="org.prov.service.core.AppTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="BindingGeneration2Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template-compiler" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.BindingGeneration2Test" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -264,20 +409,20 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="JUnit.BindingGeneration2Test" />
       <item itemvalue="JUnit.AppTest" />
       <item itemvalue="JUnit.mongoDbTest" />
       <item itemvalue="JUnit.mongoCSVDbTest" />
       <item itemvalue="JUnit.BindingTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="Application.Little" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Little" />
         <item itemvalue="JUnit.BindingTest" />
         <item itemvalue="JUnit.mongoCSVDbTest" />
         <item itemvalue="JUnit.mongoDbTest" />
         <item itemvalue="JUnit.AppTest" />
-        <item itemvalue="JUnit.BindingGeneration2Test" />
       </list>
     </recent_temporary>
   </component>
@@ -364,7 +509,7 @@
       <workItem from="1579020960895" duration="7698000" />
       <workItem from="1579103866065" duration="9923000" />
       <workItem from="1579163537374" duration="1272000" />
-      <workItem from="1579193436836" duration="43537000" />
+      <workItem from="1579193436836" duration="59982000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -424,12 +569,12 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="291" y="128" width="1987" height="1087" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578433247771" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1579356464175">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1579429473542">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="541" y="252" key="#com.intellij.ide.util.MemberChooser/0.23.1440.829@0.23.1440.829" timestamp="1579105149064" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1579356464175" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1578346818914" />
+    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1579429473542" />
     <state x="1347" y="237" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog" timestamp="1579206920306">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
@@ -438,39 +583,47 @@
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
     <state x="837" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1578606248588" />
-    <state width="2143" height="278" key="GridCell.Tab.0.bottom" timestamp="1578855255082">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state x="992" y="508" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1579416482304">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="992" y="508" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.23.2560.1338@0.23.2560.1338" timestamp="1579416482304" />
+    <state width="2074" height="273" key="GridCell.Tab.0.bottom" timestamp="1579425540648">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1578749768159" />
     <state width="756" height="398" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1578328383857" />
     <state width="2143" height="278" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2143" height="180" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612033" />
-    <state width="2143" height="278" key="GridCell.Tab.0.center" timestamp="1578855255082">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state width="2074" height="273" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540648" />
+    <state width="2074" height="273" key="GridCell.Tab.0.center" timestamp="1579425540647">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1578749768158" />
     <state width="756" height="398" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
     <state width="2143" height="278" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2143" height="180" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612032" />
-    <state width="2143" height="278" key="GridCell.Tab.0.left" timestamp="1578855255082">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state width="2074" height="273" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540647" />
+    <state width="2074" height="273" key="GridCell.Tab.0.left" timestamp="1579425540647">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1578749768157" />
     <state width="756" height="398" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
     <state width="2143" height="278" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2143" height="180" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612031" />
-    <state width="2143" height="278" key="GridCell.Tab.0.right" timestamp="1578855255082">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state width="2074" height="273" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540647" />
+    <state width="2074" height="273" key="GridCell.Tab.0.right" timestamp="1579425540647">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1578749768158" />
     <state width="756" height="398" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1578328383856" />
     <state width="2143" height="278" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2143" height="180" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1578434612032" />
-    <state x="822" y="335" key="Maven.ArtifactSearchDialog" timestamp="1578519666386">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state width="2074" height="273" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540647" />
+    <state x="822" y="335" key="Maven.ArtifactSearchDialog" timestamp="1579420343670">
+      <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1578519666386" />
-    <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578430433215" />
+    <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1579420343670" />
+    <state x="768" y="240" key="SettingsEditor" timestamp="1579416731161">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="768" y="240" key="SettingsEditor/0.23.2560.1338@0.23.2560.1338" timestamp="1579416731161" />
     <state x="714" y="338" key="com.intellij.ide.util.TipDialog" timestamp="1579193664600">
       <screen x="0" y="23" width="1440" height="829" />
     </state>
@@ -480,6 +633,10 @@
     </state>
     <state x="1022" y="432" key="extract.method.dialog/0.23.2560.1337@0.23.2560.1337" timestamp="1579297789512" />
     <state x="1022" y="432" key="extract.method.dialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578434360672" />
+    <state x="674" y="262" key="new project wizard" timestamp="1579418649740">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="674" y="262" key="new project wizard/0.23.2560.1338@0.23.2560.1338" timestamp="1579418649740" />
     <state x="949" y="316" key="run.anything.popup" timestamp="1578430643139">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>

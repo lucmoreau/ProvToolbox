@@ -22,6 +22,7 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
             <version>0.9.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>

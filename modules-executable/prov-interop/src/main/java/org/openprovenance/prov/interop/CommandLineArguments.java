@@ -377,7 +377,7 @@ public class CommandLineArguments implements ErrorCodes {
                                                                                    compareOut,
                                                                                    log2prov,
                                                                                    config),
-                                                          org.openprovenance.prov.xml.ProvFactory.getFactory());
+                                                          InteropFramework.getDefaultFactory());
             if (listFormatsp) {
                 java.util.List<java.util.Map<String, String>> formats = interop.getSupportedFormats();
                 for (java.util.Map<String, String> e: formats) {

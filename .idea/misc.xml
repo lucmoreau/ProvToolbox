@@ -20,6 +20,8 @@
         <option value="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/index-redis/pom.xml" />
         <option value="$PROJECT_DIR$/modules-services/storage-mongodb/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-executable/prov-interop-light/pom.xml" />
       </list>
     </option>
   </component>

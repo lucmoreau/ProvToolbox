@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -52,12 +53,45 @@ import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
  */
 public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvSerialiser {
 
+    public final static String configFile="config.interop.properties";
+    public final static String configuration;
+    public final static String factoryClass;
+    public final static ProvFactory defaultFactory;
+
+    static {
+        Properties properties=getPropertiesFromClasspath(configFile);
+        configuration=(String)properties.get("interop.config");
+        factoryClass = (String)properties.getProperty("prov.factory");
+        defaultFactory=dynamicallyLoadFactory(factoryClass);
+    }
 
 
     public static Properties getPropertiesFromClasspath(String propFileName) {
         return Configuration.getPropertiesFromClasspath(InteropFramework.class, propFileName);
     }
 
+    static public ProvFactory getDefaultFactory(){
+        return defaultFactory;
+    }
+
+
+
+    static public ProvFactory dynamicallyLoadFactory(String factory) {
+        System.out.println("loading dynamically " + factory);
+        Class<?> clazz=null;
+        try {
+            clazz = Class.forName(factory);
+            Method method=clazz.getMethod("getFactory");
+            return (ProvFactory) method.invoke(new Object[0]);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
     static Logger logger = Logger.getLogger(InteropFramework.class);
@@ -79,13 +113,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
 
     /** Default constructor for the ProvToolbox interoperability framework.
-     * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
+     * It uses the factory declared in the configuration file as its default factory.
      */
  
     
     public InteropFramework() {
-        this(new CommandLineArguments(),
-             org.openprovenance.prov.xml.ProvFactory.getFactory());
+        this(new CommandLineArguments(), defaultFactory);
     }
 
     public InteropFramework(ProvFactory pFactory) {
@@ -463,15 +496,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         throw new UnsupportedOperationException();
 
     }
-    
-    /** Creates a factory for the XML Java beans. 
-     * 
-     * @return a {@link ProvFactory}
-     */
-    
-    static public ProvFactory newXMLProvFactory() {
-        return org.openprovenance.prov.xml.ProvFactory.getFactory();
-    }
 
     /*
     public void provn2html(String file, String file2)  {
@@ -620,10 +644,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             ProvFormat format = getTypeForFile(filename);
             if (format == null) {
-                throw new InteropException("Unknown output file format: "
-                        + filename);
+                throw new InteropException("Unknown output file format: " + filename);
             }
-            return readDocumentFromFile(filename, format);
+        try {
+            return deserialiseDocument(new FileInputStream(filename), format);
+        } catch (IOException e) {
+            throw new InteropException(e);
+        }
     }
 
     /**
@@ -631,6 +658,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @param filename the file to read a document from
      * @param format the format of the file
      * @return a Document
+     * @deprecated Use instead deserialiseDocument
      */
     public Document readDocumentFromFile(String filename, ProvFormat format) {
 
@@ -796,6 +824,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         logger.info("serializer " + format + " " + serializerMaker);
         serializerMaker.apply().serialiseDocument(out,document,mediaType,formatted);
     }
+
 
     public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException {
         DeserializerFunction deserializer=deserializerMap.get(format);
@@ -1090,8 +1119,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      */
 
     public void writeDocument(OutputStream os, ProvFormat format, Document document) {
+        serialiseDocument(os,document,mimeTypeMap.get(format),true);
+    }
 
-        Namespace.withThreadNamespace(document.getNamespace());
+    /** TO BE DELETED */
+        public void writeDocumentOLD(OutputStream os, ProvFormat format, Document document) {
+            Namespace.withThreadNamespace(document.getNamespace());
 
         try {
             if (format == null) {
@@ -1245,6 +1278,30 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return serializer;
     }
 
+    final public Map<ProvFormat, SerializerFunction> createLightSerializerMap() {
+
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
+        serializer.putAll(
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
+                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
+                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
+                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser::new,
+                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
+                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
+                        JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
+
+        serializer.putAll(
+                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)),
+                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))
+
+                ) );
+
+        return serializer;
+    }
 
     final public Map<ProvFormat, DeserializerFunction> createLightAndLegacyDeserializerMap() {
 
@@ -1262,20 +1319,29 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return serializer;
     }
 
-    public final static String configFile="config.interop.properties";
-    public final static String configuration;
-    static {
-        Properties properties=getPropertiesFromClasspath(configFile);
-        configuration=(String)properties.get("interop.config");
+    final public Map<ProvFormat, DeserializerFunction> createLegacyDeserializerMap() {
 
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
+        serializer.putAll(
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
+                        XML,     () -> org.openprovenance.prov.xml.ProvDeserialiser.getThreadProvDeserialiser(),
+                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TURTLE),
+                 //       JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
+                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, RDFXML),
+                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TRIG),
+                        JSON,    () -> new org.openprovenance.prov.json.ProvDeserialiser(pFactory)));
+
+        return serializer;
     }
+
 
 
     public Map<ProvFormat, SerializerFunction> createSerializerMap() {
         switch (configuration) {
             case "legacy":       return createLegacySerializerMap();
             case "light+legacy": return createLightAndLegacySerializerMap();
-            case "light":        throw new UnsupportedOperationException("light configuration not supported yet");
+            case "light":        return createLightSerializerMap();
             default:
                 throw new IllegalStateException("Unexpected configuration value: " + configuration);
         }
@@ -1284,9 +1350,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
         switch (configuration) {
-            case "legacy":       throw new UnsupportedOperationException("legacy configuration not supported yet");
+            case "legacy":       return createLegacyDeserializerMap();
             case "light+legacy": return createLightAndLegacyDeserializerMap();
-            case "light":        throw new UnsupportedOperationException("light configuration not supported yet");
+            case "light":        return createLightAndLegacyDeserializerMap();
             default:
                 throw new IllegalStateException("Unexpected configuration value: " + configuration);
         }

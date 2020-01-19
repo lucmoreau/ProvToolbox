@@ -10,9 +10,10 @@
     <name>|&gt;- MODULES: CORE</name>
     <artifactId>modules-core</artifactId>
     <modules>
-      <module>prov-model</module>
-      <module>prov-jsonld-xml</module>
-      <module>prov-model-scala</module>
+        <module>prov-model</module>
+        <module>prov-jsonld</module>
+        <module>prov-jsonld-xml</module>
+        <module>prov-model-scala</module>
     </modules>
 
 

@@ -15,11 +15,11 @@
         <developer>
             <id>lucmoreau</id>
             <name>Luc Moreau</name>
-            <email>l.moreau@ecs.soton.ac.uk</email>
+            <email>luc.moreau@kcl.ac.uk</email>
             <roles>
                 <role>Developer</role>
             </roles>
-            <organization>University of Southampton</organization>
+            <organization>King's College London</organization>
             <timezone>0</timezone>
         </developer>
         <developer>
@@ -51,6 +51,11 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-jsonld-xml</artifactId>
             <version>0.9.1-SNAPSHOT</version>
         </dependency>
         <dependency>

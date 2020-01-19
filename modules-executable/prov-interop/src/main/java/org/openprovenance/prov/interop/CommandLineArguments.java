@@ -8,6 +8,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
+import org.openprovenance.prov.configuration.Configuration;
 
 public class CommandLineArguments implements ErrorCodes {
 	

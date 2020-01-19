@@ -3,7 +3,7 @@ package org.openprovenance.prov.service.core;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.openprovenance.prov.interop.Configuration;
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;

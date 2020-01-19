@@ -48,6 +48,14 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.antlr:antlr-runtime:3.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: antlr:antlr:2.7.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.antlr:stringtemplate:4.0.2" level="project" />
+    <orderEntry type="module" module-name="prov-jsonld-xml" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.woodstox:woodstox-core:5.1.0" level="project" />
     <orderEntry type="module" module-name="prov-dot" scope="PROVIDED" />
     <orderEntry type="module" module-name="prov-json" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
@@ -129,9 +137,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.openrdf.sesame:sesame-util:4.1.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.openrdf.sesame:sesame-rio-trig:4.1.2" level="project" />
     <orderEntry type="module" module-name="prov-template" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.9" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
     <orderEntry type="module" module-name="prov-template-compiler" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.squareup:javapoet:1.11.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:19.0" level="project" />

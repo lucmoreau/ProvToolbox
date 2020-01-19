@@ -14,6 +14,6 @@ public interface ProvDeserialiser {
      * @return org.openprovenance.prov.model.Document
      */
 
-    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in);
+    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException;
 
 }

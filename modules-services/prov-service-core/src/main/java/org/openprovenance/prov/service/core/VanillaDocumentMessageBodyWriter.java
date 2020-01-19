@@ -60,11 +60,11 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 
 		System.out.println(" ---- writeTo doc " + media);
 
-		if (InteropMediaType.MEDIA_APPLICATION_JSONLD.equals(media)) {
-			new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(entityStream,doc,false);
-		} else {
+	//	if (InteropMediaType.MEDIA_APPLICATION_JSONLD.equals(media)) {
+	//		new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(entityStream,doc,false);
+	//	} else {
 			serializer.serialiseDocument(entityStream, doc, media, true);
-		}
+	//	}
 	}
 
 }

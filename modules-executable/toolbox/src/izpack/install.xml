@@ -4,7 +4,7 @@
     <appversion>${project.version}</appversion>
     <url>https://github.com/lucmoreau/ProvToolbox</url>
     <authors>
-      <author name="Luc Moreau" email="l.moreau@ecs.soton.ac.uk"/>
+      <author name="Luc Moreau" email="luc.moreau@kcl.ac.uk"/>
     </authors>
   </info>
   <guiprefs height="400" resizable="no" width="700">

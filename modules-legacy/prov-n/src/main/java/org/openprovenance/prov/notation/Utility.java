@@ -226,13 +226,13 @@ public  class Utility {
 	}*/
     }
     
-    public Document readDocument(String filename, ProvFactory pFactory) throws IOException, Throwable {
+    public Document readDocument(String filename, ProvFactory pFactory)  {
         CommonTree tree = convertASNToTree(filename);
             Object doc=convertTreeToJavaBean(tree,pFactory);
             return (Document)doc;
        }
     
-    public Document readDocument(InputStream is, ProvFactory pFactory) throws IOException, Throwable {
+    public Document readDocument(InputStream is, ProvFactory pFactory)  {
         CommonTree tree = convertASNToTree(is);
         Object doc=convertTreeToJavaBean(tree,pFactory);
         return (Document)doc;

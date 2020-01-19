@@ -1,4 +1,4 @@
-package org.openprovenance.prov.interop;
+package org.openprovenance.prov.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,12 +6,10 @@ import java.util.Properties;
 
 public class Configuration {
     private static String fileName = "config.properties";
-    static public final String toolboxVersion = getPropertiesFromClasspath(fileName)
-            .getProperty("toolbox.version");
-    static public final String longToolboxVersion = toolboxVersion + " (" +
-            getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
+    static public final String toolboxVersion = getPropertiesFromClasspath(fileName).getProperty("toolbox.version");
+    static public final String longToolboxVersion = toolboxVersion + " (" + getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
 
-    public static Properties getPropertiesFromClasspath(@SuppressWarnings("rawtypes") Class clazz, String propFileName) {
+    public static Properties getPropertiesFromClasspath(Class<?> clazz, String propFileName) {
         Properties props = new Properties();
         InputStream inputStream = clazz.getResourceAsStream(propFileName);
         if (inputStream == null) {

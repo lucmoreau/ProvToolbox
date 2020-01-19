@@ -19,6 +19,7 @@ import java.util.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
@@ -53,6 +54,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
+    public static Properties getPropertiesFromClasspath(String propFileName) {
+        return Configuration.getPropertiesFromClasspath(InteropFramework.class, propFileName);
+    }
+
 
 
     static Logger logger = Logger.getLogger(InteropFramework.class);
@@ -71,6 +76,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     
     final private CommandLineArguments config;
     final private Map<ProvFormat, SerializerFunction> serializerMap;
+    final private Map<ProvFormat, DeserializerFunction> deserializerMap;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses {@link org.openprovenance.prov.xml.ProvFactory} as its default factory. 
@@ -100,6 +106,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         initializeExtensionMap(extensionMap, extensionRevMap);
 
         serializerMap = createSerializerMap();
+        deserializerMap = createDeserializerMap();
     }
 
     /**
@@ -706,6 +713,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return tripleList;
     }
 
+
+
     private Document doReadDocument(String filename, String format)
     {
         Document doc;
@@ -784,7 +793,14 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             throw new UnsupportedOperationException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
         }
         SerializerFunction serializerMaker=serializerMap.get(format);
+        logger.info("serializer " + format + " " + serializerMaker);
         serializerMaker.apply().serialiseDocument(out,document,mediaType,formatted);
+    }
+
+    public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException {
+        DeserializerFunction deserializer=deserializerMap.get(format);
+        logger.info("deserializer " + format + " " + deserializer);
+        return deserializer.apply().deserialiseDocument(is);
     }
 
     @Override
@@ -999,8 +1015,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             Document expanded;
             if (config.bindingsVersion==3) {
                 Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(config.bindings)),pFactory);
-                expanded = myExpand.expander(doc,
-                                             bb);
+                expanded = myExpand.expander(doc, bb);
 
             } else {
                 Document docBindings = (Document) doReadDocument(config.bindings,
@@ -1180,7 +1195,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    public Map<ProvFormat, SerializerFunction> createSerializerMap() {
+    final public Map<ProvFormat, SerializerFunction> createLegacySerializerMap() {
 
         //NOTE: Syntax restricted to 10 entries
         Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
@@ -1205,14 +1220,85 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return serializer;
     }
 
+    final public Map<ProvFormat, SerializerFunction> createLightAndLegacySerializerMap() {
+
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
+        serializer.putAll(
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
+                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
+                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
+                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser::new,
+                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
+                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
+                        JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
+
+        serializer.putAll(
+                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)),
+                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))
+
+                ) );
+
+        return serializer;
+    }
+
+
+    final public Map<ProvFormat, DeserializerFunction> createLightAndLegacyDeserializerMap() {
+
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
+        serializer.putAll(
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
+                        XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
+                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TURTLE),
+                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
+                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, RDFXML),
+                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TRIG),
+                        JSON,    org.openprovenance.prov.core.json.serialization.ProvDeserialiser::new));
+
+        return serializer;
+    }
+
+    public final static String configFile="config.interop.properties";
+    public final static String configuration;
+    static {
+        Properties properties=getPropertiesFromClasspath(configFile);
+        configuration=(String)properties.get("interop.config");
+
+    }
+
+
+    public Map<ProvFormat, SerializerFunction> createSerializerMap() {
+        switch (configuration) {
+            case "legacy":       return createLegacySerializerMap();
+            case "light+legacy": return createLightAndLegacySerializerMap();
+            case "light":        throw new UnsupportedOperationException("light configuration not supported yet");
+            default:
+                throw new IllegalStateException("Unexpected configuration value: " + configuration);
+        }
+    }
+
+
+    public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
+        switch (configuration) {
+            case "legacy":       throw new UnsupportedOperationException("legacy configuration not supported yet");
+            case "light+legacy": return createLightAndLegacyDeserializerMap();
+            case "light":        throw new UnsupportedOperationException("light configuration not supported yet");
+            default:
+                throw new IllegalStateException("Unexpected configuration value: " + configuration);
+        }
+    }
 
 
 
     /**
-     * Write a {@link Document} to file, serialized according to the file extension
-     * @param filename path of the file to write the Document to
-     * @param document a {@link Document} to serialize
-     */
+         * Write a {@link Document} to file, serialized according to the file extension
+         * @param filename path of the file to write the Document to
+         * @param document a {@link Document} to serialize
+         */
 
 
     public void writeDocument(String filename, ProvFormat format, Document document) {

@@ -41,12 +41,14 @@
             <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
+        -->
 
         <!-- scala -->
 
@@ -87,25 +89,26 @@
             <classifier>tests</classifier>
         </dependency>
 
-        <dependency>
+   <!--     <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
             <scope>test</scope>
             <version>0.9.1-SNAPSHOT</version>
             <classifier>tests</classifier>
         </dependency>
-
+-->
 
 
 
         <!-- XML Serialization ... -->
-
+<!--
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
+        -->
 
         <!--
         <dependency>
@@ -115,13 +118,14 @@
         </dependency>
         -->
 
+        <!--
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
             <version>0.9.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-
+-->
 
     </dependencies>
 

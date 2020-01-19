@@ -74,15 +74,13 @@ public class ProvapiApplication extends Application {
 	private Set<Object> singletons = new HashSet<Object>();
 
 
+	StorageConfiguration sc=new StorageConfiguration();
 
-	ServiceUtilsConfig config=new ServiceUtilsConfig();
 
 	public ProvapiApplication() {
 		final ProvFactory factory = ProvFactory.getFactory();
-		initRedis();
-		config.documentCacheSize=200;
-		config.storageManager=new DocumentResourceStorageFileSystem(factory);
-		config.pFactory=ProvFactory.getFactory();
+		ServiceUtilsConfig config=sc.makeFSConfig(factory);
+
 
 		PostService ps=new PostService(config);
 		singletons.add(ps);
@@ -108,30 +106,6 @@ public class ProvapiApplication extends Application {
 
 
 	}
-
-	public void initInMemory() {
-
-		Consumer<Map<String, ResourceIndex<?>>> inMemoryInit = extensionMap -> {
-			DocumentResourceIndexInMemory di=new DocumentResourceIndexInMemory();
-			extensionMap.put(DocumentResource.getResourceKind(), di);
-			extensionMap.put(TemplateResource.getResourceKind(), new TemplateResourceIndexInMemory(di,TemplateResourceIndexInMemory.factory));
-		};
-
-		inMemoryInit.accept(config.extensionMap);
-	}
-
-
-	public void initRedis() {
-
-
-		Consumer<Map<String, ResourceIndex<?>>> redisInit = extensionMap -> {
-			RedisDocumentResourceIndex di=new RedisDocumentResourceIndex();
-			extensionMap.put(DocumentResource.getResourceKind(), di);
-			extensionMap.put(TemplateResource.getResourceKind(), new RedisTemplateResourceIndex(di,RedisTemplateResourceIndex.factory));
-		};
-		redisInit.accept(config.extensionMap);
-	}
-
 
 	@Override
 	public Set<Object> getSingletons() {

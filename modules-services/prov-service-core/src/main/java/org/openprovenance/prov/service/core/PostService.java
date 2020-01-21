@@ -14,6 +14,7 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.service.core.jobs.JobManagement;
 import org.quartz.SchedulerException;
 
 import javax.servlet.http.HttpServletRequest;

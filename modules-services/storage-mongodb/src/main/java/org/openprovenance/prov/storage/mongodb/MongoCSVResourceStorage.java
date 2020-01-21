@@ -114,6 +114,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
 
     @Override
     public boolean delete(String storageId) {
-        return false;
+        WriteResult<CSVWrapper, String> result=csvCollection.removeById(storageId);
+        return result.getN()==1;
     }
 }

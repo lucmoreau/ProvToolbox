@@ -70,7 +70,7 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
 
     @Override
     public void remove(String key) {
-        logger.info("TODO: remove()");
+        dri.client.del(key);
     }
 
     @Override

@@ -117,6 +117,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public boolean delete(String storageId) {
-        return false;
+        WriteResult<DocumentWrapper, String> result=documentCollection.removeById(storageId);
+        return result.getN()==1;
     }
 }

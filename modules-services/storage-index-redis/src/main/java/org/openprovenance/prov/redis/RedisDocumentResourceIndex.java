@@ -86,7 +86,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
     @Override
     public void remove(String key) {
-
+        client.del(key);
     }
 
     @Override

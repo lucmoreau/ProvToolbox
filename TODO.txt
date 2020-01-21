@@ -1,4 +1,29 @@
 
+
+- scheduler/deletion: does not empty the cache, does not seem to work with redis
+- curl job, is it still active? through logging?
+- logging, check prov logging. Still required?
+- manual test provconvert
+- automated test provconvert
+- create modules-storage
+- Configuration of services (config file, environment variable)
+- refactor summary/narrative/signature services to support storage/indexing components
+- automatic test services summary/narrative/signature
+
+
+- TODO: service narrative does not have html highlight of text? does it belong to a different branch?
+
+- get rid of
+	../../modules-explanations/nlg-wrapper/foo.html
+	../../modules-explanations/nlg-wrapper/simplenlg-master.zip
+	../../modules-explanations/nlg-wrapper/simplenlg-master/
+	../../modules-explanations/prov-explanations/foo.tex
+	../../modules-explanations/prov-explanations/foo2.tex
+	../service-narrative/tmp.dot
+
+----------------------------------------------------------------------
+
+
 saved document 128367 for target/attr_entity_one_value_attr30.xml
 The sql table VALUE does not seem to contain a value??
    gday is not converted???

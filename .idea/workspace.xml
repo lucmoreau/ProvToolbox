@@ -5,9 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/jobs/CurlJob.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/jobs/JobDeleteDocumentResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/JobDeleteTemplateResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/JobManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/jobs/JobManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedDocumentResourceIndexFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedDocumentResourceIndexFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoAsciiBlobStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoAsciiBlobStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,12 +105,12 @@
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
-      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
-      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
-      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
-      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service.core" />
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
+      <recent name="org.openprovenance.prov.json" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.storage.mongodb" />
@@ -129,18 +143,18 @@
       <recent name="$PROJECT_DIR$/modules-services/index-redis" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.service.core.jobs" />
       <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.json" />
       <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.service.core.filesystem" />
-      <recent name="org.openprovenance.prov.storage.mongodb" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.service.core" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.dot" />
-      <recent name="org.openprovenance.prov.json" />
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
+      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
+      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
+      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
+      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Little">
@@ -238,12 +252,12 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Little" />
       <item itemvalue="JUnit.AppTest" />
       <item itemvalue="JUnit.mongoDbTest" />
       <item itemvalue="JUnit.mongoCSVDbTest" />
       <item itemvalue="JUnit.BindingTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
-      <item itemvalue="Application.Little" />
     </list>
     <recent_temporary>
       <list>
@@ -338,7 +352,9 @@
       <workItem from="1579020960895" duration="7698000" />
       <workItem from="1579103866065" duration="9923000" />
       <workItem from="1579163537374" duration="1272000" />
-      <workItem from="1579193436836" duration="60333000" />
+      <workItem from="1579193436836" duration="62163000" />
+      <workItem from="1579551877689" duration="1097000" />
+      <workItem from="1579627674311" duration="8918000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -398,12 +414,12 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="291" y="128" width="1987" height="1087" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1578433247771" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1579429473542">
+    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1579641334197">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="541" y="252" key="#com.intellij.ide.util.MemberChooser/0.23.1440.829@0.23.1440.829" timestamp="1579105149064" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1579356464175" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1579429473542" />
+    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1579641334197" />
     <state x="1347" y="237" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog" timestamp="1579206920306">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
@@ -416,47 +432,52 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="992" y="508" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.23.2560.1338@0.23.2560.1338" timestamp="1579416482304" />
-    <state width="2074" height="273" key="GridCell.Tab.0.bottom" timestamp="1579425540648">
+    <state width="2074" height="273" key="GridCell.Tab.0.bottom" timestamp="1579464198283">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1578749768159" />
     <state width="756" height="398" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1578328383857" />
     <state width="2143" height="278" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2074" height="273" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540648" />
-    <state width="2074" height="273" key="GridCell.Tab.0.center" timestamp="1579425540647">
+    <state width="2074" height="273" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1579464198283" />
+    <state width="2074" height="273" key="GridCell.Tab.0.center" timestamp="1579464198281">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1578749768158" />
     <state width="756" height="398" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
     <state width="2143" height="278" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2074" height="273" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540647" />
-    <state width="2074" height="273" key="GridCell.Tab.0.left" timestamp="1579425540647">
+    <state width="2074" height="273" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1579464198281" />
+    <state width="2074" height="273" key="GridCell.Tab.0.left" timestamp="1579464198280">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1578749768157" />
     <state width="756" height="398" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
     <state width="2143" height="278" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2074" height="273" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540647" />
-    <state width="2074" height="273" key="GridCell.Tab.0.right" timestamp="1579425540647">
+    <state width="2074" height="273" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1579464198280" />
+    <state width="2074" height="273" key="GridCell.Tab.0.right" timestamp="1579464198282">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state width="1396" height="278" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1578749768158" />
     <state width="756" height="398" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1578328383856" />
     <state width="2143" height="278" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1578855255082" />
-    <state width="2074" height="273" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1579425540647" />
+    <state width="2074" height="273" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1579464198282" />
     <state x="822" y="335" key="Maven.ArtifactSearchDialog" timestamp="1579420343670">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1578519666386" />
     <state x="822" y="335" key="Maven.ArtifactSearchDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1579420343670" />
+    <state x="514" y="364" key="ReplaceDuplicatesPrompt" timestamp="1579629739790">
+      <screen x="0" y="23" width="1440" height="830" />
+    </state>
+    <state x="514" y="364" key="ReplaceDuplicatesPrompt/0.23.1440.830@0.23.1440.830" timestamp="1579629739790" />
     <state x="768" y="240" key="SettingsEditor" timestamp="1579416731161">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="768" y="240" key="SettingsEditor/0.23.2560.1338@0.23.2560.1338" timestamp="1579416731161" />
-    <state x="714" y="338" key="com.intellij.ide.util.TipDialog" timestamp="1579193664600">
-      <screen x="0" y="23" width="1440" height="829" />
+    <state x="714" y="338" key="com.intellij.ide.util.TipDialog" timestamp="1579627673990">
+      <screen x="0" y="23" width="1440" height="830" />
     </state>
     <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.829@0.23.1440.829" timestamp="1579193664600" />
+    <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.830@0.23.1440.830" timestamp="1579627673990" />
     <state x="1022" y="432" key="extract.method.dialog" timestamp="1579297789512">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>

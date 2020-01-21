@@ -9,9 +9,12 @@ import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.jobs.JobManagement;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
+import org.quartz.JobKey;
+import org.quartz.SchedulerException;
 
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
@@ -27,6 +30,7 @@ public class ActionExpand implements ActionPerformer {
     private static Logger logger = Logger.getLogger(ActionExpand.class);
 
     private final ServiceUtils utils;
+
     private final ResourceIndex<TemplateResource> resourceIndex;
 
     ActionExpand(ServiceUtils utils) {
@@ -61,7 +65,9 @@ public class ActionExpand implements ActionPerformer {
 
         DocumentResource theTemplate=resourceIndex.getAncestor().newResource();
         final String originalStorageId = tr.getStorageId();
+
         utils.getJobManager().scheduleJob(theTemplate.getVisibleId());
+        scheduleNewJob(tr.getVisibleId());
 
         theTemplate.setStorageId(originalStorageId);
         logger.info("is it necessary for template to be exposed as " + theTemplate.getVisibleId() + " " + theTemplate.getStorageId());  // TODO: Should not if the template already existed in store
@@ -70,6 +76,7 @@ public class ActionExpand implements ActionPerformer {
         tr.setStorageId(expandedStoreId);
         tr.setTemplateStorageId(originalStorageId);
         resourceIndex.put(tr.getVisibleId(),tr);
+
 
 
         doLog(tr);
@@ -143,6 +150,17 @@ public class ActionExpand implements ActionPerformer {
        // interop.writeDocument(storeId, doc);
         return storeId;
     }
+
+    public Date scheduleNewJob(String visibleId) {
+        try {
+            // remove previous job, and replace it
+            JobManagement.getScheduler().deleteJob(new JobKey(visibleId,"graph"));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        return utils.getJobManager().scheduleJob(JobDeleteTemplateResource.class,visibleId,"-template", "graph");
+    }
+
 
     private void doLog(TemplateResource tr) {
         logger.log(ProvLevel.PROV,

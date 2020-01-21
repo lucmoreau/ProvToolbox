@@ -80,6 +80,8 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     @Override
     public boolean delete(String storageId) {
-        return false;
+        WriteResult<AsciiWrapper, String> result=genericCollection.removeById(storageId);
+        return result.getN()==1;
+
     }
 }

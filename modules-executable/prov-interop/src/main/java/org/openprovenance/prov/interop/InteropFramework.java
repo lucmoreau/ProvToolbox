@@ -61,7 +61,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     static {
         Properties properties=getPropertiesFromClasspath(configFile);
         configuration=(String)properties.get("interop.config");
-        factoryClass = (String)properties.getProperty("prov.factory");
+        factoryClass = properties.getProperty("prov.factory");
         defaultFactory=dynamicallyLoadFactory(factoryClass);
     }
 
@@ -77,17 +77,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
     static public ProvFactory dynamicallyLoadFactory(String factory) {
-        System.out.println("loading dynamically " + factory);
         Class<?> clazz=null;
         try {
             clazz = Class.forName(factory);
             Method method=clazz.getMethod("getFactory");
             return (ProvFactory) method.invoke(new Object[0]);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
@@ -130,11 +125,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         this.pFactory=pFactory;
         this.config=config;
         
-        extensionMap = new Hashtable<ProvFormat, String>();
-        extensionRevMap = new Hashtable<String, ProvFormat>();
-        mimeTypeMap = new Hashtable<ProvFormat, String>();
-        mimeTypeRevMap = new Hashtable<String, ProvFormat>();
-        provTypeMap = new Hashtable<ProvFormat, ProvFormatType>();
+        extensionMap = new Hashtable<>();
+        extensionRevMap = new Hashtable<>();
+        mimeTypeMap = new Hashtable<>();
+        mimeTypeRevMap = new Hashtable<>();
+        provTypeMap = new Hashtable<>();
 
         initializeExtensionMap(extensionMap, extensionRevMap);
 
@@ -147,7 +142,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a string representing the mime types.
      */
     public String buildAcceptHeader() {
-        StringBuffer mimetypes = new StringBuffer();
+        StringBuilder mimetypes = new StringBuilder();
         Enumeration<ProvFormat> e = mimeTypeMap.keys();
         String sep = "";
         while (e.hasMoreElements()) {
@@ -182,7 +177,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             if (theURL.getProtocol().equals("file")) {
                 return null;
             }
-            Boolean isHttp = (theURL.getProtocol().equals("http") || theURL
+            boolean isHttp = (theURL.getProtocol().equals("http") || theURL
                     .getProtocol().equals("https"));
 
             logger.debug("Requesting: " + theURL.toString());
@@ -301,12 +296,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      */
     
     public List<Variant> getVariants() {
-        List<Variant> vs = new ArrayList<Variant>();
+        List<Variant> vs = new ArrayList<>();
         for (Map.Entry<String, ProvFormat> entry : mimeTypeRevMap.entrySet()) {
             if (isOutputFormat(entry.getValue())) {
                 String[] parts = entry.getKey().split("/");
                 MediaType m = new MediaType(parts[0], parts[1]);
-                vs.add(new Variant(m, (java.util.Locale) null, (String) null));
+                vs.add(new Variant(m, (java.util.Locale) null, null));
             }
         }
         return vs;
@@ -549,10 +544,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case PROVN: {
                 Utility u = new Utility();
                 Object o = u.convertTreeToJavaBean(u.convertASNToTree(is), pFactory);
-                Document doc = (Document) o;
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
-                return doc;
+                return (Document) o;
             }
             case RDFXML: {
                 org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
@@ -679,10 +673,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case PROVN: {
                 Utility u = new Utility();
                 Object o = u.convertTreeToJavaBean(u.convertASNToTree(filename), pFactory);
-                Document doc = (Document) o;
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
-                return doc;
+                return (Document) o;
             }
             case RDFXML:
             case TRIG:
@@ -720,14 +713,14 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     for (String ext: extensionRevMap.keySet()) {
                         if (extensionRevMap.get(ext) == pt) {
                             if (isInputFormat(pt)) {
-                                trip = new java.util.HashMap<String, String>();
+                                trip = new java.util.HashMap<>();
                                 trip.put("extension", ext);
                                 trip.put("mediatype", mt);
                                 trip.put("type", "input");
                                 tripleList.add(trip);
                             }
                             if (isOutputFormat(pt)) {
-                                trip = new java.util.HashMap<String, String>();
+                                trip = new java.util.HashMap<>();
                                 trip.put("extension", ext);
                                 trip.put("mediatype", mt);
                                 trip.put("type", "output");
@@ -837,9 +830,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return mimeTypeRevMap.keySet();
     }
 
-    enum FileKind { FILE , URL };
-    
-    class ToRead {
+    enum FileKind { FILE , URL }
+
+    static class ToRead {
     	FileKind kind;
     	String url;
     	ProvFormat format;
@@ -875,22 +868,22 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     
     
     private List<ToRead> readIndexFile(InputStream is) throws IOException {
-    	List<ToRead> res=new LinkedList<InteropFramework.ToRead>();
+    	List<ToRead> res= new LinkedList<>();
      
     	BufferedReader br = new BufferedReader(new InputStreamReader(is));
      
-    	String line = null;
+    	String line;
     	while ((line = br.readLine()) != null) {
     		String [] parts=line.split(SEPARATOR);
     		if (parts.length>=3) {
     			FileKind kind=parts[0].trim().equals("URL") ? FileKind.URL : FileKind.FILE;
     			String path=parts[1].trim();
     			ProvFormat format=getTypeForFormat(parts[2].trim());
-    			ToRead elem=new ToRead(kind, path, format);
+    			ToRead elem= new ToRead(kind, path, format);
     			res.add(elem);
     		} else if (parts.length==1) {
     			String filename=parts[0].trim();
-    			ToRead elem=new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
+    			ToRead elem= new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
     			res.add(elem);
     		}
     	}     
@@ -963,21 +956,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     e.printStackTrace();
                     return -1;
              }
-            } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
+            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalArgumentException e) {
                 e.printStackTrace();
-                return -1;
-            } catch (NoSuchMethodException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } 
-            
+            }
+
             return -1;
         }
         else {
@@ -1325,7 +1307,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
-                        XML,     () -> org.openprovenance.prov.xml.ProvDeserialiser.getThreadProvDeserialiser(),
+                        XML,     org.openprovenance.prov.xml.ProvDeserialiser::getThreadProvDeserialiser,
                         TURTLE,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TURTLE),
                  //       JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
                         RDFXML,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, RDFXML),
@@ -1441,15 +1423,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             default:
                 break;
             }
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | IOException e) {
             if (config.verbose != null)
                 e.printStackTrace();
             throw new InteropException(e);
 
-        } catch (IOException e) {
-            if (config.verbose != null)
-                e.printStackTrace();
-            throw new InteropException(e);
         }
 
     }

@@ -94,6 +94,7 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
 
     @Override
     public boolean delete(String storageId) {
-        return false;
+        WriteResult<TypeWrapper<TYPE>, String> result=genericCollection.removeById(storageId);
+        return result.getN()==1;
     }
 }

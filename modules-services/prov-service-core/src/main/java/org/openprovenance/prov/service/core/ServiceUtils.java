@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import org.openprovenance.prov.service.core.jobs.JobManagement;
 import org.openprovenance.prov.service.core.memory.LRUHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -488,6 +489,14 @@ public class ServiceUtils {
         return doc;
     }
 
+
+    public boolean deleteFromCache(String storageId) {
+        Object o;
+        synchronized (this) {
+            o= documentCache.remove(this) ;
+        }
+        return o!=null;
+    }
 
     public DocumentResource doProcessStatementsForm(List<InputPart> inputParts,
                                                     List<InputPart> type) {

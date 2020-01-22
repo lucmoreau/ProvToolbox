@@ -107,29 +107,6 @@ public class ProvapiApplication extends Application {
 
 	}
 
-	public void initInMemory() {
-
-		Consumer<Map<String, ResourceIndex<?>>> inMemoryInit = extensionMap -> {
-			DocumentResourceIndexInMemory di=new DocumentResourceIndexInMemory();
-			extensionMap.put(DocumentResource.getResourceKind(), di);
-			extensionMap.put(TemplateResource.getResourceKind(), new TemplateResourceIndexInMemory(di,TemplateResourceIndexInMemory.factory));
-		};
-
-		inMemoryInit.accept(config.extensionMap);
-	}
-
-
-	public void initRedis() {
-
-
-		Consumer<Map<String, ResourceIndex<?>>> redisInit = extensionMap -> {
-			RedisDocumentResourceIndex di=new RedisDocumentResourceIndex();
-			extensionMap.put(DocumentResource.getResourceKind(), di);
-			extensionMap.put(TemplateResource.getResourceKind(), new RedisTemplateResourceIndex(di,RedisTemplateResourceIndex.factory));
-		};
-		redisInit.accept(config.extensionMap);
-	}
-
 
 	@Override
 	public Set<Object> getSingletons() {

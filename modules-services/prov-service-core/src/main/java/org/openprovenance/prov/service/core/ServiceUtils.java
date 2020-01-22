@@ -51,6 +51,7 @@ public class ServiceUtils {
 
     private final NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex;
     private final NonDocumentResourceStorage nonDocumentResourceStorage;
+    private final InteropFramework interop;
 
     public Map<String, NonDocumentGenericResourceStorage<?>> getGenericResourceStorageMap() {
         return genericResourceStorageMap;
@@ -85,6 +86,8 @@ public class ServiceUtils {
         this.config=config;
         this.storageManager=config.storageManager;
         this.pFactory=config.pFactory;
+        this.interop=new InteropFramework(config.pFactory);
+
         this.documentResourceIndex=(ResourceIndex<DocumentResource>)config.extensionMap.get(DocumentResource.getResourceKind());
         this.nonDocumentResourceIndex=config.nonDocumentResourceIndex;
         this.nonDocumentResourceStorage=config.nonDocumentResourceStorage;
@@ -410,8 +413,6 @@ public class ServiceUtils {
 
             String storedResourceIdentifier = "";
 
-            InteropFramework interop = new InteropFramework();
-
             Formats.ProvFormat format = interop.mimeTypeRevMap.get(mediaType.toString());
 
             storedResourceIdentifier=storageManager.newStore(format);
@@ -421,6 +422,8 @@ public class ServiceUtils {
             DocumentResource dr= documentResourceIndex.newResource();
 
             dr.setStorageId(storedResourceIdentifier);
+
+            documentResourceIndex.put(dr.getVisibleId(), dr);
 
             logger.info("visible Id: " + dr.getVisibleId());
 
@@ -443,20 +446,17 @@ public class ServiceUtils {
 
     public boolean doProcessFile(DocumentResource dr, boolean known) {
         try {
-            InteropFramework interop = new InteropFramework();
 
             Document doc;
 
             logger.info("doProcessFile for " + dr.getVisibleId() + " " + dr.getStorageId());
 
             doc=getDocumentFromCacheOrStore(dr.getStorageId());
-           // doc=storageManager.readDocument(dr.getStorageId(),known);
 
 
             if (doc == null)
                 throw new NullPointerException("read document returned null for " + dr.getStorageId());
 
-           // documentCache.put(dr.getStorageId(),doc);
 
             return true;
         } catch (Throwable e) {
@@ -515,7 +515,6 @@ public class ServiceUtils {
 
                 String mytype = type.get(0).getBodyAsString();
 
-                InteropFramework interop = new InteropFramework();
                 Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
 
                 storedResourceIdentifier=storageManager.newStore(format);
@@ -526,6 +525,8 @@ public class ServiceUtils {
                 DocumentResource dr= documentResourceIndex.newResource();
 
                 dr.setStorageId(storedResourceIdentifier);
+
+                documentResourceIndex.put(dr.getVisibleId(), dr);
 
                 logger.info("visible Id: " + dr.getVisibleId());
 
@@ -575,7 +576,6 @@ public class ServiceUtils {
                 // constructs upload file path
                 //fileName = UPLOADED_FILE_PATH + fileName;
 
-                InteropFramework interop = new InteropFramework();
                 Formats.ProvFormat format = interop.getTypeForFile(fileName);
 
                 storedResourceIdentifier=storageManager.newStore(format);
@@ -584,6 +584,8 @@ public class ServiceUtils {
                 dr= documentResourceIndex.newResource();
 
                 dr.setStorageId(storedResourceIdentifier);
+
+                documentResourceIndex.put(dr.getVisibleId(), dr);
 
 
 
@@ -636,7 +638,6 @@ public class ServiceUtils {
                     return null;
                 }
 
-                InteropFramework interop = new InteropFramework();
                 URL theURL = new URL(url);
                 URLConnection conn = interop.connectWithRedirect(theURL);
                 if (conn == null) throw new RuntimeException("Failed to connect to url");
@@ -732,8 +733,7 @@ public class ServiceUtils {
 
         // Use the Interop Framework to find the list of supported
         // mimetypes and feed those into the Variant list
-        InteropFramework intF = new InteropFramework();
-        List<Variant> vs = intF.getVariants();
+        List<Variant> vs = interop.getVariants();
         MediaType m = MediaType.TEXT_HTML_TYPE;
         //vs.add(new Variant(m, (java.util.Locale) null, (String) null));
         Variant v = request.selectVariant(vs);
@@ -746,7 +746,7 @@ public class ServiceUtils {
                 type = "html";
             } else {
                 String mt = v.getMediaType().toString();
-                type = intF.getExtension((Formats.ProvFormat) intF.mimeTypeRevMap.get(mt));
+                type = interop.getExtension((Formats.ProvFormat) interop.mimeTypeRevMap.get(mt));
             }
             if (type != null) {
                 return composeResponseSeeOther(path + type).build();

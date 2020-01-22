@@ -153,7 +153,7 @@ public class PostService implements Constants, InteropMediaType {
 
                 logger.info("checking other performer " );
                 if (otherPerformer.isPresent() && otherPerformer.get().otherAction(action,formData)) {
-                    logger.info("invokign other performer " );
+                    logger.info("invoking other performer " );
                     return otherPerformer.get().doAction(action,formData,vr, date);
                 }
 
@@ -212,16 +212,12 @@ public class PostService implements Constants, InteropMediaType {
         MediaType mediaType = headers.getMediaType();
         String type = mediaType.getType() + "/" + mediaType.getSubtype();
 
-        // System.out.println("buffer is " + slurp(input, 100));
 
-        System.out.println(">>> post media type is " + type);
-        //System.out.println("content type header is" + contentType);
+        logger.info(">>> post media type is " + type);
 
-        System.out.println("accept header is" + headers.getAcceptableMediaTypes());
+        logger.info("accept header is" + headers.getAcceptableMediaTypes());
 
-        DocumentResource vr;
-
-        vr = utils.doProcessFile(input, type);
+        DocumentResource vr = utils.doProcessFile(input, type);
 
         Date date = jobManager.scheduleJob(vr.getVisibleId());
         vr.setExpires(date);

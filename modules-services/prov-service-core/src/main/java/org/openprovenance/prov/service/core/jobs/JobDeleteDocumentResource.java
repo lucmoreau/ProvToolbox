@@ -50,9 +50,9 @@ public class JobDeleteDocumentResource implements Job {
                 }
             } else {
 
-                utils.deleteFromCache(visibleId);
 
                 utils.getDocumentResourceIndex().remove(visibleId);
+                utils.deleteFromCache(visibleId);
                 if (dr.getStorageId() != null) {
                     logger.info("deleting DocumentResource... " + visibleId);
                     utils.getStorageManager().delete(dr.getStorageId());

@@ -8,6 +8,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/jobs/JobDeleteDocumentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/jobs/JobDeleteDocumentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedDocumentResourceIndexFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedDocumentResourceIndexFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -341,7 +345,7 @@
       <workItem from="1579193436836" duration="62163000" />
       <workItem from="1579551877689" duration="1097000" />
       <workItem from="1579627674311" duration="9499000" />
-      <workItem from="1579711129972" duration="3068000" />
+      <workItem from="1579711129972" duration="7516000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

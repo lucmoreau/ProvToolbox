@@ -17,6 +17,6 @@ public class ServiceUtilsConfig {
     public int documentCacheSize;
     public ProvFactory pFactory;
     public ObjectSerialiser serialiser;
-
-
+    public boolean autoDelete=true;
+    public int deletePeriod=600;
 }

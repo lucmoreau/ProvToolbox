@@ -31,6 +31,8 @@ public class PostService implements Constants, InteropMediaType {
     static Logger logger = Logger.getLogger(PostService.class);
 
     private final JobManagement jobManager = new JobManagement();
+    private final boolean autoDelete;
+    private final int deletePeriod;
 
     public PostService(ServiceUtilsConfig config) {
         this(config,new LinkedList<>(),Optional.empty());
@@ -54,6 +56,8 @@ public class PostService implements Constants, InteropMediaType {
 
     public PostService(ServiceUtilsConfig config,List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=new ServiceUtils(this,config);
+        this.autoDelete=config.autoDelete;
+        this.deletePeriod=config.deletePeriod;
         jobManager.setupScheduler();
         try {
             jobManager.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
@@ -133,7 +137,7 @@ public class PostService implements Constants, InteropMediaType {
 
 
 
-                Date date = jobManager.scheduleJob(vr.getVisibleId());
+                Date date = autoDelete ? jobManager.scheduleJob(vr.getVisibleId()) : null;
                 vr.setExpires(date);
 
                 final ServiceUtils.Action action = utils.getAction(formData);

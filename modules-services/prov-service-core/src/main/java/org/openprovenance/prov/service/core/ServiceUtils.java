@@ -319,6 +319,7 @@ public class ServiceUtils {
 
     public Response composeResponseNotFOUND(String result) {
         return Response.status(Response.Status.NOT_FOUND).entity(result)
+                .type("text/plain")
                 .header(ACCESS_CONTROL_ALLOW_ORIGIN, WILDCARD).build();
     }
 
@@ -388,7 +389,7 @@ public class ServiceUtils {
     }
 
     public Response composeResponseNotFoundResource(String msg) {
-        return composeResponseNotFOUND("Not found resource for : " + msg);
+        return composeResponseNotFOUND("No resource found for id: " + msg);
     }
 
     public Response composeResponseNotFoundConstraintResource(String msg) {

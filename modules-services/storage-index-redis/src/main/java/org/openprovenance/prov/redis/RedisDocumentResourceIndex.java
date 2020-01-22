@@ -55,13 +55,14 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
     @Override
     public DocumentResource get(String key) {
-        logger.info("get " + key );
-        //List<String> values=client.hmget(key, FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND);
         List<String> values=client.hmget(key, myKeys());
-        logger.info("get " + key + values);
         Map<String,String> m=new HashMap<>();
         for (int i=0; i<myKeys().length; i++) {
-            m.put(myKeys()[i],values.get(i));
+            final String value = values.get(i);
+            if (value!=null) m.put(myKeys()[i], value);
+        }
+        if (m.isEmpty()) {
+            return null;
         }
         DocumentResource dr=new RedisDocumentResource(m);
         logger.info("get " + key + " " + m);
@@ -73,20 +74,15 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
         logger.info("put " + key );
         RedisDocumentResource rdr=(RedisDocumentResource)dr;
         client.hmset(key,rdr.getMap());
-        logger.info("put done " + key );
 
     }
-/*
-    @Override
-    public <EXTENDED_RESOURCE extends DocumentResource> ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE> getExtender(Instantiable<EXTENDED_RESOURCE> f) {
-        return new ExtendedDocumentResourceIndexFactory(this,f);
-    }
 
- */
 
     @Override
     public void remove(String key) {
-        client.del(key);
+        //client.hdel(key,myKeys());
+        Long n=client.del(key);
+        logger.info("removed " + key + " " + n);
     }
 
     @Override

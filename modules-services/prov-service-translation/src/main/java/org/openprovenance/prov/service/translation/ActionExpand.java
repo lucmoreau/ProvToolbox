@@ -1,6 +1,5 @@
 package org.openprovenance.prov.service.translation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.interop.Formats;

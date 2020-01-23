@@ -1,8 +1,7 @@
 package org.openprovenance.prov.service.translation.memory;
 
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.service.translation.TemplateResource;
-import org.openprovenance.prov.service.translation.TemplateResourceIndex;
+import org.openprovenance.prov.service.core.TemplateResource;
 
 import java.util.Map;
 

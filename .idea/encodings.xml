@@ -56,12 +56,11 @@
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/config" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/storage-index-redis" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/storage-mongodb" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/storage-mongodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-template" charset="UTF-8" />

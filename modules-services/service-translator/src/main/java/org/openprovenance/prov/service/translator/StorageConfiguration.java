@@ -9,16 +9,18 @@ import org.openprovenance.prov.service.core.DocumentResource;
 import org.openprovenance.prov.service.core.ResourceIndex;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
 import org.openprovenance.prov.service.core.filesystem.DocumentResourceStorageFileSystem;
-import org.openprovenance.prov.service.core.filesystem.NonDocumentGenericResourceStorageFileSystem;
 import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 import org.openprovenance.prov.service.translation.ActionExpand;
-import org.openprovenance.prov.service.translation.TemplateResource;
+import org.openprovenance.prov.service.core.TemplateResource;
 import org.openprovenance.prov.service.translation.filesystem.BindingsResourceStorageFileSystem;
 import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
 public class StorageConfiguration {
 
@@ -30,7 +32,7 @@ public class StorageConfiguration {
         initInMemory(config);
         final String DBNAME = "prov";
         config.documentCacheSize=200;
-        config.storageManager=new DocumentResourceStorageFileSystem(factory);
+        config.storageManager=new DocumentResourceStorageFileSystem(factory, new File(UPLOADED_FILE_PATH));
 
         config.pFactory= factory;
         ProvSerialiser serial = new ProvSerialiser();

@@ -5,51 +5,58 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-storage/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/AbstractResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/NonDocumentGenericResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/NonDocumentResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/NonDocumentResourceIndex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/NonDocumentResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/ResourceIndex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/ResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/service/core/filesystem/DocumentResourceStorageFileSystem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/service/core/filesystem/NonDocumentGenericResourceStorageFileSystem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/service/core/filesystem/NonDocumentResourceStorageFileSystem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-service-0.9.1-SNAPSHOT.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb-0.9.1-SNAPSHOT.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/AsciiWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/BindingsWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/CSVWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/DocumentWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoAsciiBlobStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoBindingsResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoNonDocumentResourceStorage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/TypeWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/config/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/Init.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/Template_blockBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoBindingsDbTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoCSVDbTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoDb2Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/mongoJLDDocumentDbTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/resources/bindings1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/resources/test1.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/prov-storage-index-redis.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedResourceIndex.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisTemplateResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisTemplateResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_ws_rs_jboss_jaxrs_api_2_1_spec_1_0_3_Final.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/AbstractResource.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentResource.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Instantiable.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/Instantiable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NonDocumentGenericResourceStorage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NonDocumentResource.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NonDocumentResourceIndex.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/NonDocumentResourceStorage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceIndex.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourceStorage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/filesystem/DocumentResourceStorageFileSystem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/filesystem/NonDocumentGenericResourceStorageFileSystem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/filesystem/NonDocumentResourceStorageFileSystem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/JobDeleteTemplateResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/JobDeleteTemplateResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/TemplateResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core/TemplateResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/filesystem/BindingsResourceStorageFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/filesystem/BindingsResourceStorageFileSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/memory/TemplateResourceInMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/memory/TemplateResourceInMemory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/memory/TemplateResourceIndexInMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/memory/TemplateResourceIndexInMemory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisDocumentResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedDocumentResourceIndexFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedDocumentResourceIndexFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisExtendedResourceIndex.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisTemplateResource.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/src/main/java/org/openprovenance/prov/redis/RedisTemplateResourceIndex.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-index-redis/storage-index-redis.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/storage-mongodb/storage-mongodb.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb-0.9.1-SNAPSHOT.log" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb-0.9.1-SNAPSHOT.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,11 +153,11 @@
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-storage" />
       <recent name="$PROJECT_DIR$/modules-core/prov-model/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala" />
-      <recent name="$PROJECT_DIR$/modules-tutorial" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.interop.Configuration" />
@@ -383,7 +390,7 @@
       <workItem from="1579193436836" duration="62163000" />
       <workItem from="1579551877689" duration="1097000" />
       <workItem from="1579627674311" duration="9499000" />
-      <workItem from="1579711129972" duration="10325000" />
+      <workItem from="1579711129972" duration="18042000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -453,6 +460,10 @@
     <state x="541" y="252" key="#com.intellij.ide.util.MemberChooser/0.23.1440.829@0.23.1440.829" timestamp="1579105149064" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1579356464175" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1579641334197" />
+    <state x="1110" y="457" width="621" height="273" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1579771687553">
+      <screen x="0" y="23" width="2560" height="1338" />
+    </state>
+    <state x="1110" y="457" width="621" height="273" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.23.2560.1338@0.23.2560.1338" timestamp="1579771687553" />
     <state x="1347" y="237" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog" timestamp="1579206920306">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>

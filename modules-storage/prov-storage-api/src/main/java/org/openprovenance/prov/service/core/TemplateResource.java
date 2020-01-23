@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.translation;
+package org.openprovenance.prov.service.core;
 
 import org.openprovenance.prov.service.core.DocumentResource;
 

@@ -13,9 +13,10 @@
     <artifactId>modules-storage</artifactId>
 
     <modules>
-      <module>prov-storage-api</module>
+        <module>prov-storage-api</module>
         <module>prov-storage-filesystem</module>      
-        <module>prov-storage-mongodb</module>      
+        <module>prov-storage-mongodb</module>
+        <module>prov-storage-index-redis</module>
     </modules>
 
 

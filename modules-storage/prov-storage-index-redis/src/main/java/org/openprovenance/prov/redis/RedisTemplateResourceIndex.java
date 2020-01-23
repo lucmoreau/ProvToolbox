@@ -5,7 +5,7 @@ import org.openprovenance.apache.commons.lang.ArrayUtils;
 import org.openprovenance.prov.service.core.DocumentResource;
 import org.openprovenance.prov.service.core.Instantiable;
 import org.openprovenance.prov.service.core.ResourceIndex;
-import org.openprovenance.prov.service.translation.TemplateResource;
+import org.openprovenance.prov.service.core.TemplateResource;
 
 import java.util.Arrays;
 import java.util.HashMap;

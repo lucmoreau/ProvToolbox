@@ -23,6 +23,7 @@
         <option value="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" />
         <option value="$PROJECT_DIR$/modules-executable/prov-interop-light/pom.xml" />
         <option value="$PROJECT_DIR$/modules-storage/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" />
       </list>
     </option>
   </component>

@@ -36,6 +36,18 @@
             <version>0.9.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-api</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-filesystem</artifactId>
+            <version>0.9.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- only used in DocumentMessageBodyWriter -->
         <dependency>
             <groupId>org.openprovenance.prov</groupId>

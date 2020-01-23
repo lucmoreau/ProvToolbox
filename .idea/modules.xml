@@ -14,6 +14,7 @@
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/modules-legacy.iml" filepath="$PROJECT_DIR$/modules-legacy/modules-legacy.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-misc/modules-misc.iml" filepath="$PROJECT_DIR$/modules-misc/modules-misc.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/modules-services.iml" filepath="$PROJECT_DIR$/modules-services/modules-services.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-storage/modules-storage.iml" filepath="$PROJECT_DIR$/modules-storage/modules-storage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/modules-template.iml" filepath="$PROJECT_DIR$/modules-template/modules-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-tutorial/modules-tutorial.iml" filepath="$PROJECT_DIR$/modules-tutorial/modules-tutorial.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" filepath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" />
@@ -33,6 +34,9 @@
       <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" filepath="$PROJECT_DIR$/modules-services/prov-service-translation/prov-service-translation.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-storage/prov-storage-api/prov-storage-api.iml" filepath="$PROJECT_DIR$/modules-storage/prov-storage-api/prov-storage-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-storage/prov-storage-filesystem/prov-storage-filesystem.iml" filepath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/prov-storage-filesystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" filepath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" />

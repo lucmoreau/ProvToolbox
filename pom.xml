@@ -26,6 +26,7 @@
 
 
 		<module>modules-tutorial</module>
+		<module>modules-storage</module>
 		<module>modules-services</module>
 
 

@@ -10,7 +10,7 @@
   </appender>
   
   <appender name="file" class="org.apache.log4j.RollingFileAppender"> 
-    <param name="file" value="${validation.log.location}prov-storage-mongodb-${project.version}.log"/>  <!-- maven variable validation.log.location defined in a profile -->
+    <param name="file" value="target/prov-storage-mongodb-${project.version}.log"/>  <!-- maven variable validation.log.location defined in a profile -->
     <param name="MaxFileSize" value="10000KB"/>
     <!-- Keep one backup file -->
     <param name="MaxBackupIndex" value="10"/>

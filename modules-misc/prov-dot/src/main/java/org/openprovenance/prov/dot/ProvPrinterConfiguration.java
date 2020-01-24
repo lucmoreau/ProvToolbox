@@ -27,21 +27,21 @@ import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProvPrinterConfiguration">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="relations" type="{http://openprovenance.org/model/opmPrinterConfig}RelationStyleMap" minOccurs="0"/>
- *         &lt;element name="activities" type="{http://openprovenance.org/model/opmPrinterConfig}ActivityMap" minOccurs="0"/>
- *         &lt;element name="entities" type="{http://openprovenance.org/model/opmPrinterConfig}EntityMap" minOccurs="0"/>
- *         &lt;element name="agents" type="{http://openprovenance.org/model/opmPrinterConfig}AgentMap" minOccurs="0"/>
- *         &lt;element name="accounts" type="{http://openprovenance.org/model/opmPrinterConfig}AccountMap" minOccurs="0"/>
- *         &lt;element name="displayEntityValue" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="graphName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="ProvPrinterConfiguration"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="relations" type="{http://openprovenance.org/model/opmPrinterConfig}RelationStyleMap" minOccurs="0"/&gt;
+ *         &lt;element name="activities" type="{http://openprovenance.org/model/opmPrinterConfig}ActivityMap" minOccurs="0"/&gt;
+ *         &lt;element name="entities" type="{http://openprovenance.org/model/opmPrinterConfig}EntityMap" minOccurs="0"/&gt;
+ *         &lt;element name="agents" type="{http://openprovenance.org/model/opmPrinterConfig}AgentMap" minOccurs="0"/&gt;
+ *         &lt;element name="accounts" type="{http://openprovenance.org/model/opmPrinterConfig}AccountMap" minOccurs="0"/&gt;
+ *         &lt;element name="displayEntityValue" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="graphName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

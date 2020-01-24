@@ -24,12 +24,12 @@ import org.openprovenance.prov.model.QualifiedName;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Other">
- *   &lt;simpleContent>
- *     &lt;extension base="&lt;http://www.w3.org/ns/prov#>TypedValue">
- *     &lt;/extension>
- *   &lt;/simpleContent>
- * &lt;/complexType>
+ * &lt;complexType name="Other"&gt;
+ *   &lt;simpleContent&gt;
+ *     &lt;extension base="&lt;http://www.w3.org/ns/prov#&gt;TypedValue"&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/simpleContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

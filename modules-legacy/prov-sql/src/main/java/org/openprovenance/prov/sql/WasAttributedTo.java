@@ -40,21 +40,21 @@ import org.openprovenance.prov.xml.SortedAttributeList;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Attribution">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
- *       &lt;sequence>
- *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element name="agent" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;any namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Attribution"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="entity" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *         &lt;element name="agent" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}label" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}type" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.w3.org/ns/prov#}others" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;any namespace='##other' maxOccurs="unbounded" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

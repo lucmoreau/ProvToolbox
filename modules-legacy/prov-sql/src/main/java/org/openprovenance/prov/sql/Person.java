@@ -31,12 +31,12 @@ import org.openprovenance.prov.xml.builder.JAXBToStringBuilder;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Person">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.w3.org/ns/prov#}Agent">
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Person"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://www.w3.org/ns/prov#}Agent"&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

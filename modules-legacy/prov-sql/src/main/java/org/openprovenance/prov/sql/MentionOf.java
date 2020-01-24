@@ -29,17 +29,17 @@ import org.openprovenance.prov.model.StatementOrBundle;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Mention">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
- *       &lt;sequence>
- *         &lt;element name="specificEntity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element name="generalEntity" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *         &lt;element name="bundle" type="{http://www.w3.org/ns/prov#}IDRef"/>
- *       &lt;/sequence>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Mention"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="specificEntity" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *         &lt;element name="generalEntity" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *         &lt;element name="bundle" type="{http://www.w3.org/ns/prov#}IDRef"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

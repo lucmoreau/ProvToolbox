@@ -36,30 +36,30 @@ import org.openprovenance.prov.model.ProvUtilities;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="AValue">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice>
- *         &lt;element name="int" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="string" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="long" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="short" type="{http://www.w3.org/2001/XMLSchema}short"/>
- *         &lt;element name="double" type="{http://www.w3.org/2001/XMLSchema}double"/>
- *         &lt;element name="float" type="{http://www.w3.org/2001/XMLSchema}float"/>
- *         &lt;element name="decimal" type="{http://www.w3.org/2001/XMLSchema}decimal"/>
- *         &lt;element name="boolean" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="byte" type="{http://www.w3.org/2001/XMLSchema}byte"/>
- *         &lt;element name="anyURI" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
- *         &lt;element name="qname" type="{http://www.w3.org/2001/XMLSchema}QName"/>
- *         &lt;element name="unsignedInt" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
- *         &lt;element name="unsignedLong" type="{http://www.w3.org/2001/XMLSchema}unsignedLong"/>
- *         &lt;element name="dateTime" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
- *         &lt;element name="gYear" type="{http://www.w3.org/2001/XMLSchema}gYear"/>
- *         &lt;element name="integer" type="{http://www.w3.org/2001/XMLSchema}integer"/>
- *       &lt;/choice>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="AValue"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;choice&gt;
+ *         &lt;element name="int" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="string" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="long" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="short" type="{http://www.w3.org/2001/XMLSchema}short"/&gt;
+ *         &lt;element name="double" type="{http://www.w3.org/2001/XMLSchema}double"/&gt;
+ *         &lt;element name="float" type="{http://www.w3.org/2001/XMLSchema}float"/&gt;
+ *         &lt;element name="decimal" type="{http://www.w3.org/2001/XMLSchema}decimal"/&gt;
+ *         &lt;element name="boolean" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="byte" type="{http://www.w3.org/2001/XMLSchema}byte"/&gt;
+ *         &lt;element name="anyURI" type="{http://www.w3.org/2001/XMLSchema}anyURI"/&gt;
+ *         &lt;element name="qname" type="{http://www.w3.org/2001/XMLSchema}QName"/&gt;
+ *         &lt;element name="unsignedInt" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/&gt;
+ *         &lt;element name="unsignedLong" type="{http://www.w3.org/2001/XMLSchema}unsignedLong"/&gt;
+ *         &lt;element name="dateTime" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
+ *         &lt;element name="gYear" type="{http://www.w3.org/2001/XMLSchema}gYear"/&gt;
+ *         &lt;element name="integer" type="{http://www.w3.org/2001/XMLSchema}integer"/&gt;
+ *       &lt;/choice&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

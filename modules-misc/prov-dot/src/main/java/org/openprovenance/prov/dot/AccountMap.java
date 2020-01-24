@@ -30,17 +30,17 @@ import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="AccountMap">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="account" type="{http://openprovenance.org/model/opmPrinterConfig}AccountColorMapEntry" maxOccurs="unbounded" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute name="defaultAccount" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="defaultColor" type="{http://www.w3.org/2001/XMLSchema}string" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="AccountMap"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="account" type="{http://openprovenance.org/model/opmPrinterConfig}AccountColorMapEntry" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attribute name="defaultAccount" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="defaultColor" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

@@ -37,16 +37,16 @@ import org.openprovenance.prov.model.StatementOrBundle;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="NamedBundle">
- *   &lt;complexContent>
- *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement">
- *       &lt;sequence maxOccurs="unbounded">
- *         &lt;group ref="{http://www.w3.org/ns/prov#}documentElements"/>
- *       &lt;/sequence>
- *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="NamedBundle"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://www.w3.org/ns/prov#}AStatement"&gt;
+ *       &lt;sequence maxOccurs="unbounded"&gt;
+ *         &lt;group ref="{http://www.w3.org/ns/prov#}documentElements"/&gt;
+ *       &lt;/sequence&gt;
+ *       &lt;attribute ref="{http://www.w3.org/ns/prov#}id"/&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

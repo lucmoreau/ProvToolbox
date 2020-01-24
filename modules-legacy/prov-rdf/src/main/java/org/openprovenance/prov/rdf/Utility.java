@@ -64,7 +64,7 @@ public class Utility {
         }
     }
 
-    /** Parse from input stream, no base uri specified. */
+    /* Parse from input stream, no base uri specified. */
 
     public Document parseRDF(InputStream inputStream,
                              Formats.ProvFormat format,
@@ -102,7 +102,7 @@ public class Utility {
         return rioFormat;
     }
 
-    /** Parse from input stream passing base uri . */
+    /* Parse from input stream passing base uri . */
 
     public Document parseRDF(InputStream inputStream, 
                              RDFParser rdfParser, 

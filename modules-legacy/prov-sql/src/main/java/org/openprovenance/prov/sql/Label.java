@@ -23,12 +23,12 @@ import org.openprovenance.prov.model.QualifiedName;
  * this class.
  * 
  * <pre>
- * &lt;complexType name="Label">
- *   &lt;simpleContent>
- *     &lt;extension base="&lt;http://www.w3.org/ns/prov#>TypedValue">
- *     &lt;/extension>
- *   &lt;/simpleContent>
- * &lt;/complexType>
+ * &lt;complexType name="Label"&gt;
+ *   &lt;simpleContent&gt;
+ *     &lt;extension base="&lt;http://www.w3.org/ns/prov#&gt;TypedValue"&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/simpleContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

@@ -34,7 +34,7 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 	}
 
 	public VanillaDocumentMessageBodyWriter(ProvSerialiser serializer) {
-		System.out.println("*********** VanillaDocumentMessageBodyWriter  ************");
+		//System.out.println("*********** VanillaDocumentMessageBodyWriter  ************");
 		this.serializer=serializer;
 	}
 

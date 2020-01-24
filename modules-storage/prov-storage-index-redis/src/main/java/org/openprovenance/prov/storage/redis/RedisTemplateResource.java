@@ -1,6 +1,6 @@
-package org.openprovenance.prov.redis;
+package org.openprovenance.prov.storage.redis;
 
-import org.openprovenance.prov.service.core.TemplateResource;
+import org.openprovenance.prov.storage.api.TemplateResource;
 
 import java.util.Map;
 

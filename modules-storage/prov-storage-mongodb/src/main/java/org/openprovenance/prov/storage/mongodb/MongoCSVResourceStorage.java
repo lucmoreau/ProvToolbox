@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
-import org.openprovenance.prov.service.core.NonDocumentGenericResourceStorage;
+import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 
 import java.io.IOException;
 import java.io.InputStream;

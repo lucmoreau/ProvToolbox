@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.storage.api;
 
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.Document;

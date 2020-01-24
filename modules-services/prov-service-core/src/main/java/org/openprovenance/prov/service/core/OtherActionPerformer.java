@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.openprovenance.prov.storage.api.DocumentResource;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;

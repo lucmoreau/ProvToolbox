@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.storage.api;
 
 public interface Instantiable<T> {
     T newResource(DocumentResource dr);

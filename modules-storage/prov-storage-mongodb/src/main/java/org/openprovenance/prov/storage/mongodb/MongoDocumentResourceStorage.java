@@ -15,7 +15,7 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.ResourceStorage;
+import org.openprovenance.prov.storage.api.ResourceStorage;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public void copyInputStreamToStore(InputStream inputStream, Formats.ProvFormat format, String id) throws IOException {
-        logger.info("copyStrcopyInputStreamToStore  " + id);
+        logger.debug("copyStrcopyInputStreamToStore  " + id);
         Document doc=interop.readDocument(inputStream, format, "");  //TODO: can we improve?
         if (!(doc instanceof org.openprovenance.prov.vanilla.Document)) {
             // if it was constructed with a different factory, convert to vanilla
@@ -90,7 +90,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public void copyStringToStore(CharSequence str, Formats.ProvFormat format, String id) throws IOException {
-        logger.info("copyStringToStore " + id);
+        logger.debug("copyStringToStore " + id);
         InputStream stream = IOUtils.toInputStream(str, Charset.defaultCharset());
         copyInputStreamToStore(stream,format, id);
     }
@@ -109,7 +109,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
-        logger.info("writeDocument " + id);
+        logger.debug("writeDocument " + id);
         documentCollection.updateById(id, DBUpdate.set("document", doc));
     }
 

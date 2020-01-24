@@ -1,8 +1,8 @@
 package org.openprovenance.prov.service.translation.memory;
 
-import org.openprovenance.prov.service.core.DocumentResource;
+import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.service.core.memory.ExtendedDocumentResourceInMemory;
-import org.openprovenance.prov.service.core.TemplateResource;
+import org.openprovenance.prov.storage.api.TemplateResource;
 
 public class TemplateResourceInMemory extends ExtendedDocumentResourceInMemory implements TemplateResource, Cloneable {
 

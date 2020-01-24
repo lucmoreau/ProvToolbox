@@ -5,7 +5,7 @@ import com.mongodb.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
-import org.openprovenance.prov.service.core.NonDocumentResourceStorage;
+import org.openprovenance.prov.storage.api.NonDocumentResourceStorage;
 
 import java.io.*;
 /* Documentation
@@ -44,14 +44,14 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     @Override
     public void copyInputStreamToStore(InputStream inputStream, String id) throws IOException {
-        logger.info("copyInputStreamToStore: " + id);
+        logger.debug("copyInputStreamToStore: " + id);
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
         IOUtils.copy(inputStream,baos);
         copyStringToStore(baos.toString(),id);
     }
 
     public DBObject findDocumentById(DBCollection collection, String id) {
-        logger.info("findDocumentById: " + id);
+        logger.debug("findDocumentById: " + id);
 
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
@@ -62,7 +62,7 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
 
     @Override
     public void copyStringToStore(CharSequence str, String id) throws IOException {
-        logger.info("copyStringToStore: " + id);
+        logger.debug("copyStringToStore: " + id);
 
         DBCollection collection = db.getCollection(COLLECTION_FILES);
 

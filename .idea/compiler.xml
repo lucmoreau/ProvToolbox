@@ -38,7 +38,6 @@
         <module name="toolbox" />
         <module name="prov-template" />
         <module name="prov-model-scala" />
-        <module name="storage-mongodb" />
         <module name="prov-template-compiler" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">

@@ -1,6 +1,9 @@
 package org.openprovenance.prov.service.core.memory;
 
-import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.Instantiable;
+import org.openprovenance.prov.storage.api.NonDocumentResource;
+import org.openprovenance.prov.storage.api.NonDocumentResourceIndex;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,9 +1,7 @@
 package org.openprovenance.prov.service.core.memory;
 
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.DocumentResource;
-import org.openprovenance.prov.service.core.NonDocumentResource;
-import org.openprovenance.prov.service.core.ResourceIndex;
+import org.openprovenance.prov.storage.api.NonDocumentResource;
+import org.openprovenance.prov.storage.api.ResourceIndex;
 
 import java.util.Date;
 import java.util.HashMap;

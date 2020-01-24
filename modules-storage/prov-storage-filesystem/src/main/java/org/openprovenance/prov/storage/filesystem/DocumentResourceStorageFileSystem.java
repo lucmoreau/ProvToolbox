@@ -1,11 +1,11 @@
-package org.openprovenance.prov.service.core.filesystem;
+package org.openprovenance.prov.storage.filesystem;
 
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.service.core.ResourceStorage;
+import org.openprovenance.prov.storage.api.ResourceStorage;
 
 import java.io.File;
 import java.io.IOException;

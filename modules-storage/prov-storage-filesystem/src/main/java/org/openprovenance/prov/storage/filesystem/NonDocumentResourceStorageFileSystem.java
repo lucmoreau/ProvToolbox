@@ -1,9 +1,9 @@
-package org.openprovenance.prov.service.core.filesystem;
+package org.openprovenance.prov.storage.filesystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.service.core.NonDocumentResourceStorage;
+import org.openprovenance.prov.storage.api.NonDocumentResourceStorage;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

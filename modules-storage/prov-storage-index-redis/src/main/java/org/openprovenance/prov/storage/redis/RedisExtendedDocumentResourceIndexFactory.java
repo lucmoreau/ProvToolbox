@@ -1,9 +1,9 @@
-package org.openprovenance.prov.redis;
+package org.openprovenance.prov.storage.redis;
 
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.service.core.DocumentResource;
-import org.openprovenance.prov.service.core.Instantiable;
-import org.openprovenance.prov.service.core.ResourceIndex;
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.Instantiable;
+import org.openprovenance.prov.storage.api.ResourceIndex;
 
 import java.util.Arrays;
 import java.util.HashMap;

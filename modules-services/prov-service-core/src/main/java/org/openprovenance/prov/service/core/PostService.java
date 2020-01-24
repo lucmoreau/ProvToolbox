@@ -15,13 +15,14 @@ import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
+import org.openprovenance.prov.storage.api.DocumentResource;
 import org.quartz.SchedulerException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class PostService implements Constants, InteropMediaType {
     private final int deletePeriod;
 
     public PostService(ServiceUtilsConfig config) {
-        this(config,new LinkedList<>(),Optional.empty());
+        this(config, new LinkedList<>(), Optional.empty());
     }
 
     public JobManagement getJobManager() {
@@ -48,24 +49,25 @@ public class PostService implements Constants, InteropMediaType {
     private Optional<OtherActionPerformer> otherPerformer;
 
     public static <E> List<E> addToList(E element, List<E> list) {
-        List<E> result=new LinkedList<>();
+        List<E> result = new LinkedList<>();
         result.add(element);
         result.addAll(list);
         return result;
     }
 
-    public PostService(ServiceUtilsConfig config,List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
-        utils=new ServiceUtils(this,config);
-        this.autoDelete=config.autoDelete;
-        this.deletePeriod=config.deletePeriod;
+    public PostService(ServiceUtilsConfig config, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
+        utils = new ServiceUtils(this, config);
+        this.autoDelete = config.autoDelete;
+        this.deletePeriod = config.deletePeriod;
         jobManager.setupScheduler();
         try {
             jobManager.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
+            jobManager.getScheduler().getContext().put(JobManagement.DURATION_KEY, config.deletePeriod);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
-        this.performers=performers;
-        this.otherPerformer=otherPerformer;
+        this.performers = performers;
+        this.otherPerformer = otherPerformer;
     }
 
     public ServiceUtils getServiceUtils() {
@@ -77,37 +79,36 @@ public class PostService implements Constants, InteropMediaType {
     }
 
     public void addOtherPerformer(Optional<OtherActionPerformer> newOtherPerformer) {
-      otherPerformer=newOtherPerformer;
+        otherPerformer = newOtherPerformer;
     }
 
 
     @POST
     @Path("/documents/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Tag(name="documents")
+    @Tag(name = "documents")
 
     @Operation(summary = "Post a document. Payload is a form that may contain a file, prov statements or a url",
             description = "Post a document in a form; indicate if validation or translation required; and redirects to the appropriate page. This method  is also designed for browser interaction, allowing the user to select a file, a url or statements for provenance.  The user may specify validate or translate directly.",
-            responses = {  @ApiResponse(responseCode = "303",
-                    headers=@Header(name="location",description="Location of posted document"),
+            responses = {@ApiResponse(responseCode = "303",
+                    headers = @Header(name = "location", description = "Location of posted document"),
                     description = "See other url for serialization of posted resource as requested by accept header."),
-                    @ApiResponse(responseCode = "404", description = "Provenance not found") })
+                    @ApiResponse(responseCode = "404", description = "Provenance not found")})
 
     public Response submit(@Parameter(name = "form",
-                                      description = "form to be posted",
-                                        required=true,
+            description = "form to be posted",
+            required = true,
 
-                                        schema =@Schema(implementation = UploadForm.class))
-                                                                   MultipartFormDataInput input,
-                                                       @Context HttpHeaders headers,
-                                                       @Context HttpServletRequest requestContext) {
+            schema = @Schema(implementation = UploadForm.class))
+                                   MultipartFormDataInput input,
+                           @Context HttpHeaders headers,
+                           @Context HttpServletRequest requestContext) {
         MediaType mediaType = headers.getMediaType();
         System.out.println("post media type is" + mediaType);
 
         if (mediaType.toString().startsWith("multipart/form-data")) {
 
             try {
-
 
 
                 Map<String, List<InputPart>> formData = input.getFormDataMap();
@@ -136,16 +137,15 @@ public class PostService implements Constants, InteropMediaType {
                 }
 
 
-
                 Date date = autoDelete ? jobManager.scheduleJob(vr.getVisibleId()) : null;
                 vr.setExpires(date);
 
                 final ServiceUtils.Action action = utils.getAction(formData);
-                doLog(action,vr);
+                doLog(action, vr);
 
                 logger.info("trying performers " + performers);
 
-                for (ActionPerformer performer: performers) {
+                for (ActionPerformer performer : performers) {
                     logger.info("trying performer " + performer.getAction());
                     if (performer.getAction().equals(action)) {
                         logger.info("invoking performer " + performer.getAction());
@@ -155,10 +155,10 @@ public class PostService implements Constants, InteropMediaType {
                 }
 
 
-                logger.info("checking other performer " );
-                if (otherPerformer.isPresent() && otherPerformer.get().otherAction(action,formData)) {
-                    logger.info("invoking other performer " );
-                    return otherPerformer.get().doAction(action,formData,vr, date);
+                logger.info("checking other performer ");
+                if (otherPerformer.isPresent() && otherPerformer.get().otherAction(action, formData)) {
+                    logger.info("invoking other performer ");
+                    return otherPerformer.get().doAction(action, formData, vr, date);
                 }
 
                 //default
@@ -168,14 +168,13 @@ public class PostService implements Constants, InteropMediaType {
                 return utils.composeResponseSeeOther(location).header("Expires", date).build();
 
             } catch (UncheckedException e) {
-                return utils.composeResponseBadRequest("URI problem (" + e.getCause() + ")",e);
+                return utils.composeResponseBadRequest("URI problem (" + e.getCause() + ")", e);
             } catch (ParserException e) {
-                return utils.composeResponseBadRequest("Parser problem",e);
-            }
-            catch (Throwable t) {
+                return utils.composeResponseBadRequest("Parser problem", e);
+            } catch (Throwable t) {
                 t.printStackTrace();
                 String result = "exception occurred";
-                return utils.composeResponseInternalServerError(result,t);
+                return utils.composeResponseInternalServerError(result, t);
             }
         } else {
             String result = "Media type " + mediaType + " Not Supported yet";
@@ -185,30 +184,29 @@ public class PostService implements Constants, InteropMediaType {
     }
 
 
-
     @POST
     @Path("/documents2/")
-    @Tag(name="documents")
-    @Consumes({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
+    @Tag(name = "documents")
+    @Consumes({MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-            MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON })
+            MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON})
     @Operation(summary = "Post a document, directly, creates a resource, supports content negotiation, redirects to URL providing serialization for the resource",
             description = "It supports the direct posting of documents using a prov serialization.",
-            responses = { @ApiResponse( responseCode = "200",
+            responses = {@ApiResponse(responseCode = "200",
                     //headers=@Header(name="location",description="Location of posted document"),
-                    content={@Content(mediaType=MEDIA_TEXT_TURTLE),
-                            @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-                            @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_TRIG),
-                            @Content(mediaType=MEDIA_APPLICATION_RDF_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_JSON)}),
+                    content = {@Content(mediaType = MEDIA_TEXT_TURTLE),
+                            @Content(mediaType = MEDIA_TEXT_PROVENANCE_NOTATION),
+                            @Content(mediaType = MEDIA_APPLICATION_PROVENANCE_XML),
+                            @Content(mediaType = MEDIA_APPLICATION_TRIG),
+                            @Content(mediaType = MEDIA_APPLICATION_RDF_XML),
+                            @Content(mediaType = MEDIA_APPLICATION_JSON)}),
                     @ApiResponse(responseCode = "303",
-                            headers=@Header(name="location",description="Location of posted document"),
+                            headers = @Header(name = "location", description = "Location of posted document"),
                             description = "See other url for serialization of posted resource as requested by accept header."),
-                    @ApiResponse(responseCode = "404", description = "Provenance not found") })
+                    @ApiResponse(responseCode = "404", description = "Provenance not found")})
     public Response submit2(@Parameter(name = "input",
             description = "input file in a prov serialization",
-            example="document\n prefix ex <http://foo>\n entity(ex:e)\nendDocument") InputStream input,
+            example = "document\n prefix ex <http://foo>\n entity(ex:e)\nendDocument") InputStream input,
                             @Context HttpHeaders headers,
                             //@Context HttpServletRequest requestContext,
                             @Context Request request) {
@@ -229,7 +227,7 @@ public class PostService implements Constants, InteropMediaType {
         // TODO: maybe not return content directly
 
         if (true) {
-            return utils.contentNegotiationForDocument(request,vr.getVisibleId(),".");
+            return utils.contentNegotiationForDocument(request, vr.getVisibleId(), ".");
         }
 
         return utils.composeResponseSeeOther("documents/" + vr.getVisibleId()).header("Expires", date).build();
@@ -248,7 +246,7 @@ public class PostService implements Constants, InteropMediaType {
 
     private DocumentResource processUrlInForm(Map<String, List<InputPart>> formData) {
         DocumentResource vr = null;
-        List<InputPart> inputParts= formData.get("url");
+        List<InputPart> inputParts = formData.get("url");
         if (inputParts != null) {
 
             vr = utils.doProcessURLForm(inputParts);
@@ -257,7 +255,7 @@ public class PostService implements Constants, InteropMediaType {
     }
 
     private DocumentResource processStatementsInForm(Map<String, List<InputPart>> formData) {
-        DocumentResource vr=null;
+        DocumentResource vr = null;
         List<InputPart> inputParts = formData.get("statements");
         List<InputPart> type = formData.get("type");
         if (inputParts != null) {
@@ -269,7 +267,7 @@ public class PostService implements Constants, InteropMediaType {
     }
 
     private void doLog(ServiceUtils.Action action, DocumentResource vr) {
-        doLog(action.toString(),vr);
+        doLog(action.toString(), vr);
     }
 
     private void doLog(String action, DocumentResource vr) {
@@ -279,6 +277,25 @@ public class PostService implements Constants, InteropMediaType {
                         + vr.getStorageId());
     }
 
+    @GET
+    @Path("/resources/prov/{name}.{type}")
+    @Tag(name = "documents")
+    @Operation(summary = "Returns static provenance document",
+            description = "No content negotiation allowed here.",
+            responses = {@ApiResponse(responseCode = "200", description = "Representation of document"),
+                         @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND)})
+    public Response getResource(@Context HttpServletResponse response,
+                                @Context HttpServletRequest request,
+                                @Parameter(name = "name", description = "document name", required = true) @PathParam("name") String name,
+                                @Parameter(name = "type", description = "document type", required = true) @PathParam("type") String type) throws IOException {
 
+
+        logger.info("requesting resource " + name);
+        InputStream stream=this.getClass().getResourceAsStream("/resources/prov/" + name + "." + type);
+        StreamingOutput promise=out -> stream.transferTo(out);
+        return utils.composeResponseOK(promise).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
+
+
+    }
 
 }

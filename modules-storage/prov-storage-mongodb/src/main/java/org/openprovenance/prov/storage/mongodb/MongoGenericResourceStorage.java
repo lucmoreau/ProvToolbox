@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
-import org.openprovenance.prov.service.core.NonDocumentGenericResourceStorage;
+import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,15 +74,15 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
 
     @Override
     public void serializeObjectToStore(TYPE o, String id) {
-        logger.info("serializeObjectToStore " + id);
+        logger.debug("serializeObjectToStore " + id);
         genericCollection.updateById(id, DBUpdate.set(TypeWrapper.VALUE, o));
     }
 
     @Override
     public void copyStoreToOutputStream(String id, OutputStream outputStream) throws IOException {
-        logger.info("copyStoreToOutputStream: deserializeObjectFromStore " + id);
+        logger.debug("copyStoreToOutputStream: deserializeObjectFromStore " + id);
         TYPE object=deserializeObjectFromStore(id);
-        logger.info("copyStoreToOutputStream: writeValue  " + id);
+        logger.debug("copyStoreToOutputStream: writeValue  " + id);
         mapper.writeValue(outputStream,object);
     }
 

@@ -1,10 +1,11 @@
 package org.openprovenance.prov.service.core.memory;
 
-import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.Instantiable;
+import org.openprovenance.prov.storage.api.ResourceIndex;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class DocumentResourceIndexInMemory implements ResourceIndex<DocumentResource> {
     static int count=100000;

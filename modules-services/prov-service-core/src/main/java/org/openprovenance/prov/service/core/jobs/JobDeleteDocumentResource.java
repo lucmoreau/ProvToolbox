@@ -1,8 +1,8 @@
 package org.openprovenance.prov.service.core.jobs;
 
 import org.apache.log4j.Logger;
-import org.openprovenance.prov.service.core.DocumentResource;
-import org.openprovenance.prov.service.core.NonDocumentResource;
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.NonDocumentResource;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

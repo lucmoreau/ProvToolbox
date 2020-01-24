@@ -13,8 +13,9 @@ public class JobManagement {
     public static final String LOG_URL = "logUrl";
     public static final String LOG_SOURCE = "logSource";
 	public static final String UTILS_KEY = "utils";
+    public static final String DURATION_KEY = "duration";
 
-	static Logger logger = Logger.getLogger(JobManagement.class);
+    static Logger logger = Logger.getLogger(JobManagement.class);
 	
     public static final String LOGGED_MESSAGE = "loggedMessage";
 
@@ -40,6 +41,7 @@ public class JobManagement {
 		}
 	}
 
+	/*
 	public Date scheduleJobOld(String visibleId) {
 
 		JobDetail job = JobBuilder.newJob(JobDeleteDocumentResource.class).withIdentity(visibleId, "graph").build();
@@ -60,18 +62,26 @@ public class JobManagement {
 		}
 	}
 
+	 */
+
 	public Date scheduleJob(String visibleId) {
 		return scheduleJob(JobDeleteDocumentResource.class,visibleId,"-trigger", "graph");
 	}
 
 	public Date scheduleJob(Class<? extends Job> jobClazz, String visibleId, String idSuffix, String group) {
 
+		int duration=600; //seconds
+		try {
+			duration=(Integer)the_scheduler.getContext().get(JobManagement.DURATION_KEY);
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
 		JobDetail job = JobBuilder.newJob(jobClazz).withIdentity(visibleId, group).build();
 
 		// Trigger the job to run on the next 10 round minute
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity(visibleId + idSuffix, group)
-				.startAt(DateBuilder.futureDate(1, IntervalUnit.MINUTE))
+				.startAt(DateBuilder.futureDate(duration, IntervalUnit.SECOND))
 				.build();
 		try {
 			Date date=scheduler.scheduleJob(job, trigger);

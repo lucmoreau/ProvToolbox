@@ -1,7 +1,7 @@
-package org.openprovenance.prov.redis;
+package org.openprovenance.prov.storage.redis;
 
-import org.openprovenance.prov.service.core.DocumentResource;
-import org.openprovenance.prov.service.core.ResourceIndex;
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.ResourceIndex;
 
 public class RedisExtendedResourceIndex<EXTENDED_RESOURCE extends DocumentResource> implements ResourceIndex<EXTENDED_RESOURCE> {
 

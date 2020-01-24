@@ -1,5 +1,9 @@
 package org.openprovenance.prov.service.core;
 
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.Instantiable;
+import org.openprovenance.prov.storage.api.ResourceIndex;
+
 public class ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends DocumentResource>  implements ResourceIndex<EXTENDED_RESOURCE> {
 
     private final ResourceIndex<EXTENDED_RESOURCE> eri;

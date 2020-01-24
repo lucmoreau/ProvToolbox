@@ -2,7 +2,7 @@ package org.openprovenance.prov.service.translation;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.service.core.ActionPerformer;
-import org.openprovenance.prov.service.core.DocumentResource;
+import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.service.core.ServiceUtils;
 
 import javax.ws.rs.core.Response;

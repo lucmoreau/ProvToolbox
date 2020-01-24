@@ -63,7 +63,12 @@
   <category name="org.openprovenance.prov.interop">   
     <priority value="INFO"/>   
     <appender-ref ref="file"/>
-  </category> 
+  </category>
+
+  <category name="org.openprovenance.prov.storage">
+    <priority value="INFO"/>
+    <appender-ref ref="file"/>
+  </category>
 
   <category name="org.openprovenance.validation">   
     <priority value="WARN"/>   

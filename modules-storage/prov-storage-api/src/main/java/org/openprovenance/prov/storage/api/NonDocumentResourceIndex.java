@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.storage.api;
 
 public interface NonDocumentResourceIndex<T extends NonDocumentResource> {
     T get(String key);

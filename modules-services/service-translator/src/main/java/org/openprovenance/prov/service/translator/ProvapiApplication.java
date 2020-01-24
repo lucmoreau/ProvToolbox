@@ -3,19 +3,13 @@ package org.openprovenance.prov.service.translator;
 
  
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
 
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.redis.RedisDocumentResourceIndex;
-import org.openprovenance.prov.redis.RedisTemplateResourceIndex;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.service.core.filesystem.DocumentResourceStorageFileSystem;
-import org.openprovenance.prov.service.core.memory.DocumentResourceIndexInMemory;
 import org.openprovenance.prov.service.translation.*;
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
@@ -29,7 +23,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.openprovenance.prov.service.translation.memory.TemplateResourceIndexInMemory;
 import org.openprovenance.prov.xml.ProvFactory;
 
 @OpenAPIDefinition(

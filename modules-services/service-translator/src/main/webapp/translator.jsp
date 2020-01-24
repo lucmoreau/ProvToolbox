@@ -72,28 +72,25 @@
 		      
 		      <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
 			<span class="caret"></span>
-		      </a> 
-		      
-		      
-		      <ul class="dropdown-menu">
-			<li>Examples</li>
-			<li><a href="#" onclick="updateURLInputBox('https://raw.github.com/lucmoreau/ProvToolbox/master/prov-n/src/test/resources/prov/primer.pn')">
-			    <i class="icon-ok"></i> Primer</a>
-			</li>
-			<li><a href="#" onclick="updateURLInputBox('https://raw.github.com/lucmoreau/ProvToolbox/master/prov-n/src/test/resources/prov/sculpture.prov-asn')">
-			    <i class="icon-ok"></i> Sculpture</a>
-			</li>
-			<li><a href="#" onclick="updateURLInputBox('https://raw.github.com/lucmoreau/ProvToolbox/master/prov-xml/src/test/resources/pc1.xml')">
-			    <i class="icon-ok"></i> PC1</a>
-			</li>
-			<li><a href="#" onclick="updateURLInputBox('https://raw.github.com/lucmoreau/ProvToolbox/master/prov-xml/src/test/resources/invalid.xml')">
-			    <i class="icon-remove"></i> Invalid</a>
-			</li>
-			
-			<li class="divider"></li>
-			<li><a href="#" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
-		      </ul>
-		    </div>
+		      </a>
+
+
+				<ul class="dropdown-menu">
+					<li>Examples</li>
+					<li><a href="#" onclick="updateLocalURLInputBox('resources/prov/primer.provn')">
+						<i class="icon-ok"></i> Primer</a>
+					</li>
+					<li><a href="#" onclick="updateLocalURLInputBox('resources/prov/pc1.provn')">
+						<i class="icon-ok"></i> PC1</a>
+					</li>
+					<li><a href="#" onclick="updateLocalURLInputBox('resources/prov/invalid.provn')">
+						<i class="icon-remove"></i> Invalid</a>
+					</li>
+
+					<li class="divider"></li>
+					<li><a href="#" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+				</ul>
+			</div>
 		  </td>
 		</tr>
 		<tr>

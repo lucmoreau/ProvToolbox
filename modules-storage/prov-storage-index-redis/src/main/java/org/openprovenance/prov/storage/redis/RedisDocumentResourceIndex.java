@@ -1,6 +1,8 @@
-package org.openprovenance.prov.redis;
+package org.openprovenance.prov.storage.redis;
 
-import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.Instantiable;
+import org.openprovenance.prov.storage.api.ResourceIndex;
 import redis.clients.jedis.Jedis;
 
 import java.text.DateFormat;
@@ -12,14 +14,15 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
     private static Logger logger = Logger.getLogger(RedisDocumentResourceIndex.class);
 
-    static final String FIELD_VISIBLE_ID ="_vid_";
-    static final String FIELD_STORE_ID ="_id_";
-    static final String FIELD_EXPIRES ="_expires_";
-    static final String FIELD_KIND ="_kind_";
-    static final String FIELD_BINDINGS_ID="_bid_";
-    static final String FIELD_TEMPLATE_ID="_tid_";
+    static final String FIELD_VISIBLE_ID  = "_vid_";
+    static final String FIELD_EXTENSION   = "_ext_";
+    static final String FIELD_STORE_ID    = "_id_";
+    static final String FIELD_EXPIRES     = "_exp_";
+    static final String FIELD_KIND        = "_kind_";
+    static final String FIELD_BINDINGS_ID = "_bid_";
+    static final String FIELD_TEMPLATE_ID = "_tid_";
 
-    private final String[] myKeyArray = {FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND};
+    private final String[] myKeyArray = {FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND, FIELD_EXTENSION};
 
 
     final Locale loc = new Locale("en", "UK");
@@ -64,14 +67,14 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
         if (m.isEmpty()) {
             return null;
         }
+        logger.debug("get " + key + " " + m);
         DocumentResource dr=new RedisDocumentResource(m);
-        logger.info("get " + key + " " + m);
         return dr;
     }
 
     @Override
     public void put(String key, DocumentResource dr) {
-        logger.info("put " + key );
+        logger.debug("put " + key );
         RedisDocumentResource rdr=(RedisDocumentResource)dr;
         client.hmset(key,rdr.getMap());
 
@@ -82,7 +85,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     public void remove(String key) {
         //client.hdel(key,myKeys());
         Long n=client.del(key);
-        logger.info("removed " + key + " " + n);
+        logger.debug("removed " + key + " " + n);
     }
 
     @Override
@@ -96,6 +99,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
         String id=newId();
         DocumentResource rdr=new RedisDocumentResource();
         rdr.setVisibleId(id);
+        put(id,rdr);
         return rdr;
     }
 

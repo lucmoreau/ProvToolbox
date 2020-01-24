@@ -72,7 +72,7 @@
       <module name="prov-rdf" target="11" />
       <module name="prov-scala" target="9" />
       <module name="prov-service-core" target="9" />
-      <module name="prov-service-translation" target="9" />
+      <module name="prov-service-translation" target="11" />
       <module name="prov-sql" target="9" />
       <module name="prov-storage-api" target="11" />
       <module name="prov-storage-filesystem" target="11" />

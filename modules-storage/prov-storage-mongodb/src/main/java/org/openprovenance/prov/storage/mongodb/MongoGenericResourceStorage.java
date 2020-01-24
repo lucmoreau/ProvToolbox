@@ -21,7 +21,7 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
 
     private final DB db;
 
-    private static Logger logger = Logger.getLogger(MongoDocumentResourceStorage.class);
+    private static Logger logger = Logger.getLogger(MongoGenericResourceStorage.class);
 
     private final JacksonDBCollection<TypeWrapper<TYPE>, String> genericCollection;
 

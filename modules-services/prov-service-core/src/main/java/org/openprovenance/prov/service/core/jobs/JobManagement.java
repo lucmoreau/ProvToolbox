@@ -85,7 +85,7 @@ public class JobManagement {
 				.build();
 		try {
 			Date date=scheduler.scheduleJob(job, trigger);
-			logger.info("schedule date " + date);
+			logger.debug("schedule date " + date);
 			return date;
 		} catch (SchedulerException e) {
 			e.printStackTrace();

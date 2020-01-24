@@ -21,7 +21,7 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     private final DB db;
 
-    private static Logger logger = Logger.getLogger(MongoDocumentResourceStorage.class);
+    private static Logger logger = Logger.getLogger(MongoAsciiBlobStorage.class);
 
     private final JacksonDBCollection<AsciiWrapper, String> genericCollection;
 
@@ -59,8 +59,8 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     @Override
     public void serializeObjectToStore(String o, String id) {
-        logger.info("serializeObjectToStore " + id);
-        logger.info("serializeObjectToStore " + o);
+        logger.debug("serializeObjectToStore " + id);
+        logger.debug("serializeObjectToStore " + o);
         genericCollection.updateById(id, DBUpdate.set(TypeWrapper.VALUE, o));
     }
 

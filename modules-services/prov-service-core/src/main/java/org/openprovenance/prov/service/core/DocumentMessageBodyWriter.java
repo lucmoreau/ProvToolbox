@@ -58,7 +58,7 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
 		String media=trimCharSet(mediaType);
 
-		System.out.println(" ---- writeTo doc " + media);
+	//	System.out.println(" ---- writeTo doc " + media);
 
 		serializer.serialiseDocument(entityStream, doc, media, true);
 	}

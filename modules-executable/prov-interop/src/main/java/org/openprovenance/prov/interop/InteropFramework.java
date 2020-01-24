@@ -814,14 +814,14 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             throw new UnsupportedOperationException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
         }
         SerializerFunction serializerMaker=serializerMap.get(format);
-        logger.info("serializer " + format + " " + serializerMaker);
+        logger.debug("serializer " + format + " " + serializerMaker);
         serializerMaker.apply().serialiseDocument(out,document,mediaType,formatted);
     }
 
 
     public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException {
         DeserializerFunction deserializer=deserializerMap.get(format);
-        logger.info("deserializer " + format + " " + deserializer);
+        logger.debug("deserializer " + format + " " + deserializer);
         return deserializer.apply().deserialiseDocument(is);
     }
 

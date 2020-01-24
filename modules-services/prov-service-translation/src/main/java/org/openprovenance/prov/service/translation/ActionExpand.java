@@ -119,7 +119,7 @@ public class ActionExpand implements ActionPerformer {
         //ndr.setStorageId(bindingsStoreId);
         bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
         //ndIndex.put(ndr.getVisibleId(),ndr);
-        logger.info("saving bindings " + " " + bindingsStoreId);
+        logger.debug("saving bindings " + " " + bindingsStoreId);
         tr.setBindingsStorageId(bindingsStoreId);
         //utils.getJobManager().scheduleJob(ndr.getVisibleId());
     }

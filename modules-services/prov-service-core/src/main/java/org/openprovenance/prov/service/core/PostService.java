@@ -143,21 +143,21 @@ public class PostService implements Constants, InteropMediaType {
                 final ServiceUtils.Action action = utils.getAction(formData);
                 doLog(action, vr);
 
-                logger.info("trying performers " + performers);
+                logger.debug("trying performers " + performers);
 
                 for (ActionPerformer performer : performers) {
-                    logger.info("trying performer " + performer.getAction());
+                    logger.debug("trying performer " + performer.getAction());
                     if (performer.getAction().equals(action)) {
-                        logger.info("invoking performer " + performer.getAction());
+                        logger.debug("invoking performer " + performer.getAction());
                         return performer.doAction(formData, vr, date);
                     }
 
                 }
 
 
-                logger.info("checking other performer ");
+                logger.debug("checking other performer ");
                 if (otherPerformer.isPresent() && otherPerformer.get().otherAction(action, formData)) {
-                    logger.info("invoking other performer ");
+                    logger.debug("invoking other performer ");
                     return otherPerformer.get().doAction(action, formData, vr, date);
                 }
 
@@ -215,9 +215,9 @@ public class PostService implements Constants, InteropMediaType {
         String type = mediaType.getType() + "/" + mediaType.getSubtype();
 
 
-        logger.info(">>> post media type is " + type);
+        logger.debug(">>> post media type is " + type);
 
-        logger.info("accept header is" + headers.getAcceptableMediaTypes());
+        logger.debug("accept header is" + headers.getAcceptableMediaTypes());
 
         DocumentResource vr = utils.doProcessFile(input, type);
 
@@ -290,7 +290,7 @@ public class PostService implements Constants, InteropMediaType {
                                 @Parameter(name = "type", description = "document type", required = true) @PathParam("type") String type) throws IOException {
 
 
-        logger.info("requesting resource " + name);
+        logger.debug("requesting resource " + name);
         InputStream stream=this.getClass().getResourceAsStream("/resources/prov/" + name + "." + type);
         StreamingOutput promise=out -> stream.transferTo(out);
         return utils.composeResponseOK(promise).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();

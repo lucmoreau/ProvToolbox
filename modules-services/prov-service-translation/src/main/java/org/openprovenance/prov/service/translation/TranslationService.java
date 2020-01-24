@@ -101,7 +101,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                           @Parameter(name = "type", description = "serialization type", example = "provn", 
                                                      schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg", "jsonld"}), required = true) @PathParam("type") String type)
                                                   throws IOException {
-        logger.info("translate to " + type);
+        logger.debug("translate to " + type);
 
 
         if ((type == null) || (!translationExtensions.contains(type))) {

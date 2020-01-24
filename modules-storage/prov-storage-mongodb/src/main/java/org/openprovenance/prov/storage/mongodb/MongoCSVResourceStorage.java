@@ -28,7 +28,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
 
     private final DB db;
 
-    private static Logger logger = Logger.getLogger(MongoDocumentResourceStorage.class);
+    private static Logger logger = Logger.getLogger(MongoCSVResourceStorage.class);
 
     private final JacksonDBCollection<CSVWrapper, String> csvCollection;
 

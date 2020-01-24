@@ -58,7 +58,7 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 
 		String media=trimCharSet(mediaType);
 
-		System.out.println(" ---- writeTo doc " + media);
+		//System.out.println(" ---- writeTo doc " + media);
 
 	//	if (InteropMediaType.MEDIA_APPLICATION_JSONLD.equals(media)) {
 	//		new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(entityStream,doc,false);

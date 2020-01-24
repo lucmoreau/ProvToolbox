@@ -47,9 +47,9 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
 
     @Override
     public EXTENDED_RESOURCE get(String key) {
-        logger.info("get " + key );
+        logger.debug("get " + key );
         List<String> values=dri.client.hmget(key, myKeys());
-        logger.info("get " + key + values);
+        logger.debug("get " + key + values);
         Map<String,String> m=new HashMap<>();
         for (int i=0; i<myKeys().length; i++) {
             final String value = values.get(i);
@@ -59,7 +59,7 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
             return null;
         }
         EXTENDED_RESOURCE er=factory.newResource(new RedisDocumentResource(m));
-        logger.info("get " + key + " " + m);
+        logger.debug("get " + key + " " + m);
         return er;
     }
 
@@ -67,14 +67,14 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
     public void put(String key, EXTENDED_RESOURCE er) {
         RedisDocumentResource rdr=(RedisDocumentResource)er;
         dri.client.hmset(key,rdr.getMap());
-        logger.info("put done " + key + " " + rdr.getMap());
+        logger.debug("put done " + key + " " + rdr.getMap());
     }
 
 
     @Override
     public void remove(String key) {
         long n=dri.client.del(key);
-        logger.info("remove done " + key + " " + n);
+        logger.debug("remove done " + key + " " + n);
 
     }
 

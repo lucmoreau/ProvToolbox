@@ -419,7 +419,7 @@ public class ServiceUtils {
 
             storedResourceIdentifier=storageManager.newStore(format);
 
-            logger.info("storage Id: " + storedResourceIdentifier);
+            logger.debug("storage Id: " + storedResourceIdentifier);
 
             DocumentResource dr= documentResourceIndex.newResource();
 
@@ -427,11 +427,11 @@ public class ServiceUtils {
 
             documentResourceIndex.put(dr.getVisibleId(), dr);
 
-            logger.info("visible Id: " + dr.getVisibleId());
+            logger.debug("visible Id: " + dr.getVisibleId());
 
             storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
 
-            logger.info("----------- Done");
+            logger.debug("----------- Done");
 
             doProcessFile(dr, true);
 
@@ -451,7 +451,7 @@ public class ServiceUtils {
 
             Document doc;
 
-            logger.info("doProcessFile for " + dr.getVisibleId() + " " + dr.getStorageId());
+            logger.debug("doProcessFile for " + dr.getVisibleId() + " " + dr.getStorageId());
 
             doc=getDocumentFromCacheOrStore(dr.getStorageId());
 
@@ -477,16 +477,16 @@ public class ServiceUtils {
             doc = documentCache.get(storageId);
         }
         if (doc!=null) {
-            logger.info("Retrieved document from cache: " + storageId);
+            logger.debug("Retrieved document from cache: " + storageId);
             return doc;
         }
-        logger.info("Retrieving document from store: " + storageId);
+        logger.debug("Retrieving document from store: " + storageId);
         doc=storageManager.readDocument(storageId,true);
         if (doc!=null) {
             synchronized (this) {
                 documentCache.put(storageId, doc);
             }
-            logger.info("Stored document in cache: " + storageId);
+            logger.debug("Stored document in cache: " + storageId);
         }
         return doc;
     }
@@ -508,9 +508,9 @@ public class ServiceUtils {
             try {
 
                 MultivaluedMap<String, String> header = inputPart.getHeaders();
-                System.out.println("Header " + header);
-                System.out.println("Header " + header.values());
-                System.out.println("Header " + header.keySet());
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
 
 
                 String mybody = inputPart.getBodyAsString();
@@ -520,7 +520,7 @@ public class ServiceUtils {
                 Formats.ProvFormat format = interop.getTypeForFile("." + mytype);
 
                 storedResourceIdentifier=storageManager.newStore(format);
-                logger.info("storage Id: " + storedResourceIdentifier);
+                logger.debug("storage Id: " + storedResourceIdentifier);
 
                 logger.debug("processStatementsForm: type is " + mytype);
 
@@ -530,16 +530,16 @@ public class ServiceUtils {
 
                 documentResourceIndex.put(dr.getVisibleId(), dr);
 
-                logger.info("visible Id: " + dr.getVisibleId());
+                logger.debug("visible Id: " + dr.getVisibleId());
 
-                System.out.println("---------- Temp file name " + storedResourceIdentifier);
+                //System.out.println("---------- Temp file name " + storedResourceIdentifier);
 
                 storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
                 //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
                 // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
                 // WORK??
 
-                System.out.println("----------- Done");
+                //System.out.println("----------- Done");
 
                 return dr;
 
@@ -563,12 +563,12 @@ public class ServiceUtils {
             try {
 
                 MultivaluedMap<String, String> header = inputPart.getHeaders();
-                System.out.println("Header " + header);
-                System.out.println("Header " + header.values());
-                System.out.println("Header " + header.keySet());
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
 
                 fileName = getFileName(header);
-                System.out.println("---------- filename " + fileName);
+                //.out.println("---------- filename " + fileName);
                 if ((fileName == null) || (fileName.equals("")))
                     return null;
 
@@ -591,13 +591,13 @@ public class ServiceUtils {
 
 
 
-                logger.info("storage Id: " + storedResourceIdentifier);
-                logger.info("visible Id: " + dr.getVisibleId());
+                logger.debug("storage Id: " + storedResourceIdentifier);
+                logger.debug("visible Id: " + dr.getVisibleId());
 
                 storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
                 //FileUtils.copyInputStreamToFile(inputStream, temp);
 
-                System.out.println("----------- Done");
+                //System.out.println("----------- Done");
                 String formatString=(format != null) ? format.toString() : "unknown";
 
 
@@ -623,16 +623,16 @@ public class ServiceUtils {
             try {
 
                 MultivaluedMap<String, String> header = inputPart.getHeaders();
-                System.out.println("Header " + header);
-                System.out.println("Header " + header.values());
-                System.out.println("Header " + header.keySet());
+                logger.debug("Header " + header);
+                logger.debug("Header " + header.values());
+                logger.debug("Header " + header.keySet());
 
                 // convert the uploaded file to inputstream
                 InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
                 String url = IOUtils.toString(inputStream, Charset.defaultCharset()).trim();
 
-                System.out.println("---------- URL " + url);
+                //System.out.println("---------- URL " + url);
                 inputStream.close();
 
                 if ((url == null) || (url.equals(""))) {
@@ -682,8 +682,8 @@ public class ServiceUtils {
                 documentResourceIndex.put(dr.getVisibleId(), dr);
 
 
-                logger.info("storage Id: " + storedResourceIdentifier);
-                logger.info("visible Id: " + dr.getVisibleId());
+                logger.debug("storage Id: " + storedResourceIdentifier);
+                logger.debug("visible Id: " + dr.getVisibleId());
 
 
 

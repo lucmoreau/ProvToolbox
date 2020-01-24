@@ -273,7 +273,7 @@ public class TemplateService  implements Constants, InteropMediaType {
                                         schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg"}), required = true) @PathParam("type") String type)
     throws IOException {
 
-        logger.info("Retrieving template");
+        logger.debug("Retrieving template");
 
         TemplateResource tr=resourceIndex.get(msg);
 
@@ -307,7 +307,7 @@ public class TemplateService  implements Constants, InteropMediaType {
                                 @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg)
             throws IOException {
 
-        logger.info("Retrieving template");
+        logger.debug("Retrieving template");
 
         TemplateResource tr=resourceIndex.get(msg);
 
@@ -317,10 +317,10 @@ public class TemplateService  implements Constants, InteropMediaType {
         }
 
         String bindings_Id=tr.getBindingsStorageId();
-        logger.info("Retrieving template, found bindings resource " + bindings_Id);
+        logger.debug("Retrieving template, found bindings resource " + bindings_Id);
         //NonDocumentResource bindingsRecord=utils.getNonDocumentResourceIndex().get(bindings_Id);
         //String bindings_storageId=bindingsRecord.getStorageId();
-        //logger.info("Retrieving template, found bindings file " + bindings_storageId);
+        //logger.debug("Retrieving template, found bindings file " + bindings_storageId);
 
         StreamingOutput promise= out -> utils.getGenericResourceStorageMap().get(ActionExpand.BINDINGS_KEY).copyStoreToOutputStream(bindings_Id,out);
 

@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/EnvironmentVariables.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfigurationNew.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/StorageConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfigurationOld.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,10 +133,10 @@
       <recent name="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.translation" />
       <recent name="org.openprovenance.prov.service.core.jobs" />
-      <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.json" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
@@ -340,7 +345,7 @@
       <workItem from="1579193436836" duration="62163000" />
       <workItem from="1579551877689" duration="1097000" />
       <workItem from="1579627674311" duration="9499000" />
-      <workItem from="1579711129972" duration="44486000" />
+      <workItem from="1579711129972" duration="48233000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

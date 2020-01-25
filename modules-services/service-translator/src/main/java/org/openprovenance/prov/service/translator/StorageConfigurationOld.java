@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
-public class StorageConfiguration {
+public class StorageConfigurationOld {
 
 
 

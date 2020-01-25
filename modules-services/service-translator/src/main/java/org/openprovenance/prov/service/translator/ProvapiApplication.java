@@ -67,12 +67,13 @@ public class ProvapiApplication extends Application {
 	private Set<Object> singletons = new HashSet<Object>();
 
 
-	StorageConfiguration sc=new StorageConfiguration();
+	StorageConfigurationNew sc=new StorageConfigurationNew();
 
 
 	public ProvapiApplication() {
 		final ProvFactory factory = ProvFactory.getFactory();
-		ServiceUtilsConfig config=sc.makeFSConfig(factory);
+
+		ServiceUtilsConfig config=sc.makeConfig(factory);
 
 
 		PostService ps=new PostService(config);
@@ -82,7 +83,6 @@ public class ProvapiApplication extends Application {
 		singletons.add(new RandomService(ps));
 
 		singletons.add(new VisService(ps));
-		//singletons.add(new VisService());
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		

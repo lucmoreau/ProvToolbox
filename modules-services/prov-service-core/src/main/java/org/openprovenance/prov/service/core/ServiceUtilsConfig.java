@@ -11,11 +11,13 @@ import java.util.Map;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
-public class ServiceUtilsConfig {
-    public Map<String, ResourceIndex<?>> extensionMap =new HashMap<>();
-    public NonDocumentResourceIndex<NonDocumentResource> nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
-    public NonDocumentResourceStorage nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem(new File(UPLOADED_FILE_PATH));
-    public Map<String, NonDocumentGenericResourceStorage<?>> genericResourceStorageMap=new HashMap<>();
+public class ServiceUtilsConfig extends StorageConfig {
+    public ServiceUtilsConfig() {
+        extensionMap = new HashMap<String, ResourceIndex<?>>();
+        nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
+        nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem(new File(UPLOADED_FILE_PATH));
+        genericResourceStorageMap=new HashMap<>();
+    }
     public ResourceStorage storageManager;
     public int documentCacheSize;
     public ProvFactory pFactory;

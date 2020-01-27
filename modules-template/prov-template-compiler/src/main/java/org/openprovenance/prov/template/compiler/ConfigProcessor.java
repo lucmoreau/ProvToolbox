@@ -1,16 +1,9 @@
 package org.openprovenance.prov.template.compiler;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Arrays;
-import java.util.Iterator;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.javapoet.*;
+import com.squareup.javapoet.TypeSpec.Builder;
 import org.apache.maven.model.*;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -21,19 +14,13 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.Runner;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeSpec.Builder;
 import javax.lang.model.element.Modifier;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class ConfigProcessor {
     private static final String PREFIX_LOG_VAR = "___";
@@ -121,7 +108,7 @@ public class ConfigProcessor {
 	               .addModifiers(Modifier.PUBLIC)
 	                .addException(Exception.class)
 	               .returns(void.class)
-	               .addStatement("$T pf=org.openprovenance.prov.xml.ProvFactory.getFactory()",ProvFactory.class)
+	               .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()",ProvFactory.class)
 	       ;
 	     
 	     for (TemplateCompilerConfig template: configs.templates) {

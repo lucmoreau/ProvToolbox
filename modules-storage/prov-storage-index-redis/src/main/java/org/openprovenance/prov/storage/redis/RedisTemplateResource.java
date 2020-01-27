@@ -1,5 +1,6 @@
 package org.openprovenance.prov.storage.redis;
 
+import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
 
 import java.util.Map;
@@ -29,4 +30,6 @@ public class RedisTemplateResource extends RedisDocumentResource implements Temp
     public void setTemplateStorageId(String templateStorageId) {
         m.put(RedisDocumentResourceIndex.FIELD_TEMPLATE_ID,templateStorageId);
     }
+
+
 }

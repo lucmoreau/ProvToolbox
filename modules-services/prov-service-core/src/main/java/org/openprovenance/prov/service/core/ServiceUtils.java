@@ -421,21 +421,28 @@ public class ServiceUtils {
 
             logger.debug("storage Id: " + storedResourceIdentifier);
 
-            DocumentResource dr= documentResourceIndex.newResource();
 
-            dr.setStorageId(storedResourceIdentifier);
+            ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
 
-            documentResourceIndex.put(dr.getVisibleId(), dr);
+            try {
+                DocumentResource dr = index.newResource();
 
-            logger.debug("visible Id: " + dr.getVisibleId());
+                dr.setStorageId(storedResourceIdentifier);
 
-            storageManager.copyInputStreamToStore(inputStream,format,storedResourceIdentifier);
+                index.put(dr.getVisibleId(), dr);
 
-            logger.debug("----------- Done");
+                logger.debug("visible Id: " + dr.getVisibleId());
 
-            doProcessFile(dr, true);
+                storageManager.copyInputStreamToStore(inputStream, format, storedResourceIdentifier);
 
-            return dr;
+                logger.debug("----------- Done");
+
+                doProcessFile(dr, true);
+
+                return dr;
+            } finally {
+                index.close();
+            }
         } catch (Throwable e) {
 
             e.printStackTrace();
@@ -524,24 +531,26 @@ public class ServiceUtils {
 
                 logger.debug("processStatementsForm: type is " + mytype);
 
-                DocumentResource dr= documentResourceIndex.newResource();
+                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
 
-                dr.setStorageId(storedResourceIdentifier);
+                try {
+                    DocumentResource dr = index.newResource();
 
-                documentResourceIndex.put(dr.getVisibleId(), dr);
+                    dr.setStorageId(storedResourceIdentifier);
 
-                logger.debug("visible Id: " + dr.getVisibleId());
+                    index.put(dr.getVisibleId(), dr);
 
-                //System.out.println("---------- Temp file name " + storedResourceIdentifier);
+                    logger.debug("visible Id: " + dr.getVisibleId());
 
-                storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
-                //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
-                // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
-                // WORK??
+                    storageManager.copyStringToStore(mybody,format, storedResourceIdentifier);
+                    //FileUtils.write(temp, mybody, StandardCharsets.UTF_8);
+                    // FileUtils.copyInputStreamToFile(inputStream,temp); DOESN'T
+                    // WORK??
 
-                //System.out.println("----------- Done");
-
-                return dr;
+                    return dr;
+                } finally {
+                    index.close();
+                }
 
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -583,12 +592,17 @@ public class ServiceUtils {
                 storedResourceIdentifier=storageManager.newStore(format);
 
 
-                dr= documentResourceIndex.newResource();
+                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
 
-                dr.setStorageId(storedResourceIdentifier);
+                try {
+                    dr = index.newResource();
 
-                documentResourceIndex.put(dr.getVisibleId(), dr);
+                    dr.setStorageId(storedResourceIdentifier);
 
+                    index.put(dr.getVisibleId(), dr);
+                } finally {
+                    index.close();
+                }
 
 
                 logger.debug("storage Id: " + storedResourceIdentifier);
@@ -677,17 +691,21 @@ public class ServiceUtils {
                // FileUtils.copyInputStreamToFile(content_stream, temp);
 
 
-                DocumentResource dr= documentResourceIndex.newResource();
-                dr.setStorageId(storedResourceIdentifier);
-                documentResourceIndex.put(dr.getVisibleId(), dr);
+                ResourceIndex<DocumentResource> index=documentResourceIndex.getIndex();
+                try {
+                    DocumentResource dr = index.newResource();
+                    dr.setStorageId(storedResourceIdentifier);
+                    index.put(dr.getVisibleId(), dr);
 
 
-                logger.debug("storage Id: " + storedResourceIdentifier);
-                logger.debug("visible Id: " + dr.getVisibleId());
+                    logger.debug("storage Id: " + storedResourceIdentifier);
+                    logger.debug("visible Id: " + dr.getVisibleId());
 
 
-
-                return dr;
+                    return dr;
+                } finally {
+                    index.close();
+                }
 
             } catch (java.net.UnknownHostException e) {
                 throw new UncheckedException("UnknownHostException", e);

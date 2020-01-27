@@ -9,6 +9,8 @@ import java.text.DateFormat;
 import java.util.*;
 
 import org.apache.log4j.Logger;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResource> {
 
@@ -30,15 +32,36 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
 
     protected final Jedis client;
+    private final JedisPool pool;
 
     public RedisDocumentResourceIndex() {
-        client=new Jedis();
+        this(new JedisPool(new JedisPoolConfig(), "localhost"));
     }
+
     public RedisDocumentResourceIndex(String host) {
-        client = new Jedis(host);
+        this(new JedisPool(new JedisPoolConfig(), host));
     }
     public RedisDocumentResourceIndex(String host, int port) {
-        client = new Jedis(host, port);
+        this(new JedisPool(new JedisPoolConfig(), host, port));
+    }
+
+    public RedisDocumentResourceIndex(JedisPool pool) {
+        this.pool=pool;
+        this.client=null;
+    }
+
+    private RedisDocumentResourceIndex(JedisPool pool, Jedis client) {
+        this.pool=pool;
+        this.client=client;
+    }
+
+    public RedisDocumentResourceIndex getIndex() {
+        return new RedisDocumentResourceIndex(pool, pool.getResource());
+    }
+
+    @Override
+    public void close() {
+        client.close();
     }
 
     public String[] myKeys()  { return myKeyArray; }

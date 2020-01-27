@@ -804,7 +804,7 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                .returns(void.class)
                .addParameter(String[].class, "args")
-               .addStatement("$T pf=org.openprovenance.prov.xml.ProvFactory.getFactory()",ProvFactory.class)
+               .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()",ProvFactory.class)
                .addStatement("$N me=new $N(pf)",name,name);
 
        ;

@@ -54,38 +54,45 @@ public class ActionExpand implements ActionPerformer {
 
     @Override
     public Response doAction(Map<String, List<InputPart>> formData, DocumentResource dr, Date date) throws IOException {
-        TemplateResource tr=resourceIndex.newResource(dr);
-
-        Document templateDocument=utils.getDocumentFromCacheOrStore(tr.getStorageId());
-
-        ServiceUtils.Destination destination = utils.getDestination(formData);
-
-        List<InputPart> inputParts = formData.get("statements");
-        String bindings = inputParts.get(0).getBodyAsString();
-        logger.debug("bindings " + bindings);
-
-        Document expanded=expandTemplateWithBindings(templateDocument, tr, bindings);
-
-        DocumentResource theTemplate=resourceIndex.getAncestor().newResource();
-        final String originalStorageId = tr.getStorageId();
-
-        utils.getJobManager().scheduleJob(theTemplate.getVisibleId());
-        scheduleNewJob(tr.getVisibleId());
-
-        theTemplate.setStorageId(originalStorageId);
-        logger.info("is it necessary for template to be exposed as " + theTemplate.getVisibleId() + " " + theTemplate.getStorageId());  // TODO: Should not if the template already existed in store
-
-        String expandedStoreId=storeExpandedDocument(expanded);
-        tr.setStorageId(expandedStoreId);
-        tr.setTemplateStorageId(originalStorageId);
-        resourceIndex.put(tr.getVisibleId(),tr);
 
 
+        ResourceIndex<TemplateResource> index=resourceIndex.getIndex();
+        try {
+            TemplateResource tr = index.newResource(dr);
 
-        doLog(tr);
 
-        String location= "documents/" + tr.getVisibleId() + "." + destination;
-        return utils.composeResponseSeeOther(location).header("Expires", date).build();
+            Document templateDocument = utils.getDocumentFromCacheOrStore(tr.getStorageId());
+
+            ServiceUtils.Destination destination = utils.getDestination(formData);
+
+            List<InputPart> inputParts = formData.get("statements");
+            String bindings = inputParts.get(0).getBodyAsString();
+            logger.debug("bindings " + bindings);
+
+            Document expanded = expandTemplateWithBindings(templateDocument, tr, bindings);
+
+            DocumentResource theTemplate = index.getAncestor().newResource();  // This is also thread safe!
+            final String originalStorageId = tr.getStorageId();
+
+            utils.getJobManager().scheduleJob(theTemplate.getVisibleId());
+            scheduleNewJob(tr.getVisibleId());
+
+            theTemplate.setStorageId(originalStorageId);
+            logger.info("is it necessary for template to be exposed as " + theTemplate.getVisibleId() + " " + theTemplate.getStorageId());  // TODO: Should not if the template already existed in store
+
+            String expandedStoreId = storeExpandedDocument(expanded);
+            tr.setStorageId(expandedStoreId);
+            tr.setTemplateStorageId(originalStorageId);
+            index.put(tr.getVisibleId(), tr);
+
+
+            doLog(tr);
+
+            String location = "documents/" + tr.getVisibleId() + "." + destination;
+            return utils.composeResponseSeeOther(location).header("Expires", date).build();
+        } finally {
+            index.close();
+        }
     }
 
     private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindings) throws IOException {
@@ -111,35 +118,17 @@ public class ActionExpand implements ActionPerformer {
     }
 
     private void storeBindings(TemplateResource tr, BindingsJson.BindingsBean bean) throws IOException {
-        //final NonDocumentResourceIndex<NonDocumentResource> ndIndex = utils.getNonDocumentResourceIndex();
-        //NonDocumentResource ndr= ndIndex.newResource();
-        //ndr.setMediaType("application/json");
+
         final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
         String bindingsStoreId= bindingsStorage.newStore("json", "application/json");
-        //ndr.setStorageId(bindingsStoreId);
+
         bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
-        //ndIndex.put(ndr.getVisibleId(),ndr);
+
         logger.debug("saving bindings " + " " + bindingsStoreId);
         tr.setBindingsStorageId(bindingsStoreId);
-        //utils.getJobManager().scheduleJob(ndr.getVisibleId());
+
     }
 
-    /*
-    private void storeBindings_ORIGINAL(TemplateResource tr, BindingsJson.BindingsBean bean) throws IOException {
-        final NonDocumentResourceIndex<NonDocumentResource> ndIndex = utils.getNonDocumentResourceIndex();
-        NonDocumentResource ndr= ndIndex.newResource();
-        ndr.setMediaType("application/json");
-        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
-        String bindingsStoreId= bindingsStorage.newStore("json", ndr.getMediaType());
-        ndr.setStorageId(bindingsStoreId);
-        bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
-        ndIndex.put(ndr.getVisibleId(),ndr);
-        logger.info("saving bindings " + ndr.getVisibleId() + " " + bindingsStoreId);
-        tr.setBindingsStorageId(ndr.getVisibleId());
-        utils.getJobManager().scheduleJob(ndr.getVisibleId());
-    }
-
-     */
 
 
     private String storeExpandedDocument(Document doc) throws IOException {
@@ -150,7 +139,6 @@ public class ActionExpand implements ActionPerformer {
             utils.documentCache.put(storeId,doc);
         }
         utils.getStorageManager().writeDocument(storeId, Formats.ProvFormat.PROVN,doc);
-       // interop.writeDocument(storeId, doc);
         return storeId;
     }
 

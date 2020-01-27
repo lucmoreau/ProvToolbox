@@ -275,22 +275,28 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         logger.debug("Retrieving template");
 
-        TemplateResource tr=resourceIndex.get(msg);
+        ResourceIndex<TemplateResource> index=resourceIndex.getIndex();
+
+        try {
+            TemplateResource tr = index.get(msg);
 
 
-        if (tr == null) {
-            return utils.composeResponseNotFoundResource(msg);
+            if (tr == null) {
+                return utils.composeResponseNotFoundResource(msg);
+            }
+
+            String template_storageId = tr.getTemplateStorageId();
+
+            Document doc = utils.getDocumentFromCacheOrStore(template_storageId);
+            if (doc == null) {
+                return utils.composeResponseNotFoundDocument(msg);
+            }
+            InteropFramework intF = new InteropFramework();
+            String mimeType = intF.convertExtensionToMediaType(type);
+            return utils.composeResponseOK(doc).type(mimeType).build();
+        } finally {
+            index.close();
         }
-
-        String template_storageId=tr.getTemplateStorageId();
-
-        Document doc=utils.getDocumentFromCacheOrStore(template_storageId);
-        if (doc == null) {
-            return utils.composeResponseNotFoundDocument(msg);
-        }
-        InteropFramework intF = new InteropFramework();
-        String mimeType = intF.convertExtensionToMediaType(type);
-        return utils.composeResponseOK(doc).type(mimeType).build();
 
     }
 
@@ -309,24 +315,27 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         logger.debug("Retrieving template");
 
-        TemplateResource tr=resourceIndex.get(msg);
+        ResourceIndex<TemplateResource> index=resourceIndex.getIndex();
+        try {
+            TemplateResource tr=index.get(msg);
 
 
-        if (tr == null) {
-            return utils.composeResponseNotFoundResource(msg);
+
+            if (tr == null) {
+                return utils.composeResponseNotFoundResource(msg);
+            }
+
+            String bindings_Id=tr.getBindingsStorageId();
+            logger.debug("Retrieving template, found bindings resource " + bindings_Id);
+
+
+            StreamingOutput promise= out -> utils.getGenericResourceStorageMap().get(ActionExpand.BINDINGS_KEY).copyStoreToOutputStream(bindings_Id,out);
+
+
+            return utils.composeResponseOK(promise).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } finally {
+            index.close();
         }
-
-        String bindings_Id=tr.getBindingsStorageId();
-        logger.debug("Retrieving template, found bindings resource " + bindings_Id);
-        //NonDocumentResource bindingsRecord=utils.getNonDocumentResourceIndex().get(bindings_Id);
-        //String bindings_storageId=bindingsRecord.getStorageId();
-        //logger.debug("Retrieving template, found bindings file " + bindings_storageId);
-
-        StreamingOutput promise= out -> utils.getGenericResourceStorageMap().get(ActionExpand.BINDINGS_KEY).copyStoreToOutputStream(bindings_Id,out);
-
-
-        return utils.composeResponseOK(promise).type(MediaType.APPLICATION_JSON_TYPE).build();
-
     }
 
 }

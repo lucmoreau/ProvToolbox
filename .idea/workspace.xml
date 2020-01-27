@@ -5,13 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/EnvironmentVariables.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfigurationNew.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/StorageConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/#RoundTripJavaToJavaTest.java#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/.#RoundTripJavaToJavaTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfigurationOld.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ExtendedDocumentResourceIndexFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ExtendedDocumentResourceIndexFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/memory/DocumentResourceIndexInMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/memory/DocumentResourceIndexInMemory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/ResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/ResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisDocumentResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisDocumentResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisExtendedDocumentResourceIndexFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisExtendedDocumentResourceIndexFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisExtendedResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisExtendedResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisTemplateResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisTemplateResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisTemplateResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisTemplateResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -345,7 +356,8 @@
       <workItem from="1579193436836" duration="62163000" />
       <workItem from="1579551877689" duration="1097000" />
       <workItem from="1579627674311" duration="9499000" />
-      <workItem from="1579711129972" duration="48233000" />
+      <workItem from="1579711129972" duration="52948000" />
+      <workItem from="1580141028092" duration="6904000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -409,12 +421,14 @@
       <screen x="0" y="23" width="1440" height="830" />
     </state>
     <state x="434" y="232" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1440.830@0.23.1440.830" timestamp="1579765154864" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1579641334197">
-      <screen x="0" y="23" width="2560" height="1338" />
+    <state x="962" y="394" key="#com.intellij.ide.util.MemberChooser" timestamp="1580153963324">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state x="541" y="252" key="#com.intellij.ide.util.MemberChooser/0.23.1440.829@0.23.1440.829" timestamp="1579105149064" />
+    <state x="541" y="253" key="#com.intellij.ide.util.MemberChooser/0.23.1440.833@0.23.1440.833" timestamp="1580144197651" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1579356464175" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1579641334197" />
+    <state x="962" y="394" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1343@0.23.2560.1343" timestamp="1580153963324" />
     <state x="1110" y="457" width="819" height="273" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1579886486372">
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
@@ -503,10 +517,11 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="949" y="316" key="run.anything.popup/0.23.2560.1338@0.23.2560.1338" timestamp="1578430643139" />
-    <state x="1579" y="295" width="670" height="676" key="search.everywhere.popup" timestamp="1579898954967">
-      <screen x="0" y="23" width="2560" height="1340" />
+    <state x="1579" y="296" width="670" height="678" key="search.everywhere.popup" timestamp="1580154075265">
+      <screen x="0" y="23" width="2560" height="1343" />
     </state>
     <state x="1579" y="295" width="670" height="676" key="search.everywhere.popup/0.23.2560.1340@0.23.2560.1340" timestamp="1579898954967" />
+    <state x="1579" y="296" width="670" height="678" key="search.everywhere.popup/0.23.2560.1343@0.23.2560.1343" timestamp="1580154075265" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

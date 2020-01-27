@@ -21,15 +21,15 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
 
 
 
-    private  final String[] extra;
-    private  final String[] myKeysArray;
+    protected  final String[] extra;
+    protected  final String[] myKeysArray;
 
 
     public String[] myKeys() {
         return myKeysArray;
     }
 
-    private final Instantiable<EXTENDED_RESOURCE> factory;
+    protected final Instantiable<EXTENDED_RESOURCE> factory;
     protected final RedisDocumentResourceIndex dri;
 
     public RedisExtendedDocumentResourceIndexFactory(RedisDocumentResourceIndex dri, Instantiable<EXTENDED_RESOURCE> factory, String [] extra) {
@@ -37,6 +37,13 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
         this.factory=factory;
         this.extra=extra;
         this.myKeysArray=concat(dri.myKeys(),extra);
+    }
+
+    protected  RedisExtendedDocumentResourceIndexFactory(RedisDocumentResourceIndex dri, Instantiable<EXTENDED_RESOURCE> factory, String [] extra, String[] myKeysArray) {
+        this.dri=dri;
+        this.factory=factory;
+        this.extra=extra;
+        this.myKeysArray=myKeysArray;
     }
 
     public EXTENDED_RESOURCE newResource(DocumentResource dr) {
@@ -97,6 +104,19 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
     @Override
     public ResourceIndex<DocumentResource> getAncestor() {
         return dri;
+    }
+
+    /**
+     * Returns a thread safe instance.
+     */
+    @Override
+    public ResourceIndex<EXTENDED_RESOURCE> getIndex() {
+        return new RedisExtendedDocumentResourceIndexFactory(dri.getIndex(),factory,extra,myKeysArray);
+    }
+
+    @Override
+    public void close() {
+        dri.close();
     }
 
     /*

@@ -56,6 +56,19 @@ public class ExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends Docu
     public ResourceIndex<DocumentResource> getAncestor() {
         return dri;
     }
+
+    /**
+     * Returns a thread safe instance.
+     */
+    @Override
+    public ResourceIndex<EXTENDED_RESOURCE> getIndex() {
+        return null;
+    }
+
+    @Override
+    public void close() {
+
+    }
 /*
     @Override
     public <R2 extends EXTENDED_RESOURCE> ExtendedDocumentResourceIndexFactory<R2> getExtender(Instantiable<R2> factory2) {

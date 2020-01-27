@@ -63,4 +63,16 @@ public class RedisTemplateResourceIndex extends RedisExtendedDocumentResourceInd
     }
 
 
+    /**
+     * Returns a thread safe instance.
+     */
+    @Override
+    public ResourceIndex<TemplateResource> getIndex() {
+        return new RedisTemplateResourceIndex(dri.getIndex(),factory,extra,myKeysArray);
+    }
+
+    private RedisTemplateResourceIndex(RedisDocumentResourceIndex dri, Instantiable<TemplateResource> factory,String [] extra, String[] myKeysArray) {
+        super(dri,factory,extra,myKeysArray);
+    }
+
 }

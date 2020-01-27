@@ -58,4 +58,17 @@ public class RedisExtendedResourceIndex<EXTENDED_RESOURCE extends DocumentResour
     public ResourceIndex<DocumentResource> getAncestor() {
         return null;
     }
+
+    /**
+     * Returns a thread safe instance.
+     */
+    @Override
+    public ResourceIndex<EXTENDED_RESOURCE> getIndex() {
+        return null;
+    }
+
+    @Override
+    public void close() {
+
+    }
 }

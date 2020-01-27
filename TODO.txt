@@ -1,4 +1,14 @@
 
+- redis multithreadding:
+ https://stackoverflow.com/questions/50266666/how-to-create-several-jedis-instances-using-jedispool-in-a-multithreaded-environ
+
+instead of using client directly, one need ot use Jedis jedis = jedisPool.getResource()
+in each thread?
+
+https://github.com/xetorthio/jedis/wiki/Getting-started#basic-usage-example
+
+
+- template compiler, make it import prov-interop light or not
 
 
 - scheduler/deletion: outstanding issue

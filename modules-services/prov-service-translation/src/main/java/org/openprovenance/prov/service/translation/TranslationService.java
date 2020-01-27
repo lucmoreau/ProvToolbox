@@ -12,6 +12,7 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.storage.api.DocumentResource;
+import org.openprovenance.prov.storage.api.ResourceIndex;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,7 +110,9 @@ public class TranslationService implements Constants, InteropMediaType {
                                                  + " for resource : " + msg);
         }
 
-        DocumentResource vr = utils.getDocumentResourceIndex().get(msg);
+        ResourceIndex<DocumentResource> index=utils.getDocumentResourceIndex().getIndex();
+        DocumentResource vr = index.get(msg);
+        index.close();
 
 
         if (vr == null) {
@@ -138,7 +141,9 @@ public class TranslationService implements Constants, InteropMediaType {
                                        @Context HttpServletRequest request,
                                        @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg) {
 
-        DocumentResource dr = utils.getDocumentResourceIndex().get(msg);
+        ResourceIndex<DocumentResource> index=utils.getDocumentResourceIndex().getIndex();
+        DocumentResource dr = index.get(msg);
+        index.close();
 
         if (dr == null) {
             return utils.composeResponseNotFoundResource(msg);

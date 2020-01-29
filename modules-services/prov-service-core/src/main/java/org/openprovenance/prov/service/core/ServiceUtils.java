@@ -44,7 +44,7 @@ public class ServiceUtils {
     public static final String containerVersion = getPropertiesFromClasspath(fileName).getProperty("container.version");
     public static final String containerClassifier = getPropertiesFromClasspath(fileName).getProperty("container.classifier");
 
-    public static final String longContainerVersion = "ProvToolbox/modules-services ... " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
+    public static final String longContainerVersion = "ProvToolbox/modules-services " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
 
     private final JobManagement jobManager;
 

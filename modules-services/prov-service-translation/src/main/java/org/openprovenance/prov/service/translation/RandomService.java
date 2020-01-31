@@ -13,7 +13,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -36,7 +36,7 @@ public class RandomService implements Constants, InteropMediaType {
 
 
 
-    static final ProvFactory f=org.openprovenance.prov.xml.ProvFactory.getFactory();
+    final ProvFactory f;
 
     final ActionTranslate actionTranslate;
 
@@ -50,6 +50,7 @@ public class RandomService implements Constants, InteropMediaType {
 		postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
 
         actionTranslate=new ActionTranslate(utils);
+        f=utils.getProvFactory();
 
     }
 

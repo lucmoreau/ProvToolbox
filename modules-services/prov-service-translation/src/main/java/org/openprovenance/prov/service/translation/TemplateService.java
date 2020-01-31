@@ -23,7 +23,7 @@ import org.openprovenance.prov.storage.api.TemplateResource;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
-import org.openprovenance.prov.xml.ProvUtilities;
+import org.openprovenance.prov.model.ProvUtilities;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -238,10 +238,9 @@ public class TemplateService  implements Constants, InteropMediaType {
         String the_template=bindings_schema.get("template").asText();
 
         boolean allExpanded=false;
-        ProvFactory pFactory=org.openprovenance.prov.xml.ProvFactory.getFactory();
         boolean addOrderp=false;
 
-        Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
+        Expand myExpand=new Expand(f, addOrderp,allExpanded);
         Document expanded;
         Document document;
 
@@ -249,7 +248,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         document= (Document) interop.readDocument(the_template);
 
-        Bindings bb= BindingsJson.fromBean(BindingsJson.importBean(bindings_schema),pFactory);
+        Bindings bb= BindingsJson.fromBean(BindingsJson.importBean(bindings_schema),f);
 
         expanded = myExpand.expander(document,
                 bb);

@@ -13,10 +13,10 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.service.core.Constants;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
-import org.openprovenance.prov.xml.ProvUtilities;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

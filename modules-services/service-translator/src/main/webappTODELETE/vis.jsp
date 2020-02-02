@@ -1,4 +1,3 @@
-
 <html>
 
 <%@page import="org.apache.log4j.Logger" %>
@@ -15,6 +14,6 @@
 
 
 
-<iframe width="100%" height="100%" scrolling="no" src="<%=resourceUri%>"></iframe>
+<iframe width="100%" height="100%" scrolling="no" src="<%=resourceUri%>">
 
 </html>

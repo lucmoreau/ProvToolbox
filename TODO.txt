@@ -1,11 +1,14 @@
 
+- service test: a few tests are failing
+-- public void testQualifiedHadMember2(){} //ok in service.light
+-- public void testMembership1() {} //ok in service.light
 
 - template compiler, make it import prov-interop light or not
 
 
 - scheduler/deletion: outstanding issue
  -- template not deleted (though expansion and bindings are)
- -- the delete period from the confguration is not passed to the scheduler
+-- the delete period from the confguration is not passed to the scheduler
  -- would be good to have a test
  -- the validation report is empty but does not indicate missing resource
 

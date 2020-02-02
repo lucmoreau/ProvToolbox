@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ProvTranslator</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+
+	<style type="text/css">
+		body {
+			padding-left: 5px;
+		}
+		.sidebar-nav {
+			padding: 9px 0;
+		}
+	</style>
+	<script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+	<link href="../webjars/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-39466031-7"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-39466031-7');
+	</script>
+
+</head>
+
+<body>
+
+
+
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<ul class="nav navbar-nav">
+			<li id="header-translator"> <a href="translator">Translate</a></li>
+			<li id="header-expander">   <a href="expander">Expand</a></li>
+			<li id="header-api">        <a href="api">API</a></li>
+			<li id="header-about">      <a href="about">About</a></li>
+			<li id="header-contact">    <a href="contact">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<script>
+	$('#header-translator').addClass("active");
+</script>
+
+<section>
+	<div class="row">
+		<div class="col-sm-8" style="text-align:center;margin-top:80px;margin-bottom:50px">
+			<form action="../provapi/documents/" method="post" enctype="multipart/form-data">
+				<style type="text/css">
+					.input-append .btn .dropdown-toggle {
+						float: none;
+					}
+				</style>
+				<div style="text-align:left;">
+					<table style="margin-left: auto; margin-right: auto;">
+						<tr>
+							<td>Select a file:</td>
+							<td>
+								<input type="file"   name="file" class="primary" style="width:320px; "/>
+							</td>
+							<td> </td>
+							<td rowspan="3">
+								<input type="submit"   value="jsonld"   name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit"   value="json"     name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit"   value="provx"    name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit"   value="provn"    name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit"   value="turtle"   name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit"   value="trig"     name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+								<input type="submit"   value="svg"      name="translate"  class="btn btn-primary btn-large" style="text-align:center; width:80px; "/><br>
+							</td>
+						</tr>
+
+						<tr>
+							<td>Enter a URL:</td>
+							<td>
+								<div class="input-append btn-group">
+									<input id="the-url-input" type="text" name="url" class="input-large" style="width:317px; height:30px;"  />
+									<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+										<li>Examples</li>
+										<li><a href="#" onclick="updateRootURLInputBox('/resources/prov/primer.provn')">
+											<i class="icon-ok"></i> Primer</a>
+										</li>
+										<li><a href="#" onclick="updateRootURLInputBox('/resources/prov/pc1.provn')">
+											<i class="icon-ok"></i> PC1</a>
+										</li>
+										<li><a href="#" onclick="updateRootURLInputBox('/resources/prov/invalid.provn')">
+											<i class="icon-remove"></i> Invalid</a>
+										</li>
+										<li class="divider"></li>
+										<li><a href="#" onclick="updateURLInputBox('')"><i class="icon-trash"></i> Clear</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>Enter PROV statements:
+								<br>
+								<table>
+									<tr>
+										<td><input type="radio" name="type" value="ttl" checked/>ttl</td>
+										<td><input type="radio" name="type" value="rdf"/>rdf</td>
+									</tr>
+									<tr>
+										<td><input type="radio" name="type" value="provn"/>provn</td>
+										<td><input type="radio" name="type" value="provx"/>provx</td>
+									</tr>
+									<tr>
+										<td><input type="radio" name="type" value="trig"/>trig</td>
+										<td><input type="radio" name="type" value="json"/>json</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<textarea rows="10" name="statements" style="width:350px; "></textarea>
+							</td>
+						</tr>
+
+					</table>
+				</div>
+			</form>
+		</div>
+
+
+		<div class="col-sm-4" id="what-do-we?" style="text-align:left; width:350px; font-size: 90%; " >
+			<p style="font-size: 90%; "><b>What do we store?</b></p>
+			<p style="font-size: 90%; ">With this service, you can validate PROV representations or translate them into other representations.  This service does not store the PROV representations that you submit, but it stores <em>Collected Data</em> (our generic term for web access logs, provenance metrics, validation reports, provenance digest and anonymous summaries).</p>
+			<p style="font-size: 90%; "><b>Agreement</b></p>
+			<p style="font-size: 90%; ">By pressing the validate/translate buttons, you agree with the terms and conditions  of this service (for full details, <a href="https://openprovenance.org/ethics/provenance-web-services/">see ethics application</a>). Specifically, you agree for <em>Collected Data</em> being stored and used for research purpose by King's College London; you also agree that no guarantees are provided as to the correctness of the validation/analysis results. The information we capture is anonymous and we will not seek to try and identify users from  IP addresses. Given this, we provide no mechanism by which logged information can be erased.</p>
+		</div>
+	</div>
+
+</section>
+
+<div class="row">
+	<div class="span12" style="padding: 19px;">
+		Validator 0.9.1.1-SNAPSHOT (2020-01-29 20:02), ProvToolbox 0.9.2-SNAPSHOT (2020-01-31 05:14), ProvToolbox/modules-services 0.9.2-SNAPSHOT- (2020-01-31 05:14)
+	</div>
+</div>
+
+
+<script src="../webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script src="../js/provservice.js"></script>
+<script>
+	$('.dropdown-toggle').dropdown()
+</script>
+
+</body>
+</html>

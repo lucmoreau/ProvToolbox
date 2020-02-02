@@ -1,17 +1,15 @@
 
 package org.openprovenance.prov.service.translator;
 
- 
-import java.util.HashSet;
-
-import java.util.Set;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ApplicationPath;
-
-import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import org.jboss.resteasy.plugins.interceptors.CorsFilter;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @ApplicationPath("/view")

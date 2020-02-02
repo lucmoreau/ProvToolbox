@@ -332,6 +332,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
 
+		<swagger.ui.version>3.24.3</swagger.ui.version>
 
 
 		<java.version>1.8</java.version>

@@ -1,19 +1,17 @@
 package org.openprovenance.prov.service.translator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.interop.InteropFramework;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
-
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
-import org.openprovenance.prov.model.Document;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 @Provider
 public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {

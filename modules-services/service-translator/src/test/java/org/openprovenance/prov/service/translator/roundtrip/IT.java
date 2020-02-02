@@ -221,7 +221,7 @@ public class IT extends RoundTripFromJavaTest {
     public void testDictionaryMembership4() {}
 
 
-    public void testMembership1() {} //ok in service.light
+   // public void testMembership1() {} //ok in service.light
 
     public void testMembership2() {}
     public void testMembership3() {}
@@ -231,7 +231,7 @@ public class IT extends RoundTripFromJavaTest {
     public void testQualifiedAlternateOf1(){}
     public void testQualifiedAlternateOf2(){}
     public void testQualifiedHadMember1(){}
-    public void testQualifiedHadMember2(){} //ok in service.light
+    //public void testQualifiedHadMember2(){} //ok in service.light
     public void testQualifiedSpecializationOf1(){}
 
     @Override

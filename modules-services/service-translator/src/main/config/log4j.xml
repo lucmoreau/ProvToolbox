@@ -30,7 +30,7 @@
 -->
 
   <category name="org.openprovenance">   
-    <priority value="PROV" class="org.openprovenance.prov.log.ProvLevel" />   
+    <priority value="INFO" />
    <!-- <appender-ref ref="stdout"/> -->
     <appender-ref ref="file"/>    
   </category> 

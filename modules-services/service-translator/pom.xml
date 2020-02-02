@@ -13,47 +13,11 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-xml</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>  <!-- using the jboss version instead -->
-                    <artifactId>jaxb-api</artifactId>
-                    <groupId>javax.xml.bind</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-log</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-        </dependency>
 
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-n</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-dot</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-json</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-generator</artifactId>
+            <artifactId>prov-interop-light</artifactId>
             <version>0.9.3-SNAPSHOT</version>
         </dependency>
 
@@ -81,24 +45,19 @@
             </exclusions>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-interop</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
             <version>0.9.3-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-translation</artifactId>
+            <version>0.9.3-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
@@ -106,21 +65,7 @@
             <version>0.9.3-SNAPSHOT</version>
         </dependency>
 
-
         <!-- for testing -->
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-xml</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>  <!-- using the jboss version instead -->
-                    <artifactId>jaxb-api</artifactId>
-                    <groupId>javax.xml.bind</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
 
         <dependency>
@@ -131,47 +76,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-interop-light</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 
-
-
-        <!--
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <version>4.0.0.Beta5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.json</groupId>
-                    <artifactId>javax.json-api</artifactId>
-                </exclusion>
-
-                <exclusion>
-                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
-                    <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-                </exclusion>
-
-
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpcore</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        -->
 
         <dependency> <!-- overriding -->
             <groupId>javax.json</groupId>
@@ -187,31 +92,39 @@
 
 
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxb-provider</artifactId>
-            <version>${resteasy.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
-                    <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-impl</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
+        <!--
+
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxb-provider</artifactId>
+                    <version>${resteasy.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.spec.javax.xml.bind</groupId>
+                            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>com.sun.xml.bind</groupId>
+                            <artifactId>jaxb-core</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>com.sun.xml.bind</groupId>
+                            <artifactId>jaxb-impl</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+        -->
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-servlet-initializer</artifactId>
             <version>${resteasy.version}</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
+                    <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+                </exclusion>
                 <exclusion>
                     <artifactId>activation</artifactId>
                     <groupId>javax.activation</groupId>
@@ -235,6 +148,12 @@
             <scope>test</scope>
 
             <exclusions>
+
+                <exclusion>
+                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
+                    <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+                </exclusion>
+
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpcore-osgi</artifactId>
@@ -305,13 +224,6 @@
 
 
 
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-service-translation</artifactId>
-            <version>0.9.3-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
 
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -326,13 +238,12 @@
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/org.webjars/swagger-ui -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>swagger-ui</artifactId>
-            <version>3.23.0</version>  <!-- need to change version in jsp files too -->
+            <version>${swagger.ui.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
+
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
@@ -357,7 +268,6 @@
             <version>4.7.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.webjars.bowergithub.ajaxorg/ace-builds -->
         <dependency>
             <groupId>org.webjars.bowergithub.ajaxorg</groupId>
             <artifactId>ace-builds</artifactId>
@@ -418,6 +328,7 @@
 
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <goals>

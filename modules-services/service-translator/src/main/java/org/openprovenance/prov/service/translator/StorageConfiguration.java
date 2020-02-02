@@ -24,9 +24,9 @@ import java.util.function.Consumer;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
-public class StorageConfigurationNew implements EnvironmentVariables{
+public class StorageConfiguration implements EnvironmentVariables{
 
-    static Logger logger = Logger.getLogger(StorageConfigurationOld.class);
+    static Logger logger = Logger.getLogger(StorageConfiguration.class);
 
     public Map<String,String> defaultConfiguration=theDefaultConfiguration();
 

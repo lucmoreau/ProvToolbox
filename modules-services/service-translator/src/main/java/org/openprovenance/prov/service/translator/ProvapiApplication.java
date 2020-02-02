@@ -1,29 +1,34 @@
 
 package org.openprovenance.prov.service.translator;
 
- 
-import java.util.HashSet;
-import java.util.Set;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ApplicationPath;
-
-import org.jboss.resteasy.plugins.interceptors.CorsFilter;
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.service.translation.*;
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.servers.ServerVariable;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
-import io.swagger.v3.oas.annotations.info.Info;
-import org.openprovenance.prov.xml.ProvFactory;
+import io.swagger.v3.oas.annotations.servers.ServerVariable;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jboss.resteasy.plugins.interceptors.CorsFilter;
+import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.service.core.NodeMessageBodyWriter;
+import org.openprovenance.prov.service.core.PostService;
+import org.openprovenance.prov.service.core.ServiceUtilsConfig;
+import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.translation.RandomService;
+import org.openprovenance.prov.service.translation.TemplateService;
+import org.openprovenance.prov.service.translation.TranslationService;
+import org.openprovenance.prov.service.translation.VisService;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -67,11 +72,11 @@ public class ProvapiApplication extends Application {
 	private Set<Object> singletons = new HashSet<Object>();
 
 
-	StorageConfigurationNew sc=new StorageConfigurationNew();
+	StorageConfiguration sc=new StorageConfiguration();
 
 
 	public ProvapiApplication() {
-		final ProvFactory factory = ProvFactory.getFactory();
+		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
 		ServiceUtilsConfig config=sc.makeConfig(factory);
 
@@ -88,7 +93,7 @@ public class ProvapiApplication extends Application {
 		
 		//singletons.add(new io.swagger.jaxrs.listing.SwaggerSerializers());
 		//singletons.add(new io.swagger.jaxrs.listing.ApiListingResource());
-		singletons.add(new DocumentMessageBodyWriter(new InteropFramework()));
+		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());			
 		
 	    CorsFilter corsFilter = new CorsFilter();

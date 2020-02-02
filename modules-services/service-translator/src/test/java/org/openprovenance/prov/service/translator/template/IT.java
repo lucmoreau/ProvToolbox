@@ -1,38 +1,58 @@
 package org.openprovenance.prov.service.translator.template;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
+import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
+import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.Bundle;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.notation.ProvSerialiser;
+import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.translator.DocumentMessageBodyReader;
+import org.openprovenance.prov.vanilla.ProvFactory;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
-import junit.framework.TestCase;
-
-import org.apache.log4j.Logger;
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.service.translator.DocumentMessageBodyReader;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
+import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IT extends TestCase {
     static Logger logger = Logger.getLogger(IT.class);
+    final private VanillaDocumentMessageBodyWriter bodyWriter;
 
-     
+
     public IT(String name) {
-	super(name);
+        super(name);
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
+
     }
-    
-    static String port="7070";
+
+
+    public Client getClient() {
+        Client client= ClientBuilder.newBuilder().build();
+        client.register(bodyWriter);
+        client.register(DocumentMessageBodyReader.class);
+        return client;
+    }
+
+
+    static String port= Configuration.getPropertiesFromClasspath(org.openprovenance.prov.service.translator.roundtrip.IT.class,"config.properties").getProperty("service.port");
     
     String expansionURL="http://localhost:" + port + "/provapi/documents/";
     
@@ -40,31 +60,54 @@ public class IT extends TestCase {
     public static HashMap<String, String> table=new HashMap<String, String>();
      
 
-    public void testAction1(){
-    	testAction("src/test/resources/bindings1.json");
+    public void testTemplateAction1() throws IOException {
+    	testAction("src/test/resources/test-templates/bindings1.json", "src/test/resources/test-templates/expansion-bindings1.provn");
     }
    
 
    
-    public void testAction(String file){
+    public void testAction(String file, String expectedFile) throws IOException {
         
-        logger.info("/////////////////////////////////// testAction");
+        logger.debug("/////////////////////////////////// testAction");
 
 
-        logger.info("*** action 1");
+        logger.debug("*** action 1");
         String location=doPostStatements(expansionURL,"https://openprovenance.org/templates/org/openprovenance/generic/binaryop/1.provn",file);
         assertNotNull("location", location);
-        table.put("location", location);    
+        table.put("location", location);
 
-        Response resp=getResource(location, null);
-        logger.debug("++ response contents " + resp.getEntity());
-        logger.debug("++ response headers " + resp.getHeaders());
-        logger.debug("++ response links " + resp.getLinks());
+        Response response=getResource(location, MEDIA_APPLICATION_JSONLD);
+        logger.debug("++ response contents " + response.getEntity());
+        logger.debug("++ response headers " +  response.getHeaders());
+        logger.debug("++ response links " +    response.getLinks());
 
-        String location_html=(String)resp.getHeaders().getFirst("Location");
+        String location_html=(String)response.getHeaders().getFirst("Location");
         logger.debug("location " + location_html);
         assertNull("location", location_html);
-        logger.info("/////////////////////////////////// end testAction");
+
+
+        Document doc=readDocument(location);
+
+        Document doc2=new InteropFramework().deserialiseDocument(new FileInputStream(expectedFile), Formats.ProvFormat.PROVN);
+
+        logger.debug("+++ ready to test");
+        final Bundle bundle1 = (Bundle)doc.getStatementOrBundle().get(0);
+        final Bundle bundle2 = (Bundle)doc2.getStatementOrBundle().get(0);
+
+        bundle2.setId(bundle1.getId());
+
+        assertEquals(bundle1, bundle2);
+
+
+        final String templateLocation = location.replace(".provn", "/template.provn");
+        logger.debug(templateLocation);
+        Document doc3=readDocument(templateLocation);
+        assertNotNull(doc3);
+
+        final String bindingsLocation = location.replace(".provn", "/bindings");
+        logger.debug(bindingsLocation);
+        Response response4=getResource(bindingsLocation, null);
+        assertEquals("Response status for Bindings request is OK",Response.Status.OK.getStatusCode(),response4.getStatus());
 
        
     }
@@ -90,13 +133,8 @@ public class IT extends TestCase {
         } 
         assertNotNull(" string (" + file + ") is not null", str);
 
-ClassLoader classLoader = this.getClass().getClassLoader();
-java.net.URL resource = classLoader.getResource("org/apache/http/message/BasicLineFormatter.class");
-System.out.println(resource);
-resource = classLoader.getResource("org/apache/http/conn/ssl/SSLConnectionSocketFactory.class");
-System.out.println(resource);
 
-        Client client = ClientBuilder.newBuilder().build();
+        Client client = getClient();
 
 
 
@@ -105,37 +143,37 @@ System.out.println(resource);
 
 
         MultipartFormDataOutput output=new MultipartFormDataOutput();
-        output.addFormData("url", template, MediaType.TEXT_PLAIN_TYPE);
-        output.addFormData("statements", str, MediaType.TEXT_PLAIN_TYPE);
-        output.addFormData("type", "provn", MediaType.TEXT_PLAIN_TYPE);
-        output.addFormData("expand", "provn", MediaType.TEXT_PLAIN_TYPE);
+        output.addFormData("url",           template,        MediaType.TEXT_PLAIN_TYPE);
+        output.addFormData("statements",    str,             MediaType.TEXT_PLAIN_TYPE);
+        output.addFormData("type",      "provn",      MediaType.TEXT_PLAIN_TYPE);
+        output.addFormData("expand",    "provn",      MediaType.TEXT_PLAIN_TYPE);
 
-        logger.debug("Form is " +output);
 
-        Response response=target.request().post(Entity.entity(output, MediaType.MULTIPART_FORM_DATA_TYPE));
+        Response response=target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(output, MediaType.MULTIPART_FORM_DATA_TYPE));
 
         String location=response.getHeaderString("Location");
         System.out.println("*** write " + location);
         client.close();
+
+
         return location;  
 
     }
 
 
-    public Object readObject(String location, String media) {
-        Client client=ClientBuilder.newBuilder().build();
-        client.register(DocumentMessageBodyReader.class);
+
+    public Document readDocument(String location) {
+
+        Client client=getClient();
         WebTarget target=client.target(location);
-        Response response2=target.request(media).get(); 
-        Object o=response2.readEntity(InputStream.class);
-        //System.out.println(" *** found entity ");
-        client.close();
-                return o;
+        Response response2=target.request().get();
+        Document doc=response2.readEntity(org.openprovenance.prov.vanilla.Document.class);
+        return doc;
     }
-    
+
 
     public Response getResource(String location, String media) {
-        Client client=ClientBuilder.newBuilder().build();
+        Client client=getClient();
         WebTarget target=client.target(location);
         Response response2;
         if (media==null) {

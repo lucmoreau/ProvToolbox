@@ -4,7 +4,35 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/#TODO.txt#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.#TODO.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/StringMessageBodyReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/interop/config.interop.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/service/translator/roundtrip/config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/test-templates/expansion-bindings1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/bindings1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DocumentMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DocumentMessageBodyReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/StreamMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/StreamMessageBodyReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/roundtrip/IT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/roundtrip/IT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/IT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/IT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindings-plps-log1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/bindings-plps-log1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindings1.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/test-templates/bindings1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindingsCheneyTRENDDB09.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/bindingsCheneyTRENDDB09.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/bindingsMoreauOPM101.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/bindingsMoreauOPM101.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/doc-tovalidate.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/doc-tovalidate.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/picaso-file.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/picaso-file.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/picaso-file2.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/picaso-file2.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/report-start-fail4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/report-start-fail4.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/small.ttl" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/small.ttl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/template-attribution.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte/template-attribution.provn" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +108,7 @@
     <property name="extract.method.default.visibility" value="public" />
     <property name="extractMethod.generateAnnotations" value="false" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
     <property name="project.structure.last.edited" value="Facets" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -100,11 +128,11 @@
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte" />
       <recent name="$PROJECT_DIR$/modules-storage" />
       <recent name="$PROJECT_DIR$/modules-core/prov-model/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.interop.Configuration" />
@@ -118,18 +146,18 @@
       <recent name="org.openprovenance.prov.scala" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src" />
       <recent name="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb" />
       <recent name="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/service/core/filesystem" />
-      <recent name="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/service/core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.translator" />
+      <recent name="org.openprovenance.prov.service.translator.template" />
+      <recent name="org.openprovenance.prov.service.translator.roundtrip" />
+      <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.service.core.jobs" />
-      <recent name="org.openprovenance.prov.json" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.service.translation.ActionExpand" />

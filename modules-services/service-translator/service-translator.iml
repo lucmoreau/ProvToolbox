@@ -31,8 +31,6 @@
     <orderEntry type="module" module-name="prov-jsonld-xml (1)" />
     <orderEntry type="module" module-name="prov-xml" />
     <orderEntry type="module" module-name="prov-model" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />
@@ -145,6 +143,13 @@
     <orderEntry type="library" name="Maven: redis.clients:jedis:2.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-pool2:2.4.2" level="project" />
     <orderEntry type="module" module-name="prov-xml" scope="TEST" production-on-test="" />
+    <orderEntry type="module" module-name="prov-model" scope="TEST" production-on-test="" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
+    <orderEntry type="module" module-name="prov-interop-light" scope="TEST" />
+    <orderEntry type="module" module-name="prov-jsonld" scope="TEST" />
+    <orderEntry type="module" module-name="prov-template" />
     <orderEntry type="library" name="Maven: javax.json:javax.json-api:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-nop:1.7.12" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.12" level="project" />
@@ -174,7 +179,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.9" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:4.0.0" level="project" />
     <orderEntry type="module" module-name="prov-service-translation" />
-    <orderEntry type="module" module-name="prov-template" />
     <orderEntry type="library" name="Maven: io.swagger.core.v3:swagger-jaxrs2:2.0.8" level="project" />
     <orderEntry type="library" name="Maven: io.github.classgraph:classgraph:4.6.32" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.22.0-GA" level="project" />

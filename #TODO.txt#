@@ -5,7 +5,7 @@
 
 - scheduler/deletion: outstanding issue
  -- template not deleted (though expansion and bindings are)
- -- the delete period from the confguration is not passed to the scheduler
+-- the delete period from the confguration is not passed to the scheduler
  -- would be good to have a test
  -- the validation report is empty but does not indicate missing resource
 

@@ -122,6 +122,24 @@
             </exclusions>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>0.9.3-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-interop-light</artifactId>
+            <version>0.9.3-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
         <!--
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
@@ -360,7 +378,26 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.18.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <runOrder>alphabetical</runOrder>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
 
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
@@ -378,6 +415,18 @@
                     <source>1.9</source>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 
         </plugins>
 
@@ -409,10 +458,12 @@
                 </includes>
             </testResource>
         </testResources>
-
-
-
     </build>
+
+    <properties>
+        <service.port>7071</service.port>
+    </properties>
+
 
     <profiles>
 
@@ -482,7 +533,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <skip>true</skip>
+                            <skip>false</skip>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -524,7 +575,7 @@
                         <configuration>
                             <httpConnector>
                                 <!--host>localhost</host-->
-                                <port>7070</port> <!-- port hard coded in IT.java files in prov-service/test/ ... -->
+                                <port>${service.port}</port>
                             </httpConnector>
                             <!--<scanIntervalSeconds>10</scanIntervalSeconds> -->
                             <stopKey>foo</stopKey>
@@ -583,7 +634,7 @@
                         <version>2.2</version>
                         <configuration>
                             <server>local.tomcat</server> <!-- see .m2/settings.xml -->
-                            <port>7070</port>
+                            <port>${service.port}</port>
                             <path>/</path>
                         </configuration>
                         <executions>

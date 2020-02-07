@@ -104,7 +104,7 @@ public class PostService implements Constants, InteropMediaType {
                            @Context HttpHeaders headers,
                            @Context HttpServletRequest requestContext) {
         MediaType mediaType = headers.getMediaType();
-       logger.debug("post media type is" + mediaType);
+       //logger.debug("post media type is" + mediaType);
 
         if (mediaType.toString().startsWith("multipart/form-data")) {
 

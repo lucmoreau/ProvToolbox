@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/NonDocumentGenericResourceStorageFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/NonDocumentGenericResourceStorageFileSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/NonDocumentResourceStorageFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/NonDocumentResourceStorageFileSystem.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -343,7 +345,10 @@
       <workItem from="1579711129972" duration="52948000" />
       <workItem from="1580141028092" duration="6904000" />
       <workItem from="1580238346797" duration="17472000" />
-      <workItem from="1580648177809" duration="3798000" />
+      <workItem from="1580648177809" duration="5205000" />
+      <workItem from="1580760841397" duration="2246000" />
+      <workItem from="1580930628029" duration="1457000" />
+      <workItem from="1581083932921" duration="1234000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

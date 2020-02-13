@@ -36,45 +36,16 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
 
     @Override
     public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-      //  System.out.println("CustomAttributeDeserializerWithRootName " + deserializationContext);
 
         if (jp.isExpectedStartObjectToken()) {
             JsonNode node = jp.getCodec().readTree(jp);
-       //     System.out.println("CustomAttributeDeserializerWithRootName " + node);
-
+//System.out.println(node);
             return deserialize(node, deserializationContext);
         } else {
             String s=jp.getText();
-       //     System.out.println("CustomAttributeDeserializerWithRootName: String " + s);
             return deserialize(s, deserializationContext);
         }
-
     }
-
-    /*
-    private Attribute deserializeNode(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        if (ns==null) {
-            ns=Namespace.getThreadNamespace();
-        }
-
-        System.out.println(node);
-        System.out.println(node.fields());
-        System.out.println("next? " + node.fields().hasNext());
-        Map.Entry<String, JsonNode> pair=node.fields().next();
-        System.out.println("next: " + pair);
-        System.out.println("ns: " + ns);
-
-        QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
-        JsonNode vObj=pair.getValue();
-
-        return deserialize_SIMPLIFY2(elementName,vObj,deserializationContext);
-
-    }
-
-
-     */
-
 
     public Attribute deserialize(String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
@@ -84,36 +55,35 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
 
     public Attribute deserialize(JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
-     //   System.out.println("---> " + elementName);
         return deserialize_AttributeValueAndType(elementName, vObj, deserializationContext);
     }
 
     public Attribute deserialize_AttributeValueAndType(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
         if (!vObj.isObject()) {
             throw new UnsupportedOperationException("vObj can only be object");
 
         } else {
 
-            JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);
-            String type = (typeRaw == null) ? null : typeRaw.textValue();
+            final JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);
+            final String type = (typeRaw == null) ? null : typeRaw.textValue();
 
-            JsonNode value = vObj.get(PROPERTY_AT_VALUE);
+            final JsonNode value = vObj.get(PROPERTY_AT_VALUE);
+            final String textValue = value.textValue();
 
             Object valueObject;
-
             QualifiedName typeQN;
             if (type == null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
-                JsonNode theLang = vObj.get(Constants.PROPERTY_STRING_LANG);
-                valueObject = new LangString(value.textValue(), (theLang == null) ? null : theLang.textValue());
+                final JsonNode theLang = vObj.get(Constants.PROPERTY_STRING_LANG);
+                valueObject = new LangString(textValue, (theLang == null) ? null : theLang.textValue());
                 typeQN = (theLang == null) ? XSD_STRING : PROV_INTERNATIONALIZED_STRING;
             } else if (type.equals("prov:QUALIFIED_NAME")) {
-                valueObject = ns.stringToQualifiedName(value.textValue(), pf);
+                final Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+                valueObject = ns.stringToQualifiedName(textValue, pf);
                 typeQN = ns.stringToQualifiedName(type, pf);
             } else {
-                valueObject = value.textValue();
-                ; //TODO: should not be checking qname but uri
+                final Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+                valueObject = textValue;
                 typeQN = ns.stringToQualifiedName(type, pf);
             }
 

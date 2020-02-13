@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 
 
 public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
@@ -31,6 +32,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         Namespace ns=new Namespace();
         if (previous!=null) ns.setParent(previous);  //FIXME: needs a mechanism to restore to previous namespace context when leaving bundle.
 
+        /*
         JsonNode x=jp.getCodec().readTree(jp);
         if (x.isArray()) {
             for (int i=0; i < x.size(); i++) {
@@ -57,6 +59,33 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
                     }
 
+                }
+            }
+        }
+
+         */
+
+        if (jp.isExpectedStartArrayToken()) {
+            Object[] objects=jp.readValueAs(Object[].class);
+            for (Object o: objects) {
+                if (o instanceof Map) {
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                        final Object value = entry.getValue();
+                        if (value instanceof String) {
+                            final String valueString = (String) value;
+                            final String key = entry.getKey();
+                            switch (key) {
+                                case "@namespace":
+                                    ns.setDefaultNamespace(valueString);
+                                    break;
+                                case "@version":
+                                    break;
+                                default:
+                                    ns.register(key, valueString);
+                            }
+                        }
+                    }
                 }
             }
         }

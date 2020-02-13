@@ -48,16 +48,10 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         SimpleModule module =
                 new SimpleModule("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
 
-        //module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();
-        CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
 
-    //    JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
-     //   MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
-
-     //   module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
 
 
         // DESERIALISER
@@ -67,8 +61,6 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
 
 
-        // FIXME: why not remove this deserializer, and rely on jackson to handle set.
-        //module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
         module.addDeserializer(Attribute.class,new CustomAttributeDeserializer());
 
         provMixin().addProvMixin(mapper);

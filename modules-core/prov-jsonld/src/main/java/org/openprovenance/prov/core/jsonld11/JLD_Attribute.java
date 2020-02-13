@@ -11,21 +11,21 @@ import org.openprovenance.prov.model.QualifiedName;
 public interface JLD_Attribute {
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getElementName();
+    QualifiedName getElementName();
 
     @JsonIgnore
-    public Attribute.AttributeKind getKind();
+    Attribute.AttributeKind getKind();
 
     @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
-    public QualifiedName getType();
+    QualifiedName getType();
 
-    public Object getValue();
-
-    @JsonIgnore
-    public Object getConvertedValue();
+    Object getValue();
 
     @JsonIgnore
-    public void setValueFromObject(Object anObject);
+    Object getConvertedValue();
+
+    @JsonIgnore
+    void setValueFromObject(Object anObject);
 
     @JsonIgnore
     void setValueFromObject(org.w3c.dom.Node n);

@@ -35,13 +35,14 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     @Override
     public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
         if (jp.isExpectedStartObjectToken()) {
-            AttributeValueAndType valueAndType=jp.readValueAs(AttributeValueAndType.class);
-            QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
+            final AttributeValueAndType valueAndType=jp.readValueAs(AttributeValueAndType.class);
+            final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
             return deserialize_AttributeValueAndType(elementName,valueAndType,deserializationContext);
         } else {
             return deserialize(jp.getText(), deserializationContext);
         }
     }
+    /*
 
     public Attribute deserializeOLD(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
         Object o=jp.readValueAs(Object.class);
@@ -59,13 +60,15 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     }
 
 
+
+     */
     private final Attribute deserialize(String astring, DeserializationContext deserializationContext) {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
+        final Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
         return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), PROV_QUALIFIED_NAME);
     }
 
-
+/*
     private final Attribute deserialize_AttributeValueAndType(QualifiedName elementName, Map<String, Object> map, DeserializationContext deserializationContext) {
 
         final String type = (String) map.get(PROPERTY_AT_TYPE);
@@ -100,6 +103,8 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
 
     }
 
+
+ */
 
     private final Attribute deserialize_AttributeValueAndType(QualifiedName elementName, AttributeValueAndType valueAndType, DeserializationContext deserializationContext) {
 

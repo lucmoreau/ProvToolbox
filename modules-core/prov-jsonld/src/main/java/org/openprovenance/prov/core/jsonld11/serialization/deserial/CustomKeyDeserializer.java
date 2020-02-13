@@ -9,11 +9,11 @@ import java.io.IOException;
 public class CustomKeyDeserializer extends KeyDeserializer {
 
     public static final String PROV_ATTRIBUTE_CONTEXT_KEY = "prov:Attribute";
-    static final CustomQualifiedNameDeserializer customQualifiedNameDeserializer = new CustomQualifiedNameDeserializer();
+    public static final CustomQualifiedNameDeserializer customQualifiedNameDeserializer = new CustomQualifiedNameDeserializer();
 
     @Override
     public Object deserializeKey(String s, DeserializationContext deserializationContext) throws IOException {
-        QualifiedName qn = customQualifiedNameDeserializer.deserialize(s, deserializationContext);
+        final QualifiedName qn = customQualifiedNameDeserializer.deserialize(s, deserializationContext);
         deserializationContext.setAttribute(PROV_ATTRIBUTE_CONTEXT_KEY,qn);
         return qn;
     }

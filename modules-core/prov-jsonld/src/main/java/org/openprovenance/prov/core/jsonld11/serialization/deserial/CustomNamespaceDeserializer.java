@@ -32,38 +32,6 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         Namespace ns=new Namespace();
         if (previous!=null) ns.setParent(previous);  //FIXME: needs a mechanism to restore to previous namespace context when leaving bundle.
 
-        /*
-        JsonNode x=jp.getCodec().readTree(jp);
-        if (x.isArray()) {
-            for (int i=0; i < x.size(); i++) {
-                JsonNode n=x.get(i);
-                if (n.isObject()) {
-                    for (Iterator<String> it = n.fieldNames(); it.hasNext(); ) {
-                        String field = it.next();
-                        JsonNode value=n.get(field);
-                        if (value.isObject()) {
-                            // ignore, it's a JSONLD Mapping
-                        } else {
-                            String s=value.textValue();
-                            //System.out.println("[" + field + "]" + "[" + s + "]");
-                            if ("@namespace".equals(field)) {
-                                ns.setDefaultNamespace(s);
-                            } else if ("@version".equals(field)) {
-                                // ignore
-                            }
-                            else {
-                                ns.register(field, s);
-                            }
-
-                        }
-
-                    }
-
-                }
-            }
-        }
-
-         */
 
         if (jp.isExpectedStartArrayToken()) {
             Object[] objects=jp.readValueAs(Object[].class);

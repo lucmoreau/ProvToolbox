@@ -42,69 +42,13 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
             return deserialize(jp.getText(), deserializationContext);
         }
     }
-    /*
 
-    public Attribute deserializeOLD(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
-        Object o=jp.readValueAs(Object.class);
-
-        if (o instanceof String) {
-            return deserialize((String)o, deserializationContext);
-        } else if (o instanceof Map) {
-            Map<String,Object> map=(Map<String,Object>) o;
-            QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
-            return deserialize_AttributeValueAndType(elementName,map,deserializationContext);
-        } else {
-            throw new UnsupportedOperationException("unknown object " + o);
-        }
-
-    }
-
-
-
-     */
     private final Attribute deserialize(String astring, DeserializationContext deserializationContext) {
         final Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
         return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), PROV_QUALIFIED_NAME);
     }
 
-/*
-    private final Attribute deserialize_AttributeValueAndType(QualifiedName elementName, Map<String, Object> map, DeserializationContext deserializationContext) {
-
-        final String type = (String) map.get(PROPERTY_AT_TYPE);
-
-        final String textValue = (String) map.get(PROPERTY_AT_VALUE);
-
-        Object valueObject;
-        QualifiedName typeQN;
-        if (type == null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
-            final String theLang = (String) map.get(Constants.PROPERTY_STRING_LANG);
-            if (theLang==null) {
-                valueObject = new LangString(textValue, null);
-                typeQN =  XSD_STRING;
-            } else {
-                valueObject = new LangString(textValue, theLang);
-                typeQN = PROV_INTERNATIONALIZED_STRING;
-            }
-        } else {
-            final Namespace ns = (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-            typeQN = ns.stringToQualifiedName(type, pf);
-            if (type.equals("prov:QUALIFIED_NAME")) {
-                valueObject = ns.stringToQualifiedName(textValue, pf);
-            } else {
-                valueObject = textValue;
-            }
-        }
-
-
-        return pf.newAttribute(elementName, valueObject, typeQN);
-
-
-
-    }
-
-
- */
 
     private final Attribute deserialize_AttributeValueAndType(QualifiedName elementName, AttributeValueAndType valueAndType, DeserializationContext deserializationContext) {
 
@@ -117,7 +61,7 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
         if (type == null || type.equals("xsd:string") || type.equals("prov:InternationalizedString")) {
             final String theLang = valueAndType.language;
             if (theLang==null) {
-                valueObject = new LangString(textValue, null);
+                valueObject = new LangString(textValue);
                 typeQN =  XSD_STRING;
             } else {
                 valueObject = new LangString(textValue, theLang);

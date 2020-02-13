@@ -51,7 +51,7 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
 
     }
 
-
+/*
     public Attribute deserializeOld(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
 
         if (jp.isExpectedStartObjectToken()) {
@@ -63,13 +63,13 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
             return deserialize(s, deserializationContext);
         }
     }
-
+*/
     public Attribute deserialize(String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
         return pf.newAttribute(elementName, ns.stringToQualifiedName(astring,pf), PROV_QUALIFIED_NAME);
     }
-
+/*
     public Attribute deserialize(JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
         return deserialize_AttributeValueAndType(elementName, vObj, deserializationContext);
@@ -110,6 +110,8 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
         }
 
     }
+
+ */
 
     public Attribute deserialize_AttributeValueAndType(QualifiedName elementName, Map<String, Object> map, DeserializationContext deserializationContext) {
 

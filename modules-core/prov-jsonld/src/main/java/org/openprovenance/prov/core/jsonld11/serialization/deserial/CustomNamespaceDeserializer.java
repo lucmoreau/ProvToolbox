@@ -64,6 +64,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
         deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
 
+        Namespace.withThreadNamespace(ns);
 
         return ns;
     }

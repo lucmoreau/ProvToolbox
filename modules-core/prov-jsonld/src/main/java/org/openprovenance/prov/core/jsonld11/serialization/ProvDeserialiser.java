@@ -2,47 +2,45 @@ package org.openprovenance.prov.core.jsonld11.serialization;
 
 
 import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeMapDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeSetDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomKindDeserializer;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Document;
-import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
+
+//import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeMapDeserializer;
 
 public class ProvDeserialiser extends org.openprovenance.prov.core.json.serialization.ProvDeserialiser {
 
+    public ProvDeserialiser() {
+        customize(mapper);
+    }
 
     public ProvMixin provMixin() {
         return new ProvMixin();
     }
 
+    final ObjectMapper mapper = new ObjectMapper();
+
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
-        ObjectMapper mapper = new ObjectMapper();
-
-        customize(mapper);
-
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }
-
     }
 
     public void customize(ObjectMapper mapper) {
@@ -50,22 +48,28 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         SimpleModule module =
                 new SimpleModule("CustomKindDeserializer", new Version(1, 0, 0, null, null, null));
 
-        module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
+        //module.addDeserializer(org.openprovenance.prov.model.StatementOrBundle.Kind.class, new CustomKindDeserializer());
 
 
         TypeFactory typeFactory = mapper.getTypeFactory();
         CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
-        JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
-        MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
-        module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
+
+    //    JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
+     //   MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
+
+     //   module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
 
 
+        // DESERIALISER
         MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
         ArrayType arrayType=typeFactory.constructArrayType(mapType2);
         module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(arrayType));
 
 
-        module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
+
+        // FIXME: why not remove this deserializer, and rely on jackson to handle set.
+        //module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
+        module.addDeserializer(Attribute.class,new CustomAttributeDeserializer());
 
         provMixin().addProvMixin(mapper);
 

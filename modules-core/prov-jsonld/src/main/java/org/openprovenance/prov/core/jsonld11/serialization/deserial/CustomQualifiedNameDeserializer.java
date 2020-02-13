@@ -29,7 +29,7 @@ public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedNa
     }
 
     @Override
-    public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         String text = jsonParser.getText();
         if (Constants.PROPERTY_AT_TYPE.equals(text)) return PROV_TYPE;
@@ -37,7 +37,7 @@ public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedNa
     }
 
 
-    public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;
         return ns.stringToQualifiedName(s, pf, false);

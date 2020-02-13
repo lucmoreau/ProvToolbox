@@ -34,38 +34,40 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
     }
 
     protected final boolean embedContext;
+    // create two independent mappers, with formatting or not
+    final ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapperWithFormat = new ObjectMapper();
 
     public ProvSerialiser () {
-        embedContext=true;
+        this(true);
     }
 
     public ProvSerialiser (boolean embedContext) {
         this.embedContext=embedContext;
+        customize(mapper);
+        customize(mapperWithFormat);
+        mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     public ProvMixin provMixin() {
         return new ProvMixin();
     }
 
-
-
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        ObjectMapper mapper = new ObjectMapper();
-        customize(mapper,formatted);
-
-
         try {
-            mapper.writeValue(out,document);
+            if (formatted) {
+                mapperWithFormat.writeValue(out,document);
+            } else {
+                mapper.writeValue(out,document);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }
     }
 
-    public ObjectMapper customize(ObjectMapper mapper,boolean formatted) {
-
-        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    public ObjectMapper customize(ObjectMapper mapper) {
 
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer",

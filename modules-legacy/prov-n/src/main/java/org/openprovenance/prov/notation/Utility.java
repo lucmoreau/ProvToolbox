@@ -159,11 +159,11 @@ public  class Utility {
 
 
     public void convertBeanToASN(final Document doc, Writer writer, ProvFactory pFactory) {
-	NotationConstructor nc=new NotationConstructor(writer);
+        NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.doAction(doc);
         nc.flush();
-       // nc.close();
+        // nc.close();
     }
 
     /* from http://www.antlr.org/wiki/display/ANTLR3/Interfacing+AST+with+Java */
@@ -206,40 +206,33 @@ public  class Utility {
             catch (IOException e) {}
         }
     }
-    
+
     public void writeDocument(Document doc, String filename, ProvFactory pFactory){
-	String s=convertBeanToASN(doc, pFactory);
-	//System.out.println("printing" + s);
+        String s=convertBeanToASN(doc, pFactory);
         writeTextToFile(s,filename);
     }
-    
+
 
     public void writeDocument(Document doc, OutputStream os, ProvFactory pFactory){
-	Writer writer=new OutputStreamWriter(os);
-	convertBeanToASN(doc, writer, pFactory);
-	/*
-	try {
-	    writer.close();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}*/
+        Writer writer=new OutputStreamWriter(os);
+        convertBeanToASN(doc, writer, pFactory);
+
     }
-    
+
     public Document readDocument(String filename, ProvFactory pFactory)  {
         CommonTree tree = convertASNToTree(filename);
-            Object doc=convertTreeToJavaBean(tree,pFactory);
-            return (Document)doc;
-       }
-    
+        Object doc=convertTreeToJavaBean(tree,pFactory);
+        return (Document)doc;
+    }
+
     public Document readDocument(InputStream is, ProvFactory pFactory)  {
         CommonTree tree = convertASNToTree(is);
         Object doc=convertTreeToJavaBean(tree,pFactory);
         return (Document)doc;
     }
-    
-    
- 
+
+
+
 }
 
 

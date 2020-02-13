@@ -2033,13 +2033,13 @@ class ActedOnBehalfOf(val id: QualifiedName,
                       val activity: QualifiedName,
                       val label: Set[LangString],
                       val typex: Set[Type],
-                      val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableActedOnBehalfOf {     
-     
-     def addAttributes (attr: Set[Attribute]) = {
-    		  ProvFactory.pf.newActedOnBehalfOf(id, 
-    				                                delegate, responsible, activity,
-    				                                getAttributes() ++ attr)
-	   }
+                      val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableActedOnBehalfOf {
+
+  def addAttributes (attr: Set[Attribute]): ActedOnBehalfOf = {
+    ProvFactory.pf.newActedOnBehalfOf(id,
+      delegate, responsible, activity,
+      getAttributes() ++ attr)
+  }
 
 
   def getIndexedAttributes(): util.Map[model.QualifiedName, util.Set[model.Attribute]] = {

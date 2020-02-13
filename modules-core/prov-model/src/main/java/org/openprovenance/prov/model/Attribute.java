@@ -18,13 +18,13 @@ public interface Attribute extends TypedValue {
      *
      */
     public enum AttributeKind {
-	PROV_TYPE,
-	PROV_LABEL,
-	PROV_ROLE,
-	PROV_LOCATION,
-	PROV_VALUE,
-	PROV_KEY,
-	OTHER	
+        PROV_TYPE,
+        PROV_LABEL,
+        PROV_ROLE,
+        PROV_LOCATION,
+        PROV_VALUE,
+        PROV_KEY,
+        OTHER
     }
 
     public abstract QualifiedName getQualifiedName(AttributeKind kind);

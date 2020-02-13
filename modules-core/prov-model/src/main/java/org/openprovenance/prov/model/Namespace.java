@@ -224,42 +224,40 @@ public class Namespace  {
     public QualifiedName stringToQualifiedName(String id, ProvFactory pFactory, boolean isEscaped) {
         if (id == null)
             return null;
-        int index = id.indexOf(':');
+        final int index = id.indexOf(':');
         if (index == -1) {
             String tmp = getDefaultNamespace();
-            if (tmp == null && parent != null) tmp = parent.getDefaultNamespace();
-            if (tmp==null) throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for "+id);
-            return pFactory.newQualifiedName(tmp, id, null);
-        }
-        String prefix = id.substring(0, index);
-        String local = id.substring(index + 1, id.length());
-
-        //TODO: why have special cases here, prov and xsd are now declared prefixes in namespaces
-        if ("prov".equals(prefix)) {
-            return pFactory.newQualifiedName(NamespacePrefixMapper.PROV_NS, local, prefix);
-        } else if ("xsd".equals(prefix)) {
-            return pFactory.newQualifiedName(NamespacePrefixMapper.XSD_NS, // + "#", // RDF ns ends
-                                             // in #, not
-                                             // XML ns.
-                                             local, prefix);
-        } else {
-            String tmp=prefixes.get(prefix);
-            if (tmp==null) {
-                if (parent!=null) {
-                    return parent.stringToQualifiedName(id, pFactory,isEscaped);
+            if (tmp == null) {
+                if (parent != null) {
+                    tmp = parent.getDefaultNamespace();
+                    if (tmp ==null) throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for parent "+id);
                 } else {
-                    throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + id + " namespace " + this);
+                    throw new NullPointerException("Namespace.stringToQualifiedName(): Null namespace for "+id);
                 }
             }
-            if (isEscaped) {
-                return pFactory.newQualifiedName(tmp, local, prefix);
-            } else {
-                return pFactory.newQualifiedName(tmp, qnU.escapeProvLocalName(local)
-                                                 //local.replace("=","\\=")
-                                                 , prefix);
-            }		
-
+            return pFactory.newQualifiedName(tmp, id, null);
         }
+        final String prefix = id.substring(0, index);
+
+        String tmp=prefixes.get(prefix);
+        if (tmp==null) {
+            if (parent!=null) {
+                return parent.stringToQualifiedName(id, pFactory,isEscaped);
+            } else {
+                throw new QualifiedNameException("Namespace.stringToQualifiedName(): Null namespace for " + id + " namespace " + this);
+            }
+        }
+        final String local = id.substring(index + 1);
+        if (isEscaped) {
+            return pFactory.newQualifiedName(tmp, local, prefix);
+        } else {
+            return pFactory.newQualifiedName(tmp, qnU.escapeProvLocalName(local)
+                    //local.replace("=","\\=")
+                    , prefix);
+        }
+
+
+
     }
 
     /**

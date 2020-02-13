@@ -1,17 +1,24 @@
 package org.openprovenance.prov.scala.immutable
 
+import java.io.{InputStream, OutputStream}
+import java.util
+
 import org.parboiled2._
 
 import scala.util.{Failure, Success}
 import org.openprovenance.prov.model.Namespace
 import ProvFactory.pf
 import javax.xml.datatype.XMLGregorianCalendar
+import org.openprovenance.prov.interop.InteropMediaType
+import org.openprovenance.prov.model
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.DocBuilder
 import org.openprovenance.prov.scala.streaming.Tee
 import org.openprovenance.prov.scala.streaming.SimpleStreamStats
 import shapeless.HNil
+
+import scala.io.BufferedSource
 
 trait ProvnCore extends Parser {
 
@@ -568,6 +575,25 @@ class MyParser(val input: ParserInput, val docns: Namespace, var bun_ns: Option[
     }
 
 
+}
+
+class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
+
+  override def deserialiseDocument(in: InputStream): model.Document = {
+    val docBuilder=new DocBuilder
+    val ns=new Namespace
+    ns.addKnownNamespaces()
+    ns.register("provext", "http://openprovenance.org/prov/extension#");
+
+    val bufferedSource: BufferedSource =io.Source.fromInputStream(in)
+
+    val p=new MyParser(bufferedSource.mkString,ns,None,docBuilder)
+    p.document.run() match {
+      case Success(result) => docBuilder.document
+      case Failure(e: ParseError) => { println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException("Expression is not valid") }
+      case Failure(e) => { println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException("Unexpected error during parsing run") }
+    }
+  }
 }
 
 object Parser {

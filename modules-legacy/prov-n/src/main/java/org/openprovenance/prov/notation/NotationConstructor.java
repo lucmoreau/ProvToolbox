@@ -167,18 +167,20 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                 XMLGregorianCalendar startTime,
                                 XMLGregorianCalendar endTime,
                                 Collection<Attribute> attributes) {
-        String s = keyword("activity") + "(" + idOrMarker(id) + ","
-                + timeOrMarker(startTime) + "," + timeOrMarker(endTime)
-                + optionalAttributes(attributes) + ")";
-        writeln(s);
+        final String s = keyword("activity") + "(" + idOrMarker(id) + ","
+                + timeOrMarker(startTime) + "," + timeOrMarker(endTime);
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
     @Override
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes) {
-        String s = keyword("agent") + "(" + idOrMarker(id)
-                + optionalAttributes(attributes) + ")";
-        writeln(s);
+        final String s = keyword("agent") + "(" + idOrMarker(id);
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
@@ -251,9 +253,10 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
 
     @Override
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
-        String s = keyword("entity") + "(" + idOrMarker(id)
-                + optionalAttributes(attributes) + ")";
-        writeln(s);
+        final String s = keyword("entity") + "(" + idOrMarker(id);
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
@@ -306,10 +309,12 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
     public Used newUsed(QualifiedName id, QualifiedName activity,
                         QualifiedName entity, XMLGregorianCalendar time,
                         Collection<Attribute> attributes) {
-        String s = keyword("used") + "(" + optionalId(id)
+        final String s = keyword("used") + "(" + optionalId(id)
                 + idOrMarker(activity) + "," + idOrMarker(entity) + ","
-                + timeOrMarker(time) + optionalAttributes(attributes) + ")";
-        writeln(s);
+                + timeOrMarker(time);
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
@@ -319,10 +324,11 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                                   QualifiedName ag,
                                                   QualifiedName plan,
                                                   Collection<Attribute> attributes) {
-        String s = keyword("wasAssociatedWith") + "(" + optionalId(id)
-                + idOrMarker(a) + "," + idOrMarker(ag) + "," + idOrMarker(plan)
-                + optionalAttributes(attributes) + ")";
-        writeln(s);
+        final String s = keyword("wasAssociatedWith") + "(" + optionalId(id)
+                + idOrMarker(a) + "," + idOrMarker(ag) + "," + idOrMarker(plan);
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
@@ -331,10 +337,11 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                               QualifiedName e,
                                               QualifiedName ag,
                                               Collection<Attribute> attributes) {
-        String s = keyword("wasAttributedTo") + "(" + optionalId(id)
-                + idOrMarker(e) + ", " + idOrMarker(ag)
-                + optionalAttributes(attributes) + ")";
-        writeln(s);
+        final String s = keyword("wasAttributedTo") + "(" + optionalId(id)
+                + idOrMarker(e) + ", " + idOrMarker(ag);
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
@@ -346,7 +353,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                                             QualifiedName generation,
                                             QualifiedName usage,
                                             Collection<Attribute> attributes) {
-        String s = keyword("wasDerivedFrom")
+        final String s = keyword("wasDerivedFrom")
                 + "("
                 + optionalId(id)
                 + idOrMarker(e2)
@@ -355,9 +362,10 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
                 + ((activity == null && generation == null && usage == null) ? ""
                         : ", " + idOrMarker(activity) + ", "
                                 + idOrMarker(generation) + ", "
-                                + idOrMarker(usage))
-                + optionalAttributes(attributes) + ")";
-        writeln(s);
+                                + idOrMarker(usage));
+        write(s);
+        writeOptionalAttributes(attributes);
+        writeln("");
         return null;
     }
 
@@ -455,6 +463,29 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
         return sb.toString();
     }
 
+    final String closing=")";
+
+    public void writeOptionalAttributes(Collection<Attribute> attrs) {
+        if ((attrs == null) || (attrs.isEmpty())) {
+        } else {
+            boolean first = true;
+            for (Attribute attr : attrs) {
+                if (first) {
+                    write(symbol(",["));
+                    write(attr.toNotationString());
+                    first = false;
+                } else {
+                    write(symbol(",") + " ");
+                    write(attr.toNotationString());
+                }
+            }
+            if (!first)
+                write(symbol("]"));
+        }
+        write (closing);
+    }
+
+
     private String optionalId(QualifiedName id) {
         return ((id == null) ? "" : (Namespace.getThreadNamespace().qualifiedNameToString(id) + ";"));
     }
@@ -503,7 +534,7 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
 
     @Override
     public void startDocument(Namespace namespaces) {
-	String s = keyword("document") + breakline();
+        String s = keyword("document") + breakline();
         s = s + processNamespaces(namespaces);
         write(s);
     }
@@ -516,36 +547,38 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
         return ((time == null) ? MARKER : time.toString());
     }
 
-    public void write(String s) {
+    final public void write(String s) {
         try {
             buffer.write(s);
         } catch (IOException e) {
-            throw new UncheckedException("NotationConstructor.write() failed",
-                                         e);
+            throw new UncheckedException("NotationConstructor.write() failed", e);
         }
     }
 
-    public void writeln(String s) {
+    final public void writeln(String s) {
         try {
             buffer.write(s);
             if (!standaloneExpression)
                 buffer.newLine();
         } catch (IOException e) {
-            throw new UncheckedException("NotationConstructor.write() failed",
-                                         e);
+            throw new UncheckedException("NotationConstructor.write() failed", e);
         }
     }
 
+
     @Override
-    public QualifiedName newQualifiedName(String namespace, String local,
-					  String prefix) {
-	return null;
+    public QualifiedName newQualifiedName(String namespace,
+                                          String local,
+                                          String prefix) {
+        return null;
     }
 
     @Override
-    public QualifiedName newQualifiedName(String namespace, String local, String prefix,
-					  BuildFlag flag) {
-	return null;
+    public QualifiedName newQualifiedName(String namespace,
+                                          String local,
+                                          String prefix,
+                                          BuildFlag flag) {
+        return null;
     }
 
     @Override

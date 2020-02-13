@@ -63,10 +63,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     @Override
     public Attribute newAttribute(org.openprovenance.prov.model.QualifiedName elementName, Object value, org.openprovenance.prov.model.QualifiedName type) {
 
- //       if (getName().RDF_LITERAL.equals(type)&& (value instanceof String)) {
- //           value=vconv.convertToJava(type,(String)value);
- //       }
-
         // TODO: use TypedValue.getAttributeKind and switch on a kind
         if (elementName.equals(getName().PROV_LOCATION)) {
             return newLocation(value, type);

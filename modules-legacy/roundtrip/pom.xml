@@ -28,6 +28,13 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model-scala</artifactId>
+            <version>0.9.3-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
             <version>0.9.3-SNAPSHOT</version>
             <classifier>tests</classifier>
@@ -78,6 +85,13 @@
             <version>${sesame.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-n</artifactId>
+            <version>0.9.3-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -104,6 +118,27 @@
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration> -->
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.openprovenance.prov.benchmarks.Benchmarks</mainClass>
+                    <classpathScope>test</classpathScope>
+                    <arguments>
+                        <argument>400</argument>
+                        <argument>200</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

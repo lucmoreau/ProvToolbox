@@ -45,15 +45,6 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         return result;
     }
 
-    Map<QualifiedName, Attribute[]> split2(Collection<Attribute> attributes) {
-        Map<QualifiedName, Attribute[]> result=new HashMap<>();
-        Map<QualifiedName, Set<Attribute>> m=split(attributes);
-        for (Map.Entry<QualifiedName, Set<Attribute>> entry: m.entrySet()) {
-            result.put(entry.getKey(),entry.getValue().toArray(new Attribute[0]));
-        }
-        return result;
-    }
-
 
     void split(Collection<Attribute> attributes,
                Collection<Label> labels,
@@ -97,6 +88,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
         }
     }
+
 
 //TODO: these URI need to be constants in the Constants interface, also need to have proper dispatch
     public void distribute(QualifiedName qn,
@@ -146,7 +138,6 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
 
     }
 
-    // TODO: missing fields to populate
     void populateAttributes(Collection<Attribute> attributes,
                             List<org.openprovenance.prov.model.LangString> label,
                             List<org.openprovenance.prov.model.Location> location,
@@ -154,13 +145,40 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
                             List<org.openprovenance.prov.model.Role> role,
                             List<org.openprovenance.prov.model.Other> other,
                             org.openprovenance.prov.model.Value [] value) {
-        Collection<Label> labels=new LinkedList<>();
-        Collection<org.openprovenance.prov.vanilla.Type> types=new LinkedList<>();
-        Collection<org.openprovenance.prov.vanilla.Location> locations=new LinkedList<>();
-        Collection<Role> roles=new LinkedList<>();
-        Collection<Value> values=new LinkedList<>();
-        Map<QualifiedName,Collection<Other>> others=new HashMap<>();
 
+        boolean foundValue = false;
+        if (attributes != null) {
+            for (Attribute attribute : attributes) {
+                switch (attribute.getKind()) {
+                    case PROV_TYPE:
+                        type.add((org.openprovenance.prov.model.Type) attribute);
+                        break;
+                    case PROV_LABEL:
+                        label.add((LangString) ((org.openprovenance.prov.model.Label) attribute).getValue());
+                        break;
+                    case PROV_ROLE:
+                        role.add((org.openprovenance.prov.model.Role) attribute);
+                        break;
+                    case PROV_LOCATION:
+                        location.add((org.openprovenance.prov.model.Location) attribute);
+                        break;
+                    case PROV_VALUE:
+                        if (!foundValue) {
+                            foundValue = true;
+                            value[0] = (org.openprovenance.prov.model.Value) attribute;
+                        }
+                        break;
+                    case PROV_KEY:
+                        /* Ignore */
+                        break;
+                    case OTHER:
+                        other.add((org.openprovenance.prov.model.Other) attribute);
+                }
+            }
+        }
+    }
+
+/*
         if (attributes != null) {
             split(attributes,
                     labels,
@@ -188,5 +206,7 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
             }
         }
 
-    }
+ */
+
+
 }

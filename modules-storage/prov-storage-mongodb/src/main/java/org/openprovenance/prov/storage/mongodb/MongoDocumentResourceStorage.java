@@ -56,7 +56,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
         this.deserialiser=deserialiser;
 
         deserialiser.customize(mapper);
-        serialiser.customize(mapper,false);
+        serialiser.customize(mapper);
 
         mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
 

@@ -3,7 +3,7 @@ package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.openprovenance.prov.core.jsonld11.AttributeValueAndType;
+import org.openprovenance.prov.core.jsonld11.AttributeTypedValue;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
@@ -12,7 +12,6 @@ import org.openprovenance.prov.vanilla.LangString;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class CustomAttributeDeserializer extends StdDeserializer<Attribute> implements Constants {
 
@@ -35,9 +34,9 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     @Override
     public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
         if (jp.isExpectedStartObjectToken()) {
-            final AttributeValueAndType valueAndType=jp.readValueAs(AttributeValueAndType.class);
+            final AttributeTypedValue valueAndType=jp.readValueAs(AttributeTypedValue.class);
             final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
-            return deserialize_AttributeValueAndType(elementName,valueAndType,deserializationContext);
+            return deserialize_TypedValue(elementName,valueAndType,deserializationContext);
         } else {
             return deserialize(jp.getText(), deserializationContext);
         }
@@ -50,7 +49,7 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     }
 
 
-    private final Attribute deserialize_AttributeValueAndType(QualifiedName elementName, AttributeValueAndType valueAndType, DeserializationContext deserializationContext) {
+    private final Attribute deserialize_TypedValue(QualifiedName elementName, AttributeTypedValue valueAndType, DeserializationContext deserializationContext) {
 
         final String type = valueAndType.typex;
 

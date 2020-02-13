@@ -8,14 +8,12 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomDateSerializer;
-import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomKindSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomNamespaceSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomQualifiedNameSerializer;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -47,6 +45,7 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
         customize(mapper);
         customize(mapperWithFormat);
         mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(SerializationFeature.INDENT_OUTPUT);
     }
 
     public ProvMixin provMixin() {
@@ -73,17 +72,17 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
                 new SimpleModule("CustomKindSerializer",
                         new Version(1, 0, 0, null, null, null));
 
-        module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
         module.addSerializer(Namespace.class, new CustomNamespaceSerializer(embedContext));
         mapper.registerModule(module);
 
+        /*
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter("nsFilter",
                 SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
-         mapper.setFilterProvider(filterProvider);
-
+     //    mapper.setFilterProvider(filterProvider);
+         */
         provMixin().addProvMixin(mapper);
         return mapper;
     }

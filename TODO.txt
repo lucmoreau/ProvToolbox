@@ -1,4 +1,8 @@
 
+- inefficient processing in deep copy,
+    - should avoid copying freshly created lists
+    - rewrite populateAttributes to use split2 or similar in ProvUtilities.
+    
 - service test: a few tests are failing
 -- public void testQualifiedHadMember2(){} //ok in service.light
 -- public void testMembership1() {} //ok in service.light

@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
 
-public class ProvSerialiser extends org.openprovenance.prov.core.json.serialization.ProvSerialiser {
+public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser  {
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_JSONLD);
 

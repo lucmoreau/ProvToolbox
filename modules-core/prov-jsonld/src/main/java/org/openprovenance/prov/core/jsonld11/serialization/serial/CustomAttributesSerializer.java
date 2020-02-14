@@ -3,6 +3,7 @@ package org.openprovenance.prov.core.jsonld11.serialization.serial;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.openprovenance.prov.core.jsonld11.AttributeTypedValue;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.vanilla.LangString;
@@ -33,12 +34,75 @@ public class CustomAttributesSerializer extends StdSerializer<Object> implements
         Set<TypedValue> set=(Set<TypedValue>) o;
         if (!(set.isEmpty())) {
             jsonGenerator.writeFieldName(newKey);
-            jsonGenerator.writeStartArray();
-            for (TypedValue a : set) {
-                serialize_TypedValue(a, jsonGenerator, serializerProvider);
+
+            if (true) {
+                jsonGenerator.writeObject(o);
+            } else {
+                jsonGenerator.writeStartArray();
+                for (TypedValue a : set) {
+                    //serialize_TypedValue(a, jsonGenerator, serializerProvider);
+                    jsonGenerator.writeObject(createTypedValueOrString2(a));
+                }
+                jsonGenerator.writeEndArray();
             }
-            jsonGenerator.writeEndArray();
         }
+    }
+
+    public Object createTypedValueOrString2(TypedValue attr) {
+        final AttributeTypedValue result = new AttributeTypedValue();
+        final Object value = attr.getValue();
+
+        final boolean isLangString    = value instanceof LangString;
+        final boolean isQualifiedName = value instanceof QualifiedName;
+
+
+        result.value    = isLangString ? ((LangString) value).getValue() : (isQualifiedName? prnt((QualifiedName) value): value.toString());
+        result.language = isLangString ? ((LangString) value).getLang() : null;
+        result.typex    = QUALIFIED_NAME_XSD_STRING.equals(attr.getType())? (result.language==null ? null : prnt(attr.getType())) : prnt(attr.getType());
+        return result;
+    }
+
+
+    public Object createTypedValueOrString(TypedValue attr) {
+        final AttributeTypedValue result = new AttributeTypedValue();
+        final Object value = attr.getValue();
+
+        if ((value instanceof LangString) &&
+                ((LangString) value).getLang() == null &&
+                (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
+
+            LangString me = (LangString) value;
+            result.value = me.getValue();
+
+        } else if ((value instanceof LangString) &&
+                ((LangString) value).getLang() != null) {
+
+            LangString me = (LangString) value;
+            result.value = me.getValue();
+            result.language = me.getLang();
+
+        } else if (value instanceof QualifiedName) {
+
+            return prnt((QualifiedName) value);
+
+        } else if ((value instanceof String) &&
+                (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
+
+            throw new UnsupportedOperationException("should never be here");
+
+        } else {
+            result.typex = prnt(attr.getType());
+            if (value instanceof String) {
+                result.value = (String) value;
+            } else if (value instanceof QualifiedName) {
+                result.value = prnt((QualifiedName) value);
+            } else if (value instanceof LangString) {
+                result.value = value.toString();  //FIXME: can we be here
+            } else {
+                throw new UnsupportedOperationException("should never be here");
+            }
+        }
+        return result;
     }
 
     public void serialize_TypedValue(TypedValue attr, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -77,7 +141,6 @@ public class CustomAttributesSerializer extends StdSerializer<Object> implements
             serializeValue(PROPERTY_AT_VALUE, value, jsonGenerator, serializerProvider);
             jsonGenerator.writeEndObject();
         }
-
     }
 
 

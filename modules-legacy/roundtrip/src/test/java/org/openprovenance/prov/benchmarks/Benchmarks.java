@@ -54,6 +54,8 @@ public class Benchmarks {
     ProvDeserialiser jsonDeserialiser   = new JsonDeserialiser();
     ProvSerialiser   jsonSerialiser     = new JsonSerialiser();
     ProvDeserialiser scalaDeserialiser  = new org.openprovenance.prov.scala.immutable.ProvDeserialiser();
+    ProvSerialiser   pjsonSerialiser    = new org.openprovenance.prov.core.json.serialization.ProvSerialiser();
+    ProvDeserialiser pjsonDeserialiser  = new org.openprovenance.prov.core.json.serialization.ProvDeserialiser();
 
     public static void main(String [] args) throws IOException {
         new Benchmarks().doTask(args[0], args[1]);
@@ -116,12 +118,21 @@ public class Benchmarks {
         List<Long> result8 = repeatCopy(count, doc,new org.openprovenance.prov.scala.immutable.ProvFactory());
         output(result8);
 
+        System.out.println("write pjson");
+        List<Long> result9 = repeatSerialize(pjsonSerialiser, count, doc);
+        output(result9);
+        System.out.println("read pjson");
+        List<Long> result10 = repeatDeserialize(pjsonDeserialiser, count, pjsonPrimer);
+        output(result10);
+
         final double average3 = average(result3);
         final double average4 = average(result4);
         final double average5 = average(result5);
         final double average6 = average(result6);
         final double average7 = average(result7);
         final double average8 = average(result8);
+        final double average9 = average(result9);
+        final double average10 = average(result10);
 
         System.out.println( "w:jsonld, " + average(result1));
         System.out.println( "w:provn, " + average(result2));
@@ -131,6 +142,9 @@ public class Benchmarks {
         System.out.println( "r:json, " + average6);
         System.out.println( "r:scala, " + average7);
         System.out.println( "deep copy sc, " + average8);
+        System.out.println( "w:pjson, " + average9);
+        System.out.println( "r:pjson, " + average10);
+
     }
 
     public List<Long> repeatSerialize(ProvSerialiser serialiser, int count, Document doc) {
@@ -429,5 +443,184 @@ public class Benchmarks {
             "\n" +
             "endDocument\n" +
             "\n";
+
+    public static String pjsonPrimer="{\n" +
+            "  \"prefix\" : {\n" +
+            "    \"foaf\" : \"http://xmlns.com/foaf/0.1/\",\n" +
+            "    \"xsd\" : \"http://www.w3.org/2001/XMLSchema#\",\n" +
+            "    \"_\" : \"https://openprovenance.org/blank#\",\n" +
+            "    \"dcterms\" : \"http://purl.org/dc/terms/\",\n" +
+            "    \"ex\" : \"http://example/\",\n" +
+            "    \"prov\" : \"http://www.w3.org/ns/prov#\"\n" +
+            "  },\n" +
+            "  \"entity\" : {\n" +
+            "    \"ex:chart1\" : { },\n" +
+            "    \"ex:regionList\" : { },\n" +
+            "    \"ex:composition\" : { },\n" +
+            "    \"ex:chart2\" : { },\n" +
+            "    \"ex:article\" : {\n" +
+            "      \"dcterms:title\" : [ \"Crime rises in cities\" ]\n" +
+            "    },\n" +
+            "    \"ex:articleV1\" : { },\n" +
+            "    \"ex:dataSet2\" : { },\n" +
+            "    \"ex:blogEntry\" : { },\n" +
+            "    \"ex:articleV2\" : { },\n" +
+            "    \"ex:dataSet1\" : { }\n" +
+            "  },\n" +
+            "  \"activity\" : {\n" +
+            "    \"ex:compile\" : { },\n" +
+            "    \"ex:correct\" : {\n" +
+            "      \"prov:startTime\" : \"2012-03-31T09:21:00.000+01:00\",\n" +
+            "      \"prov:endTime\" : \"2012-04-01T15:21:00.000+01:00\"\n" +
+            "    },\n" +
+            "    \"ex:compose\" : { },\n" +
+            "    \"ex:illustrate\" : { },\n" +
+            "    \"ex:compile2\" : { }\n" +
+            "  },\n" +
+            "  \"agent\" : {\n" +
+            "    \"ex:derek\" : {\n" +
+            "      \"foaf:mbox\" : [ \"<mailto:derek@example.org>\" ],\n" +
+            "      \"prov:type\" : [ {\n" +
+            "        \"type\" : \"prov:QUALIFIED_NAME\",\n" +
+            "        \"$\" : \"prov:Person\"\n" +
+            "      } ],\n" +
+            "      \"foaf:givenName\" : [ \"Derek\" ]\n" +
+            "    },\n" +
+            "    \"ex:chartgen\" : {\n" +
+            "      \"foaf:name\" : [ \"Chart Generators Inc\" ],\n" +
+            "      \"prov:type\" : [ {\n" +
+            "        \"type\" : \"prov:QUALIFIED_NAME\",\n" +
+            "        \"$\" : \"prov:Organization\"\n" +
+            "      } ]\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"used\" : {\n" +
+            "    \"_:n11\" : {\n" +
+            "      \"prov:activity\" : \"ex:compose\",\n" +
+            "      \"prov:entity\" : \"ex:dataSet1\",\n" +
+            "      \"prov:role\" : [ {\n" +
+            "        \"type\" : \"prov:QUALIFIED_NAME\",\n" +
+            "        \"$\" : \"ex:dataToCompose\"\n" +
+            "      } ]\n" +
+            "    },\n" +
+            "    \"_:n12\" : {\n" +
+            "      \"prov:activity\" : \"ex:compose\",\n" +
+            "      \"prov:entity\" : \"ex:regionList\",\n" +
+            "      \"prov:role\" : [ {\n" +
+            "        \"type\" : \"prov:QUALIFIED_NAME\",\n" +
+            "        \"$\" : \"ex:regionsToAggregateBy\"\n" +
+            "      } ]\n" +
+            "    },\n" +
+            "    \"_:n14\" : {\n" +
+            "      \"prov:activity\" : \"ex:correct\",\n" +
+            "      \"prov:entity\" : \"ex:dataSet1\"\n" +
+            "    },\n" +
+            "    \"_:n1\" : {\n" +
+            "      \"prov:activity\" : \"ex:compose\",\n" +
+            "      \"prov:entity\" : \"ex:regionList\"\n" +
+            "    },\n" +
+            "    \"_:n0\" : {\n" +
+            "      \"prov:activity\" : \"ex:compose\",\n" +
+            "      \"prov:entity\" : \"ex:dataSet1\"\n" +
+            "    },\n" +
+            "    \"_:n3\" : {\n" +
+            "      \"prov:activity\" : \"ex:illustrate\",\n" +
+            "      \"prov:entity\" : \"ex:composition\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"wasAssociatedWith\" : {\n" +
+            "    \"_:n7\" : {\n" +
+            "      \"prov:activity\" : \"ex:compose\",\n" +
+            "      \"prov:agent\" : \"ex:derek\"\n" +
+            "    },\n" +
+            "    \"_:n8\" : {\n" +
+            "      \"prov:activity\" : \"ex:illustrate\",\n" +
+            "      \"prov:agent\" : \"ex:derek\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"wasAttributedTo\" : {\n" +
+            "    \"_:n10\" : {\n" +
+            "      \"prov:entity\" : \"ex:chart1\",\n" +
+            "      \"prov:agent\" : \"ex:derek\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"actedOnBehalfOf\" : {\n" +
+            "    \"_:n9\" : {\n" +
+            "      \"prov:delegate\" : \"ex:derek\",\n" +
+            "      \"prov:responsible\" : \"ex:chartgen\",\n" +
+            "      \"prov:activity\" : \"ex:compose\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"alternateOf\" : {\n" +
+            "    \"_:n22\" : {\n" +
+            "      \"prov:alternate1\" : \"ex:articleV2\",\n" +
+            "      \"prov:alternate2\" : \"ex:articleV1\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"specializationOf\" : {\n" +
+            "    \"_:n20\" : {\n" +
+            "      \"prov:specificEntity\" : \"ex:articleV2\",\n" +
+            "      \"prov:generalEntity\" : \"ex:article\"\n" +
+            "    },\n" +
+            "    \"_:n18\" : {\n" +
+            "      \"prov:specificEntity\" : \"ex:articleV1\",\n" +
+            "      \"prov:generalEntity\" : \"ex:article\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"wasDerivedFrom\" : {\n" +
+            "    \"_:n21\" : {\n" +
+            "      \"prov:generatedEntity\" : \"ex:articleV2\",\n" +
+            "      \"prov:usedEntity\" : \"ex:dataSet2\"\n" +
+            "    },\n" +
+            "    \"_:n15\" : {\n" +
+            "      \"prov:generatedEntity\" : \"ex:dataSet2\",\n" +
+            "      \"prov:usedEntity\" : \"ex:dataSet1\",\n" +
+            "      \"prov:type\" : [ {\n" +
+            "        \"type\" : \"prov:QUALIFIED_NAME\",\n" +
+            "        \"$\" : \"prov:Revision\"\n" +
+            "      } ]\n" +
+            "    },\n" +
+            "    \"_:n16\" : {\n" +
+            "      \"prov:generatedEntity\" : \"ex:chart2\",\n" +
+            "      \"prov:usedEntity\" : \"ex:dataSet2\"\n" +
+            "    },\n" +
+            "    \"_:n17\" : {\n" +
+            "      \"prov:generatedEntity\" : \"ex:blogEntry\",\n" +
+            "      \"prov:usedEntity\" : \"ex:article\",\n" +
+            "      \"prov:type\" : [ {\n" +
+            "        \"type\" : \"prov:QUALIFIED_NAME\",\n" +
+            "        \"$\" : \"prov:Quotation\"\n" +
+            "      } ]\n" +
+            "    },\n" +
+            "    \"_:n19\" : {\n" +
+            "      \"prov:generatedEntity\" : \"ex:articleV1\",\n" +
+            "      \"prov:usedEntity\" : \"ex:dataSet1\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"wasGeneratedBy\" : {\n" +
+            "    \"_:n6\" : {\n" +
+            "      \"prov:entity\" : \"ex:chart2\",\n" +
+            "      \"prov:activity\" : \"ex:compile2\",\n" +
+            "      \"prov:time\" : \"2012-04-01T15:21:00.000+01:00\"\n" +
+            "    },\n" +
+            "    \"_:n13\" : {\n" +
+            "      \"prov:entity\" : \"ex:dataSet2\",\n" +
+            "      \"prov:activity\" : \"ex:correct\"\n" +
+            "    },\n" +
+            "    \"_:n2\" : {\n" +
+            "      \"prov:entity\" : \"ex:composition\",\n" +
+            "      \"prov:activity\" : \"ex:compose\"\n" +
+            "    },\n" +
+            "    \"_:n5\" : {\n" +
+            "      \"prov:entity\" : \"ex:chart1\",\n" +
+            "      \"prov:activity\" : \"ex:compile\",\n" +
+            "      \"prov:time\" : \"2012-03-02T10:30:00.000Z\"\n" +
+            "    },\n" +
+            "    \"_:n4\" : {\n" +
+            "      \"prov:entity\" : \"ex:chart1\",\n" +
+            "      \"prov:activity\" : \"ex:illustrate\"\n" +
+            "    }\n" +
+            "  }\n" +
+            "}";
 
 }

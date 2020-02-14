@@ -27,6 +27,22 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_JSON);
 
+    final ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapperWithFormat = new ObjectMapper();
+
+    public ProvSerialiser() {
+        mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(SerializationFeature.INDENT_OUTPUT);
+        customize(mapper);
+        customize(mapperWithFormat);
+    }
+
+    public void customize(ObjectMapper mapper) {
+        registerModule(mapper);
+        registerFilter(mapper);
+        provMixin.addProvMixin(mapper);
+    }
+
     @Override
     public Collection<String> mediaTypes() {
         return myMedia;
@@ -36,13 +52,12 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        ObjectMapper mapper = new ObjectMapper();
-        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        registerModule(mapper);
-        registerFilter(mapper);
-        provMixin.addProvMixin(mapper);
         try {
-            mapper.writeValue(out,new SortedDocument(document));
+            if (formatted) {
+                mapperWithFormat.writeValue(out, new SortedDocument(document));
+            } else {
+                mapper.writeValue(out, new SortedDocument(document));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
@@ -50,13 +65,12 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     }
 
     public void serialiseObject(OutputStream out, Object document, boolean formatted) {
-        ObjectMapper mapper = new ObjectMapper();
-        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        registerModule(mapper);
-        registerFilter(mapper);
-        provMixin.addProvMixin(mapper);
         try {
-            mapper.writeValue(out,document);
+            if (formatted) {
+                mapperWithFormat.writeValue(out, document);
+            } else {
+                mapper.writeValue(out, document);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
@@ -78,7 +92,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
-        //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
 
         module.addSerializer(Bundle.class, new CustomBundleSerializer());
         mapper.registerModule(module);

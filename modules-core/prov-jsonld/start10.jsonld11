@@ -1,0 +1,88 @@
+{
+  "@context" : [ {
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    "ex" : "http://example.org/",
+    "prov" : "http://www.w3.org/ns/prov#",
+    "ex2" : "http://example2.org/"
+  }, "http://openprovenance.org/prov.jsonld" ],
+  "@graph" : [ {
+    "@type" : "prov:Start",
+    "activity" : "ex:a1",
+    "starter" : "ex:a2",
+    "time" : "2020-02-14T17:11:33.445Z",
+    "ex:tag1" : [ {
+      "@value" : "bonjour"
+    }, {
+      "@type" : "xsd:gYear",
+      "@value" : "2002"
+    }, {
+      "@value" : "hello"
+    }, {
+      "@value" : "hello\nover\nmore\nlines"
+    } ],
+    "ex2:tag3" : [ {
+      "@value" : "hi"
+    } ],
+    "ex:0tagWithDigit" : [ {
+      "@value" : "hello"
+    }, {
+      "@value" : "hello2"
+    } ],
+    "prov:role" : [ {
+      "@value" : "otherRole"
+    }, {
+      "@value" : "someRole"
+    } ],
+    "prov:type" : [ {
+      "@type" : "xsd:anyURI",
+      "@value" : "http://example.org/hello"
+    }, {
+      "@type" : "xsd:dateTime",
+      "@value" : "2020-02-14T17:11:33.445Z"
+    }, {
+      "@type" : "xsd:float",
+      "@value" : "1.0"
+    }, {
+      "@value" : "a"
+    }, "ex:abc", {
+      "@type" : "xsd:boolean",
+      "@value" : "true"
+    }, {
+      "@type" : "xsd:int",
+      "@value" : "1"
+    } ],
+    "ex:tag2" : [ {
+      "@value" : "bye"
+    } ],
+    "prov:label" : [ {
+      "@value" : "bye",
+      "@language" : "en"
+    }, {
+      "@value" : "bonjour",
+      "@language" : "fr"
+    }, {
+      "@value" : "hello"
+    } ],
+    "prov:location" : [ {
+      "@type" : "xsd:dateTime",
+      "@value" : "2020-02-14T17:11:33.445Z"
+    }, {
+      "@type" : "xsd:float",
+      "@value" : "1.0"
+    }, {
+      "@value" : "London"
+    }, "ex:london", {
+      "@type" : "xsd:boolean",
+      "@value" : "true"
+    }, {
+      "@type" : "xsd:anyURI",
+      "@value" : "http://example.org/london"
+    }, {
+      "@type" : "xsd:gYear",
+      "@value" : "2002"
+    }, {
+      "@type" : "xsd:int",
+      "@value" : "1"
+    } ]
+  } ]
+}

@@ -242,5 +242,24 @@ import javax.xml.transform.TransformerException;
         return toStringBuilder.toString();
     }
 
+    // to assist with provjsonld serialisaton
+    public String getLanguageString() {
+         if (getValue() instanceof LangString) {
+             return ((LangString) getValue()).getLang();
+         }
+         return null;
+    }
+    public String getTypeString() {
+         if (QualifiedName_XSD_STRING.equals(type)) {
+             return null;
+         }
+         return prnt(type);
+
+    }
+
+    static final  String prnt(QualifiedName qn) {
+        return qn.getPrefix() + ":" + qn.getLocalPart();
+    }
+
 
 }

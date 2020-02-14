@@ -28,29 +28,29 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 
 
 public  class Utility {
-    
-    static Logger logger=Logger.getLogger(Utility.class);
-    
-    public static void warn(String s) {
-	logger.warn(s);
-    }
-    
-    public static void warn(Exception e) {
-	logger.warn(e.getMessage());
-    }
-   
-    class ParserWithErrorHandling extends PROV_NParser {
-	public void reportError(RecognitionException re) {
-	    super.reportError(re);
-	    errors.add(re);
-	}
-	
-	public List<RecognitionException> errors=new LinkedList<RecognitionException>();
 
-	public ParserWithErrorHandling(TokenStream input) {
-	    super(input);
-	}
-	
+    static Logger logger=Logger.getLogger(Utility.class);
+
+    public static void warn(String s) {
+        logger.warn(s);
+    }
+
+    public static void warn(Exception e) {
+        logger.warn(e.getMessage());
+    }
+
+    class ParserWithErrorHandling extends PROV_NParser {
+        public void reportError(RecognitionException re) {
+            super.reportError(re);
+            errors.add(re);
+        }
+
+        public List<RecognitionException> errors=new LinkedList<RecognitionException>();
+
+        public ParserWithErrorHandling(TokenStream input) {
+            super(input);
+        }
+
     }
 
     public PROV_NParser getParserForFile(String file) {
@@ -81,16 +81,16 @@ public  class Utility {
     }
 
     static final TreeAdaptor adaptor = new CommonTreeAdaptor() {
-            public Object create(Token payload) {
-                return new CommonTree(payload);
-            }
+        public Object create(Token payload) {
+            return new CommonTree(payload);
+        }
     };
 
     public CommonTree convertASNToTree(String file)  {
         PROV_NParser parser=getParserForFile(file);
         return convertASNToTree(parser);
     }
-   
+
 
     public CommonTree convertASNToTree(InputStream is){
         PROV_NParser parser=getParserForStream(is);
@@ -145,8 +145,8 @@ public  class Utility {
 
 
     public String convertBeanToASN(final Document doc, ProvFactory pFactory) {
-	StringWriter writer=new StringWriter();
-	NotationConstructor nc=new NotationConstructor(writer);
+        StringWriter writer=new StringWriter();
+        NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.doAction(doc);
         nc.flush();
@@ -178,19 +178,19 @@ public  class Utility {
             }
         }
     }
-    
+
     public void writeTextToFile(String text,
                                 String filename) {
-	try {
-	    writeTextToFile(text, new FileWriter(filename));
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        try {
+            writeTextToFile(text, new FileWriter(filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-	
-	
+
+
     public void writeTextToFile(String text,
-                                Writer out) {	
+                                Writer out) {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(out);

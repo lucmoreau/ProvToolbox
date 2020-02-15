@@ -1,9 +1,6 @@
 package org.openprovenance.prov.core.jsonld11;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
@@ -11,10 +8,13 @@ import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualif
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomAttributeValueSerializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.vanilla.Label;
+import org.openprovenance.prov.vanilla.Type;
 
 
 @JsonPropertyOrder({ "elementName", "type", "value" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
+
 public interface JLD_Attribute extends Constants {
 
     @JsonProperty(access= JsonProperty.Access.WRITE_ONLY)

@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerException;
      private static final QualifiedName QualifiedName_XSD_HEX_BINARY     = ProvFactory.getFactory().getName().XSD_HEX_BINARY;
      private static final QualifiedName QualifiedName_XSD_BASE64_BINARY  = ProvFactory.getFactory().getName().XSD_BASE64_BINARY;
      private static final QualifiedName QualifiedName_PROV_QUALIFIEDNAME = ProvFactory.getFactory().getName().PROV_QUALIFIED_NAME;
+     private static final QualifiedName QualifiedName_PROV_LANG_STRING   = ProvFactory.getFactory().getName().PROV_LANG_STRING;
 
      public static Object castToStringOrLangStringOrQualifiedName(Object value, QualifiedName type) {
          return (value instanceof org.openprovenance.prov.model.LangString)? value : ((value instanceof org.openprovenance.prov.model.QualifiedName)? value : ((QualifiedName_XSD_STRING.equals(type))? new org.openprovenance.prov.vanilla.LangString(value.toString(),null): value.toString()));
@@ -243,14 +244,14 @@ import javax.xml.transform.TransformerException;
     }
 
     // to assist with provjsonld serialisaton
-    public String getLanguageString() {
+    final public String getLanguageString() {
          if (getValue() instanceof LangString) {
              return ((LangString) getValue()).getLang();
          }
          return null;
     }
-    public String getTypeString() {
-         if (QualifiedName_XSD_STRING.equals(type)) {
+    final public String getTypeString() {
+         if ((QualifiedName_XSD_STRING.equals(type)) || (QualifiedName_PROV_LANG_STRING.equals(type))) {
              return null;
          }
          return prnt(type);

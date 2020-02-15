@@ -26,7 +26,7 @@ public class CustomAttributeValueSerializer extends StdSerializer<Object> {
         jsonGenerator.writeString(output);
     }
 
-    final  String prnt(QualifiedName qn) {
+    static final  String prnt(QualifiedName qn) {
         return qn.getPrefix() + ":" + qn.getLocalPart();
     }
 

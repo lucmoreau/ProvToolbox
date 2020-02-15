@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomKeyDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomAttributesSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomMapSerializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
@@ -24,7 +23,9 @@ public interface HasAttributes extends org.openprovenance.prov.vanilla.HasAttrib
 
     @JsonAnyGetter
     @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class, contentUsing = CustomAttributesSerializer.class)
+    @JsonSerialize(keyUsing= CustomMapSerializer.class)//, contentUsing = CustomAttributesSerializer.class)
+    //FIXME:  I need to convert some of the attributes in string directly because they are qualified names
+   // @JsonSerialize(using = CustomTest.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

@@ -44,11 +44,12 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9" level="project" />
-    <orderEntry type="library" name="Maven: org.mongojack:mongojack:2.10.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:bson:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.7" level="project" />
+    <orderEntry type="library" name="Maven: org.mongojack:mongojack:2.10.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-legacy:3.11.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:bson:3.11.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.11.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:3.11.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.10" level="project" />
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.9.2" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.7" level="project" />

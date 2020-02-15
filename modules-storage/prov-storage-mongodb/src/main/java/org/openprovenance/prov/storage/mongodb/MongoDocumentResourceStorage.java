@@ -44,9 +44,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
         DB db = mongoClient.getDB(dbname);
         this.db=db;
 
-        //mongoClient.getDatabaseNames().forEach(System.out::println);
         DBCollection collection=db.getCollection(COLLECTION_DOCUMENTS);
-        //db.getCollectionNames().forEach(System.out::println);
 
 
         ProvSerialiser serialiser=new ProvSerialiser(false);
@@ -109,7 +107,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
-        logger.debug("writeDocument " + id);
+        logger.debug("writeDocument " + id + " " + doc);
         documentCollection.updateById(id, DBUpdate.set("document", doc));
     }
 

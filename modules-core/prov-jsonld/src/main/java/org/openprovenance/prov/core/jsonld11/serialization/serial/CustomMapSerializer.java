@@ -28,6 +28,6 @@ public class CustomMapSerializer extends StdSerializer<QualifiedName> {
             s= Constants.PROPERTY_PROV_TYPE;
         }
         serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,s);
-
+        jsonGenerator.writeFieldName(s);
     }
 }

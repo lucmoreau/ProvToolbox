@@ -5,19 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributeValueSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/start10.jsonld11" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_bson_3_11_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_legacy_3_11_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomOverridingAttributeSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_8_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_9_10.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_bson_3_8_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_3_8_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_core_3_11_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_core_3_8_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_sync_3_11_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongojack_mongojack_2_10_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongojack_mongojack_2_10_1.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/AttributeTypedValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/AttributeTypedValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasAttributes.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/HasAttributes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Attribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/JLD_Attribute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvMixin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributeValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributeValueSerializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributesSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributesSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomMapSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomMapSerializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/TypedValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/TypedValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/TreeTraversal.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/TreeTraversal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/benchmarks/Benchmarks.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/benchmarks/Benchmarks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,11 +110,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.translation" />
       <recent name="org.openprovenance.prov.interop" />
       <recent name="org.openprovenance.prov.dot" />
-      <recent name="org.openprovenance.prov.json" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.storage.mongodb" />
@@ -359,7 +366,7 @@
       <workItem from="1581083932921" duration="4757000" />
       <workItem from="1581365929732" duration="5476000" />
       <workItem from="1581404742634" duration="1076000" />
-      <workItem from="1581444336990" duration="57375000" />
+      <workItem from="1581444336990" duration="67952000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -427,14 +434,14 @@
       <screen x="0" y="23" width="1440" height="830" />
     </state>
     <state x="434" y="232" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1440.830@0.23.1440.830" timestamp="1579765154864" />
-    <state x="961" y="394" key="#com.intellij.ide.util.MemberChooser" timestamp="1581703243795">
+    <state x="961" y="394" key="#com.intellij.ide.util.MemberChooser" timestamp="1581754850982">
       <screen x="0" y="23" width="2560" height="1340" />
     </state>
     <state x="541" y="252" key="#com.intellij.ide.util.MemberChooser/0.23.1440.829@0.23.1440.829" timestamp="1579105149064" />
     <state x="541" y="253" key="#com.intellij.ide.util.MemberChooser/0.23.1440.833@0.23.1440.833" timestamp="1580144197651" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1579356464175" />
     <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1338@0.23.2560.1338" timestamp="1580326822165" />
-    <state x="961" y="394" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1340@0.23.2560.1340" timestamp="1581703243795" />
+    <state x="961" y="394" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1340@0.23.2560.1340" timestamp="1581754850982" />
     <state x="962" y="394" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1343@0.23.2560.1343" timestamp="1580153963324" />
     <state x="1110" y="457" width="819" height="273" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1579886486372">
       <screen x="0" y="23" width="2560" height="1338" />

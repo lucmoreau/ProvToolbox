@@ -4,6 +4,7 @@ benchmark_file="bench1-quick.csv"
 benchmark_file="bench100.csv"
 benchmark_file="bench-2020-02-16-08-00.csv"
 benchmark_file="bench-2020-02-16-09-31.csv"
+benchmark_file="bench-2020-02-16-18-02.csv"
 
 
 library(reshape)
@@ -37,6 +38,8 @@ new_stats <-rbind(new_stats1,new_stats2,new_stats3,new_stats4, new_stats5, new_s
 new_stats$Score <- new_stats$Score * 1000 * 1000
 print(new_stats)
 
+outfile <- sub("csv", "pdf", benchmark_file)
+pdf(outfile) 
 
 
 ######################################################################
@@ -46,7 +49,13 @@ plotTop <- max(new_stats$Score+ 2 * max(new_stats$Score.Error..99.9..)) * 1.1
 
 title <- paste ("Serialisation/Deserialisation (", benchmark_file, ")", sep="")
 
-myplot <-barplot (new_stats$Score, names.arg=names(benchmarks), xlab=title, ylab="Time in us", ylim = c(0, plotTop), col=colors, cex.names=0.7)
+#par(mar=c(20,4,4,2))
+
+myplot <-barplot (new_stats$Score, xlab=title, ylab="Time in us", ylim = c(0, plotTop), col=colors, cex.names=0.6)
+
+text(x = myplot, y = par("usr")[3] - 1, srt = 45,
+     adj = 1, labels = names(benchmarks), xpd = TRUE)
+
 
 #myplot2 <-barplot (new_stats$Score, names.arg=names(benchmarks), xlab="Serialisation/Deserialisation", ylab="Time in us", xlim = c(0, plotTop), col=colors, horiz=TRUE, cex.names=0.5, legend=unique(new_stats$Unit))
 
@@ -58,3 +67,4 @@ arrows(myplot, new_stats$Score - new_stats$Score.Error..99.9.., myplot, new_stat
 
 text(myplot, y = new_stats$Score +7, label = round(new_stats$Score, digits=2), pos = 4, cex = 0.8, col = "blue")
 
+dev.off() 

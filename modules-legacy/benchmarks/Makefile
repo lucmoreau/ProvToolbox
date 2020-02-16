@@ -13,6 +13,9 @@ bench2:
 	java $(JVM_ARGS) -jar target/benchmarks.jar -f 2 -wi 3 -i 5  -bm all -tu us -rf csv -rff target/bench-$(DATE).csv -o target/bench-$(DATE).txt
 
 
+plot.file:
+	R --no-save --args target/bench-2020-02-16-18-02.csv target/foo.pdf   < src/main/R/plot.R
+
 
 
 quick:

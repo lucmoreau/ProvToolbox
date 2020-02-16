@@ -35,6 +35,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     // create two independent mappers, with formatting or not
     final ObjectMapper mapper = new ObjectMapper();
     final ObjectMapper mapperWithFormat = new ObjectMapper();
+    final ObjectWriter writer;
 
     public ProvSerialiser () {
         this(true);
@@ -46,6 +47,8 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         customize(mapperWithFormat);
         mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(SerializationFeature.INDENT_OUTPUT);
+        writer=mapper.writer().withDefaultPrettyPrinter();
+
     }
 
     public ProvMixin provMixin() {
@@ -58,7 +61,8 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
             if (formatted) {
                 mapperWithFormat.writeValue(out,document);
             } else {
-                mapper.writeValue(out,document);
+                writer.writeValue(out,document);
+                //mapper.writeValue(out,document);
             }
         } catch (IOException e) {
             e.printStackTrace();

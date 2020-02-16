@@ -10,6 +10,7 @@ import org.openprovenance.prov.model.exception.QualifiedNameException
 import org.openprovenance.prov.model.extension.QualifiedHadMember
 import org.openprovenance.prov.model._
 import org.openprovenance.prov.scala.immutable.Attribute.split
+import org.openprovenance.prov.scala.immutable.Kind.Kind
 import org.openprovenance.prov.{model, vanilla}
 
 import scala.beans.BeanProperty
@@ -794,70 +795,70 @@ trait ImmutableWasEndedBy extends Relation with org.openprovenance.prov.model.Wa
 
 
 trait ImmutableActedOnBehalfOf extends Relation with org.openprovenance.prov.model.ActedOnBehalfOf with Identifiable with HasLabel with HasType with HasOther with HasAttributes with Hashable {
-  
-    val delegate: QualifiedName
-    
-    val responsible: QualifiedName
-    
-    val activity: QualifiedName
-    
-    
-    @BeanProperty
-    val kind= PROV_DELEGATION
-    val enumType=Kind.aobo
 
-    
-    def getCause() = responsible
-    def getEffect() = delegate
-    
-    
-    
-   
-    def getActivity(): org.openprovenance.prov.model.QualifiedName = activity
-    def getResponsible(): org.openprovenance.prov.model.QualifiedName = responsible
-    def getDelegate(): org.openprovenance.prov.model.QualifiedName = delegate
+  val delegate: QualifiedName
+
+  val responsible: QualifiedName
+
+  val activity: QualifiedName
 
 
-    def setActivity(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
-    def setResponsible(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
-    def setDelegate(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
-     
-    
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableActedOnBehalfOf]
+  @BeanProperty
+  val kind= PROV_DELEGATION
+  val enumType=Kind.aobo
 
-    override def equals(that: Any): Boolean =
+
+  def getCause() = responsible
+  def getEffect() = delegate
+
+
+
+
+  def getActivity(): org.openprovenance.prov.model.QualifiedName = activity
+  def getResponsible(): org.openprovenance.prov.model.QualifiedName = responsible
+  def getDelegate(): org.openprovenance.prov.model.QualifiedName = delegate
+
+
+  def setActivity(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
+  def setResponsible(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
+  def setDelegate(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
+
+
+  def canEqual(a: Any) = a.isInstanceOf[ImmutableActedOnBehalfOf]
+
+  override def equals(that: Any): Boolean =
     that match {
-      case that: ImmutableActedOnBehalfOf => that.canEqual(this) && 
-                           this.id == that.id && 
-                           this.delegate == that.delegate && 
-                           this.responsible == that.responsible && 
-                           this.activity == that.activity &&  
-                           this.label == that.label && 
-                           this.typex == that.typex && 
-                           this.other == that.other                   
+      case that: ImmutableActedOnBehalfOf => that.canEqual(this) &&
+        this.id == that.id &&
+        this.delegate == that.delegate &&
+        this.responsible == that.responsible &&
+        this.activity == that.activity &&
+        this.label == that.label &&
+        this.typex == that.typex &&
+        this.other == that.other
       case _ => false
     }
-   
-    override def hashCode:Int = {
-        pr(pr(pr(pr(pr(pr(h(id),h(delegate)),h(responsible)),h(activity)),h(label)),h(typex)),h(other))
-    }
-    
-    def getAttributes () :Set[Attribute]= {
-      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++other.values.flatten
-    }
+
+  override def hashCode:Int = {
+    pr(pr(pr(pr(pr(pr(h(id),h(delegate)),h(responsible)),h(activity)),h(label)),h(typex)),h(other))
+  }
+
+  def getAttributes () :Set[Attribute]= {
+    label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++other.values.flatten
+  }
 
 
   def toNotation (sb:StringBuilder) {
-      sb++="actedOnBehalfOf("
-      optionalId(id,sb)
-      idOrMarker(delegate, sb)
-      sb+=','
-      idOrMarker(responsible, sb)
-      sb+=','
-      idOrMarker(activity, sb)
-      Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), other)
-      sb+=')'      
-    }
+    sb++="actedOnBehalfOf("
+    optionalId(id,sb)
+    idOrMarker(delegate, sb)
+    sb+=','
+    idOrMarker(responsible, sb)
+    sb+=','
+    idOrMarker(activity, sb)
+    Attribute.toNotation(sb, label, typex, Set(), Set(), Set(), other)
+    sb+=')'
+  }
 
 }
 
@@ -1358,7 +1359,7 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
     }
     
     def toNotation (sb:StringBuilder) {
-    	val isExt=(id!=null) || !label.isEmpty || !typex.isEmpty || !other.isEmpty
+    	val isExt=(id!=null) || label.nonEmpty || typex.nonEmpty || other.nonEmpty
       
       sb++= (if (isExt) "provext:hadMember(" else  "hadMember(")
       optionalId(id,sb)
@@ -1542,7 +1543,7 @@ class Entity(val id: QualifiedName,
              val location: Set[Location],           
              val other: Map[QualifiedName,Set[Other]]) extends Node with ImmutableEntity {
   
-	def addAttributes (attr: Set[Attribute]) = {
+	def addAttributes (attr: Set[Attribute]): Entity = {
       ProvFactory.pf.newEntity(id,getAttributes() ++ attr)
 	}
 
@@ -1588,7 +1589,7 @@ class Agent(val id: QualifiedName,
             val other: Map[QualifiedName,Set[Other]]) extends Node with ImmutableAgent  {     
     
     
-	def addAttributes (attr: Set[Attribute]) = {
+	def addAttributes (attr: Set[Attribute]): Agent = {
       ProvFactory.pf.newAgent(id,getAttributes() ++ attr)
 	}
 
@@ -1609,8 +1610,8 @@ object Activity {
       case a:Activity => a
       case _ =>
             new Activity(QualifiedName(a.getId),
-                         if (a.getStartTime==null) None else Some(a.getStartTime),
-                         if (a.getEndTime==null) None else Some(a.getEndTime),
+                         Option(a.getStartTime),
+                         Option(a.getEndTime),
                          LangString(a.getLabel),
                          Type(a.getType),
                          Location(a.getLocation),
@@ -1620,8 +1621,8 @@ object Activity {
 
   def apply(a: org.openprovenance.prov.model.Activity, gensym: () => org.openprovenance.prov.model.QualifiedName):Activity = {
     new Activity(if (a.getId==null) QualifiedName(gensym()) else QualifiedName(a.getId),
-      if (a.getStartTime==null) None else Some(a.getStartTime),
-      if (a.getEndTime==null) None else Some(a.getEndTime),
+      Option(a.getStartTime),
+      Option(a.getEndTime),
       LangString(a.getLabel),
       Type(a.getType),
       Location(a.getLocation),
@@ -1639,9 +1640,9 @@ class Activity(val id: QualifiedName,
   
       @BeanProperty
       val kind=PROV_ACTIVITY
-      val enumType=Kind.act
+      val enumType: Kind =Kind.act
       
-      def addAttributes (attr: Set[Attribute]) = {
+      def addAttributes (attr: Set[Attribute]): Activity = {
     		  ProvFactory.pf.newActivity(id, startTime, endTime, getAttributes() ++ attr)
       }
 
@@ -2670,7 +2671,7 @@ object Attribute {
   import ProvFactory.pf
 
   
-  def apply(attr: org.openprovenance.prov.model.Attribute) = {
+  def apply(attr: org.openprovenance.prov.model.Attribute): Attribute = {
       pf.newAttribute(attr.getElementName(), 
                       attr.getValue(),
                       attr.getType()) match {
@@ -2693,7 +2694,10 @@ object Attribute {
              Set(),
              new HashMap())
   }
-    
+  def split(attributes: Set[Attribute]): (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]])  = {
+    split(attributes.toList)
+  }
+
   def split(attributes: List[Attribute]): (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]]) = {
     splitrec(attributes,
              Set(),
@@ -4791,7 +4795,7 @@ class ProvFactory extends ProvFactory1  {
 
 
 
-    override def getSerializer() = throw new UnsupportedOperationException
+  override def getSerializer() = throw new UnsupportedOperationException
   override def newQualifiedName(x1: String, x2:String, x3: String, x4:org.openprovenance.prov.model.ProvUtilities.BuildFlag) = throw new UnsupportedOperationException
   override def newAttribute(kind: org.openprovenance.prov.model.Attribute.AttributeKind,
                             value: Object,
@@ -4807,18 +4811,20 @@ class ProvFactory extends ProvFactory1  {
       case AttributeKind.OTHER => throw new UnsupportedOperationException // this function does have an elementName, so, we can't deal with OTHER
     }
   }
-  val prov_type=getName.PROV_TYPE.asInstanceOf[QualifiedName]
-  val prov_role=getName.PROV_ROLE.asInstanceOf[QualifiedName]
-  val prov_location=getName.PROV_LOCATION.asInstanceOf[QualifiedName]
-  val prov_value=getName.PROV_VALUE.asInstanceOf[QualifiedName]
-  val prov_key=getName.PROV_KEY.asInstanceOf[QualifiedName]
-  val prov_label=getName.PROV_LABEL.asInstanceOf[QualifiedName]
-  val prov_qualified_name=getName.PROV_QUALIFIED_NAME.asInstanceOf[QualifiedName]
-  val xsd_string=getName.XSD_STRING.asInstanceOf[QualifiedName]
-  val xsd_int=getName.XSD_INT.asInstanceOf[QualifiedName]
-  
-  
-  def attributeKind(qualifiedName: org.openprovenance.prov.model.QualifiedName)= {
+  val prov_type           =getName.PROV_TYPE.asInstanceOf[QualifiedName]
+  val prov_role           =getName.PROV_ROLE.asInstanceOf[QualifiedName]
+  val prov_location       =getName.PROV_LOCATION.asInstanceOf[QualifiedName]
+  val prov_value          =getName.PROV_VALUE.asInstanceOf[QualifiedName]
+  val prov_key            =getName.PROV_KEY.asInstanceOf[QualifiedName]
+  val prov_label          =getName.PROV_LABEL.asInstanceOf[QualifiedName]
+  val prov_qualified_name =getName.PROV_QUALIFIED_NAME.asInstanceOf[QualifiedName]
+  val xsd_string          =getName.XSD_STRING.asInstanceOf[QualifiedName]
+  val xsd_int             =getName.XSD_INT.asInstanceOf[QualifiedName]
+
+  val attributeKindMap: Map[QualifiedName, AttributeKind] = Map(prov_type -> AttributeKind.PROV_TYPE, prov_role -> AttributeKind.PROV_ROLE, prov_value -> AttributeKind.PROV_VALUE, prov_location -> AttributeKind.PROV_LOCATION, prov_key -> AttributeKind.PROV_KEY, prov_label -> AttributeKind.PROV_LABEL)
+ // val attributeKindCons: Map[AttributeKind, ((QualifiedName,Object) -> org.openprovenance.prov.model.Attribute)] = Map(AttributeKind.PROV_TYPE -> {case (t:QualifiedName,v:Object) -> Type(t, v)})
+
+  def attributeKindOld(qualifiedName: org.openprovenance.prov.model.QualifiedName): AttributeKind = {
     qualifiedName match {
       case  `prov_type` =>  AttributeKind.PROV_TYPE
       case  `prov_role` =>  AttributeKind.PROV_ROLE
@@ -4829,16 +4835,21 @@ class ProvFactory extends ProvFactory1  {
       case _ => AttributeKind.OTHER
       }
   }
-  
+
+  def attributeKind(qualifiedName: org.openprovenance.prov.model.QualifiedName): AttributeKind = {
+    attributeKindMap.getOrElse(qualifiedName.asInstanceOf[QualifiedName], AttributeKind.OTHER)
+  }
+
+
   override def newAttribute(qualifiedName: org.openprovenance.prov.model.QualifiedName,
-		                        value: Object, 
-		                        typ: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute = {
+                            value: Object,
+                            typ: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute = {
     val kind=attributeKind(qualifiedName)
     kind match {
       case AttributeKind.OTHER => Other(qualifiedName,QualifiedName(typ),value)
       case _ => newAttribute(kind,value,typ)
     }
-      
+
   }
 
   override def newInternationalizedString(s: String): org.openprovenance.prov.model.LangString = {

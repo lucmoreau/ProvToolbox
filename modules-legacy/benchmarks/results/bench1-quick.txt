@@ -1,0 +1,625 @@
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyJava
+
+# Run progress: 0.00% complete, ETA 00:01:30
+# Fork: 1 of 1
+Iteration   1: 8.471 ±(99.9%) 0.219 us/op
+                 testDeepCopyJava·p0.00:   6.080 us/op
+                 testDeepCopyJava·p0.50:   6.960 us/op
+                 testDeepCopyJava·p0.90:   8.976 us/op
+                 testDeepCopyJava·p0.95:   14.960 us/op
+                 testDeepCopyJava·p0.99:   31.584 us/op
+                 testDeepCopyJava·p0.999:  87.763 us/op
+                 testDeepCopyJava·p0.9999: 674.677 us/op
+                 testDeepCopyJava·p1.00:   16744.448 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyJava":
+  N = 301354
+  mean =      8.471 ±(99.9%) 0.219 us/op
+
+  Histogram, us/op:
+    [    0.000,  1250.000) = 301350 
+    [ 1250.000,  2500.000) = 2 
+    [ 2500.000,  3750.000) = 0 
+    [ 3750.000,  5000.000) = 0 
+    [ 5000.000,  6250.000) = 0 
+    [ 6250.000,  7500.000) = 0 
+    [ 7500.000,  8750.000) = 0 
+    [ 8750.000, 10000.000) = 1 
+    [10000.000, 11250.000) = 0 
+    [11250.000, 12500.000) = 0 
+    [12500.000, 13750.000) = 0 
+    [13750.000, 15000.000) = 0 
+    [15000.000, 16250.000) = 0 
+    [16250.000, 17500.000) = 1 
+    [17500.000, 18750.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =      6.080 us/op
+     p(50.0000) =      6.960 us/op
+     p(90.0000) =      8.976 us/op
+     p(95.0000) =     14.960 us/op
+     p(99.0000) =     31.584 us/op
+     p(99.9000) =     87.763 us/op
+     p(99.9900) =    674.677 us/op
+     p(99.9990) =   1679.621 us/op
+     p(99.9999) =  16744.448 us/op
+    p(100.0000) =  16744.448 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyScala
+
+# Run progress: 11.11% complete, ETA 00:01:27
+# Fork: 1 of 1
+Iteration   1: 72.424 ±(99.9%) 9.343 us/op
+                 testDeepCopyScala·p0.00:   44.544 us/op
+                 testDeepCopyScala·p0.50:   51.136 us/op
+                 testDeepCopyScala·p0.90:   109.440 us/op
+                 testDeepCopyScala·p0.95:   141.824 us/op
+                 testDeepCopyScala·p0.99:   237.824 us/op
+                 testDeepCopyScala·p0.999:  718.258 us/op
+                 testDeepCopyScala·p0.9999: 4185.797 us/op
+                 testDeepCopyScala·p1.00:   388497.408 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyScala":
+  N = 137595
+  mean =     72.424 ±(99.9%) 9.343 us/op
+
+  Histogram, us/op:
+    [     0.000,  25000.000) = 137594 
+    [ 25000.000,  50000.000) = 0 
+    [ 50000.000,  75000.000) = 0 
+    [ 75000.000, 100000.000) = 0 
+    [100000.000, 125000.000) = 0 
+    [125000.000, 150000.000) = 0 
+    [150000.000, 175000.000) = 0 
+    [175000.000, 200000.000) = 0 
+    [200000.000, 225000.000) = 0 
+    [225000.000, 250000.000) = 0 
+    [250000.000, 275000.000) = 0 
+    [275000.000, 300000.000) = 0 
+    [300000.000, 325000.000) = 0 
+    [325000.000, 350000.000) = 0 
+    [350000.000, 375000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     44.544 us/op
+     p(50.0000) =     51.136 us/op
+     p(90.0000) =    109.440 us/op
+     p(95.0000) =    141.824 us/op
+     p(99.0000) =    237.824 us/op
+     p(99.9000) =    718.258 us/op
+     p(99.9900) =   4185.797 us/op
+     p(99.9990) = 249361.457 us/op
+     p(99.9999) = 388497.408 us/op
+    p(100.0000) = 388497.408 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseJson
+
+# Run progress: 22.22% complete, ETA 00:01:15
+# Fork: 1 of 1
+Iteration   1: 15.474 ±(99.9%) 0.414 us/op
+                 testDeserialiseJson·p0.00:   11.280 us/op
+                 testDeserialiseJson·p0.50:   12.512 us/op
+                 testDeserialiseJson·p0.90:   21.792 us/op
+                 testDeserialiseJson·p0.95:   31.776 us/op
+                 testDeserialiseJson·p0.99:   50.304 us/op
+                 testDeserialiseJson·p0.999:  117.394 us/op
+                 testDeserialiseJson·p0.9999: 714.430 us/op
+                 testDeserialiseJson·p1.00:   17203.200 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseJson":
+  N = 163856
+  mean =     15.474 ±(99.9%) 0.414 us/op
+
+  Histogram, us/op:
+    [    0.000,  1250.000) = 163851 
+    [ 1250.000,  2500.000) = 2 
+    [ 2500.000,  3750.000) = 1 
+    [ 3750.000,  5000.000) = 0 
+    [ 5000.000,  6250.000) = 0 
+    [ 6250.000,  7500.000) = 0 
+    [ 7500.000,  8750.000) = 0 
+    [ 8750.000, 10000.000) = 1 
+    [10000.000, 11250.000) = 0 
+    [11250.000, 12500.000) = 0 
+    [12500.000, 13750.000) = 0 
+    [13750.000, 15000.000) = 0 
+    [15000.000, 16250.000) = 0 
+    [16250.000, 17500.000) = 1 
+    [17500.000, 18750.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     11.280 us/op
+     p(50.0000) =     12.512 us/op
+     p(90.0000) =     21.792 us/op
+     p(95.0000) =     31.776 us/op
+     p(99.0000) =     50.304 us/op
+     p(99.9000) =    117.394 us/op
+     p(99.9900) =    714.430 us/op
+     p(99.9990) =  12034.809 us/op
+     p(99.9999) =  17203.200 us/op
+    p(100.0000) =  17203.200 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialisePJson
+
+# Run progress: 33.33% complete, ETA 00:01:04
+# Fork: 1 of 1
+Iteration   1: 81.519 ±(99.9%) 3.078 us/op
+                 testDeserialisePJson·p0.00:   44.992 us/op
+                 testDeserialisePJson·p0.50:   59.776 us/op
+                 testDeserialisePJson·p0.90:   132.864 us/op
+                 testDeserialisePJson·p0.95:   169.216 us/op
+                 testDeserialisePJson·p0.99:   300.355 us/op
+                 testDeserialisePJson·p0.999:  711.491 us/op
+                 testDeserialisePJson·p0.9999: 3606.902 us/op
+                 testDeserialisePJson·p1.00:   106430.464 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialisePJson":
+  N = 122236
+  mean =     81.519 ±(99.9%) 3.078 us/op
+
+  Histogram, us/op:
+    [     0.000,  12500.000) = 122232 
+    [ 12500.000,  25000.000) = 3 
+    [ 25000.000,  37500.000) = 0 
+    [ 37500.000,  50000.000) = 0 
+    [ 50000.000,  62500.000) = 0 
+    [ 62500.000,  75000.000) = 0 
+    [ 75000.000,  87500.000) = 0 
+    [ 87500.000, 100000.000) = 0 
+    [100000.000, 112500.000) = 1 
+    [112500.000, 125000.000) = 0 
+    [125000.000, 137500.000) = 0 
+    [137500.000, 150000.000) = 0 
+    [150000.000, 162500.000) = 0 
+    [162500.000, 175000.000) = 0 
+    [175000.000, 187500.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     44.992 us/op
+     p(50.0000) =     59.776 us/op
+     p(90.0000) =    132.864 us/op
+     p(95.0000) =    169.216 us/op
+     p(99.0000) =    300.355 us/op
+     p(99.9000) =    711.491 us/op
+     p(99.9900) =   3606.902 us/op
+     p(99.9990) =  87281.226 us/op
+     p(99.9999) = 106430.464 us/op
+    p(100.0000) = 106430.464 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvJsonLD
+
+# Run progress: 44.44% complete, ETA 00:00:53
+# Fork: 1 of 1
+Iteration   1: 60.521 ±(99.9%) 1.670 us/op
+                 testDeserialiseProvJsonLD·p0.00:   40.256 us/op
+                 testDeserialiseProvJsonLD·p0.50:   47.040 us/op
+                 testDeserialiseProvJsonLD·p0.90:   91.904 us/op
+                 testDeserialiseProvJsonLD·p0.95:   126.464 us/op
+                 testDeserialiseProvJsonLD·p0.99:   187.904 us/op
+                 testDeserialiseProvJsonLD·p0.999:  456.322 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 1257.951 us/op
+                 testDeserialiseProvJsonLD·p1.00:   79560.704 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvJsonLD":
+  N = 164746
+  mean =     60.521 ±(99.9%) 1.670 us/op
+
+  Histogram, us/op:
+    [    0.000,  5000.000) = 164743 
+    [ 5000.000, 10000.000) = 1 
+    [10000.000, 15000.000) = 0 
+    [15000.000, 20000.000) = 1 
+    [20000.000, 25000.000) = 0 
+    [25000.000, 30000.000) = 0 
+    [30000.000, 35000.000) = 0 
+    [35000.000, 40000.000) = 0 
+    [40000.000, 45000.000) = 0 
+    [45000.000, 50000.000) = 0 
+    [50000.000, 55000.000) = 0 
+    [55000.000, 60000.000) = 0 
+    [60000.000, 65000.000) = 0 
+    [65000.000, 70000.000) = 0 
+    [70000.000, 75000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     40.256 us/op
+     p(50.0000) =     47.040 us/op
+     p(90.0000) =     91.904 us/op
+     p(95.0000) =    126.464 us/op
+     p(99.0000) =    187.904 us/op
+     p(99.9000) =    456.322 us/op
+     p(99.9900) =   1257.951 us/op
+     p(99.9990) =  39164.875 us/op
+     p(99.9999) =  79560.704 us/op
+    p(100.0000) =  79560.704 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvN
+
+# Run progress: 55.56% complete, ETA 00:00:43
+# Fork: 1 of 1
+Iteration   1: 134.136 ±(99.9%) 5.441 us/op
+                 testDeserialiseProvN·p0.00:   88.832 us/op
+                 testDeserialiseProvN·p0.50:   112.512 us/op
+                 testDeserialiseProvN·p0.90:   182.784 us/op
+                 testDeserialiseProvN·p0.95:   228.352 us/op
+                 testDeserialiseProvN·p0.99:   404.183 us/op
+                 testDeserialiseProvN·p0.999:  993.128 us/op
+                 testDeserialiseProvN·p0.9999: 4065.463 us/op
+                 testDeserialiseProvN·p1.00:   119406.592 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvN":
+  N = 74357
+  mean =    134.136 ±(99.9%) 5.441 us/op
+
+  Histogram, us/op:
+    [     0.000,  12500.000) = 74355 
+    [ 12500.000,  25000.000) = 1 
+    [ 25000.000,  37500.000) = 0 
+    [ 37500.000,  50000.000) = 0 
+    [ 50000.000,  62500.000) = 0 
+    [ 62500.000,  75000.000) = 0 
+    [ 75000.000,  87500.000) = 0 
+    [ 87500.000, 100000.000) = 0 
+    [100000.000, 112500.000) = 0 
+    [112500.000, 125000.000) = 1 
+    [125000.000, 137500.000) = 0 
+    [137500.000, 150000.000) = 0 
+    [150000.000, 162500.000) = 0 
+    [162500.000, 175000.000) = 0 
+    [175000.000, 187500.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     88.832 us/op
+     p(50.0000) =    112.512 us/op
+     p(90.0000) =    182.784 us/op
+     p(95.0000) =    228.352 us/op
+     p(99.0000) =    404.183 us/op
+     p(99.9000) =    993.128 us/op
+     p(99.9900) =   4065.463 us/op
+     p(99.9990) = 119406.592 us/op
+     p(99.9999) = 119406.592 us/op
+    p(100.0000) = 119406.592 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialisePJson
+
+# Run progress: 66.67% complete, ETA 00:00:32
+# Fork: 1 of 1
+Iteration   1: 49.009 ±(99.9%) 2.829 us/op
+                 testSerialisePJson·p0.00:   34.304 us/op
+                 testSerialisePJson·p0.50:   38.656 us/op
+                 testSerialisePJson·p0.90:   68.608 us/op
+                 testSerialisePJson·p0.95:   81.280 us/op
+                 testSerialisePJson·p0.99:   138.240 us/op
+                 testSerialisePJson·p0.999:  632.322 us/op
+                 testSerialisePJson·p0.9999: 1505.031 us/op
+                 testSerialisePJson·p1.00:   85852.160 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialisePJson":
+  N = 103748
+  mean =     49.009 ±(99.9%) 2.829 us/op
+
+  Histogram, us/op:
+    [    0.000,  5000.000) = 103744 
+    [ 5000.000, 10000.000) = 2 
+    [10000.000, 15000.000) = 0 
+    [15000.000, 20000.000) = 1 
+    [20000.000, 25000.000) = 0 
+    [25000.000, 30000.000) = 0 
+    [30000.000, 35000.000) = 0 
+    [35000.000, 40000.000) = 0 
+    [40000.000, 45000.000) = 0 
+    [45000.000, 50000.000) = 0 
+    [50000.000, 55000.000) = 0 
+    [55000.000, 60000.000) = 0 
+    [60000.000, 65000.000) = 0 
+    [65000.000, 70000.000) = 0 
+    [70000.000, 75000.000) = 0 
+    [75000.000, 80000.000) = 0 
+    [80000.000, 85000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     34.304 us/op
+     p(50.0000) =     38.656 us/op
+     p(90.0000) =     68.608 us/op
+     p(95.0000) =     81.280 us/op
+     p(99.0000) =    138.240 us/op
+     p(99.9000) =    632.322 us/op
+     p(99.9900) =   1505.031 us/op
+     p(99.9990) =  83322.735 us/op
+     p(99.9999) =  85852.160 us/op
+    p(100.0000) =  85852.160 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvJsonLD
+
+# Run progress: 77.78% complete, ETA 00:00:21
+# Fork: 1 of 1
+Iteration   1: 75.733 ±(99.9%) 2.118 us/op
+                 testSerialiseProvJsonLD·p0.00:   51.968 us/op
+                 testSerialiseProvJsonLD·p0.50:   57.856 us/op
+                 testSerialiseProvJsonLD·p0.90:   104.192 us/op
+                 testSerialiseProvJsonLD·p0.95:   143.616 us/op
+                 testSerialiseProvJsonLD·p0.99:   326.656 us/op
+                 testSerialiseProvJsonLD·p0.999:  610.976 us/op
+                 testSerialiseProvJsonLD·p0.9999: 1801.114 us/op
+                 testSerialiseProvJsonLD·p1.00:   79691.776 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvJsonLD":
+  N = 131723
+  mean =     75.733 ±(99.9%) 2.118 us/op
+
+  Histogram, us/op:
+    [    0.000,  5000.000) = 131719 
+    [ 5000.000, 10000.000) = 2 
+    [10000.000, 15000.000) = 0 
+    [15000.000, 20000.000) = 1 
+    [20000.000, 25000.000) = 0 
+    [25000.000, 30000.000) = 0 
+    [30000.000, 35000.000) = 0 
+    [35000.000, 40000.000) = 0 
+    [40000.000, 45000.000) = 0 
+    [45000.000, 50000.000) = 0 
+    [50000.000, 55000.000) = 0 
+    [55000.000, 60000.000) = 0 
+    [60000.000, 65000.000) = 0 
+    [65000.000, 70000.000) = 0 
+    [70000.000, 75000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     51.968 us/op
+     p(50.0000) =     57.856 us/op
+     p(90.0000) =    104.192 us/op
+     p(95.0000) =    143.616 us/op
+     p(99.0000) =    326.656 us/op
+     p(99.9000) =    610.976 us/op
+     p(99.9900) =   1801.114 us/op
+     p(99.9990) =  60117.388 us/op
+     p(99.9999) =  79691.776 us/op
+    p(100.0000) =  79691.776 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Warmup: <none>
+# Measurement: 1 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvN
+
+# Run progress: 88.89% complete, ETA 00:00:10
+# Fork: 1 of 1
+Iteration   1: 20.876 ±(99.9%) 1.567 us/op
+                 testSerialiseProvN·p0.00:   13.648 us/op
+                 testSerialiseProvN·p0.50:   15.408 us/op
+                 testSerialiseProvN·p0.90:   33.472 us/op
+                 testSerialiseProvN·p0.95:   41.344 us/op
+                 testSerialiseProvN·p0.99:   75.448 us/op
+                 testSerialiseProvN·p0.999:  215.421 us/op
+                 testSerialiseProvN·p0.9999: 753.484 us/op
+                 testSerialiseProvN·p1.00:   112984.064 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvN":
+  N = 241755
+  mean =     20.876 ±(99.9%) 1.567 us/op
+
+  Histogram, us/op:
+    [     0.000,  12500.000) = 241753 
+    [ 12500.000,  25000.000) = 1 
+    [ 25000.000,  37500.000) = 0 
+    [ 37500.000,  50000.000) = 0 
+    [ 50000.000,  62500.000) = 0 
+    [ 62500.000,  75000.000) = 0 
+    [ 75000.000,  87500.000) = 0 
+    [ 87500.000, 100000.000) = 0 
+    [100000.000, 112500.000) = 0 
+    [112500.000, 125000.000) = 1 
+    [125000.000, 137500.000) = 0 
+    [137500.000, 150000.000) = 0 
+    [150000.000, 162500.000) = 0 
+    [162500.000, 175000.000) = 0 
+    [175000.000, 187500.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     13.648 us/op
+     p(50.0000) =     15.408 us/op
+     p(90.0000) =     33.472 us/op
+     p(95.0000) =     41.344 us/op
+     p(99.0000) =     75.448 us/op
+     p(99.9000) =    215.421 us/op
+     p(99.9900) =    753.484 us/op
+     p(99.9990) =  13919.726 us/op
+     p(99.9999) = 112984.064 us/op
+    p(100.0000) = 112984.064 us/op
+
+
+# Run complete. Total time: 00:01:36
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                                                                              Mode     Cnt       Score   Error  Units
+SerialisationBenchmarks.testDeepCopyJava                                             sample  301354       8.471 ± 0.219  us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.00                      sample               6.080          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.50                      sample               6.960          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.90                      sample               8.976          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.95                      sample              14.960          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.99                      sample              31.584          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.999                     sample              87.763          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.9999                    sample             674.677          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p1.00                      sample           16744.448          us/op
+SerialisationBenchmarks.testDeepCopyScala                                            sample  137595      72.424 ± 9.343  us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.00                    sample              44.544          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.50                    sample              51.136          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.90                    sample             109.440          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.95                    sample             141.824          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.99                    sample             237.824          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.999                   sample             718.258          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.9999                  sample            4185.797          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p1.00                    sample          388497.408          us/op
+SerialisationBenchmarks.testDeserialiseJson                                          sample  163856      15.474 ± 0.414  us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.00                sample              11.280          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.50                sample              12.512          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.90                sample              21.792          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.95                sample              31.776          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.99                sample              50.304          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.999               sample             117.394          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.9999              sample             714.430          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p1.00                sample           17203.200          us/op
+SerialisationBenchmarks.testDeserialisePJson                                         sample  122236      81.519 ± 3.078  us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.00              sample              44.992          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.50              sample              59.776          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.90              sample             132.864          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.95              sample             169.216          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.99              sample             300.355          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.999             sample             711.491          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.9999            sample            3606.902          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p1.00              sample          106430.464          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD                                    sample  164746      60.521 ± 1.670  us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.00    sample              40.256          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.50    sample              47.040          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.90    sample              91.904          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.95    sample             126.464          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.99    sample             187.904          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.999   sample             456.322          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.9999  sample            1257.951          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p1.00    sample           79560.704          us/op
+SerialisationBenchmarks.testDeserialiseProvN                                         sample   74357     134.136 ± 5.441  us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.00              sample              88.832          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.50              sample             112.512          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.90              sample             182.784          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.95              sample             228.352          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.99              sample             404.183          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.999             sample             993.128          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.9999            sample            4065.463          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p1.00              sample          119406.592          us/op
+SerialisationBenchmarks.testSerialisePJson                                           sample  103748      49.009 ± 2.829  us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.00                  sample              34.304          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.50                  sample              38.656          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.90                  sample              68.608          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.95                  sample              81.280          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.99                  sample             138.240          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.999                 sample             632.322          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.9999                sample            1505.031          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p1.00                  sample           85852.160          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD                                      sample  131723      75.733 ± 2.118  us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.00        sample              51.968          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.50        sample              57.856          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.90        sample             104.192          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.95        sample             143.616          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.99        sample             326.656          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.999       sample             610.976          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.9999      sample            1801.114          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p1.00        sample           79691.776          us/op
+SerialisationBenchmarks.testSerialiseProvN                                           sample  241755      20.876 ± 1.567  us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.00                  sample              13.648          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.50                  sample              15.408          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.90                  sample              33.472          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.95                  sample              41.344          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.99                  sample              75.448          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.999                 sample             215.421          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.9999                sample             753.484          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p1.00                  sample          112984.064          us/op
+
+Benchmark result is saved to target/bench1-quick.csv

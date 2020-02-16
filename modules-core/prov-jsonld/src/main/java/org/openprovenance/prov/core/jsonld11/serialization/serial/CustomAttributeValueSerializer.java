@@ -10,7 +10,7 @@ import org.openprovenance.prov.vanilla.TypedValue;
 
 import java.io.IOException;
 
-public class CustomAttributeValueSerializer extends StdSerializer<Object> {
+final public class CustomAttributeValueSerializer extends StdSerializer<Object> {
     protected CustomAttributeValueSerializer(Class<Object> t) {
         super(t);
     }

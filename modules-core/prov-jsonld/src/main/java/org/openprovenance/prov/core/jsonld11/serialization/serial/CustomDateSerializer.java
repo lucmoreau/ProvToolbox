@@ -8,7 +8,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 
 
-public class CustomDateSerializer extends StdSerializer<XMLGregorianCalendar> {
+final public class CustomDateSerializer extends StdSerializer<XMLGregorianCalendar> {
 
     public CustomDateSerializer() {
         super(XMLGregorianCalendar.class);
@@ -19,7 +19,7 @@ public class CustomDateSerializer extends StdSerializer<XMLGregorianCalendar> {
     }
 
     @Override
-    public void serialize(XMLGregorianCalendar d, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    final public void serialize(XMLGregorianCalendar d, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=d.toString();
         jsonGenerator.writeString(s);
     }

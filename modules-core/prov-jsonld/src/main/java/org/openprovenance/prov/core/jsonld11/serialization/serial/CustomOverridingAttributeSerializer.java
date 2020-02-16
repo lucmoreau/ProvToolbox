@@ -13,7 +13,7 @@ import static org.openprovenance.prov.core.jsonld11.serialization.serial.CustomA
 
 // See https://www.baeldung.com/jackson-serialize-field-custom-criteria#2-custom-serializer
 
-public class CustomOverridingAttributeSerializer extends JsonSerializer<TypedValue> {
+final public class CustomOverridingAttributeSerializer extends JsonSerializer<TypedValue> {
 
     private final JsonSerializer<TypedValue> defaultSerializer;
 
@@ -22,7 +22,7 @@ public class CustomOverridingAttributeSerializer extends JsonSerializer<TypedVal
     }
 
     @Override
-    public void serialize(TypedValue o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    final public void serialize(TypedValue o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
 
         if (o.getValue() instanceof QualifiedName) {
             jsonGenerator.writeString(prnt((QualifiedName) o.getValue()));

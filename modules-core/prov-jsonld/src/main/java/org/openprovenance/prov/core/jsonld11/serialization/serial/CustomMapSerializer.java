@@ -9,7 +9,7 @@ import org.openprovenance.prov.vanilla.QualifiedName;
 import java.io.IOException;
 
 
-public class CustomMapSerializer extends StdSerializer<QualifiedName> {
+final public class CustomMapSerializer extends StdSerializer<QualifiedName> {
 
     public static final String CONTEXT_KEY_FOR_MAP = "CONTEXT_KEY_FOR_MAP";
 

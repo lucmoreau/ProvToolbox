@@ -1,0 +1,3098 @@
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyJava
+
+# Run progress: 0.00% complete, ETA 01:15:00
+# Fork: 1 of 5
+# Warmup Iteration   1: 9.511 ±(99.9%) 0.152 us/op
+# Warmup Iteration   2: 8.286 ±(99.9%) 0.039 us/op
+# Warmup Iteration   3: 8.236 ±(99.9%) 0.032 us/op
+# Warmup Iteration   4: 8.838 ±(99.9%) 0.039 us/op
+# Warmup Iteration   5: 11.852 ±(99.9%) 0.069 us/op
+Iteration   1: 8.045 ±(99.9%) 0.031 us/op
+                 testDeepCopyJava·p0.00:   6.664 us/op
+                 testDeepCopyJava·p0.50:   7.408 us/op
+                 testDeepCopyJava·p0.90:   9.024 us/op
+                 testDeepCopyJava·p0.95:   9.504 us/op
+                 testDeepCopyJava·p0.99:   20.928 us/op
+                 testDeepCopyJava·p0.999:  44.916 us/op
+                 testDeepCopyJava·p0.9999: 84.927 us/op
+                 testDeepCopyJava·p1.00:   785.408 us/op
+
+Iteration   2: 7.831 ±(99.9%) 0.041 us/op
+                 testDeepCopyJava·p0.00:   6.640 us/op
+                 testDeepCopyJava·p0.50:   7.200 us/op
+                 testDeepCopyJava·p0.90:   7.728 us/op
+                 testDeepCopyJava·p0.95:   9.600 us/op
+                 testDeepCopyJava·p0.99:   25.696 us/op
+                 testDeepCopyJava·p0.999:  51.253 us/op
+                 testDeepCopyJava·p0.9999: 99.957 us/op
+                 testDeepCopyJava·p1.00:   929.792 us/op
+
+Iteration   3: 8.083 ±(99.9%) 0.035 us/op
+                 testDeepCopyJava·p0.00:   7.184 us/op
+                 testDeepCopyJava·p0.50:   7.776 us/op
+                 testDeepCopyJava·p0.90:   8.024 us/op
+                 testDeepCopyJava·p0.95:   8.944 us/op
+                 testDeepCopyJava·p0.99:   14.464 us/op
+                 testDeepCopyJava·p0.999:  38.784 us/op
+                 testDeepCopyJava·p0.9999: 81.668 us/op
+                 testDeepCopyJava·p1.00:   1828.864 us/op
+
+Iteration   4: 7.486 ±(99.9%) 0.032 us/op
+                 testDeepCopyJava·p0.00:   6.776 us/op
+                 testDeepCopyJava·p0.50:   7.152 us/op
+                 testDeepCopyJava·p0.90:   7.448 us/op
+                 testDeepCopyJava·p0.95:   8.352 us/op
+                 testDeepCopyJava·p0.99:   13.152 us/op
+                 testDeepCopyJava·p0.999:  33.920 us/op
+                 testDeepCopyJava·p0.9999: 73.153 us/op
+                 testDeepCopyJava·p1.00:   1673.216 us/op
+
+Iteration   5: 7.485 ±(99.9%) 0.026 us/op
+                 testDeepCopyJava·p0.00:   6.784 us/op
+                 testDeepCopyJava·p0.50:   7.200 us/op
+                 testDeepCopyJava·p0.90:   7.432 us/op
+                 testDeepCopyJava·p0.95:   8.056 us/op
+                 testDeepCopyJava·p0.99:   12.816 us/op
+                 testDeepCopyJava·p0.999:  35.596 us/op
+                 testDeepCopyJava·p0.9999: 84.724 us/op
+                 testDeepCopyJava·p1.00:   641.024 us/op
+
+
+# Run progress: 2.22% complete, ETA 01:14:08
+# Fork: 2 of 5
+# Warmup Iteration   1: 8.556 ±(99.9%) 0.114 us/op
+# Warmup Iteration   2: 7.728 ±(99.9%) 0.039 us/op
+# Warmup Iteration   3: 7.903 ±(99.9%) 0.048 us/op
+# Warmup Iteration   4: 7.714 ±(99.9%) 0.044 us/op
+# Warmup Iteration   5: 7.695 ±(99.9%) 0.038 us/op
+Iteration   1: 7.772 ±(99.9%) 0.040 us/op
+                 testDeepCopyJava·p0.00:   6.488 us/op
+                 testDeepCopyJava·p0.50:   6.920 us/op
+                 testDeepCopyJava·p0.90:   7.392 us/op
+                 testDeepCopyJava·p0.95:   10.524 us/op
+                 testDeepCopyJava·p0.99:   26.304 us/op
+                 testDeepCopyJava·p0.999:  53.184 us/op
+                 testDeepCopyJava·p0.9999: 97.724 us/op
+                 testDeepCopyJava·p1.00:   1615.872 us/op
+
+Iteration   2: 7.910 ±(99.9%) 0.048 us/op
+                 testDeepCopyJava·p0.00:   6.472 us/op
+                 testDeepCopyJava·p0.50:   6.880 us/op
+                 testDeepCopyJava·p0.90:   7.520 us/op
+                 testDeepCopyJava·p0.95:   11.600 us/op
+                 testDeepCopyJava·p0.99:   27.520 us/op
+                 testDeepCopyJava·p0.999:  58.112 us/op
+                 testDeepCopyJava·p0.9999: 102.971 us/op
+                 testDeepCopyJava·p1.00:   1443.840 us/op
+
+Iteration   3: 7.885 ±(99.9%) 0.048 us/op
+                 testDeepCopyJava·p0.00:   6.472 us/op
+                 testDeepCopyJava·p0.50:   6.872 us/op
+                 testDeepCopyJava·p0.90:   7.448 us/op
+                 testDeepCopyJava·p0.95:   11.366 us/op
+                 testDeepCopyJava·p0.99:   27.456 us/op
+                 testDeepCopyJava·p0.999:  56.469 us/op
+                 testDeepCopyJava·p0.9999: 101.755 us/op
+                 testDeepCopyJava·p1.00:   2037.760 us/op
+
+Iteration   4: 7.888 ±(99.9%) 0.054 us/op
+                 testDeepCopyJava·p0.00:   6.480 us/op
+                 testDeepCopyJava·p0.50:   6.872 us/op
+                 testDeepCopyJava·p0.90:   7.432 us/op
+                 testDeepCopyJava·p0.95:   11.376 us/op
+                 testDeepCopyJava·p0.99:   27.456 us/op
+                 testDeepCopyJava·p0.999:  58.540 us/op
+                 testDeepCopyJava·p0.9999: 107.180 us/op
+                 testDeepCopyJava·p1.00:   2091.008 us/op
+
+Iteration   5: 8.013 ±(99.9%) 0.048 us/op
+                 testDeepCopyJava·p0.00:   6.472 us/op
+                 testDeepCopyJava·p0.50:   6.888 us/op
+                 testDeepCopyJava·p0.90:   8.120 us/op
+                 testDeepCopyJava·p0.95:   12.304 us/op
+                 testDeepCopyJava·p0.99:   27.093 us/op
+                 testDeepCopyJava·p0.999:  59.134 us/op
+                 testDeepCopyJava·p0.9999: 121.498 us/op
+                 testDeepCopyJava·p1.00:   1937.408 us/op
+
+
+# Run progress: 4.44% complete, ETA 01:12:20
+# Fork: 3 of 5
+# Warmup Iteration   1: 8.668 ±(99.9%) 0.124 us/op
+# Warmup Iteration   2: 7.726 ±(99.9%) 0.039 us/op
+# Warmup Iteration   3: 7.939 ±(99.9%) 0.045 us/op
+# Warmup Iteration   4: 7.833 ±(99.9%) 0.042 us/op
+# Warmup Iteration   5: 7.965 ±(99.9%) 0.078 us/op
+Iteration   1: 7.866 ±(99.9%) 0.055 us/op
+                 testDeepCopyJava·p0.00:   5.960 us/op
+                 testDeepCopyJava·p0.50:   6.824 us/op
+                 testDeepCopyJava·p0.90:   7.480 us/op
+                 testDeepCopyJava·p0.95:   11.552 us/op
+                 testDeepCopyJava·p0.99:   27.488 us/op
+                 testDeepCopyJava·p0.999:  59.008 us/op
+                 testDeepCopyJava·p0.9999: 112.337 us/op
+                 testDeepCopyJava·p1.00:   2158.592 us/op
+
+Iteration   2: 7.816 ±(99.9%) 0.046 us/op
+                 testDeepCopyJava·p0.00:   6.072 us/op
+                 testDeepCopyJava·p0.50:   6.824 us/op
+                 testDeepCopyJava·p0.90:   7.408 us/op
+                 testDeepCopyJava·p0.95:   11.552 us/op
+                 testDeepCopyJava·p0.99:   26.848 us/op
+                 testDeepCopyJava·p0.999:  54.784 us/op
+                 testDeepCopyJava·p0.9999: 103.714 us/op
+                 testDeepCopyJava·p1.00:   1071.104 us/op
+
+Iteration   3: 7.849 ±(99.9%) 0.052 us/op
+                 testDeepCopyJava·p0.00:   6.104 us/op
+                 testDeepCopyJava·p0.50:   6.824 us/op
+                 testDeepCopyJava·p0.90:   7.384 us/op
+                 testDeepCopyJava·p0.95:   11.392 us/op
+                 testDeepCopyJava·p0.99:   27.648 us/op
+                 testDeepCopyJava·p0.999:  58.296 us/op
+                 testDeepCopyJava·p0.9999: 108.950 us/op
+                 testDeepCopyJava·p1.00:   2070.528 us/op
+
+Iteration   4: 7.874 ±(99.9%) 0.048 us/op
+                 testDeepCopyJava·p0.00:   6.088 us/op
+                 testDeepCopyJava·p0.50:   6.832 us/op
+                 testDeepCopyJava·p0.90:   7.512 us/op
+                 testDeepCopyJava·p0.95:   11.664 us/op
+                 testDeepCopyJava·p0.99:   27.279 us/op
+                 testDeepCopyJava·p0.999:  58.364 us/op
+                 testDeepCopyJava·p0.9999: 116.607 us/op
+                 testDeepCopyJava·p1.00:   1888.256 us/op
+
+Iteration   5: 7.898 ±(99.9%) 0.048 us/op
+                 testDeepCopyJava·p0.00:   6.016 us/op
+                 testDeepCopyJava·p0.50:   6.824 us/op
+                 testDeepCopyJava·p0.90:   7.607 us/op
+                 testDeepCopyJava·p0.95:   11.824 us/op
+                 testDeepCopyJava·p0.99:   27.712 us/op
+                 testDeepCopyJava·p0.999:  62.141 us/op
+                 testDeepCopyJava·p0.9999: 119.940 us/op
+                 testDeepCopyJava·p1.00:   2101.248 us/op
+
+
+# Run progress: 6.67% complete, ETA 01:10:41
+# Fork: 4 of 5
+# Warmup Iteration   1: 8.552 ±(99.9%) 0.127 us/op
+# Warmup Iteration   2: 7.867 ±(99.9%) 0.047 us/op
+# Warmup Iteration   3: 7.797 ±(99.9%) 0.042 us/op
+# Warmup Iteration   4: 7.753 ±(99.9%) 0.042 us/op
+# Warmup Iteration   5: 7.845 ±(99.9%) 0.052 us/op
+Iteration   1: 7.849 ±(99.9%) 0.049 us/op
+                 testDeepCopyJava·p0.00:   6.032 us/op
+                 testDeepCopyJava·p0.50:   6.792 us/op
+                 testDeepCopyJava·p0.90:   7.624 us/op
+                 testDeepCopyJava·p0.95:   11.712 us/op
+                 testDeepCopyJava·p0.99:   27.424 us/op
+                 testDeepCopyJava·p0.999:  60.634 us/op
+                 testDeepCopyJava·p0.9999: 110.885 us/op
+                 testDeepCopyJava·p1.00:   2383.872 us/op
+
+Iteration   2: 7.845 ±(99.9%) 0.049 us/op
+                 testDeepCopyJava·p0.00:   6.040 us/op
+                 testDeepCopyJava·p0.50:   6.784 us/op
+                 testDeepCopyJava·p0.90:   7.344 us/op
+                 testDeepCopyJava·p0.95:   11.408 us/op
+                 testDeepCopyJava·p0.99:   27.904 us/op
+                 testDeepCopyJava·p0.999:  67.072 us/op
+                 testDeepCopyJava·p0.9999: 188.625 us/op
+                 testDeepCopyJava·p1.00:   1008.640 us/op
+
+Iteration   3: 7.819 ±(99.9%) 0.049 us/op
+                 testDeepCopyJava·p0.00:   6.032 us/op
+                 testDeepCopyJava·p0.50:   6.800 us/op
+                 testDeepCopyJava·p0.90:   7.472 us/op
+                 testDeepCopyJava·p0.95:   11.312 us/op
+                 testDeepCopyJava·p0.99:   26.816 us/op
+                 testDeepCopyJava·p0.999:  58.560 us/op
+                 testDeepCopyJava·p0.9999: 108.023 us/op
+                 testDeepCopyJava·p1.00:   1923.072 us/op
+
+Iteration   4: 7.810 ±(99.9%) 0.044 us/op
+                 testDeepCopyJava·p0.00:   6.000 us/op
+                 testDeepCopyJava·p0.50:   6.792 us/op
+                 testDeepCopyJava·p0.90:   7.488 us/op
+                 testDeepCopyJava·p0.95:   11.536 us/op
+                 testDeepCopyJava·p0.99:   27.040 us/op
+                 testDeepCopyJava·p0.999:  58.432 us/op
+                 testDeepCopyJava·p0.9999: 112.604 us/op
+                 testDeepCopyJava·p1.00:   949.248 us/op
+
+Iteration   5: 7.715 ±(99.9%) 0.045 us/op
+                 testDeepCopyJava·p0.00:   6.024 us/op
+                 testDeepCopyJava·p0.50:   6.776 us/op
+                 testDeepCopyJava·p0.90:   7.296 us/op
+                 testDeepCopyJava·p0.95:   10.896 us/op
+                 testDeepCopyJava·p0.99:   27.488 us/op
+                 testDeepCopyJava·p0.999:  60.014 us/op
+                 testDeepCopyJava·p0.9999: 106.534 us/op
+                 testDeepCopyJava·p1.00:   995.328 us/op
+
+
+# Run progress: 8.89% complete, ETA 01:08:59
+# Fork: 5 of 5
+# Warmup Iteration   1: 8.404 ±(99.9%) 0.129 us/op
+# Warmup Iteration   2: 7.823 ±(99.9%) 0.043 us/op
+# Warmup Iteration   3: 7.888 ±(99.9%) 0.044 us/op
+# Warmup Iteration   4: 7.841 ±(99.9%) 0.045 us/op
+# Warmup Iteration   5: 7.900 ±(99.9%) 0.048 us/op
+Iteration   1: 7.877 ±(99.9%) 0.049 us/op
+                 testDeepCopyJava·p0.00:   6.056 us/op
+                 testDeepCopyJava·p0.50:   6.840 us/op
+                 testDeepCopyJava·p0.90:   7.512 us/op
+                 testDeepCopyJava·p0.95:   11.648 us/op
+                 testDeepCopyJava·p0.99:   27.296 us/op
+                 testDeepCopyJava·p0.999:  62.127 us/op
+                 testDeepCopyJava·p0.9999: 110.496 us/op
+                 testDeepCopyJava·p1.00:   1773.568 us/op
+
+Iteration   2: 7.823 ±(99.9%) 0.054 us/op
+                 testDeepCopyJava·p0.00:   6.064 us/op
+                 testDeepCopyJava·p0.50:   6.824 us/op
+                 testDeepCopyJava·p0.90:   7.400 us/op
+                 testDeepCopyJava·p0.95:   11.376 us/op
+                 testDeepCopyJava·p0.99:   27.168 us/op
+                 testDeepCopyJava·p0.999:  60.672 us/op
+                 testDeepCopyJava·p0.9999: 117.601 us/op
+                 testDeepCopyJava·p1.00:   2355.200 us/op
+
+Iteration   3: 7.884 ±(99.9%) 0.049 us/op
+                 testDeepCopyJava·p0.00:   6.056 us/op
+                 testDeepCopyJava·p0.50:   6.832 us/op
+                 testDeepCopyJava·p0.90:   7.440 us/op
+                 testDeepCopyJava·p0.95:   11.712 us/op
+                 testDeepCopyJava·p0.99:   27.872 us/op
+                 testDeepCopyJava·p0.999:  62.379 us/op
+                 testDeepCopyJava·p0.9999: 154.242 us/op
+                 testDeepCopyJava·p1.00:   1687.552 us/op
+
+Iteration   4: 7.885 ±(99.9%) 0.058 us/op
+                 testDeepCopyJava·p0.00:   6.072 us/op
+                 testDeepCopyJava·p0.50:   6.832 us/op
+                 testDeepCopyJava·p0.90:   7.496 us/op
+                 testDeepCopyJava·p0.95:   11.584 us/op
+                 testDeepCopyJava·p0.99:   27.744 us/op
+                 testDeepCopyJava·p0.999:  62.519 us/op
+                 testDeepCopyJava·p0.9999: 125.198 us/op
+                 testDeepCopyJava·p1.00:   2203.648 us/op
+
+Iteration   5: 7.859 ±(99.9%) 0.044 us/op
+                 testDeepCopyJava·p0.00:   6.040 us/op
+                 testDeepCopyJava·p0.50:   6.840 us/op
+                 testDeepCopyJava·p0.90:   7.432 us/op
+                 testDeepCopyJava·p0.95:   11.536 us/op
+                 testDeepCopyJava·p0.99:   27.328 us/op
+                 testDeepCopyJava·p0.999:  60.992 us/op
+                 testDeepCopyJava·p0.9999: 106.387 us/op
+                 testDeepCopyJava·p1.00:   986.112 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyJava":
+  N = 7995722
+  mean =      7.840 ±(99.9%) 0.009 us/op
+
+  Histogram, us/op:
+    [   0.000,  250.000) = 7995210 
+    [ 250.000,  500.000) = 31 
+    [ 500.000,  750.000) = 208 
+    [ 750.000, 1000.000) = 241 
+    [1000.000, 1250.000) = 7 
+    [1250.000, 1500.000) = 1 
+    [1500.000, 1750.000) = 3 
+    [1750.000, 2000.000) = 10 
+    [2000.000, 2250.000) = 9 
+    [2250.000, 2500.000) = 2 
+    [2500.000, 2750.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =      5.960 us/op
+     p(50.0000) =      6.880 us/op
+     p(90.0000) =      7.856 us/op
+     p(95.0000) =     10.960 us/op
+     p(99.0000) =     26.368 us/op
+     p(99.9000) =     56.896 us/op
+     p(99.9900) =    109.568 us/op
+     p(99.9990) =    907.352 us/op
+     p(99.9999) =   2101.423 us/op
+    p(100.0000) =   2383.872 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyScala
+
+# Run progress: 11.11% complete, ETA 01:07:19
+# Fork: 1 of 5
+# Warmup Iteration   1: 62.979 ±(99.9%) 9.281 us/op
+# Warmup Iteration   2: 54.978 ±(99.9%) 0.157 us/op
+# Warmup Iteration   3: 54.913 ±(99.9%) 0.150 us/op
+# Warmup Iteration   4: 54.818 ±(99.9%) 0.149 us/op
+# Warmup Iteration   5: 55.076 ±(99.9%) 0.153 us/op
+Iteration   1: 55.085 ±(99.9%) 0.150 us/op
+                 testDeepCopyScala·p0.00:   42.688 us/op
+                 testDeepCopyScala·p0.50:   48.256 us/op
+                 testDeepCopyScala·p0.90:   77.376 us/op
+                 testDeepCopyScala·p0.95:   91.008 us/op
+                 testDeepCopyScala·p0.99:   130.048 us/op
+                 testDeepCopyScala·p0.999:  192.909 us/op
+                 testDeepCopyScala·p0.9999: 728.899 us/op
+                 testDeepCopyScala·p1.00:   966.656 us/op
+
+Iteration   2: 54.689 ±(99.9%) 0.155 us/op
+                 testDeepCopyScala·p0.00:   43.456 us/op
+                 testDeepCopyScala·p0.50:   48.256 us/op
+                 testDeepCopyScala·p0.90:   75.840 us/op
+                 testDeepCopyScala·p0.95:   90.496 us/op
+                 testDeepCopyScala·p0.99:   127.872 us/op
+                 testDeepCopyScala·p0.999:  188.928 us/op
+                 testDeepCopyScala·p0.9999: 770.292 us/op
+                 testDeepCopyScala·p1.00:   2326.528 us/op
+
+Iteration   3: 55.123 ±(99.9%) 0.158 us/op
+                 testDeepCopyScala·p0.00:   42.880 us/op
+                 testDeepCopyScala·p0.50:   48.256 us/op
+                 testDeepCopyScala·p0.90:   78.208 us/op
+                 testDeepCopyScala·p0.95:   91.008 us/op
+                 testDeepCopyScala·p0.99:   130.414 us/op
+                 testDeepCopyScala·p0.999:  193.507 us/op
+                 testDeepCopyScala·p0.9999: 764.806 us/op
+                 testDeepCopyScala·p1.00:   2420.736 us/op
+
+Iteration   4: 55.231 ±(99.9%) 0.153 us/op
+                 testDeepCopyScala·p0.00:   43.456 us/op
+                 testDeepCopyScala·p0.50:   48.256 us/op
+                 testDeepCopyScala·p0.90:   78.464 us/op
+                 testDeepCopyScala·p0.95:   91.142 us/op
+                 testDeepCopyScala·p0.99:   129.792 us/op
+                 testDeepCopyScala·p0.999:  190.720 us/op
+                 testDeepCopyScala·p0.9999: 753.952 us/op
+                 testDeepCopyScala·p1.00:   1087.488 us/op
+
+Iteration   5: 54.989 ±(99.9%) 0.151 us/op
+                 testDeepCopyScala·p0.00:   43.392 us/op
+                 testDeepCopyScala·p0.50:   48.256 us/op
+                 testDeepCopyScala·p0.90:   77.440 us/op
+                 testDeepCopyScala·p0.95:   90.880 us/op
+                 testDeepCopyScala·p0.99:   129.920 us/op
+                 testDeepCopyScala·p0.999:  194.946 us/op
+                 testDeepCopyScala·p0.9999: 754.751 us/op
+                 testDeepCopyScala·p1.00:   939.008 us/op
+
+
+# Run progress: 13.33% complete, ETA 01:05:38
+# Fork: 2 of 5
+# Warmup Iteration   1: 66.284 ±(99.9%) 9.423 us/op
+# Warmup Iteration   2: 54.724 ±(99.9%) 0.151 us/op
+# Warmup Iteration   3: 54.743 ±(99.9%) 0.148 us/op
+# Warmup Iteration   4: 55.081 ±(99.9%) 0.150 us/op
+# Warmup Iteration   5: 51.111 ±(99.9%) 0.121 us/op
+Iteration   1: 51.145 ±(99.9%) 0.123 us/op
+                 testDeepCopyScala·p0.00:   42.560 us/op
+                 testDeepCopyScala·p0.50:   46.272 us/op
+                 testDeepCopyScala·p0.90:   62.848 us/op
+                 testDeepCopyScala·p0.95:   81.664 us/op
+                 testDeepCopyScala·p0.99:   111.872 us/op
+                 testDeepCopyScala·p0.999:  176.849 us/op
+                 testDeepCopyScala·p0.9999: 746.270 us/op
+                 testDeepCopyScala·p1.00:   1873.920 us/op
+
+Iteration   2: 51.614 ±(99.9%) 0.125 us/op
+                 testDeepCopyScala·p0.00:   42.624 us/op
+                 testDeepCopyScala·p0.50:   46.592 us/op
+                 testDeepCopyScala·p0.90:   63.808 us/op
+                 testDeepCopyScala·p0.95:   82.688 us/op
+                 testDeepCopyScala·p0.99:   114.688 us/op
+                 testDeepCopyScala·p0.999:  177.920 us/op
+                 testDeepCopyScala·p0.9999: 772.104 us/op
+                 testDeepCopyScala·p1.00:   980.992 us/op
+
+Iteration   3: 50.989 ±(99.9%) 0.130 us/op
+                 testDeepCopyScala·p0.00:   43.328 us/op
+                 testDeepCopyScala·p0.50:   46.208 us/op
+                 testDeepCopyScala·p0.90:   62.912 us/op
+                 testDeepCopyScala·p0.95:   81.792 us/op
+                 testDeepCopyScala·p0.99:   110.848 us/op
+                 testDeepCopyScala·p0.999:  171.568 us/op
+                 testDeepCopyScala·p0.9999: 782.860 us/op
+                 testDeepCopyScala·p1.00:   2326.528 us/op
+
+Iteration   4: 51.710 ±(99.9%) 0.130 us/op
+                 testDeepCopyScala·p0.00:   43.136 us/op
+                 testDeepCopyScala·p0.50:   47.040 us/op
+                 testDeepCopyScala·p0.90:   64.448 us/op
+                 testDeepCopyScala·p0.95:   82.560 us/op
+                 testDeepCopyScala·p0.99:   113.152 us/op
+                 testDeepCopyScala·p0.999:  174.592 us/op
+                 testDeepCopyScala·p0.9999: 745.948 us/op
+                 testDeepCopyScala·p1.00:   2375.680 us/op
+
+Iteration   5: 51.757 ±(99.9%) 0.126 us/op
+                 testDeepCopyScala·p0.00:   42.496 us/op
+                 testDeepCopyScala·p0.50:   46.848 us/op
+                 testDeepCopyScala·p0.90:   65.088 us/op
+                 testDeepCopyScala·p0.95:   82.560 us/op
+                 testDeepCopyScala·p0.99:   112.512 us/op
+                 testDeepCopyScala·p0.999:  167.936 us/op
+                 testDeepCopyScala·p0.9999: 698.968 us/op
+                 testDeepCopyScala·p1.00:   2310.144 us/op
+
+
+# Run progress: 15.56% complete, ETA 01:03:57
+# Fork: 3 of 5
+# Warmup Iteration   1: 57.820 ±(99.9%) 7.789 us/op
+# Warmup Iteration   2: 50.462 ±(99.9%) 0.127 us/op
+# Warmup Iteration   3: 50.441 ±(99.9%) 0.120 us/op
+# Warmup Iteration   4: 50.530 ±(99.9%) 0.121 us/op
+# Warmup Iteration   5: 50.470 ±(99.9%) 0.120 us/op
+Iteration   1: 50.623 ±(99.9%) 0.118 us/op
+                 testDeepCopyScala·p0.00:   41.856 us/op
+                 testDeepCopyScala·p0.50:   45.760 us/op
+                 testDeepCopyScala·p0.90:   62.464 us/op
+                 testDeepCopyScala·p0.95:   81.152 us/op
+                 testDeepCopyScala·p0.99:   111.360 us/op
+                 testDeepCopyScala·p0.999:  170.240 us/op
+                 testDeepCopyScala·p0.9999: 730.441 us/op
+                 testDeepCopyScala·p1.00:   913.408 us/op
+
+Iteration   2: 50.222 ±(99.9%) 0.124 us/op
+                 testDeepCopyScala·p0.00:   41.984 us/op
+                 testDeepCopyScala·p0.50:   45.568 us/op
+                 testDeepCopyScala·p0.90:   61.184 us/op
+                 testDeepCopyScala·p0.95:   80.640 us/op
+                 testDeepCopyScala·p0.99:   111.104 us/op
+                 testDeepCopyScala·p0.999:  172.104 us/op
+                 testDeepCopyScala·p0.9999: 788.662 us/op
+                 testDeepCopyScala·p1.00:   2392.064 us/op
+
+Iteration   3: 50.494 ±(99.9%) 0.125 us/op
+                 testDeepCopyScala·p0.00:   42.624 us/op
+                 testDeepCopyScala·p0.50:   45.632 us/op
+                 testDeepCopyScala·p0.90:   62.272 us/op
+                 testDeepCopyScala·p0.95:   81.024 us/op
+                 testDeepCopyScala·p0.99:   111.122 us/op
+                 testDeepCopyScala·p0.999:  173.056 us/op
+                 testDeepCopyScala·p0.9999: 780.525 us/op
+                 testDeepCopyScala·p1.00:   2387.968 us/op
+
+Iteration   4: 50.513 ±(99.9%) 0.125 us/op
+                 testDeepCopyScala·p0.00:   41.920 us/op
+                 testDeepCopyScala·p0.50:   45.632 us/op
+                 testDeepCopyScala·p0.90:   62.336 us/op
+                 testDeepCopyScala·p0.95:   81.152 us/op
+                 testDeepCopyScala·p0.99:   111.872 us/op
+                 testDeepCopyScala·p0.999:  172.109 us/op
+                 testDeepCopyScala·p0.9999: 777.840 us/op
+                 testDeepCopyScala·p1.00:   2240.512 us/op
+
+Iteration   5: 50.217 ±(99.9%) 0.118 us/op
+                 testDeepCopyScala·p0.00:   41.920 us/op
+                 testDeepCopyScala·p0.50:   45.568 us/op
+                 testDeepCopyScala·p0.90:   61.696 us/op
+                 testDeepCopyScala·p0.95:   80.768 us/op
+                 testDeepCopyScala·p0.99:   109.312 us/op
+                 testDeepCopyScala·p0.999:  168.246 us/op
+                 testDeepCopyScala·p0.9999: 751.676 us/op
+                 testDeepCopyScala·p1.00:   1025.024 us/op
+
+
+# Run progress: 17.78% complete, ETA 01:02:15
+# Fork: 4 of 5
+# Warmup Iteration   1: 58.495 ±(99.9%) 6.919 us/op
+# Warmup Iteration   2: 51.619 ±(99.9%) 0.123 us/op
+# Warmup Iteration   3: 50.911 ±(99.9%) 0.117 us/op
+# Warmup Iteration   4: 51.232 ±(99.9%) 0.128 us/op
+# Warmup Iteration   5: 51.539 ±(99.9%) 0.123 us/op
+Iteration   1: 51.243 ±(99.9%) 0.120 us/op
+                 testDeepCopyScala·p0.00:   43.520 us/op
+                 testDeepCopyScala·p0.50:   46.400 us/op
+                 testDeepCopyScala·p0.90:   62.976 us/op
+                 testDeepCopyScala·p0.95:   82.176 us/op
+                 testDeepCopyScala·p0.99:   112.545 us/op
+                 testDeepCopyScala·p0.999:  172.800 us/op
+                 testDeepCopyScala·p0.9999: 774.721 us/op
+                 testDeepCopyScala·p1.00:   998.400 us/op
+
+Iteration   2: 51.047 ±(99.9%) 0.125 us/op
+                 testDeepCopyScala·p0.00:   43.520 us/op
+                 testDeepCopyScala·p0.50:   46.336 us/op
+                 testDeepCopyScala·p0.90:   62.528 us/op
+                 testDeepCopyScala·p0.95:   81.920 us/op
+                 testDeepCopyScala·p0.99:   111.104 us/op
+                 testDeepCopyScala·p0.999:  169.932 us/op
+                 testDeepCopyScala·p0.9999: 783.564 us/op
+                 testDeepCopyScala·p1.00:   2375.680 us/op
+
+Iteration   3: 51.655 ±(99.9%) 0.122 us/op
+                 testDeepCopyScala·p0.00:   42.880 us/op
+                 testDeepCopyScala·p0.50:   47.104 us/op
+                 testDeepCopyScala·p0.90:   63.680 us/op
+                 testDeepCopyScala·p0.95:   82.432 us/op
+                 testDeepCopyScala·p0.99:   113.702 us/op
+                 testDeepCopyScala·p0.999:  172.731 us/op
+                 testDeepCopyScala·p0.9999: 760.653 us/op
+                 testDeepCopyScala·p1.00:   951.296 us/op
+
+Iteration   4: 52.210 ±(99.9%) 0.133 us/op
+                 testDeepCopyScala·p0.00:   42.688 us/op
+                 testDeepCopyScala·p0.50:   46.720 us/op
+                 testDeepCopyScala·p0.90:   66.944 us/op
+                 testDeepCopyScala·p0.95:   83.584 us/op
+                 testDeepCopyScala·p0.99:   115.200 us/op
+                 testDeepCopyScala·p0.999:  176.128 us/op
+                 testDeepCopyScala·p0.9999: 789.172 us/op
+                 testDeepCopyScala·p1.00:   2082.816 us/op
+
+Iteration   5: 51.179 ±(99.9%) 0.122 us/op
+                 testDeepCopyScala·p0.00:   42.688 us/op
+                 testDeepCopyScala·p0.50:   46.336 us/op
+                 testDeepCopyScala·p0.90:   63.040 us/op
+                 testDeepCopyScala·p0.95:   82.048 us/op
+                 testDeepCopyScala·p0.99:   111.360 us/op
+                 testDeepCopyScala·p0.999:  172.474 us/op
+                 testDeepCopyScala·p0.9999: 763.651 us/op
+                 testDeepCopyScala·p1.00:   1054.720 us/op
+
+
+# Run progress: 20.00% complete, ETA 01:00:34
+# Fork: 5 of 5
+# Warmup Iteration   1: 58.259 ±(99.9%) 7.335 us/op
+# Warmup Iteration   2: 51.289 ±(99.9%) 0.126 us/op
+# Warmup Iteration   3: 51.232 ±(99.9%) 0.121 us/op
+# Warmup Iteration   4: 51.224 ±(99.9%) 0.125 us/op
+# Warmup Iteration   5: 51.139 ±(99.9%) 0.123 us/op
+Iteration   1: 51.118 ±(99.9%) 0.130 us/op
+                 testDeepCopyScala·p0.00:   42.304 us/op
+                 testDeepCopyScala·p0.50:   46.272 us/op
+                 testDeepCopyScala·p0.90:   62.848 us/op
+                 testDeepCopyScala·p0.95:   81.920 us/op
+                 testDeepCopyScala·p0.99:   112.111 us/op
+                 testDeepCopyScala·p0.999:  172.560 us/op
+                 testDeepCopyScala·p0.9999: 738.176 us/op
+                 testDeepCopyScala·p1.00:   2396.160 us/op
+
+Iteration   2: 51.704 ±(99.9%) 0.127 us/op
+                 testDeepCopyScala·p0.00:   42.752 us/op
+                 testDeepCopyScala·p0.50:   47.616 us/op
+                 testDeepCopyScala·p0.90:   63.680 us/op
+                 testDeepCopyScala·p0.95:   83.072 us/op
+                 testDeepCopyScala·p0.99:   118.400 us/op
+                 testDeepCopyScala·p0.999:  184.320 us/op
+                 testDeepCopyScala·p0.9999: 734.324 us/op
+                 testDeepCopyScala·p1.00:   1021.952 us/op
+
+Iteration   3: 51.447 ±(99.9%) 0.133 us/op
+                 testDeepCopyScala·p0.00:   42.688 us/op
+                 testDeepCopyScala·p0.50:   46.464 us/op
+                 testDeepCopyScala·p0.90:   63.744 us/op
+                 testDeepCopyScala·p0.95:   81.792 us/op
+                 testDeepCopyScala·p0.99:   113.024 us/op
+                 testDeepCopyScala·p0.999:  170.239 us/op
+                 testDeepCopyScala·p0.9999: 759.793 us/op
+                 testDeepCopyScala·p1.00:   2408.448 us/op
+
+Iteration   4: 51.317 ±(99.9%) 0.128 us/op
+                 testDeepCopyScala·p0.00:   42.624 us/op
+                 testDeepCopyScala·p0.50:   46.336 us/op
+                 testDeepCopyScala·p0.90:   63.168 us/op
+                 testDeepCopyScala·p0.95:   82.176 us/op
+                 testDeepCopyScala·p0.99:   114.304 us/op
+                 testDeepCopyScala·p0.999:  173.158 us/op
+                 testDeepCopyScala·p0.9999: 776.764 us/op
+                 testDeepCopyScala·p1.00:   2285.568 us/op
+
+Iteration   5: 51.727 ±(99.9%) 0.127 us/op
+                 testDeepCopyScala·p0.00:   42.560 us/op
+                 testDeepCopyScala·p0.50:   47.744 us/op
+                 testDeepCopyScala·p0.90:   64.192 us/op
+                 testDeepCopyScala·p0.95:   82.816 us/op
+                 testDeepCopyScala·p0.99:   115.968 us/op
+                 testDeepCopyScala·p0.999:  173.056 us/op
+                 testDeepCopyScala·p0.9999: 794.170 us/op
+                 testDeepCopyScala·p1.00:   1095.680 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeepCopyScala":
+  N = 4807430
+  mean =     51.914 ±(99.9%) 0.026 us/op
+
+  Histogram, us/op:
+    [   0.000,  250.000) = 4806670 
+    [ 250.000,  500.000) = 212 
+    [ 500.000,  750.000) = 66 
+    [ 750.000, 1000.000) = 438 
+    [1000.000, 1250.000) = 24 
+    [1250.000, 1500.000) = 1 
+    [1500.000, 1750.000) = 0 
+    [1750.000, 2000.000) = 3 
+    [2000.000, 2250.000) = 4 
+    [2250.000, 2500.000) = 12 
+    [2500.000, 2750.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     41.856 us/op
+     p(50.0000) =     47.360 us/op
+     p(90.0000) =     65.472 us/op
+     p(95.0000) =     83.328 us/op
+     p(99.0000) =    116.608 us/op
+     p(99.9000) =    177.408 us/op
+     p(99.9900) =    752.640 us/op
+     p(99.9990) =    994.228 us/op
+     p(99.9999) =   2388.757 us/op
+    p(100.0000) =   2420.736 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseJson
+
+# Run progress: 22.22% complete, ETA 00:58:53
+# Fork: 1 of 5
+# Warmup Iteration   1: 14.856 ±(99.9%) 0.211 us/op
+# Warmup Iteration   2: 13.783 ±(99.9%) 0.083 us/op
+# Warmup Iteration   3: 13.665 ±(99.9%) 0.063 us/op
+# Warmup Iteration   4: 13.710 ±(99.9%) 0.078 us/op
+# Warmup Iteration   5: 13.568 ±(99.9%) 0.072 us/op
+Iteration   1: 13.556 ±(99.9%) 0.074 us/op
+                 testDeserialiseJson·p0.00:   11.248 us/op
+                 testDeserialiseJson·p0.50:   12.208 us/op
+                 testDeserialiseJson·p0.90:   13.408 us/op
+                 testDeserialiseJson·p0.95:   20.763 us/op
+                 testDeserialiseJson·p0.99:   38.208 us/op
+                 testDeserialiseJson·p0.999:  69.194 us/op
+                 testDeserialiseJson·p0.9999: 126.841 us/op
+                 testDeserialiseJson·p1.00:   2293.760 us/op
+
+Iteration   2: 13.463 ±(99.9%) 0.065 us/op
+                 testDeserialiseJson·p0.00:   11.264 us/op
+                 testDeserialiseJson·p0.50:   12.176 us/op
+                 testDeserialiseJson·p0.90:   13.360 us/op
+                 testDeserialiseJson·p0.95:   19.776 us/op
+                 testDeserialiseJson·p0.99:   38.464 us/op
+                 testDeserialiseJson·p0.999:  70.716 us/op
+                 testDeserialiseJson·p0.9999: 114.893 us/op
+                 testDeserialiseJson·p1.00:   913.408 us/op
+
+Iteration   3: 13.471 ±(99.9%) 0.068 us/op
+                 testDeserialiseJson·p0.00:   11.248 us/op
+                 testDeserialiseJson·p0.50:   12.176 us/op
+                 testDeserialiseJson·p0.90:   13.360 us/op
+                 testDeserialiseJson·p0.95:   20.509 us/op
+                 testDeserialiseJson·p0.99:   38.144 us/op
+                 testDeserialiseJson·p0.999:  70.016 us/op
+                 testDeserialiseJson·p0.9999: 127.225 us/op
+                 testDeserialiseJson·p1.00:   964.608 us/op
+
+Iteration   4: 13.564 ±(99.9%) 0.065 us/op
+                 testDeserialiseJson·p0.00:   11.264 us/op
+                 testDeserialiseJson·p0.50:   12.192 us/op
+                 testDeserialiseJson·p0.90:   13.408 us/op
+                 testDeserialiseJson·p0.95:   21.600 us/op
+                 testDeserialiseJson·p0.99:   38.784 us/op
+                 testDeserialiseJson·p0.999:  73.216 us/op
+                 testDeserialiseJson·p0.9999: 133.297 us/op
+                 testDeserialiseJson·p1.00:   885.760 us/op
+
+Iteration   5: 13.504 ±(99.9%) 0.068 us/op
+                 testDeserialiseJson·p0.00:   11.456 us/op
+                 testDeserialiseJson·p0.50:   12.176 us/op
+                 testDeserialiseJson·p0.90:   13.360 us/op
+                 testDeserialiseJson·p0.95:   20.320 us/op
+                 testDeserialiseJson·p0.99:   38.144 us/op
+                 testDeserialiseJson·p0.999:  70.912 us/op
+                 testDeserialiseJson·p0.9999: 128.361 us/op
+                 testDeserialiseJson·p1.00:   968.704 us/op
+
+
+# Run progress: 24.44% complete, ETA 00:57:12
+# Fork: 2 of 5
+# Warmup Iteration   1: 14.727 ±(99.9%) 0.212 us/op
+# Warmup Iteration   2: 13.913 ±(99.9%) 0.068 us/op
+# Warmup Iteration   3: 13.890 ±(99.9%) 0.066 us/op
+# Warmup Iteration   4: 13.813 ±(99.9%) 0.065 us/op
+# Warmup Iteration   5: 13.851 ±(99.9%) 0.065 us/op
+Iteration   1: 13.962 ±(99.9%) 0.069 us/op
+                 testDeserialiseJson·p0.00:   11.728 us/op
+                 testDeserialiseJson·p0.50:   12.528 us/op
+                 testDeserialiseJson·p0.90:   13.744 us/op
+                 testDeserialiseJson·p0.95:   25.536 us/op
+                 testDeserialiseJson·p0.99:   39.872 us/op
+                 testDeserialiseJson·p0.999:  74.112 us/op
+                 testDeserialiseJson·p0.9999: 159.458 us/op
+                 testDeserialiseJson·p1.00:   881.664 us/op
+
+Iteration   2: 13.889 ±(99.9%) 0.070 us/op
+                 testDeserialiseJson·p0.00:   11.536 us/op
+                 testDeserialiseJson·p0.50:   12.528 us/op
+                 testDeserialiseJson·p0.90:   13.712 us/op
+                 testDeserialiseJson·p0.95:   22.144 us/op
+                 testDeserialiseJson·p0.99:   39.552 us/op
+                 testDeserialiseJson·p0.999:  72.840 us/op
+                 testDeserialiseJson·p0.9999: 125.490 us/op
+                 testDeserialiseJson·p1.00:   1263.616 us/op
+
+Iteration   3: 13.863 ±(99.9%) 0.065 us/op
+                 testDeserialiseJson·p0.00:   11.552 us/op
+                 testDeserialiseJson·p0.50:   12.512 us/op
+                 testDeserialiseJson·p0.90:   13.760 us/op
+                 testDeserialiseJson·p0.95:   22.560 us/op
+                 testDeserialiseJson·p0.99:   38.208 us/op
+                 testDeserialiseJson·p0.999:  73.358 us/op
+                 testDeserialiseJson·p0.9999: 119.561 us/op
+                 testDeserialiseJson·p1.00:   1071.104 us/op
+
+Iteration   4: 13.900 ±(99.9%) 0.069 us/op
+                 testDeserialiseJson·p0.00:   11.744 us/op
+                 testDeserialiseJson·p0.50:   12.512 us/op
+                 testDeserialiseJson·p0.90:   13.728 us/op
+                 testDeserialiseJson·p0.95:   23.360 us/op
+                 testDeserialiseJson·p0.99:   39.320 us/op
+                 testDeserialiseJson·p0.999:  71.582 us/op
+                 testDeserialiseJson·p0.9999: 139.230 us/op
+                 testDeserialiseJson·p1.00:   975.872 us/op
+
+Iteration   5: 13.820 ±(99.9%) 0.077 us/op
+                 testDeserialiseJson·p0.00:   11.552 us/op
+                 testDeserialiseJson·p0.50:   12.496 us/op
+                 testDeserialiseJson·p0.90:   13.728 us/op
+                 testDeserialiseJson·p0.95:   21.376 us/op
+                 testDeserialiseJson·p0.99:   38.592 us/op
+                 testDeserialiseJson·p0.999:  69.959 us/op
+                 testDeserialiseJson·p0.9999: 114.030 us/op
+                 testDeserialiseJson·p1.00:   2281.472 us/op
+
+
+# Run progress: 26.67% complete, ETA 00:55:30
+# Fork: 3 of 5
+# Warmup Iteration   1: 14.317 ±(99.9%) 0.210 us/op
+# Warmup Iteration   2: 13.196 ±(99.9%) 0.067 us/op
+# Warmup Iteration   3: 13.257 ±(99.9%) 0.064 us/op
+# Warmup Iteration   4: 13.292 ±(99.9%) 0.061 us/op
+# Warmup Iteration   5: 13.222 ±(99.9%) 0.065 us/op
+Iteration   1: 13.291 ±(99.9%) 0.066 us/op
+                 testDeserialiseJson·p0.00:   11.088 us/op
+                 testDeserialiseJson·p0.50:   11.984 us/op
+                 testDeserialiseJson·p0.90:   13.120 us/op
+                 testDeserialiseJson·p0.95:   18.720 us/op
+                 testDeserialiseJson·p0.99:   38.528 us/op
+                 testDeserialiseJson·p0.999:  71.808 us/op
+                 testDeserialiseJson·p0.9999: 123.625 us/op
+                 testDeserialiseJson·p1.00:   996.352 us/op
+
+Iteration   2: 13.247 ±(99.9%) 0.066 us/op
+                 testDeserialiseJson·p0.00:   11.056 us/op
+                 testDeserialiseJson·p0.50:   11.968 us/op
+                 testDeserialiseJson·p0.90:   13.136 us/op
+                 testDeserialiseJson·p0.95:   18.496 us/op
+                 testDeserialiseJson·p0.99:   37.952 us/op
+                 testDeserialiseJson·p0.999:  69.278 us/op
+                 testDeserialiseJson·p0.9999: 125.511 us/op
+                 testDeserialiseJson·p1.00:   972.800 us/op
+
+Iteration   3: 13.298 ±(99.9%) 0.066 us/op
+                 testDeserialiseJson·p0.00:   11.008 us/op
+                 testDeserialiseJson·p0.50:   11.984 us/op
+                 testDeserialiseJson·p0.90:   13.136 us/op
+                 testDeserialiseJson·p0.95:   20.096 us/op
+                 testDeserialiseJson·p0.99:   37.824 us/op
+                 testDeserialiseJson·p0.999:  70.819 us/op
+                 testDeserialiseJson·p0.9999: 133.299 us/op
+                 testDeserialiseJson·p1.00:   985.088 us/op
+
+Iteration   4: 13.200 ±(99.9%) 0.073 us/op
+                 testDeserialiseJson·p0.00:   11.072 us/op
+                 testDeserialiseJson·p0.50:   11.968 us/op
+                 testDeserialiseJson·p0.90:   13.088 us/op
+                 testDeserialiseJson·p0.95:   17.696 us/op
+                 testDeserialiseJson·p0.99:   37.820 us/op
+                 testDeserialiseJson·p0.999:  69.579 us/op
+                 testDeserialiseJson·p0.9999: 121.126 us/op
+                 testDeserialiseJson·p1.00:   2224.128 us/op
+
+Iteration   5: 13.258 ±(99.9%) 0.068 us/op
+                 testDeserialiseJson·p0.00:   11.040 us/op
+                 testDeserialiseJson·p0.50:   11.984 us/op
+                 testDeserialiseJson·p0.90:   13.136 us/op
+                 testDeserialiseJson·p0.95:   19.072 us/op
+                 testDeserialiseJson·p0.99:   36.480 us/op
+                 testDeserialiseJson·p0.999:  69.120 us/op
+                 testDeserialiseJson·p0.9999: 114.207 us/op
+                 testDeserialiseJson·p1.00:   1929.216 us/op
+
+
+# Run progress: 28.89% complete, ETA 00:53:50
+# Fork: 4 of 5
+# Warmup Iteration   1: 13.991 ±(99.9%) 0.197 us/op
+# Warmup Iteration   2: 13.081 ±(99.9%) 0.075 us/op
+# Warmup Iteration   3: 12.975 ±(99.9%) 0.064 us/op
+# Warmup Iteration   4: 13.018 ±(99.9%) 0.066 us/op
+# Warmup Iteration   5: 12.973 ±(99.9%) 0.064 us/op
+Iteration   1: 13.036 ±(99.9%) 0.078 us/op
+                 testDeserialiseJson·p0.00:   10.848 us/op
+                 testDeserialiseJson·p0.50:   11.744 us/op
+                 testDeserialiseJson·p0.90:   12.912 us/op
+                 testDeserialiseJson·p0.95:   20.768 us/op
+                 testDeserialiseJson·p0.99:   34.775 us/op
+                 testDeserialiseJson·p0.999:  66.688 us/op
+                 testDeserialiseJson·p0.9999: 119.120 us/op
+                 testDeserialiseJson·p1.00:   2265.088 us/op
+
+Iteration   2: 13.001 ±(99.9%) 0.063 us/op
+                 testDeserialiseJson·p0.00:   10.832 us/op
+                 testDeserialiseJson·p0.50:   11.744 us/op
+                 testDeserialiseJson·p0.90:   12.864 us/op
+                 testDeserialiseJson·p0.95:   17.792 us/op
+                 testDeserialiseJson·p0.99:   36.966 us/op
+                 testDeserialiseJson·p0.999:  69.729 us/op
+                 testDeserialiseJson·p0.9999: 119.693 us/op
+                 testDeserialiseJson·p1.00:   911.360 us/op
+
+Iteration   3: 13.036 ±(99.9%) 0.065 us/op
+                 testDeserialiseJson·p0.00:   11.040 us/op
+                 testDeserialiseJson·p0.50:   11.744 us/op
+                 testDeserialiseJson·p0.90:   12.896 us/op
+                 testDeserialiseJson·p0.95:   18.048 us/op
+                 testDeserialiseJson·p0.99:   36.608 us/op
+                 testDeserialiseJson·p0.999:  71.059 us/op
+                 testDeserialiseJson·p0.9999: 124.426 us/op
+                 testDeserialiseJson·p1.00:   1014.784 us/op
+
+Iteration   4: 13.031 ±(99.9%) 0.070 us/op
+                 testDeserialiseJson·p0.00:   11.008 us/op
+                 testDeserialiseJson·p0.50:   11.744 us/op
+                 testDeserialiseJson·p0.90:   12.896 us/op
+                 testDeserialiseJson·p0.95:   18.944 us/op
+                 testDeserialiseJson·p0.99:   35.584 us/op
+                 testDeserialiseJson·p0.999:  72.061 us/op
+                 testDeserialiseJson·p0.9999: 144.564 us/op
+                 testDeserialiseJson·p1.00:   2002.944 us/op
+
+Iteration   5: 13.067 ±(99.9%) 0.073 us/op
+                 testDeserialiseJson·p0.00:   10.816 us/op
+                 testDeserialiseJson·p0.50:   11.760 us/op
+                 testDeserialiseJson·p0.90:   12.896 us/op
+                 testDeserialiseJson·p0.95:   18.880 us/op
+                 testDeserialiseJson·p0.99:   37.632 us/op
+                 testDeserialiseJson·p0.999:  70.731 us/op
+                 testDeserialiseJson·p0.9999: 132.942 us/op
+                 testDeserialiseJson·p1.00:   2174.976 us/op
+
+
+# Run progress: 31.11% complete, ETA 00:52:08
+# Fork: 5 of 5
+# Warmup Iteration   1: 14.286 ±(99.9%) 0.204 us/op
+# Warmup Iteration   2: 13.184 ±(99.9%) 0.071 us/op
+# Warmup Iteration   3: 13.248 ±(99.9%) 0.063 us/op
+# Warmup Iteration   4: 13.233 ±(99.9%) 0.078 us/op
+# Warmup Iteration   5: 13.144 ±(99.9%) 0.063 us/op
+Iteration   1: 13.238 ±(99.9%) 0.073 us/op
+                 testDeserialiseJson·p0.00:   11.040 us/op
+                 testDeserialiseJson·p0.50:   11.936 us/op
+                 testDeserialiseJson·p0.90:   13.088 us/op
+                 testDeserialiseJson·p0.95:   19.360 us/op
+                 testDeserialiseJson·p0.99:   37.977 us/op
+                 testDeserialiseJson·p0.999:  71.680 us/op
+                 testDeserialiseJson·p0.9999: 141.114 us/op
+                 testDeserialiseJson·p1.00:   2093.056 us/op
+
+Iteration   2: 13.199 ±(99.9%) 0.063 us/op
+                 testDeserialiseJson·p0.00:   11.200 us/op
+                 testDeserialiseJson·p0.50:   11.920 us/op
+                 testDeserialiseJson·p0.90:   13.072 us/op
+                 testDeserialiseJson·p0.95:   19.136 us/op
+                 testDeserialiseJson·p0.99:   37.632 us/op
+                 testDeserialiseJson·p0.999:  70.617 us/op
+                 testDeserialiseJson·p0.9999: 129.277 us/op
+                 testDeserialiseJson·p1.00:   849.920 us/op
+
+Iteration   3: 13.330 ±(99.9%) 0.067 us/op
+                 testDeserialiseJson·p0.00:   11.216 us/op
+                 testDeserialiseJson·p0.50:   12.016 us/op
+                 testDeserialiseJson·p0.90:   13.120 us/op
+                 testDeserialiseJson·p0.95:   20.896 us/op
+                 testDeserialiseJson·p0.99:   38.080 us/op
+                 testDeserialiseJson·p0.999:  71.907 us/op
+                 testDeserialiseJson·p0.9999: 133.886 us/op
+                 testDeserialiseJson·p1.00:   1136.640 us/op
+
+Iteration   4: 13.312 ±(99.9%) 0.076 us/op
+                 testDeserialiseJson·p0.00:   11.184 us/op
+                 testDeserialiseJson·p0.50:   11.936 us/op
+                 testDeserialiseJson·p0.90:   13.136 us/op
+                 testDeserialiseJson·p0.95:   22.709 us/op
+                 testDeserialiseJson·p0.99:   37.376 us/op
+                 testDeserialiseJson·p0.999:  71.040 us/op
+                 testDeserialiseJson·p0.9999: 137.296 us/op
+                 testDeserialiseJson·p1.00:   2363.392 us/op
+
+Iteration   5: 13.307 ±(99.9%) 0.074 us/op
+                 testDeserialiseJson·p0.00:   11.200 us/op
+                 testDeserialiseJson·p0.50:   11.952 us/op
+                 testDeserialiseJson·p0.90:   13.120 us/op
+                 testDeserialiseJson·p0.95:   20.992 us/op
+                 testDeserialiseJson·p0.99:   38.208 us/op
+                 testDeserialiseJson·p0.999:  72.704 us/op
+                 testDeserialiseJson·p0.9999: 139.181 us/op
+                 testDeserialiseJson·p1.00:   2248.704 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseJson":
+  N = 4667724
+  mean =     13.387 ±(99.9%) 0.014 us/op
+
+  Histogram, us/op:
+    [   0.000,  250.000) = 4667370 
+    [ 250.000,  500.000) = 16 
+    [ 500.000,  750.000) = 79 
+    [ 750.000, 1000.000) = 242 
+    [1000.000, 1250.000) = 4 
+    [1250.000, 1500.000) = 1 
+    [1500.000, 1750.000) = 1 
+    [1750.000, 2000.000) = 1 
+    [2000.000, 2250.000) = 6 
+    [2250.000, 2500.000) = 4 
+    [2500.000, 2750.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     10.816 us/op
+     p(50.0000) =     12.208 us/op
+     p(90.0000) =     13.216 us/op
+     p(95.0000) =     20.256 us/op
+     p(99.0000) =     38.016 us/op
+     p(99.9000) =     71.040 us/op
+     p(99.9900) =    126.621 us/op
+     p(99.9990) =    891.210 us/op
+     p(99.9999) =   2254.148 us/op
+    p(100.0000) =   2363.392 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialisePJson
+
+# Run progress: 33.33% complete, ETA 00:50:27
+# Fork: 1 of 5
+# Warmup Iteration   1: 58.018 ±(99.9%) 1.729 us/op
+# Warmup Iteration   2: 51.431 ±(99.9%) 0.131 us/op
+# Warmup Iteration   3: 51.769 ±(99.9%) 0.129 us/op
+# Warmup Iteration   4: 50.506 ±(99.9%) 0.116 us/op
+# Warmup Iteration   5: 49.941 ±(99.9%) 0.175 us/op
+Iteration   1: 49.748 ±(99.9%) 0.178 us/op
+                 testDeserialisePJson·p0.00:   42.624 us/op
+                 testDeserialisePJson·p0.50:   45.824 us/op
+                 testDeserialisePJson·p0.90:   60.416 us/op
+                 testDeserialisePJson·p0.95:   77.824 us/op
+                 testDeserialisePJson·p0.99:   101.376 us/op
+                 testDeserialisePJson·p0.999:  171.685 us/op
+                 testDeserialisePJson·p0.9999: 883.202 us/op
+                 testDeserialisePJson·p1.00:   1004.544 us/op
+
+Iteration   2: 53.706 ±(99.9%) 1.148 us/op
+                 testDeserialisePJson·p0.00:   42.688 us/op
+                 testDeserialisePJson·p0.50:   47.872 us/op
+                 testDeserialisePJson·p0.90:   72.192 us/op
+                 testDeserialisePJson·p0.95:   89.728 us/op
+                 testDeserialisePJson·p0.99:   124.557 us/op
+                 testDeserialisePJson·p0.999:  215.836 us/op
+                 testDeserialisePJson·p0.9999: 954.242 us/op
+                 testDeserialisePJson·p1.00:   62128.128 us/op
+
+Iteration   3: 53.741 ±(99.9%) 0.110 us/op
+                 testDeserialisePJson·p0.00:   46.400 us/op
+                 testDeserialisePJson·p0.50:   50.240 us/op
+                 testDeserialisePJson·p0.90:   61.376 us/op
+                 testDeserialisePJson·p0.95:   74.752 us/op
+                 testDeserialisePJson·p0.99:   111.232 us/op
+                 testDeserialisePJson·p0.999:  168.705 us/op
+                 testDeserialisePJson·p0.9999: 665.243 us/op
+                 testDeserialisePJson·p1.00:   891.904 us/op
+
+Iteration   4: 71.436 ±(99.9%) 40.474 us/op
+                 testDeserialisePJson·p0.00:   45.376 us/op
+                 testDeserialisePJson·p0.50:   48.960 us/op
+                 testDeserialisePJson·p0.90:   88.448 us/op
+                 testDeserialisePJson·p0.95:   102.528 us/op
+                 testDeserialisePJson·p0.99:   146.432 us/op
+                 testDeserialisePJson·p0.999:  251.489 us/op
+                 testDeserialisePJson·p0.9999: 978.056 us/op
+                 testDeserialisePJson·p1.00:   1719664.640 us/op
+
+Iteration   5: 219.626 ±(99.9%) 5.448 us/op
+                 testDeserialisePJson·p0.00:   47.552 us/op
+                 testDeserialisePJson·p0.50:   52.608 us/op
+                 testDeserialisePJson·p0.90:   572.416 us/op
+                 testDeserialisePJson·p0.95:   899.072 us/op
+                 testDeserialisePJson·p0.99:   1544.192 us/op
+                 testDeserialisePJson·p0.999:  2812.101 us/op
+                 testDeserialisePJson·p0.9999: 7477.097 us/op
+                 testDeserialisePJson·p1.00:   13287.424 us/op
+
+
+# Run progress: 35.56% complete, ETA 00:48:47
+# Fork: 2 of 5
+# Warmup Iteration   1: 65.429 ±(99.9%) 2.004 us/op
+# Warmup Iteration   2: 54.270 ±(99.9%) 0.119 us/op
+# Warmup Iteration   3: 54.713 ±(99.9%) 0.109 us/op
+# Warmup Iteration   4: 76.139 ±(99.9%) 43.609 us/op
+# Warmup Iteration   5: 79.962 ±(99.9%) 2.638 us/op
+Iteration   1: 948.402 ±(99.9%) 47.668 us/op
+                 testDeserialisePJson·p0.00:   521.728 us/op
+                 testDeserialisePJson·p0.50:   610.304 us/op
+                 testDeserialisePJson·p0.90:   1574.912 us/op
+                 testDeserialisePJson·p0.95:   1957.888 us/op
+                 testDeserialisePJson·p0.99:   4175.258 us/op
+                 testDeserialisePJson·p0.999:  16724.902 us/op
+                 testDeserialisePJson·p0.9999: 86201.113 us/op
+                 testDeserialisePJson·p1.00:   88080.384 us/op
+
+Iteration   2: 1127.353 ±(99.9%) 48.641 us/op
+                 testDeserialisePJson·p0.00:   521.728 us/op
+                 testDeserialisePJson·p0.50:   642.048 us/op
+                 testDeserialisePJson·p0.90:   2054.963 us/op
+                 testDeserialisePJson·p0.95:   2990.080 us/op
+                 testDeserialisePJson·p0.99:   5584.650 us/op
+                 testDeserialisePJson·p0.999:  16509.665 us/op
+                 testDeserialisePJson·p0.9999: 54722.560 us/op
+                 testDeserialisePJson·p1.00:   54722.560 us/op
+
+Iteration   3: 2606.875 ±(99.9%) 90.286 us/op
+                 testDeserialisePJson·p0.00:   559.104 us/op
+                 testDeserialisePJson·p0.50:   2084.864 us/op
+                 testDeserialisePJson·p0.90:   4071.424 us/op
+                 testDeserialisePJson·p0.95:   5019.238 us/op
+                 testDeserialisePJson·p0.99:   9901.507 us/op
+                 testDeserialisePJson·p0.999:  20720.845 us/op
+                 testDeserialisePJson·p0.9999: 27983.872 us/op
+                 testDeserialisePJson·p1.00:   27983.872 us/op
+
+Iteration   4: 1897.439 ±(99.9%) 98.067 us/op
+                 testDeserialisePJson·p0.00:   520.704 us/op
+                 testDeserialisePJson·p0.50:   1550.336 us/op
+                 testDeserialisePJson·p0.90:   3591.373 us/op
+                 testDeserialisePJson·p0.95:   4544.102 us/op
+                 testDeserialisePJson·p0.99:   9438.167 us/op
+                 testDeserialisePJson·p0.999:  29209.854 us/op
+                 testDeserialisePJson·p0.9999: 37879.808 us/op
+                 testDeserialisePJson·p1.00:   37879.808 us/op
+
+Iteration   5: 1019.203 ±(99.9%) 54.130 us/op
+                 testDeserialisePJson·p0.00:   520.192 us/op
+                 testDeserialisePJson·p0.50:   609.280 us/op
+                 testDeserialisePJson·p0.90:   1816.576 us/op
+                 testDeserialisePJson·p0.95:   2620.621 us/op
+                 testDeserialisePJson·p0.99:   4685.660 us/op
+                 testDeserialisePJson·p0.999:  11927.388 us/op
+                 testDeserialisePJson·p0.9999: 130547.712 us/op
+                 testDeserialisePJson·p1.00:   130547.712 us/op
+
+
+# Run progress: 37.78% complete, ETA 00:47:18
+# Fork: 3 of 5
+# Warmup Iteration   1: 686.291 ±(99.9%) 97.016 us/op
+# Warmup Iteration   2: 107.140 ±(99.9%) 1.173 us/op
+# Warmup Iteration   3: 85.918 ±(99.9%) 0.671 us/op
+# Warmup Iteration   4: 92.904 ±(99.9%) 0.859 us/op
+# Warmup Iteration   5: 179.602 ±(99.9%) 3.091 us/op
+Iteration   1: 186.385 ±(99.9%) 2.567 us/op
+                 testDeserialisePJson·p0.00:   117.888 us/op
+                 testDeserialisePJson·p0.50:   135.936 us/op
+                 testDeserialisePJson·p0.90:   358.400 us/op
+                 testDeserialisePJson·p0.95:   424.960 us/op
+                 testDeserialisePJson·p0.99:   954.532 us/op
+                 testDeserialisePJson·p0.999:  2166.096 us/op
+                 testDeserialisePJson·p0.9999: 4227.295 us/op
+                 testDeserialisePJson·p1.00:   10878.976 us/op
+
+Iteration   2: 466.741 ±(99.9%) 12.971 us/op
+                 testDeserialisePJson·p0.00:   133.120 us/op
+                 testDeserialisePJson·p0.50:   404.480 us/op
+                 testDeserialisePJson·p0.90:   822.272 us/op
+                 testDeserialisePJson·p0.95:   1210.368 us/op
+                 testDeserialisePJson·p0.99:   2252.800 us/op
+                 testDeserialisePJson·p0.999:  6240.666 us/op
+                 testDeserialisePJson·p0.9999: 18878.300 us/op
+                 testDeserialisePJson·p1.00:   29032.448 us/op
+
+Iteration   3: 328.391 ±(99.9%) 6.343 us/op
+                 testDeserialisePJson·p0.00:   104.448 us/op
+                 testDeserialisePJson·p0.50:   335.872 us/op
+                 testDeserialisePJson·p0.90:   583.680 us/op
+                 testDeserialisePJson·p0.95:   883.149 us/op
+                 testDeserialisePJson·p0.99:   1341.215 us/op
+                 testDeserialisePJson·p0.999:  3014.656 us/op
+                 testDeserialisePJson·p0.9999: 6003.949 us/op
+                 testDeserialisePJson·p1.00:   19398.656 us/op
+
+Iteration   4: 131.634 ±(99.9%) 1.301 us/op
+                 testDeserialisePJson·p0.00:   94.336 us/op
+                 testDeserialisePJson·p0.50:   102.400 us/op
+                 testDeserialisePJson·p0.90:   199.936 us/op
+                 testDeserialisePJson·p0.95:   290.304 us/op
+                 testDeserialisePJson·p0.99:   462.336 us/op
+                 testDeserialisePJson·p0.999:  1187.856 us/op
+                 testDeserialisePJson·p0.9999: 2751.876 us/op
+                 testDeserialisePJson·p1.00:   10731.520 us/op
+
+Iteration   5: 147.858 ±(99.9%) 1.977 us/op
+                 testDeserialisePJson·p0.00:   94.592 us/op
+                 testDeserialisePJson·p0.50:   97.152 us/op
+                 testDeserialisePJson·p0.90:   292.352 us/op
+                 testDeserialisePJson·p0.95:   327.168 us/op
+                 testDeserialisePJson·p0.99:   779.264 us/op
+                 testDeserialisePJson·p0.999:  1903.708 us/op
+                 testDeserialisePJson·p0.9999: 3393.824 us/op
+                 testDeserialisePJson·p1.00:   12451.840 us/op
+
+
+# Run progress: 40.00% complete, ETA 00:45:48
+# Fork: 4 of 5
+# Warmup Iteration   1: 358.410 ±(99.9%) 21.875 us/op
+# Warmup Iteration   2: 259.003 ±(99.9%) 4.432 us/op
+# Warmup Iteration   3: 298.325 ±(99.9%) 5.749 us/op
+# Warmup Iteration   4: 285.492 ±(99.9%) 5.026 us/op
+# Warmup Iteration   5: 170.574 ±(99.9%) 3.204 us/op
+Iteration   1: 239.843 ±(99.9%) 4.176 us/op
+                 testDeserialisePJson·p0.00:   91.264 us/op
+                 testDeserialisePJson·p0.50:   184.064 us/op
+                 testDeserialisePJson·p0.90:   402.944 us/op
+                 testDeserialisePJson·p0.95:   691.200 us/op
+                 testDeserialisePJson·p0.99:   1014.436 us/op
+                 testDeserialisePJson·p0.999:  2324.001 us/op
+                 testDeserialisePJson·p0.9999: 9045.433 us/op
+                 testDeserialisePJson·p1.00:   15237.120 us/op
+
+Iteration   2: 190.788 ±(99.9%) 2.819 us/op
+                 testDeserialisePJson·p0.00:   95.744 us/op
+                 testDeserialisePJson·p0.50:   104.320 us/op
+                 testDeserialisePJson·p0.90:   324.608 us/op
+                 testDeserialisePJson·p0.95:   443.904 us/op
+                 testDeserialisePJson·p0.99:   898.652 us/op
+                 testDeserialisePJson·p0.999:  2191.360 us/op
+                 testDeserialisePJson·p0.9999: 4035.330 us/op
+                 testDeserialisePJson·p1.00:   10567.680 us/op
+
+Iteration   3: 347.847 ±(99.9%) 6.102 us/op
+                 testDeserialisePJson·p0.00:   106.496 us/op
+                 testDeserialisePJson·p0.50:   330.752 us/op
+                 testDeserialisePJson·p0.90:   595.968 us/op
+                 testDeserialisePJson·p0.95:   859.136 us/op
+                 testDeserialisePJson·p0.99:   1327.964 us/op
+                 testDeserialisePJson·p0.999:  2759.582 us/op
+                 testDeserialisePJson·p0.9999: 11144.036 us/op
+                 testDeserialisePJson·p1.00:   16023.552 us/op
+
+Iteration   4: 284.524 ±(99.9%) 5.438 us/op
+                 testDeserialisePJson·p0.00:   112.000 us/op
+                 testDeserialisePJson·p0.50:   165.376 us/op
+                 testDeserialisePJson·p0.90:   507.904 us/op
+                 testDeserialisePJson·p0.95:   745.472 us/op
+                 testDeserialisePJson·p0.99:   1208.422 us/op
+                 testDeserialisePJson·p0.999:  2711.163 us/op
+                 testDeserialisePJson·p0.9999: 9326.752 us/op
+                 testDeserialisePJson·p1.00:   20250.624 us/op
+
+Iteration   5: 295.096 ±(99.9%) 5.953 us/op
+                 testDeserialisePJson·p0.00:   100.480 us/op
+                 testDeserialisePJson·p0.50:   301.056 us/op
+                 testDeserialisePJson·p0.90:   515.072 us/op
+                 testDeserialisePJson·p0.95:   791.552 us/op
+                 testDeserialisePJson·p0.99:   1251.328 us/op
+                 testDeserialisePJson·p0.999:  2808.906 us/op
+                 testDeserialisePJson·p0.9999: 9943.594 us/op
+                 testDeserialisePJson·p1.00:   23232.512 us/op
+
+
+# Run progress: 42.22% complete, ETA 00:44:13
+# Fork: 5 of 5
+# Warmup Iteration   1: 290.709 ±(99.9%) 16.710 us/op
+# Warmup Iteration   2: 201.947 ±(99.9%) 3.602 us/op
+# Warmup Iteration   3: 246.066 ±(99.9%) 4.509 us/op
+# Warmup Iteration   4: 261.448 ±(99.9%) 4.940 us/op
+# Warmup Iteration   5: 186.600 ±(99.9%) 3.216 us/op
+Iteration   1: 325.661 ±(99.9%) 11.145 us/op
+                 testDeserialisePJson·p0.00:   96.768 us/op
+                 testDeserialisePJson·p0.50:   288.256 us/op
+                 testDeserialisePJson·p0.90:   499.712 us/op
+                 testDeserialisePJson·p0.95:   775.168 us/op
+                 testDeserialisePJson·p0.99:   1343.488 us/op
+                 testDeserialisePJson·p0.999:  3922.555 us/op
+                 testDeserialisePJson·p0.9999: 31844.391 us/op
+                 testDeserialisePJson·p1.00:   46727.168 us/op
+
+Iteration   2: 207.916 ±(99.9%) 3.982 us/op
+                 testDeserialisePJson·p0.00:   112.640 us/op
+                 testDeserialisePJson·p0.50:   124.160 us/op
+                 testDeserialisePJson·p0.90:   358.912 us/op
+                 testDeserialisePJson·p0.95:   470.528 us/op
+                 testDeserialisePJson·p0.99:   827.392 us/op
+                 testDeserialisePJson·p0.999:  2174.906 us/op
+                 testDeserialisePJson·p0.9999: 13623.319 us/op
+                 testDeserialisePJson·p1.00:   29130.752 us/op
+
+Iteration   3: 148.440 ±(99.9%) 1.853 us/op
+                 testDeserialisePJson·p0.00:   120.320 us/op
+                 testDeserialisePJson·p0.50:   124.032 us/op
+                 testDeserialisePJson·p0.90:   217.088 us/op
+                 testDeserialisePJson·p0.95:   250.880 us/op
+                 testDeserialisePJson·p0.99:   358.400 us/op
+                 testDeserialisePJson·p0.999:  910.989 us/op
+                 testDeserialisePJson·p0.9999: 5071.672 us/op
+                 testDeserialisePJson·p1.00:   17072.128 us/op
+
+Iteration   4: 240.111 ±(99.9%) 3.855 us/op
+                 testDeserialisePJson·p0.00:   120.448 us/op
+                 testDeserialisePJson·p0.50:   131.328 us/op
+                 testDeserialisePJson·p0.90:   403.456 us/op
+                 testDeserialisePJson·p0.95:   562.176 us/op
+                 testDeserialisePJson·p0.99:   1054.290 us/op
+                 testDeserialisePJson·p0.999:  2804.769 us/op
+                 testDeserialisePJson·p0.9999: 6146.956 us/op
+                 testDeserialisePJson·p1.00:   10715.136 us/op
+
+Iteration   5: 468.425 ±(99.9%) 7.493 us/op
+                 testDeserialisePJson·p0.00:   252.928 us/op
+                 testDeserialisePJson·p0.50:   366.592 us/op
+                 testDeserialisePJson·p0.90:   746.496 us/op
+                 testDeserialisePJson·p0.95:   920.730 us/op
+                 testDeserialisePJson·p0.99:   1694.700 us/op
+                 testDeserialisePJson·p0.999:  3159.716 us/op
+                 testDeserialisePJson·p0.9999: 11046.504 us/op
+                 testDeserialisePJson·p1.00:   19038.208 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialisePJson":
+  N = 1344784
+  mean =    181.947 ±(99.9%) 4.374 us/op
+
+  Histogram, us/op:
+    [      0.000,  125000.000) = 1344782 
+    [ 125000.000,  250000.000) = 1 
+    [ 250000.000,  375000.000) = 0 
+    [ 375000.000,  500000.000) = 0 
+    [ 500000.000,  625000.000) = 0 
+    [ 625000.000,  750000.000) = 0 
+    [ 750000.000,  875000.000) = 0 
+    [ 875000.000, 1000000.000) = 0 
+    [1000000.000, 1125000.000) = 0 
+    [1125000.000, 1250000.000) = 0 
+    [1250000.000, 1375000.000) = 0 
+    [1375000.000, 1500000.000) = 0 
+    [1500000.000, 1625000.000) = 0 
+    [1625000.000, 1750000.000) = 1 
+    [1750000.000, 1875000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     42.624 us/op
+     p(50.0000) =     96.896 us/op
+     p(90.0000) =    375.808 us/op
+     p(95.0000) =    561.152 us/op
+     p(99.0000) =   1540.096 us/op
+     p(99.9000) =   4186.112 us/op
+     p(99.9900) =  12632.769 us/op
+     p(99.9990) =  35927.399 us/op
+     p(99.9999) = 1171760.960 us/op
+    p(100.0000) = 1719664.640 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvJsonLD
+
+# Run progress: 44.44% complete, ETA 00:42:36
+# Fork: 1 of 5
+# Warmup Iteration   1: 291.142 ±(99.9%) 15.290 us/op
+# Warmup Iteration   2: 335.036 ±(99.9%) 5.918 us/op
+# Warmup Iteration   3: 374.392 ±(99.9%) 6.576 us/op
+# Warmup Iteration   4: 375.844 ±(99.9%) 6.573 us/op
+# Warmup Iteration   5: 345.858 ±(99.9%) 5.523 us/op
+Iteration   1: 292.959 ±(99.9%) 5.809 us/op
+                 testDeserialiseProvJsonLD·p0.00:   178.176 us/op
+                 testDeserialiseProvJsonLD·p0.50:   228.608 us/op
+                 testDeserialiseProvJsonLD·p0.90:   385.024 us/op
+                 testDeserialiseProvJsonLD·p0.95:   695.296 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1085.850 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2689.147 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 13718.266 us/op
+                 testDeserialiseProvJsonLD·p1.00:   35192.832 us/op
+
+Iteration   2: 275.589 ±(99.9%) 4.180 us/op
+                 testDeserialiseProvJsonLD·p0.00:   166.144 us/op
+                 testDeserialiseProvJsonLD·p0.50:   217.344 us/op
+                 testDeserialiseProvJsonLD·p0.90:   357.376 us/op
+                 testDeserialiseProvJsonLD·p0.95:   667.648 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1050.624 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2141.307 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 9191.424 us/op
+                 testDeserialiseProvJsonLD·p1.00:   17268.736 us/op
+
+Iteration   3: 285.225 ±(99.9%) 5.985 us/op
+                 testDeserialiseProvJsonLD·p0.00:   147.200 us/op
+                 testDeserialiseProvJsonLD·p0.50:   221.696 us/op
+                 testDeserialiseProvJsonLD·p0.90:   374.784 us/op
+                 testDeserialiseProvJsonLD·p0.95:   679.936 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1029.550 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2314.412 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 18850.179 us/op
+                 testDeserialiseProvJsonLD·p1.00:   29196.288 us/op
+
+Iteration   4: 305.241 ±(99.9%) 5.650 us/op
+                 testDeserialiseProvJsonLD·p0.00:   189.952 us/op
+                 testDeserialiseProvJsonLD·p0.50:   237.824 us/op
+                 testDeserialiseProvJsonLD·p0.90:   398.848 us/op
+                 testDeserialiseProvJsonLD·p0.95:   718.848 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1165.312 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2453.504 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 15016.714 us/op
+                 testDeserialiseProvJsonLD·p1.00:   23658.496 us/op
+
+Iteration   5: 330.980 ±(99.9%) 6.102 us/op
+                 testDeserialiseProvJsonLD·p0.00:   190.464 us/op
+                 testDeserialiseProvJsonLD·p0.50:   255.744 us/op
+                 testDeserialiseProvJsonLD·p0.90:   439.808 us/op
+                 testDeserialiseProvJsonLD·p0.95:   766.976 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1186.284 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2609.152 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 19507.603 us/op
+                 testDeserialiseProvJsonLD·p1.00:   21069.824 us/op
+
+
+# Run progress: 46.67% complete, ETA 00:40:59
+# Fork: 2 of 5
+# Warmup Iteration   1: 281.285 ±(99.9%) 16.715 us/op
+# Warmup Iteration   2: 233.498 ±(99.9%) 3.993 us/op
+# Warmup Iteration   3: 196.426 ±(99.9%) 3.689 us/op
+# Warmup Iteration   4: 142.259 ±(99.9%) 2.065 us/op
+# Warmup Iteration   5: 188.664 ±(99.9%) 3.166 us/op
+Iteration   1: 144.397 ±(99.9%) 1.942 us/op
+                 testDeserialiseProvJsonLD·p0.00:   89.856 us/op
+                 testDeserialiseProvJsonLD·p0.50:   92.032 us/op
+                 testDeserialiseProvJsonLD·p0.90:   250.880 us/op
+                 testDeserialiseProvJsonLD·p0.95:   291.840 us/op
+                 testDeserialiseProvJsonLD·p0.99:   774.144 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2073.313 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 4534.462 us/op
+                 testDeserialiseProvJsonLD·p1.00:   10813.440 us/op
+
+Iteration   2: 215.586 ±(99.9%) 3.755 us/op
+                 testDeserialiseProvJsonLD·p0.00:   78.208 us/op
+                 testDeserialiseProvJsonLD·p0.50:   214.016 us/op
+                 testDeserialiseProvJsonLD·p0.90:   332.288 us/op
+                 testDeserialiseProvJsonLD·p0.95:   613.376 us/op
+                 testDeserialiseProvJsonLD·p0.99:   924.672 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2286.969 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 10572.461 us/op
+                 testDeserialiseProvJsonLD·p1.00:   17596.416 us/op
+
+Iteration   3: 106.149 ±(99.9%) 1.327 us/op
+                 testDeserialiseProvJsonLD·p0.00:   75.264 us/op
+                 testDeserialiseProvJsonLD·p0.50:   77.184 us/op
+                 testDeserialiseProvJsonLD·p0.90:   196.352 us/op
+                 testDeserialiseProvJsonLD·p0.95:   215.424 us/op
+                 testDeserialiseProvJsonLD·p0.99:   606.106 us/op
+                 testDeserialiseProvJsonLD·p0.999:  1619.948 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 4271.133 us/op
+                 testDeserialiseProvJsonLD·p1.00:   13058.048 us/op
+
+Iteration   4: 129.368 ±(99.9%) 1.901 us/op
+                 testDeserialiseProvJsonLD·p0.00:   74.624 us/op
+                 testDeserialiseProvJsonLD·p0.50:   76.544 us/op
+                 testDeserialiseProvJsonLD·p0.90:   214.016 us/op
+                 testDeserialiseProvJsonLD·p0.95:   264.704 us/op
+                 testDeserialiseProvJsonLD·p0.99:   734.208 us/op
+                 testDeserialiseProvJsonLD·p0.999:  1842.135 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 4433.633 us/op
+                 testDeserialiseProvJsonLD·p1.00:   13680.640 us/op
+
+Iteration   5: 103.627 ±(99.9%) 1.317 us/op
+                 testDeserialiseProvJsonLD·p0.00:   75.008 us/op
+                 testDeserialiseProvJsonLD·p0.50:   76.800 us/op
+                 testDeserialiseProvJsonLD·p0.90:   194.048 us/op
+                 testDeserialiseProvJsonLD·p0.95:   211.200 us/op
+                 testDeserialiseProvJsonLD·p0.99:   475.771 us/op
+                 testDeserialiseProvJsonLD·p0.999:  1231.512 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 3935.218 us/op
+                 testDeserialiseProvJsonLD·p1.00:   16678.912 us/op
+
+
+# Run progress: 48.89% complete, ETA 00:39:21
+# Fork: 3 of 5
+# Warmup Iteration   1: 210.811 ±(99.9%) 10.481 us/op
+# Warmup Iteration   2: 113.362 ±(99.9%) 1.241 us/op
+# Warmup Iteration   3: 99.422 ±(99.9%) 0.738 us/op
+# Warmup Iteration   4: 96.588 ±(99.9%) 1.192 us/op
+# Warmup Iteration   5: 85.381 ±(99.9%) 0.712 us/op
+Iteration   1: 92.195 ±(99.9%) 0.764 us/op
+                 testDeserialiseProvJsonLD·p0.00:   73.216 us/op
+                 testDeserialiseProvJsonLD·p0.50:   75.264 us/op
+                 testDeserialiseProvJsonLD·p0.90:   113.664 us/op
+                 testDeserialiseProvJsonLD·p0.95:   194.048 us/op
+                 testDeserialiseProvJsonLD·p0.99:   315.904 us/op
+                 testDeserialiseProvJsonLD·p0.999:  882.688 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 2393.385 us/op
+                 testDeserialiseProvJsonLD·p1.00:   6184.960 us/op
+
+Iteration   2: 96.632 ±(99.9%) 0.616 us/op
+                 testDeserialiseProvJsonLD·p0.00:   80.000 us/op
+                 testDeserialiseProvJsonLD·p0.50:   85.376 us/op
+                 testDeserialiseProvJsonLD·p0.90:   105.088 us/op
+                 testDeserialiseProvJsonLD·p0.95:   153.856 us/op
+                 testDeserialiseProvJsonLD·p0.99:   259.840 us/op
+                 testDeserialiseProvJsonLD·p0.999:  867.328 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 1974.497 us/op
+                 testDeserialiseProvJsonLD·p1.00:   4923.392 us/op
+
+Iteration   3: 97.181 ±(99.9%) 0.683 us/op
+                 testDeserialiseProvJsonLD·p0.00:   83.968 us/op
+                 testDeserialiseProvJsonLD·p0.50:   85.376 us/op
+                 testDeserialiseProvJsonLD·p0.90:   102.656 us/op
+                 testDeserialiseProvJsonLD·p0.95:   155.136 us/op
+                 testDeserialiseProvJsonLD·p0.99:   263.168 us/op
+                 testDeserialiseProvJsonLD·p0.999:  859.181 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 2273.619 us/op
+                 testDeserialiseProvJsonLD·p1.00:   6004.736 us/op
+
+Iteration   4: 88.285 ±(99.9%) 0.687 us/op
+                 testDeserialiseProvJsonLD·p0.00:   73.088 us/op
+                 testDeserialiseProvJsonLD·p0.50:   77.696 us/op
+                 testDeserialiseProvJsonLD·p0.90:   92.672 us/op
+                 testDeserialiseProvJsonLD·p0.95:   132.608 us/op
+                 testDeserialiseProvJsonLD·p0.99:   237.056 us/op
+                 testDeserialiseProvJsonLD·p0.999:  844.800 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 2520.728 us/op
+                 testDeserialiseProvJsonLD·p1.00:   10584.064 us/op
+
+Iteration   5: 205.259 ±(99.9%) 3.690 us/op
+                 testDeserialiseProvJsonLD·p0.00:   73.088 us/op
+                 testDeserialiseProvJsonLD·p0.50:   189.952 us/op
+                 testDeserialiseProvJsonLD·p0.90:   279.552 us/op
+                 testDeserialiseProvJsonLD·p0.95:   607.283 us/op
+                 testDeserialiseProvJsonLD·p0.99:   923.648 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2206.818 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 9143.214 us/op
+                 testDeserialiseProvJsonLD·p1.00:   19431.424 us/op
+
+
+# Run progress: 51.11% complete, ETA 00:37:42
+# Fork: 4 of 5
+# Warmup Iteration   1: 146.265 ±(99.9%) 5.700 us/op
+# Warmup Iteration   2: 94.106 ±(99.9%) 0.791 us/op
+# Warmup Iteration   3: 126.618 ±(99.9%) 1.991 us/op
+# Warmup Iteration   4: 119.704 ±(99.9%) 1.725 us/op
+# Warmup Iteration   5: 123.373 ±(99.9%) 1.783 us/op
+Iteration   1: 252.429 ±(99.9%) 4.118 us/op
+                 testDeserialiseProvJsonLD·p0.00:   68.608 us/op
+                 testDeserialiseProvJsonLD·p0.50:   189.696 us/op
+                 testDeserialiseProvJsonLD·p0.90:   336.384 us/op
+                 testDeserialiseProvJsonLD·p0.95:   661.504 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1053.614 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2467.176 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 10458.107 us/op
+                 testDeserialiseProvJsonLD·p1.00:   11075.584 us/op
+
+Iteration   2: 263.938 ±(99.9%) 5.928 us/op
+                 testDeserialiseProvJsonLD·p0.00:   82.816 us/op
+                 testDeserialiseProvJsonLD·p0.50:   199.936 us/op
+                 testDeserialiseProvJsonLD·p0.90:   316.928 us/op
+                 testDeserialiseProvJsonLD·p0.95:   696.320 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1081.344 us/op
+                 testDeserialiseProvJsonLD·p0.999:  3256.943 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 14859.895 us/op
+                 testDeserialiseProvJsonLD·p1.00:   30572.544 us/op
+
+Iteration   3: 264.686 ±(99.9%) 4.791 us/op
+                 testDeserialiseProvJsonLD·p0.00:   78.720 us/op
+                 testDeserialiseProvJsonLD·p0.50:   203.520 us/op
+                 testDeserialiseProvJsonLD·p0.90:   322.560 us/op
+                 testDeserialiseProvJsonLD·p0.95:   668.672 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1081.344 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2553.086 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 13318.639 us/op
+                 testDeserialiseProvJsonLD·p1.00:   16334.848 us/op
+
+Iteration   4: 259.464 ±(99.9%) 4.964 us/op
+                 testDeserialiseProvJsonLD·p0.00:   89.216 us/op
+                 testDeserialiseProvJsonLD·p0.50:   200.448 us/op
+                 testDeserialiseProvJsonLD·p0.90:   310.784 us/op
+                 testDeserialiseProvJsonLD·p0.95:   689.152 us/op
+                 testDeserialiseProvJsonLD·p0.99:   996.362 us/op
+                 testDeserialiseProvJsonLD·p0.999:  2635.780 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 12541.236 us/op
+                 testDeserialiseProvJsonLD·p1.00:   18415.616 us/op
+
+Iteration   5: 243.050 ±(99.9%) 5.122 us/op
+                 testDeserialiseProvJsonLD·p0.00:   81.280 us/op
+                 testDeserialiseProvJsonLD·p0.50:   183.296 us/op
+                 testDeserialiseProvJsonLD·p0.90:   279.552 us/op
+                 testDeserialiseProvJsonLD·p0.95:   681.984 us/op
+                 testDeserialiseProvJsonLD·p0.99:   1041.807 us/op
+                 testDeserialiseProvJsonLD·p0.999:  3387.392 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 14239.392 us/op
+                 testDeserialiseProvJsonLD·p1.00:   25821.184 us/op
+
+
+# Run progress: 53.33% complete, ETA 00:36:02
+# Fork: 5 of 5
+# Warmup Iteration   1: 323.749 ±(99.9%) 200.504 us/op
+# Warmup Iteration   2: 119.308 ±(99.9%) 8.703 us/op
+# Warmup Iteration   3: 89.497 ±(99.9%) 2.332 us/op
+# Warmup Iteration   4: 50.068 ±(99.9%) 0.701 us/op
+# Warmup Iteration   5: 46.560 ±(99.9%) 0.140 us/op
+Iteration   1: 51.708 ±(99.9%) 0.314 us/op
+                 testDeserialiseProvJsonLD·p0.00:   41.664 us/op
+                 testDeserialiseProvJsonLD·p0.50:   44.416 us/op
+                 testDeserialiseProvJsonLD·p0.90:   65.024 us/op
+                 testDeserialiseProvJsonLD·p0.95:   91.392 us/op
+                 testDeserialiseProvJsonLD·p0.99:   153.600 us/op
+                 testDeserialiseProvJsonLD·p0.999:  328.214 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 1034.174 us/op
+                 testDeserialiseProvJsonLD·p1.00:   11091.968 us/op
+
+Iteration   2: 46.565 ±(99.9%) 0.142 us/op
+                 testDeserialiseProvJsonLD·p0.00:   41.600 us/op
+                 testDeserialiseProvJsonLD·p0.50:   43.264 us/op
+                 testDeserialiseProvJsonLD·p0.90:   52.864 us/op
+                 testDeserialiseProvJsonLD·p0.95:   66.048 us/op
+                 testDeserialiseProvJsonLD·p0.99:   98.048 us/op
+                 testDeserialiseProvJsonLD·p0.999:  144.128 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 747.593 us/op
+                 testDeserialiseProvJsonLD·p1.00:   830.464 us/op
+
+Iteration   3: 45.954 ±(99.9%) 0.171 us/op
+                 testDeserialiseProvJsonLD·p0.00:   36.352 us/op
+                 testDeserialiseProvJsonLD·p0.50:   40.384 us/op
+                 testDeserialiseProvJsonLD·p0.90:   60.608 us/op
+                 testDeserialiseProvJsonLD·p0.95:   75.776 us/op
+                 testDeserialiseProvJsonLD·p0.99:   104.192 us/op
+                 testDeserialiseProvJsonLD·p0.999:  173.343 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 798.685 us/op
+                 testDeserialiseProvJsonLD·p1.00:   1026.048 us/op
+
+Iteration   4: 46.927 ±(99.9%) 0.201 us/op
+                 testDeserialiseProvJsonLD·p0.00:   36.288 us/op
+                 testDeserialiseProvJsonLD·p0.50:   40.320 us/op
+                 testDeserialiseProvJsonLD·p0.90:   66.944 us/op
+                 testDeserialiseProvJsonLD·p0.95:   81.024 us/op
+                 testDeserialiseProvJsonLD·p0.99:   113.408 us/op
+                 testDeserialiseProvJsonLD·p0.999:  182.991 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 817.932 us/op
+                 testDeserialiseProvJsonLD·p1.00:   2015.232 us/op
+
+Iteration   5: 48.317 ±(99.9%) 0.166 us/op
+                 testDeserialiseProvJsonLD·p0.00:   38.976 us/op
+                 testDeserialiseProvJsonLD·p0.50:   43.968 us/op
+                 testDeserialiseProvJsonLD·p0.90:   58.752 us/op
+                 testDeserialiseProvJsonLD·p0.95:   75.520 us/op
+                 testDeserialiseProvJsonLD·p0.99:   108.663 us/op
+                 testDeserialiseProvJsonLD·p0.999:  166.089 us/op
+                 testDeserialiseProvJsonLD·p0.9999: 710.546 us/op
+                 testDeserialiseProvJsonLD·p1.00:   901.120 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvJsonLD":
+  N = 1839642
+  mean =    124.803 ±(99.9%) 0.444 us/op
+
+  Histogram, us/op:
+    [    0.000,  2500.000) = 1839069 
+    [ 2500.000,  5000.000) = 407 
+    [ 5000.000,  7500.000) = 68 
+    [ 7500.000, 10000.000) = 25 
+    [10000.000, 12500.000) = 31 
+    [12500.000, 15000.000) = 17 
+    [15000.000, 17500.000) = 9 
+    [17500.000, 20000.000) = 6 
+    [20000.000, 22500.000) = 2 
+    [22500.000, 25000.000) = 3 
+    [25000.000, 27500.000) = 2 
+    [27500.000, 30000.000) = 1 
+    [30000.000, 32500.000) = 1 
+    [32500.000, 35000.000) = 0 
+    [35000.000, 37500.000) = 1 
+
+  Percentiles, us/op:
+      p(0.0000) =     36.288 us/op
+     p(50.0000) =     78.976 us/op
+     p(90.0000) =    229.888 us/op
+     p(95.0000) =    274.432 us/op
+     p(99.0000) =    753.664 us/op
+     p(99.9000) =   1830.912 us/op
+     p(99.9900) =   4735.268 us/op
+     p(99.9990) =  16784.296 us/op
+     p(99.9999) =  31313.440 us/op
+    p(100.0000) =  35192.832 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvN
+
+# Run progress: 55.56% complete, ETA 00:34:22
+# Fork: 1 of 5
+# Warmup Iteration   1: 145.196 ±(99.9%) 7.323 us/op
+# Warmup Iteration   2: 115.692 ±(99.9%) 0.326 us/op
+# Warmup Iteration   3: 113.541 ±(99.9%) 0.291 us/op
+# Warmup Iteration   4: 108.249 ±(99.9%) 0.331 us/op
+# Warmup Iteration   5: 108.690 ±(99.9%) 0.353 us/op
+Iteration   1: 108.936 ±(99.9%) 0.355 us/op
+                 testDeserialiseProvN·p0.00:   85.248 us/op
+                 testDeserialiseProvN·p0.50:   95.616 us/op
+                 testDeserialiseProvN·p0.90:   144.896 us/op
+                 testDeserialiseProvN·p0.95:   170.240 us/op
+                 testDeserialiseProvN·p0.99:   231.168 us/op
+                 testDeserialiseProvN·p0.999:  317.096 us/op
+                 testDeserialiseProvN·p0.9999: 935.241 us/op
+                 testDeserialiseProvN·p1.00:   1124.352 us/op
+
+Iteration   2: 108.551 ±(99.9%) 0.351 us/op
+                 testDeserialiseProvN·p0.00:   85.504 us/op
+                 testDeserialiseProvN·p0.50:   95.616 us/op
+                 testDeserialiseProvN·p0.90:   143.872 us/op
+                 testDeserialiseProvN·p0.95:   169.472 us/op
+                 testDeserialiseProvN·p0.99:   228.352 us/op
+                 testDeserialiseProvN·p0.999:  321.017 us/op
+                 testDeserialiseProvN·p0.9999: 933.454 us/op
+                 testDeserialiseProvN·p1.00:   1069.056 us/op
+
+Iteration   3: 110.829 ±(99.9%) 0.374 us/op
+                 testDeserialiseProvN·p0.00:   85.248 us/op
+                 testDeserialiseProvN·p0.50:   96.000 us/op
+                 testDeserialiseProvN·p0.90:   150.502 us/op
+                 testDeserialiseProvN·p0.95:   179.200 us/op
+                 testDeserialiseProvN·p0.99:   235.520 us/op
+                 testDeserialiseProvN·p0.999:  321.412 us/op
+                 testDeserialiseProvN·p0.9999: 921.563 us/op
+                 testDeserialiseProvN·p1.00:   1124.352 us/op
+
+Iteration   4: 109.122 ±(99.9%) 0.352 us/op
+                 testDeserialiseProvN·p0.00:   85.632 us/op
+                 testDeserialiseProvN·p0.50:   95.744 us/op
+                 testDeserialiseProvN·p0.90:   145.152 us/op
+                 testDeserialiseProvN·p0.95:   171.264 us/op
+                 testDeserialiseProvN·p0.99:   229.888 us/op
+                 testDeserialiseProvN·p0.999:  318.198 us/op
+                 testDeserialiseProvN·p0.9999: 904.127 us/op
+                 testDeserialiseProvN·p1.00:   1047.552 us/op
+
+Iteration   5: 108.419 ±(99.9%) 0.352 us/op
+                 testDeserialiseProvN·p0.00:   85.504 us/op
+                 testDeserialiseProvN·p0.50:   95.616 us/op
+                 testDeserialiseProvN·p0.90:   143.360 us/op
+                 testDeserialiseProvN·p0.95:   169.472 us/op
+                 testDeserialiseProvN·p0.99:   228.096 us/op
+                 testDeserialiseProvN·p0.999:  317.896 us/op
+                 testDeserialiseProvN·p0.9999: 978.456 us/op
+                 testDeserialiseProvN·p1.00:   1251.328 us/op
+
+
+# Run progress: 57.78% complete, ETA 00:32:37
+# Fork: 2 of 5
+# Warmup Iteration   1: 124.701 ±(99.9%) 5.572 us/op
+# Warmup Iteration   2: 108.555 ±(99.9%) 0.367 us/op
+# Warmup Iteration   3: 108.575 ±(99.9%) 0.364 us/op
+# Warmup Iteration   4: 108.476 ±(99.9%) 0.360 us/op
+# Warmup Iteration   5: 108.626 ±(99.9%) 0.373 us/op
+Iteration   1: 144.548 ±(99.9%) 7.969 us/op
+                 testDeserialiseProvN·p0.00:   83.584 us/op
+                 testDeserialiseProvN·p0.50:   105.728 us/op
+                 testDeserialiseProvN·p0.90:   201.984 us/op
+                 testDeserialiseProvN·p0.95:   239.104 us/op
+                 testDeserialiseProvN·p0.99:   374.441 us/op
+                 testDeserialiseProvN·p0.999:  3604.206 us/op
+                 testDeserialiseProvN·p0.9999: 30124.687 us/op
+                 testDeserialiseProvN·p1.00:   107216.896 us/op
+
+Iteration   2: 112.103 ±(99.9%) 0.409 us/op
+                 testDeserialiseProvN·p0.00:   84.864 us/op
+                 testDeserialiseProvN·p0.50:   100.480 us/op
+                 testDeserialiseProvN·p0.90:   147.968 us/op
+                 testDeserialiseProvN·p0.95:   179.200 us/op
+                 testDeserialiseProvN·p0.99:   239.616 us/op
+                 testDeserialiseProvN·p0.999:  371.712 us/op
+                 testDeserialiseProvN·p0.9999: 1059.180 us/op
+                 testDeserialiseProvN·p1.00:   2125.824 us/op
+
+Iteration   3: 107.433 ±(99.9%) 0.363 us/op
+                 testDeserialiseProvN·p0.00:   84.864 us/op
+                 testDeserialiseProvN·p0.50:   94.848 us/op
+                 testDeserialiseProvN·p0.90:   142.336 us/op
+                 testDeserialiseProvN·p0.95:   168.192 us/op
+                 testDeserialiseProvN·p0.99:   227.840 us/op
+                 testDeserialiseProvN·p0.999:  308.224 us/op
+                 testDeserialiseProvN·p0.9999: 1012.004 us/op
+                 testDeserialiseProvN·p1.00:   2129.920 us/op
+
+Iteration   4: 106.829 ±(99.9%) 0.342 us/op
+                 testDeserialiseProvN·p0.00:   84.608 us/op
+                 testDeserialiseProvN·p0.50:   94.720 us/op
+                 testDeserialiseProvN·p0.90:   141.056 us/op
+                 testDeserialiseProvN·p0.95:   166.656 us/op
+                 testDeserialiseProvN·p0.99:   223.488 us/op
+                 testDeserialiseProvN·p0.999:  306.174 us/op
+                 testDeserialiseProvN·p0.9999: 944.638 us/op
+                 testDeserialiseProvN·p1.00:   1062.912 us/op
+
+Iteration   5: 107.131 ±(99.9%) 0.343 us/op
+                 testDeserialiseProvN·p0.00:   84.096 us/op
+                 testDeserialiseProvN·p0.50:   94.848 us/op
+                 testDeserialiseProvN·p0.90:   141.568 us/op
+                 testDeserialiseProvN·p0.95:   167.424 us/op
+                 testDeserialiseProvN·p0.99:   224.251 us/op
+                 testDeserialiseProvN·p0.999:  302.489 us/op
+                 testDeserialiseProvN·p0.9999: 991.272 us/op
+                 testDeserialiseProvN·p1.00:   1091.584 us/op
+
+
+# Run progress: 60.00% complete, ETA 00:30:53
+# Fork: 3 of 5
+# Warmup Iteration   1: 118.778 ±(99.9%) 5.523 us/op
+# Warmup Iteration   2: 107.225 ±(99.9%) 0.366 us/op
+# Warmup Iteration   3: 107.079 ±(99.9%) 0.351 us/op
+# Warmup Iteration   4: 111.044 ±(99.9%) 0.403 us/op
+# Warmup Iteration   5: 118.121 ±(99.9%) 0.569 us/op
+Iteration   1: 107.403 ±(99.9%) 0.347 us/op
+                 testDeserialiseProvN·p0.00:   83.584 us/op
+                 testDeserialiseProvN·p0.50:   94.592 us/op
+                 testDeserialiseProvN·p0.90:   143.616 us/op
+                 testDeserialiseProvN·p0.95:   169.472 us/op
+                 testDeserialiseProvN·p0.99:   222.976 us/op
+                 testDeserialiseProvN·p0.999:  310.273 us/op
+                 testDeserialiseProvN·p0.9999: 958.465 us/op
+                 testDeserialiseProvN·p1.00:   1134.592 us/op
+
+Iteration   2: 106.947 ±(99.9%) 0.344 us/op
+                 testDeserialiseProvN·p0.00:   84.736 us/op
+                 testDeserialiseProvN·p0.50:   94.464 us/op
+                 testDeserialiseProvN·p0.90:   141.568 us/op
+                 testDeserialiseProvN·p0.95:   167.680 us/op
+                 testDeserialiseProvN·p0.99:   224.000 us/op
+                 testDeserialiseProvN·p0.999:  317.440 us/op
+                 testDeserialiseProvN·p0.9999: 940.361 us/op
+                 testDeserialiseProvN·p1.00:   1026.048 us/op
+
+Iteration   3: 106.960 ±(99.9%) 0.343 us/op
+                 testDeserialiseProvN·p0.00:   84.608 us/op
+                 testDeserialiseProvN·p0.50:   94.592 us/op
+                 testDeserialiseProvN·p0.90:   141.568 us/op
+                 testDeserialiseProvN·p0.95:   166.400 us/op
+                 testDeserialiseProvN·p0.99:   221.184 us/op
+                 testDeserialiseProvN·p0.999:  304.778 us/op
+                 testDeserialiseProvN·p0.9999: 951.286 us/op
+                 testDeserialiseProvN·p1.00:   1875.968 us/op
+
+Iteration   4: 107.064 ±(99.9%) 0.363 us/op
+                 testDeserialiseProvN·p0.00:   84.736 us/op
+                 testDeserialiseProvN·p0.50:   94.592 us/op
+                 testDeserialiseProvN·p0.90:   141.312 us/op
+                 testDeserialiseProvN·p0.95:   168.960 us/op
+                 testDeserialiseProvN·p0.99:   230.502 us/op
+                 testDeserialiseProvN·p0.999:  336.876 us/op
+                 testDeserialiseProvN·p0.9999: 961.202 us/op
+                 testDeserialiseProvN·p1.00:   2334.720 us/op
+
+Iteration   5: 114.396 ±(99.9%) 1.324 us/op
+                 testDeserialiseProvN·p0.00:   83.456 us/op
+                 testDeserialiseProvN·p0.50:   99.200 us/op
+                 testDeserialiseProvN·p0.90:   156.672 us/op
+                 testDeserialiseProvN·p0.95:   184.064 us/op
+                 testDeserialiseProvN·p0.99:   240.896 us/op
+                 testDeserialiseProvN·p0.999:  394.080 us/op
+                 testDeserialiseProvN·p0.9999: 1160.554 us/op
+                 testDeserialiseProvN·p1.00:   33030.144 us/op
+
+
+# Run progress: 62.22% complete, ETA 00:29:08
+# Fork: 4 of 5
+# Warmup Iteration   1: 138.085 ±(99.9%) 6.601 us/op
+# Warmup Iteration   2: 112.573 ±(99.9%) 0.282 us/op
+# Warmup Iteration   3: 111.715 ±(99.9%) 0.304 us/op
+# Warmup Iteration   4: 112.287 ±(99.9%) 0.722 us/op
+# Warmup Iteration   5: 109.478 ±(99.9%) 0.359 us/op
+Iteration   1: 109.889 ±(99.9%) 0.365 us/op
+                 testDeserialiseProvN·p0.00:   86.912 us/op
+                 testDeserialiseProvN·p0.50:   96.896 us/op
+                 testDeserialiseProvN·p0.90:   145.408 us/op
+                 testDeserialiseProvN·p0.95:   172.800 us/op
+                 testDeserialiseProvN·p0.99:   237.568 us/op
+                 testDeserialiseProvN·p0.999:  337.920 us/op
+                 testDeserialiseProvN·p0.9999: 915.951 us/op
+                 testDeserialiseProvN·p1.00:   1031.168 us/op
+
+Iteration   2: 109.415 ±(99.9%) 0.355 us/op
+                 testDeserialiseProvN·p0.00:   86.912 us/op
+                 testDeserialiseProvN·p0.50:   96.768 us/op
+                 testDeserialiseProvN·p0.90:   144.640 us/op
+                 testDeserialiseProvN·p0.95:   170.496 us/op
+                 testDeserialiseProvN·p0.99:   227.840 us/op
+                 testDeserialiseProvN·p0.999:  307.582 us/op
+                 testDeserialiseProvN·p0.9999: 934.784 us/op
+                 testDeserialiseProvN·p1.00:   2187.264 us/op
+
+Iteration   3: 109.132 ±(99.9%) 0.352 us/op
+                 testDeserialiseProvN·p0.00:   86.656 us/op
+                 testDeserialiseProvN·p0.50:   96.768 us/op
+                 testDeserialiseProvN·p0.90:   144.128 us/op
+                 testDeserialiseProvN·p0.95:   169.472 us/op
+                 testDeserialiseProvN·p0.99:   223.744 us/op
+                 testDeserialiseProvN·p0.999:  309.495 us/op
+                 testDeserialiseProvN·p0.9999: 956.599 us/op
+                 testDeserialiseProvN·p1.00:   2084.864 us/op
+
+Iteration   4: 109.355 ±(99.9%) 0.349 us/op
+                 testDeserialiseProvN·p0.00:   85.248 us/op
+                 testDeserialiseProvN·p0.50:   96.896 us/op
+                 testDeserialiseProvN·p0.90:   143.872 us/op
+                 testDeserialiseProvN·p0.95:   169.216 us/op
+                 testDeserialiseProvN·p0.99:   227.840 us/op
+                 testDeserialiseProvN·p0.999:  316.928 us/op
+                 testDeserialiseProvN·p0.9999: 931.568 us/op
+                 testDeserialiseProvN·p1.00:   1036.288 us/op
+
+Iteration   5: 110.133 ±(99.9%) 0.365 us/op
+                 testDeserialiseProvN·p0.00:   86.912 us/op
+                 testDeserialiseProvN·p0.50:   96.896 us/op
+                 testDeserialiseProvN·p0.90:   146.432 us/op
+                 testDeserialiseProvN·p0.95:   172.800 us/op
+                 testDeserialiseProvN·p0.99:   234.752 us/op
+                 testDeserialiseProvN·p0.999:  335.360 us/op
+                 testDeserialiseProvN·p0.9999: 968.095 us/op
+                 testDeserialiseProvN·p1.00:   1107.968 us/op
+
+
+# Run progress: 64.44% complete, ETA 00:27:25
+# Fork: 5 of 5
+# Warmup Iteration   1: 126.225 ±(99.9%) 5.191 us/op
+# Warmup Iteration   2: 106.923 ±(99.9%) 0.345 us/op
+# Warmup Iteration   3: 107.552 ±(99.9%) 0.354 us/op
+# Warmup Iteration   4: 107.321 ±(99.9%) 0.369 us/op
+# Warmup Iteration   5: 111.786 ±(99.9%) 0.587 us/op
+Iteration   1: 115.906 ±(99.9%) 0.398 us/op
+                 testDeserialiseProvN·p0.00:   91.520 us/op
+                 testDeserialiseProvN·p0.50:   101.504 us/op
+                 testDeserialiseProvN·p0.90:   157.952 us/op
+                 testDeserialiseProvN·p0.95:   184.320 us/op
+                 testDeserialiseProvN·p0.99:   241.920 us/op
+                 testDeserialiseProvN·p0.999:  326.075 us/op
+                 testDeserialiseProvN·p0.9999: 969.290 us/op
+                 testDeserialiseProvN·p1.00:   1105.920 us/op
+
+Iteration   2: 111.748 ±(99.9%) 0.291 us/op
+                 testDeserialiseProvN·p0.00:   97.024 us/op
+                 testDeserialiseProvN·p0.50:   103.680 us/op
+                 testDeserialiseProvN·p0.90:   132.096 us/op
+                 testDeserialiseProvN·p0.95:   162.560 us/op
+                 testDeserialiseProvN·p0.99:   213.248 us/op
+                 testDeserialiseProvN·p0.999:  295.936 us/op
+                 testDeserialiseProvN·p0.9999: 782.095 us/op
+                 testDeserialiseProvN·p1.00:   1771.520 us/op
+
+Iteration   3: 109.782 ±(99.9%) 0.266 us/op
+                 testDeserialiseProvN·p0.00:   97.152 us/op
+                 testDeserialiseProvN·p0.50:   101.760 us/op
+                 testDeserialiseProvN·p0.90:   127.360 us/op
+                 testDeserialiseProvN·p0.95:   156.160 us/op
+                 testDeserialiseProvN·p0.99:   206.848 us/op
+                 testDeserialiseProvN·p0.999:  279.552 us/op
+                 testDeserialiseProvN·p0.9999: 758.368 us/op
+                 testDeserialiseProvN·p1.00:   916.480 us/op
+
+Iteration   4: 110.448 ±(99.9%) 0.287 us/op
+                 testDeserialiseProvN·p0.00:   97.024 us/op
+                 testDeserialiseProvN·p0.50:   101.632 us/op
+                 testDeserialiseProvN·p0.90:   130.816 us/op
+                 testDeserialiseProvN·p0.95:   160.512 us/op
+                 testDeserialiseProvN·p0.99:   213.504 us/op
+                 testDeserialiseProvN·p0.999:  311.066 us/op
+                 testDeserialiseProvN·p0.9999: 794.179 us/op
+                 testDeserialiseProvN·p1.00:   875.520 us/op
+
+Iteration   5: 109.186 ±(99.9%) 0.259 us/op
+                 testDeserialiseProvN·p0.00:   97.024 us/op
+                 testDeserialiseProvN·p0.50:   101.376 us/op
+                 testDeserialiseProvN·p0.90:   126.080 us/op
+                 testDeserialiseProvN·p0.95:   154.112 us/op
+                 testDeserialiseProvN·p0.99:   204.544 us/op
+                 testDeserialiseProvN·p0.999:  274.432 us/op
+                 testDeserialiseProvN·p0.9999: 742.796 us/op
+                 testDeserialiseProvN·p1.00:   822.272 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testDeserialiseProvN":
+  N = 2259751
+  mean =    110.491 ±(99.9%) 0.258 us/op
+
+  Histogram, us/op:
+    [     0.000,  12500.000) = 2259733 
+    [ 12500.000,  25000.000) = 8 
+    [ 25000.000,  37500.000) = 6 
+    [ 37500.000,  50000.000) = 2 
+    [ 50000.000,  62500.000) = 1 
+    [ 62500.000,  75000.000) = 0 
+    [ 75000.000,  87500.000) = 0 
+    [ 87500.000, 100000.000) = 0 
+    [100000.000, 112500.000) = 1 
+    [112500.000, 125000.000) = 0 
+    [125000.000, 137500.000) = 0 
+    [137500.000, 150000.000) = 0 
+    [150000.000, 162500.000) = 0 
+    [162500.000, 175000.000) = 0 
+    [175000.000, 187500.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     83.456 us/op
+     p(50.0000) =     97.920 us/op
+     p(90.0000) =    145.152 us/op
+     p(95.0000) =    172.544 us/op
+     p(99.0000) =    232.960 us/op
+     p(99.9000) =    345.088 us/op
+     p(99.9900) =   1044.505 us/op
+     p(99.9990) =   9817.415 us/op
+     p(99.9999) =  49806.370 us/op
+    p(100.0000) = 107216.896 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialisePJson
+
+# Run progress: 66.67% complete, ETA 00:25:41
+# Fork: 1 of 5
+# Warmup Iteration   1: 49.436 ±(99.9%) 3.488 us/op
+# Warmup Iteration   2: 42.377 ±(99.9%) 0.180 us/op
+# Warmup Iteration   3: 42.188 ±(99.9%) 0.171 us/op
+# Warmup Iteration   4: 42.744 ±(99.9%) 0.186 us/op
+# Warmup Iteration   5: 42.414 ±(99.9%) 0.173 us/op
+Iteration   1: 42.153 ±(99.9%) 0.186 us/op
+                 testSerialisePJson·p0.00:   34.176 us/op
+                 testSerialisePJson·p0.50:   37.952 us/op
+                 testSerialisePJson·p0.90:   55.552 us/op
+                 testSerialisePJson·p0.95:   71.936 us/op
+                 testSerialisePJson·p0.99:   96.768 us/op
+                 testSerialisePJson·p0.999:  162.461 us/op
+                 testSerialisePJson·p0.9999: 857.419 us/op
+                 testSerialisePJson·p1.00:   2326.528 us/op
+
+Iteration   2: 42.308 ±(99.9%) 0.172 us/op
+                 testSerialisePJson·p0.00:   34.112 us/op
+                 testSerialisePJson·p0.50:   37.952 us/op
+                 testSerialisePJson·p0.90:   56.512 us/op
+                 testSerialisePJson·p0.95:   72.192 us/op
+                 testSerialisePJson·p0.99:   97.024 us/op
+                 testSerialisePJson·p0.999:  162.335 us/op
+                 testSerialisePJson·p0.9999: 833.008 us/op
+                 testSerialisePJson·p1.00:   1052.672 us/op
+
+Iteration   3: 42.210 ±(99.9%) 0.176 us/op
+                 testSerialisePJson·p0.00:   34.112 us/op
+                 testSerialisePJson·p0.50:   37.952 us/op
+                 testSerialisePJson·p0.90:   55.872 us/op
+                 testSerialisePJson·p0.95:   72.064 us/op
+                 testSerialisePJson·p0.99:   96.128 us/op
+                 testSerialisePJson·p0.999:  163.010 us/op
+                 testSerialisePJson·p0.9999: 818.166 us/op
+                 testSerialisePJson·p1.00:   2232.320 us/op
+
+Iteration   4: 44.523 ±(99.9%) 0.264 us/op
+                 testSerialisePJson·p0.00:   34.176 us/op
+                 testSerialisePJson·p0.50:   38.144 us/op
+                 testSerialisePJson·p0.90:   63.168 us/op
+                 testSerialisePJson·p0.95:   76.928 us/op
+                 testSerialisePJson·p0.99:   106.624 us/op
+                 testSerialisePJson·p0.999:  177.381 us/op
+                 testSerialisePJson·p0.9999: 933.241 us/op
+                 testSerialisePJson·p1.00:   4784.128 us/op
+
+Iteration   5: 44.296 ±(99.9%) 0.154 us/op
+                 testSerialisePJson·p0.00:   36.672 us/op
+                 testSerialisePJson·p0.50:   40.832 us/op
+                 testSerialisePJson·p0.90:   53.376 us/op
+                 testSerialisePJson·p0.95:   67.072 us/op
+                 testSerialisePJson·p0.99:   94.464 us/op
+                 testSerialisePJson·p0.999:  153.175 us/op
+                 testSerialisePJson·p0.9999: 694.751 us/op
+                 testSerialisePJson·p1.00:   964.608 us/op
+
+
+# Run progress: 68.89% complete, ETA 00:23:57
+# Fork: 2 of 5
+# Warmup Iteration   1: 52.109 ±(99.9%) 1.914 us/op
+# Warmup Iteration   2: 43.922 ±(99.9%) 0.151 us/op
+# Warmup Iteration   3: 42.897 ±(99.9%) 0.153 us/op
+# Warmup Iteration   4: 42.181 ±(99.9%) 0.207 us/op
+# Warmup Iteration   5: 45.010 ±(99.9%) 0.346 us/op
+Iteration   1: 42.875 ±(99.9%) 0.123 us/op
+                 testSerialisePJson·p0.00:   38.848 us/op
+                 testSerialisePJson·p0.50:   40.000 us/op
+                 testSerialisePJson·p0.90:   48.064 us/op
+                 testSerialisePJson·p0.95:   57.088 us/op
+                 testSerialisePJson·p0.99:   86.016 us/op
+                 testSerialisePJson·p0.999:  127.488 us/op
+                 testSerialisePJson·p0.9999: 634.838 us/op
+                 testSerialisePJson·p1.00:   1253.376 us/op
+
+Iteration   2: 42.934 ±(99.9%) 0.125 us/op
+                 testSerialisePJson·p0.00:   38.912 us/op
+                 testSerialisePJson·p0.50:   40.000 us/op
+                 testSerialisePJson·p0.90:   48.128 us/op
+                 testSerialisePJson·p0.95:   57.664 us/op
+                 testSerialisePJson·p0.99:   86.528 us/op
+                 testSerialisePJson·p0.999:  135.865 us/op
+                 testSerialisePJson·p0.9999: 639.215 us/op
+                 testSerialisePJson·p1.00:   899.072 us/op
+
+Iteration   3: 42.809 ±(99.9%) 0.131 us/op
+                 testSerialisePJson·p0.00:   38.912 us/op
+                 testSerialisePJson·p0.50:   39.936 us/op
+                 testSerialisePJson·p0.90:   48.000 us/op
+                 testSerialisePJson·p0.95:   56.960 us/op
+                 testSerialisePJson·p0.99:   85.504 us/op
+                 testSerialisePJson·p0.999:  127.520 us/op
+                 testSerialisePJson·p0.9999: 639.718 us/op
+                 testSerialisePJson·p1.00:   2166.784 us/op
+
+Iteration   4: 43.734 ±(99.9%) 0.360 us/op
+                 testSerialisePJson·p0.00:   36.096 us/op
+                 testSerialisePJson·p0.50:   39.616 us/op
+                 testSerialisePJson·p0.90:   54.016 us/op
+                 testSerialisePJson·p0.95:   71.168 us/op
+                 testSerialisePJson·p0.99:   97.920 us/op
+                 testSerialisePJson·p0.999:  164.037 us/op
+                 testSerialisePJson·p0.9999: 685.448 us/op
+                 testSerialisePJson·p1.00:   8282.112 us/op
+
+Iteration   5: 44.569 ±(99.9%) 0.315 us/op
+                 testSerialisePJson·p0.00:   36.416 us/op
+                 testSerialisePJson·p0.50:   40.576 us/op
+                 testSerialisePJson·p0.90:   54.592 us/op
+                 testSerialisePJson·p0.95:   70.400 us/op
+                 testSerialisePJson·p0.99:   97.664 us/op
+                 testSerialisePJson·p0.999:  173.407 us/op
+                 testSerialisePJson·p0.9999: 1057.019 us/op
+                 testSerialisePJson·p1.00:   5750.784 us/op
+
+
+# Run progress: 71.11% complete, ETA 00:22:14
+# Fork: 3 of 5
+# Warmup Iteration   1: 50.662 ±(99.9%) 3.511 us/op
+# Warmup Iteration   2: 43.329 ±(99.9%) 0.136 us/op
+# Warmup Iteration   3: 43.609 ±(99.9%) 0.133 us/op
+# Warmup Iteration   4: 43.395 ±(99.9%) 0.130 us/op
+# Warmup Iteration   5: 42.769 ±(99.9%) 0.158 us/op
+Iteration   1: 42.178 ±(99.9%) 0.175 us/op
+                 testSerialisePJson·p0.00:   33.984 us/op
+                 testSerialisePJson·p0.50:   37.888 us/op
+                 testSerialisePJson·p0.90:   55.936 us/op
+                 testSerialisePJson·p0.95:   71.936 us/op
+                 testSerialisePJson·p0.99:   96.640 us/op
+                 testSerialisePJson·p0.999:  159.910 us/op
+                 testSerialisePJson·p0.9999: 866.801 us/op
+                 testSerialisePJson·p1.00:   1064.960 us/op
+
+Iteration   2: 42.348 ±(99.9%) 0.428 us/op
+                 testSerialisePJson·p0.00:   33.920 us/op
+                 testSerialisePJson·p0.50:   37.824 us/op
+                 testSerialisePJson·p0.90:   56.256 us/op
+                 testSerialisePJson·p0.95:   72.320 us/op
+                 testSerialisePJson·p0.99:   99.072 us/op
+                 testSerialisePJson·p0.999:  164.626 us/op
+                 testSerialisePJson·p0.9999: 837.390 us/op
+                 testSerialisePJson·p1.00:   13549.568 us/op
+
+Iteration   3: 41.139 ±(99.9%) 0.174 us/op
+                 testSerialisePJson·p0.00:   33.984 us/op
+                 testSerialisePJson·p0.50:   36.416 us/op
+                 testSerialisePJson·p0.90:   53.568 us/op
+                 testSerialisePJson·p0.95:   70.784 us/op
+                 testSerialisePJson·p0.99:   93.952 us/op
+                 testSerialisePJson·p0.999:  168.866 us/op
+                 testSerialisePJson·p0.9999: 861.928 us/op
+                 testSerialisePJson·p1.00:   1374.208 us/op
+
+Iteration   4: 39.847 ±(99.9%) 0.165 us/op
+                 testSerialisePJson·p0.00:   33.920 us/op
+                 testSerialisePJson·p0.50:   36.288 us/op
+                 testSerialisePJson·p0.90:   48.064 us/op
+                 testSerialisePJson·p0.95:   62.704 us/op
+                 testSerialisePJson·p0.99:   86.400 us/op
+                 testSerialisePJson·p0.999:  149.248 us/op
+                 testSerialisePJson·p0.9999: 816.057 us/op
+                 testSerialisePJson·p1.00:   2244.608 us/op
+
+Iteration   5: 40.314 ±(99.9%) 0.910 us/op
+                 testSerialisePJson·p0.00:   33.920 us/op
+                 testSerialisePJson·p0.50:   36.288 us/op
+                 testSerialisePJson·p0.90:   48.960 us/op
+                 testSerialisePJson·p0.95:   64.704 us/op
+                 testSerialisePJson·p0.99:   87.936 us/op
+                 testSerialisePJson·p0.999:  163.511 us/op
+                 testSerialisePJson·p0.9999: 943.250 us/op
+                 testSerialisePJson·p1.00:   32440.320 us/op
+
+
+# Run progress: 73.33% complete, ETA 00:20:31
+# Fork: 4 of 5
+# Warmup Iteration   1: 48.519 ±(99.9%) 3.853 us/op
+# Warmup Iteration   2: 42.213 ±(99.9%) 0.326 us/op
+# Warmup Iteration   3: 109.821 ±(99.9%) 62.384 us/op
+# Warmup Iteration   4: 97.307 ±(99.9%) 4.495 us/op
+# Warmup Iteration   5: 43.799 ±(99.9%) 0.185 us/op
+Iteration   1: 42.770 ±(99.9%) 0.120 us/op
+                 testSerialisePJson·p0.00:   35.968 us/op
+                 testSerialisePJson·p0.50:   41.088 us/op
+                 testSerialisePJson·p0.90:   45.952 us/op
+                 testSerialisePJson·p0.95:   52.416 us/op
+                 testSerialisePJson·p0.99:   81.280 us/op
+                 testSerialisePJson·p0.999:  130.688 us/op
+                 testSerialisePJson·p0.9999: 650.813 us/op
+                 testSerialisePJson·p1.00:   881.664 us/op
+
+Iteration   2: 42.340 ±(99.9%) 0.121 us/op
+                 testSerialisePJson·p0.00:   34.368 us/op
+                 testSerialisePJson·p0.50:   41.088 us/op
+                 testSerialisePJson·p0.90:   44.608 us/op
+                 testSerialisePJson·p0.95:   49.216 us/op
+                 testSerialisePJson·p0.99:   72.064 us/op
+                 testSerialisePJson·p0.999:  116.983 us/op
+                 testSerialisePJson·p0.9999: 638.559 us/op
+                 testSerialisePJson·p1.00:   2154.496 us/op
+
+Iteration   3: 54.643 ±(99.9%) 31.022 us/op
+                 testSerialisePJson·p0.00:   34.240 us/op
+                 testSerialisePJson·p0.50:   40.832 us/op
+                 testSerialisePJson·p0.90:   55.360 us/op
+                 testSerialisePJson·p0.95:   70.784 us/op
+                 testSerialisePJson·p0.99:   101.632 us/op
+                 testSerialisePJson·p0.999:  278.181 us/op
+                 testSerialisePJson·p0.9999: 1310.977 us/op
+                 testSerialisePJson·p1.00:   1721761.792 us/op
+
+Iteration   4: 44.410 ±(99.9%) 0.246 us/op
+                 testSerialisePJson·p0.00:   37.440 us/op
+                 testSerialisePJson·p0.50:   41.024 us/op
+                 testSerialisePJson·p0.90:   50.176 us/op
+                 testSerialisePJson·p0.95:   67.840 us/op
+                 testSerialisePJson·p0.99:   92.928 us/op
+                 testSerialisePJson·p0.999:  189.996 us/op
+                 testSerialisePJson·p0.9999: 812.120 us/op
+                 testSerialisePJson·p1.00:   3108.864 us/op
+
+Iteration   5: 49.101 ±(99.9%) 0.218 us/op
+                 testSerialisePJson·p0.00:   38.336 us/op
+                 testSerialisePJson·p0.50:   43.520 us/op
+                 testSerialisePJson·p0.90:   71.296 us/op
+                 testSerialisePJson·p0.95:   81.664 us/op
+                 testSerialisePJson·p0.99:   110.208 us/op
+                 testSerialisePJson·p0.999:  224.340 us/op
+                 testSerialisePJson·p0.9999: 743.082 us/op
+                 testSerialisePJson·p1.00:   1712.128 us/op
+
+
+# Run progress: 75.56% complete, ETA 00:18:48
+# Fork: 5 of 5
+# Warmup Iteration   1: 50.080 ±(99.9%) 3.543 us/op
+# Warmup Iteration   2: 48.906 ±(99.9%) 0.231 us/op
+# Warmup Iteration   3: 50.079 ±(99.9%) 0.127 us/op
+# Warmup Iteration   4: 49.181 ±(99.9%) 0.195 us/op
+# Warmup Iteration   5: 47.234 ±(99.9%) 0.161 us/op
+Iteration   1: 47.035 ±(99.9%) 0.154 us/op
+                 testSerialisePJson·p0.00:   40.576 us/op
+                 testSerialisePJson·p0.50:   42.560 us/op
+                 testSerialisePJson·p0.90:   59.456 us/op
+                 testSerialisePJson·p0.95:   74.240 us/op
+                 testSerialisePJson·p0.99:   97.664 us/op
+                 testSerialisePJson·p0.999:  141.041 us/op
+                 testSerialisePJson·p0.9999: 656.580 us/op
+                 testSerialisePJson·p1.00:   756.736 us/op
+
+Iteration   2: 46.465 ±(99.9%) 0.150 us/op
+                 testSerialisePJson·p0.00:   40.640 us/op
+                 testSerialisePJson·p0.50:   42.176 us/op
+                 testSerialisePJson·p0.90:   57.024 us/op
+                 testSerialisePJson·p0.95:   71.296 us/op
+                 testSerialisePJson·p0.99:   97.536 us/op
+                 testSerialisePJson·p0.999:  147.386 us/op
+                 testSerialisePJson·p0.9999: 667.927 us/op
+                 testSerialisePJson·p1.00:   1005.568 us/op
+
+Iteration   3: 41.689 ±(99.9%) 0.124 us/op
+                 testSerialisePJson·p0.00:   37.568 us/op
+                 testSerialisePJson·p0.50:   39.296 us/op
+                 testSerialisePJson·p0.90:   44.736 us/op
+                 testSerialisePJson·p0.95:   55.424 us/op
+                 testSerialisePJson·p0.99:   81.920 us/op
+                 testSerialisePJson·p0.999:  127.403 us/op
+                 testSerialisePJson·p0.9999: 595.592 us/op
+                 testSerialisePJson·p1.00:   1873.920 us/op
+
+Iteration   4: 41.811 ±(99.9%) 0.124 us/op
+                 testSerialisePJson·p0.00:   37.696 us/op
+                 testSerialisePJson·p0.50:   39.424 us/op
+                 testSerialisePJson·p0.90:   44.736 us/op
+                 testSerialisePJson·p0.95:   55.168 us/op
+                 testSerialisePJson·p0.99:   82.048 us/op
+                 testSerialisePJson·p0.999:  128.371 us/op
+                 testSerialisePJson·p0.9999: 601.672 us/op
+                 testSerialisePJson·p1.00:   1841.152 us/op
+
+Iteration   5: 41.934 ±(99.9%) 0.119 us/op
+                 testSerialisePJson·p0.00:   37.696 us/op
+                 testSerialisePJson·p0.50:   39.488 us/op
+                 testSerialisePJson·p0.90:   45.504 us/op
+                 testSerialisePJson·p0.95:   57.024 us/op
+                 testSerialisePJson·p0.99:   81.280 us/op
+                 testSerialisePJson·p0.999:  127.871 us/op
+                 testSerialisePJson·p0.9999: 650.443 us/op
+                 testSerialisePJson·p1.00:   757.760 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialisePJson":
+  N = 2965202
+  mean =     43.777 ±(99.9%) 1.912 us/op
+
+  Histogram, us/op:
+    [      0.000,  125000.000) = 2965201 
+    [ 125000.000,  250000.000) = 0 
+    [ 250000.000,  375000.000) = 0 
+    [ 375000.000,  500000.000) = 0 
+    [ 500000.000,  625000.000) = 0 
+    [ 625000.000,  750000.000) = 0 
+    [ 750000.000,  875000.000) = 0 
+    [ 875000.000, 1000000.000) = 0 
+    [1000000.000, 1125000.000) = 0 
+    [1125000.000, 1250000.000) = 0 
+    [1250000.000, 1375000.000) = 0 
+    [1375000.000, 1500000.000) = 0 
+    [1500000.000, 1625000.000) = 0 
+    [1625000.000, 1750000.000) = 1 
+    [1750000.000, 1875000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     33.920 us/op
+     p(50.0000) =     39.744 us/op
+     p(90.0000) =     52.416 us/op
+     p(95.0000) =     67.712 us/op
+     p(99.0000) =     93.440 us/op
+     p(99.9000) =    160.000 us/op
+     p(99.9900) =    775.659 us/op
+     p(99.9990) =   2337.930 us/op
+     p(99.9999) =  28898.010 us/op
+    p(100.0000) = 1721761.792 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvJsonLD
+
+# Run progress: 77.78% complete, ETA 00:17:04
+# Fork: 1 of 5
+# Warmup Iteration   1: 76.998 ±(99.9%) 2.215 us/op
+# Warmup Iteration   2: 63.166 ±(99.9%) 0.108 us/op
+# Warmup Iteration   3: 63.297 ±(99.9%) 0.104 us/op
+# Warmup Iteration   4: 62.569 ±(99.9%) 0.100 us/op
+# Warmup Iteration   5: 63.004 ±(99.9%) 0.102 us/op
+Iteration   1: 64.101 ±(99.9%) 0.113 us/op
+                 testSerialiseProvJsonLD·p0.00:   58.368 us/op
+                 testSerialiseProvJsonLD·p0.50:   60.096 us/op
+                 testSerialiseProvJsonLD·p0.90:   71.296 us/op
+                 testSerialiseProvJsonLD·p0.95:   88.320 us/op
+                 testSerialiseProvJsonLD·p0.99:   118.144 us/op
+                 testSerialiseProvJsonLD·p0.999:  157.440 us/op
+                 testSerialiseProvJsonLD·p0.9999: 630.394 us/op
+                 testSerialiseProvJsonLD·p1.00:   839.680 us/op
+
+Iteration   2: 62.609 ±(99.9%) 0.101 us/op
+                 testSerialiseProvJsonLD·p0.00:   58.176 us/op
+                 testSerialiseProvJsonLD·p0.50:   59.392 us/op
+                 testSerialiseProvJsonLD·p0.90:   67.456 us/op
+                 testSerialiseProvJsonLD·p0.95:   81.024 us/op
+                 testSerialiseProvJsonLD·p0.99:   112.640 us/op
+                 testSerialiseProvJsonLD·p0.999:  147.849 us/op
+                 testSerialiseProvJsonLD·p0.9999: 621.364 us/op
+                 testSerialiseProvJsonLD·p1.00:   739.328 us/op
+
+Iteration   3: 62.660 ±(99.9%) 0.107 us/op
+                 testSerialiseProvJsonLD·p0.00:   58.304 us/op
+                 testSerialiseProvJsonLD·p0.50:   59.392 us/op
+                 testSerialiseProvJsonLD·p0.90:   67.712 us/op
+                 testSerialiseProvJsonLD·p0.95:   81.280 us/op
+                 testSerialiseProvJsonLD·p0.99:   113.536 us/op
+                 testSerialiseProvJsonLD·p0.999:  151.040 us/op
+                 testSerialiseProvJsonLD·p0.9999: 616.588 us/op
+                 testSerialiseProvJsonLD·p1.00:   1861.632 us/op
+
+Iteration   4: 62.713 ±(99.9%) 0.101 us/op
+                 testSerialiseProvJsonLD·p0.00:   58.368 us/op
+                 testSerialiseProvJsonLD·p0.50:   59.392 us/op
+                 testSerialiseProvJsonLD·p0.90:   67.840 us/op
+                 testSerialiseProvJsonLD·p0.95:   81.920 us/op
+                 testSerialiseProvJsonLD·p0.99:   113.664 us/op
+                 testSerialiseProvJsonLD·p0.999:  151.296 us/op
+                 testSerialiseProvJsonLD·p0.9999: 613.538 us/op
+                 testSerialiseProvJsonLD·p1.00:   727.040 us/op
+
+Iteration   5: 64.144 ±(99.9%) 0.135 us/op
+                 testSerialiseProvJsonLD·p0.00:   56.896 us/op
+                 testSerialiseProvJsonLD·p0.50:   59.584 us/op
+                 testSerialiseProvJsonLD·p0.90:   74.368 us/op
+                 testSerialiseProvJsonLD·p0.95:   92.672 us/op
+                 testSerialiseProvJsonLD·p0.99:   126.208 us/op
+                 testSerialiseProvJsonLD·p0.999:  183.384 us/op
+                 testSerialiseProvJsonLD·p0.9999: 631.716 us/op
+                 testSerialiseProvJsonLD·p1.00:   1654.784 us/op
+
+
+# Run progress: 80.00% complete, ETA 00:15:22
+# Fork: 2 of 5
+# Warmup Iteration   1: 78.617 ±(99.9%) 2.217 us/op
+# Warmup Iteration   2: 65.708 ±(99.9%) 0.182 us/op
+# Warmup Iteration   3: 67.472 ±(99.9%) 0.213 us/op
+# Warmup Iteration   4: 64.924 ±(99.9%) 0.147 us/op
+# Warmup Iteration   5: 65.627 ±(99.9%) 0.174 us/op
+Iteration   1: 65.159 ±(99.9%) 0.183 us/op
+                 testSerialiseProvJsonLD·p0.00:   50.624 us/op
+                 testSerialiseProvJsonLD·p0.50:   57.088 us/op
+                 testSerialiseProvJsonLD·p0.90:   92.288 us/op
+                 testSerialiseProvJsonLD·p0.95:   107.008 us/op
+                 testSerialiseProvJsonLD·p0.99:   145.408 us/op
+                 testSerialiseProvJsonLD·p0.999:  209.152 us/op
+                 testSerialiseProvJsonLD·p0.9999: 782.422 us/op
+                 testSerialiseProvJsonLD·p1.00:   966.656 us/op
+
+Iteration   2: 65.334 ±(99.9%) 0.181 us/op
+                 testSerialiseProvJsonLD·p0.00:   51.456 us/op
+                 testSerialiseProvJsonLD·p0.50:   57.152 us/op
+                 testSerialiseProvJsonLD·p0.90:   92.288 us/op
+                 testSerialiseProvJsonLD·p0.95:   106.624 us/op
+                 testSerialiseProvJsonLD·p0.99:   142.848 us/op
+                 testSerialiseProvJsonLD·p0.999:  202.339 us/op
+                 testSerialiseProvJsonLD·p0.9999: 826.530 us/op
+                 testSerialiseProvJsonLD·p1.00:   1026.048 us/op
+
+Iteration   3: 65.189 ±(99.9%) 0.180 us/op
+                 testSerialiseProvJsonLD·p0.00:   50.496 us/op
+                 testSerialiseProvJsonLD·p0.50:   57.216 us/op
+                 testSerialiseProvJsonLD·p0.90:   91.520 us/op
+                 testSerialiseProvJsonLD·p0.95:   106.368 us/op
+                 testSerialiseProvJsonLD·p0.99:   143.872 us/op
+                 testSerialiseProvJsonLD·p0.999:  205.312 us/op
+                 testSerialiseProvJsonLD·p0.9999: 820.168 us/op
+                 testSerialiseProvJsonLD·p1.00:   985.088 us/op
+
+Iteration   4: 65.115 ±(99.9%) 0.184 us/op
+                 testSerialiseProvJsonLD·p0.00:   50.752 us/op
+                 testSerialiseProvJsonLD·p0.50:   57.152 us/op
+                 testSerialiseProvJsonLD·p0.90:   91.648 us/op
+                 testSerialiseProvJsonLD·p0.95:   106.112 us/op
+                 testSerialiseProvJsonLD·p0.99:   142.592 us/op
+                 testSerialiseProvJsonLD·p0.999:  206.770 us/op
+                 testSerialiseProvJsonLD·p0.9999: 889.890 us/op
+                 testSerialiseProvJsonLD·p1.00:   1097.728 us/op
+
+Iteration   5: 65.307 ±(99.9%) 0.195 us/op
+                 testSerialiseProvJsonLD·p0.00:   50.752 us/op
+                 testSerialiseProvJsonLD·p0.50:   57.152 us/op
+                 testSerialiseProvJsonLD·p0.90:   91.648 us/op
+                 testSerialiseProvJsonLD·p0.95:   106.624 us/op
+                 testSerialiseProvJsonLD·p0.99:   144.896 us/op
+                 testSerialiseProvJsonLD·p0.999:  205.568 us/op
+                 testSerialiseProvJsonLD·p0.9999: 820.874 us/op
+                 testSerialiseProvJsonLD·p1.00:   2252.800 us/op
+
+
+# Run progress: 82.22% complete, ETA 00:13:39
+# Fork: 3 of 5
+# Warmup Iteration   1: 76.256 ±(99.9%) 2.209 us/op
+# Warmup Iteration   2: 65.995 ±(99.9%) 0.191 us/op
+# Warmup Iteration   3: 65.600 ±(99.9%) 0.179 us/op
+# Warmup Iteration   4: 66.469 ±(99.9%) 0.190 us/op
+# Warmup Iteration   5: 65.923 ±(99.9%) 0.181 us/op
+Iteration   1: 65.710 ±(99.9%) 0.186 us/op
+                 testSerialiseProvJsonLD·p0.00:   51.520 us/op
+                 testSerialiseProvJsonLD·p0.50:   58.048 us/op
+                 testSerialiseProvJsonLD·p0.90:   92.160 us/op
+                 testSerialiseProvJsonLD·p0.95:   107.264 us/op
+                 testSerialiseProvJsonLD·p0.99:   144.640 us/op
+                 testSerialiseProvJsonLD·p0.999:  202.240 us/op
+                 testSerialiseProvJsonLD·p0.9999: 803.482 us/op
+                 testSerialiseProvJsonLD·p1.00:   2396.160 us/op
+
+Iteration   2: 66.871 ±(99.9%) 0.190 us/op
+                 testSerialiseProvJsonLD·p0.00:   52.416 us/op
+                 testSerialiseProvJsonLD·p0.50:   58.176 us/op
+                 testSerialiseProvJsonLD·p0.90:   93.184 us/op
+                 testSerialiseProvJsonLD·p0.95:   109.440 us/op
+                 testSerialiseProvJsonLD·p0.99:   147.712 us/op
+                 testSerialiseProvJsonLD·p0.999:  212.736 us/op
+                 testSerialiseProvJsonLD·p0.9999: 812.770 us/op
+                 testSerialiseProvJsonLD·p1.00:   1787.904 us/op
+
+Iteration   3: 66.459 ±(99.9%) 0.184 us/op
+                 testSerialiseProvJsonLD·p0.00:   52.352 us/op
+                 testSerialiseProvJsonLD·p0.50:   58.176 us/op
+                 testSerialiseProvJsonLD·p0.90:   92.544 us/op
+                 testSerialiseProvJsonLD·p0.95:   107.904 us/op
+                 testSerialiseProvJsonLD·p0.99:   145.408 us/op
+                 testSerialiseProvJsonLD·p0.999:  202.752 us/op
+                 testSerialiseProvJsonLD·p0.9999: 827.276 us/op
+                 testSerialiseProvJsonLD·p1.00:   971.776 us/op
+
+Iteration   4: 67.991 ±(99.9%) 0.305 us/op
+                 testSerialiseProvJsonLD·p0.00:   52.288 us/op
+                 testSerialiseProvJsonLD·p0.50:   58.240 us/op
+                 testSerialiseProvJsonLD·p0.90:   96.384 us/op
+                 testSerialiseProvJsonLD·p0.95:   112.000 us/op
+                 testSerialiseProvJsonLD·p0.99:   151.040 us/op
+                 testSerialiseProvJsonLD·p0.999:  209.199 us/op
+                 testSerialiseProvJsonLD·p0.9999: 848.850 us/op
+                 testSerialiseProvJsonLD·p1.00:   9764.864 us/op
+
+Iteration   5: 69.895 ±(99.9%) 0.178 us/op
+                 testSerialiseProvJsonLD·p0.00:   54.848 us/op
+                 testSerialiseProvJsonLD·p0.50:   63.168 us/op
+                 testSerialiseProvJsonLD·p0.90:   92.160 us/op
+                 testSerialiseProvJsonLD·p0.95:   108.416 us/op
+                 testSerialiseProvJsonLD·p0.99:   142.848 us/op
+                 testSerialiseProvJsonLD·p0.999:  204.288 us/op
+                 testSerialiseProvJsonLD·p0.9999: 777.425 us/op
+                 testSerialiseProvJsonLD·p1.00:   1804.288 us/op
+
+
+# Run progress: 84.44% complete, ETA 00:11:56
+# Fork: 4 of 5
+# Warmup Iteration   1: 89.319 ±(99.9%) 2.757 us/op
+# Warmup Iteration   2: 68.443 ±(99.9%) 0.143 us/op
+# Warmup Iteration   3: 68.663 ±(99.9%) 0.193 us/op
+# Warmup Iteration   4: 67.829 ±(99.9%) 0.132 us/op
+# Warmup Iteration   5: 68.884 ±(99.9%) 0.148 us/op
+Iteration   1: 68.135 ±(99.9%) 0.160 us/op
+                 testSerialiseProvJsonLD·p0.00:   53.312 us/op
+                 testSerialiseProvJsonLD·p0.50:   63.424 us/op
+                 testSerialiseProvJsonLD·p0.90:   84.736 us/op
+                 testSerialiseProvJsonLD·p0.95:   103.936 us/op
+                 testSerialiseProvJsonLD·p0.99:   138.240 us/op
+                 testSerialiseProvJsonLD·p0.999:  198.360 us/op
+                 testSerialiseProvJsonLD·p0.9999: 698.072 us/op
+                 testSerialiseProvJsonLD·p1.00:   970.752 us/op
+
+Iteration   2: 66.953 ±(99.9%) 0.195 us/op
+                 testSerialiseProvJsonLD·p0.00:   52.096 us/op
+                 testSerialiseProvJsonLD·p0.50:   58.752 us/op
+                 testSerialiseProvJsonLD·p0.90:   93.952 us/op
+                 testSerialiseProvJsonLD·p0.95:   111.104 us/op
+                 testSerialiseProvJsonLD·p0.99:   152.576 us/op
+                 testSerialiseProvJsonLD·p0.999:  224.206 us/op
+                 testSerialiseProvJsonLD·p0.9999: 822.931 us/op
+                 testSerialiseProvJsonLD·p1.00:   1021.952 us/op
+
+Iteration   3: 69.277 ±(99.9%) 0.272 us/op
+                 testSerialiseProvJsonLD·p0.00:   52.096 us/op
+                 testSerialiseProvJsonLD·p0.50:   58.944 us/op
+                 testSerialiseProvJsonLD·p0.90:   99.328 us/op
+                 testSerialiseProvJsonLD·p0.95:   115.328 us/op
+                 testSerialiseProvJsonLD·p0.99:   157.440 us/op
+                 testSerialiseProvJsonLD·p0.999:  217.323 us/op
+                 testSerialiseProvJsonLD·p0.9999: 825.950 us/op
+                 testSerialiseProvJsonLD·p1.00:   7479.296 us/op
+
+Iteration   4: 70.299 ±(99.9%) 0.179 us/op
+                 testSerialiseProvJsonLD·p0.00:   55.680 us/op
+                 testSerialiseProvJsonLD·p0.50:   63.552 us/op
+                 testSerialiseProvJsonLD·p0.90:   93.440 us/op
+                 testSerialiseProvJsonLD·p0.95:   109.952 us/op
+                 testSerialiseProvJsonLD·p0.99:   149.760 us/op
+                 testSerialiseProvJsonLD·p0.999:  202.242 us/op
+                 testSerialiseProvJsonLD·p0.9999: 683.419 us/op
+                 testSerialiseProvJsonLD·p1.00:   1010.688 us/op
+
+Iteration   5: 67.965 ±(99.9%) 0.136 us/op
+                 testSerialiseProvJsonLD·p0.00:   60.736 us/op
+                 testSerialiseProvJsonLD·p0.50:   63.296 us/op
+                 testSerialiseProvJsonLD·p0.90:   78.336 us/op
+                 testSerialiseProvJsonLD·p0.95:   97.664 us/op
+                 testSerialiseProvJsonLD·p0.99:   130.304 us/op
+                 testSerialiseProvJsonLD·p0.999:  175.370 us/op
+                 testSerialiseProvJsonLD·p0.9999: 710.367 us/op
+                 testSerialiseProvJsonLD·p1.00:   909.312 us/op
+
+
+# Run progress: 86.67% complete, ETA 00:10:14
+# Fork: 5 of 5
+# Warmup Iteration   1: 80.884 ±(99.9%) 2.502 us/op
+# Warmup Iteration   2: 66.306 ±(99.9%) 0.167 us/op
+# Warmup Iteration   3: 67.536 ±(99.9%) 0.295 us/op
+# Warmup Iteration   4: 67.006 ±(99.9%) 0.155 us/op
+# Warmup Iteration   5: 66.205 ±(99.9%) 0.135 us/op
+Iteration   1: 65.901 ±(99.9%) 0.128 us/op
+                 testSerialiseProvJsonLD·p0.00:   58.688 us/op
+                 testSerialiseProvJsonLD·p0.50:   61.184 us/op
+                 testSerialiseProvJsonLD·p0.90:   76.416 us/op
+                 testSerialiseProvJsonLD·p0.95:   94.464 us/op
+                 testSerialiseProvJsonLD·p0.99:   127.104 us/op
+                 testSerialiseProvJsonLD·p0.999:  172.544 us/op
+                 testSerialiseProvJsonLD·p0.9999: 643.419 us/op
+                 testSerialiseProvJsonLD·p1.00:   737.280 us/op
+
+Iteration   2: 66.003 ±(99.9%) 0.131 us/op
+                 testSerialiseProvJsonLD·p0.00:   58.688 us/op
+                 testSerialiseProvJsonLD·p0.50:   61.184 us/op
+                 testSerialiseProvJsonLD·p0.90:   76.288 us/op
+                 testSerialiseProvJsonLD·p0.95:   94.976 us/op
+                 testSerialiseProvJsonLD·p0.99:   127.360 us/op
+                 testSerialiseProvJsonLD·p0.999:  172.720 us/op
+                 testSerialiseProvJsonLD·p0.9999: 671.422 us/op
+                 testSerialiseProvJsonLD·p1.00:   821.248 us/op
+
+Iteration   3: 66.100 ±(99.9%) 0.169 us/op
+                 testSerialiseProvJsonLD·p0.00:   51.200 us/op
+                 testSerialiseProvJsonLD·p0.50:   61.120 us/op
+                 testSerialiseProvJsonLD·p0.90:   84.864 us/op
+                 testSerialiseProvJsonLD·p0.95:   103.168 us/op
+                 testSerialiseProvJsonLD·p0.99:   137.984 us/op
+                 testSerialiseProvJsonLD·p0.999:  196.096 us/op
+                 testSerialiseProvJsonLD·p0.9999: 777.040 us/op
+                 testSerialiseProvJsonLD·p1.00:   1771.520 us/op
+
+Iteration   4: 64.573 ±(99.9%) 0.182 us/op
+                 testSerialiseProvJsonLD·p0.00:   51.008 us/op
+                 testSerialiseProvJsonLD·p0.50:   56.704 us/op
+                 testSerialiseProvJsonLD·p0.90:   91.136 us/op
+                 testSerialiseProvJsonLD·p0.95:   106.752 us/op
+                 testSerialiseProvJsonLD·p0.99:   145.664 us/op
+                 testSerialiseProvJsonLD·p0.999:  205.568 us/op
+                 testSerialiseProvJsonLD·p0.9999: 837.458 us/op
+                 testSerialiseProvJsonLD·p1.00:   1075.200 us/op
+
+Iteration   5: 64.525 ±(99.9%) 0.183 us/op
+                 testSerialiseProvJsonLD·p0.00:   51.008 us/op
+                 testSerialiseProvJsonLD·p0.50:   56.704 us/op
+                 testSerialiseProvJsonLD·p0.90:   91.136 us/op
+                 testSerialiseProvJsonLD·p0.95:   106.368 us/op
+                 testSerialiseProvJsonLD·p0.99:   145.152 us/op
+                 testSerialiseProvJsonLD·p0.999:  204.344 us/op
+                 testSerialiseProvJsonLD·p0.9999: 876.544 us/op
+                 testSerialiseProvJsonLD·p1.00:   1046.528 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvJsonLD":
+  N = 3788127
+  mean =     65.896 ±(99.9%) 0.035 us/op
+
+  Histogram, us/op:
+    [    0.000,  1000.000) = 3788094 
+    [ 1000.000,  2000.000) = 24 
+    [ 2000.000,  3000.000) = 7 
+    [ 3000.000,  4000.000) = 0 
+    [ 4000.000,  5000.000) = 0 
+    [ 5000.000,  6000.000) = 0 
+    [ 6000.000,  7000.000) = 0 
+    [ 7000.000,  8000.000) = 1 
+    [ 8000.000,  9000.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     50.496 us/op
+     p(50.0000) =     59.520 us/op
+     p(90.0000) =     86.912 us/op
+     p(95.0000) =    103.424 us/op
+     p(99.0000) =    139.264 us/op
+     p(99.9000) =    199.424 us/op
+     p(99.9900) =    714.111 us/op
+     p(99.9990) =    971.776 us/op
+     p(99.9999) =   2386.475 us/op
+    p(100.0000) =   9764.864 us/op
+
+
+# JMH version: 1.23
+# VM version: JDK 12.0.1, OpenJDK 64-Bit Server VM, 12.0.1+12
+# VM invoker: /usr/local/java/jdk-12.0.1.jdk/Contents/Home/bin/java
+# VM options: -Xms1g -Xmx16g
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Sampling time
+# Benchmark: org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvN
+
+# Run progress: 88.89% complete, ETA 00:08:31
+# Fork: 1 of 5
+# Warmup Iteration   1: 20.842 ±(99.9%) 1.505 us/op
+# Warmup Iteration   2: 18.117 ±(99.9%) 0.117 us/op
+# Warmup Iteration   3: 17.655 ±(99.9%) 0.060 us/op
+# Warmup Iteration   4: 18.042 ±(99.9%) 0.061 us/op
+# Warmup Iteration   5: 17.516 ±(99.9%) 0.048 us/op
+Iteration   1: 17.680 ±(99.9%) 0.049 us/op
+                 testSerialiseProvN·p0.00:   15.360 us/op
+                 testSerialiseProvN·p0.50:   16.192 us/op
+                 testSerialiseProvN·p0.90:   19.872 us/op
+                 testSerialiseProvN·p0.95:   25.824 us/op
+                 testSerialiseProvN·p0.99:   44.992 us/op
+                 testSerialiseProvN·p0.999:  75.136 us/op
+                 testSerialiseProvN·p0.9999: 190.149 us/op
+                 testSerialiseProvN·p1.00:   694.272 us/op
+
+Iteration   2: 16.751 ±(99.9%) 0.069 us/op
+                 testSerialiseProvN·p0.00:   13.424 us/op
+                 testSerialiseProvN·p0.50:   15.536 us/op
+                 testSerialiseProvN·p0.90:   17.248 us/op
+                 testSerialiseProvN·p0.95:   26.336 us/op
+                 testSerialiseProvN·p0.99:   43.584 us/op
+                 testSerialiseProvN·p0.999:  79.616 us/op
+                 testSerialiseProvN·p0.9999: 618.276 us/op
+                 testSerialiseProvN·p1.00:   2334.720 us/op
+
+Iteration   3: 16.319 ±(99.9%) 0.108 us/op
+                 testSerialiseProvN·p0.00:   13.216 us/op
+                 testSerialiseProvN·p0.50:   14.672 us/op
+                 testSerialiseProvN·p0.90:   16.144 us/op
+                 testSerialiseProvN·p0.95:   28.768 us/op
+                 testSerialiseProvN·p0.99:   47.488 us/op
+                 testSerialiseProvN·p0.999:  101.585 us/op
+                 testSerialiseProvN·p0.9999: 839.952 us/op
+                 testSerialiseProvN·p1.00:   1325.056 us/op
+
+Iteration   4: 16.488 ±(99.9%) 0.151 us/op
+                 testSerialiseProvN·p0.00:   13.200 us/op
+                 testSerialiseProvN·p0.50:   14.752 us/op
+                 testSerialiseProvN·p0.90:   16.320 us/op
+                 testSerialiseProvN·p0.95:   28.928 us/op
+                 testSerialiseProvN·p0.99:   47.680 us/op
+                 testSerialiseProvN·p0.999:  101.930 us/op
+                 testSerialiseProvN·p0.9999: 847.063 us/op
+                 testSerialiseProvN·p1.00:   2375.680 us/op
+
+Iteration   5: 16.263 ±(99.9%) 0.099 us/op
+                 testSerialiseProvN·p0.00:   13.184 us/op
+                 testSerialiseProvN·p0.50:   14.640 us/op
+                 testSerialiseProvN·p0.90:   16.224 us/op
+                 testSerialiseProvN·p0.95:   28.544 us/op
+                 testSerialiseProvN·p0.99:   46.080 us/op
+                 testSerialiseProvN·p0.999:  95.554 us/op
+                 testSerialiseProvN·p0.9999: 796.625 us/op
+                 testSerialiseProvN·p1.00:   1058.816 us/op
+
+
+# Run progress: 91.11% complete, ETA 00:06:49
+# Fork: 2 of 5
+# Warmup Iteration   1: 18.155 ±(99.9%) 1.246 us/op
+# Warmup Iteration   2: 17.510 ±(99.9%) 0.078 us/op
+# Warmup Iteration   3: 16.965 ±(99.9%) 0.067 us/op
+# Warmup Iteration   4: 16.450 ±(99.9%) 0.259 us/op
+# Warmup Iteration   5: 16.276 ±(99.9%) 0.063 us/op
+Iteration   1: 16.679 ±(99.9%) 0.046 us/op
+                 testSerialiseProvN·p0.00:   14.688 us/op
+                 testSerialiseProvN·p0.50:   15.600 us/op
+                 testSerialiseProvN·p0.90:   17.152 us/op
+                 testSerialiseProvN·p0.95:   22.432 us/op
+                 testSerialiseProvN·p0.99:   37.760 us/op
+                 testSerialiseProvN·p0.999:  66.069 us/op
+                 testSerialiseProvN·p0.9999: 144.985 us/op
+                 testSerialiseProvN·p1.00:   2322.432 us/op
+
+Iteration   2: 16.456 ±(99.9%) 0.088 us/op
+                 testSerialiseProvN·p0.00:   14.688 us/op
+                 testSerialiseProvN·p0.50:   15.520 us/op
+                 testSerialiseProvN·p0.90:   16.368 us/op
+                 testSerialiseProvN·p0.95:   20.032 us/op
+                 testSerialiseProvN·p0.99:   35.264 us/op
+                 testSerialiseProvN·p0.999:  72.135 us/op
+                 testSerialiseProvN·p0.9999: 620.889 us/op
+                 testSerialiseProvN·p1.00:   731.136 us/op
+
+Iteration   3: 16.080 ±(99.9%) 0.089 us/op
+                 testSerialiseProvN·p0.00:   12.960 us/op
+                 testSerialiseProvN·p0.50:   14.592 us/op
+                 testSerialiseProvN·p0.90:   16.048 us/op
+                 testSerialiseProvN·p0.95:   28.576 us/op
+                 testSerialiseProvN·p0.99:   46.080 us/op
+                 testSerialiseProvN·p0.999:  95.585 us/op
+                 testSerialiseProvN·p0.9999: 407.306 us/op
+                 testSerialiseProvN·p1.00:   988.160 us/op
+
+Iteration   4: 15.872 ±(99.9%) 0.083 us/op
+                 testSerialiseProvN·p0.00:   12.944 us/op
+                 testSerialiseProvN·p0.50:   14.304 us/op
+                 testSerialiseProvN·p0.90:   15.760 us/op
+                 testSerialiseProvN·p0.95:   28.288 us/op
+                 testSerialiseProvN·p0.99:   46.080 us/op
+                 testSerialiseProvN·p0.999:  93.671 us/op
+                 testSerialiseProvN·p0.9999: 199.998 us/op
+                 testSerialiseProvN·p1.00:   929.792 us/op
+
+Iteration   5: 15.979 ±(99.9%) 0.117 us/op
+                 testSerialiseProvN·p0.00:   12.944 us/op
+                 testSerialiseProvN·p0.50:   14.336 us/op
+                 testSerialiseProvN·p0.90:   15.808 us/op
+                 testSerialiseProvN·p0.95:   28.288 us/op
+                 testSerialiseProvN·p0.99:   43.779 us/op
+                 testSerialiseProvN·p0.999:  95.207 us/op
+                 testSerialiseProvN·p0.9999: 826.456 us/op
+                 testSerialiseProvN·p1.00:   984.064 us/op
+
+
+# Run progress: 93.33% complete, ETA 00:05:06
+# Fork: 3 of 5
+# Warmup Iteration   1: 18.301 ±(99.9%) 1.206 us/op
+# Warmup Iteration   2: 16.461 ±(99.9%) 0.131 us/op
+# Warmup Iteration   3: 16.333 ±(99.9%) 0.113 us/op
+# Warmup Iteration   4: 16.460 ±(99.9%) 0.106 us/op
+# Warmup Iteration   5: 16.720 ±(99.9%) 0.225 us/op
+Iteration   1: 16.442 ±(99.9%) 0.105 us/op
+                 testSerialiseProvN·p0.00:   13.232 us/op
+                 testSerialiseProvN·p0.50:   14.688 us/op
+                 testSerialiseProvN·p0.90:   16.384 us/op
+                 testSerialiseProvN·p0.95:   28.928 us/op
+                 testSerialiseProvN·p0.99:   47.424 us/op
+                 testSerialiseProvN·p0.999:  97.147 us/op
+                 testSerialiseProvN·p0.9999: 788.063 us/op
+                 testSerialiseProvN·p1.00:   972.800 us/op
+
+Iteration   2: 16.574 ±(99.9%) 0.108 us/op
+                 testSerialiseProvN·p0.00:   13.200 us/op
+                 testSerialiseProvN·p0.50:   14.816 us/op
+                 testSerialiseProvN·p0.90:   16.544 us/op
+                 testSerialiseProvN·p0.95:   29.088 us/op
+                 testSerialiseProvN·p0.99:   48.000 us/op
+                 testSerialiseProvN·p0.999:  103.078 us/op
+                 testSerialiseProvN·p0.9999: 789.217 us/op
+                 testSerialiseProvN·p1.00:   1130.496 us/op
+
+Iteration   3: 16.503 ±(99.9%) 0.116 us/op
+                 testSerialiseProvN·p0.00:   13.280 us/op
+                 testSerialiseProvN·p0.50:   14.752 us/op
+                 testSerialiseProvN·p0.90:   16.512 us/op
+                 testSerialiseProvN·p0.95:   28.928 us/op
+                 testSerialiseProvN·p0.99:   47.744 us/op
+                 testSerialiseProvN·p0.999:  100.001 us/op
+                 testSerialiseProvN·p0.9999: 806.555 us/op
+                 testSerialiseProvN·p1.00:   2281.472 us/op
+
+Iteration   4: 18.084 ±(99.9%) 0.157 us/op
+                 testSerialiseProvN·p0.00:   13.600 us/op
+                 testSerialiseProvN·p0.50:   15.232 us/op
+                 testSerialiseProvN·p0.90:   28.672 us/op
+                 testSerialiseProvN·p0.95:   34.432 us/op
+                 testSerialiseProvN·p0.99:   55.872 us/op
+                 testSerialiseProvN·p0.999:  95.651 us/op
+                 testSerialiseProvN·p0.9999: 453.172 us/op
+                 testSerialiseProvN·p1.00:   11616.256 us/op
+
+Iteration   5: 17.348 ±(99.9%) 0.047 us/op
+                 testSerialiseProvN·p0.00:   14.704 us/op
+                 testSerialiseProvN·p0.50:   16.336 us/op
+                 testSerialiseProvN·p0.90:   17.664 us/op
+                 testSerialiseProvN·p0.95:   22.880 us/op
+                 testSerialiseProvN·p0.99:   38.464 us/op
+                 testSerialiseProvN·p0.999:  68.480 us/op
+                 testSerialiseProvN·p0.9999: 429.816 us/op
+                 testSerialiseProvN·p1.00:   824.320 us/op
+
+
+# Run progress: 95.56% complete, ETA 00:03:24
+# Fork: 4 of 5
+# Warmup Iteration   1: 19.311 ±(99.9%) 1.364 us/op
+# Warmup Iteration   2: 16.293 ±(99.9%) 0.074 us/op
+# Warmup Iteration   3: 16.350 ±(99.9%) 0.077 us/op
+# Warmup Iteration   4: 16.695 ±(99.9%) 0.102 us/op
+# Warmup Iteration   5: 16.203 ±(99.9%) 0.081 us/op
+Iteration   1: 16.889 ±(99.9%) 0.173 us/op
+                 testSerialiseProvN·p0.00:   13.136 us/op
+                 testSerialiseProvN·p0.50:   14.656 us/op
+                 testSerialiseProvN·p0.90:   23.296 us/op
+                 testSerialiseProvN·p0.95:   29.760 us/op
+                 testSerialiseProvN·p0.99:   49.024 us/op
+                 testSerialiseProvN·p0.999:  91.545 us/op
+                 testSerialiseProvN·p0.9999: 762.469 us/op
+                 testSerialiseProvN·p1.00:   14155.776 us/op
+
+Iteration   2: 17.297 ±(99.9%) 0.049 us/op
+                 testSerialiseProvN·p0.00:   13.776 us/op
+                 testSerialiseProvN·p0.50:   15.792 us/op
+                 testSerialiseProvN·p0.90:   18.720 us/op
+                 testSerialiseProvN·p0.95:   25.408 us/op
+                 testSerialiseProvN·p0.99:   42.112 us/op
+                 testSerialiseProvN·p0.999:  72.570 us/op
+                 testSerialiseProvN·p0.9999: 168.798 us/op
+                 testSerialiseProvN·p1.00:   1724.416 us/op
+
+Iteration   3: 16.346 ±(99.9%) 0.069 us/op
+                 testSerialiseProvN·p0.00:   14.672 us/op
+                 testSerialiseProvN·p0.50:   15.504 us/op
+                 testSerialiseProvN·p0.90:   16.336 us/op
+                 testSerialiseProvN·p0.95:   20.128 us/op
+                 testSerialiseProvN·p0.99:   34.496 us/op
+                 testSerialiseProvN·p0.999:  67.359 us/op
+                 testSerialiseProvN·p0.9999: 596.179 us/op
+                 testSerialiseProvN·p1.00:   842.752 us/op
+
+Iteration   4: 16.205 ±(99.9%) 0.137 us/op
+                 testSerialiseProvN·p0.00:   14.000 us/op
+                 testSerialiseProvN·p0.50:   15.216 us/op
+                 testSerialiseProvN·p0.90:   15.936 us/op
+                 testSerialiseProvN·p0.95:   19.776 us/op
+                 testSerialiseProvN·p0.99:   34.646 us/op
+                 testSerialiseProvN·p0.999:  75.682 us/op
+                 testSerialiseProvN·p0.9999: 659.931 us/op
+                 testSerialiseProvN·p1.00:   2367.488 us/op
+
+Iteration   5: 15.947 ±(99.9%) 0.097 us/op
+                 testSerialiseProvN·p0.00:   13.008 us/op
+                 testSerialiseProvN·p0.50:   14.544 us/op
+                 testSerialiseProvN·p0.90:   15.904 us/op
+                 testSerialiseProvN·p0.95:   28.128 us/op
+                 testSerialiseProvN·p0.99:   43.392 us/op
+                 testSerialiseProvN·p0.999:  92.131 us/op
+                 testSerialiseProvN·p0.9999: 458.152 us/op
+                 testSerialiseProvN·p1.00:   2310.144 us/op
+
+
+# Run progress: 97.78% complete, ETA 00:01:42
+# Fork: 5 of 5
+# Warmup Iteration   1: 19.716 ±(99.9%) 1.291 us/op
+# Warmup Iteration   2: 17.970 ±(99.9%) 0.095 us/op
+# Warmup Iteration   3: 17.180 ±(99.9%) 0.055 us/op
+# Warmup Iteration   4: 16.913 ±(99.9%) 0.050 us/op
+# Warmup Iteration   5: 17.025 ±(99.9%) 0.055 us/op
+Iteration   1: 17.016 ±(99.9%) 0.056 us/op
+                 testSerialiseProvN·p0.00:   15.008 us/op
+                 testSerialiseProvN·p0.50:   16.016 us/op
+                 testSerialiseProvN·p0.90:   17.280 us/op
+                 testSerialiseProvN·p0.95:   22.112 us/op
+                 testSerialiseProvN·p0.99:   37.440 us/op
+                 testSerialiseProvN·p0.999:  65.536 us/op
+                 testSerialiseProvN·p0.9999: 572.033 us/op
+                 testSerialiseProvN·p1.00:   1800.192 us/op
+
+Iteration   2: 16.701 ±(99.9%) 0.155 us/op
+                 testSerialiseProvN·p0.00:   13.504 us/op
+                 testSerialiseProvN·p0.50:   15.408 us/op
+                 testSerialiseProvN·p0.90:   16.384 us/op
+                 testSerialiseProvN·p0.95:   22.656 us/op
+                 testSerialiseProvN·p0.99:   42.752 us/op
+                 testSerialiseProvN·p0.999:  91.393 us/op
+                 testSerialiseProvN·p0.9999: 815.517 us/op
+                 testSerialiseProvN·p1.00:   2220.032 us/op
+
+Iteration   3: 16.730 ±(99.9%) 0.196 us/op
+                 testSerialiseProvN·p0.00:   13.328 us/op
+                 testSerialiseProvN·p0.50:   14.848 us/op
+                 testSerialiseProvN·p0.90:   16.608 us/op
+                 testSerialiseProvN·p0.95:   28.992 us/op
+                 testSerialiseProvN·p0.99:   47.744 us/op
+                 testSerialiseProvN·p0.999:  104.920 us/op
+                 testSerialiseProvN·p0.9999: 987.407 us/op
+                 testSerialiseProvN·p1.00:   2347.008 us/op
+
+Iteration   4: 16.366 ±(99.9%) 0.089 us/op
+                 testSerialiseProvN·p0.00:   13.344 us/op
+                 testSerialiseProvN·p0.50:   14.704 us/op
+                 testSerialiseProvN·p0.90:   16.304 us/op
+                 testSerialiseProvN·p0.95:   28.864 us/op
+                 testSerialiseProvN·p0.99:   47.616 us/op
+                 testSerialiseProvN·p0.999:  98.257 us/op
+                 testSerialiseProvN·p0.9999: 322.406 us/op
+                 testSerialiseProvN·p1.00:   1017.856 us/op
+
+Iteration   5: 16.349 ±(99.9%) 0.099 us/op
+                 testSerialiseProvN·p0.00:   13.312 us/op
+                 testSerialiseProvN·p0.50:   14.688 us/op
+                 testSerialiseProvN·p0.90:   16.336 us/op
+                 testSerialiseProvN·p0.95:   28.800 us/op
+                 testSerialiseProvN·p0.99:   46.336 us/op
+                 testSerialiseProvN·p0.999:  94.550 us/op
+                 testSerialiseProvN·p0.9999: 200.738 us/op
+                 testSerialiseProvN·p1.00:   2215.936 us/op
+
+
+
+Result "org.openprovenance.prov.benchmarks.SerialisationBenchmarks.testSerialiseProvN":
+  N = 4927593
+  mean =     16.741 ±(99.9%) 0.022 us/op
+
+  Histogram, us/op:
+    [    0.000,  1250.000) = 4927551 
+    [ 1250.000,  2500.000) = 40 
+    [ 2500.000,  3750.000) = 0 
+    [ 3750.000,  5000.000) = 0 
+    [ 5000.000,  6250.000) = 0 
+    [ 6250.000,  7500.000) = 0 
+    [ 7500.000,  8750.000) = 0 
+    [ 8750.000, 10000.000) = 0 
+    [10000.000, 11250.000) = 0 
+    [11250.000, 12500.000) = 1 
+    [12500.000, 13750.000) = 0 
+    [13750.000, 15000.000) = 1 
+    [15000.000, 16250.000) = 0 
+    [16250.000, 17500.000) = 0 
+    [17500.000, 18750.000) = 0 
+
+  Percentiles, us/op:
+      p(0.0000) =     12.944 us/op
+     p(50.0000) =     15.312 us/op
+     p(90.0000) =     17.248 us/op
+     p(95.0000) =     26.656 us/op
+     p(99.0000) =     44.480 us/op
+     p(99.9000) =     86.528 us/op
+     p(99.9900) =    667.894 us/op
+     p(99.9990) =   1022.976 us/op
+     p(99.9999) =   2348.491 us/op
+    p(100.0000) =  14155.776 us/op
+
+
+# Run complete. Total time: 01:16:36
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                                                                              Mode      Cnt        Score   Error  Units
+SerialisationBenchmarks.testDeepCopyJava                                             sample  7995722        7.840 ± 0.009  us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.00                      sample                 5.960          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.50                      sample                 6.880          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.90                      sample                 7.856          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.95                      sample                10.960          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.99                      sample                26.368          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.999                     sample                56.896          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p0.9999                    sample               109.568          us/op
+SerialisationBenchmarks.testDeepCopyJava:testDeepCopyJava·p1.00                      sample              2383.872          us/op
+SerialisationBenchmarks.testDeepCopyScala                                            sample  4807430       51.914 ± 0.026  us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.00                    sample                41.856          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.50                    sample                47.360          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.90                    sample                65.472          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.95                    sample                83.328          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.99                    sample               116.608          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.999                   sample               177.408          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p0.9999                  sample               752.640          us/op
+SerialisationBenchmarks.testDeepCopyScala:testDeepCopyScala·p1.00                    sample              2420.736          us/op
+SerialisationBenchmarks.testDeserialiseJson                                          sample  4667724       13.387 ± 0.014  us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.00                sample                10.816          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.50                sample                12.208          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.90                sample                13.216          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.95                sample                20.256          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.99                sample                38.016          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.999               sample                71.040          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p0.9999              sample               126.621          us/op
+SerialisationBenchmarks.testDeserialiseJson:testDeserialiseJson·p1.00                sample              2363.392          us/op
+SerialisationBenchmarks.testDeserialisePJson                                         sample  1344784      181.947 ± 4.374  us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.00              sample                42.624          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.50              sample                96.896          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.90              sample               375.808          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.95              sample               561.152          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.99              sample              1540.096          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.999             sample              4186.112          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p0.9999            sample             12632.769          us/op
+SerialisationBenchmarks.testDeserialisePJson:testDeserialisePJson·p1.00              sample           1719664.640          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD                                    sample  1839642      124.803 ± 0.444  us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.00    sample                36.288          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.50    sample                78.976          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.90    sample               229.888          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.95    sample               274.432          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.99    sample               753.664          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.999   sample              1830.912          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p0.9999  sample              4735.268          us/op
+SerialisationBenchmarks.testDeserialiseProvJsonLD:testDeserialiseProvJsonLD·p1.00    sample             35192.832          us/op
+SerialisationBenchmarks.testDeserialiseProvN                                         sample  2259751      110.491 ± 0.258  us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.00              sample                83.456          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.50              sample                97.920          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.90              sample               145.152          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.95              sample               172.544          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.99              sample               232.960          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.999             sample               345.088          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p0.9999            sample              1044.505          us/op
+SerialisationBenchmarks.testDeserialiseProvN:testDeserialiseProvN·p1.00              sample            107216.896          us/op
+SerialisationBenchmarks.testSerialisePJson                                           sample  2965202       43.777 ± 1.912  us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.00                  sample                33.920          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.50                  sample                39.744          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.90                  sample                52.416          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.95                  sample                67.712          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.99                  sample                93.440          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.999                 sample               160.000          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p0.9999                sample               775.659          us/op
+SerialisationBenchmarks.testSerialisePJson:testSerialisePJson·p1.00                  sample           1721761.792          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD                                      sample  3788127       65.896 ± 0.035  us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.00        sample                50.496          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.50        sample                59.520          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.90        sample                86.912          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.95        sample               103.424          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.99        sample               139.264          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.999       sample               199.424          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p0.9999      sample               714.111          us/op
+SerialisationBenchmarks.testSerialiseProvJsonLD:testSerialiseProvJsonLD·p1.00        sample              9764.864          us/op
+SerialisationBenchmarks.testSerialiseProvN                                           sample  4927593       16.741 ± 0.022  us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.00                  sample                12.944          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.50                  sample                15.312          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.90                  sample                17.248          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.95                  sample                26.656          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.99                  sample                44.480          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.999                 sample                86.528          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p0.9999                sample               667.894          us/op
+SerialisationBenchmarks.testSerialiseProvN:testSerialiseProvN·p1.00                  sample             14155.776          us/op
+
+Benchmark result is saved to target/bench100.csv

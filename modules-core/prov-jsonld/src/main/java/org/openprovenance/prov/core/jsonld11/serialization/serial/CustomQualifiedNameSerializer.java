@@ -8,7 +8,7 @@ import org.openprovenance.prov.vanilla.QualifiedName;
 import java.io.IOException;
 
 
-public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> {
+final public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> {
 
     public CustomQualifiedNameSerializer() {
         super(QualifiedName.class);

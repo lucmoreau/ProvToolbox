@@ -22,10 +22,7 @@ public interface HasAttributes extends org.openprovenance.prov.vanilla.HasAttrib
     void setIndexedAttributes(Object qn, Set<Attribute> attributes);
 
     @JsonAnyGetter
-    @JsonProperty("attributes")
-    @JsonSerialize(keyUsing= CustomMapSerializer.class)//, contentUsing = CustomAttributesSerializer.class)
-    //FIXME:  I need to convert some of the attributes in string directly because they are qualified names
-   // @JsonSerialize(using = CustomTest.class)
+    @JsonSerialize(keyUsing= CustomMapSerializer.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

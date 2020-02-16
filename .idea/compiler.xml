@@ -7,10 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="prov-model" />
-        <module name="prov-storage-filesystem" />
         <module name="prov-service-core" />
         <module name="provconvert" />
         <module name="prov-jsonld-xml (1)" />
+        <module name="prov-model-scala" />
         <module name="prov-xml" />
         <module name="prov-storage-api" />
         <module name="prov-jsonld-xml" />
@@ -18,11 +18,11 @@
         <module name="prov-n" />
         <module name="service-translator" />
         <module name="prov-interop" />
-        <module name="roundtrip" />
-        <module name="prov-service-translation" />
+        <module name="prov-storage-filesystem" />
         <module name="prov-sql" />
         <module name="prov-dot" />
-        <module name="prov-log" />
+        <module name="prov-service-translation" />
+        <module name="prov-template-compiler" />
         <module name="prov-jsonld" />
         <module name="ProvToolbox-Tutorial5" />
         <module name="ProvToolbox-Tutorial4" />
@@ -37,8 +37,9 @@
         <module name="prov-json" />
         <module name="toolbox" />
         <module name="prov-template" />
-        <module name="prov-model-scala" />
-        <module name="prov-template-compiler" />
+        <module name="benchmarks" />
+        <module name="roundtrip" />
+        <module name="prov-log" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
@@ -48,6 +49,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="benchmarks" target="12" />
       <module name="docker-service-translator" target="11" />
       <module name="modules-core" target="1.5" />
       <module name="modules-executable" target="1.5" />
@@ -95,5 +97,10 @@
       <module name="storage-mongodb" target="11" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="benchmarks" options="" />
+    </option>
   </component>
 </project>

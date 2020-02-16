@@ -9,25 +9,20 @@ import org.openprovenance.prov.vanilla.QualifiedName;
 import java.io.IOException;
 
 
-final public class CustomMapSerializer extends StdSerializer<QualifiedName> {
+final public class CustomKeySerializer extends StdSerializer<QualifiedName> {
 
-    public static final String CONTEXT_KEY_FOR_MAP = "CONTEXT_KEY_FOR_MAP";
 
-    protected CustomMapSerializer() {
+    protected CustomKeySerializer() {
         super(QualifiedName.class);
     }
 
-    protected CustomMapSerializer(Class<QualifiedName> t) {
+    protected CustomKeySerializer(Class<QualifiedName> t) {
         super(t);
     }
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         String s=q.getPrefix() + ":" + q.getLocalPart();
-        if (s.equals("prov:type")) {
-            s= Constants.PROPERTY_PROV_TYPE;
-        }
-        serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,s);
         jsonGenerator.writeFieldName(s);
     }
 }

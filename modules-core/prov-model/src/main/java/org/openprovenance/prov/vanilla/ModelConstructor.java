@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ModelConstructor implements org.openprovenance.prov.model.ModelConstructor, AtomConstructor {
+final public class ModelConstructor implements org.openprovenance.prov.model.ModelConstructor, AtomConstructor {
     /**
      * A factory method to create an instance of a delegation {@link ActedOnBehalfOf}
      *
@@ -305,38 +305,32 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
 
     @Override
     public Role newRole(Object value, QualifiedName type) {
-        Role res =  new org.openprovenance.prov.vanilla.Role(type,value);
-        return res;
+        return new org.openprovenance.prov.vanilla.Role(type,value);
     }
 
     @Override
     public Location newLocation(Object value, QualifiedName type) {
-        Location res =  new org.openprovenance.prov.vanilla.Location(type,value);
-        return res;
+        return new org.openprovenance.prov.vanilla.Location(type,value);
     }
 
     @Override
     public Type newType(Object value, QualifiedName type) {
-        org.openprovenance.prov.model.Type res =  new org.openprovenance.prov.vanilla.Type(type,value);
-        return res;
+        return new org.openprovenance.prov.vanilla.Type(type,value);
     }
 
     @Override
     public org.openprovenance.prov.model.Label newLabel(Object value, QualifiedName type) {
-        org.openprovenance.prov.model.Label res =  new Label(type, value);
-        return res;
+        return new Label(type, value);
     }
 
     @Override
     public LangString newInternationalizedString(String s,String lang) {
-        LangString res = new org.openprovenance.prov.vanilla.LangString(s,lang);
-        return res;
+        return new org.openprovenance.prov.vanilla.LangString(s,lang);
     }
 
     @Override
     public Value newValue(Object value, QualifiedName type) {
-        Value res =  new org.openprovenance.prov.vanilla.Value(type,value);
-        return res;
+        return new org.openprovenance.prov.vanilla.Value(type,value);
     }
 
     @Override
@@ -346,7 +340,6 @@ public class ModelConstructor implements org.openprovenance.prov.model.ModelCons
 
     @Override
     public org.openprovenance.prov.model.LangString newInternationalizedString(String s) {
-        LangString res = new org.openprovenance.prov.vanilla.LangString(s);
-        return res;
+        return new org.openprovenance.prov.vanilla.LangString(s);
     }
 }

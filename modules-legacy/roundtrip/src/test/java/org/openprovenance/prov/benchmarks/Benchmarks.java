@@ -94,7 +94,7 @@ public class Benchmarks {
 
     public void doBenchmark(Document doc, int count) throws IOException {
         System.out.println("write jsonld");
-        List<Long> result1 = repeatSerialize(jsonldSerialiser, count, doc);
+        List<Long> result1 = repeatSerialize(jsonldSerialiser, count , doc);
         output(result1);
         System.out.println("write provn");
         List<Long> result2 = repeatSerialize(provnSerialiser, count, doc);
@@ -103,7 +103,7 @@ public class Benchmarks {
         List<Long> result3 = repeatCopy(count, doc, ProvFactory.getFactory());
         output(result3);
         System.out.println("read jsonld");
-        List<Long> result4 = repeatDeserialize(jsonldDeserialiser, count, provjsonldPrimer);
+        List<Long> result4 = repeatDeserialize(jsonldDeserialiser, count , provjsonldPrimer);
         output(result4);
         System.out.println("read provn");
         List<Long> result5 = repeatDeserialize(provnDeserialiser, count, provnPrimer);

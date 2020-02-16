@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomKeyDeserializer;
-import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomMapSerializer;
+import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomKeySerializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 
@@ -22,7 +22,7 @@ public interface HasAttributes extends org.openprovenance.prov.vanilla.HasAttrib
     void setIndexedAttributes(Object qn, Set<Attribute> attributes);
 
     @JsonAnyGetter
-    @JsonSerialize(keyUsing= CustomMapSerializer.class)
+    @JsonSerialize(keyUsing= CustomKeySerializer.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

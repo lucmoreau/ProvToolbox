@@ -6,9 +6,10 @@ import java.util
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model.Attribute.AttributeKind
 import org.openprovenance.prov.model.StatementOrBundle.Kind._
+import org.openprovenance.prov.model._
 import org.openprovenance.prov.model.exception.QualifiedNameException
 import org.openprovenance.prov.model.extension.QualifiedHadMember
-import org.openprovenance.prov.model._
+import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.Attribute.split
 import org.openprovenance.prov.scala.immutable.Kind.Kind
 import org.openprovenance.prov.{model, vanilla}
@@ -108,7 +109,7 @@ trait HasAttributes {
   def addAttributes (attr: Set[Attribute]): Statement
 
 
-  val PLS = ProvFactory.pf.getName.XSD_STRING.asInstanceOf[QualifiedName]
+  val PLS: QualifiedName = ProvFactory.pf.getName.XSD_STRING.asInstanceOf[QualifiedName]
 
   def convertAttributes(label: Set[LangString],
                         typex: Set[Type],
@@ -130,11 +131,11 @@ trait HasAttributes {
 
 trait Hashable {
       
-      @inline final def h(x: AnyRef) = {
+      @inline final def h(x: AnyRef): Int = {
           if (x==null) 0 else x.hashCode
       }
       
-      @inline final def pr(v0: Int,v1:Int) = {
+      @inline final def pr(v0: Int,v1:Int): Int = {
           prime*v0+v1
       }
     
@@ -159,9 +160,9 @@ trait ImmutableEntity extends org.openprovenance.prov.model.HasLabel
     @BeanProperty
     val kind=PROV_ENTITY
       
-    val enumType=Kind.ent
+    val enumType: immutable.Kind.Value =Kind.ent
   
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableEntity]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableEntity]
       
       
     override def equals(that: Any): Boolean =
@@ -176,14 +177,14 @@ trait ImmutableEntity extends org.openprovenance.prov.model.HasLabel
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
       pr(pr(pr(pr(pr(h(id),h(value)),h(location)),h(label)),h(typex)),h(other))
     }
     
     def valueSet():Set[Value]=value match {case Some(v) => Set(v); case None => Set()} 
 
     
-    def getAttributes () :Set[Attribute]= {
+    def getAttributes (): Set[Attribute]= {
       label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++valueSet++other.values.flatten
     }
     
@@ -218,10 +219,10 @@ trait ImmutableAgent extends org.openprovenance.prov.model.HasLabel
     @BeanProperty
     val kind=PROV_AGENT
       
-    val enumType=Kind.ag
+    val enumType: immutable.Kind.Value =Kind.ag
   
   
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableAgent]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableAgent]
       
       
     override def equals(that: Any): Boolean =
@@ -236,7 +237,7 @@ trait ImmutableAgent extends org.openprovenance.prov.model.HasLabel
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val  hashCode:Int = {
       pr(pr(pr(pr(pr(h(id),h(value)),h(location)),h(label)),h(typex)),h(other))
     }
     
@@ -291,9 +292,9 @@ trait ImmutableActivity extends org.openprovenance.prov.model.HasLabel
     
     def setEndTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
     
-    def setStartTime(x$1: javax.xml.datatype.XMLGregorianCalendar)= throw new UnsupportedOperationException
+    def setStartTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
     
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableActivity]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableActivity]
       
       
     override def equals(that: Any): Boolean =
@@ -309,7 +310,7 @@ trait ImmutableActivity extends org.openprovenance.prov.model.HasLabel
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
       pr(pr(pr(pr(pr(pr(h(id),h(startTime)),h(endTime)),h(location)),h(label)),h(typex)),h(other))
 
     }
@@ -347,8 +348,8 @@ trait ImmutableWasDerivedFrom extends Relation with org.openprovenance.prov.mode
     val usage: QualifiedName
 
     @BeanProperty
-    val kind=PROV_DERIVATION
-    val enumType=Kind.wdf
+    val kind =PROV_DERIVATION
+    val enumType: Kind =Kind.wdf
 
     
     def getCause() = usedEntity
@@ -368,7 +369,7 @@ trait ImmutableWasDerivedFrom extends Relation with org.openprovenance.prov.mode
     def setUsedEntity(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
 
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasDerivedFrom]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasDerivedFrom]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -385,7 +386,7 @@ trait ImmutableWasDerivedFrom extends Relation with org.openprovenance.prov.mode
       case _ => false
     }
     
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(pr(h(id),h(generatedEntity)),h(usedEntity)),h(activity)),h(usage)),h(generation)),h(label)),h(typex)),h(other))
 
     }
@@ -426,7 +427,7 @@ trait ImmutableWasGeneratedBy extends Relation with org.openprovenance.prov.mode
     
     @BeanProperty
     val kind=PROV_GENERATION
-    val enumType=Kind.wgb
+    val enumType: Kind =Kind.wgb
 
     
     def getCause() = activity
@@ -442,7 +443,7 @@ trait ImmutableWasGeneratedBy extends Relation with org.openprovenance.prov.mode
     def setTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
 
 
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasGeneratedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasGeneratedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -459,12 +460,12 @@ trait ImmutableWasGeneratedBy extends Relation with org.openprovenance.prov.mode
       case _ => false
     }
     
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(h(id),h(activity)),h(entity)),h(location)),h(label)),h(typex)),h(role)),h(other))
 
     }
     
-    def getAttributes () :Set[Attribute]= {
+    def getAttributes (): Set[Attribute]= {
       label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++location++typex++role++other.values.flatten
     }
 
@@ -500,7 +501,7 @@ trait ImmutableUsed extends Relation with org.openprovenance.prov.model.Used wit
     
     @BeanProperty
     val kind=PROV_USAGE
-    val enumType=Kind.usd
+    val enumType: Kind =Kind.usd
 
     
     def getCause() = entity
@@ -533,7 +534,7 @@ trait ImmutableUsed extends Relation with org.openprovenance.prov.model.Used wit
       case _ => false
     }
     
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(h(id),h(activity)),h(entity)),h(location)),h(label)),h(typex)),h(role)),h(other))
 
     }
@@ -572,7 +573,7 @@ trait ImmutableWasInvalidatedBy extends Relation with org.openprovenance.prov.mo
     
     @BeanProperty
     val kind=PROV_INVALIDATION
-    val enumType=Kind.wib
+    val enumType: Kind =Kind.wib
 
     
     def getCause() = activity
@@ -588,7 +589,7 @@ trait ImmutableWasInvalidatedBy extends Relation with org.openprovenance.prov.mo
     def setTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
 
 
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasInvalidatedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasInvalidatedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -605,7 +606,7 @@ trait ImmutableWasInvalidatedBy extends Relation with org.openprovenance.prov.mo
       case _ => false
     }
     
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(h(id),h(activity)),h(entity)),h(location)),h(label)),h(typex)),h(role)),h(other))
 
     }
@@ -650,7 +651,7 @@ trait ImmutableWasStartedBy extends Relation with org.openprovenance.prov.model.
     
     @BeanProperty
     val kind= PROV_START
-    val enumType=Kind.wsb
+    val enumType: Kind =Kind.wsb
 
     
     def getCause() = trigger
@@ -670,7 +671,7 @@ trait ImmutableWasStartedBy extends Relation with org.openprovenance.prov.model.
     def setTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
      
     
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasStartedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasStartedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -688,7 +689,7 @@ trait ImmutableWasStartedBy extends Relation with org.openprovenance.prov.model.
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(pr(pr(h(id),h(activity)),h(trigger)),h(starter)),h(time)),h(location)), h(label)),h(typex)),h(role)),h(other))
 
     }
@@ -731,7 +732,7 @@ trait ImmutableWasEndedBy extends Relation with org.openprovenance.prov.model.Wa
     
     @BeanProperty
     val kind= PROV_END
-    val enumType=Kind.web
+    val enumType: Kind =Kind.web
 
     
     def getCause() = trigger
@@ -751,7 +752,7 @@ trait ImmutableWasEndedBy extends Relation with org.openprovenance.prov.model.Wa
     def setTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
      
     
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasEndedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasEndedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -769,7 +770,7 @@ trait ImmutableWasEndedBy extends Relation with org.openprovenance.prov.model.Wa
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(pr(pr(h(id),h(activity)),h(trigger)),h(ender)),h(time)),h(location)), h(label)),h(typex)),h(role)),h(other))
 
     }
@@ -805,7 +806,7 @@ trait ImmutableActedOnBehalfOf extends Relation with org.openprovenance.prov.mod
 
   @BeanProperty
   val kind= PROV_DELEGATION
-  val enumType=Kind.aobo
+  val enumType: Kind =Kind.aobo
 
 
   def getCause() = responsible
@@ -824,7 +825,7 @@ trait ImmutableActedOnBehalfOf extends Relation with org.openprovenance.prov.mod
   def setDelegate(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
 
-  def canEqual(a: Any) = a.isInstanceOf[ImmutableActedOnBehalfOf]
+  def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableActedOnBehalfOf]
 
   override def equals(that: Any): Boolean =
     that match {
@@ -839,7 +840,7 @@ trait ImmutableActedOnBehalfOf extends Relation with org.openprovenance.prov.mod
       case _ => false
     }
 
-  override def hashCode:Int = {
+  override lazy val hashCode:Int = {
     pr(pr(pr(pr(pr(pr(h(id),h(delegate)),h(responsible)),h(activity)),h(label)),h(typex)),h(other))
   }
 
@@ -892,7 +893,7 @@ trait ImmutableWasAssociatedWith extends Relation with org.openprovenance.prov.m
     def setPlan(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
        
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasAssociatedWith]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasAssociatedWith]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -908,7 +909,7 @@ trait ImmutableWasAssociatedWith extends Relation with org.openprovenance.prov.m
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(pr(pr(h(id),h(activity)),h(agent)),h(plan)),h(label)),h(typex)),h(role)),h(other))
 
     }
@@ -941,7 +942,7 @@ trait ImmutableWasAttributedTo extends Relation with org.openprovenance.prov.mod
     
     @BeanProperty
     val kind=PROV_ATTRIBUTION
-    val enumType=Kind.wat
+    val enumType: Kind =Kind.wat
 
     
     def getCause() = agent
@@ -956,7 +957,7 @@ trait ImmutableWasAttributedTo extends Relation with org.openprovenance.prov.mod
     def setAgent(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
        
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasAttributedTo]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasAttributedTo]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -970,7 +971,7 @@ trait ImmutableWasAttributedTo extends Relation with org.openprovenance.prov.mod
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(h(id),h(entity)),h(agent)),h(label)),h(typex)),h(other))
 
     }
@@ -1003,7 +1004,7 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
     
     @BeanProperty
     val kind=PROV_SPECIALIZATION
-    val enumType=Kind.spec
+    val enumType: Kind =Kind.spec
 
     
     def getCause() = generalEntity
@@ -1018,7 +1019,7 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
     def setSpecificEntity(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
        
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableSpecializationOf]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableSpecializationOf]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1032,7 +1033,7 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
               pr(pr(pr(pr(pr(h(id),h(generalEntity)),h(specificEntity)),h(label)),h(typex)),h(other))
     }
     
@@ -1041,7 +1042,7 @@ trait ImmutableSpecializationOf extends Relation with org.openprovenance.prov.mo
     }
 
    def toNotation (sb:StringBuilder) {
-      val isExt=(id!=null) || !label.isEmpty || !typex.isEmpty || !other.isEmpty
+      val isExt=(id!=null) || label.nonEmpty || typex.nonEmpty || other.nonEmpty
       
       sb++= (if (isExt) "provext:specializationOf(" else  "specializationOf(")
       optionalId(id,sb)
@@ -1067,7 +1068,7 @@ trait ImmutableAlternateOf extends Relation with org.openprovenance.prov.model.A
 
   @BeanProperty
     val kind=PROV_ALTERNATE
-    val enumType=Kind.alt
+    val enumType: Kind =Kind.alt
 
     
     def getCause() = alternate2
@@ -1096,7 +1097,7 @@ trait ImmutableAlternateOf extends Relation with org.openprovenance.prov.model.A
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
               pr(pr(pr(pr(pr(h(id),h(alternate1)),h(alternate2)),h(label)),h(typex)),h(other))
     }
     
@@ -1105,7 +1106,7 @@ trait ImmutableAlternateOf extends Relation with org.openprovenance.prov.model.A
     }
 
    def toNotation (sb:StringBuilder) {
-      val isExt=(id!=null) || !label.isEmpty || !typex.isEmpty || !other.isEmpty
+      val isExt=(id!=null) || label.nonEmpty || typex.nonEmpty || other.nonEmpty
       
       sb++= (if (isExt) "provext:alternateOf(" else  "alternateOf(")
       optionalId(id,sb)
@@ -1131,7 +1132,7 @@ trait ImmutableMentionOf extends Relation with org.openprovenance.prov.model.Men
 
   @BeanProperty
     val kind=PROV_MENTION
-    val enumType=Kind.men
+    val enumType: Kind =Kind.men
 
     
     def getCause() = generalEntity
@@ -1148,7 +1149,7 @@ trait ImmutableMentionOf extends Relation with org.openprovenance.prov.model.Men
     def setBundle(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
        
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableMentionOf]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableMentionOf]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1163,7 +1164,7 @@ trait ImmutableMentionOf extends Relation with org.openprovenance.prov.model.Men
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
               pr(pr(pr(pr(pr(pr(h(id),h(generalEntity)),h(specificEntity)),h(bundle)),h(label)),h(typex)),h(other))
     }
     
@@ -1172,7 +1173,7 @@ trait ImmutableMentionOf extends Relation with org.openprovenance.prov.model.Men
     }
 
    def toNotation (sb:StringBuilder) {
-      val isExt=(id!=null) || !label.isEmpty || !typex.isEmpty || !other.isEmpty
+      val isExt=(id!=null) || label.nonEmpty || typex.nonEmpty || other.nonEmpty
       
       sb++= (if (isExt) "provext:mentionOf(" else  "mentionOf(")
       optionalId(id,sb)
@@ -1196,7 +1197,7 @@ trait ImmutableWasInformedBy extends Relation with org.openprovenance.prov.model
     
     @BeanProperty
     val kind=PROV_COMMUNICATION
-    val enumType=Kind.winfob
+    val enumType: Kind =Kind.winfob
 
     
     def getCause() = informant
@@ -1211,7 +1212,7 @@ trait ImmutableWasInformedBy extends Relation with org.openprovenance.prov.model
     def setInformant(x$1: org.openprovenance.prov.model.QualifiedName)= throw new UnsupportedOperationException
 
        
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasInformedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasInformedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1225,7 +1226,7 @@ trait ImmutableWasInformedBy extends Relation with org.openprovenance.prov.model
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
               pr(pr(pr(pr(pr(h(id),h(informed)),h(informant)),h(label)),h(typex)),h(other))
 
     }
@@ -1255,7 +1256,7 @@ trait ImmutableWasInfluencedBy extends Relation with org.openprovenance.prov.mod
     
     @BeanProperty
     val kind=PROV_INFLUENCE
-    val enumType=Kind.winfl
+    val enumType: Kind =Kind.winfl
 
     
     def getCause() = influencer
@@ -1270,7 +1271,7 @@ trait ImmutableWasInfluencedBy extends Relation with org.openprovenance.prov.mod
     def setInfluencer(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
 
        
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableWasInfluencedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasInfluencedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1284,7 +1285,7 @@ trait ImmutableWasInfluencedBy extends Relation with org.openprovenance.prov.mod
       case _ => false
     }
    
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
               pr(pr(pr(pr(pr(h(id),h(influencee)),h(influencer)),h(label)),h(typex)),h(other))
 
     }
@@ -1319,7 +1320,7 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
 
   @BeanProperty
     val kind=PROV_MEMBERSHIP
-    val enumType=Kind.mem
+    val enumType: Kind =Kind.mem
 
     
     def getCause() = entity.head
@@ -1336,7 +1337,7 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
 
 
     
-    def canEqual(a: Any) = a.isInstanceOf[ImmutableHadMember]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableHadMember]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1350,7 +1351,7 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
       case _ => false
     }
     
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(pr(pr(pr(pr(h(id),h(collection)),h(entity)),h(label)),h(typex)),h(other))
     }
     
@@ -1697,7 +1698,7 @@ class WasDerivedFrom(val id: QualifiedName,
                      val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasDerivedFrom  {     
   
 
-      def addAttributes (attr: Set[Attribute]) = {
+      def addAttributes (attr: Set[Attribute]): WasDerivedFrom = {
     		  ProvFactory.pf.newWasDerivedFrom(id, 
     		                                   generatedEntity, usedEntity, 
     		                                   activity, 
@@ -1705,7 +1706,7 @@ class WasDerivedFrom(val id: QualifiedName,
     		                                   getAttributes() ++ attr)
       } 
       
-      override def rename(m: Map[QualifiedName,QualifiedName])={
+      override def rename(m: Map[QualifiedName,QualifiedName]): WasDerivedFrom ={
 	     new WasDerivedFrom(m.getOrElse(id, id),
 	                        m(generatedEntity),
 	                        m(usedEntity),
@@ -1733,7 +1734,7 @@ object WasGeneratedBy {
             new WasGeneratedBy(QualifiedName(e.getId),
                                QualifiedName(e.getEntity),
                                QualifiedName(e.getActivity),
-                               if (e.getTime==null) None else Some(e.getTime),
+                               Option(e.getTime),
                                LangString(e.getLabel),
                                Type(e.getType),
                                Location(e.getLocation),
@@ -1746,7 +1747,7 @@ object WasGeneratedBy {
     new WasGeneratedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
       QualifiedName(e.getEntity),
       QualifiedName(e.getActivity),
-      if (e.getTime==null) None else Some(e.getTime),
+      Option(e.getTime),
       LangString(e.getLabel),
       Type(e.getType),
       Location(e.getLocation),
@@ -1765,13 +1766,13 @@ class WasGeneratedBy(val id: QualifiedName,
                      val role: Set[Role],           
                      val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasGeneratedBy  {     
 
-	   def addAttributes (attr: Set[Attribute]) = {
+	   def addAttributes (attr: Set[Attribute]): WasGeneratedBy = {
     		  ProvFactory.pf.newWasGeneratedBy(id, 
     		                                   entity, activity, time,
     		                                   getAttributes() ++ attr)
 	   } 
 	   
-	   override def rename(m: Map[QualifiedName,QualifiedName])={
+	   override def rename(m: Map[QualifiedName,QualifiedName]): WasGeneratedBy ={
 	     new WasGeneratedBy(m.getOrElse(id, id),
 	                        m(entity),
 	                        m(activity),
@@ -1799,7 +1800,7 @@ object Used {
             new Used(QualifiedName(e.getId),
             		     QualifiedName(e.getActivity),
             		     QualifiedName(e.getEntity),
-            		     if (e.getTime==null) None else Some(e.getTime),
+            		     Option(e.getTime),
             		     LangString(e.getLabel),
             		     Type(e.getType),
             		     Location(e.getLocation),
@@ -1812,7 +1813,7 @@ object Used {
     new Used(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
       QualifiedName(e.getActivity),
       QualifiedName(e.getEntity),
-      if (e.getTime==null) None else Some(e.getTime),
+      Option(e.getTime),
       LangString(e.getLabel),
       Type(e.getType),
       Location(e.getLocation),
@@ -1831,13 +1832,13 @@ class Used(val id: QualifiedName,
                      val role: Set[Role],           
                      val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableUsed  {     
   
-	   def addAttributes (attr: Set[Attribute]) = {
+	   def addAttributes (attr: Set[Attribute]): Used = {
     		  ProvFactory.pf.newUsed(id, 
     				                     activity, entity, time,
     				                     getAttributes() ++ attr)
 	   } 
 	   
-	   override def rename(m: Map[QualifiedName,QualifiedName])={
+	   override def rename(m: Map[QualifiedName,QualifiedName]): Used ={
 	     new Used(m.getOrElse(id, id),
 	    		      m(activity),
 	    		      m(entity),
@@ -1862,7 +1863,7 @@ object WasInvalidatedBy {
             new WasInvalidatedBy(QualifiedName(e.getId),
                                 QualifiedName(e.getEntity),
                                 QualifiedName(e.getActivity),
-                                if (e.getTime==null) None else Some(e.getTime),
+                                Option(e.getTime),
                                 LangString(e.getLabel),
                                 Type(e.getType),
                                 Location(e.getLocation),
@@ -1875,7 +1876,7 @@ object WasInvalidatedBy {
     new WasInvalidatedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
       QualifiedName(e.getEntity),
       QualifiedName(e.getActivity),
-      if (e.getTime==null) None else Some(e.getTime),
+      Option(e.getTime),
       LangString(e.getLabel),
       Type(e.getType),
       Location(e.getLocation),
@@ -1893,13 +1894,13 @@ class WasInvalidatedBy(val id: QualifiedName,
                      val location: Set[Location],           
                      val role: Set[Role],           
                      val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasInvalidatedBy  {     
-	   def addAttributes (attr: Set[Attribute]) = {
+	   def addAttributes (attr: Set[Attribute]): WasInvalidatedBy = {
     		  ProvFactory.pf.newWasInvalidatedBy(id, 
     		                                   entity, activity, time,
     		                                   getAttributes() ++ attr)
 	   } 
 	   
-	   override def rename(m: Map[QualifiedName,QualifiedName])={
+	   override def rename(m: Map[QualifiedName,QualifiedName]): WasInvalidatedBy ={
 	     new WasInvalidatedBy(m.getOrElse(id, id),
 	                        m(entity),
 	                        m(activity),
@@ -1922,16 +1923,16 @@ object WasStartedBy {
     e match {
       case e: WasStartedBy => e
       case _ =>
-        new WasStartedBy(QualifiedName(e.getId),
-          QualifiedName(e.getActivity),
-          QualifiedName(e.getTrigger),
-          QualifiedName(e.getStarter),
-          if (e.getTime == null) None else Some(e.getTime),
-          LangString(e.getLabel),
-          Type(e.getType),
-          Location(e.getLocation),
-          Role(e.getRole),
-          Other(e.getOther))
+        new WasStartedBy( QualifiedName(e.getId),
+                          QualifiedName(e.getActivity),
+                          QualifiedName(e.getTrigger),
+                          QualifiedName(e.getStarter),
+                          Option(e.getTime),
+                          LangString(e.getLabel),
+                          Type(e.getType),
+                          Location(e.getLocation),
+                          Role(e.getRole),
+                          Other(e.getOther))
     }
   }
 }
@@ -1947,7 +1948,7 @@ class WasStartedBy(val id: QualifiedName,
                    val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasStartedBy  {     
   
 
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): WasStartedBy = {
     		  ProvFactory.pf.newWasStartedBy(id, 
     				                             activity, trigger, starter, time,
     				                             getAttributes() ++ attr)
@@ -1969,7 +1970,7 @@ object WasEndedBy {
           QualifiedName(e.getActivity),
           QualifiedName(e.getTrigger),
           QualifiedName(e.getEnder),
-          if (e.getTime == null) None else Some(e.getTime),
+          Option(e.getTime),
           LangString(e.getLabel),
           Type(e.getType),
           Location(e.getLocation),
@@ -1979,17 +1980,17 @@ object WasEndedBy {
   }
 }
 class WasEndedBy(val id: QualifiedName,
-                   val activity: QualifiedName,
-                   val trigger: QualifiedName,
-                   val ender: QualifiedName,
-                   val time:Option[XMLGregorianCalendar],
-                   val label: Set[LangString],
-                   val typex: Set[Type],
-                   val location: Set[Location],        
-                   val role: Set[Role],           
-                   val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasEndedBy  {     
-  
-     def addAttributes (attr: Set[Attribute]) = {
+                 val activity: QualifiedName,
+                 val trigger: QualifiedName,
+                 val ender: QualifiedName,
+                 val time:Option[XMLGregorianCalendar],
+                 val label: Set[LangString],
+                 val typex: Set[Type],
+                 val location: Set[Location],
+                 val role: Set[Role],
+                 val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasEndedBy  {
+
+  def addAttributes (attr: Set[Attribute]): WasEndedBy = {
     		  ProvFactory.pf.newWasEndedBy(id, 
     				                           activity, trigger, ender, time,
     				                           getAttributes() ++ attr)
@@ -2086,7 +2087,7 @@ class WasAssociatedWith(val id: QualifiedName,
                         val typex: Set[Type],
                         val role: Set[Role],           
                         val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasAssociatedWith {
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): WasAssociatedWith = {
     		  ProvFactory.pf.newWasAssociatedWith(id, 
     				                                  activity, agent, plan,
     				                                  getAttributes() ++ attr)
@@ -2132,13 +2133,13 @@ class WasAttributedTo(val id: QualifiedName,
                         val typex: Set[Type],
                         val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasAttributedTo  {     
   
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): WasAttributedTo = {
     		  ProvFactory.pf.newWasAttributedTo(id, 
     				                                entity, agent,
     				                                getAttributes() ++ attr)
 	   } 
      
-     override def rename(m: Map[QualifiedName,QualifiedName])={
+     override def rename(m: Map[QualifiedName,QualifiedName]): WasAttributedTo ={
 	     new WasAttributedTo(m.getOrElse(id, id),
 	                         m(entity),
 	                         m(agent),
@@ -2191,7 +2192,7 @@ class SpecializationOf(val id: QualifiedName,
                         val label: Set[LangString],
                         val typex: Set[Type],
                         val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableSpecializationOf {     
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): SpecializationOf = {
     		  ProvFactory.pf.newSpecializationOf(id, 
     				                                 specificEntity, generalEntity,
     				                                 getAttributes() ++ attr)
@@ -2222,11 +2223,11 @@ object AlternateOf {
 
   def apply(e: org.openprovenance.prov.model.AlternateOf, gensym: () => org.openprovenance.prov.model.QualifiedName):AlternateOf = {
     new AlternateOf(QualifiedName(gensym()),
-      QualifiedName(e.getAlternate1),
-      QualifiedName(e.getAlternate2),
-      Set(),
-      Set(),
-      Map())
+                    QualifiedName(e.getAlternate1),
+                    QualifiedName(e.getAlternate2),
+                    Set(),
+                    Set(),
+                    Map())
   }
 }
 
@@ -2237,7 +2238,7 @@ class AlternateOf(val id: QualifiedName,
                         val typex: Set[Type],
                         val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableAlternateOf {     
   
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): AlternateOf = {
     		  ProvFactory.pf.newAlternateOf(id, 
     				                            alternate1, alternate2,
     				                            getAttributes() ++ attr)
@@ -2252,7 +2253,7 @@ class MentionOf(val id: QualifiedName,
                         val typex: Set[Type],
                         val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableMentionOf {     
   
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): MentionOf = {
     		  ProvFactory.pf.newMentionOf(id, 
     				                          specificEntity, generalEntity, bundle,
     				                          getAttributes() ++ attr)
@@ -2277,11 +2278,11 @@ object WasInformedBy {
 
   def apply(e: org.openprovenance.prov.model.WasInformedBy, gensym: () => org.openprovenance.prov.model.QualifiedName):WasInformedBy = {
     new WasInformedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
-      QualifiedName(e.getInformed),
-      QualifiedName(e.getInformant),
-      LangString(e.getLabel),
-      Type(e.getType),
-      Other(e.getOther))
+                      QualifiedName(e.getInformed),
+                      QualifiedName(e.getInformant),
+                      LangString(e.getLabel),
+                      Type(e.getType),
+                      Other(e.getOther))
   }
 }
 
@@ -2292,7 +2293,7 @@ class WasInformedBy(val id: QualifiedName,
                     val label: Set[LangString],
                     val typex: Set[Type],
                     val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasInformedBy {     
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): WasInformedBy = {
     		  ProvFactory.pf.newWasInformedBy(id, 
     				                              informed, informant,
     				                              getAttributes() ++ attr)
@@ -2320,11 +2321,11 @@ object WasInfluencedBy {
 
   def apply(e: org.openprovenance.prov.model.WasInfluencedBy, gensym: () => org.openprovenance.prov.model.QualifiedName):WasInfluencedBy = {
     new WasInfluencedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
-      QualifiedName(e.getInfluencee),
-      QualifiedName(e.getInfluencer),
-      LangString(e.getLabel),
-      Type(e.getType),
-      Other(e.getOther))
+                        QualifiedName(e.getInfluencee),
+                        QualifiedName(e.getInfluencer),
+                        LangString(e.getLabel),
+                        Type(e.getType),
+                        Other(e.getOther))
   }
 }
 
@@ -2336,7 +2337,7 @@ class WasInfluencedBy(val id: QualifiedName,
                       val typex: Set[Type],
                       val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableWasInfluencedBy {     
 
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): WasInfluencedBy = {
     		  ProvFactory.pf.newWasInfluencedBy(id, 
     				                                influencee, influencer,
     				                                getAttributes() ++ attr)
@@ -2386,7 +2387,7 @@ class HadMember(val id: QualifiedName,
                 val label: Set[LangString],
                 val typex: Set[Type],
                 val other: Map[QualifiedName,Set[Other]]) extends Statement with ImmutableHadMember {     
-     def addAttributes (attr: Set[Attribute]) = {
+     def addAttributes (attr: Set[Attribute]): HadMember = {
     		  ProvFactory.pf.newHadMember(id, 
     				                          collection, entity,
     				                          getAttributes() ++ attr)
@@ -2430,11 +2431,11 @@ class Bundle(val id: QualifiedName,
 
     @BeanProperty
     val kind=PROV_BUNDLE
-    val enumType= Kind.bun
+    val enumType: Kind = Kind.bun
 
  
     
-    def canEqual(a: Any) = a.isInstanceOf[Bundle]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Bundle]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -2444,7 +2445,7 @@ class Bundle(val id: QualifiedName,
       case _ => false
     }
 
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         pr(h(id),h(statement))
     }
     
@@ -2510,7 +2511,7 @@ trait HasNamespace {
 
 object Document {
   def apply(doc: Document, gensym: () => QualifiedName, prefix: String, uri: String): Document = {
-    val ss=doc.statements.map(Statement(_,gensym))
+    val ss=doc.statements().map(Statement(_,gensym))
     val bb: Iterable[Bundle] =doc.bundles()
     val ns=new Namespace(doc.namespace)
     ns.register(prefix,uri)
@@ -2528,7 +2529,7 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
     def statements () = statementOrBundle.collect{case s:Statement => s}
     def bundles ()    = statementOrBundle.collect{case b:Bundle    => b}
 
-    def canEqual(a: Any) = a.isInstanceOf[Document]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Document]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -2537,7 +2538,7 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
       case _ => false
     }
   
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
         h(statementOrBundle)
     }
     
@@ -2709,7 +2710,8 @@ object Attribute {
   }
   
  
-  def splitrec(attributes: List[Attribute], 
+  @scala.annotation.tailrec
+  def splitrec(attributes: List[Attribute],
                ls: Set[Label],
                ts: Set[Type],
                vs: Set[Value],
@@ -2731,7 +2733,7 @@ object Attribute {
       }
   }
   
-  def toNotation (sb: StringBuilder, ls: Set[LangString],ts: Set[Type],vs: Set[Value],locs: Set[Location],rs: Set[Role],os: Map[QualifiedName,Set[Other]]) = {
+  def toNotation (sb: StringBuilder, ls: Set[LangString],ts: Set[Type],vs: Set[Value],locs: Set[Location],rs: Set[Role],os: Map[QualifiedName,Set[Other]]):StringBuilder = {
       if (ls.isEmpty && ts.isEmpty & vs.isEmpty && locs.isEmpty && os.isEmpty) sb else {
           val all:List[AnyRef]=List()++ls.map(Label(null,_))++ts++vs++locs++rs++os.values.flatMap(x=>x)
 
@@ -2743,7 +2745,7 @@ object Attribute {
 }
 
 object Type {
-      val myName=QualifiedName(ProvFactory.pf.getName.PROV_TYPE)
+      val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_TYPE)
       private[immutable] def apply (`type`: QualifiedName,
                                     value: Object) = {
           new Type(`type`,value)
@@ -2793,7 +2795,7 @@ class Type protected (override val `type`: QualifiedName,
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
  
-    def canEqual(a: Any) = a.isInstanceOf[Type]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Type]
 
     
     override def equals(that: Any): Boolean =
@@ -2811,7 +2813,7 @@ class Type protected (override val `type`: QualifiedName,
 }
 
 object Role {
-      val myName=QualifiedName(ProvFactory.pf.getName.PROV_ROLE)
+      val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_ROLE)
 
       private[immutable] def apply (`type`: QualifiedName,
     		                            value: Object) = {
@@ -2837,7 +2839,7 @@ class Role protected (override val `type`: QualifiedName,
                       override val value: Object) 
                       extends Attribute(`type`,value) with org.openprovenance.prov.model.Role  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Role.myName
-    val elementName = myName 
+    val elementName: QualifiedName = myName
     
     
         
@@ -2862,7 +2864,7 @@ class Role protected (override val `type`: QualifiedName,
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
-    def canEqual(a: Any) = a.isInstanceOf[Role]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Role]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -2877,7 +2879,7 @@ class Role protected (override val `type`: QualifiedName,
     
 }
 object Location {
-      val myName=QualifiedName(ProvFactory.pf.getName.PROV_LOCATION)
+      val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_LOCATION)
       private[immutable] def apply (`type`: QualifiedName,
                                     value: Object) = {
         new Location(`type`,value)
@@ -2904,7 +2906,7 @@ class Location protected (override val `type`: QualifiedName,
                           extends Attribute(`type`,value) with org.openprovenance.prov.model.Location  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Location.myName
     
-    val elementName = myName 
+    val elementName: QualifiedName = myName
     
         
     def this(t: QualifiedName,
@@ -2929,7 +2931,7 @@ class Location protected (override val `type`: QualifiedName,
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
-    def canEqual(a: Any) = a.isInstanceOf[Location]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Location]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -2939,16 +2941,16 @@ class Location protected (override val `type`: QualifiedName,
                            this.value == that.value                  
       case _ => false
     }
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
       pr(pr(h(elementName),h(`type`)),h(value))
     }  
 }
 
 object Value {
-      val myName=QualifiedName(ProvFactory.pf.getName.PROV_VALUE)
+      val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_VALUE)
       
       private[immutable] def apply (`type`: QualifiedName,
-    		                            value: Object) = {
+    		                            value: Object): Value = {
         new Value(`type`,value)
       }
       
@@ -2966,7 +2968,7 @@ class Value protected (override val `type`:QualifiedName,
                        extends Attribute(`type`,value) with org.openprovenance.prov.model.Value  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Value.myName
     
-    val elementName = myName 
+    val elementName: QualifiedName = myName
     
        
     def this(t: QualifiedName,
@@ -2990,7 +2992,7 @@ class Value protected (override val `type`:QualifiedName,
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
-    def canEqual(a: Any) = a.isInstanceOf[Value]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Value]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -3011,55 +3013,55 @@ object LangString {
             case v:LangString => v
             case _ =>
               val lang = str.getLang
-              new LangString(str.getValue, if (lang==null) None else Some(lang))
+              new LangString(str.getValue, Option(lang))
           }
       }
       
   
       def apply(labels: java.util.Collection[org.openprovenance.prov.model.LangString]): Set[LangString] = {
-          val labels2=labels.asScala.toSet
-          labels2.map(s => LangString(s))
+          val labels2: Iterable[model.LangString] =labels.asScala
+          labels2.map(LangString(_)).toSet
       }
   
   
       def apply(labels: Set[org.openprovenance.prov.model.LangString]): Set[LangString] = {
-          labels.map(s => LangString(s))
+          labels.map(LangString(_))
       }  
 }
 
 class LangString (@BeanProperty val value: String,
                   val lang: Option[String]) extends org.openprovenance.prov.model.LangString with Hashable{
 
-    override def getLang() = {
-      lang match {
-        case Some(l) => l
-        case None => null
-      }
+  override def getLang(): String = {
+    lang match {
+      case Some(l) => l
+      case None => null
     }
+  }
 
-    def this(value: String,lang: String) = {
-      this(value, if (lang==null) None else Some(lang))
-    }
+  def this(value: String,lang: String) = {
+    this(value, Option(lang))
+  }
 
-    def this(lg: org.openprovenance.prov.model.LangString) = {
-      this(lg.getValue(), lg.getLang())
-    }
+  def this(lg: org.openprovenance.prov.model.LangString) = {
+    this(lg.getValue(), lg.getLang())
+  }
 
   override def setValue(x: String) {
-        throw new UnsupportedOperationException
-    }
+    throw new UnsupportedOperationException
+  }
 
-    override def setLang(x: String) {
-        throw new UnsupportedOperationException
-    }
+  override def setLang(x: String) {
+    throw new UnsupportedOperationException
+  }
 
-    def canEqual(a: Any) = a.isInstanceOf[LangString]
+  def canEqual(a: Any): Boolean = a.isInstanceOf[LangString]
 
-    override def equals(that: Any): Boolean =
+  override def equals(that: Any): Boolean =
     that match {
       case that: LangString => that.canEqual(this) &&
-                           this.lang == that.lang &&
-                           this.value == that.value
+        this.lang == that.lang &&
+        this.value == that.value
       case _ => false
     }
 
@@ -3070,11 +3072,11 @@ class LangString (@BeanProperty val value: String,
       lang match { case Some(l) => '"' + value + '"' + "@" + l; case None => '"' + value + '"' } 
     }
     
-    def toLabel () = {
+    def toLabel (): Label = {
       new Label(null,this)
     }
     
-     def rename(m: Map[String,String]) = {
+     def rename(m: Map[String,String]): LangString = {
        m.get(value) match {
          case None => this
          case Some(v) => new LangString(v,lang)
@@ -3085,7 +3087,7 @@ class LangString (@BeanProperty val value: String,
 
 
 object Label {
-      val myName=QualifiedName(ProvFactory.pf.getName.PROV_LABEL)
+      val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_LABEL)
 
       private[immutable] def apply (`type`: QualifiedName,
     		                            value: Object) = {
@@ -3114,7 +3116,7 @@ class Label protected (override val `type`: QualifiedName,
                        extends Attribute(`type`,value) with org.openprovenance.prov.model.Label  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Label.myName
 
-    val elementName = myName 
+    val elementName: QualifiedName = myName
     
        
     
@@ -3123,7 +3125,7 @@ class Label protected (override val `type`: QualifiedName,
         this (t,{val o:Object=v;o})
     }
     
-    def getLangString() = {
+    def getLangString(): model.LangString = {
       value match {
         case l:LangString => l
         case l:String => ProvFactory.pf.newInternationalizedString(l)
@@ -3136,7 +3138,7 @@ class Label protected (override val `type`: QualifiedName,
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
-    def canEqual(a: Any) = a.isInstanceOf[Label]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Label]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -3226,7 +3228,7 @@ class Other protected (val elementName : QualifiedName,
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
  
-    def canEqual(a: Any) = a.isInstanceOf[Other]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Other]
 
   
     override def equals(that: Any): Boolean =
@@ -3238,7 +3240,7 @@ class Other protected (val elementName : QualifiedName,
       case _ => false
     }
 
-    override def hashCode:Int = {
+    override lazy val hashCode:Int = {
       pr(pr(h(elementName),h(`type`)),h(value))
     }      
     
@@ -3267,11 +3269,11 @@ class QualifiedName (val prefix: String,
 
     override val hashCode = this.namespaceURI.hashCode ^ this.localPart.hashCode()
 
-    def getUri () = uri
+    def getUri (): String = uri
 
-    def getLocalPart()= localPart
+    def getLocalPart(): String = localPart
     
-    def getNamespaceURI() = namespaceURI
+    def getNamespaceURI(): String = namespaceURI
     
     def getPrefix() = prefix
 
@@ -3285,7 +3287,7 @@ class QualifiedName (val prefix: String,
 
     def getUnescapedLocalPart () = { qnU.unescapeProvLocalName(localPart)}
    
-    override def toString() ={
+    override def toString(): String ={
       if (prefix==null) localPart else prefix + ":" + localPart
     }
     
@@ -3302,7 +3304,7 @@ class QualifiedName (val prefix: String,
             }
     }
     
-    def canEqual(a: Any) = a.isInstanceOf[QualifiedName]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[QualifiedName]
 
     override def equals (other: Any) : Boolean = other match { 
         case other: QualifiedName => other.canEqual(this) && 
@@ -3365,8 +3367,8 @@ class ObjectFactory extends org.openprovenance.prov.model.ObjectFactory {
 class FooException extends Exception
 
 object ProvFactory {
-  val pf=new ProvFactory
-  val getFactory=pf
+  val pf: ProvFactory =new ProvFactory
+  val getFactory: ProvFactory =pf
 }
 
 trait ImmutableConstructorDelegator  extends ImmutableConstructorInterface {
@@ -3495,8 +3497,8 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
                             endTime: XMLGregorianCalendar,
                             attributes: Set[Attribute]): Activity = {
     newActivity(id,
-      if (startTime==null) None else Some(startTime),
-      if (endTime==null) None else Some(endTime),
+      Option(startTime),
+      Option(endTime),
       attributes)
   }
 
@@ -3553,15 +3555,15 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
         val size=vs.size
         if (size>0) throw new ValueExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
-        new WasGeneratedBy(id,
-          entity,
-          activity,
-          time,
-          langStrings,
-          ts,
-          locs,
-          rs,
-          os)
+        new WasGeneratedBy( id,
+                            entity,
+                            activity,
+                            time,
+                            langStrings,
+                            ts,
+                            locs,
+                            rs,
+                            os)
 
     }
   }
@@ -3624,16 +3626,16 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
         val size=vs.size
         if (size>0) throw new ValueExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
-        new WasStartedBy(id,
-          activity,
-          trigger,
-          starter,
-          time,
-          langStrings,
-          ts,
-          locs,
-          rs,
-          os)
+        new WasStartedBy( id,
+                          activity,
+                          trigger,
+                          starter,
+                          time,
+                          langStrings,
+                          ts,
+                          locs,
+                          rs,
+                          os)
 
     }
   }
@@ -3672,15 +3674,15 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        val langStrings=LangString(ls.map(l=>l.getLangString()))
+        val langStrings: Set[LangString]=LangString(ls.map(l=>l.getLangString()))
         new WasAssociatedWith(id,
-          activity,
-          agent,
-          plan,
-          langStrings,
-          ts,
-          rs,
-          os)
+                              activity,
+                              agent,
+                              plan,
+                              langStrings,
+                              ts,
+                              rs,
+                              os)
 
     }
   }
@@ -3713,7 +3715,7 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new WasAttributedTo(id,
           entity,
@@ -3737,7 +3739,7 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new SpecializationOf(id,
           entity2,
@@ -3770,7 +3772,7 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new MentionOf(null,
           specializedEntity,
@@ -3792,7 +3794,7 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new MentionOf(id,
           specializedEntity,
@@ -3815,7 +3817,7 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new AlternateOf(id,
           entity2,
@@ -3835,8 +3837,8 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls,ts,vs,locs,rs,os) =>
         val size=vs.size
         if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
-        if (locs.size>0) throw new LocationExistException
+        if (rs.nonEmpty) throw new RoleExistException
+        if (locs.nonEmpty) throw new LocationExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new WasInformedBy(id,
           informed,
@@ -3856,8 +3858,8 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
       case (ls, ts, vs, locs, rs, os) =>
         val size = vs.size
         if (size > 0) throw new ValueExistException
-        if (rs.size > 0) throw new RoleExistException
-        if (locs.size > 0) throw new LocationExistException
+        if (rs.nonEmpty) throw new RoleExistException
+        if (locs.nonEmpty) throw new LocationExistException
         val langStrings = LangString(ls.map(l => l.getLangString()))
         new WasInfluencedBy(id,
           influencee,
@@ -3967,7 +3969,7 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
   }
 
   override def newInternationalizedString(s: String, lang: String): org.openprovenance.prov.model.LangString = {
-    new LangString(s,if (lang==null) None else Some(lang))
+    new LangString(s,Option(lang))
   }
 
 
@@ -4086,12 +4088,12 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                                  usage: org.openprovenance.prov.model.QualifiedName,
                                  attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.WasDerivedFrom = {
     newWasDerivedFrom(QualifiedName(id),
-      QualifiedName(generatedEntity),
-      QualifiedName(usedEntity),
-      if (activity==null) null else QualifiedName(activity),
-      if (generation==null) null else QualifiedName(generation),
-      if (usage==null) null else QualifiedName(usage),
-      Attribute(attributes))
+                      QualifiedName(generatedEntity),
+                      QualifiedName(usedEntity),
+                      QualifiedName(activity),
+                      QualifiedName(generation),
+                      QualifiedName(usage),
+                      Attribute(attributes))
   }
 
   /*
@@ -4127,10 +4129,10 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                                  time: XMLGregorianCalendar,
                                  attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): WasGeneratedBy= {
     newWasGeneratedBy(QualifiedName(id),
-      QualifiedName(entity),
-      QualifiedName(activity),
-      if (time==null) None else Some(time),
-      Attribute(attributes))
+                      QualifiedName(entity),
+                      QualifiedName(activity),
+                      Option(time),
+                      Attribute(attributes))
   }
 
   /*
@@ -4166,10 +4168,10 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                        time: XMLGregorianCalendar,
                        attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.Used= {
     newUsed(QualifiedName(id),
-      QualifiedName(activity),
-      QualifiedName(entity),
-      if (time==null) None else Some(time),
-      Attribute(attributes))
+            QualifiedName(activity),
+            QualifiedName(entity),
+            Option(time),
+            Attribute(attributes))
 
   }
 
@@ -4208,7 +4210,7 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
     newWasInvalidatedBy(QualifiedName(id),
       QualifiedName(entity),
       QualifiedName(activity),
-      if (time==null) None else Some(time),
+      Option(time),
       Attribute(attributes))
 
   }
@@ -4246,11 +4248,11 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                                time: XMLGregorianCalendar,
                                attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.WasStartedBy = {
     newWasStartedBy(QualifiedName(id),
-      QualifiedName(activity),
-      QualifiedName(trigger),
-      QualifiedName(starter),
-      if (time==null) None else Some(time),
-      Attribute(attributes))
+                    QualifiedName(activity),
+                    QualifiedName(trigger),
+                    QualifiedName(starter),
+                    Option(time),
+                    Attribute(attributes))
   }
 
   /*
@@ -4289,11 +4291,11 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                              time: XMLGregorianCalendar,
                              attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.WasEndedBy = {
     newWasEndedBy(QualifiedName(id),
-      QualifiedName(activity),
-      QualifiedName(trigger),
-      QualifiedName(ender),
-      if (time==null) None else Some(time),
-      Attribute(attributes))
+                  QualifiedName(activity),
+                  QualifiedName(trigger),
+                  QualifiedName(ender),
+                  Option(time),
+                  Attribute(attributes))
   }
 
   /*
@@ -4331,10 +4333,10 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                                      plan: org.openprovenance.prov.model.QualifiedName,
                                      attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.WasAssociatedWith= {
     newWasAssociatedWith(QualifiedName(id),
-      QualifiedName(activity),
-      QualifiedName(agent),
-      if (plan==null) null else QualifiedName(plan),
-      Attribute(attributes))
+                          QualifiedName(activity),
+                          QualifiedName(agent),
+                          QualifiedName(plan),
+                          Attribute(attributes))
   }
 
   /*
@@ -4370,10 +4372,10 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                                    activity: org.openprovenance.prov.model.QualifiedName,
                                    attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.ActedOnBehalfOf= {
     newActedOnBehalfOf(QualifiedName(id),
-      QualifiedName(delegate),
-      QualifiedName(responsible),
-      if (activity==null) null else QualifiedName(activity),
-      Attribute(attributes))
+                      QualifiedName(delegate),
+                      QualifiedName(responsible),
+                      QualifiedName(activity),
+                      Attribute(attributes))
   }
 
   /*
@@ -4450,11 +4452,11 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
   def newSpecializationOf (specializedEntity: QualifiedName,
                            generalEntity: QualifiedName): SpecializationOf= {
     new SpecializationOf(null,
-      specializedEntity,
-      generalEntity,
-      Set(),
-      Set(),
-      Map())
+                          specializedEntity,
+                          generalEntity,
+                          Set(),
+                          Set(),
+                          Map())
 
   }
 
@@ -4558,11 +4560,11 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                       alternate2: QualifiedName): AlternateOf = {
 
     new AlternateOf(null,
-      alternate1,
-      alternate2,
-      Set(),
-      Set(),
-      Map())
+                    alternate1,
+                    alternate2,
+                    Set(),
+                    Set(),
+                    Map())
 
   }
 
@@ -4645,9 +4647,9 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
                                    influencer: org.openprovenance.prov.model.QualifiedName,
                                    attributes: java.util.Collection[org.openprovenance.prov.model.Attribute]): org.openprovenance.prov.model.WasInfluencedBy = {
     newWasInfluencedBy(QualifiedName(id),
-      QualifiedName(influencee),
-      QualifiedName(influencer),
-      Attribute(attributes))
+                      QualifiedName(influencee),
+                      QualifiedName(influencer),
+                      Attribute(attributes))
   }
 
   /*
@@ -4811,15 +4813,15 @@ class ProvFactory extends ProvFactory1  {
       case AttributeKind.OTHER => throw new UnsupportedOperationException // this function does have an elementName, so, we can't deal with OTHER
     }
   }
-  val prov_type           =getName.PROV_TYPE.asInstanceOf[QualifiedName]
-  val prov_role           =getName.PROV_ROLE.asInstanceOf[QualifiedName]
-  val prov_location       =getName.PROV_LOCATION.asInstanceOf[QualifiedName]
-  val prov_value          =getName.PROV_VALUE.asInstanceOf[QualifiedName]
-  val prov_key            =getName.PROV_KEY.asInstanceOf[QualifiedName]
-  val prov_label          =getName.PROV_LABEL.asInstanceOf[QualifiedName]
-  val prov_qualified_name =getName.PROV_QUALIFIED_NAME.asInstanceOf[QualifiedName]
-  val xsd_string          =getName.XSD_STRING.asInstanceOf[QualifiedName]
-  val xsd_int             =getName.XSD_INT.asInstanceOf[QualifiedName]
+  val prov_type: QualifiedName           =getName.PROV_TYPE.asInstanceOf[QualifiedName]
+  val prov_role: QualifiedName           =getName.PROV_ROLE.asInstanceOf[QualifiedName]
+  val prov_location: QualifiedName       =getName.PROV_LOCATION.asInstanceOf[QualifiedName]
+  val prov_value: QualifiedName          =getName.PROV_VALUE.asInstanceOf[QualifiedName]
+  val prov_key: QualifiedName            =getName.PROV_KEY.asInstanceOf[QualifiedName]
+  val prov_label: QualifiedName          =getName.PROV_LABEL.asInstanceOf[QualifiedName]
+  val prov_qualified_name: QualifiedName =getName.PROV_QUALIFIED_NAME.asInstanceOf[QualifiedName]
+  val xsd_string: QualifiedName          =getName.XSD_STRING.asInstanceOf[QualifiedName]
+  val xsd_int: QualifiedName             =getName.XSD_INT.asInstanceOf[QualifiedName]
 
   val attributeKindMap: Map[QualifiedName, AttributeKind] = Map(prov_type -> AttributeKind.PROV_TYPE, prov_role -> AttributeKind.PROV_ROLE, prov_value -> AttributeKind.PROV_VALUE, prov_location -> AttributeKind.PROV_LOCATION, prov_key -> AttributeKind.PROV_KEY, prov_label -> AttributeKind.PROV_LABEL)
  // val attributeKindCons: Map[AttributeKind, ((QualifiedName,Object) -> org.openprovenance.prov.model.Attribute)] = Map(AttributeKind.PROV_TYPE -> {case (t:QualifiedName,v:Object) -> Type(t, v)})
@@ -4859,8 +4861,6 @@ class ProvFactory extends ProvFactory1  {
   override def newInternationalizedString(s: String, lang: String): org.openprovenance.prov.model.LangString = {
     new LangString(s,if (lang==null) None else Some(lang))
   }
-
-
 
 
   override def newKey(x$1: Any,x$2: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Key = throw new UnsupportedOperationException
@@ -4913,7 +4913,7 @@ class ProvFactory extends ProvFactory1  {
     }
   }
   
-  override def newDocument(document: org.openprovenance.prov.model.Document) = {
+  override def newDocument(document: org.openprovenance.prov.model.Document): Document = {
     val statements=document.getStatementOrBundle
     new Document(StatementOrBundle.forStatementOrBundle(statements), document.getNamespace)
   }
@@ -4946,8 +4946,8 @@ class ProvFactory extends ProvFactory1  {
                    endTime: XMLGregorianCalendar,
                    attributes: Set[Attribute]): Activity = {    
       newActivity(id,
-                  if (startTime==null) None else Some(startTime),
-                  if (endTime==null) None else Some(endTime),
+                  Option(startTime),
+                  Option(endTime),
                   attributes)
   }
     
@@ -5019,7 +5019,7 @@ class ProvFactory extends ProvFactory1  {
       newWasGeneratedBy(QualifiedName(id),
                        QualifiedName(entity),
                        QualifiedName(activity),
-                       if (time==null) None else Some(time),
+                       Option(time),
                        Attribute(attributes))
     }
     def newWasGeneratedBy(id: QualifiedName,
@@ -5054,7 +5054,7 @@ class ProvFactory extends ProvFactory1  {
     newUsed(QualifiedName(id),
             QualifiedName(activity),
             QualifiedName(entity),
-            if (time==null) None else Some(time),
+            Option(time),
             Attribute(attributes))
     
   }
@@ -5090,7 +5090,7 @@ class ProvFactory extends ProvFactory1  {
     newWasInvalidatedBy(QualifiedName(id),
                         QualifiedName(entity),
                         QualifiedName(activity),
-                        if (time==null) None else Some(time),
+                        Option(time),
                         Attribute(attributes))
                      
   }
@@ -5129,7 +5129,7 @@ class ProvFactory extends ProvFactory1  {
                       QualifiedName(activity),
                       QualifiedName(trigger),
                       QualifiedName(starter),
-                      if (time==null) None else Some(time),
+                      Option(time),
                       Attribute(attributes))
   }
   
@@ -5168,7 +5168,7 @@ class ProvFactory extends ProvFactory1  {
                       QualifiedName(activity),
                       QualifiedName(trigger),
                       QualifiedName(ender),
-                      if (time==null) None else Some(time),
+                      Option(time),
                       Attribute(attributes))
   }
   
@@ -5217,8 +5217,7 @@ class ProvFactory extends ProvFactory1  {
                             attributes: Set[Attribute]): WasAssociatedWith= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
+        if (vs.nonEmpty) throw new ValueExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new WasAssociatedWith(id,
                               activity,
@@ -5241,7 +5240,7 @@ class ProvFactory extends ProvFactory1  {
     newActedOnBehalfOf(QualifiedName(id),
                        QualifiedName(delegate),
                        QualifiedName(responsible),
-                       if (activity==null) null else QualifiedName(activity),
+                       QualifiedName(activity),
                        Attribute(attributes))
   }
 
@@ -5252,8 +5251,7 @@ class ProvFactory extends ProvFactory1  {
                           attributes: Set[Attribute]): ActedOnBehalfOf = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
+        if (vs.nonEmpty) throw new ValueExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new ActedOnBehalfOf(id,
                             delegate,
@@ -5283,9 +5281,8 @@ class ProvFactory extends ProvFactory1  {
                           attributes: Set[Attribute]): WasAttributedTo = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (vs.nonEmpty) throw new ValueExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new WasAttributedTo(id,
                             entity,
@@ -5324,9 +5321,8 @@ class ProvFactory extends ProvFactory1  {
                            attributes: Set[Attribute]): SpecializationOf = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (vs.nonEmpty) throw new ValueExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new SpecializationOf(id,
                             entity2,
@@ -5357,9 +5353,8 @@ class ProvFactory extends ProvFactory1  {
 		                 attributes: Set[Attribute]): MentionOf= {      
        split(attributes) match {
          case (ls,ts,vs,locs,rs,os) => 
-           val size=vs.size
-           if (size>0) throw new ValueExistException
-           if (rs.size>0) throw new RoleExistException
+           if (vs.nonEmpty) throw new ValueExistException
+           if (rs.nonEmpty) throw new RoleExistException
            val langStrings=LangString(ls.map(l=>l.getLangString()))
            new MentionOf(null,
         		             specializedEntity,
@@ -5379,9 +5374,8 @@ class ProvFactory extends ProvFactory1  {
 		                 attributes: Set[Attribute]): MentionOf= {      
        split(attributes) match {
          case (ls,ts,vs,locs,rs,os) => 
-           val size=vs.size
-           if (size>0) throw new ValueExistException
-           if (rs.size>0) throw new RoleExistException
+           if (vs.nonEmpty) throw new ValueExistException
+           if (rs.nonEmpty) throw new RoleExistException
            val langStrings=LangString(ls.map(l=>l.getLangString()))
            new MentionOf(id,
         		             specializedEntity,
@@ -5419,9 +5413,8 @@ class ProvFactory extends ProvFactory1  {
                       attributes: Set[Attribute]): AlternateOf = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (vs.nonEmpty) throw new ValueExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new AlternateOf(id,
                             entity2,
@@ -5449,10 +5442,9 @@ class ProvFactory extends ProvFactory1  {
 		                    attributes: Set[Attribute]): WasInformedBy= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
-        if (locs.size>0) throw new LocationExistException
+        if (vs.nonEmpty) throw new ValueExistException
+        if (rs.nonEmpty) throw new RoleExistException
+        if (locs.nonEmpty) throw new LocationExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new WasInformedBy(id,
                           informed,
@@ -5482,9 +5474,9 @@ class ProvFactory extends ProvFactory1  {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
-        if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
-        if (locs.size>0) throw new LocationExistException
+        if (vs.nonEmpty) throw new ValueExistException
+        if (rs.nonEmpty) throw new RoleExistException
+        if (locs.nonEmpty) throw new LocationExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new WasInfluencedBy(id,
                             influencee,
@@ -5521,9 +5513,8 @@ class ProvFactory extends ProvFactory1  {
                     attributes: Set[Attribute]): HadMember = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
-        val size=vs.size
-        if (size>0) throw new ValueExistException
-        if (rs.size>0) throw new RoleExistException
+        if (vs.nonEmpty) throw new ValueExistException
+        if (rs.nonEmpty) throw new RoleExistException
         val langStrings=LangString(ls.map(l=>l.getLangString()))
         new HadMember(id,
                       collection,

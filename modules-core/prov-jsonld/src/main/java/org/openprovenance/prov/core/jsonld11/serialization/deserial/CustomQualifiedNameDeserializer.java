@@ -33,13 +33,13 @@ public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedNa
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         String text = jsonParser.getText();
         if (Constants.PROPERTY_AT_TYPE.equals(text)) return PROV_TYPE;
-        return ns.stringToQualifiedName(text, pf, false);
+        return ns.stringToQualifiedName(text, pf, true);  // FIXME: is this correct, is it escaped?
     }
 
 
     public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
         if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;
-        return ns.stringToQualifiedName(s, pf, false);
+        return ns.stringToQualifiedName(s, pf, true);
     }
 }

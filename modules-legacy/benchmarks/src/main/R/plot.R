@@ -3,6 +3,7 @@
 benchmark_file="bench1-quick.csv"
 benchmark_file="bench100.csv"
 benchmark_file="bench-2020-02-16-08-00.csv"
+benchmark_file="bench-2020-02-16-09-31.csv"
 
 
 library(reshape)
@@ -15,7 +16,7 @@ unit<- 1000 * 1000 # seconds
 
 stats$Score <- stats$Score/unit
 
-benchmarks <- c(1,2,3,4,5,6,7,8)
+benchmarks <- c(1,2,3,4,5,6,7,8,9)
 names(benchmarks)=c("r-provjsonld","w-provjsonld","r-json", "jdeepcopy","r-provjson", "w-provjson", "r-provn", "w-provn", "sdeepcopy")
 
 colors <- c("royalblue3", "lightblue", "orange4", "orange1", "chartreuse4","chartreuse1", "tomato4", "tomato1", "grey")
@@ -41,7 +42,7 @@ print(new_stats)
 ######################################################################
 # bar plot
 
-plotTop <- max(new_stats$Score+ 2 * max(new_stats$Score.Error..99.9..))
+plotTop <- max(new_stats$Score+ 2 * max(new_stats$Score.Error..99.9..)) * 1.1
 
 title <- paste ("Serialisation/Deserialisation (", benchmark_file, ")", sep="")
 
@@ -56,3 +57,4 @@ segments(myplot, new_stats$Score - new_stats$Score.Error..99.9.., myplot, new_st
 arrows(myplot, new_stats$Score - new_stats$Score.Error..99.9.., myplot, new_stats$Score + new_stats$Score.Error..99.9.., lwd = 1.5, angle = 90, code = 3, length = 0.05, col=errorbar_color)
 
 text(myplot, y = new_stats$Score +7, label = round(new_stats$Score, digits=2), pos = 4, cex = 0.8, col = "blue")
+

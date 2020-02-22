@@ -83,40 +83,40 @@ class Tee (val s1: ProvStream, val s2: ProvStream) extends ProvStream {
     }
 }
 
-class DocBuilder extends ProvStream {
-  var doc_statementOrBundles:Set[StatementOrBundle] = Set()
+final class DocBuilder extends ProvStream {
+  var doc_statementOrBundles:Seq[StatementOrBundle] = Seq()
   var doc_ns:Option[Namespace]=None
 
   var bun_ns:Option[Namespace]=None
   var bun_id:Option[QualifiedName]=None
-  var bun_statements:Option[Set[Statement]]=None
+  var bun_statements:Option[Seq[Statement]]=None
 
   
   
-  def postStatement = (s: Statement) => {
+  def postStatement: Statement => Unit = (s: Statement) => {
     (bun_id,bun_statements) match {
-      case (None,None) =>  doc_statementOrBundles += s
-      case (Some(_),Some(statements))=>  bun_statements = Some(statements + s)
+      case (None,None) =>  doc_statementOrBundles = doc_statementOrBundles :+ s
+      case (Some(_),Some(statements))=>  bun_statements = Some(statements :+ s)
       case _ => ???
     }
   }
-  def postBundle = (b: Bundle) => {      
+  def postBundle: Bundle => Unit = (b: Bundle) => {
      (bun_id,bun_statements) match {
-      case (None,None) =>  doc_statementOrBundles += b
+      case (None,None) =>  doc_statementOrBundles = doc_statementOrBundles :+ b
       case (Some(_),Some(_))=>  throw new BundleNotClosedException
       case _ => ???
     }
    
   }
-  def postStartDocument = (anamespace: Namespace) => {
+  def postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
     doc_ns=Some(anamespace)
   }
 
-  def postEndDocument = () => {
+  def postEndDocument: () => Unit = () => {
   }
   
 
-  def postStartBundle=(qn: QualifiedName, ns: Namespace) => {
+  def postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
   //  println("start bundle " + qn.toString() + " " + bun_id)
     //println("start bundle " + ns)
     bun_id match {
@@ -126,7 +126,7 @@ class DocBuilder extends ProvStream {
     bun_ns=Some(ns)
     ns.setParent(doc_ns.get)
     bun_id=Some(qn)
-    bun_statements=Some(Set())
+    bun_statements=Some(Seq())
     
   }
 
@@ -150,7 +150,7 @@ class DocBuilder extends ProvStream {
 }
 
 
-class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.DocumentProxyFactory) extends ProvStream {
+final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.DocumentProxyFactory) extends ProvStream {
   var nf_doc:org.openprovenance.prov.scala.nf.DocumentProxyInterface=null
   var doc_ns:Option[Namespace]=None
 

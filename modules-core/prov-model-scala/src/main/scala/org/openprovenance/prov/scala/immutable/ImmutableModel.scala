@@ -2400,7 +2400,7 @@ trait ExtensionStatement {
 }
 
 trait HasStatements {
-    val statement: Set[Statement]
+    val statement: Iterable[Statement]
     def getStatement () : java.util.List[org.openprovenance.prov.model.Statement] = {
             statement.toSeq 
     }
@@ -2425,7 +2425,7 @@ object Bundle {
 }
 
 class Bundle(val id: QualifiedName,
-             val statement: Set[Statement],
+             val statement: Iterable[Statement],
              @BeanProperty val namespace: Namespace) extends StatementOrBundle with org.openprovenance.prov.model.Bundle with Identifiable with HasStatements with Hashable with HasNamespace {     
 
 
@@ -2526,8 +2526,8 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
 	    this(List(),new Namespace)
 	  }
 
-    def statements () = statementOrBundle.collect{case s:Statement => s}
-    def bundles ()    = statementOrBundle.collect{case b:Bundle    => b}
+    def statements (): Iterable[Statement] = statementOrBundle.collect{case s:Statement => s}
+    def bundles (): Iterable[Bundle] = statementOrBundle.collect{case b:Bundle    => b}
 
     def canEqual(a: Any): Boolean = a.isInstanceOf[Document]
 

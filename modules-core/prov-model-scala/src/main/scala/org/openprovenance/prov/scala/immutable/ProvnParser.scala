@@ -22,7 +22,7 @@ import scala.io.BufferedSource
 
 trait ProvnCore extends Parser {
 
-  val pn_chars_base = CharPredicate.Alpha  ++ CharPredicate('\u00C0' to '\u00D6') ++
+  val pn_chars_base: CharPredicate = CharPredicate.Alpha  ++ CharPredicate('\u00C0' to '\u00D6') ++
     CharPredicate('\u00D8' to '\u00F6') ++
     CharPredicate('\u00F8' to '\u02FF') ++
     CharPredicate('\u0370' to '\u037D') ++
@@ -37,34 +37,34 @@ trait ProvnCore extends Parser {
 
 
 
-  val pn_chars_u = pn_chars_base ++ '_'
+  val pn_chars_u: CharPredicate = pn_chars_base ++ '_'
 
-  val pn_chars = pn_chars_u ++ '-' ++ CharPredicate.Digit ++
+  val pn_chars: CharPredicate = pn_chars_u ++ '-' ++ CharPredicate.Digit ++
     '\u00B7' ++ CharPredicate('\u0300' to '\u036F') ++ CharPredicate('\u203F' to '\u2040')
 
-  val marker = CharPredicate('-')
+  val marker: CharPredicate = CharPredicate('-')
 
-  val qualified_name_escape_chars=CharPredicate("='(),-:;[].")
+  val qualified_name_escape_chars: CharPredicate =CharPredicate("='(),-:;[].")
 
-  val qualified_name_chars_others=CharPredicate("/@~&+*?#$!")
+  val qualified_name_chars_others: CharPredicate =CharPredicate("/@~&+*?#$!")
 
-  val pn_char_white = CharPredicate(" \t \n\r")
+  val pn_char_white: CharPredicate = CharPredicate(" \t \n\r")
 
-  val EOL = CharPredicate("\n\r")
+  val EOL: CharPredicate = CharPredicate("\n\r")
 
-  val SIGN = CharPredicate("+-")
+  val SIGN: CharPredicate = CharPredicate("+-")
 
   def pn_prefix = rule{ pn_chars_base ~
     zeroOrMore ( pn_chars   |
       ( oneOrMore('.')  ~  pn_chars ) ) }
 
-  def percent = rule {  '%'  ~ CharPredicate.HexDigit ~ CharPredicate.HexDigit }
+  def percent: Rule[HNil, HNil] = rule {  '%'  ~ CharPredicate.HexDigit ~ CharPredicate.HexDigit }
 
 
-  def pn_chars_esc = rule {  '\\' ~ qualified_name_escape_chars }
+  def pn_chars_esc: Rule[HNil, HNil] = rule {  '\\' ~ qualified_name_escape_chars }
 
 
-  def pn_chars_others = rule { percent | qualified_name_chars_others | pn_chars_esc }
+  def pn_chars_others: Rule[HNil, HNil] = rule { percent | qualified_name_chars_others | pn_chars_esc }
 
 
   // Note, this had to be reorganised to  be compatible with the committed choice | or of ERG grammars
@@ -72,13 +72,13 @@ trait ProvnCore extends Parser {
     zeroOrMore ( ( pn_chars |  pn_chars_others )  |
       ( oneOrMore('.')  ~  ( pn_chars | pn_chars_others) ) )   }
 
-  def qualified_name = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeQualifiedName }
+  def qualified_name:Rule1[QualifiedName] = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeQualifiedName }
 
-  def qualified_nameAsString = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeText }
+  def qualified_nameAsString: Rule1[String] = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeText }
 
   def WS = rule { zeroOrMore( pn_char_white  | comment) }
 
-  def comment = rule { comment1 | comment2 }
+  def comment: Rule[HNil, HNil] = rule { comment1 | comment2 }
 
   def comment1 = rule { "//" ~ zeroOrMore(CharPredicate.Printable) ~ oneOrMore(EOL) }
 
@@ -98,7 +98,7 @@ trait ProvnNamespaces extends Parser with ProvnCore {
 
   def namespaceDeclaration: Rule[HNil, HNil] =  rule { "prefix" ~ WS ~ capture(pn_prefix) ~ WS ~ namespace ~> registerNamespace }
 
-  def defaultNamespaceDeclaration =  rule { "default" ~ WS ~ namespace  ~> registerDefaultNamespace }
+  def defaultNamespaceDeclaration: Rule[HNil, HNil] =  rule { "default" ~ WS ~ namespace  ~> registerDefaultNamespace }
 
   def namespace =  rule { '<' ~ capture( oneOrMore(noneOf("<>")) )  ~ '>' ~ WS }   // TO REFINE, see IRI_REF def
 
@@ -106,9 +106,9 @@ trait ProvnNamespaces extends Parser with ProvnCore {
 
   def theNamespace: () => Namespace
 
-  def registerNamespace = (pre:String,ns:String) => theNamespace().register(pre,ns)
+  def registerNamespace: (String, String) => Unit = (pre:String, ns:String) => theNamespace().register(pre,ns)
 
-  def registerDefaultNamespace = (ns:String) => theNamespace().registerDefault(ns)
+  def registerDefaultNamespace: String => Unit = (ns:String) => theNamespace().registerDefault(ns)
 }
 
 trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
@@ -344,7 +344,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
     def makeIntAttribute: (QualifiedName, String) => Attribute
     def makeQualifiedNameAttribute: (QualifiedName, QualifiedName) => Attribute
 
-    def makeBundle = (name: String, r: Seq[Statement]) => {
+    def makeBundle: (String, Seq[Statement]) => Bundle = (name: String, r: Seq[Statement]) => {
       val ns=theNamespace()
       val qn=makeQualifiedName(name)
       closeBundle()
@@ -353,14 +353,14 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
     def openBundle: () => Unit
     def closeBundle: () => Unit
 
-    def makeEmptyAttributeSet = () => Set() :Set[Attribute]
-    def makeAttributeSet = (a: Attribute, r: Seq[Attribute]) => (r.toSet + a) :Set[Attribute]
-    def makeAttributeSetFromOption = (s: Option[Set[Attribute]]) =>  (s match { case Some(s) => s; case _ => Set() } ) :Set[Attribute]
+    def makeEmptyAttributeSet: () => Set[Attribute] = () => Set() :Set[Attribute]
+    def makeAttributeSet: (Attribute, Seq[Attribute]) => Set[Attribute] = (a: Attribute, r: Seq[Attribute]) => (r.toSet + a) :Set[Attribute]
+    def makeAttributeSetFromOption: Option[Set[Attribute]] => Set[Attribute] = (s: Option[Set[Attribute]]) =>  (s match { case Some(s) => s; case _ => Set() } ) :Set[Attribute]
     def makeTime: (String) => XMLGregorianCalendar
     def makeOptionalTime: (XMLGregorianCalendar) => Option[XMLGregorianCalendar]
-    def makeNoTime= () => None: Option[XMLGregorianCalendar]
-    def makeOptionalIdentifier= (q: QualifiedName) => Some(q): Option[QualifiedName]
-    def makeNoIdentifier= () => None: Option[QualifiedName]
+    def makeNoTime: () => Option[XMLGregorianCalendar] = () => None: Option[XMLGregorianCalendar]
+    def makeOptionalIdentifier: QualifiedName => Option[QualifiedName] = (q: QualifiedName) => Some(q): Option[QualifiedName]
+    def makeNoIdentifier: () => Option[QualifiedName] = () => None: Option[QualifiedName]
 
  /* Streaming support */  
     def postStatement: Statement => Unit
@@ -381,144 +381,144 @@ trait ProvStream {
 
 class MyParser2(override val input: ParserInput) extends MyParser(input,new Namespace,None, new DocBuilder)  {
   docns.addKnownNamespaces()
-  docns.register("provext", "http://openprovenance.org/prov/extension#");
+  docns.register("provext", "http://openprovenance.org/prov/extension#")
 
 
 }
 
 class MyParser(val input: ParserInput, val docns: Namespace, var bun_ns: Option[Namespace]=None, val next: ProvStream=new DocBuilder) extends ProvnParser {
   
-    def getNext()= next
+    def getNext(): ProvStream = next
     
-    def makeText = (text: String) => text
+    override def makeText: String => String = (text: String) => text
             
-    def makeEntity = (n: QualifiedName, attr: Set[Attribute]) => pf.newEntity(n,attr)  
+    override def makeEntity: (QualifiedName, Set[Attribute]) => Entity = (n: QualifiedName, attr: Set[Attribute]) => pf.newEntity(n,attr)
 
-    def makeAgent = (n: QualifiedName, attr: Set[Attribute]) => pf.newAgent(n,attr)
+    override def makeAgent: (QualifiedName, Set[Attribute]) => Agent = (n: QualifiedName, attr: Set[Attribute]) => pf.newAgent(n,attr)
 
-    def makeActivity =(n: QualifiedName, start: Option[XMLGregorianCalendar], end: Option[XMLGregorianCalendar], attr: Set[Attribute]) => Activity {
+    override def makeActivity: (QualifiedName, Option[XMLGregorianCalendar], Option[XMLGregorianCalendar], Set[Attribute]) => Activity = (n: QualifiedName, start: Option[XMLGregorianCalendar], end: Option[XMLGregorianCalendar], attr: Set[Attribute]) => Activity {
       pf.newActivity(n, start, end, attr)
     }
 
-    def makeActivityNoTime =(n: QualifiedName, attr: Set[Attribute]) => Activity {
+    override def makeActivityNoTime: (QualifiedName, Set[Attribute]) => Activity = (n: QualifiedName, attr: Set[Attribute]) => Activity {
       pf.newActivity(n, None, None, attr)
     }
 
     def nullable [T >: Null](x:Option[T]):T = x match { case Some(s) => s; case None => null:T }
 
-    def makeWasGeneratedByWithId = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasGeneratedBy(id,e,nullable(a),t,attr)
+    override def makeWasGeneratedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasGeneratedBy = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasGeneratedBy(id,e,nullable(a),t,attr)
 
-    def makeWasGeneratedByWithId2 = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeWasGeneratedByWithId(id,e,None,None,attr)
+    override def makeWasGeneratedByWithId2: (QualifiedName, QualifiedName, Set[Attribute]) => WasGeneratedBy = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeWasGeneratedByWithId(id,e,None,None,attr)
 
-    def makeWasGeneratedByNoId = (e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasGeneratedBy(null,e,nullable(a),t,attr)
+    override def makeWasGeneratedByNoId: (QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasGeneratedBy = (e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasGeneratedBy(null,e,nullable(a),t,attr)
 
-    def makeWasGeneratedByNoId2 = (e: QualifiedName, attr: Set[Attribute]) =>   makeWasGeneratedByNoId(e,None,None,attr) 
+    override def makeWasGeneratedByNoId2: (QualifiedName, Set[Attribute]) => WasGeneratedBy = (e: QualifiedName, attr: Set[Attribute]) =>   makeWasGeneratedByNoId(e,None,None,attr)
 
-    def makeWasInvalidatedByWithId = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasInvalidatedBy(id,e,nullable(a),t,attr)
+    override def makeWasInvalidatedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasInvalidatedBy = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasInvalidatedBy(id,e,nullable(a),t,attr)
 
-    def makeWasInvalidatedByWithId2 = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeWasInvalidatedByWithId(id,e,None,None,attr)
+    override def makeWasInvalidatedByWithId2: (QualifiedName, QualifiedName, Set[Attribute]) => WasInvalidatedBy = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeWasInvalidatedByWithId(id,e,None,None,attr)
 
-    def makeWasInvalidatedByNoId = (e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasInvalidatedBy(null,e,nullable(a),t,attr)
+    override def makeWasInvalidatedByNoId: (QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasInvalidatedBy = (e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasInvalidatedBy(null,e,nullable(a),t,attr)
 
-    def makeWasInvalidatedByNoId2 = (e: QualifiedName, attr: Set[Attribute]) =>   makeWasInvalidatedByNoId(e,None,None,attr) 
+    override def makeWasInvalidatedByNoId2: (QualifiedName, Set[Attribute]) => WasInvalidatedBy = (e: QualifiedName, attr: Set[Attribute]) =>   makeWasInvalidatedByNoId(e,None,None,attr)
 
-    def makeWasAssociatedWithWithId = (id: QualifiedName, a: QualifiedName, ag: Option[QualifiedName], pl: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasAssociatedWith(id,a,nullable(ag),nullable(pl),attr)
+    override def makeWasAssociatedWithWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Set[Attribute]) => WasAssociatedWith = (id: QualifiedName, a: QualifiedName, ag: Option[QualifiedName], pl: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasAssociatedWith(id,a,nullable(ag),nullable(pl),attr)
 
-    def makeWasAssociatedWithWithId2 = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeWasAssociatedWithWithId(id,e,None,None,attr)
+    override def makeWasAssociatedWithWithId2: (QualifiedName, QualifiedName, Set[Attribute]) => WasAssociatedWith = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeWasAssociatedWithWithId(id,e,None,None,attr)
 
-    def makeWasAssociatedWithNoId = (a: QualifiedName, ag: Option[QualifiedName], pl: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasAssociatedWith(null,a,nullable(ag),nullable(pl),attr)
+    override def makeWasAssociatedWithNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Set[Attribute]) => WasAssociatedWith = (a: QualifiedName, ag: Option[QualifiedName], pl: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasAssociatedWith(null,a,nullable(ag),nullable(pl),attr)
 
-    def makeWasAssociatedWithNoId2 = (e: QualifiedName, attr: Set[Attribute]) =>   makeWasAssociatedWithNoId(e,None,None,attr) 
+    override def makeWasAssociatedWithNoId2: (QualifiedName, Set[Attribute]) => WasAssociatedWith = (e: QualifiedName, attr: Set[Attribute]) =>   makeWasAssociatedWithNoId(e,None,None,attr)
 
-    def makeActedOnBehalfOfWithId = (id: QualifiedName, ag2: QualifiedName, ag1: QualifiedName, a: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newActedOnBehalfOf(id,ag2,ag1,nullable(a),attr)
+    override def makeActedOnBehalfOfWithId: (QualifiedName, QualifiedName, QualifiedName, Option[QualifiedName], Set[Attribute]) => ActedOnBehalfOf = (id: QualifiedName, ag2: QualifiedName, ag1: QualifiedName, a: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newActedOnBehalfOf(id,ag2,ag1,nullable(a),attr)
 
-    def makeActedOnBehalfOfWithId2 = (id: QualifiedName, ag2: QualifiedName, ag1: QualifiedName, attr: Set[Attribute]) =>  makeActedOnBehalfOfWithId(id,ag2,ag1,None,attr)
+    override def makeActedOnBehalfOfWithId2: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => ActedOnBehalfOf = (id: QualifiedName, ag2: QualifiedName, ag1: QualifiedName, attr: Set[Attribute]) =>  makeActedOnBehalfOfWithId(id,ag2,ag1,None,attr)
 
-    def makeActedOnBehalfOfNoId = (ag2: QualifiedName, ag1: QualifiedName, a: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newActedOnBehalfOf(null,ag2,ag1,nullable(a),attr)
+    override def makeActedOnBehalfOfNoId: (QualifiedName, QualifiedName, Option[QualifiedName], Set[Attribute]) => ActedOnBehalfOf = (ag2: QualifiedName, ag1: QualifiedName, a: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newActedOnBehalfOf(null,ag2,ag1,nullable(a),attr)
 
-    def makeActedOnBehalfOfNoId2 = (ag2: QualifiedName, ag1: QualifiedName, attr: Set[Attribute]) =>   makeActedOnBehalfOfNoId(ag2,ag1,None,attr) 
+    override def makeActedOnBehalfOfNoId2: (QualifiedName, QualifiedName, Set[Attribute]) => ActedOnBehalfOf = (ag2: QualifiedName, ag1: QualifiedName, attr: Set[Attribute]) =>   makeActedOnBehalfOfNoId(ag2,ag1,None,attr)
   
-    def makeWasDerivedFromWithId = (id: QualifiedName, e2: QualifiedName, e1: QualifiedName, a: Option[QualifiedName], gen: Option[QualifiedName], use: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasDerivedFrom(id,e2,e1,nullable(a),nullable(gen),nullable(use),attr)
+    override def makeWasDerivedFromWithId: (QualifiedName, QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[QualifiedName], Set[Attribute]) => WasDerivedFrom = (id: QualifiedName, e2: QualifiedName, e1: QualifiedName, a: Option[QualifiedName], gen: Option[QualifiedName], use: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasDerivedFrom(id,e2,e1,nullable(a),nullable(gen),nullable(use),attr)
 
-    def makeWasDerivedFromWithId2 = (id: QualifiedName, e2: QualifiedName, e1: QualifiedName, attr: Set[Attribute]) =>  makeWasDerivedFromWithId(id,e2,e1,None,None,None,attr)
+    override def makeWasDerivedFromWithId2: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => WasDerivedFrom = (id: QualifiedName, e2: QualifiedName, e1: QualifiedName, attr: Set[Attribute]) =>  makeWasDerivedFromWithId(id,e2,e1,None,None,None,attr)
 
-    def makeWasDerivedFromNoId = (e2: QualifiedName, e1: QualifiedName, a: Option[QualifiedName], gen: Option[QualifiedName], use: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasDerivedFrom(null,e2,e1,nullable(a),nullable(gen),nullable(use),attr)
+    override def makeWasDerivedFromNoId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[QualifiedName], Set[Attribute]) => WasDerivedFrom = (e2: QualifiedName, e1: QualifiedName, a: Option[QualifiedName], gen: Option[QualifiedName], use: Option[QualifiedName], attr: Set[Attribute]) =>  pf.newWasDerivedFrom(null,e2,e1,nullable(a),nullable(gen),nullable(use),attr)
 
-    def makeWasDerivedFromNoId2 = (e2: QualifiedName, e1: QualifiedName, attr: Set[Attribute]) =>   makeWasDerivedFromNoId(e2,e1,None,None,None,attr) 
+    override def makeWasDerivedFromNoId2: (QualifiedName, QualifiedName, Set[Attribute]) => WasDerivedFrom = (e2: QualifiedName, e1: QualifiedName, attr: Set[Attribute]) =>   makeWasDerivedFromNoId(e2,e1,None,None,None,attr)
   
-    def makeWasAttributedToWithId= (id: QualifiedName,e: QualifiedName,ag: QualifiedName, attr: Set[Attribute]) => pf.newWasAttributedTo(id,e,ag,attr)
+    override def makeWasAttributedToWithId: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => WasAttributedTo = (id: QualifiedName, e: QualifiedName, ag: QualifiedName, attr: Set[Attribute]) => pf.newWasAttributedTo(id,e,ag,attr)
 
-    def makeWasAttributedToNoId= (e: QualifiedName,ag: QualifiedName, attr: Set[Attribute]) => pf.newWasAttributedTo(null,e,ag,attr)
+    override def makeWasAttributedToNoId: (QualifiedName, QualifiedName, Set[Attribute]) => WasAttributedTo = (e: QualifiedName, ag: QualifiedName, attr: Set[Attribute]) => pf.newWasAttributedTo(null,e,ag,attr)
 
-    def makeWasInfluencedByWithId= (id: QualifiedName,r2: QualifiedName,r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInfluencedBy(id,r2,r1,attr)
+    override def makeWasInfluencedByWithId: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => WasInfluencedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInfluencedBy(id,r2,r1,attr)
 
-    def makeWasInfluencedByNoId= (r2: QualifiedName,r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInfluencedBy(null,r2,r1,attr)
+    override def makeWasInfluencedByNoId: (QualifiedName, QualifiedName, Set[Attribute]) => WasInfluencedBy = (r2: QualifiedName, r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInfluencedBy(null,r2,r1,attr)
 
-    def makeWasInformedByWithId= (id: QualifiedName,r2: QualifiedName,r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInformedBy(id,r2,r1,attr)
+    override def makeWasInformedByWithId: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => WasInformedBy = (id: QualifiedName, r2: QualifiedName, r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInformedBy(id,r2,r1,attr)
 
-    def makeWasInformedByNoId= (r2: QualifiedName,r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInformedBy(null,r2,r1,attr)
+    override def makeWasInformedByNoId: (QualifiedName, QualifiedName, Set[Attribute]) => WasInformedBy = (r2: QualifiedName, r1: QualifiedName, attr: Set[Attribute]) => pf.newWasInformedBy(null,r2,r1,attr)
 
-    def makeUsedWithId = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newUsed(id,e,nullable(a),t,attr)
+    override def makeUsedWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => Used = (id: QualifiedName, e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newUsed(id,e,nullable(a),t,attr)
 
-    def makeUsedWithId2 = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeUsedWithId(id,e,None,None,attr)
+    override def makeUsedWithId2: (QualifiedName, QualifiedName, Set[Attribute]) => Used = (id: QualifiedName, e: QualifiedName, attr: Set[Attribute]) =>  makeUsedWithId(id,e,None,None,attr)
 
-    def makeUsedNoId = (e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newUsed(null,e,nullable(a),t,attr)
+    override def makeUsedNoId: (QualifiedName, Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => Used = (e: QualifiedName, a: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newUsed(null,e,nullable(a),t,attr)
 
-    def makeUsedNoId2 = (e: QualifiedName, attr: Set[Attribute]) =>   makeUsedNoId(e,None,None,attr) 
+    override def makeUsedNoId2: (QualifiedName, Set[Attribute]) => Used = (e: QualifiedName, attr: Set[Attribute]) =>   makeUsedNoId(e,None,None,attr)
 
-    def makeWasStartedByWithId  = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasStartedBy(id,a,nullable(trigger),nullable(starter),t,attr)
+    override def makeWasStartedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasStartedBy = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasStartedBy(id,a,nullable(trigger),nullable(starter),t,attr)
 
-    def makeWasStartedByWithId2 = (id: QualifiedName, a: QualifiedName, attr: Set[Attribute]) =>  makeWasStartedByWithId(id,a,None,None,None,attr)
+    override def makeWasStartedByWithId2: (QualifiedName, QualifiedName, Set[Attribute]) => WasStartedBy = (id: QualifiedName, a: QualifiedName, attr: Set[Attribute]) =>  makeWasStartedByWithId(id,a,None,None,None,attr)
 
-    def makeWasStartedByNoId = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasStartedBy(null,a,nullable(trigger),nullable(starter),t,attr)
+    override def makeWasStartedByNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasStartedBy = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasStartedBy(null,a,nullable(trigger),nullable(starter),t,attr)
 
-    def makeWasStartedByNoId2 = (a: QualifiedName, attr: Set[Attribute]) =>   makeWasStartedByNoId(a,None,None,None,attr) 
+    override def makeWasStartedByNoId2: (QualifiedName, Set[Attribute]) => WasStartedBy = (a: QualifiedName, attr: Set[Attribute]) =>   makeWasStartedByNoId(a,None,None,None,attr)
 
-    def makeWasEndedByWithId  = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasEndedBy(id,a,nullable(trigger),nullable(starter),t,attr)
+    override def makeWasEndedByWithId: (QualifiedName, QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasEndedBy = (id: QualifiedName, a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasEndedBy(id,a,nullable(trigger),nullable(starter),t,attr)
 
-    def makeWasEndedByWithId2 = (id: QualifiedName, a: QualifiedName, attr: Set[Attribute]) =>  makeWasEndedByWithId(id,a,None,None,None,attr)
+    override def makeWasEndedByWithId2: (QualifiedName, QualifiedName, Set[Attribute]) => WasEndedBy = (id: QualifiedName, a: QualifiedName, attr: Set[Attribute]) =>  makeWasEndedByWithId(id,a,None,None,None,attr)
 
-    def makeWasEndedByNoId = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasEndedBy(null,a,nullable(trigger),nullable(starter),t,attr)
+    override def makeWasEndedByNoId: (QualifiedName, Option[QualifiedName], Option[QualifiedName], Option[XMLGregorianCalendar], Set[Attribute]) => WasEndedBy = (a: QualifiedName, trigger: Option[QualifiedName], starter: Option[QualifiedName], t: Option[XMLGregorianCalendar], attr: Set[Attribute]) =>  pf.newWasEndedBy(null,a,nullable(trigger),nullable(starter),t,attr)
 
-    def makeWasEndedByNoId2 = (a: QualifiedName, attr: Set[Attribute]) =>   makeWasEndedByNoId(a,None,None,None,attr) 
+    override def makeWasEndedByNoId2: (QualifiedName, Set[Attribute]) => WasEndedBy = (a: QualifiedName, attr: Set[Attribute]) =>   makeWasEndedByNoId(a,None,None,None,attr)
 
-    def makeSpecializationOf= (e2: QualifiedName, e1:QualifiedName) => pf.newSpecializationOf(e2,e1)
+    override def makeSpecializationOf: (QualifiedName, QualifiedName) => SpecializationOf = (e2: QualifiedName, e1:QualifiedName) => pf.newSpecializationOf(e2,e1)
     
-    def makeMentionOf= (e2: QualifiedName, e1:QualifiedName, b: QualifiedName) => pf.newMentionOf(e2,e1,b)
+    override def makeMentionOf: (QualifiedName, QualifiedName, QualifiedName) => MentionOf = (e2: QualifiedName, e1:QualifiedName, b: QualifiedName) => pf.newMentionOf(e2,e1,b)
 
 
-    def makeQualifiedSpecializationOfWithId = (id:QualifiedName,e2:QualifiedName,e1:QualifiedName, attr:Set[Attribute]) => pf.newSpecializationOf(id,e2,e1,attr)
+    override def makeQualifiedSpecializationOfWithId: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => SpecializationOf = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Set[Attribute]) => pf.newSpecializationOf(id,e2,e1,attr)
 
-    def makeQualifiedSpecializationOfNoId = (e2:QualifiedName,e1:QualifiedName, attr:Set[Attribute]) => pf.newSpecializationOf(null,e2,e1,attr)
+    override def makeQualifiedSpecializationOfNoId: (QualifiedName, QualifiedName, Set[Attribute]) => SpecializationOf = (e2:QualifiedName, e1:QualifiedName, attr:Set[Attribute]) => pf.newSpecializationOf(null,e2,e1,attr)
 
-    def makeAlternateOf= (e2: QualifiedName, e1: QualifiedName) =>  pf.newAlternateOf(e2,e1)
+    override def makeAlternateOf: (QualifiedName, QualifiedName) => AlternateOf = (e2: QualifiedName, e1: QualifiedName) =>  pf.newAlternateOf(e2,e1)
 
-    def makeQualifiedAlternateOfWithId = (id:QualifiedName,e2:QualifiedName,e1:QualifiedName, attr:Set[Attribute]) => pf.newAlternateOf(id,e2,e1,attr)
+    override def makeQualifiedAlternateOfWithId: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => AlternateOf = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Set[Attribute]) => pf.newAlternateOf(id,e2,e1,attr)
 
-    def makeQualifiedAlternateOfNoId = (e2:QualifiedName,e1:QualifiedName, attr:Set[Attribute]) => pf.newAlternateOf(null,e2,e1,attr)
+    override def makeQualifiedAlternateOfNoId: (QualifiedName, QualifiedName, Set[Attribute]) => AlternateOf = (e2:QualifiedName, e1:QualifiedName, attr:Set[Attribute]) => pf.newAlternateOf(null,e2,e1,attr)
 
-    def makeHadMember= (e2:QualifiedName,e1:QualifiedName) => pf.newHadMember(e2,Set(e1))
+    override def makeHadMember: (QualifiedName, QualifiedName) => HadMember = (e2:QualifiedName, e1:QualifiedName) => pf.newHadMember(e2,Set(e1))
 
-    def makeQualifiedHadMemberOfWithId = (id:QualifiedName,e2:QualifiedName,e1:QualifiedName, attr:Set[Attribute]) => pf.newHadMember(id,e2,Set(e1),attr)
+    override def makeQualifiedHadMemberOfWithId: (QualifiedName, QualifiedName, QualifiedName, Set[Attribute]) => HadMember = (id:QualifiedName, e2:QualifiedName, e1:QualifiedName, attr:Set[Attribute]) => pf.newHadMember(id,e2,Set(e1),attr)
 
-    def makeQualifiedHadMemberOfNoId = (e2:QualifiedName,e1:QualifiedName, attr:Set[Attribute]) => pf.newHadMember(null,e2,Set(e1),attr)
+    override def makeQualifiedHadMemberOfNoId: (QualifiedName, QualifiedName, Set[Attribute]) => HadMember = (e2:QualifiedName, e1:QualifiedName, attr:Set[Attribute]) => pf.newHadMember(null,e2,Set(e1),attr)
 
-    def theNamespace= () => bun_ns match{
+    override def theNamespace: () => Namespace = () => bun_ns match{
       case Some(ns) => ns
       case None => docns
     }
 
-    def makeQualifiedName = (s:String) => QualifiedName {
+    override def makeQualifiedName: String => QualifiedName = (s:String) => QualifiedName {
         //println("creating qn for " ++ s ++ " with ns " ++ ns.toString())
         theNamespace().stringToQualifiedName(s,pf).asInstanceOf[QualifiedName]
     }
     
-    def makeAttribute =(attr: QualifiedName, literal: String, datatype: QualifiedName) => Attribute {
+    override def makeAttribute: (QualifiedName, String, QualifiedName) => Attribute = (attr: QualifiedName, literal: String, datatype: QualifiedName) => Attribute {
       //println("creating attr for " ++ attr.toString ++ " " ++  literal ++ " " ++ datatype.toString)
       pf.newAttribute(attr, literal, datatype)
     }
     
-    def makeStringAttribute =(attr: QualifiedName, literal: String, lang: Option[String]) => Attribute {
+    override def makeStringAttribute: (QualifiedName, String, Option[String]) => Attribute = (attr: QualifiedName, literal: String, lang: Option[String]) => Attribute {
         //println("creating attr (str) for " ++ attr.toString ++ " " ++  literal ++ " " + lang)
         lang match {
           case None    => pf.newAttribute(attr, literal, pf.xsd_string)
@@ -526,51 +526,51 @@ class MyParser(val input: ParserInput, val docns: Namespace, var bun_ns: Option[
         }
         
     }   
-    def makeIntAttribute =(attr: QualifiedName, literal: String) => Attribute {
+    override def makeIntAttribute: (QualifiedName, String) => Attribute = (attr: QualifiedName, literal: String) => Attribute {
       //println("creating attr (int) for " ++ attr.toString ++ " " ++  literal)
         pf.newAttribute(attr, literal, pf.xsd_int)
     }
 
-    def makeQualifiedNameAttribute =(attr: QualifiedName, literal: QualifiedName) => Attribute {
+    override def makeQualifiedNameAttribute: (QualifiedName, QualifiedName) => Attribute = (attr: QualifiedName, literal: QualifiedName) => Attribute {
         //println("creating attr (qn) for " ++ attr.toString ++ " " ++  literal.toString)
         pf.newAttribute(attr, literal, pf.prov_qualified_name)
     }
 
-    def makeTime = (s: String) => (pf.newISOTime(s)): XMLGregorianCalendar
+    override def makeTime: String => XMLGregorianCalendar = (s: String) => pf.newISOTime(s): XMLGregorianCalendar
 
-    def makeOptionalTime = (t:XMLGregorianCalendar) => (if (t==null) None else Some(t)): Option[XMLGregorianCalendar]
+    override def makeOptionalTime: XMLGregorianCalendar => Option[XMLGregorianCalendar] = (t:XMLGregorianCalendar) => Option(t): Option[XMLGregorianCalendar]
 
-    def openBundle = () => {
+    override def openBundle: () => Unit = () => {
       val ns=pf.newNamespace()
       bun_ns=Some(ns)
-      ns.addKnownNamespaces();
+      ns.addKnownNamespaces()
       ns.register("provext", "http://openprovenance.org/prov/extension#");
-      ns.setParent(docns);
+      ns.setParent(docns)
     }
     
-    def closeBundle = () => { bun_ns=None }
+    override def closeBundle: () => Unit = () => { bun_ns=None }
 
     /* Streaming support */
 
-    def postStartBundle = (name: String) => {
+    override def postStartBundle: String => Unit = (name: String) => {
       val ns=theNamespace()
       val qn=makeQualifiedName(name)
       next.postStartBundle(qn,ns)
     }
 
-    def postStatement = (s: Statement) => {
+    override def postStatement: Statement => Unit = (s: Statement) => {
       next.postStatement(s)
     }
 
-    def postStartDocument= () => {
+    override def postStartDocument: () => Unit = () => {
       next.postStartDocument(theNamespace())
     }
 
-    def postEndDocument= () => {
+    override def postEndDocument: () => Unit = () => {
       next.postEndDocument()
     }
 
-    def postEndBundle= () => {
+    override def postEndBundle: () => Unit = () => {
       next.postEndBundle()
     }
 
@@ -583,7 +583,7 @@ class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
     val docBuilder=new DocBuilder
     val ns=new Namespace
     ns.addKnownNamespaces()
-    ns.register("provext", "http://openprovenance.org/prov/extension#");
+    ns.register("provext", "http://openprovenance.org/prov/extension#")
 
     val bufferedSource: BufferedSource =io.Source.fromInputStream(in)
 
@@ -602,14 +602,14 @@ object Parser {
         val docBuilder=new DocBuilder
         val ns=new Namespace
         ns.addKnownNamespaces()
-        ns.register("provext", "http://openprovenance.org/prov/extension#");
+        ns.register("provext", "http://openprovenance.org/prov/extension#")
 
-        
+
         val p=new MyParser(inputfile,ns,None,docBuilder)
         p.document.run() match {
-          case Success(result) => docBuilder.document
-          case Failure(e: ParseError) => { println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException() }
-          case Failure(e) => { println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException() }
+          case Success(result) => docBuilder.document()
+          case Failure(e: ParseError) => println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException()
+          case Failure(e) => println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException()
         }
     }
 }
@@ -617,17 +617,17 @@ object Parser {
 
 object AParser  {
 
-  def doCheckDoc (s: ParserInput) = {
+  def doCheckDoc (s: ParserInput): Unit = {
         val docBuilder=new DocBuilder
         val stream=new Tee(docBuilder,new SimpleStreamStats)
         val ns=new Namespace
         ns.addKnownNamespaces()
-        ns.register("provext", "http://openprovenance.org/prov/extension#");
+        ns.register("provext", "http://openprovenance.org/prov/extension#")
 
         
         val p=new MyParser(s,ns,None,stream)
         p.document.run() match {
-          case Success(result) => println(docBuilder.document)
+          case Success(result) => println(docBuilder.document())
           case Failure(e: ParseError) => println("Expression is not valid: " + p.formatError(e))
           case Failure(e) => println("Unexpected error during parsing run: " + e.printStackTrace)
         }
@@ -646,7 +646,7 @@ object AParser  {
         println( "parsing " + new MyParser2("var:").qualified_name.run())
         println( "parsing " + new MyParser2(":var").qualified_name.run())
         println( "parsing " + new MyParser2(":").qualified_name.run())
-        
+
 
         doCheckDoc( """
 document

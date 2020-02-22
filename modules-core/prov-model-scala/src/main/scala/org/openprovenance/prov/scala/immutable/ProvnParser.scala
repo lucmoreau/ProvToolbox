@@ -22,6 +22,8 @@ import scala.io.BufferedSource
 
 trait ProvnCore extends Parser {
 
+  def input : ParserInput
+
   val pn_chars_base: CharPredicate = CharPredicate.Alpha  ++ CharPredicate('\u00C0' to '\u00D6') ++
     CharPredicate('\u00D8' to '\u00F6') ++
     CharPredicate('\u00F8' to '\u02FF') ++
@@ -92,6 +94,7 @@ trait ProvnCore extends Parser {
 
 
 }
+
 
 trait ProvnNamespaces extends Parser with ProvnCore {
 
@@ -378,6 +381,7 @@ trait ProvStream {
   def postEndDocument: () => Unit
 }
 
+/*
 
 class MyParser2(override val input: ParserInput) extends MyParser(input,new Namespace,None, new DocBuilder)  {
   docns.addKnownNamespaces()
@@ -385,8 +389,9 @@ class MyParser2(override val input: ParserInput) extends MyParser(input,new Name
 
 
 }
+ */
 
-class MyParser(val input: ParserInput, val docns: Namespace, var bun_ns: Option[Namespace]=None, val next: ProvStream=new DocBuilder) extends ProvnParser {
+final class MyParser(val input: ParserInput, val docns: Namespace, var bun_ns: Option[Namespace]=None, val next: ProvStream=new DocBuilder) extends ProvnParser {
   
     def getNext(): ProvStream = next
     
@@ -512,7 +517,7 @@ class MyParser(val input: ParserInput, val docns: Namespace, var bun_ns: Option[
         //println("creating qn for " ++ s ++ " with ns " ++ ns.toString())
         theNamespace().stringToQualifiedName(s,pf).asInstanceOf[QualifiedName]
     }
-    
+
     override def makeAttribute: (QualifiedName, String, QualifiedName) => Attribute = (attr: QualifiedName, literal: String, datatype: QualifiedName) => Attribute {
       //println("creating attr for " ++ attr.toString ++ " " ++  literal ++ " " ++ datatype.toString)
       pf.newAttribute(attr, literal, datatype)
@@ -597,13 +602,14 @@ class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
 }
 
 object Parser {
-      def readDocument (s: String): Document = {
-        val inputfile : ParserInput = io.Source.fromFile(s: String).mkString
-        val docBuilder=new DocBuilder
-        val ns=new Namespace
-        ns.addKnownNamespaces()
-        ns.register("provext", "http://openprovenance.org/prov/extension#")
 
+  def readDocument (s: String): Document = {
+    val docBuilder=new DocBuilder
+    val ns=new Namespace
+    ns.addKnownNamespaces()
+    ns.register("provext", "http://openprovenance.org/prov/extension#")
+
+    val inputfile : ParserInput = io.Source.fromFile(s: String).mkString
 
         val p=new MyParser(inputfile,ns,None,docBuilder)
         p.document.run() match {
@@ -636,7 +642,7 @@ object AParser  {
 
     def main(args: Array[String]) {
         lazy val inputfile : ParserInput = io.Source.fromFile(args(0)).mkString
-
+/*
         println( "parsing " + new MyParser2("foo").pn_local.run())
         println( "parsing " + new MyParser2("-foo").pn_local.run())
         println( "parsing " + new MyParser2("foo").pn_prefix.run())
@@ -647,6 +653,8 @@ object AParser  {
         println( "parsing " + new MyParser2(":var").qualified_name.run())
         println( "parsing " + new MyParser2(":").qualified_name.run())
 
+
+ */
 
         doCheckDoc( """
 document

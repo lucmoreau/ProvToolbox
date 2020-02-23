@@ -22,7 +22,7 @@ public class Entity implements org.openprovenance.prov.model.Entity, Equals, Has
     private Optional<org.openprovenance.prov.model.Value> value=Optional.empty();
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

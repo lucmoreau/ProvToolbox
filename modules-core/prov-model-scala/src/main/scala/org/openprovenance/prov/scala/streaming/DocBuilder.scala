@@ -16,7 +16,7 @@ class SimpleStreamStats(var threshold:Int=10000) extends ProvStream {
         times = times.enqueue(LocalDateTime.now())
     }
 
-    def postStatement: Statement => Unit = (s: Statement) => {
+    val postStatement: Statement => Unit = (s: Statement) => {
         count=count+1
         if (count == threshold) {
             processTime(count, LocalDateTime.now())
@@ -25,18 +25,18 @@ class SimpleStreamStats(var threshold:Int=10000) extends ProvStream {
         }
     }
     
-    def postStartDocument: Namespace => Unit = (ns: Namespace) => {
+    val postStartDocument: Namespace => Unit = (ns: Namespace) => {
       
     }
-    def postEndDocument: () => Unit = () => {
+    val postEndDocument: () => Unit = () => {
         processTime(count, LocalDateTime.now())
         times.foreach { println(_) }
     }
     
-    def postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
+    val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
       
     }
-    def postEndBundle: () => Unit = () => {
+    val postEndBundle: () => Unit = () => {
       
     }
 }
@@ -46,7 +46,7 @@ class SimpleStreamStatsPrint(thresh:Int, out: PrintWriter) extends SimpleStreamS
       out.println(time.toString())
       out.flush()
     }
-    override def postEndDocument: () => Unit = () => {
+    override val postEndDocument: () => Unit = () => {
         processTime(count, LocalDateTime.now())
         out.close()
     }
@@ -57,67 +57,76 @@ class SimpleStreamStatsPrint(thresh:Int, out: PrintWriter) extends SimpleStreamS
 
 class Tee (val s1: ProvStream, val s2: ProvStream) extends ProvStream {
 
-    def postStatement = (s: Statement) => {
+    val postStatement = (s: Statement) => {
         s1.postStatement(s);
         s2.postStatement(s)
     }
     
-    def postStartDocument = (ns: Namespace) => {
+    val postStartDocument = (ns: Namespace) => {
       s1.postStartDocument(ns);
       s2.postStartDocument(ns)
     }
     
-    def postEndDocument = () => {
+    val postEndDocument = () => {
        s1.postEndDocument();
        s2.postEndDocument()      
     }
     
-    def postStartBundle = (qn: QualifiedName, ns: Namespace) => {
+    val postStartBundle = (qn: QualifiedName, ns: Namespace) => {
       s1.postStartBundle(qn,ns);
       s2.postStartBundle(qn,ns)       
     }
     
-    def postEndBundle = () => {
+    val postEndBundle = () => {
         s1.postEndBundle();
         s2.postEndBundle()
     }
 }
 
-final class DocBuilder extends ProvStream {
-  var doc_statementOrBundles:Seq[StatementOrBundle] = Seq()
-  var doc_ns:Option[Namespace]=None
 
-  var bun_ns:Option[Namespace]=None
-  var bun_id:Option[QualifiedName]=None
-  var bun_statements:Option[Seq[Statement]]=None
+final class DocBuilderFunctions (
+  var doc_statementOrBundles:Seq[StatementOrBundle] = Seq(),
+  var doc_ns:Option[Namespace]=None,
 
-  
-  
-  def postStatement: Statement => Unit = (s: Statement) => {
+  var bun_ns:Option[Namespace]=None,
+  var bun_id:Option[QualifiedName]=None,
+  var bun_statements:Option[Seq[Statement]]=None) {
+
+  def reset() = {
+    doc_statementOrBundles=Seq()
+    doc_ns=None
+    bun_ns=None
+    bun_id=None
+    bun_statements=None
+  }
+
+
+
+  val postStatement: Statement => Unit = (s: Statement) => {
     (bun_id,bun_statements) match {
       case (None,None) =>  doc_statementOrBundles = doc_statementOrBundles :+ s
       case (Some(_),Some(statements))=>  bun_statements = Some(statements :+ s)
       case _ => ???
     }
   }
-  def postBundle: Bundle => Unit = (b: Bundle) => {
-     (bun_id,bun_statements) match {
+  val postBundle: Bundle => Unit = (b: Bundle) => {
+    (bun_id,bun_statements) match {
       case (None,None) =>  doc_statementOrBundles = doc_statementOrBundles :+ b
       case (Some(_),Some(_))=>  throw new BundleNotClosedException
       case _ => ???
     }
-   
+
   }
-  def postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
+  val postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
     doc_ns=Some(anamespace)
   }
 
-  def postEndDocument: () => Unit = () => {
+  val postEndDocument: () => Unit = () => {
   }
-  
 
-  def postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
-  //  println("start bundle " + qn.toString() + " " + bun_id)
+
+  val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
+    //  println("start bundle " + qn.toString() + " " + bun_id)
     //println("start bundle " + ns)
     bun_id match {
       case Some(_) => throw new NestedBundleException
@@ -127,11 +136,11 @@ final class DocBuilder extends ProvStream {
     ns.setParent(doc_ns.get)
     bun_id=Some(qn)
     bun_statements=Some(Seq())
-    
+
   }
 
-  def postEndBundle: () => Unit = () => {
-//    println ("end bundle " + bun_id)
+  val postEndBundle: () => Unit = () => {
+    //    println ("end bundle " + bun_id)
     val bun= (bun_id,bun_ns,bun_statements) match {
       case (Some(id),Some(ns),Some(statements)) => new Bundle(id,statements,ns)
       case _ => throw new BundleNotStartedException
@@ -141,11 +150,29 @@ final class DocBuilder extends ProvStream {
     bun_statements=None
     postBundle(bun)
   }
-  
+
   def document (): Document = doc_ns match {
     case Some(ns) => new Document(doc_statementOrBundles,ns)
     case None => throw new DocumentNotStartedException
   }
+
+}
+
+final class DocBuilder(val funs:DocBuilderFunctions) extends ProvStream {
+
+  val postStatement: Statement => Unit = funs.postStatement
+
+  val postBundle: Bundle => Unit = funs.postBundle
+
+  val postStartDocument: Namespace => Unit = funs.postStartDocument
+
+  val postEndDocument: () => Unit = funs.postEndDocument
+
+  val postStartBundle: (QualifiedName, Namespace) => Unit = funs.postStartBundle
+
+  val postEndBundle: () => Unit = funs.postEndBundle
+  
+  def document (): Document = funs.document
 
 }
 
@@ -160,7 +187,7 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
 
   
   
-  def postStatement: Statement => Unit = (s: Statement) => {
+  val postStatement: Statement => Unit = (s: Statement) => {
     (bun_id,bun_statements) match {
       case (None,None) =>  nf_doc= nf_doc.add(s)
       case (Some(_),Some(statements))=>  bun_statements = Some(statements + s)
@@ -175,16 +202,16 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
   }
    
   }
-  def postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
+  val postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
     doc_ns=Some(anamespace)
     nf_doc= documentProxyFactory.make(anamespace)
   }
 
-  def postEndDocument: () => Unit = () => {
+  val postEndDocument: () => Unit = () => {
   }
   
 
-  def postStartBundle=(qn: QualifiedName, ns: Namespace) => {
+  val postStartBundle=(qn: QualifiedName, ns: Namespace) => {
   //  println("start bundle " + qn.toString() + " " + bun_id)
     //println("start bundle " + ns)
     bun_id match {
@@ -198,7 +225,7 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
     
   }
 
-  def postEndBundle=() => {
+  val postEndBundle=() => {
 //    println ("end bundle " + bun_id)
     val bun= (bun_id,bun_ns,bun_statements) match {
       case (Some(id),Some(ns),Some(statements)) => new Bundle(id,statements,ns)
@@ -230,15 +257,15 @@ class FileStreamer (pw: PrintWriter, b: Boolean) extends ProvStream {
   def this(f: File, b: Boolean) {
     this(new PrintWriter(f),b)
   }
-  
-  def postStatement = (s: Statement) => {
+
+  override val postStatement = (s: Statement) => {
       pw.println(s.toString())
   }
-  def postBundle = (b: Bundle) => {      
+  val postBundle = (b: Bundle) => {
       pw.println("endBundle")
   }
-  
-  def postStartDocument = (anamespace: Namespace) => {
+
+  override val postStartDocument = (anamespace: Namespace) => {
       pw.println("document")
       Namespace.withThreadNamespace(anamespace)
 
@@ -249,13 +276,13 @@ class FileStreamer (pw: PrintWriter, b: Boolean) extends ProvStream {
       
   }
 
-  def postEndDocument = () => {
+  override val postEndDocument = () => {
       pw.println("endDocument")
       if (b) pw.close()
   }
-  
 
-  def postStartBundle=(qn: QualifiedName, ns: Namespace) => {
+
+  override val postStartBundle=(qn: QualifiedName, ns: Namespace) => {
       pw.println("bundle " + qn.toString())
       
       val sb=new StringBuilder
@@ -263,7 +290,7 @@ class FileStreamer (pw: PrintWriter, b: Boolean) extends ProvStream {
       pw.println(sb)
   }
 
-  def postEndBundle=() => {
+  override val postEndBundle=() => {
     pw.println ("endBundle")
   }
   

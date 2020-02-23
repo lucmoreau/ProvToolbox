@@ -2460,13 +2460,13 @@ class Bundle(val id: QualifiedName,
       printNamespace(sb)
       //statement.addString(sb, "    ", "\n    ", "\n")
       val currentNS=new Namespace(Namespace.getThreadNamespace())
-      Namespace.withThreadNamespace(namespace);
+      Namespace.withThreadNamespace(namespace)
       addString(sb,statement, "    ", "\n    ", "\n")
       Namespace.withThreadNamespace(currentNS);
 
       sb++="  endBundle"
     }
-    override def toString ():String = {
+    override def toString:String = {
        val sb=new StringBuilder
        toNotation(sb)
        sb.toString()
@@ -2695,12 +2695,12 @@ object Attribute {
              Set(),
              new HashMap())
   }
-  def split(attributes: Set[Attribute]): (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]])  = {
-    split(attributes.toList)
-  }
+ // def split(attributes: Set[Attribute]): (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]])  = {
+ //   split(attributes.toList)
+ // }
 
-  def split(attributes: List[Attribute]): (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]]) = {
-    splitrec(attributes,
+  def split(attributes: Iterable[Attribute]): (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]]) = {
+    splitrec(attributes.toList,
              Set(),
              Set(),
              Set(),
@@ -4877,7 +4877,7 @@ class ProvFactory extends ProvFactory1  {
   }
 
   def newEntity(id: org.openprovenance.prov.model.QualifiedName,
-                         attributes: Set[Attribute]): Entity= {
+                         attributes: Iterable[Attribute]): Entity= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -4899,7 +4899,7 @@ class ProvFactory extends ProvFactory1  {
   }
 
   def newAgent(id: QualifiedName,
-               attributes: Set[Attribute]): Agent = {
+               attributes: Iterable[Attribute]): Agent = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -4944,7 +4944,7 @@ class ProvFactory extends ProvFactory1  {
   def newActivity (id: QualifiedName, 
                    startTime: XMLGregorianCalendar,
                    endTime: XMLGregorianCalendar,
-                   attributes: Set[Attribute]): Activity = {    
+                   attributes: Iterable[Attribute]): Activity = {
       newActivity(id,
                   Option(startTime),
                   Option(endTime),
@@ -4954,7 +4954,7 @@ class ProvFactory extends ProvFactory1  {
     def newActivity (id: QualifiedName, 
                    startTime: Option[XMLGregorianCalendar],
                    endTime: Option[XMLGregorianCalendar],
-                   attributes: Set[Attribute]): Activity = {    
+                   attributes: Iterable[Attribute]): Activity = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -4991,7 +4991,7 @@ class ProvFactory extends ProvFactory1  {
                         activity: QualifiedName,   
                         generation: QualifiedName,   
                         usage: QualifiedName,   
-                        attributes: Set[Attribute]): WasDerivedFrom= {
+                        attributes: Iterable[Attribute]): WasDerivedFrom= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5026,7 +5026,7 @@ class ProvFactory extends ProvFactory1  {
                                  entity: QualifiedName,   
                                  activity: QualifiedName,   
                                  time: Option[XMLGregorianCalendar],   
-                                 attributes: Set[Attribute]): WasGeneratedBy= {
+                                 attributes: Iterable[Attribute]): WasGeneratedBy= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5062,7 +5062,7 @@ class ProvFactory extends ProvFactory1  {
                        activity: QualifiedName,   
                        entity: QualifiedName,   
                        time: Option[XMLGregorianCalendar],   
-                       attributes: Set[Attribute]): Used= {
+                       attributes: Iterable[Attribute]): Used= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5099,7 +5099,7 @@ class ProvFactory extends ProvFactory1  {
                                    entity: QualifiedName,   
                                    activity: QualifiedName,   
                                    time: Option[XMLGregorianCalendar],   
-                                   attributes: Set[Attribute]): WasInvalidatedBy= {
+                                   attributes: Iterable[Attribute]): WasInvalidatedBy= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5138,7 +5138,7 @@ class ProvFactory extends ProvFactory1  {
                       trigger: QualifiedName,   
                       starter: QualifiedName,   
                       time: Option[XMLGregorianCalendar],
-                      attributes: Set[Attribute]): WasStartedBy = {
+                      attributes: Iterable[Attribute]): WasStartedBy = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5177,7 +5177,7 @@ class ProvFactory extends ProvFactory1  {
                       trigger: QualifiedName,   
                       ender: QualifiedName,   
                       time: Option[XMLGregorianCalendar],
-                      attributes: Set[Attribute]): WasEndedBy = {
+                      attributes: Iterable[Attribute]): WasEndedBy = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5214,7 +5214,7 @@ class ProvFactory extends ProvFactory1  {
                             activity: QualifiedName,   
                             agent: QualifiedName,   
                             plan: QualifiedName,   
-                            attributes: Set[Attribute]): WasAssociatedWith= {
+                            attributes: Iterable[Attribute]): WasAssociatedWith= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException
@@ -5248,7 +5248,7 @@ class ProvFactory extends ProvFactory1  {
                           delegate: QualifiedName,
                           responsible: QualifiedName,
                           activity: QualifiedName,
-                          attributes: Set[Attribute]): ActedOnBehalfOf = {
+                          attributes: Iterable[Attribute]): ActedOnBehalfOf = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException
@@ -5278,7 +5278,7 @@ class ProvFactory extends ProvFactory1  {
   def newWasAttributedTo (id: QualifiedName,
                           entity: QualifiedName,   
                           agent: QualifiedName,   
-                          attributes: Set[Attribute]): WasAttributedTo = {
+                          attributes: Iterable[Attribute]): WasAttributedTo = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException
@@ -5318,7 +5318,7 @@ class ProvFactory extends ProvFactory1  {
   def newSpecializationOf (id: QualifiedName,
                            entity2: QualifiedName,   
                            entity1: QualifiedName,   
-                           attributes: Set[Attribute]): SpecializationOf = {
+                           attributes: Iterable[Attribute]): SpecializationOf = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException
@@ -5350,7 +5350,7 @@ class ProvFactory extends ProvFactory1  {
   def newMentionOf (specializedEntity: QualifiedName,   
 		                 generalEntity: QualifiedName,
 		                 bundle: QualifiedName,
-		                 attributes: Set[Attribute]): MentionOf= {      
+		                 attributes: Iterable[Attribute]): MentionOf= {
        split(attributes) match {
          case (ls,ts,vs,locs,rs,os) => 
            if (vs.nonEmpty) throw new ValueExistException
@@ -5371,7 +5371,7 @@ class ProvFactory extends ProvFactory1  {
                      specializedEntity: QualifiedName,   
 		                 generalEntity: QualifiedName,
 		                 bundle: QualifiedName,
-		                 attributes: Set[Attribute]): MentionOf= {      
+		                 attributes: Iterable[Attribute]): MentionOf= {
        split(attributes) match {
          case (ls,ts,vs,locs,rs,os) => 
            if (vs.nonEmpty) throw new ValueExistException
@@ -5410,7 +5410,7 @@ class ProvFactory extends ProvFactory1  {
   def newAlternateOf (id: QualifiedName,
                       entity2: QualifiedName,   
                       entity1: QualifiedName,   
-                      attributes: Set[Attribute]): AlternateOf = {
+                      attributes: Iterable[Attribute]): AlternateOf = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException
@@ -5439,7 +5439,7 @@ class ProvFactory extends ProvFactory1  {
   def newWasInformedBy (id: QualifiedName,   
 		                    informed: QualifiedName,   
 		                    informant: QualifiedName,   
-		                    attributes: Set[Attribute]): WasInformedBy= {
+		                    attributes: Iterable[Attribute]): WasInformedBy= {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException
@@ -5470,7 +5470,7 @@ class ProvFactory extends ProvFactory1  {
   def newWasInfluencedBy (id: QualifiedName,
                           influencee: QualifiedName,   
                           influencer: QualifiedName,   
-                          attributes: Set[Attribute]): WasInfluencedBy = {
+                          attributes: Iterable[Attribute]): WasInfluencedBy = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         val size=vs.size
@@ -5509,8 +5509,8 @@ class ProvFactory extends ProvFactory1  {
   
   def newHadMember (id: QualifiedName,
                     collection: QualifiedName,   
-                    entity: Set[QualifiedName],   
-                    attributes: Set[Attribute]): HadMember = {
+                    entity: Set[QualifiedName],
+                    attributes: Iterable[Attribute]): HadMember = {
     split(attributes) match {
       case (ls,ts,vs,locs,rs,os) => 
         if (vs.nonEmpty) throw new ValueExistException

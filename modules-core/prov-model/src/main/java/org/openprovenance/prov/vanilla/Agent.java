@@ -8,11 +8,11 @@ import org.openprovenance.prov.model.Role;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
 
 
 public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id;
 
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
@@ -21,7 +21,7 @@ public class Agent implements org.openprovenance.prov.model.Agent, Equals, HashC
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

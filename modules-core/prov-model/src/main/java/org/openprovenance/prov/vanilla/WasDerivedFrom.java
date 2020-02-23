@@ -8,11 +8,11 @@ import org.openprovenance.prov.model.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
 
 
 public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedFrom, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
     final private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     final private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
@@ -24,7 +24,7 @@ public class WasDerivedFrom implements org.openprovenance.prov.model.WasDerivedF
     protected Optional<QualifiedName> usage=Optional.empty();
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

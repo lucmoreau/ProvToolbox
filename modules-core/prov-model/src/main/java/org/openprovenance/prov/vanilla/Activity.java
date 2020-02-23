@@ -5,6 +5,7 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Role;
 import org.openprovenance.prov.model.Value;
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
@@ -12,7 +13,6 @@ import java.util.stream.Collectors;
 
 public class Activity implements org.openprovenance.prov.model.Activity, Equals, HashCode, ToString, HasAttributes { //, JLD_Activity {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<org.openprovenance.prov.model.QualifiedName> id;
     private Optional<XMLGregorianCalendar> startTime=Optional.empty();
     private Optional<XMLGregorianCalendar> endTime=Optional.empty();
@@ -21,7 +21,7 @@ public class Activity implements org.openprovenance.prov.model.Activity, Equals,
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
 
-    final org.openprovenance.prov.vanilla.ProvUtilities u=new ProvUtilities();
+    static final org.openprovenance.prov.vanilla.ProvUtilities u=new ProvUtilities();
 
 
     protected Activity() {}

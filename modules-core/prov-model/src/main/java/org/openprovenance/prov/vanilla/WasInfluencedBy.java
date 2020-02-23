@@ -8,11 +8,11 @@ import org.openprovenance.prov.model.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
 
 
 public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluencedBy, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
@@ -21,7 +21,7 @@ public class WasInfluencedBy implements org.openprovenance.prov.model.WasInfluen
     protected QualifiedName influencer;
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

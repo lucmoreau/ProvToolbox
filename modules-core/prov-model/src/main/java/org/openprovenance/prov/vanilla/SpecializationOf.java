@@ -12,7 +12,7 @@ public class SpecializationOf implements org.openprovenance.prov.model.Specializ
     protected QualifiedName generalEntity;
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

@@ -112,7 +112,7 @@ public class Benchmarks {
         List<Long> result6 = repeatDeserialize(jsonDeserialiser, count, provjsonldPrimer);
         output(result6);
         System.out.println("read scala");
-        List<Long> result7 = repeatDeserialize(scalaDeserialiser, count, provnPrimer);
+        List<Long> result7 = repeatDeserialize(scalaDeserialiser, count*100*1000, provnPrimer);
         output(result7);
         System.out.println("deep copy scala");
         List<Long> result8 = repeatCopy(count, doc,new org.openprovenance.prov.scala.immutable.ProvFactory());

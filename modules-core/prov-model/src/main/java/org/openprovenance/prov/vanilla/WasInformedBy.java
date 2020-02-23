@@ -7,10 +7,10 @@ import org.openprovenance.prov.model.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
 
 public class WasInformedBy implements org.openprovenance.prov.model.WasInformedBy, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
@@ -19,7 +19,7 @@ public class WasInformedBy implements org.openprovenance.prov.model.WasInformedB
     protected QualifiedName informant;
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

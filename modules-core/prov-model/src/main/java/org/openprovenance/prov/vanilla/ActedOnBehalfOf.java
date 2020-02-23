@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBehalfOf, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
+    public static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
@@ -20,7 +20,7 @@ public class ActedOnBehalfOf implements org.openprovenance.prov.model.ActedOnBeh
     private Optional<QualifiedName> activity=Optional.empty();
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

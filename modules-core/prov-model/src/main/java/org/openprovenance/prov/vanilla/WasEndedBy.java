@@ -5,13 +5,14 @@ import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Value;
 
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class WasEndedBy implements org.openprovenance.prov.model.WasEndedBy, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
     private Optional<XMLGregorianCalendar> time=Optional.empty();
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
@@ -24,7 +25,7 @@ public class WasEndedBy implements org.openprovenance.prov.model.WasEndedBy, Equ
     protected Optional<QualifiedName> ender=Optional.empty();
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

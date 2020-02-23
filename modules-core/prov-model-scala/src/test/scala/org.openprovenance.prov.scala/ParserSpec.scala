@@ -1,26 +1,13 @@
 
 package org.openprovenance.prov.scala
 
-import collection.mutable.Stack
-import org.scalatest._
-import org.openprovenance.prov.scala.immutable.QualifiedName
-import org.openprovenance.prov.model.StatementOrBundle.Kind
-import org.openprovenance.prov.model.DocumentEquality
 import org.openprovenance.prov.model.Namespace
-import java.util.LinkedList
-import org.openprovenance.prov.model.Statement
-import org.openprovenance.prov.scala.immutable.Document
-import org.openprovenance.prov.scala.immutable.Entity
-import org.openprovenance.prov.scala.immutable.Value
-import org.openprovenance.prov.scala.immutable.Other
-import org.openprovenance.prov.scala.immutable.Type
-import org.openprovenance.prov.scala.immutable.Location
-import org.openprovenance.prov.scala.immutable.MyParser
-import scala.util.{Failure, Success}
+import org.openprovenance.prov.scala.immutable._
+import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
-import org.openprovenance.prov.scala.immutable.LangString
-import org.openprovenance.prov.scala.streaming.DocBuilder
-import org.openprovenance.prov.scala.immutable.Activity
+import org.scalatest._
+
+import scala.util.{Failure, Success}
 
 
 class ParserSpec extends FlatSpec with Matchers {
@@ -30,33 +17,54 @@ class ParserSpec extends FlatSpec with Matchers {
   val prov_qualified_name=QualifiedName(ipf.prov_qualified_name)
 
   def q(local: String) = {
-   new QualifiedName("ex",local,EX_NS)
+    new QualifiedName("ex",local,EX_NS)
   }
-  
+
+  val actions=new MyActions()
+  val actions2=new MyActions2()
+  val funs=new DocBuilderFunctions()
+
+
   def doCheckDocument (s: String, doc: Document): Boolean = {
-      val p=new MyParser(s,null)
-      p.document.run() match {
-        case Success(result) => p.getNext().asInstanceOf[DocBuilder].document==doc
-        case Failure(e: ParseError) => false
-        case Failure(e) =>false
-      }
+    funs.reset()
+    val docBuilder: DocBuilder =new DocBuilder(funs)
+    actions2.bun_ns=None
+    actions2.next=docBuilder
+    val p=new MyParser(s,null)
+    p.document.run() match {
+      case Success(result) => p.getNext().asInstanceOf[DocBuilder].document==doc
+      case Failure(e: ParseError) => false
+      case Failure(e) =>false
+    }
   }
 
   def doCheckEntity (s: String, ns: Namespace, ent: Entity): Boolean = {
-      val p=new MyParser(s,ns)
-      p.entity.run() match {
-        case Success(result) => Namespace.withThreadNamespace(ns); println("Success " + result); result==ent
-        case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
-        case Failure(e) =>println("Error " + e); false
-      }
+    funs.reset()
+    val docBuilder: DocBuilder =new DocBuilder(funs)
+    actions2.docns=ns
+    actions2.bun_ns=None
+    actions2.next=docBuilder
+
+    val p=new MyParser(s,actions2,actions)
+    p.entity.run() match {
+      case Success(result) => Namespace.withThreadNamespace(ns); println("Success " + result); result==ent
+      case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
+      case Failure(e) =>println("Error " + e); false
+    }
   }
+
   def doCheckActivity (s: String, ns: Namespace, ent: Activity): Boolean = {
-      val p=new MyParser(s,ns)
-      p.activity.run() match {
-        case Success(result) => Namespace.withThreadNamespace(ns); println("Success " + result); result==ent
-        case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
-        case Failure(e) =>println("Error " + e); false
-      }
+    funs.reset()
+    val docBuilder: DocBuilder =new DocBuilder(funs)
+    actions2.docns=ns
+    actions2.bun_ns=None
+    actions2.next=docBuilder
+    val p=new MyParser(s,actions2,actions)
+    p.activity.run() match {
+      case Success(result) => Namespace.withThreadNamespace(ns); println("Success " + result); result==ent
+      case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
+      case Failure(e) =>println("Error " + e); false
+    }
   }
 
   

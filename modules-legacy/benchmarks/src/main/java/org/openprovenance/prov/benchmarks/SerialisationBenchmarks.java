@@ -48,7 +48,7 @@ public class SerialisationBenchmarks {
         provnDeserialiser  = new org.openprovenance.prov.notation.ProvDeserialiser(pf);
         rawJsonDeserialiser = new RawJsonDeserialiser();
         rawJsonSerialiser = new RawJsonSerialiser();
-        //scalaDeserialiser  = new org.openprovenance.prov.scala.immutable.ProvDeserialiser();
+        scalaDeserialiser  = new org.openprovenance.prov.scala.immutable.ProvDeserialiser();
         pjsonSerialiser    = new org.openprovenance.prov.core.json.serialization.ProvSerialiser();
         pjsonDeserialiser  = new org.openprovenance.prov.core.json.serialization.ProvDeserialiser();
 
@@ -124,5 +124,13 @@ public class SerialisationBenchmarks {
         provnSerialiser.serialiseDocument(baos,doc,false);
         blackhole.consume(baos);
     }
+
+    @Benchmark
+    public void testReadScala(Blackhole blackhole) throws IOException {
+        provnPrimerStream.reset();
+        doc= scalaDeserialiser.deserialiseDocument(provnPrimerStream);
+        blackhole.consume(doc);
+    }
+
 
 }

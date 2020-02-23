@@ -8,10 +8,10 @@ import org.openprovenance.prov.model.Value;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD_STRING;
 
 public class WasStartedBy implements org.openprovenance.prov.model.WasStartedBy, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id=Optional.empty();
     private Optional<XMLGregorianCalendar> time=Optional.empty();
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
@@ -24,7 +24,7 @@ public class WasStartedBy implements org.openprovenance.prov.model.WasStartedBy,
     protected Optional<QualifiedName> starter=Optional.empty();
 
 
-    final ProvUtilities u=new ProvUtilities();
+    static final ProvUtilities u=new ProvUtilities();
 
 
 

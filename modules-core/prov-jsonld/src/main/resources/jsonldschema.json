@@ -28,7 +28,7 @@
 	},
 	"typed_value": {
 	    "type": "object",
-	    "required": [ "@value" ],
+	    "required": [ "@value", "@type"],
 	    "properties": {
 		"@value": {
 		    "type": "string"
@@ -39,35 +39,34 @@
 	    },
 	    "additionalProperties": false
 	},
+	"lang_string": {
+	    "type": "object",
+	    "required": [ "@value" ],
+	    "properties": {
+		"@value": {
+		    "type": "string"
+		},
+		"@language": {
+		    "type": "string"
+		}
+	    },
+	    "additionalProperties": false
+	},
 	"ArrayOfValues": {
 	    "$id": "#/definitions/ArrayOfValues",	    
 	    "type": "array",
 	    "items": { 
-		"oneOf": [
+		"anyOf": [
 		    { "$ref": "#/definitions/QualifiedName" },
-		    { "$ref": "#/definitions/typed_value" }
+		    { "$ref": "#/definitions/typed_value" },
+		    { "$ref": "#/definitions/lang_string" }		    		    
 		]
 	    }
 	},
 	"ArrayOfLabelValues": {
 	    "$id": "#/definitions/ArrayOfLabelValues",	    	    
 	    "type": "array",
-	    "items": {
-		"type": "object",
-		"required": [ "@value" ],
-		"properties": {
-		    "@value": {
-			"type": "string",
-			"pattern": "^(.*)$"
-		    },
-		    
-		    "@language": {
-			"type": "string",
-			"pattern": "^(.*)$"
-		    }
-		},
-		"additionalProperties": false
-	    }
+	    "items": { "$ref": "#/definitions/lang_string" }
 	},
 	"Context": {
 	    "$id": "#/definitions/Context",
@@ -90,26 +89,7 @@
 	},
 	"prov:StatementOrBundle": {
 	    "oneOf": [
-		{ "$ref": "#/definitions/prov:Entity" },
-		{ "$ref": "#/definitions/prov:Activity" },
-		{ "$ref": "#/definitions/prov:Agent" },
-		{ "$ref": "#/definitions/prov:Usage" },
-		{ "$ref": "#/definitions/prov:Generation" },
-		{ "$ref": "#/definitions/prov:Attribution" },
-		{ "$ref": "#/definitions/prov:Association" },
-		{ "$ref": "#/definitions/prov:Delegation" },
-		{ "$ref": "#/definitions/prov:Invalidation" },
-		{ "$ref": "#/definitions/prov:Start" },
-		{ "$ref": "#/definitions/prov:End" },
-		{ "$ref": "#/definitions/prov:Derivation" },
-		{ "$ref": "#/definitions/prov:Alternate" },
-		{ "$ref": "#/definitions/prov:Specialization" },
-		{ "$ref": "#/definitions/prov:Membership" },
-		{ "$ref": "#/definitions/prov:Influence" },
-		{ "$ref": "#/definitions/prov:Communication" },				
-		{ "$ref": "#/definitions/prov:QualifiedAlternate" },
-		{ "$ref": "#/definitions/prov:QualifiedSpecialization" },
-		{ "$ref": "#/definitions/prov:QualifiedMembership" },
+		{ "$ref": "#/definitions/prov:Statement" },
 		{ "$ref": "#/definitions/prov:Bundle" }
 	    ]
 	},
@@ -148,7 +128,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -163,7 +143,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -196,7 +176,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -215,7 +195,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -234,7 +214,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -253,7 +233,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -275,7 +255,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -297,7 +277,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -315,7 +295,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -336,7 +316,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -355,7 +335,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -376,7 +356,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -394,7 +374,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -412,7 +392,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -430,7 +410,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -448,7 +428,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -466,7 +446,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -484,7 +464,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -502,7 +482,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},
@@ -520,7 +500,7 @@
 		"prov:label":      { "$ref": "#/definitions/ArrayOfLabelValues"}
 	    },
 	    "patternProperties": {
-		"^[A-Za-z0-9_]+:(.*)$": {}
+		"^[A-Za-z0-9_]+:(.*)$": { "$ref": "#/definitions/ArrayOfValues" }
 	    },
 	    "additionalProperties": false
 	},

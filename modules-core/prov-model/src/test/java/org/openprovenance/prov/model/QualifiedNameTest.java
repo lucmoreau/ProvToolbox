@@ -168,6 +168,11 @@ public class QualifiedNameTest extends TestCase {
 		assertFalse(u.patternExactMatch("01."));
 		assertFalse(u.patternExactMatch("01[]b"));
 		assertTrue(u.patternExactMatch("abc\\[\\]b"));
+		assertTrue(u.patternExactMatch("_"));
+		assertTrue(u.patternExactMatch("ab_"));
+		assertTrue(u.patternExactMatch("ab___"));
+		//assertTrue(u.patternExactMatch("c:ab_"));
+		//assertFalse(u.patternExactMatch("ab_:c"));
 
 	}
 

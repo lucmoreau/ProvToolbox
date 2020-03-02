@@ -5,48 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-21-08-15.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-21-08-15.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-21-08-15.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-22-15-29.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-22-15-29.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-22-15-29.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-22-22-53.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-22-22-53.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-22-22-53.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-07-31.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-07-31.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-07-31.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-09-22.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-09-22.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-09-22.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-19-10.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-19-10.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-19-10.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-20-23.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-20-23.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-20-23.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-21-24.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-21-24.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-23-21-24.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-24-19-12.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-24-19-12.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/bench-2020-02-24-19-12.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/jsonldschema.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/resources/jsonldschema.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/start10.jsonld11" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/streaming/DocBuilder.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/streaming/DocBuilder.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala/ParserSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala/ParserSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ActedOnBehalfOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ActedOnBehalfOf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Activity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Agent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedAlternateOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedAlternateOf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedHadMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedHadMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedSpecializationOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedSpecializationOf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/SpecializationOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/SpecializationOf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasAssociatedWith.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasAssociatedWith.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasAttributedTo.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasAttributedTo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasDerivedFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasDerivedFrom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasEndedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasEndedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasGeneratedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasGeneratedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInfluencedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInfluencedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInformedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInformedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInvalidatedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInvalidatedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasStartedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasStartedBy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedNameUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedNameUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/QualifiedNameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/QualifiedNameTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/benchmarks/results/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/results/.Rhistory" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-legacy/benchmarks/src/main/R/plot.R" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/src/main/R/plot.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/benchmarks/src/main/java/org/openprovenance/prov/benchmarks/SerialisationBenchmarks.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/src/main/java/org/openprovenance/prov/benchmarks/SerialisationBenchmarks.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/benchmarks/Benchmarks.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/benchmarks/Benchmarks.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +158,7 @@
       <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Benchmarks">
+  <component name="RunManager" selected="JUnit.QualifiedNameTest">
     <configuration name="Benchmarks" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.benchmarks.Benchmarks" />
       <module name="roundtrip" />
@@ -225,6 +200,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="QualifiedNameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.QualifiedNameTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="mongoCSVDbTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="storage-mongodb" />
       <extension name="coverage">
@@ -235,21 +225,6 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.mongoCSVDbTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="mongoDbTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="storage-mongodb" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.storage.mongodb.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.storage.mongodb" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -278,18 +253,18 @@
     <list>
       <item itemvalue="Application.Little" />
       <item itemvalue="Application.Benchmarks" />
-      <item itemvalue="JUnit.mongoDbTest" />
       <item itemvalue="JUnit.mongoCSVDbTest" />
       <item itemvalue="JUnit.BindingTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="JUnit.QualifiedNameTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.QualifiedNameTest" />
         <item itemvalue="Application.Benchmarks" />
         <item itemvalue="Application.Little" />
         <item itemvalue="JUnit.BindingTest" />
         <item itemvalue="JUnit.mongoCSVDbTest" />
-        <item itemvalue="JUnit.mongoDbTest" />
       </list>
     </recent_temporary>
   </component>
@@ -399,7 +374,13 @@
       <workItem from="1582388652790" duration="3689000" />
       <workItem from="1582403306770" duration="3464000" />
       <workItem from="1582438880264" duration="1117000" />
-      <workItem from="1582446646363" duration="3416000" />
+      <workItem from="1582446646363" duration="7371000" />
+      <workItem from="1582479276865" duration="5058000" />
+      <workItem from="1582492607565" duration="409000" />
+      <workItem from="1582521185844" duration="147000" />
+      <workItem from="1582888880871" duration="2750000" />
+      <workItem from="1583082542097" duration="611000" />
+      <workItem from="1583129768131" duration="3014000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -408,7 +389,7 @@
       <option name="project" value="LOCAL" />
       <updated>1566430960720</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView">
@@ -495,39 +476,39 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="992" y="508" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.23.2560.1338@0.23.2560.1338" timestamp="1579416482304" />
-    <state width="2300" height="252" key="GridCell.Tab.0.bottom" timestamp="1581875950346">
+    <state width="1744" height="165" key="GridCell.Tab.0.bottom" timestamp="1583138119813">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
-    <state width="1396" height="278" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1578749768159" />
+    <state width="1440" height="165" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1583131597764" />
     <state width="756" height="398" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1578328383857" />
-    <state width="2300" height="252" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950346" />
+    <state width="1744" height="165" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1583138119813" />
     <state width="1802" height="373" key="GridCell.Tab.0.bottom/0.23.2560.1338@0.23.2560.1338" timestamp="1580328269023" />
     <state width="2300" height="4" key="GridCell.Tab.0.bottom/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
     <state width="2300" height="4" key="GridCell.Tab.0.bottom/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145380" />
-    <state width="2300" height="252" key="GridCell.Tab.0.center" timestamp="1581875950342">
+    <state width="1744" height="165" key="GridCell.Tab.0.center" timestamp="1583138119812">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
-    <state width="1396" height="278" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1578749768158" />
+    <state width="1440" height="165" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1583131597763" />
     <state width="756" height="398" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
-    <state width="2300" height="252" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950342" />
+    <state width="1744" height="165" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1583138119812" />
     <state width="1802" height="373" key="GridCell.Tab.0.center/0.23.2560.1338@0.23.2560.1338" timestamp="1580328269022" />
     <state width="2300" height="4" key="GridCell.Tab.0.center/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
     <state width="2300" height="4" key="GridCell.Tab.0.center/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145379" />
-    <state width="2300" height="252" key="GridCell.Tab.0.left" timestamp="1581875950341">
+    <state width="1744" height="165" key="GridCell.Tab.0.left" timestamp="1583138119812">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
-    <state width="1396" height="278" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1578749768157" />
+    <state width="1440" height="165" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1583131597762" />
     <state width="756" height="398" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1578328383855" />
-    <state width="2300" height="252" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950341" />
+    <state width="1744" height="165" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1583138119812" />
     <state width="1802" height="373" key="GridCell.Tab.0.left/0.23.2560.1338@0.23.2560.1338" timestamp="1580328269018" />
     <state width="2300" height="4" key="GridCell.Tab.0.left/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954661" />
     <state width="2300" height="4" key="GridCell.Tab.0.left/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145378" />
-    <state width="2300" height="252" key="GridCell.Tab.0.right" timestamp="1581875950344">
+    <state width="1744" height="165" key="GridCell.Tab.0.right" timestamp="1583138119813">
       <screen x="0" y="23" width="2560" height="1337" />
     </state>
-    <state width="1396" height="278" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1578749768158" />
+    <state width="1440" height="165" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1583131597763" />
     <state width="756" height="398" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1578328383856" />
-    <state width="2300" height="252" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950344" />
+    <state width="1744" height="165" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1583138119813" />
     <state width="1802" height="373" key="GridCell.Tab.0.right/0.23.2560.1338@0.23.2560.1338" timestamp="1580328269023" />
     <state width="2300" height="4" key="GridCell.Tab.0.right/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
     <state width="2300" height="4" key="GridCell.Tab.0.right/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145380" />
@@ -573,17 +554,22 @@
       <screen x="0" y="23" width="2560" height="1338" />
     </state>
     <state x="768" y="240" key="SettingsEditor/0.23.2560.1338@0.23.2560.1338" timestamp="1579416731161" />
+    <state x="1072" y="514" key="SimpleOpenTaskDialog" timestamp="1582483120902">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1072" y="514" key="SimpleOpenTaskDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1582483120902" />
     <state width="500" height="447" key="SwitcherDM" timestamp="1579900309064">
       <screen x="0" y="23" width="2560" height="1340" />
     </state>
     <state width="500" height="447" key="SwitcherDM/0.23.2560.1340@0.23.2560.1340" timestamp="1579900309064" />
-    <state x="714" y="877" key="com.intellij.ide.util.TipDialog" timestamp="1582446657106">
-      <screen x="0" y="23" width="2560" height="1337" />
+    <state x="714" y="338" key="com.intellij.ide.util.TipDialog" timestamp="1583130160407">
+      <screen x="0" y="23" width="1440" height="829" />
     </state>
-    <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.829@0.23.1440.829" timestamp="1579193664600" />
+    <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.829@0.23.1440.829" timestamp="1583130160407" />
     <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.830@0.23.1440.830" timestamp="1579627673990" />
     <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.831@0.23.1440.831" timestamp="1581444338181" />
-    <state x="714" y="877" key="com.intellij.ide.util.TipDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1582446657106" />
+    <state x="714" y="877" key="com.intellij.ide.util.TipDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1582492607135" />
+    <state x="714" y="878" key="com.intellij.ide.util.TipDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1582888886703" />
     <state x="1022" y="433" width="524" height="450" key="extract.method.dialog" timestamp="1581698001251">
       <screen x="0" y="23" width="2560" height="1340" />
     </state>

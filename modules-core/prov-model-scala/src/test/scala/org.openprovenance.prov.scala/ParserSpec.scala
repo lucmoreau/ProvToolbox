@@ -48,8 +48,8 @@ class ParserSpec extends FlatSpec with Matchers {
     val p=new MyParser(s,actions2,actions)
     p.entity.run() match {
       case Success(result) => Namespace.withThreadNamespace(ns); println("Success " + result); result==ent
-      case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
-      case Failure(e) =>println("Error " + e); false
+      case Failure(e: ParseError) => println("Error 1 " + p.formatError(e)); false
+      case Failure(e) =>println("Error 2 " + e); false
     }
   }
 
@@ -62,8 +62,8 @@ class ParserSpec extends FlatSpec with Matchers {
     val p=new MyParser(s,actions2,actions)
     p.activity.run() match {
       case Success(result) => Namespace.withThreadNamespace(ns); println("Success " + result); result==ent
-      case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
-      case Failure(e) =>println("Error " + e); false
+      case Failure(e: ParseError) => println("Error 1 " + p.formatError(e)); e.printStackTrace(); false
+      case Failure(e) =>println("Error 2 " + e); e.printStackTrace(); false
     }
   }
 

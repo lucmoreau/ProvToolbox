@@ -222,7 +222,7 @@ public class ConfigProcessor {
             addProvDependency("prov-n", model);
             //addProvDependency("prov-json", model);
             addProvDependency("prov-template-compiler", model);
-            addProvDependency("prov-interop", model);
+            addProvDependency("prov-interop-light", model);
             addJunitDependency(model);
 
         }

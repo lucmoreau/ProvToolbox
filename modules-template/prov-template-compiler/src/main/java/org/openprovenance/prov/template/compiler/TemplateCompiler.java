@@ -328,9 +328,11 @@ public class TemplateCompiler {
        
        String args="";
        boolean first=true;
+       Set<String> seen=new HashSet<>();
        for (QualifiedName q: allVars) {
            final String key = q.getLocalPart();
-           final String newName = "__"+key;
+           seen.add(key);
+           final String newName = varPrefix(key);
            final JsonNode entry = the_var.path(key);
            if (entry!=null && !(entry instanceof MissingNode)) {
                String s=entry.get(0).get("@id").textValue();
@@ -358,19 +360,21 @@ public class TemplateCompiler {
        for (QualifiedName q: allAtts) {
            final String key = q.getLocalPart();
            String newName = key;
-           final JsonNode entry = the_var.path(key);
-           JsonNode jentry;
-           if (entry!=null && !(entry instanceof MissingNode)  && ((jentry=entry.get(0).get("@id"))!=null)) {
-               String s=jentry.textValue();
-               String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
-               newName="__"+key;
-               builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key,key);
-           }
-           if (first) {
-               first=false;
-               args=newName;
-           } else {
-               args=args + ", " + newName;
+           if (!(seen.contains(key))) {
+               final JsonNode entry = the_var.path(key);
+               JsonNode jentry;
+               if (entry != null && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
+                   String s = jentry.textValue();
+                   String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
+                   newName = attPrefix(key);
+                   builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+               }
+               if (first) {
+                   first = false;
+                   args = newName;
+               } else {
+                   args = args + ", " + newName;
+               }
            }
        }
        
@@ -809,7 +813,7 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
 
        ;
        for (QualifiedName q: allVars) {
-           builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, q.getLocalPart(), "http://example.org/",q.getLocalPart(), "ex");
+           builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, varPrefix(q.getLocalPart()), "http://example.org/",q.getLocalPart(), "ex");
        }
        
        JsonNode the_var2=(bindings_schema==null)?null:bindings_schema.get("var");
@@ -828,26 +832,32 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
     	   }
 	       String example=generateExampleForType(declaredType,q.getLocalPart());
 
-           builder.addStatement("$T $N=$S", String.class, q.getLocalPart(), example);
+           builder.addStatement("$T $N=$S", String.class, attPrefix(q.getLocalPart()), example);
        }
        
        String args="";
        boolean first=true;
+       Set<String> seen=new HashSet<>();
        for (QualifiedName q: allVars) {
            if (first) {
                first=false;
-               args=q.getLocalPart();
+               args=varPrefix(q.getLocalPart());
            } else {
-               args=args + ", " + q.getLocalPart();
-           } 
+               args=args + ", " + varPrefix(q.getLocalPart());
+           }
+           seen.add(q.getLocalPart());
        }
+
+
        for (QualifiedName q: allAtts) {
-           final String key = q.getLocalPart();
-           if (first) {
-               first=false;
-               args=key;
-           } else {
-               args=args + ", " + key; 
+           if (!(seen.contains(q.getLocalPart()))) {
+               final String key = attPrefix(q.getLocalPart());
+               if (first) {
+                   first = false;
+                   args = key;
+               } else {
+                   args = args + ", " + key;
+               }
            }
        }
 
@@ -864,16 +874,17 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
            args="";
            first=true;
            int count=0;
-           while(iter.hasNext()){
+           while(iter.hasNext()) {
                String key=iter.next();
                if (first) {
-                   first=false;
-                   args=createExamplar(the_var,key,count++);
+                   first = false;
+                   args = createExamplar(the_var, key, count++);
                } else {
-                   args=args + ", " +  createExamplar(the_var,key,count++);
+                   args = args + ", " + createExamplar(the_var, key, count++);
                }
            }
-           
+
+
            builder.addStatement("document=me.make(" + args + ")");
            builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)");
 
@@ -886,7 +897,15 @@ public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set
        return method;
    }
 
-   public  String generateExampleForType(String declaredType, String localPart) {
+    private String varPrefix(String localPart) {
+       return "__var_" + localPart;
+    }
+
+    private String attPrefix(String localPart) {
+       return "__att_" + localPart;
+    }
+
+    public  String generateExampleForType(String declaredType, String localPart) {
 	   if (declaredType==null) {
 		   return "test_" + localPart;
 	   } else {

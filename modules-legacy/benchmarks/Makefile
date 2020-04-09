@@ -27,8 +27,12 @@ PROFILE_PARAMS=1000000
 PROFILE_KIND=bin
 PROFILE_JAVA_PARAMS=-Xms1g -Xmx8g
 profiler:
-	java $(PROFILE_JAVA_PARAMS) -jar target/benchmarks.jar -pname=$(PROFILE_PARAMS) -pgraph=$(PROFILE_KIND) -jvmArgs " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"  SerialisationBenchmarks.testDeepCopyScala
+	java $(PROFILE_JAVA_PARAMS) -jar target/benchmarks.jar -pname=$(PROFILE_PARAMS) -pgraph=$(PROFILE_KIND) -jvmArgs " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"  SerialisationBenchmarks.testReadScala
 
 visual:
 	jvisualvm
 
+
+
+bench1.scala:
+	java $(JVM_ARGS) -jar target/benchmarks.jar -f 1 -wi 3 -i 5  -bm all -tu us -rf csv -rff target/bench-$(DATE).csv -o target/bench-$(DATE).txt testReadScala

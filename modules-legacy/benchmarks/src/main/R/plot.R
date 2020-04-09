@@ -15,6 +15,9 @@ benchmark_file="bench-2020-02-23-19-10.csv"
 benchmark_file="bench-2020-02-23-20-23.csv"  #very bad!
 benchmark_file="bench-2020-02-23-21-24.csv"
 benchmark_file="bench-2020-02-24-19-12.csv"
+benchmark_file="bench-2020-03-02-18-51.csv"
+benchmark_file="bench-2020-03-02-20-03.csv"
+benchmark_file="bench-2020-03-02-21-43.csv"
 
 
 library(reshape)

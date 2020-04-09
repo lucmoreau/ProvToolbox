@@ -3,7 +3,7 @@ package org.openprovenance.prov.scala.immutable
 import java.io.{InputStream, OutputStream}
 import java.util
 
-import org.parboiled2._
+import org.parboiled2.{Rule1, _}
 
 import scala.util.{Failure, Success}
 import org.openprovenance.prov.model.Namespace
@@ -55,7 +55,7 @@ trait ProvnCore extends Parser {
 
   private val DOT: CharPredicate = CharPredicate(".")
 
-  def pn_prefix = rule { pn_chars_base ~ zeroOrMore ( pn_chars   |  ( DOT ~ zeroOrMore(DOT)  ~  pn_chars ) ) }
+  def pn_prefix: Rule[HNil, HNil] = rule { pn_chars_base ~ zeroOrMore ( pn_chars   |  ( DOT ~ zeroOrMore(DOT)  ~  pn_chars ) ) }
 
   private def percent: Rule[HNil, HNil] = rule {  '%'  ~ CharPredicate.HexDigit ~ CharPredicate.HexDigit }
 
@@ -67,10 +67,16 @@ trait ProvnCore extends Parser {
 
 
   // Note, this had to be reorganised to  be compatible with the committed choice | or of ERG grammars
-  private def pn_local = rule { ( pn_chars_u | CharPredicate.Digit | pn_chars_others ) ~
+  private def pn_local: Rule[HNil, HNil] = rule { ( pn_chars_u | CharPredicate.Digit | pn_chars_others ) ~
     zeroOrMore ( ( pn_chars |  pn_chars_others )  | ( oneOrMore(DOT)  ~  ( pn_chars | pn_chars_others) ) )   }
 
-  def qualified_name:Rule1[QualifiedName] = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeQualifiedName }
+  def orig_qualified_name:Rule1[QualifiedName] = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeQualifiedName }
+
+  private val approx_chars=pn_chars  ++ CharPredicate(".:%") ++ CharPredicate.HexDigit ++ qualified_name_chars_others  // ++ pn_chars_esc  TODO: need to encode escape
+
+  def approx_qualified_name: Rule1[QualifiedName]= rule { capture (oneOrMore ( approx_chars )) ~> makeApproxQualifiedName  }
+
+  def qualified_name:Rule1[QualifiedName] = approx_qualified_name
 
   def qualified_nameAsString: Rule1[String] = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeText }
 
@@ -85,8 +91,9 @@ trait ProvnCore extends Parser {
   private def endcomment2: Rule0 = rule { "*/" | zeroOrMore (CharPredicate.Printable) ~ zeroOrMore( pn_char_white ) ~ endcomment2 }  //TODO: will result in stack overflow
 
   /* parser action */
-  val makeText: (String) => String
-  val makeQualifiedName: (String) => QualifiedName
+  val makeText: String => String
+  val makeQualifiedName: String => QualifiedName
+  val makeApproxQualifiedName: String => QualifiedName = x => makeQualifiedName(x)
 
 
 }
@@ -113,20 +120,20 @@ trait ProvnNamespaces extends Parser with ProvnCore {
 trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
 
-    def entity = rule {  "entity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeEntity ~ WS }
+    def entity:Rule1[Entity] = rule {  "entity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeEntity ~ WS }
 
-    def agent = rule {  "agent" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeAgent ~ WS }
+    def agent:Rule1[Agent] = rule {  "agent" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeAgent ~ WS }
 
-    def activity = rule {  "activity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~  ( ',' ~ WS ~ optional_datetime  ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')'  ~ WS  ~> makeActivity | optionalAttributeValuePairs ~ ')'  ~ WS   ~> makeActivityNoTime ) }
+    def activity:Rule1[Activity] = rule {  "activity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~  ( ',' ~ WS ~ optional_datetime  ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')'  ~ WS  ~> makeActivity | optionalAttributeValuePairs ~ ')'  ~ WS   ~> makeActivityNoTime ) }
 
-    def wasGeneratedBy = rule {  "wasGeneratedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS | 
+    def wasGeneratedBy:Rule1[WasGeneratedBy] = rule {  "wasGeneratedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS |
                                                                                                                                                                                 optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId2 ~ WS ) |
                                                                      identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByWithId ~ WS | 
                                                                                                                                                                                 optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByWithId2 ~ WS ) |
                                                                                     ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS |
                                                                                                                                                                                 optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId2 ~ WS ))) }
 
-    def wasInvalidatedBy = rule {  "wasInvalidatedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId ~ WS | 
+    def wasInvalidatedBy:Rule1[WasInvalidatedBy] = rule {  "wasInvalidatedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId ~ WS |
                                                                                                                                                                                     optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId2 ~ WS ) |
                                                                          identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByWithId ~ WS | 
                                                                                                                                                                                     optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByWithId2 ~ WS ) |
@@ -134,14 +141,14 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
                                                                                                                                                                                     optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId2 ~ WS ))) }
 
 
-    def used = rule {  "used" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS | 
+    def used:Rule1[Used] = rule {  "used" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS |
                                                                                                                                                             optionalAttributeValuePairs ~ ')' ~> makeUsedNoId2 ~ WS ) |
                                                  identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedWithId ~ WS | 
                                                                                                                                                             optionalAttributeValuePairs ~ ')' ~> makeUsedWithId2 ~ WS ) |
                                                                 ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS |
                                                                                                                                                             optionalAttributeValuePairs ~ ')' ~> makeUsedNoId2 ~ WS ))) }
 
-    def wasStartedBy = rule {  "wasStartedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId ~ WS | 
+    def wasStartedBy:Rule1[WasStartedBy] = rule {  "wasStartedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId ~ WS |
                                                                                                                                                                                                             optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId2 ~ WS ) |
                                                                  identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByWithId ~ WS | 
                                                                                                                                                                                                             optionalAttributeValuePairs ~ ')' ~> makeWasStartedByWithId2 ~ WS ) |
@@ -149,7 +156,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
                                                                                                                                                                                                             optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId2 ~ WS ))) }
 
 
-    def wasEndedBy = rule {  "wasEndedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId ~ WS |
+    def wasEndedBy:Rule1[WasEndedBy] = rule {  "wasEndedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId ~ WS |
                                                                                                                                                                                                         optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId2 ~ WS ) |
                                                              identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByWithId ~ WS | 
                                                                                                                                                                                                         optionalAttributeValuePairs ~ ')' ~> makeWasEndedByWithId2 ~ WS ) |
@@ -157,7 +164,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
                                                                                                                                                                                                         optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId2 ~ WS ))) }
 
 
-    def wasAssociatedWith = rule {  "wasAssociatedWith" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId ~ WS | 
+    def wasAssociatedWith:Rule1[WasAssociatedWith] = rule {  "wasAssociatedWith" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId ~ WS |
                                                                                                                                                                                        optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId2 ~ WS ) |
                                                                            identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithWithId ~ WS | 
                                                                                                                                                                                        optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithWithId2 ~ WS ) |
@@ -166,28 +173,28 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
 
     
-    def actedOnBehalfOf = rule {  "actedOnBehalfOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS | 
+    def actedOnBehalfOf:Rule1[ActedOnBehalfOf] = rule {  "actedOnBehalfOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS |
                                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId2 ~ WS ) |
                                                                        identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfWithId ~ WS | 
                                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfWithId2 ~ WS ) |
                                                                                         ',' ~ WS                          ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS |
                                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId2 ~ WS ))) }
 
-    def wasAttributedTo = rule {  "wasAttributedTo" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS |
+    def wasAttributedTo:Rule1[WasAttributedTo] = rule {  "wasAttributedTo" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS |
                                                                        identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToWithId ~ WS | 
                                                                                         ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS )) }
 
-    def wasInfluencedBy = rule {  "wasInfluencedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS |
+    def wasInfluencedBy:Rule1[WasInfluencedBy] = rule {  "wasInfluencedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS |
                                                                        identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByWithId ~ WS | 
                                                                                         ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS )) }
 
 
-    def wasInformedBy = rule {  "wasInformedBy" ~ WS ~ '(' ~ WS ~ ('-'     ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS |
+    def wasInformedBy:Rule1[WasInformedBy] = rule {  "wasInformedBy" ~ WS ~ '(' ~ WS ~ ('-'     ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS |
                                                                        identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByWithId ~ WS | 
                                                                                         ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS )) }
 
 
-    def wasDerivedFrom = rule {  "wasDerivedFrom" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS | 
+    def wasDerivedFrom:Rule1[WasDerivedFrom] = rule {  "wasDerivedFrom" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
                                                                                                                                                                                                                                          optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ) |
                                                                      identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId ~ WS | 
                                                                                                                                                                                                                                          optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId2 ~ WS ) |
@@ -196,34 +203,34 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
     
 
-    def specializationOf = rule { "specializationOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeSpecializationOf ~ WS }
+    def specializationOf:Rule1[SpecializationOf] = rule { "specializationOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeSpecializationOf ~ WS }
 
-    def alternateOf = rule { "alternateOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeAlternateOf ~ WS }
+    def alternateOf:Rule1[AlternateOf] = rule { "alternateOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeAlternateOf ~ WS }
 
-    def hadMember = rule { "hadMember" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeHadMember ~ WS }
+    def hadMember:Rule1[HadMember] = rule { "hadMember" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeHadMember ~ WS }
 
-    def mentionOf = rule { "mentionOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeMentionOf ~ WS }
+    def mentionOf:Rule1[MentionOf] = rule { "mentionOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeMentionOf ~ WS }
 
 
-    def qualifiedSpecializationOf = rule {  "provext:specializationOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS |
+    def qualifiedSpecializationOf:Rule1[SpecializationOf] = rule {  "provext:specializationOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS |
                                                                                           identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfWithId ~ WS | 
                                                                                                            ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS )) }
 
 
 
-    def qualifiedAlternateOf = rule {  "provext:alternateOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS |
+    def qualifiedAlternateOf:Rule1[AlternateOf] = rule {  "provext:alternateOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS |
                                                                                 identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfWithId ~ WS | 
                                                                                                  ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS )) }
 
 
-    def qualifiedHadMemberOf = rule {  "provext:hadMember" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS |
+    def qualifiedHadMemberOf:Rule1[HadMember] = rule {  "provext:hadMember" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS |
                                                                                 identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfWithId ~ WS | 
                                                                                                  ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS )) }
 
 
-    def identifier = qualified_name
+    def identifier: Rule1[QualifiedName] = qualified_name
 
-    def identifierOrMarker = rule { ( qualified_name ~> makeOptionalIdentifier | '-' ~ WS ~> makeNoIdentifier ) }
+    def identifierOrMarker = rule { (  '-' ~ WS ~> makeNoIdentifier | qualified_name ~> makeOptionalIdentifier ) }
 
     def statement: Rule1[Statement] = rule { entity | agent | activity |  wasGeneratedBy | wasDerivedFrom | wasInvalidatedBy | used | wasAssociatedWith | actedOnBehalfOf | wasAttributedTo | specializationOf | alternateOf | hadMember | wasInformedBy | wasStartedBy | wasEndedBy | qualifiedSpecializationOf | mentionOf | qualifiedAlternateOf | qualifiedHadMemberOf | wasInfluencedBy }
 

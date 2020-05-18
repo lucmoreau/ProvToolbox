@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
@@ -26,13 +27,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -450,9 +444,9 @@ public class TemplateCompiler {
    }
 
 
-public boolean noNode(final JsonNode jsonNode2) {
-    return jsonNode2==null || jsonNode2 instanceof MissingNode || jsonNode2 instanceof NullNode;
-}
+    public boolean noNode(final JsonNode jsonNode2) {
+        return jsonNode2==null || jsonNode2 instanceof MissingNode || jsonNode2 instanceof NullNode;
+    }
 
    public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
        final String loggerName = loggerName(template);
@@ -461,6 +455,18 @@ public boolean noNode(final JsonNode jsonNode2) {
                .returns(String.class)
       
                ;
+
+       CodeBlock.Builder jdoc=CodeBlock.builder();
+       jdoc.add(loggerName + " client side logging method\n");
+       JsonNode the_var1=bindings_schema.get("var");
+       Iterator<String> iter1=the_var1.fieldNames();
+       while(iter1.hasNext()) {
+           String key=iter1.next();
+           String newkey="__"+key;
+           jdoc.add("@param " + newkey + " " + getJavaTypeForDeclaredType(the_var1, key) + "\n");
+       }
+       jdoc.add("@return java.lang.String\n");
+       builder.addJavadoc(jdoc.build());
        
        JsonNode the_var=bindings_schema.get("var");
        JsonNode the_context=bindings_schema.get("context");

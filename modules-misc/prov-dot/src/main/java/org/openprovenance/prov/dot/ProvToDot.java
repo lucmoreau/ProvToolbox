@@ -528,21 +528,30 @@ public class ProvToDot {
         return properties;
     }
 
+    public String getStringValue(Other o) {
+        Object v=o.getValue();
+        if (v instanceof LangString) {
+            return ((LangString) v).getValue();
+        } else {
+            return v.toString();
+        }
+    }
+
     public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
         Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
 
         List<Other> o=table.get("fillcolor");
         if (o!=null && !o.isEmpty()) {
-            properties.put("fillcolor", o.get(0).getValue().toString());
+            properties.put("fillcolor", getStringValue(o.get(0)));
             properties.put("style", "filled");
         }
         o=table.get("color");
         if (o!=null && !o.isEmpty()) {
-            properties.put("color", o.get(0).getValue().toString());
+            properties.put("color", getStringValue(o.get(0)));
         }
         o=table.get("url");
         if (o!=null && !o.isEmpty()) {
-            properties.put("URL", htmlify(o.get(0).getValue().toString()));
+            properties.put("URL", htmlify(getStringValue(o.get(0))));
         }
         o=table.get("size");
         if (o!=null && !o.isEmpty()) {
@@ -551,13 +560,13 @@ public class ProvToDot {
                 properties.put("penwidth", val);
             } else {
                 if (object instanceof Element) {
-                    properties.put("width", "" + Double.valueOf(o.get(0).getValue().toString()) * 0.75);
+                    properties.put("width", "" + Double.valueOf(getStringValue(o.get(0))) * 0.75);
                 }
             }
         }
         o=table.get("tooltip");
         if (o!=null && !o.isEmpty()) {
-            String val=o.get(0).getValue().toString();
+            String val=getStringValue(o.get(0));
             if (val.length()>MAX_TOOLTIP_LENGTH) {
                 val=val.substring(0,Math.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
             }

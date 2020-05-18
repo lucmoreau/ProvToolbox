@@ -262,28 +262,55 @@ public class ConfigProcessor {
         model.addDependency(dep);
     }
 
-    public void addCompilerDeclaration(Model model) {
-        Plugin plugin=new Plugin();
-        plugin.setGroupId("org.apache.maven.plugins");
-        plugin.setArtifactId("maven-compiler-plugin");
-        plugin.setVersion("3.8.1");
+        /*
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <source>1.8</source>
+                </configuration>
+            </plugin>
 
-        StringBuilder configString = new StringBuilder()
+         */
+
+
+    public void addCompilerDeclaration(Model model) {
+        Plugin plugin1=new Plugin();
+        plugin1.setGroupId("org.apache.maven.plugins");
+        plugin1.setArtifactId("maven-compiler-plugin");
+        plugin1.setVersion("3.8.1");
+
+        StringBuilder configString1 = new StringBuilder()
                 .append("<configuration>")
                 .append("<source>1.8</source>")
                 .append("<target>1.8</target>")
                 .append("</configuration>");
 
-        Xpp3Dom config = null;
+        Plugin plugin2=new Plugin();
+        plugin2.setGroupId("org.apache.maven.plugins");
+        plugin2.setArtifactId("maven-javadoc-plugin");
+        plugin2.setVersion("3.1.1");
+
+        StringBuilder configString2 = new StringBuilder()
+                .append("<configuration>")
+                .append("<source>1.8</source>")
+                .append("</configuration>");
+
+        Xpp3Dom config1 = null;
+        Xpp3Dom config2 = null;
         try {
-            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
+            config1 = Xpp3DomBuilder.build(new StringReader(configString1.toString()));
+            config2 = Xpp3DomBuilder.build(new StringReader(configString2.toString()));
         } catch (XmlPullParserException | IOException ex) {
-            throw new RuntimeException("Issue creating cofig for enforcer plugin", ex);
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
         }
 
         PluginManagement pm=new PluginManagement();
-        pm.addPlugin(plugin);
-        plugin.setConfiguration(config);
+        pm.addPlugin(plugin1);
+        plugin1.setConfiguration(config1);
+        pm.addPlugin(plugin2);
+        plugin2.setConfiguration(config2);
 
         Build build=new Build();
         model.setBuild(build);

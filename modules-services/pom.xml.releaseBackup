@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ProvToolbox</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>0.9.3-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <packaging>pom</packaging>
+    <name>|&gt;- MODULES: SERVICES</name>
+    <artifactId>modules-services</artifactId>
+
+    <modules>
+        <module>prov-log</module>
+        <module>prov-service-core</module>
+        <module>prov-service-translation</module>
+        <module>service-translator</module>
+        <module>docker-service-translator</module>
+    </modules>
+
+
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <isdocker />
+                <upload.directory>target/</upload.directory>
+                <validation.log.location>target/</validation.log.location>
+                <validation.prov.log.location>target/</validation.prov.log.location>
+                <hsqldb.location>target/test-database/database</hsqldb.location>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <classifier />
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+
+</project>

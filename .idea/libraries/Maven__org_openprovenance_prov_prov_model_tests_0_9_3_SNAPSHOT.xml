@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Maven: org.openprovenance.prov:prov-model:tests:0.9.3-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-model/0.9.3-SNAPSHOT/prov-model-0.9.3-SNAPSHOT-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/modules-core/prov-model/prov-model-0.9.3-SNAPSHOT-test-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-model/0.9.3-SNAPSHOT/prov-model-0.9.3-SNAPSHOT-test-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/modules-core/prov-model/prov-model-0.9.3-SNAPSHOT-test-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-model/0.9.3-SNAPSHOT/prov-model-0.9.3-SNAPSHOT-test-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

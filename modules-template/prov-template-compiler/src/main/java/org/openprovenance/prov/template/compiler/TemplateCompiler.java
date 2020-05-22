@@ -527,7 +527,7 @@ public class TemplateCompiler {
 
            if (String.class.equals(clazz)) {
                builder.beginControlFlow("if ($N==null)",newName)
-                          .addStatement("$N.append($N)", var, newName)
+                       .addStatement("$N.append($N)", var, newName)
                       .nextControlFlow("else")
                           .addStatement("$N.append($S)",var,"\"")
                           .addStatement("$N.append($N)", var, newName)

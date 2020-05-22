@@ -75,7 +75,7 @@ public class StatementCompilerAction implements StatementAction {
     public String local(QualifiedName id) {
         return (id==null)? "nullqn" : id.getLocalPart();
     }
-    
+
     @Override
 	public void doAction(Activity s) {
 		// TODO, start and end time
@@ -153,14 +153,24 @@ public class StatementCompilerAction implements StatementAction {
 
     @Override
     public void doAction(ActedOnBehalfOf s) {
-        // TODO Auto-generated method stub
-        
+        final String responsible = local(s.getResponsible());
+        final String delegate = local(s.getDelegate());
+
+        if (s.getActivity() == null) {
+            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newActedOnBehalfOf($N,$N,$N,null" + generateAttributes(s) + "))", delegate, responsible, local(s.getId()), delegate, responsible);
+        } else {
+            final String activity = local(s.getActivity());  // known to be non null
+            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newActedOnBehalfOf($N,$N,$N,$N" + generateAttributes(s) + "))", delegate, responsible, local(s.getId()), delegate, responsible, activity);
+        }
     }
 
     @Override
     public void doAction(WasDerivedFrom s) {
         final String generated = local(s.getGeneratedEntity());
         final String used = local(s.getUsedEntity());
+
+
+
         builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, local(s.getId()), generated, used);             
     }
 

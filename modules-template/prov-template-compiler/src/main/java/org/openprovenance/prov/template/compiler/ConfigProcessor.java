@@ -9,6 +9,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -320,7 +321,7 @@ public class ConfigProcessor {
     }
     
     public String getProvVersion() {
-        return "0.9.1-SNAPSHOT"; // TODO: need to get actual version
+        return Configuration.toolboxVersion;
     }
     
     final CompilerUtil cu=new CompilerUtil();

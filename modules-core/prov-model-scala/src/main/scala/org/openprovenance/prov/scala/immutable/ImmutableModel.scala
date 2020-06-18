@@ -132,7 +132,15 @@ trait HasAttributes {
 trait Hashable {
       
       @inline final def h(x: AnyRef): Int = {
-          if (x==null) 0 else x.hashCode
+          if (x==null) 0 else {
+            x match {
+              case xs:Iterable[_] =>  {
+                val set: Set[_] =xs.toSet
+                set.hashCode
+              }
+              case _ => x.hashCode
+            }
+          }
       }
       
       @inline final def pr(v0: Int,v1:Int): Int = {
@@ -1415,6 +1423,8 @@ object Statement {
       case e: org.openprovenance.prov.model.ActedOnBehalfOf => ActedOnBehalfOf(e,gensym)
       case e: org.openprovenance.prov.model.WasAssociatedWith => WasAssociatedWith(e,gensym)
       case e: org.openprovenance.prov.model.WasAttributedTo => WasAttributedTo(e,gensym)
+      case e: org.openprovenance.prov.model.WasStartedBy => WasStartedBy(e,gensym)
+      case e: org.openprovenance.prov.model.WasEndedBy => WasEndedBy(e,gensym)
       case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e,gensym)
       case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e,gensym)
       case m: org.openprovenance.prov.model.HadMember => HadMember(m,gensym)
@@ -1935,7 +1945,21 @@ object WasStartedBy {
                           Other(e.getOther))
     }
   }
+
+  def apply(e: org.openprovenance.prov.model.WasStartedBy, gensym: () => org.openprovenance.prov.model.QualifiedName):WasStartedBy = {
+    new WasStartedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
+      QualifiedName(e.getActivity),
+      QualifiedName(e.getTrigger),
+      QualifiedName(e.getStarter),
+      Option(e.getTime),
+      LangString(e.getLabel),
+      Type(e.getType),
+      Location(e.getLocation),
+      Role(e.getRole),
+      Other(e.getOther))
+  }
 }
+
 class WasStartedBy(val id: QualifiedName,
                    val activity: QualifiedName,
                    val trigger: QualifiedName,
@@ -1978,7 +2002,22 @@ object WasEndedBy {
           Other(e.getOther))
     }
   }
+
+  def apply(e: org.openprovenance.prov.model.WasEndedBy, gensym: () => org.openprovenance.prov.model.QualifiedName):WasEndedBy = {
+    new WasEndedBy(if (e.getId==null) QualifiedName(gensym()) else QualifiedName(e.getId),
+      QualifiedName(e.getActivity),
+      QualifiedName(e.getTrigger),
+      QualifiedName(e.getEnder),
+      Option(e.getTime),
+      LangString(e.getLabel),
+      Type(e.getType),
+      Location(e.getLocation),
+      Role(e.getRole),
+      Other(e.getOther))
+  }
 }
+
+
 class WasEndedBy(val id: QualifiedName,
                  val activity: QualifiedName,
                  val trigger: QualifiedName,
@@ -2418,7 +2457,7 @@ object Bundle {
     bun match {
       case b: Bundle => b
       case b: org.openprovenance.prov.model.Bundle =>
-        val ss: Set[Statement] =b.getStatement.toSet.map((s: model.Statement) => Statement(s))
+        val ss: Iterable[Statement] =b.getStatement.map((s: model.Statement) => Statement(s))
         new Bundle(QualifiedName(b.getId),ss,b.getNamespace)
     }
   }
@@ -2441,7 +2480,7 @@ class Bundle(val id: QualifiedName,
     that match {
       case that: Bundle => that.canEqual(this) && 
                            this.id == that.id  && 
-                           this.statement == that.statement
+                           this.statement.toSet == that.statement.toSet
       case _ => false
     }
 
@@ -2534,7 +2573,7 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
     override def equals(that: Any): Boolean =
     that match {
       case that: Document => that.canEqual(this) && 
-                                     this.statementOrBundle == that.statementOrBundle 
+                                     this.statementOrBundle.toSet == that.statementOrBundle.toSet
       case _ => false
     }
   
@@ -5488,7 +5527,7 @@ class ProvFactory extends ProvFactory1  {
     }
   }
 
-  override def newHadMember (collection: org.openprovenance.prov.model.QualifiedName,   
+  override def  newHadMember (collection: org.openprovenance.prov.model.QualifiedName,
                              entity: java.util.Collection[org.openprovenance.prov.model.QualifiedName]): org.openprovenance.prov.model.HadMember = {
       val set=entity.asScala.toSet
               newHadMember(QualifiedName(collection),

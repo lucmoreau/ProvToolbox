@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ModelConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ModelConstructor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -386,7 +388,8 @@
       <workItem from="1586445563313" duration="8414000" />
       <workItem from="1589295570990" duration="6488000" />
       <workItem from="1589873474208" duration="598000" />
-      <workItem from="1589904346599" duration="6525000" />
+      <workItem from="1589904346599" duration="10754000" />
+      <workItem from="1592410461225" duration="15238000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -429,117 +432,21 @@
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1045" y="363" key="#Benchmarks" timestamp="1581693653617">
-      <screen x="0" y="23" width="2560" height="1340" />
-    </state>
-    <state x="1045" y="363" key="#Benchmarks/0.23.2560.1340@0.23.2560.1340" timestamp="1581693653617" />
-    <state x="748" y="337" key="#Project_Structure" timestamp="1581784619758">
-      <screen x="0" y="23" width="2560" height="1340" />
-    </state>
-    <state x="748" y="337" key="#Project_Structure/0.23.2560.1340@0.23.2560.1340" timestamp="1581784619758" />
-    <state x="575" y="285" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1583172557505">
-      <screen x="0" y="23" width="1440" height="829" />
-    </state>
-    <state x="575" y="285" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.23.1440.829@0.23.1440.829" timestamp="1583172557505" />
-    <state x="1022" y="446" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1582448912570" />
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser" timestamp="1582448362906">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state x="961" y="393" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1582448362906" />
-    <state x="961" y="394" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1340@0.23.2560.1340" timestamp="1581767233389" />
-    <state x="235" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1581582152474">
-      <screen x="0" y="23" width="2560" height="1338" />
-    </state>
-    <state x="132" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1440.831@0.23.1440.831" timestamp="1581529206968" />
-    <state x="235" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1581582152474" />
-    <state width="2560" height="232" key="GridCell.Tab.0.bottom" timestamp="1583184053988">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="1440" height="165" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1583131597764" />
-    <state width="2560" height="232" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1583184053988" />
-    <state width="2300" height="4" key="GridCell.Tab.0.bottom/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
-    <state width="2300" height="4" key="GridCell.Tab.0.bottom/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145380" />
-    <state width="2560" height="232" key="GridCell.Tab.0.center" timestamp="1583184053988">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="1440" height="165" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1583131597763" />
-    <state width="2560" height="232" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1583184053988" />
-    <state width="2300" height="4" key="GridCell.Tab.0.center/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
-    <state width="2300" height="4" key="GridCell.Tab.0.center/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145379" />
-    <state width="2560" height="232" key="GridCell.Tab.0.left" timestamp="1583184053988">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="1440" height="165" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1583131597762" />
-    <state width="2560" height="232" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1583184053988" />
-    <state width="2300" height="4" key="GridCell.Tab.0.left/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954661" />
-    <state width="2300" height="4" key="GridCell.Tab.0.left/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145378" />
-    <state width="2560" height="232" key="GridCell.Tab.0.right" timestamp="1583184053988">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="1440" height="165" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1583131597763" />
-    <state width="2560" height="232" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1583184053988" />
-    <state width="2300" height="4" key="GridCell.Tab.0.right/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
-    <state width="2300" height="4" key="GridCell.Tab.0.right/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145380" />
-    <state width="2300" height="4" key="GridCell.Tab.1.bottom" timestamp="1581875950334">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="2300" height="4" key="GridCell.Tab.1.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950334" />
-    <state width="2300" height="4" key="GridCell.Tab.1.bottom/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954664" />
-    <state width="2300" height="4" key="GridCell.Tab.1.bottom/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145382" />
-    <state width="2300" height="4" key="GridCell.Tab.1.center" timestamp="1581875950333">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="2300" height="4" key="GridCell.Tab.1.center/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950333" />
-    <state width="2300" height="4" key="GridCell.Tab.1.center/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954663" />
-    <state width="2300" height="4" key="GridCell.Tab.1.center/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145381" />
-    <state width="2300" height="4" key="GridCell.Tab.1.left" timestamp="1581875950333">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="2300" height="4" key="GridCell.Tab.1.left/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950333" />
-    <state width="2300" height="4" key="GridCell.Tab.1.left/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954662" />
-    <state width="2300" height="4" key="GridCell.Tab.1.left/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145381" />
-    <state width="2300" height="4" key="GridCell.Tab.1.right" timestamp="1581875950334">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state width="2300" height="4" key="GridCell.Tab.1.right/0.23.2560.1337@0.23.2560.1337" timestamp="1581875950334" />
-    <state width="2300" height="4" key="GridCell.Tab.1.right/0.23.2560.1340@0.23.2560.1340" timestamp="1581839954663" />
-    <state width="2300" height="4" key="GridCell.Tab.1.right/0.23.2560.1342@0.23.2560.1342" timestamp="1581694145382" />
-    <state x="914" y="574" key="ReplaceDuplicatesPrompt" timestamp="1581697513623">
-      <screen x="0" y="23" width="2560" height="1340" />
-    </state>
-    <state x="914" y="574" key="ReplaceDuplicatesPrompt/0.23.2560.1340@0.23.2560.1340" timestamp="1581697513623" />
     <state x="2688" y="240" key="SettingsEditor" timestamp="1585319708964">
       <screen x="1920" y="23" width="2560" height="1338" />
     </state>
     <state x="2688" y="240" key="SettingsEditor/0.23.1920.1057/1920.23.2560.1338@1920.23.2560.1338" timestamp="1585319708964" />
-    <state x="1072" y="514" key="SimpleOpenTaskDialog" timestamp="1582483120902">
-      <screen x="0" y="23" width="2560" height="1337" />
-    </state>
-    <state x="1072" y="514" key="SimpleOpenTaskDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1582483120902" />
     <state x="2635" y="880" key="com.intellij.ide.util.TipDialog" timestamp="1589907006462">
       <screen x="1920" y="23" width="2560" height="1340" />
     </state>
-    <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.829@0.23.1440.829" timestamp="1583130160407" />
-    <state x="714" y="338" key="com.intellij.ide.util.TipDialog/0.23.1440.831@0.23.1440.831" timestamp="1581444338181" />
     <state x="2635" y="877" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1337@1920.23.2560.1337" timestamp="1585901014224" />
     <state x="2635" y="880" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1340@1920.23.2560.1340" timestamp="1589907006462" />
     <state x="2635" y="883" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1345@1920.23.2560.1345" timestamp="1589489676076" />
-    <state x="714" y="877" key="com.intellij.ide.util.TipDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1583352929593" />
-    <state x="714" y="878" key="com.intellij.ide.util.TipDialog/0.23.2560.1338@0.23.2560.1338" timestamp="1582888886703" />
     <state x="536" y="698" key="com.intellij.ide.util.TipDialog/1920.23.2560.1337/0.23.1920.1057@0.23.1920.1057" timestamp="1584292246285" />
-    <state x="1022" y="433" width="524" height="450" key="extract.method.dialog" timestamp="1581698001251">
-      <screen x="0" y="23" width="2560" height="1340" />
+    <state x="2972" y="435" width="670" height="676" key="search.everywhere.popup" timestamp="1592426513188">
+      <screen x="1920" y="23" width="2560" height="1338" />
     </state>
-    <state x="1022" y="432" key="extract.method.dialog/0.23.2560.1337@0.23.2560.1337" timestamp="1581368187981" />
-    <state x="1022" y="433" width="524" height="450" key="extract.method.dialog/0.23.2560.1340@0.23.2560.1340" timestamp="1581698001251" />
-    <state x="345" y="89" key="new project wizard" timestamp="1581777860708">
-      <screen x="0" y="23" width="2560" height="1340" />
-    </state>
-    <state x="345" y="89" key="new project wizard/0.23.2560.1340@0.23.2560.1340" timestamp="1581777860708" />
-    <state x="1579" y="295" width="670" height="676" key="search.everywhere.popup" timestamp="1581704441198">
-      <screen x="0" y="23" width="2560" height="1340" />
-    </state>
-    <state x="1579" y="295" width="670" height="676" key="search.everywhere.popup/0.23.2560.1340@0.23.2560.1340" timestamp="1581704441198" />
+    <state x="2972" y="435" width="670" height="676" key="search.everywhere.popup/0.23.1920.1057/1920.23.2560.1338@1920.23.2560.1338" timestamp="1592426513188" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

@@ -2,6 +2,7 @@ package org.openprovenance.prov.vanilla;
 
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Activity;
+import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.AlternateOf;
 import org.openprovenance.prov.model.Entity;
@@ -34,7 +35,7 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
      */
     @Override
     public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible, QualifiedName activity, Collection<Attribute> attributes) {
-        return new ActedOnBehalfOf(id,delegate,responsible,activity,attributes);
+        return new org.openprovenance.prov.vanilla.ActedOnBehalfOf(id,delegate,responsible,activity,attributes);
     }
 
     @Override

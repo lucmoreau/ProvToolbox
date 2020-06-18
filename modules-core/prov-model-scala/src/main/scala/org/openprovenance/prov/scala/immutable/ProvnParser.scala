@@ -11,7 +11,7 @@ import ProvFactory.pf
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.interop.InteropMediaType
 import org.openprovenance.prov.model
-import org.openprovenance.prov.scala.immutable.Parser.{actions, actions2}
+//import org.openprovenance.prov.scala.immutable.Parser.{actions, actions2}
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}
@@ -69,6 +69,11 @@ trait ProvnCore extends Parser {
   // Note, this had to be reorganised to  be compatible with the committed choice | or of ERG grammars
   private def pn_local: Rule[HNil, HNil] = rule { ( pn_chars_u | CharPredicate.Digit | pn_chars_others ) ~
     zeroOrMore ( ( pn_chars |  pn_chars_others )  | ( oneOrMore(DOT)  ~  ( pn_chars | pn_chars_others) ) )   }
+
+  // to support Query language
+  def pn_local_no_dot = rule { ( pn_chars_u | CharPredicate.Digit | pn_chars_others ) ~
+    zeroOrMore ( pn_chars |  pn_chars_others )     }
+
 
   def orig_qualified_name:Rule1[QualifiedName] = rule { capture ((optional( pn_prefix ~ ':' ) ~  pn_local )  | (pn_prefix ~ ':' ))  ~> makeQualifiedName }
 
@@ -784,11 +789,11 @@ class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
 }
 
 object Parser {
-  val actions=new MyActions()
-  val actions2=new MyActions2()
-  val funs=new DocBuilderFunctions()
 
   def readDocument (s: String): Document = {
+    val actions=new MyActions()
+    val actions2=new MyActions2()
+    val funs=new DocBuilderFunctions()
     val docBuilder=new DocBuilder(funs)
     val ns=new Namespace
     ns.addKnownNamespaces()
@@ -798,16 +803,15 @@ object Parser {
     actions2.bun_ns=None
     actions2.next=docBuilder
 
-
     val inputfile : ParserInput = io.Source.fromFile(s: String).mkString
 
-        val p=new MyParser(inputfile,actions2, actions)
-        p.document.run() match {
-          case Success(result) => docBuilder.document()
-          case Failure(e: ParseError) => println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException()
-          case Failure(e) => println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException()
-        }
+    val p=new MyParser(inputfile,actions2, actions)
+    p.document.run() match {
+      case Success(result) => docBuilder.document()
+      case Failure(e: ParseError) => println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException()
+      case Failure(e) => println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException()
     }
+  }
 }
 
 

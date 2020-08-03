@@ -27,6 +27,8 @@ release.doc:
 	cd target/$(RELEASE_VERSION); scp toolbox/target/provconvert-0.7.3.dmg openprovenance@websites1.ecs.soton.ac.uk:/home/openprovenance/openprovenance.org/htdocs/java/installer
 
 
+doc.test:
+	mvn -Prelease javadoc:javadoc
 
 
 yum:

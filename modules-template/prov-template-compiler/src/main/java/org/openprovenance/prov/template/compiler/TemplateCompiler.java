@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.text.StringSubstitutor;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
@@ -304,6 +305,7 @@ public class TemplateCompiler {
                .returns(Document.class)
                .addStatement("$T document = null", Document.class)
                .addStatement("$T ns = new Namespace()", Namespace.class)
+               .addStatement("$T subst= new StringSubstitutor(getVariableMap())", StringSubstitutor.class)
   
                ;
        
@@ -316,7 +318,7 @@ public class TemplateCompiler {
        while(iter2.hasNext()){
            String prefix=iter2.next();
            String uri=the_context.get(prefix).textValue();
-           builder.addStatement("ns.register($S,$S)", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing * 
+           builder.addStatement("ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
        }
            
        

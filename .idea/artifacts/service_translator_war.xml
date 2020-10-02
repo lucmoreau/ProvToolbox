@@ -7,7 +7,7 @@
         <packaging>war</packaging>
       </options>
     </properties>
-    <root id="archive" name="service-translator-0.9.5-SNAPSHOT.war">
+    <root id="archive" name="service-translator-0.9.6-SNAPSHOT.war">
       <element id="artifact" artifact-name="service-translator:war exploded" />
     </root>
   </artifact>

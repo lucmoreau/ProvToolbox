@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,12 +93,12 @@
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
-      <recent name="org.openprovenance.prov.service.core" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.dot" />
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
+      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
+      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
+      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
+      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.storage.mongodb" />
@@ -141,12 +137,12 @@
       <recent name="org.openprovenance.prov.service.translator.template" />
       <recent name="org.openprovenance.prov.service.translator.roundtrip" />
     </key>
-    <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
-      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
-      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
-      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
-      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
+      <recent name="org.openprovenance.prov.service.core" />
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
     </key>
   </component>
   <component name="RunManager" selected="ScalaTest.ParserSpec">
@@ -398,7 +394,10 @@
       <workItem from="1595576596885" duration="1793000" />
       <workItem from="1595766691049" duration="1809000" />
       <workItem from="1596355023476" duration="15000" />
-      <workItem from="1596355845664" duration="4032000" />
+      <workItem from="1596355845664" duration="4616000" />
+      <workItem from="1596639625332" duration="1581000" />
+      <workItem from="1597416998452" duration="5000" />
+      <workItem from="1601632527989" duration="7986000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -445,11 +444,11 @@
       <screen x="1920" y="23" width="2560" height="1417" />
     </state>
     <state x="2638" y="212" key="Maven.ArtifactSearchDialog/0.23.1920.1002/1920.23.2560.1417@1920.23.2560.1417" timestamp="1596356285276" />
-    <state x="2635" y="880" key="com.intellij.ide.util.TipDialog" timestamp="1589907006462">
-      <screen x="1920" y="23" width="2560" height="1340" />
+    <state x="2635" y="929" key="com.intellij.ide.util.TipDialog" timestamp="1596652857238">
+      <screen x="1920" y="23" width="2560" height="1345" />
     </state>
     <state x="2635" y="880" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1340@1920.23.2560.1340" timestamp="1589907006462" />
-    <state x="2635" y="883" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1345@1920.23.2560.1345" timestamp="1589489676076" />
+    <state x="2635" y="929" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1345@1920.23.2560.1345" timestamp="1596652857238" />
     <state x="2972" y="435" width="670" height="676" key="search.everywhere.popup" timestamp="1592426513188">
       <screen x="1920" y="23" width="2560" height="1338" />
     </state>

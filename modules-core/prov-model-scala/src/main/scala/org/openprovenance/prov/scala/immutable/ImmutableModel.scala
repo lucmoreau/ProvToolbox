@@ -2710,10 +2710,18 @@ abstract sealed class Attribute  protected (override val `type`: QualifiedName,
 object Attribute {    
   import ProvFactory.pf
 
-  
+
+  def ifQualifiedNameOrLangString(value: AnyRef): Object = {
+    value match {
+      case qn:org.openprovenance.prov.model.QualifiedName => QualifiedName(qn)
+      case lg:org.openprovenance.prov.model.LangString => LangString(lg)
+      case _ => value
+    }
+  }
+
   def apply(attr: org.openprovenance.prov.model.Attribute): Attribute = {
-      pf.newAttribute(attr.getElementName(), 
-                      attr.getValue(),
+      pf.newAttribute(attr.getElementName(),
+                      ifQualifiedNameOrLangString(attr.getValue()),
                       attr.getType()) match {
       case a:Attribute => a
     }
@@ -2747,8 +2755,8 @@ object Attribute {
              Set(),
              new HashMap())
   }
-  
- 
+
+
   @scala.annotation.tailrec
   def splitrec(attributes: List[Attribute],
                ls: Set[Label],
@@ -2760,7 +2768,7 @@ object Attribute {
                : (Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]]) = {
       attributes match {
          case List() => (ls,ts,vs,locs,rs,os)
-         case attr :: rest => 
+         case attr :: rest =>
             attr match {
               case l:Label    => splitrec(rest,ls + l,ts,   vs,   locs,   rs,   os)
               case t:Type     => splitrec(rest,ls,    ts+t, vs,   locs,   rs,   os)
@@ -2771,7 +2779,7 @@ object Attribute {
             }
       }
   }
-  
+
   def toNotation (sb: StringBuilder, ls: Set[LangString],ts: Set[Type],vs: Set[Value],locs: Set[Location],rs: Set[Role],os: Map[QualifiedName,Set[Other]]):StringBuilder = {
       if (ls.isEmpty && ts.isEmpty & vs.isEmpty && locs.isEmpty && os.isEmpty) sb else {
           val all:List[AnyRef]=List()++ls.map(Label(null,_))++ts++vs++locs++rs++os.values.flatMap(x=>x)
@@ -2789,15 +2797,15 @@ object Type {
                                     value: Object) = {
           new Type(`type`,value)
       }
-      
-      
+
+
       private[immutable] def apply (typex: org.openprovenance.prov.model.Type):Type = {
           typex match {
             case v:Type => v
-            case _ =>Type(QualifiedName(typex.getType),typex.getValue)
+            case _ =>Type(QualifiedName(typex.getType),Attribute.ifQualifiedNameOrLangString(typex.getValue))
           }
       }
-      
+
       def apply(types: java.util.Collection[org.openprovenance.prov.model.Type]): Set[Type] = {
           val types2=types.asScala.toSet
           types2.map(s => Type(s))
@@ -2805,50 +2813,50 @@ object Type {
 }
 
 class Type protected (override val `type`: QualifiedName,
-                      override val value: Object) 
+                      override val value: Object)
            extends Attribute(`type`,value) with org.openprovenance.prov.model.Type  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Type.myName
-    
-    
-    val elementName : QualifiedName = myName 
-    
-    
+
+
+    val elementName : QualifiedName = myName
+
+
     def this(t: QualifiedName,
              v: String) {
         this (t,{val o:Object=v;o})
     }
-    
+
     def this(t: QualifiedName,
              v: QualifiedName) {
         this (t,{val o:Object=v;o})
     }
-    
+
     def this(t: QualifiedName,
              v: LangString) {
         this (t,{val o:Object=v;o})
     }
-  
+
     def getAttributeKind(x$1: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute.AttributeKind = ???
-  
+
     def getKind(): org.openprovenance.prov.model.Attribute.AttributeKind = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_TYPE
-	
+
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
- 
+
     def canEqual(a: Any): Boolean = a.isInstanceOf[Type]
 
-    
+
     override def equals(that: Any): Boolean =
     that match {
-      case that: Type => that.canEqual(this) && 
-                           this.elementName == that.elementName && 
-                           this.`type` == that.`type` && 
-                           this.value == that.value                  
+      case that: Type => that.canEqual(this) &&
+                           this.elementName == that.elementName &&
+                           this.`type` == that.`type` &&
+                           this.value == that.value
       case _ => false
     }
-    
+
     override val hashCode:Int = pr(pr(h(elementName),h(`type`)),h(value))
-   
- 
+
+
 }
 
 object Role {
@@ -2858,64 +2866,64 @@ object Role {
     		                            value: Object) = {
         new Role(`type`,value)
       }
-      
-           
+
+
       private[immutable] def apply (loc: org.openprovenance.prov.model.Role):Role = {
           loc match {
             case v:Role => v
-            case _ =>Role(QualifiedName(loc.getType),loc.getValue)
+            case _ =>Role(QualifiedName(loc.getType),Attribute.ifQualifiedNameOrLangString(loc.getValue))
           }
       }
-      
+
       def apply(types: java.util.Collection[org.openprovenance.prov.model.Role]): Set[Role] = {
           val types2=types.asScala.toSet
           types2.map(s => Role(s))
       }
-      
-  
+
+
 }
 class Role protected (override val `type`: QualifiedName,
-                      override val value: Object) 
+                      override val value: Object)
                       extends Attribute(`type`,value) with org.openprovenance.prov.model.Role  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Role.myName
     val elementName: QualifiedName = myName
-    
-    
-        
+
+
+
     def this(t: QualifiedName,
              v: String) {
         this (t,{val o:Object=v;o})
     }
-    
+
     def this(t: QualifiedName,
              v: QualifiedName) {
         this (t,{val o:Object=v;o})
     }
-    
+
     def this(t: QualifiedName,
              v: LangString) {
         this (t,{val o:Object=v;o})
     }
-  
+
     def getAttributeKind(x$1: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute.AttributeKind = ???
-  
+
     def getKind(): org.openprovenance.prov.model.Attribute.AttributeKind = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_ROLE
-	
+
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
-    
+
     def canEqual(a: Any): Boolean = a.isInstanceOf[Role]
 
     override def equals(that: Any): Boolean =
     that match {
-      case that: Role => that.canEqual(this) && 
-                           this.elementName == that.elementName && 
-                           this.`type` == that.`type` && 
-                           this.value == that.value                  
+      case that: Role => that.canEqual(this) &&
+                           this.elementName == that.elementName &&
+                           this.`type` == that.`type` &&
+                           this.value == that.value
       case _ => false
     }
 
     override val hashCode:Int = pr(pr(h(elementName),h(`type`)),h(value))
-    
+
 }
 object Location {
       val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_LOCATION)
@@ -2923,80 +2931,80 @@ object Location {
                                     value: Object) = {
         new Location(`type`,value)
       }
-      
+
       private[immutable] def apply (loc: org.openprovenance.prov.model.Location):Location = {
           loc match {
             case v:Location => v
-            case _ =>Location(QualifiedName(loc.getType),loc.getValue)
+            case _ =>Location(QualifiedName(loc.getType),Attribute.ifQualifiedNameOrLangString(loc.getValue))
           }
       }
-      
-  
+
+
       def apply(locs: java.util.Collection[org.openprovenance.prov.model.Location]): Set[Location] = {
           val locs2=locs.asScala.toSet
           locs2.map(s => Location(s))
       }
-  
+
 
 }
 
 class Location protected (override val `type`: QualifiedName,
-                          override val value: Object) 
+                          override val value: Object)
                           extends Attribute(`type`,value) with org.openprovenance.prov.model.Location  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Location.myName
-    
+
     val elementName: QualifiedName = myName
-    
-        
+
+
     def this(t: QualifiedName,
              v: String) {
         this (t, {val o:Object=v; o})
     }
-    
+
     def this(t: QualifiedName,
              v: QualifiedName) {
         this (t, {val o:Object=v;o})
     }
-    
+
     def this(t: QualifiedName,
              v: LangString) {
         this (t, {val o:Object=v;o})
     }
-  
-  
+
+
     def getAttributeKind(x$1: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute.AttributeKind = ???
-  
+
     def getKind(): org.openprovenance.prov.model.Attribute.AttributeKind = org.openprovenance.prov.model.Attribute.AttributeKind.PROV_LOCATION
-	
+
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
-    
+
     def canEqual(a: Any): Boolean = a.isInstanceOf[Location]
 
     override def equals(that: Any): Boolean =
     that match {
-      case that: Location => that.canEqual(this) && 
-                           this.elementName == that.elementName && 
-                           this.`type` == that.`type` && 
-                           this.value == that.value                  
+      case that: Location => that.canEqual(this) &&
+                           this.elementName == that.elementName &&
+                           this.`type` == that.`type` &&
+                           this.value == that.value
       case _ => false
     }
     override lazy val hashCode:Int = {
       pr(pr(h(elementName),h(`type`)),h(value))
-    }  
+    }
 }
 
 object Value {
       val myName: QualifiedName =QualifiedName(ProvFactory.pf.getName.PROV_VALUE)
-      
+
       private[immutable] def apply (`type`: QualifiedName,
     		                            value: Object): Value = {
         new Value(`type`,value)
       }
-      
+
       def apply (value: org.openprovenance.prov.model.Value):Value = {  // To CHECK: used to be private[immutable]. Was changed to public for NormalForm.
           value match {
             case v:Value => v
-            case _ =>Value(QualifiedName(value.getType),value.getValue)
+            case _ =>Value(QualifiedName(value.getType),Attribute.ifQualifiedNameOrLangString(value.getValue))
           }
       }
  

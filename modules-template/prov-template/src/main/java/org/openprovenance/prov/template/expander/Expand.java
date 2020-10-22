@@ -19,6 +19,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
 
@@ -72,9 +73,15 @@ public class Expand {
     
 
     public Document expander(Document docIn, Bindings bindings1) {
-        
-        Bundle bun = (Bundle) u.getBundle(docIn).get(0);
 
+        
+        Bundle bun;
+
+        try {
+            bun = (Bundle) u.getBundle(docIn).get(0);
+        } catch (RuntimeException e) {
+            throw new UncheckedException("Bundle missing in template", e);
+        }
 
         Groupings grp1 = Groupings.fromDocument(docIn);
         logger.debug("expander: Found groupings " + grp1);

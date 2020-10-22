@@ -1458,6 +1458,7 @@ object StatementOrBundle {
             case e: org.openprovenance.prov.model.WasInfluencedBy => WasInfluencedBy(e)
             case e: org.openprovenance.prov.model.SpecializationOf => SpecializationOf(e)
             case e: org.openprovenance.prov.model.AlternateOf => AlternateOf(e)
+            case e: org.openprovenance.prov.model.HadMember => HadMember(e)
             case e: org.openprovenance.prov.model.Bundle => Bundle(e)
 
           }

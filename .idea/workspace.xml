@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -403,7 +402,12 @@
       <workItem from="1602098460725" duration="2234000" />
       <workItem from="1602658625698" duration="1211000" />
       <workItem from="1602786155167" duration="1195000" />
-      <workItem from="1603354249456" duration="3421000" />
+      <workItem from="1603354249456" duration="6921000" />
+      <workItem from="1603617824628" duration="598000" />
+      <workItem from="1603917283491" duration="2518000" />
+      <workItem from="1604347954453" duration="598000" />
+      <workItem from="1604668309832" duration="3000" />
+      <workItem from="1604833142976" duration="923000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -454,10 +458,10 @@
       <screen x="1920" y="23" width="2560" height="1345" />
     </state>
     <state x="2635" y="929" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1345@1920.23.2560.1345" timestamp="1596652857238" />
-    <state x="2783" y="374" width="670" height="676" key="search.everywhere.popup" timestamp="1603391223471">
+    <state x="2783" y="374" width="670" height="676" key="search.everywhere.popup" timestamp="1603395575660">
       <screen x="1920" y="23" width="2560" height="1417" />
     </state>
-    <state x="2783" y="374" width="670" height="676" key="search.everywhere.popup/0.23.1920.1003/1920.23.2560.1417@1920.23.2560.1417" timestamp="1603391223471" />
+    <state x="2783" y="374" width="670" height="676" key="search.everywhere.popup/0.23.1920.1003/1920.23.2560.1417@1920.23.2560.1417" timestamp="1603395575660" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

@@ -238,7 +238,7 @@ public class TemplateCompiler {
                .returns(Document.class)
                .addStatement("$T nullqn = null", QualifiedName.class)
                .addStatement("$T attrs=null", StatementCompilerAction.cl_collectionOfAttributes)
-               .addStatement("$T document = pf.newDocument()", Document.class)
+               .addStatement("$T __C_document = pf.newDocument()", Document.class)
  
        ;
        for (QualifiedName q: allVars) {
@@ -259,14 +259,14 @@ public class TemplateCompiler {
        }
 
        
-       StatementCompilerAction action=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "document.getStatementOrBundle()", bindings_schema);
+       StatementCompilerAction action=new StatementCompilerAction(pFactory, allVars, allAtts, vmap, builder, "__C_document.getStatementOrBundle()", bindings_schema);
        for (StatementOrBundle s: doc.getStatementOrBundle()) {
            u.doAction(s, action);
            
        }
-       builder.addStatement("new $T().updateNamespaces(document)", ProvUtilities.class);
+       builder.addStatement("new $T().updateNamespaces(__C_document)", ProvUtilities.class);
 
-       builder.addStatement("return document");
+       builder.addStatement("return __C_document");
 
        MethodSpec method=builder.build();
        
@@ -303,8 +303,8 @@ public class TemplateCompiler {
        MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                .addModifiers(Modifier.PUBLIC)
                .returns(Document.class)
-               .addStatement("$T document = null", Document.class)
-               .addStatement("$T ns = new Namespace()", Namespace.class)
+               .addStatement("$T __C_document = null", Document.class)
+               .addStatement("$T __C_ns = new Namespace()", Namespace.class)
                .addStatement("$T subst= new StringSubstitutor(getVariableMap())", StringSubstitutor.class)
   
                ;
@@ -318,7 +318,7 @@ public class TemplateCompiler {
        while(iter2.hasNext()){
            String prefix=iter2.next();
            String uri=the_context.get(prefix).textValue();
-           builder.addStatement("ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
+           builder.addStatement("__C_ns.register($S,subst.replace($S))", prefix, uri);  // TODO: needs substitution here, to expand the URI potentially containing *
        }
            
        
@@ -336,9 +336,9 @@ public class TemplateCompiler {
                boolean toEscape=toEscapeEntry!=null && toEscapeEntry.textValue()!=null && "true".equals(toEscapeEntry.textValue());
                String s2="\"" + s.replace("*","\" + $N + \"") + "\"";
                if (toEscape) {
-                   builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
+                   builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf,false)", QualifiedName.class, newName, key, key);
                } else {
-                   builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+                   builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
 
                }
            } else {
@@ -363,7 +363,7 @@ public class TemplateCompiler {
                    String s = jentry.textValue();
                    String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
                    newName = attPrefix(key);
-                   builder.addStatement("$T $N=($N==null)?null:ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
+                   builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
                }
                if (first) {
                    first = false;
@@ -374,10 +374,10 @@ public class TemplateCompiler {
            }
        }
        
-       builder.addStatement("document = generator(" + args + ")");
+       builder.addStatement("__C_document = generator(" + args + ")");
 
                       
-       builder.addStatement("return document");
+       builder.addStatement("return __C_document");
 
  
        

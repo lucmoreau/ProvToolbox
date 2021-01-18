@@ -96,6 +96,9 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     @Override
     public Document readDocument(String id, boolean known) throws IOException {
         DocumentWrapper wrapper=documentCollection.findOneById(id);
+        if (wrapper==null) {
+            return null;
+        }
         return wrapper.document;
     }
 

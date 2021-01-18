@@ -65,6 +65,7 @@ public interface InteropMediaType {
      * @see <a href="http://www.iana.org/assignments/media-types/text/vnd.graphviz">Media Type for Graphviz</a> */
     public static final String MEDIA_TEXT_VND_GRAPHVIZ = "text/vnd.graphviz";
     public static final String MEDIA_TEXT_XML = "text/xml";
+    public static final String MEDIA_TEXT_CSV = "text/csv";
     /**
      * All Media Types accepted as input for PROV. 
      */

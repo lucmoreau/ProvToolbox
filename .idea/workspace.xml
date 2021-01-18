@@ -3,10 +3,19 @@
   <component name="AnalysisUIOptions">
     <option name="SCOPE_TYPE" value="3" />
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/TemplateCompiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/InteropMediaType.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/InteropMediaType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoCSVResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoGenericResourceStorage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,12 +65,13 @@
       </map>
     </option>
   </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
-      </MavenImportingSettings>
-    </option>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
@@ -72,7 +82,6 @@
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -85,23 +94,26 @@
     <property name="extractMethod.generateAnnotations" value="false" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-legacy/benchmarks" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="project.propCompiler" />
   </component>
   <component name="RecentsManager">
-    <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
-      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
-      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
-      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
-      <recent name="org.openprovenance.prov.core.json.serialization.SortedBundle" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
+      <recent name="org.openprovenance.prov.service.core" />
+      <recent name="org.openprovenance.prov.service.translation" />
+      <recent name="org.openprovenance.prov.interop" />
+      <recent name="org.openprovenance.prov.dot" />
     </key>
-    <key name="ExtractSuperBase.RECENT_KEYS">
-      <recent name="org.openprovenance.prov.storage.mongodb" />
-      <recent name="org.openprovenance.prov.core.json" />
-      <recent name="org.openprovenance.prov.core" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-legacy/benchmarks" />
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main" />
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
+      <recent name="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/todelte" />
@@ -114,6 +126,18 @@
       <recent name="org.openprovenance.prov.interop.Configuration" />
       <recent name="org.openprovenance.prov.core.serialization.Constants" />
     </key>
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.storage.mongodb.MongoCSVResourceStorage" />
+      <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
+      <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
+      <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
+      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.openprovenance.prov.storage.mongodb" />
+      <recent name="org.openprovenance.prov.core.json" />
+      <recent name="org.openprovenance.prov.core" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.storage.redis" />
       <recent name="org.openprovenance.prov.storage.filesystem" />
@@ -121,26 +145,12 @@
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.scala" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-legacy/benchmarks" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src" />
-    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.benchmarks" />
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
       <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.service.translator.template" />
       <recent name="org.openprovenance.prov.service.translator.roundtrip" />
-    </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
-      <recent name="org.openprovenance.prov.service.core" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
-      <recent name="org.openprovenance.prov.dot" />
     </key>
   </component>
   <component name="RunManager" selected="ScalaTest.ParserSpec">
@@ -166,6 +176,19 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -203,18 +226,13 @@
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
       <option name="allowRunningInParallel" value="false" />
-      <option name="testKind" value="Class" />
-      <option name="envs">
-        <map />
+      <option name="selectedOptions">
+        <list />
       </option>
-      <option name="javaOptions" value="" />
+      <option name="testKind" value="Class" />
       <option name="jrePath" value="" />
       <option name="searchTest" value="In single module" />
-      <option name="showProgressMessages" value="true" />
-      <option name="testArgs" value="" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
-      <option name="useSbt" value="false" />
-      <option name="useUiWithSbt" value="false" />
       <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -223,26 +241,19 @@
     <configuration name="ParserSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
       <option name="allowRunningInParallel" value="false" />
-      <option name="testKind" value="Class" />
-      <option name="envs">
-        <map />
+      <option name="selectedOptions">
+        <list />
       </option>
-      <option name="javaOptions" value="" />
-      <option name="jrePath" />
-      <option name="searchTest" value="Across module dependencies" />
-      <option name="showProgressMessages" value="true" />
-      <option name="testArgs" value="" />
+      <option name="testKind" value="Class" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ParserSpec" />
-      <option name="useSbt" value="false" />
-      <option name="useUiWithSbt" value="false" />
       <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Little" />
       <item itemvalue="Application.Benchmarks" />
+      <item itemvalue="Application.Little" />
       <item itemvalue="JUnit.BindingTest" />
       <item itemvalue="JUnit.QualifiedNameTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
@@ -252,9 +263,9 @@
       <list>
         <item itemvalue="ScalaTest.ParserSpec" />
         <item itemvalue="JUnit.QualifiedNameTest" />
-        <item itemvalue="Application.Benchmarks" />
-        <item itemvalue="Application.Little" />
         <item itemvalue="JUnit.BindingTest" />
+        <item itemvalue="Application.Little" />
+        <item itemvalue="Application.Benchmarks" />
       </list>
     </recent_temporary>
   </component>
@@ -270,6 +281,7 @@
       </list>
     </option>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -407,7 +419,22 @@
       <workItem from="1603917283491" duration="2518000" />
       <workItem from="1604347954453" duration="598000" />
       <workItem from="1604668309832" duration="3000" />
-      <workItem from="1604833142976" duration="923000" />
+      <workItem from="1604833142976" duration="2072000" />
+      <workItem from="1605214938905" duration="1195000" />
+      <workItem from="1605285281388" duration="788000" />
+      <workItem from="1605735530895" duration="613000" />
+      <workItem from="1605860146592" duration="2189000" />
+      <workItem from="1606638232738" duration="598000" />
+      <workItem from="1606665604516" duration="558000" />
+      <workItem from="1607096975033" duration="599000" />
+      <workItem from="1607602593119" duration="597000" />
+      <workItem from="1608114858942" duration="21000" />
+      <workItem from="1608295816485" duration="10703000" />
+      <workItem from="1609357288112" duration="193000" />
+      <workItem from="1609357569124" duration="2636000" />
+      <workItem from="1609684239208" duration="2325000" />
+      <workItem from="1610100159387" duration="47261000" />
+      <workItem from="1610706267007" duration="20679000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -429,39 +456,24 @@
     </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="First cut of json-ld serialisation for activities" />
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="2638" y="212" key="Maven.ArtifactSearchDialog" timestamp="1596356285276">
-      <screen x="1920" y="23" width="2560" height="1417" />
-    </state>
-    <state x="2638" y="212" key="Maven.ArtifactSearchDialog/0.23.1920.1002/1920.23.2560.1417@1920.23.2560.1417" timestamp="1596356285276" />
-    <state x="2635" y="929" key="com.intellij.ide.util.TipDialog" timestamp="1596652857238">
-      <screen x="1920" y="23" width="2560" height="1345" />
-    </state>
-    <state x="2635" y="929" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.2560.1345@1920.23.2560.1345" timestamp="1596652857238" />
-    <state x="2783" y="374" width="670" height="676" key="search.everywhere.popup" timestamp="1603395575660">
-      <screen x="1920" y="23" width="2560" height="1417" />
-    </state>
-    <state x="2783" y="374" width="670" height="676" key="search.everywhere.popup/0.23.1920.1003/1920.23.2560.1417@1920.23.2560.1417" timestamp="1603395575660" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

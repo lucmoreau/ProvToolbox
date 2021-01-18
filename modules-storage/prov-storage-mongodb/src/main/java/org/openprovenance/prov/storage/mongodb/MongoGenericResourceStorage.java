@@ -89,6 +89,7 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
     @Override
     public TYPE deserializeObjectFromStore(String id) {
         TypeWrapper<TYPE> wrapper= genericCollection.findOneById(id);
+        if (wrapper==null) return null;
         return wrapper.value;
     }
 

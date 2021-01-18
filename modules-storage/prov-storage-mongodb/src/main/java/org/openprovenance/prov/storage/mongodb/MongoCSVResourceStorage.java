@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorage<Collection<CSVRecord>>, Constants {
 
 
+    public static final String CSV_ENTRY = "csv";
     private final DB db;
 
     private static Logger logger = Logger.getLogger(MongoCSVResourceStorage.class);
@@ -34,7 +35,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
 
     private final ObjectMapper mapper;
 
-    MongoCSVResourceStorage(String dbname, ObjectMapper mapper) {
+    public MongoCSVResourceStorage(String dbname, ObjectMapper mapper) {
 
         MongoClient mongoClient = new MongoClient("localhost", 27017);
         DB db = mongoClient.getDB(dbname);
@@ -69,6 +70,18 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
     public void serializeObjectToStore(Collection<CSVRecord> coll, String id) throws IOException {
         List<List<String>> result=new ArrayList<>();
         for (CSVRecord rec: coll) {
+            List<String> ll = toList(rec);
+            result.add(ll);
+        }
+        List<?>[] array=result.toArray(new List<?> [0]);
+
+        csvCollection.updateById(id, DBUpdate.set(CSV_ENTRY, array));
+    }
+
+    public void serializeObjectToStore(Iterator<CSVRecord> iterator, String id) throws IOException {
+        List<List<String>> result=new ArrayList<>();
+        for (Iterator<CSVRecord> it = iterator; it.hasNext(); ) {
+            CSVRecord rec = it.next();
             List<String> ll = toList(rec);
             result.add(ll);
         }

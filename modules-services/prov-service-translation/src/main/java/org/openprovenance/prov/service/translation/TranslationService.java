@@ -111,23 +111,27 @@ public class TranslationService implements Constants, InteropMediaType {
         }
 
         ResourceIndex<DocumentResource> index=utils.getDocumentResourceIndex().getIndex();
-        DocumentResource vr = index.get(msg);
+        DocumentResource dr = index.get(msg);
         index.close();
 
 
-        if (vr == null) {
+        if (dr == null) {
             return utils.composeResponseNotFoundResource(msg);
         }
 
-        Document doc=utils.getDocumentFromCacheOrStore(vr.getStorageId());
+        return retrieveAndReturnDocument(msg, type, dr);
+
+    }
+    final InteropFramework intF = new InteropFramework();
+
+    public Response retrieveAndReturnDocument(String msg, String type, DocumentResource dr) throws IOException {
+        Document doc=utils.getDocumentFromCacheOrStore(dr.getStorageId());
         if (doc == null) {
             return utils.composeResponseNotFoundDocument(msg);
         }
 
-        InteropFramework intF = new InteropFramework();
         String mimeType = intF.convertExtensionToMediaType(type);
         return utils.composeResponseOK(doc).type(mimeType).build();
-
     }
 
     @GET
@@ -153,13 +157,12 @@ public class TranslationService implements Constants, InteropMediaType {
        //     return utils.composeResponseNotFoundDocument(msg);
        // }
 
-        InteropFramework intf = new InteropFramework();
 
         String format=dr.getStorageId().substring(0, dr.getStorageId().lastIndexOf(".")+1);
 
 
 
-        String mimeType = intf.mimeTypeMap.get(format); //TODO: fix me, domain is not a string
+        String mimeType = intF.mimeTypeMap.get(format); //TODO: fix me, domain is not a string
 
         File f = new File(dr.getStorageId());
 

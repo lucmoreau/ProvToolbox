@@ -28,8 +28,12 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
     private final String collectionName;
 
     public MongoAsciiBlobStorage(String dbname, String collectionName) {
+        this("localhost",dbname,collectionName);
+    }
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+    public MongoAsciiBlobStorage(String host, String dbname, String collectionName) {
+
+        MongoClient mongoClient = new MongoClient(host, 27017);
         DB db = mongoClient.getDB(dbname);
         this.db=db;
         this.collectionName=collectionName;

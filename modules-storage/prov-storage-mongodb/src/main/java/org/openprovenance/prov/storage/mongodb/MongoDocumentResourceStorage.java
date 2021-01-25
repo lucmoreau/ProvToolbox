@@ -38,9 +38,12 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     final ProvFactory factory = ProvFactory.getFactory();
 
     public MongoDocumentResourceStorage(String dbname) {
+        this("localhost", dbname);
+    }
 
+    public MongoDocumentResourceStorage(String host, String dbname) {
         //System.out.println("Creating a client");
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        MongoClient mongoClient = new MongoClient(host, 27017);
         DB db = mongoClient.getDB(dbname);
         this.db=db;
 

@@ -31,8 +31,12 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
     private final String collectionName;
 
     public MongoGenericResourceStorage(String dbname, String collectionName, ObjectMapper mapper, Class<TYPE> cl, Supplier<TypeWrapper<TYPE>> wmake) {
+        this("localhost",dbname,collectionName,mapper,cl,wmake);
+    }
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+    public MongoGenericResourceStorage(String host, String dbname, String collectionName, ObjectMapper mapper, Class<TYPE> cl, Supplier<TypeWrapper<TYPE>> wmake) {
+
+        MongoClient mongoClient = new MongoClient(host, 27017);
         DB db = mongoClient.getDB(dbname);
         this.db=db;
 

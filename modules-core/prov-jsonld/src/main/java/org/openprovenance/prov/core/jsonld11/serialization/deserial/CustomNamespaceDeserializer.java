@@ -36,25 +36,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         if (jp.isExpectedStartArrayToken()) {
             Object[] objects=jp.readValueAs(Object[].class);
             for (Object o: objects) {
-                if (o instanceof Map) {
-                    Map<String, Object> map = (Map<String, Object>) o;
-                    for (Map.Entry<String, Object> entry : map.entrySet()) {
-                        final Object value = entry.getValue();
-                        if (value instanceof String) {
-                            final String valueString = (String) value;
-                            final String key = entry.getKey();
-                            switch (key) {
-                                case "@namespace":
-                                    ns.setDefaultNamespace(valueString);
-                                    break;
-                                case "@version":
-                                    break;
-                                default:
-                                    ns.register(key, valueString);
-                            }
-                        }
-                    }
-                }
+                processContextObject(ns, o);
             }
         }
 
@@ -64,5 +46,27 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         Namespace.withThreadNamespace(ns);
 
         return ns;
+    }
+
+    public void processContextObject(Namespace ns, Object o) {
+        if (o instanceof Map) {
+            Map<String, Object> map = (Map<String, Object>) o;
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                final Object value = entry.getValue();
+                if (value instanceof String) {
+                    final String valueString = (String) value;
+                    final String key = entry.getKey();
+                    switch (key) {
+                        case "@namespace":
+                            ns.setDefaultNamespace(valueString);
+                            break;
+                        case "@version":
+                            break;
+                        default:
+                            ns.register(key, valueString);
+                    }
+                }
+            }
+        }
     }
 }

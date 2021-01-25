@@ -19,8 +19,12 @@ public class MongoNonDocumentResourceStorage implements NonDocumentResourceStora
     private final DB db;
 
     public MongoNonDocumentResourceStorage(String dbname) {
+        this("localhost", dbname);
+    }
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+    public MongoNonDocumentResourceStorage(String host, String dbname) {
+
+        MongoClient mongoClient = new MongoClient(host, 27017);
 
         DB db = mongoClient.getDB(dbname);
         this.db=db;

@@ -36,8 +36,11 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
     private final ObjectMapper mapper;
 
     public MongoCSVResourceStorage(String dbname, ObjectMapper mapper) {
+        this("localhost",dbname,mapper);
+    }
+    public MongoCSVResourceStorage(String host, String dbname, ObjectMapper mapper) {
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        MongoClient mongoClient = new MongoClient(host, 27017);
         DB db = mongoClient.getDB(dbname);
         this.db=db;
 

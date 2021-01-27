@@ -1,10 +1,7 @@
 package org.openprovenance.prov.json;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.net.URLDecoder;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -221,8 +218,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				QualifiedName delegate = optionalQualifiedName("prov:delegate", attributeMap);
 				QualifiedName responsible = optionalQualifiedName("prov:responsible", attributeMap);
 				activity = optionalQualifiedName("prov:activity", attributeMap);
-				statement = pf.newActedOnBehalfOf(id, delegate, responsible,
-						activity);
+				statement = pf.newActedOnBehalfOf(id, delegate, responsible, activity);
 				break;
 			case wasDerivedFrom:
 				QualifiedName generatedEntity = optionalQualifiedName("prov:generatedEntity",
@@ -231,8 +227,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				activity = optionalQualifiedName("prov:activity", attributeMap);
 				QualifiedName generation = optionalQualifiedName("prov:generation", attributeMap);
 				QualifiedName usage = optionalQualifiedName("prov:usage", attributeMap);
-				statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity,
-						activity, generation, usage,null);
+				statement = pf.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage,null);
 				break;
 			case wasEndedBy:
 				activity = optionalQualifiedName("prov:activity", attributeMap);

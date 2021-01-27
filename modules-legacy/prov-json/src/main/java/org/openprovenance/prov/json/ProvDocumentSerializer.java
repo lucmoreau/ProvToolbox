@@ -11,21 +11,20 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 public class ProvDocumentSerializer implements JsonSerializer<Document> {
-    final ProvFactory pFactory;
+	final ProvFactory pFactory;
 
-    public ProvDocumentSerializer(ProvFactory pFactory) {
-	this.pFactory=pFactory;
-    }
+	public ProvDocumentSerializer(ProvFactory pFactory) {
+		this.pFactory=pFactory;
+	}
 
-    @Override
-    public JsonElement serialize(final Document doc, 
-                                 Type typeOfSrc,
-				 JsonSerializationContext context) {
-	JSONConstructor jsonConstructor = new JSONConstructor(pFactory.getName());
-	BeanTraversal bt = new BeanTraversal(jsonConstructor, 
-	                                     pFactory);
-	bt.doAction(doc);
-	Object jsonStructure = jsonConstructor.getJSONStructure();
-	return context.serialize(jsonStructure);
-    }
+	@Override
+	public JsonElement serialize(final Document doc,
+								 Type typeOfSrc,
+								 JsonSerializationContext context) {
+		JSONConstructor jsonConstructor = new JSONConstructor(pFactory.getName());
+		BeanTraversal bt = new BeanTraversal(jsonConstructor, pFactory);
+		bt.doAction(doc);
+		Object jsonStructure = jsonConstructor.getJSONStructure();
+		return context.serialize(jsonStructure);
+	}
 }

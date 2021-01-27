@@ -81,9 +81,9 @@ public class QualifiedNameUtils {
 		}
 	}
 
-    public String unescapeProvLocalName(String localName) {
-	return UNESCAPE_PROV_LOCAL_NAME.translate(localName);
-    }
+	public String unescapeProvLocalName(String localName) {
+		return UNESCAPE_PROV_LOCAL_NAME.translate(localName);
+	}
 
     public static final String INNER_ESCAPE="_";
     public static final String START_ESCAPE="_";

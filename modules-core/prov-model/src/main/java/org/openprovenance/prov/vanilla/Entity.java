@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class Entity implements org.openprovenance.prov.model.Entity, Equals, HashCode, ToString, HasAttributes {
 
-    private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
+    static private final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvFactory.getFactory().getName().XSD_STRING;
     private Optional<QualifiedName> id;
 
     private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();

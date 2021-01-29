@@ -7,6 +7,11 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="jsweet-central" />
+      <option name="name" value="libs-release" />
+      <option name="url" value="http://repository.jsweet.org/artifactory/libs-release-local" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
@@ -20,6 +25,11 @@
       <option name="id" value="mvn.prov.toolbox.snapshots" />
       <option name="name" value="maven snapshot repository for PROV toolbox" />
       <option name="url" value="http://openprovenance.org/java/maven-snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jsweet-snapshots" />
+      <option name="name" value="libs-snapshot" />
+      <option name="url" value="http://repository.jsweet.org/artifactory/libs-snapshot-local" />
     </remote-repository>
   </component>
 </project>

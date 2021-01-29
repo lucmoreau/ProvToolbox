@@ -24,10 +24,11 @@
         <option value="$PROJECT_DIR$/modules-storage/pom.xml" />
         <option value="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" />
         <option value="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-core/jsweet-quickstart/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="12.0.1" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="12.0.1" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
 </project>

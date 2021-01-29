@@ -1,0 +1,331 @@
+<html>
+<head>
+	<link rel="icon" type="image/png" href="logo.png">
+	<link rel="shortcut icon" href="logo.png">
+	<meta charset="utf-8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+
+	<style>
+	[vanilla] {
+		color: rgb(50, 200, 75);
+	}
+	</style>
+</head>
+
+<body>
+
+	<!-- used to show the jQuery candy (see the QuickStart class) -->
+	<p id="target"></p>
+
+	<div vanilla></div>
+
+
+	<script>
+		var javax={}
+		javax.xml={}
+		javax.xml.datatype={}
+		javax.xml.datatype.DatatypeFactory= class DatatypeFactory {
+			constructor () {
+			}
+			static newInstance () { return new javax.xml.datatype.DatatypeFactory();}
+
+			newXMLGregorianCalendar(gc) { return new javax.xml.datatype.XMLGregorianCalendar(gc) };
+
+		}
+		javax.xml.datatype.XMLGregorianCalendar= class XMLGregorianCalendar {
+			constructor(gc) {
+				this.gc=gc;
+			}
+			toXMLFormat() {
+				return this.gc.toISOString();
+			}
+		}
+		javax.xml.XMLConstants={}
+		javax.xml.XMLConstants.DEFAULT_NS_PREFIX=""
+		javax.xml.namespace={}
+		javax.xml.namespace.QName = class QName {
+			constructor(uri,local,prefix) {
+				this.uri=uri;
+				this.local=local;
+				this.prefix=prefix;
+			}
+			getNamespaceURI() {
+				return this.uri;
+			}
+			getLocalPart() {
+				return this.local;
+			}
+			getPrefix() {
+				return this.prefix;
+			}
+		}
+		var java={}
+		java.util={}
+		java.util.Collections={}
+		java.util.Collections.EMPTY_LIST=[]
+
+		java.util.stream={}
+		java.util.stream.Collectors= {}
+		java.util.stream.Collectors.toList = function () {}
+
+
+		java.io={}
+		java.io.OutputStreamWriter= class OutputStreamWriter {
+			constructor(ignore) {
+				return null;
+			}};
+		java.io.BufferedWriter= class BufferedWriter {
+			constructor(ignore) {
+				return null;
+			}
+			close() {}
+		};
+
+
+		var org={}
+		org.apache={}
+		org.apache.commons={}
+		org.apache.commons.lang3={}
+		org.apache.commons.lang3.text={}
+		org.apache.commons.lang3.text.translate={}
+		org.apache.commons.lang3.text.translate.AggregateTranslator=class AggregateTranslator {
+			constructor (x) {}
+			translate (x) { return x;}
+		}
+
+		org.apache.commons.lang3.text.translate.UnicodeUnescaper=class UnicodeUnescaper {
+			constructor (x) {}
+		}
+
+		org.apache.commons.lang3.text.translate.LookupTranslator=class LookupTranslator {
+			constructor (x) {}
+		}
+
+		org.apache.commons.lang3.text.translate.UnicodeEscaper=class UnicodeEscaper {
+			constructor (x) {}
+			static outsideOf(x,y) {return null;}
+		}
+
+
+		Array.prototype.stream=function() { return this }
+		Array.prototype.collect=function(x) { return this }
+
+
+	//var StatementOrBundle=org.openprovenance.prov.model.StatementOrBundle
+
+	</script>
+	<!--<script type="text/javascript" src="candies/j4ts.js"></script>-->
+
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/exception/UncheckedException.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/ProvFactory.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/BeanTraversal.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/ProvUtilities.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/QualifiedName.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/QualifiedNameUtils.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Entity.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Activity.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Agent.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/WasGeneratedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Name.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/NameSpace.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Document.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Type.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Other.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/TypedValue.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/Attribute.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/WasDerivedFrom.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/NamespaceGatherer.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/exception/QualifiedNameException.js"></script>
+
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/NamespacePrefixMapper.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/StatementOrBundle.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/model/ValueConverter.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/ProvFactory.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/ModelConstructor.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/QualifiedName.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Entity.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Activity.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Agent.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasGeneratedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/ProvUtilities.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Document.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/TypedValue.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Type.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasDerivedFrom.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/LangString.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Other.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Location.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Label.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Value.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Role.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Used.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasAssociatedWith.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasAttributedTo.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasEndedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasStartedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasInfluencedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasInformedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/WasInvalidatedBy.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/AlternateOf.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/SpecializationOf.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/HadMember.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/ActedOnBehalfOf.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/Bundle.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/QualifiedAlternateOf.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/QualifiedHadMember.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/vanilla/QualifiedSpecializationOf.js"></script>
+
+
+	<script type="text/javascript" src="../target/js/com/google/gson/GsonBuilder.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/Gson.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonElement.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonNull.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonObject.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonArray.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonPrimitive.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonSerializer.js"></script>
+	<script type="text/javascript" src="../target/js/com/google/gson/JsonSerializationContext.js"></script>
+
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/Converter.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/ProvSerialiser.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/ProvDeserialiser.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/ProvDocumentDeserializer.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/ProvDocumentSerializer.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/JSONConstructor.js"></script>
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/json/ProvJSONStatement.js"></script>
+
+	<script type="text/javascript" src="../target/js/org/openprovenance/apache/commons/lang/builder/EqualsBuilder.js"></script>
+
+	<script type="text/javascript" src="../target/js/org/openprovenance/prov/test/RoundTripFromJavaTest.js"></script>
+
+
+
+
+
+	<script>
+		var StatementOrBundle=org.openprovenance.prov.model.StatementOrBundle
+		var Attribute=org.openprovenance.prov.model.Attribute
+
+		org.openprovenance.prov.model.QualifiedNameUtils.unescapeProvLocalName=function(x) { return x;}
+
+		var javaemul ;
+
+		(function (javaemul) {
+			var internal;
+			(function (internal) {
+				/**
+				 * Wraps native <code>boolean</code> as an object.
+				 * @param {boolean} value
+				 * @class
+				 */
+				var BooleanHelper = /** @class */ (function () {
+					function BooleanHelper() {
+					}
+					BooleanHelper.TYPE_$LI$ = function () { if (BooleanHelper.TYPE == null) {
+						BooleanHelper.TYPE = Boolean;
+					} return BooleanHelper.TYPE; };
+					BooleanHelper.compare = function (x, y) {
+						return (x === y) ? 0 : (x ? 1 : -1);
+					};
+					BooleanHelper.hashCode = function (value) {
+						return value ? 1231 : 1237;
+					};
+					BooleanHelper.logicalAnd = function (a, b) {
+						return a && b;
+					};
+					BooleanHelper.logicalOr = function (a, b) {
+						return a || b;
+					};
+					BooleanHelper.logicalXor = function (a, b) {
+						return (a) !== (b);
+					};
+					BooleanHelper.parseBoolean = function (s) {
+						return /* equalsIgnoreCase */ (function (o1, o2) { return o1.toUpperCase() === (o2 === null ? o2 : o2.toUpperCase()); })("true", s);
+					};
+					BooleanHelper.toString = function (x) {
+						return /* valueOf */ String(x).toString();
+					};
+					BooleanHelper.valueOf$boolean = function (b) {
+						return b ? BooleanHelper.TRUE : BooleanHelper.FALSE;
+					};
+					BooleanHelper.valueOf$java_lang_String = function (s) {
+						return BooleanHelper.valueOf$boolean(BooleanHelper.parseBoolean(s));
+					};
+					BooleanHelper.valueOf = function (s) {
+						if (((typeof s === 'string') || s === null)) {
+							return javaemul.internal.BooleanHelper.valueOf$java_lang_String(s);
+						}
+						else if (((typeof s === 'boolean') || s === null)) {
+							return javaemul.internal.BooleanHelper.valueOf$boolean(s);
+						}
+						else
+							throw new Error('invalid overload');
+					};
+					BooleanHelper.prototype.booleanValue = function () {
+						return BooleanHelper.unsafeCast((javaemul.internal.InternalPreconditions.checkNotNull(this)));
+					};
+					/*private*/ BooleanHelper.unsafeCast = function (value) {
+						return value;
+					};
+					BooleanHelper.prototype.compareTo$javaemul_internal_BooleanHelper = function (b) {
+						return BooleanHelper.compare(this.booleanValue(), b.booleanValue());
+					};
+					/**
+					 *
+					 * @param {javaemul.internal.BooleanHelper} b
+					 * @return {number}
+					 */
+					BooleanHelper.prototype.compareTo = function (b) {
+						if (((b != null && b instanceof javaemul.internal.BooleanHelper) || b === null)) {
+							return this.compareTo$javaemul_internal_BooleanHelper(b);
+						}
+						else
+							throw new Error('invalid overload');
+					};
+					/**
+					 *
+					 * @param {*} o
+					 * @return {boolean}
+					 */
+					BooleanHelper.prototype.equals = function (o) {
+						return javaemul.internal.InternalPreconditions.checkNotNull(this) === o;
+					};
+					/**
+					 *
+					 * @return {number}
+					 */
+					BooleanHelper.prototype.hashCode = function () {
+						return BooleanHelper.hashCode(this.booleanValue());
+					};
+					/**
+					 *
+					 * @return {string}
+					 */
+					BooleanHelper.prototype.toString = function () {
+						return BooleanHelper.toString(this.booleanValue());
+					};
+					BooleanHelper.FALSE = false;
+					BooleanHelper.TRUE = true;
+					return BooleanHelper;
+				}());
+				internal.BooleanHelper = BooleanHelper;
+				BooleanHelper["__class"] = "javaemul.internal.BooleanHelper";
+				BooleanHelper["__interfaces"] = ["java.lang.Comparable", "java.io.Serializable"];
+			})(internal = javaemul.internal || (javaemul.internal = {}));
+		})(javaemul || (javaemul = {}));
+
+		console.log(javaemul)
+
+
+
+	</script>
+
+	<!-- The transpiled output of the QuickStart.java source file (mvn generate-sources) -->
+	<!-- <script type="text/javascript" src="../target/js/quickstart/QuickStart.js"></script> -->
+	<!-- <script type="text/javascript" src="prov.js"></script> -->
+
+<script>
+	new org.openprovenance.prov.test.RoundTripFromJavaTest().testAll();
+</script>
+</body>
+</html>

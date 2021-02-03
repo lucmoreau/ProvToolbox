@@ -25,6 +25,7 @@
         <option value="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" />
         <option value="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" />
         <option value="$PROJECT_DIR$/modules-core/jsweet-quickstart/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" />
       </list>
     </option>
   </component>

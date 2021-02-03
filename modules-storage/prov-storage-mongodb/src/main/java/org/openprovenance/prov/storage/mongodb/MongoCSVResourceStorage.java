@@ -6,11 +6,13 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.Logger;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
+import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 
 import java.io.IOException;
@@ -118,8 +120,20 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
         List<String>[] array=wrapper.csv;
         List result=new ArrayList();
         for (List<String> ll: array) {
-            String input=ll.stream().collect(Collectors.joining(","));
-            CSVRecord record=CSVParser.parse(input, CSVFormat.DEFAULT).getRecords().get(0);
+            StringBuffer sb=new StringBuffer();
+            boolean first=true;
+            for (String s: ll) {
+                if (first) {
+                    first=false;
+                } else {
+                    sb.append(",");
+                }
+                sb.append(StringEscapeUtils.escapeCsv(s));
+            }
+            final String string = sb.toString();
+            //System.out.println(string);
+            // TODO: Isn't there a way to build a csvrecord without constructing a string to b eparsed?
+            CSVRecord record=CSVParser.parse(string, CSVFormat.DEFAULT).getRecords().get(0);
             result.add(record);
         }
         return result;

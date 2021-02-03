@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jsweet</groupId>
-	<artifactId>jsweet-quickstart</artifactId>
+	<artifactId>prov-js-core</artifactId>
 	<version>${jsweet.transpiler.version}</version>
 	<name>JSweet quick start</name>
 	<description>A simple project structure to get started with JSweet</description>

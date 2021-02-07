@@ -6,34 +6,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
-import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.DictionaryMembership;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.StatementAction;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.WasStartedBy;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
@@ -236,10 +209,17 @@ public class StatementCompilerAction implements StatementAction {
                                              vmap.get(typeq));
                     }
                 } else {
-                    builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
-                                         vmap.get(element),
-                                         value.toString(),
-                                         vmap.get(typeq));
+                    if (value instanceof LangString) {
+                        builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
+                                vmap.get(element),
+                                ((LangString)value).getValue(),  // TDDO: ignoring Lang for now
+                                vmap.get(typeq));
+                    } else {
+                        builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
+                                            vmap.get(element),
+                                            value.toString(),
+                                            vmap.get(typeq));
+                    }
                     
                 }
             }

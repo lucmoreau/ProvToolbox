@@ -121,6 +121,7 @@ public class VisService implements Constants, InteropMediaType {
             MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG};
     public static final String ALL_OUTPUT_MEDIA_AS_STRING= Arrays.toString(ALL_OUTPUT_MEDIA);
 
+    /*
     @GET
     @Path("/documents/random/{nodes}/{degree}")
     @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
@@ -190,7 +191,9 @@ public class VisService implements Constants, InteropMediaType {
 
     }
 
+
+
     static ObjectMapper mapper = new ObjectMapper();
 
-
+ */
 }

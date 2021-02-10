@@ -77,6 +77,7 @@ public class TemplateService  implements Constants, InteropMediaType {
     public static final String ALL_OUTPUT_MEDIA_AS_STRING= Arrays.toString(ALL_OUTPUT_MEDIA);
  */
 
+    /* In Random Service
 
     @GET
     @Path("/documents/random/{nodes}/{degree}")
@@ -146,6 +147,8 @@ public class TemplateService  implements Constants, InteropMediaType {
         return utils.composeResponseOK(doc).type(mt).build();
 
     }
+
+     */
 
     static ObjectMapper mapper = new ObjectMapper();
 

@@ -20,7 +20,7 @@ public class RedisDocumentResource implements DocumentResource {
     final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, loc);
 
 
-    final Map<String,String> m;
+    protected final Map<String,String> m;
     private Document doc;
     private Throwable thrown;
 
@@ -87,7 +87,7 @@ public class RedisDocumentResource implements DocumentResource {
         this.thrown=thrown;
     }
 
-    ObjectMapper om=new ObjectMapper();
+    static public final ObjectMapper om=new ObjectMapper();
 
     Map<String, Object> extension=null;
 

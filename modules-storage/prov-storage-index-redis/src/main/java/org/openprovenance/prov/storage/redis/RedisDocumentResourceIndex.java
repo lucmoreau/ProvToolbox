@@ -16,13 +16,13 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
     private static Logger logger = Logger.getLogger(RedisDocumentResourceIndex.class);
 
-    static final String FIELD_VISIBLE_ID  = "_vid_";
-    static final String FIELD_EXTENSION   = "_ext_";
-    static final String FIELD_STORE_ID    = "_id_";
-    static final String FIELD_EXPIRES     = "_exp_";
-    static final String FIELD_KIND        = "_kind_";
-    static final String FIELD_BINDINGS_ID = "_bid_";
-    static final String FIELD_TEMPLATE_ID = "_tid_";
+    public static final String FIELD_VISIBLE_ID  = "_vid_";
+    public static final String FIELD_EXTENSION   = "_ext_";
+    public static final String FIELD_STORE_ID    = "_id_";
+    public static final String FIELD_EXPIRES     = "_exp_";
+    public static final String FIELD_KIND        = "_kind_";
+    public static final String FIELD_BINDINGS_ID = "_bid_";
+    public static final String FIELD_TEMPLATE_ID = "_tid_";
 
     private final String[] myKeyArray = {FIELD_STORE_ID, FIELD_EXPIRES, FIELD_KIND, FIELD_EXTENSION};
 

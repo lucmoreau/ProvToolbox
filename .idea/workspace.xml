@@ -9,8 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/VisService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/VisService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisDocumentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisDocumentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisDocumentResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java/org/openprovenance/prov/storage/redis/RedisDocumentResourceIndex.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,17 +173,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -436,7 +425,8 @@
       <workItem from="1611932987304" duration="7197000" />
       <workItem from="1612466593021" duration="597000" />
       <workItem from="1612524031476" duration="2832000" />
-      <workItem from="1612538777418" duration="33396000" />
+      <workItem from="1612538777418" duration="35758000" />
+      <workItem from="1613022949964" duration="4048000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

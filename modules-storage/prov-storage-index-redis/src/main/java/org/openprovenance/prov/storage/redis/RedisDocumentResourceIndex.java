@@ -78,7 +78,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
             return new RedisDocumentResource(new HashMap<>());
         }
     };
-    
+
     @Override
     public DocumentResource get(String key) {
         List<String> values=client.hmget(key, myKeys());

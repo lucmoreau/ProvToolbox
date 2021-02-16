@@ -47,7 +47,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
 
     public RedisDocumentResourceIndex(JedisPool pool) {
         this.pool=pool;
-        this.client=null;
+        this.client=pool.getResource();
     }
 
     private RedisDocumentResourceIndex(JedisPool pool, Jedis client) {

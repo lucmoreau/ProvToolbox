@@ -117,6 +117,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
     @Override
     public Collection<CSVRecord> deserializeObjectFromStore(String id) throws IOException {
         CSVWrapper wrapper= csvCollection.findOneById(id);
+        if (wrapper==null) return null;
         List<String>[] array=wrapper.csv;
         List result=new ArrayList();
         for (List<String> ll: array) {

@@ -55,6 +55,8 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
     @Override
     public EXTENDED_RESOURCE get(String key) {
         logger.debug("get " + key );
+        logger.debug("get " + myKeys() );
+        logger.debug("get " + dri.client );
         List<String> values=dri.client.hmget(key, myKeys());
         logger.debug("get " + key + values);
         Map<String,String> m=new HashMap<>();

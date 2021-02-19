@@ -2,7 +2,7 @@
     <parent>
         <artifactId>modules-executable</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.7</version>
+        <version>0.9.7-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,43 +16,43 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-dot</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-generator</artifactId>
-            <version>0.9.7</version>
+            <version>0.9.7-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

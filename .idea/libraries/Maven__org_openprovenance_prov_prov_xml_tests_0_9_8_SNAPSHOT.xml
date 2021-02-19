@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openprovenance.prov:prov-xml:tests:0.9.8-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-xml/0.9.8-SNAPSHOT/prov-xml-0.9.8-SNAPSHOT-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-xml/0.9.8-SNAPSHOT/prov-xml-0.9.8-SNAPSHOT-test-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-xml/0.9.8-SNAPSHOT/prov-xml-0.9.8-SNAPSHOT-test-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

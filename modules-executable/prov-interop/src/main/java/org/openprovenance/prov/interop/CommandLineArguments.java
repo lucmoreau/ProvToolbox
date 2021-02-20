@@ -7,12 +7,13 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.configuration.Configuration;
 
 public class CommandLineArguments implements ErrorCodes {
 	
-	static Logger logger=Logger.getLogger(CommandLineArguments.class);
+	static Logger logger= LogManager.getLogger(CommandLineArguments.class);
     
     public static final String BINDINGS = "bindings";
     public static final String OUTFILE = "outfile";

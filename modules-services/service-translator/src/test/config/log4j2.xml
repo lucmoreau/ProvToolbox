@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
-<log4j:configuration>
-
-    
-  <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
-    </layout>
-  </appender>
-  <!--
-  <appender name="file" class="org.apache.log4j.RollingFileAppender"> 
-    <param name="file" value="target/it-client.log"/>  
-    <param name="MaxFileSize" value="10000KB"/>
-    <param name="MaxBackupIndex" value="10"/>
-    <layout class="org.apache.log4j.PatternLayout"> 
-      <param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
-    </layout> 
-  </appender> 
--->
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
 
 
+  <Loggers>
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
 
-  <category name="org.quartz-scheduler">   
-    <priority value="INFO"/>   
-    <appender-ref ref="stdout"/>
-  </category> 
+
+    <Logger name="org.quartz-scheduler" level="info">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+
+    <Logger name="org.openprovenance.prov.interop" level="info">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+  </Loggers>
+</Configuration>
+
+
+<!--
+
   <category name="org.quartz">   
     <priority value="WARN"/>   
     <appender-ref ref="stdout"/>
@@ -60,3 +63,4 @@
     <appender-ref ref="stdout"/>
   </root>
 </log4j:configuration>
+-->

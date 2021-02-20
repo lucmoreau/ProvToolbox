@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.translator.template;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
@@ -33,7 +34,7 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IT extends TestCase {
-    static Logger logger = Logger.getLogger(IT.class);
+    static Logger logger = LogManager.getLogger(IT.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 

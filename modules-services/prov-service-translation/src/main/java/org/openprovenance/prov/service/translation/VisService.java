@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.openprovenance.prov.interop.InteropFramework;
@@ -34,7 +35,7 @@ public class VisService implements Constants, InteropMediaType {
 
     ProvUtilities u = new ProvUtilities();
 
-    static Logger logger = Logger.getLogger(VisService.class);
+    static Logger logger = LogManager.getLogger(VisService.class);
 
 
     private final ServiceUtils utils;

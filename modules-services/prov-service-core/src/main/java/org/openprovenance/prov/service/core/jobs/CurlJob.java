@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core.jobs;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.service.core.PostService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -12,7 +13,7 @@ import java.io.InputStreamReader;
 import static org.openprovenance.prov.service.core.jobs.JobManagement.*;
 
 public class CurlJob implements Job {
-    static Logger logger = Logger.getLogger(CurlJob.class);
+    static Logger logger = LogManager.getLogger(CurlJob.class);
 
 
     public CurlJob() {

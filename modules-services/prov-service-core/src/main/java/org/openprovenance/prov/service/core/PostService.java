@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openprovenance.prov.interop.InteropMediaType;
@@ -29,7 +30,7 @@ import java.util.*;
 @Path("")
 public class PostService implements Constants, InteropMediaType {
 
-    static Logger logger = Logger.getLogger(PostService.class);
+    static Logger logger = LogManager.getLogger(PostService.class);
 
     private final JobManagement jobManager = new JobManagement();
     private final boolean autoDelete;

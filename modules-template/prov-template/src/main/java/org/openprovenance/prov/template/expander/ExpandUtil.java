@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
@@ -18,7 +19,7 @@ import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.ProvUtilities;
 
 public class ExpandUtil {
-    static Logger logger = Logger.getLogger(ExpandUtil.class);
+    static Logger logger = LogManager.getLogger(ExpandUtil.class);
 
     public static final String VAR_NS = "http://openprovenance.org/var#";
     public static final String VARGEN_NS = "http://openprovenance.org/vargen#";

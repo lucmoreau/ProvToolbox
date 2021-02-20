@@ -1,6 +1,7 @@
 package org.openprovenance.prov.storage.redis;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.Instantiable;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends DocumentResource>  implements ResourceIndex<EXTENDED_RESOURCE> {
-    private static Logger logger = Logger.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
+    private static Logger logger = LogManager.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
 
     public static <T> T[] concat(T[] first, T[] second) {
         T[] result = Arrays.copyOf(first, first.length + second.length);

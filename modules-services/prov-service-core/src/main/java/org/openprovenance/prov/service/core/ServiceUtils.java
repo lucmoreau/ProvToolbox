@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.core;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats;
@@ -70,7 +71,7 @@ public class ServiceUtils {
         return Configuration.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
 
-    private static Logger logger = Logger.getLogger(ServiceUtils.class);
+    private static Logger logger = LogManager.getLogger(ServiceUtils.class);
 
 
 

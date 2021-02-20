@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.openprovenance.prov.interop.InteropFramework;
@@ -32,7 +33,7 @@ public class RandomService implements Constants, InteropMediaType {
     private final ServiceUtils utils;
     ProvUtilities u = new ProvUtilities();
 
-    static Logger logger = Logger.getLogger(RandomService.class);
+    static Logger logger = LogManager.getLogger(RandomService.class);
 
 
 

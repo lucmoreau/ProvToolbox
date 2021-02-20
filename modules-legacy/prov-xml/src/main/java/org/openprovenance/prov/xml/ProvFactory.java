@@ -4,10 +4,10 @@ import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.Attribute.AttributeKind;
 import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
 import org.openprovenance.prov.model.ProvSerialiser;
@@ -23,7 +23,7 @@ import org.openprovenance.prov.model.exception.QualifiedNameException;
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
 
-    static Logger logger = Logger.getLogger(ProvFactory.class);
+    static Logger logger = LogManager.getLogger(ProvFactory.class);
 
     final private QualifiedNameUtils qnU = new QualifiedNameUtils();
 

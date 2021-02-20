@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.translator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
@@ -26,7 +27,7 @@ import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PA
 
 public class StorageConfiguration implements EnvironmentVariables{
 
-    static Logger logger = Logger.getLogger(StorageConfiguration.class);
+    static Logger logger = LogManager.getLogger(StorageConfiguration.class);
 
     public Map<String,String> defaultConfiguration=theDefaultConfiguration();
 
@@ -130,6 +131,8 @@ public class StorageConfiguration implements EnvironmentVariables{
 
 
     public ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig, ProvFactory factory, Map<String,String> configuration) {
+
+
         utilsConfig.storageManager=new DocumentResourceStorageFileSystem(factory, path);
 
         ProvSerialiser serial = new ProvSerialiser();

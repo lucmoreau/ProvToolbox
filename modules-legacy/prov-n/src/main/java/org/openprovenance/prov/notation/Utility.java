@@ -20,7 +20,8 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.TreeAdaptor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Document;
@@ -29,7 +30,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 
 public  class Utility {
 
-    static Logger logger=Logger.getLogger(Utility.class);
+    static Logger logger= LogManager.getLogger(Utility.class);
 
     public static void warn(String s) {
         logger.warn(s);

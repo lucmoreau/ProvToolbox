@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core.jobs;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.NonDocumentResource;
 import org.openprovenance.prov.service.core.ServiceUtils;
@@ -12,7 +13,7 @@ import org.quartz.SchedulerException;
 import static org.openprovenance.prov.service.core.jobs.JobManagement.UTILS_KEY;
 
 public class JobDeleteDocumentResource implements Job {
-    static Logger logger = Logger.getLogger(JobDeleteDocumentResource.class);
+    static Logger logger = LogManager.getLogger(JobDeleteDocumentResource.class);
 
     public JobDeleteDocumentResource() {
     }

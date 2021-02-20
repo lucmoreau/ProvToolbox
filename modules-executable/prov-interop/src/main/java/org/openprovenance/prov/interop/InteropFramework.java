@@ -20,6 +20,8 @@ import java.util.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
@@ -37,7 +39,6 @@ import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
-import org.apache.log4j.Logger;
 
 import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
 
@@ -89,7 +90,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     }
 
 
-    static Logger logger = Logger.getLogger(InteropFramework.class);
+    static Logger logger = LogManager.getLogger(InteropFramework.class);
     public static final String UNKNOWN = "unknown";
 
     final ProvFactory pFactory;

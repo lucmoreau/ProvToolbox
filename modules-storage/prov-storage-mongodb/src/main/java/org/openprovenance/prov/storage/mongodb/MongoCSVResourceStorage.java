@@ -8,7 +8,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
@@ -31,7 +32,7 @@ public class MongoCSVResourceStorage implements NonDocumentGenericResourceStorag
     public static final String CSV_ENTRY = "csv";
     private final DB db;
 
-    private static Logger logger = Logger.getLogger(MongoCSVResourceStorage.class);
+    private static Logger logger = LogManager.getLogger(MongoCSVResourceStorage.class);
 
     private final JacksonDBCollection<CSVWrapper, String> csvCollection;
 

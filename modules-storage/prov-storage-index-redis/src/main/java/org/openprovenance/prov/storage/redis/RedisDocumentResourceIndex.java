@@ -1,5 +1,7 @@
 package org.openprovenance.prov.storage.redis;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.Instantiable;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -8,13 +10,12 @@ import redis.clients.jedis.Jedis;
 import java.text.DateFormat;
 import java.util.*;
 
-import org.apache.log4j.Logger;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResource> {
 
-    private static Logger logger = Logger.getLogger(RedisDocumentResourceIndex.class);
+    private static Logger logger = LogManager.getLogger(RedisDocumentResourceIndex.class);
 
     public static final String FIELD_VISIBLE_ID  = "_vid_";
     public static final String FIELD_EXTENSION   = "_ext_";

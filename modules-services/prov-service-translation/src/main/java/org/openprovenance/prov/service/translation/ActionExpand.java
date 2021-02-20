@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
@@ -30,7 +31,7 @@ import java.util.Map;
 
 public class ActionExpand implements ActionPerformer {
     public static final String BINDINGS_KEY = "bindings";
-    private static Logger logger = Logger.getLogger(ActionExpand.class);
+    private static Logger logger = LogManager.getLogger(ActionExpand.class);
 
     private final ServiceUtils utils;
 

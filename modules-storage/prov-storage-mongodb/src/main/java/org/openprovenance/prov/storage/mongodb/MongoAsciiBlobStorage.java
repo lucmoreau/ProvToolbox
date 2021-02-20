@@ -4,7 +4,8 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
@@ -21,7 +22,7 @@ public class MongoAsciiBlobStorage implements NonDocumentGenericResourceStorage<
 
     private final DB db;
 
-    private static Logger logger = Logger.getLogger(MongoAsciiBlobStorage.class);
+    private static Logger logger = LogManager.getLogger(MongoAsciiBlobStorage.class);
 
     private final JacksonDBCollection<AsciiWrapper, String> genericCollection;
 

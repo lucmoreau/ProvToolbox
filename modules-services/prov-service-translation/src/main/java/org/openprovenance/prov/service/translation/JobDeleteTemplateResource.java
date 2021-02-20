@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -17,7 +18,7 @@ import static org.openprovenance.prov.service.translation.ActionExpand.BINDINGS_
 
 
 public class JobDeleteTemplateResource implements Job {
-    static Logger logger = Logger.getLogger(JobDeleteTemplateResource.class);
+    static Logger logger = LogManager.getLogger(JobDeleteTemplateResource.class);
 
     public JobDeleteTemplateResource() {
     }

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core.jobs;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.quartz.*;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.impl.StdSchedulerFactory;
@@ -15,7 +16,7 @@ public class JobManagement {
 	public static final String UTILS_KEY = "utils";
     public static final String DURATION_KEY = "duration";
 
-    static Logger logger = Logger.getLogger(JobManagement.class);
+    static Logger logger = LogManager.getLogger(JobManagement.class);
 	
     public static final String LOGGED_MESSAGE = "loggedMessage";
 

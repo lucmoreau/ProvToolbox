@@ -84,13 +84,19 @@
             <version>1.1.2</version>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.12</version>
         </dependency>
 
-
+-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
 
 
         <!--
@@ -326,7 +332,7 @@
                 <directory>src/main/config</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>log4j.xml</include>
+                    <include>log4j2.xml</include>
                 </includes>
             </resource>
         </resources>
@@ -341,7 +347,7 @@
                 <directory>src/test/config</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>log4j.xml</include>
+                    <include>log4j2.xml</include>
                 </includes>
             </testResource>
         </testResources>
@@ -361,7 +367,7 @@
             </activation>
             <properties>
                 <isdocker />
-                <upload.directory>target/</upload.directory>
+                <upload.directory>${project.build.directory}/</upload.directory>
                 <validation.log.location>target/</validation.log.location>
                 <validation.prov.log.location>target/</validation.prov.log.location>
                 <hsqldb.location>target/test-database/database</hsqldb.location>

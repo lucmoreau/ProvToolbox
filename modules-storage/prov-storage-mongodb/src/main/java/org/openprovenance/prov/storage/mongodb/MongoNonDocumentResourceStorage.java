@@ -3,7 +3,8 @@ package org.openprovenance.prov.storage.mongodb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bson.types.ObjectId;
 import org.openprovenance.prov.storage.api.NonDocumentResourceStorage;
 
@@ -14,7 +15,7 @@ https://howtodoinjava.com/mongodb/java-mongodb-getsave-image-using-gridfs-apis/
 
 
 public class MongoNonDocumentResourceStorage implements NonDocumentResourceStorage, Constants {
-    private static Logger logger = Logger.getLogger(MongoNonDocumentResourceStorage.class);
+    private static Logger logger = LogManager.getLogger(MongoNonDocumentResourceStorage.class);
 
     private final DB db;
 

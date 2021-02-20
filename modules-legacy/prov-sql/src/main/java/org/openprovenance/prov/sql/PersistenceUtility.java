@@ -12,12 +12,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.ProvUtilities;
 
 public class PersistenceUtility {
-    static Logger logger = Logger.getLogger(PersistenceUtility.class);
+    static Logger logger = LogManager.getLogger(PersistenceUtility.class);
     static private EntityManagerFactory emf;                                                                                                                   
     static private EntityManager entityManager;
     static Hashtable<String, QualifiedName> table;

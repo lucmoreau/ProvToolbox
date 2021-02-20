@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
@@ -34,7 +35,7 @@ import java.util.Optional;
 //@Api(value = "", description = "Provenance API")
 public class TranslationService implements Constants, InteropMediaType {
 	
-    private static Logger logger = Logger.getLogger(TranslationService.class);
+    private static Logger logger = LogManager.getLogger(TranslationService.class);
     private final ServiceUtils utils;
 
 

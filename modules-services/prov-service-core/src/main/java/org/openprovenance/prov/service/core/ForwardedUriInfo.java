@@ -42,7 +42,8 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Custom implementation of {@link UriInfo} that is aware of
@@ -55,7 +56,7 @@ import org.apache.log4j.Logger;
  * @see <a href="http://tools.ietf.org/html/draft-ietf-appsawg-http-forwarded-10">IETF Forwarded HTTP Extension</a>
  */
 final public class ForwardedUriInfo implements UriInfo {
-    static Logger logger = Logger.getLogger(ForwardedUriInfo.class);
+    static Logger logger = LogManager.getLogger(ForwardedUriInfo.class);
 
     /**
      * Original {@link UriInfo}.

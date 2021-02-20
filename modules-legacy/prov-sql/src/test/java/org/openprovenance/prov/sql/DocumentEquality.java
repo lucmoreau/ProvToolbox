@@ -10,7 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.collections4.bag.HashBag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Document;
 
@@ -20,7 +21,7 @@ import org.openprovenance.prov.model.Document;
  */
 
 public class DocumentEquality {
-	static Logger logger = Logger.getLogger(DocumentEquality.class);
+	static Logger logger = LogManager.getLogger(DocumentEquality.class);
 	
 	private boolean mergeDuplicates;
 

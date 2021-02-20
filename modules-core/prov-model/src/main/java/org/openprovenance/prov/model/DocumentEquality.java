@@ -6,7 +6,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import org.apache.commons.collections4.bag.HashBag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Trung Dong Huynh &lt;tdh@ecs.soton.ac.uk&gt;
@@ -17,7 +18,7 @@ import org.apache.log4j.Logger;
 
 
 public class DocumentEquality {
-	static Logger logger = Logger.getLogger(DocumentEquality.class);
+	static Logger logger = LogManager.getLogger(DocumentEquality.class);
 
 	private boolean mergeDuplicates;
 

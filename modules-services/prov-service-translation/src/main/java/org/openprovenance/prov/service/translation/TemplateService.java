@@ -5,17 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.log4j.Logger;
-import org.openprovenance.prov.generator.GeneratorDetails;
-import org.openprovenance.prov.generator.GraphGenerator;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -43,7 +41,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     ProvUtilities u = new ProvUtilities();
 
-    private static Logger logger = Logger.getLogger(TemplateService.class);
+    private static Logger logger = LogManager.getLogger(TemplateService.class);
 
     final ActionExpand actionExpand;
 

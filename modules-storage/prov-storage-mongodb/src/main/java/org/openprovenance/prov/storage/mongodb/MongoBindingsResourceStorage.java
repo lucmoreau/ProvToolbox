@@ -1,7 +1,8 @@
 package org.openprovenance.prov.storage.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
 
 
@@ -9,7 +10,7 @@ public class MongoBindingsResourceStorage extends MongoGenericResourceStorage<Bi
 
 
 
-    private static Logger logger = Logger.getLogger(MongoBindingsResourceStorage.class);
+    private static Logger logger = LogManager.getLogger(MongoBindingsResourceStorage.class);
 
 
 

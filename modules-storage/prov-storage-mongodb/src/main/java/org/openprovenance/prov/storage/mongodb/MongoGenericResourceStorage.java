@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
@@ -21,7 +22,7 @@ public class MongoGenericResourceStorage<TYPE> implements NonDocumentGenericReso
 
     private final DB db;
 
-    private static Logger logger = Logger.getLogger(MongoGenericResourceStorage.class);
+    private static Logger logger = LogManager.getLogger(MongoGenericResourceStorage.class);
 
     private final JacksonDBCollection<TypeWrapper<TYPE>, String> genericCollection;
 

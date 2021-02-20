@@ -1,6 +1,7 @@
 package org.openprovenance.prov.vanilla;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Bundle;
@@ -24,7 +25,7 @@ import java.util.*;
 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension, AtomConstructor {
-    static Logger logger = Logger.getLogger(ProvFactory.class);
+    static Logger logger = LogManager.getLogger(ProvFactory.class);
 
     private final static ProvFactory oFactory = new ProvFactory();
 

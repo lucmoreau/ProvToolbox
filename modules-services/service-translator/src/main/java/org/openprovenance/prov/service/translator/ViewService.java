@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.service.core.ServiceUtils;
 
 import javax.servlet.ServletException;
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 @Path("")
 public class ViewService {
-    static Logger logger = Logger.getLogger(ViewService.class);
+    static Logger logger = LogManager.getLogger(ViewService.class);
 
 
     public static final String longVersion =  ServiceUtils.longContainerVersion;

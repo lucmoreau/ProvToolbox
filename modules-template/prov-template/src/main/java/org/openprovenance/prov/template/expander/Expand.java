@@ -9,7 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Bundle;
@@ -24,7 +25,7 @@ import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
 
 public class Expand {
-    static Logger logger = Logger.getLogger(Expand.class);
+    static Logger logger = LogManager.getLogger(Expand.class);
 
 
     final private boolean addOrderp;

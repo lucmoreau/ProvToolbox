@@ -1,6 +1,7 @@
 package org.openprovenance.prov.storage.redis;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.Instantiable;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class RedisTemplateResourceIndex extends RedisExtendedDocumentResourceIndexFactory<TemplateResource> implements ResourceIndex<TemplateResource> {
 
-    private static Logger logger = Logger.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
+    private static Logger logger = LogManager.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
 
     static String[] extra=new String[]{ RedisDocumentResourceIndex.FIELD_BINDINGS_ID, RedisDocumentResourceIndex.FIELD_TEMPLATE_ID};
     public RedisTemplateResourceIndex(RedisDocumentResourceIndex dri, Instantiable<TemplateResource> factory) {

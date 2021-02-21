@@ -12,22 +12,24 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="prov-jsonld-xml (1)" />
-    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-model:0.9.9-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="prov-model" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.openprovenance.prov:prov-interop:0.9.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-jsonld-xml:0.9.9-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="prov-interop" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: commons-cli:commons-cli:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.0.Final" level="project" />
+    <orderEntry type="module" module-name="prov-jsonld-xml" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:5.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-log:0.9.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-storage-api:0.9.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-storage-filesystem:0.9.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.openprovenance.prov:prov-xml:0.9.9-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="prov-log" />
+    <orderEntry type="module" module-name="prov-storage-api" />
+    <orderEntry type="module" module-name="prov-storage-filesystem" />
+    <orderEntry type="module" module-name="prov-xml" scope="PROVIDED" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />
@@ -38,7 +40,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-multipart-provider:4.3.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-core-spi:4.3.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.3.Final" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec:1.0.1.Final" level="project" />

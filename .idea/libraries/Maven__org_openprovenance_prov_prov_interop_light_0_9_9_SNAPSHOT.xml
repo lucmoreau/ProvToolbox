@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openprovenance.prov:prov-interop-light:0.9.9-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-interop-light/0.9.9-SNAPSHOT/prov-interop-light-0.9.9-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-interop-light/0.9.9-SNAPSHOT/prov-interop-light-0.9.9-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-interop-light/0.9.9-SNAPSHOT/prov-interop-light-0.9.9-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

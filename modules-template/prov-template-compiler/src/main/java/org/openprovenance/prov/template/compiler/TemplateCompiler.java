@@ -423,27 +423,30 @@ public class TemplateCompiler {
 
 
 
-    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var) {
-       Iterator<String> iter=the_var.fieldNames();
-       while(iter.hasNext()){
-           String key=iter.next();
-           
-           final JsonNode entry = the_var.path(key);
-           if (entry!=null && !(entry instanceof MissingNode)) {
-               JsonNode firstNode = entry.get(0);
-               if (firstNode instanceof ArrayNode) {
-                   firstNode=((ArrayNode)firstNode).get(0);
-               }
-               final JsonNode jsonNode = firstNode.get("@documentation");
-               String documentation=noNode(jsonNode)? "-- no @documentation" : jsonNode.textValue();
-               final JsonNode jsonNode2 = firstNode.get("@type");
-               String type=noNode(jsonNode2)? "xsd:string" : jsonNode2.textValue();
-               builder.addJavadoc("@param $N $L (expected type: $L)\n", key, documentation, type); 
-           } else {           
-               builder.addJavadoc("@param $N -- no bindings schemas \n", key); 
-           }
-       }
-   }
+    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var, JsonNode the_documentation) {
+        String docString=noNode(the_documentation)? "No @documentation." : the_documentation.textValue();
+        builder.addJavadoc(docString);
+        builder.addJavadoc("\n\n");
+        Iterator<String> iter=the_var.fieldNames();
+        while(iter.hasNext()){
+            String key=iter.next();
+
+            final JsonNode entry = the_var.path(key);
+            if (entry!=null && !(entry instanceof MissingNode)) {
+                JsonNode firstNode = entry.get(0);
+                if (firstNode instanceof ArrayNode) {
+                    firstNode=((ArrayNode)firstNode).get(0);
+                }
+                final JsonNode jsonNode = firstNode.get("@documentation");
+                String documentation=noNode(jsonNode)? "-- no @documentation" : jsonNode.textValue();
+                final JsonNode jsonNode2 = firstNode.get("@type");
+                String type=noNode(jsonNode2)? "xsd:string" : jsonNode2.textValue();
+                builder.addJavadoc("@param $N $L (expected type: $L)\n", key, documentation, type);
+            } else {
+                builder.addJavadoc("@param $N -- no bindings schemas \n", key);
+            }
+        }
+    }
 
 
     public boolean noNode(final JsonNode jsonNode2) {

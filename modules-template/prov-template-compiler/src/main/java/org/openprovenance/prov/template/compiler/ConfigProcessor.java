@@ -510,8 +510,9 @@ public class ConfigProcessor {
     
         JsonNode the_var=bindings_schema.get("var");
         JsonNode the_context=bindings_schema.get("context");
+        JsonNode the_documentation=bindings_schema.get("@documentation");
         tc.generateSpecializedParameters(builder, the_var);
-        tc.generateSpecializedParametersJavadoc(builder, the_var);
+        tc.generateSpecializedParametersJavadoc(builder, the_var, the_documentation);
         
         
         int count=1;

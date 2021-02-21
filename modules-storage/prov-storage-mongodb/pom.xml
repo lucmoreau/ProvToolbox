@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-storage</artifactId>
-        <version>0.9.9-SNAPSHOT</version>
+        <version>0.9.9</version>
     </parent>
     <artifactId>prov-storage-mongodb</artifactId>
     <name> |---- PROV-STORAGE-MONGODB</name>
@@ -15,32 +15,32 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-api</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop-light</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
             <scope>provided</scope>
         </dependency>
 
@@ -69,21 +69,21 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
-            <version>0.9.9-SNAPSHOT</version>
+            <version>0.9.9</version>
             <scope>test</scope>
         </dependency>
 

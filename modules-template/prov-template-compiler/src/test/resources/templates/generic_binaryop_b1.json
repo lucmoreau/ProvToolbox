@@ -23,7 +23,7 @@
 	],
 	"consumed_value1": [[
 	    {
-		"@type": "xsd:int"
+		"@type": "xsd:string"
 	    }
 	]],
 	"consumed2": [

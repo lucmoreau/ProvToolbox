@@ -31,3 +31,8 @@ wfl:
 
 clash:
 	cd target/output;javac org/issue/ClashBindingsBean.java -cp ../../../prov-template/target/prov-template-0.9.1-SNAPSHOT.jar:../../../../modules-core/prov-model/target/prov-model-0.9.1-SNAPSHOT.jar 
+
+HERE=$(HOME)/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/
+
+comp2:
+	cd target/libs/templates/templates_cli/src/main/java/;javac org/example/templates/block/client/*.java -cp $(HERE)/../prov-template/target/prov-template-0.9.10-SNAPSHOT.jar:$(HERE)/../../modules-core/prov-model/target/prov-model-0.9.10-SNAPSHOT.jar 

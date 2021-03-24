@@ -524,18 +524,26 @@ public class TemplateCompiler {
            String key=iter.next();
            final String newName = "__"+key;
            final Class<?> clazz=getJavaTypeForDeclaredType(the_var, key);
-           
+           final boolean isQualifiedName=the_var.get(key).get(0).get("@id")!=null;
 
            constant=constant+',';
            builder.addStatement("$N.append($S)",var,constant);
            constant="";
 
            if (String.class.equals(clazz)) {
+               String myStatement="$N.append($N)";
+               if (!isQualifiedName ) {
+                   final boolean doEscape=the_var.get(key).get(0).get(0).get("@escape")!=null;
+                   if (doEscape) {
+                       myStatement = "$N.append(org.openprovenance.apache.commons.lang.StringEscapeUtils.escapeJavaScript($N))";
+                   }
+               }
                builder.beginControlFlow("if ($N==null)",newName)
                        .addStatement("$N.append($N)", var, newName)
                       .nextControlFlow("else")
                           .addStatement("$N.append($S)",var,"\"")
-                          .addStatement("$N.append($N)", var, newName)
+
+                          .addStatement(myStatement, var, newName)
                           .addStatement("$N.append($S)",var,"\"")
                       .endControlFlow();
            } else {

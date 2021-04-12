@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-legacy</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.10</version>
+        <version>0.9.11-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.10</version>
+            <version>0.9.11-SNAPSHOT</version>
         </dependency>
 
         <!-- jaxb -->

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openprovenance.prov:prov-n:0.9.11-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-n/0.9.11-SNAPSHOT/prov-n-0.9.11-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-n/0.9.11-SNAPSHOT/prov-n-0.9.11-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-n/0.9.11-SNAPSHOT/prov-n-0.9.11-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

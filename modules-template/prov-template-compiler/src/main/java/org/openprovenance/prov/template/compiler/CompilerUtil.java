@@ -1,19 +1,22 @@
 package org.openprovenance.prov.template.compiler;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
@@ -28,10 +31,9 @@ import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
 import com.google.common.base.CaseFormat;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 
 
 public class CompilerUtil {
@@ -40,6 +42,16 @@ public class CompilerUtil {
     public String capitalize(String templateName) {
         return templateName.substring(0, 1).toUpperCase()+templateName.substring(1);
     }
+
+    public String templateNameClass(String templateName) {
+        return capitalize(templateName) + "Builder";
+    }
+
+    public String loggerName(String template) {
+        return "log" + capitalize(template);
+
+    }
+
 
     public void extractVariablesAndAttributes(Bundle bundle,
                                               Set<QualifiedName> allVars,
@@ -58,11 +70,7 @@ public class CompilerUtil {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
     }
-    public Builder generateClassInit(String name, String packge, String supername) {
-        return TypeSpec.classBuilder(name)
-                .addSuperinterface(ClassName.get(packge,supername))
-                .addModifiers(Modifier.PUBLIC);
-    }
+
     
     public Builder generateClassInitExtends(String name, String packge, String supername) {
         return TypeSpec.classBuilder(name)
@@ -105,7 +113,7 @@ public class CompilerUtil {
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s); 
     }
     
-    static ProvUtilities u = new ProvUtilities();
+    final static ProvUtilities u = new ProvUtilities();
         
 
     public Set<QualifiedName> allQualifiedNames(Statement statement) {
@@ -178,8 +186,118 @@ public class CompilerUtil {
         return ctor.newInstance(new Object[] { }); 
     }
 
-    
-    
+
+
+    public boolean saveToFile(String destinationDir, String destination, JavaFile spec) {
+        PrintWriter out;
+        try {
+            File dir=new File(destinationDir);
+            if (!dir.exists() && !dir.mkdirs()) {
+                System.err.println("failed to create directory " + destinationDir);
+                return false;
+            };
+            out = new PrintWriter(destination);
+            out.print(spec);
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public JsonNode get_bindings_schema(TemplateCompilerConfig config) {
+        JsonNode bindings_schema=null;
+        if (config.bindings != null) {
+            try {
+                bindings_schema = objectMapper.readTree(new File(config.bindings));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bindings_schema;
+    }
+
+    static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+
+    public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
+        if (the_var.get(key).get(0).get("@id") != null) {
+            return String.class;
+        } else {
+            if (the_var.get(key).get(0).get(0) == null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
+            if (hasType != null) {
+                String keyType = hasType.textValue();
+                switch (keyType) {
+                    case "xsd:int":
+                        return Integer.class;
+                    case "xsd:long":
+                        return Long.class;
+                    case "xsd:string":
+                        return String.class;
+                    case "xsd:boolean":
+                        return Boolean.class;
+                    case "xsd:float":
+                        return Float.class;
+                    case "xsd:double":
+                        return Double.class;
+                    case "xsd:dateTime":
+                        return String.class;
+                    default:
+                        throw new UnsupportedOperationException();
+                }
+            } else {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
+        Iterator<String> iter = the_var.fieldNames();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
+        }
+    }
+
+
+    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var, JsonNode the_documentation) {
+        String docString = noNode(the_documentation) ? "No @documentation.\n\n@return a string." : the_documentation.textValue();
+        builder.addJavadoc(docString);
+        builder.addJavadoc("\n\n");
+        Iterator<String> iter = the_var.fieldNames();
+        while (iter.hasNext()) {
+            String key = iter.next();
+
+            final JsonNode entry = the_var.path(key);
+            if (entry != null && !(entry instanceof MissingNode)) {
+                JsonNode firstNode = entry.get(0);
+                if (firstNode instanceof ArrayNode) {
+                    firstNode = ((ArrayNode) firstNode).get(0);
+                }
+                final JsonNode jsonNode = firstNode.get("@documentation");
+                String documentation = noNode(jsonNode) ? "-- no @documentation" : jsonNode.textValue();
+                final JsonNode jsonNode2 = firstNode.get("@type");
+                String type = noNode(jsonNode2) ? "xsd:string" : jsonNode2.textValue();
+                builder.addJavadoc("@param $N $L (expected type: $L)\n", key, documentation, type);
+            } else {
+                builder.addJavadoc("@param $N -- no bindings schemas \n", key);
+            }
+        }
+    }
+
+    public boolean noNode(final JsonNode jsonNode2) {
+        return jsonNode2 == null || jsonNode2 instanceof MissingNode || jsonNode2 instanceof NullNode;
+    }
 
 
 }

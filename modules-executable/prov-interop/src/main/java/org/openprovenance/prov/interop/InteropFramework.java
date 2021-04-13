@@ -29,7 +29,6 @@ import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
-import org.openprovenance.prov.template.compiler.TemplateCompiler;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -944,7 +943,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             doc = iDoc.toDocument();
 
         } else if (config.template_builder!=null) {
-            return ConfigProcessor.processTemplateGenerationConfig(config.template_builder, pFactory);
+            ConfigProcessor cp=new ConfigProcessor(pFactory);
+            return cp.processTemplateGenerationConfig(config.template_builder, pFactory);
             
         } else if (config.log2prov!=null) {
             try {
@@ -1003,11 +1003,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
       }
         
         if (config.template!=null  && config.builder) {
-            TemplateCompiler tbg=new TemplateCompiler(pFactory);
+            ConfigProcessor cp=new ConfigProcessor(pFactory);
 
             if (config.bindings != null && config.bindingsVersion>=3) {
                 try {
-                    tbg.generate(doc, config.template, config.packge, config.outfile, config.location,config.location,tbg.readTree(new File(config.bindings)));
+                    cp.generate(doc, config.template, config.packge, config.outfile, config.location,config.location,cp.readTree(new File(config.bindings)));
                     return CommandLineArguments.STATUS_OK;
 
                 } catch (IOException e) {

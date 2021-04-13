@@ -6,7 +6,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.compiler.TemplateCompiler;
+import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.TemplatesCompilerConfig;
 
@@ -40,7 +40,7 @@ public class CompilerTest extends TestCase {
         // ConfigProcessor.processTemplateGenerationConfig("src/test/resources/config1.json",pf);
 
 
-        TemplateCompiler tc=new TemplateCompiler(pf);
+        ConfigProcessor cp=new ConfigProcessor(pf);
         TemplatesCompilerConfig configs = objectMapper.readValue(new File("src/test/resources/config1.json"), TemplatesCompilerConfig.class);
         TemplateCompilerConfig config=configs.templates[0];
 
@@ -49,7 +49,7 @@ public class CompilerTest extends TestCase {
 
         Document doc=u.readDocument(config.template, pf);
 
-        boolean result=tc.generate(doc,config.name, config.package_, "target/libs/templates/templates_cli/src/main/java", "target/libs/templates/templates_l2p/src/main/java", "resource", objectMapper.readTree(new File(config.bindings)));
+        boolean result=cp.generate(doc,config.name, config.package_, "target/libs/templates/templates_cli/src/main/java", "target/libs/templates/templates_l2p/src/main/java", "resource", objectMapper.readTree(new File(config.bindings)));
 
     }
 

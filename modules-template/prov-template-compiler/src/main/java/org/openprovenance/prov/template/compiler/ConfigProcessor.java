@@ -37,12 +37,16 @@ public class ConfigProcessor {
     private final CompilerClient compilerClient;
     private final CompilerBuilder compilerBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
+    private final CompilerSimpleBean compilerSimpleBean;
+    private final CompilerContinuation compilerContinuation;
 
     public ConfigProcessor(ProvFactory pFactory) {
         this.pFactory=pFactory;
         this.compilerClient= new CompilerClient(pFactory);
         this.compilerBuilder= new CompilerBuilder(withMain,compilerClient,pFactory);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
+        this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
+        this.compilerContinuation =new CompilerContinuation(pFactory);
     }
 
     public int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
@@ -146,11 +150,16 @@ public class ConfigProcessor {
     public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource,  JsonNode bindings_schema) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
+            String bean=compilerUtil.beanNameClass(templateName);
+            String continuation=compilerUtil.continuationNameClass(templateName);
+
             String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
             String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
 
             String destination=destinationDir + bn + ".java";
             String destination2=destinationDir2 + bn + ".java";
+            String destination3=destinationDir2 + bean + ".java";
+            String destination4=destinationDir2 + continuation + ".java";
 
             JavaFile spec= compilerBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
             boolean val1=compilerUtil.saveToFile(destinationDir, destination, spec);
@@ -158,8 +167,16 @@ public class ConfigProcessor {
             JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
+            JavaFile spec3= compilerSimpleBean.generateSimpleBean(doc,bean,templateName,packge+ ".client", resource, bindings_schema);
+            boolean val3=compilerUtil.saveToFile(destinationDir2, destination3, spec3);
 
-            return val1 & val2;
+            JavaFile spec4=compilerContinuation.generateContinuation(doc,continuation,templateName,packge+ ".client", resource, bindings_schema);
+            boolean val4=compilerUtil.saveToFile(destinationDir2, destination4, spec4);
+
+
+
+
+            return val1 & val2 & val3 & val4;
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -385,8 +385,7 @@ public class CompilerClient {
             count++;
         }
         builder.addStatement("return " + loggerName + "(" + args + ")");
-
-
+        
         MethodSpec method = builder.build();
 
         return method;

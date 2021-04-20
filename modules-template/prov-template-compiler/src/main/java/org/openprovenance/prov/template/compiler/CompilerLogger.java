@@ -59,6 +59,7 @@ public class CompilerLogger {
 
         for (TemplateCompilerConfig config : configs.templates) {
             builder.addMethod(generateStaticLogMethod(config));
+            builder.addMethod(generateStaticBeanMethod(config));
         }
 
 
@@ -153,6 +154,39 @@ public class CompilerLogger {
         return builder.build();
 
     }
+    public MethodSpec generateStaticBeanMethod(TemplateCompilerConfig config) {
+        final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
+                .returns(ClassName.get(config.package_ + ".client",compilerUtil.beanNameClass(config.name)));
+
+        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
+
+        JsonNode the_var = bindings_schema.get("var");
+        JsonNode the_context = bindings_schema.get("context");
+        JsonNode the_documentation = bindings_schema.get("@documentation");
+        compilerUtil.generateSpecializedParameters(builder, the_var);
+        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation);
+
+
+        int count = 1;
+        Iterator<String> iter = the_var.fieldNames();
+        String args = "";
+        while (iter.hasNext()) {
+            String key = iter.next();
+            if (count > 1) args = args + ", ";
+            args = args + key;
+            count++;
+        }
+        builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
+
+
+        return builder.build();
+
+    }
+
+
 
     public MethodSpec generateGetBuilderMethod(ArrayTypeName builderArrayType) {
 

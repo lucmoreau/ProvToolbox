@@ -7,9 +7,8 @@ import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
 
 import javax.lang.model.element.Modifier;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 
@@ -54,12 +53,23 @@ public class CompilerSimpleBean {
         JsonNode the_context = bindings_schema.get("context");
 
 
+        FieldSpec.Builder b0 = FieldSpec.builder(String.class, "isA");
+        b0.addModifiers(Modifier.PUBLIC);
+        b0.addModifiers(Modifier.FINAL);
+        b0.initializer("$S",templateName);
+
+        builder.addField(b0.build());
+
+
+
+
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
 
 
             FieldSpec.Builder b = FieldSpec.builder(compilerUtil.getJavaTypeForDeclaredType(the_var, key), key);
+            b.addModifiers(Modifier.PUBLIC);
 
             final JsonNode entry = the_var.path(key);
             if (entry != null && !(entry instanceof MissingNode)) {
@@ -123,5 +133,6 @@ public class CompilerSimpleBean {
         return builder.build();
 
     }
+
 
 }

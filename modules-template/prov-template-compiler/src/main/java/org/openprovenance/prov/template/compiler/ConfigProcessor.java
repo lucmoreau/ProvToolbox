@@ -37,8 +37,11 @@ public class ConfigProcessor {
     private final CompilerClient compilerClient;
     private final CompilerBuilder compilerBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
+
     private final CompilerSimpleBean compilerSimpleBean;
     private final CompilerContinuation compilerContinuation;
+    private final CompilerJsonSchema compilerJsonSchema;
+    private final CompilerClientTest compilerClientTest;
 
     public ConfigProcessor(ProvFactory pFactory) {
         this.pFactory=pFactory;
@@ -47,6 +50,8 @@ public class ConfigProcessor {
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
         this.compilerContinuation =new CompilerContinuation(pFactory);
+        this.compilerJsonSchema=new CompilerJsonSchema();
+        this.compilerClientTest =new CompilerClientTest();
     }
 
     public int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
@@ -67,50 +72,73 @@ public class ConfigProcessor {
             final String l2p_src_dir=l2p_dir+"/src/main/java";
             final String l2p_test_src_dir=l2p_dir+"/src/test/java";
             final String cli_src_dir=cli_dir+"/src/main/java";
-            new File(l2p_src_dir).mkdirs(); 
-            new File(cli_src_dir).mkdirs(); 
-            new File(l2p_test_src_dir).mkdirs(); 
-
-            //TemplateCompiler tc=new TemplateCompiler(pFactory);
-
-            compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
-            compilerMaven.makeSubPom(configs, cli_dir,  cli_lib, false);
-            compilerMaven.makeSubPom(configs, l2p_dir,  l2p_lib, true);
+            final String cli_test_src_dir=cli_dir+"/src/test/java";
+            new File(l2p_src_dir).mkdirs();
+            new File(cli_src_dir).mkdirs();
+            new File(l2p_test_src_dir).mkdirs();
+            new File(cli_test_src_dir).mkdirs();
 
 
             for (TemplateCompilerConfig config: configs.templates) {
                 System.out.println(config.toString());
-
-                doProcessEntry(config,configs,cli_src_dir,l2p_src_dir,pFactory);
+                doGenerateServerForEntry(config,configs,cli_src_dir,l2p_src_dir,pFactory);
             }
-            
-            final String init_dir=l2p_src_dir+ "/" + configs.init_package.replace('.', '/') + "/";;
-            final String test_dir=l2p_test_src_dir+ "/" + configs.init_package.replace('.', '/') + "/";;
-   
-            JavaFile init=compilerBuilderInit.generateInitializer(configs);
-            compilerUtil.saveToFile(init_dir, init_dir+INIT + ".java", init);
-            
-            
-            final String logger_dir=cli_src_dir+ "/" + configs.logger_package.replace('.', '/') + "/";;
-            final String openprovenance_dir=cli_src_dir+ "/" + CLIENT_PACKAGE.replace('.', '/') + "/";;
 
-            JavaFile logger=compilerLogger.generateLogger(configs);
-            compilerUtil.saveToFile(logger_dir, logger_dir+configs.logger+ ".java", logger);
+            generateJSonSchemaEnd(configs, cli_src_dir);
 
-            JavaFile intface=compilerLogger.generateBuilderInterface(configs);
-            compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir+BUILDER_INTERFACE+ ".java", intface);
+            doGenerateProject(configs, root_dir, cli_lib, l2p_lib, l2p_dir, l2p_src_dir, l2p_test_src_dir, cli_test_src_dir);
 
-            JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
-            compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir+LOGGER_INTERFACE+ ".java", intface2);
- 
-            JavaFile testfile=compilerMaven.generateTestFile(configs);
-            compilerUtil.saveToFile(test_dir, test_dir+TESTER_FILE+ ".java", testfile);
+            doGenerateClientAndProject(configs, cli_lib, cli_dir, cli_src_dir);
 
-            compilerMaven.generateScript(configs);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public void generateJSonSchemaEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
+        if (configs.jsonschema!=null) compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
+    }
+
+    public void doGenerateProject(TemplatesCompilerConfig configs, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir) {
+        final String init_dir= l2p_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
+        JavaFile init=compilerBuilderInit.generateInitializer(configs);
+        compilerUtil.saveToFile(init_dir, init_dir +INIT + ".java", init);
+
+        final String l2p_test_dir= l2p_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
+        JavaFile testfile=compilerMaven.generateTestFile_l2p(configs);
+        compilerUtil.saveToFile(l2p_test_dir, l2p_test_dir +TESTER_FILE+ ".java", testfile);
+
+
+
+        compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
+        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, false, false);
+
+        final String cli_test_dir= cli_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
+        JavaFile testfile2= compilerClientTest.generateTestFile_cli(configs);
+        compilerUtil.saveToFile(cli_test_dir, cli_test_dir +TESTER_FILE+ ".java", testfile2);
+
+    }
+
+    public void doGenerateClientAndProject(TemplatesCompilerConfig configs, String cli_lib, String cli_dir, String cli_src_dir) {
+        final String logger_dir= cli_src_dir + "/" + configs.logger_package.replace('.', '/') + "/";
+        final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
+
+        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true);
+
+
+        JavaFile logger=compilerLogger.generateLogger(configs);
+        compilerUtil.saveToFile(logger_dir, logger_dir + configs.logger+ ".java", logger);
+
+        JavaFile intface=compilerLogger.generateBuilderInterface(configs);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +BUILDER_INTERFACE+ ".java", intface);
+
+        JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +LOGGER_INTERFACE+ ".java", intface2);
+
+
+        compilerMaven.generateScript(configs);
     }
 
     public JsonNode readTree(File file) throws IOException {
@@ -129,13 +157,13 @@ public class ConfigProcessor {
 
 
 
-    public void doProcessEntry (TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory) {
+    public void doGenerateServerForEntry(TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, bindings_schema);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -146,8 +174,17 @@ public class ConfigProcessor {
         }
     }
 
+    public void doGenerateServerForEntry1(Document doc, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir) {
+        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
+        try {
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, bindings_schema);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource,  JsonNode bindings_schema) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource,  boolean sbean, String jsonschema, JsonNode bindings_schema) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bean=compilerUtil.beanNameClass(templateName);
@@ -167,11 +204,19 @@ public class ConfigProcessor {
             JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
-            JavaFile spec3= compilerSimpleBean.generateSimpleBean(doc,bean,templateName,packge+ ".client", resource, bindings_schema);
-            boolean val3=compilerUtil.saveToFile(destinationDir2, destination3, spec3);
+            boolean val3=true;
+            boolean val4=true;
 
-            JavaFile spec4=compilerContinuation.generateContinuation(doc,continuation,templateName,packge+ ".client", resource, bindings_schema);
-            boolean val4=compilerUtil.saveToFile(destinationDir2, destination4, spec4);
+            if (sbean) {
+                JavaFile spec3 = compilerSimpleBean.generateSimpleBean(doc, bean, templateName, packge + ".client", resource, bindings_schema);
+                val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
+
+                JavaFile spec4 = compilerContinuation.generateContinuation(doc, continuation, templateName, packge + ".client", resource, bindings_schema);
+                val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
+
+                compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
+
+            }
 
 
 
@@ -186,6 +231,10 @@ public class ConfigProcessor {
     }
 
 
+
+    public CompilerJsonSchema getCompilerJsonSchema() {
+        return compilerJsonSchema;
+    }
 
 
 

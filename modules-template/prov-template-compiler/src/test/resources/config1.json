@@ -9,6 +9,9 @@
     "logger_package": "org.example.templates.client",
     "script": "example_dt",
     "script_dir": "target/libs/bin",
+    "jsweet": false,
+    "sbean": true,
+    "jsonschema": "schema.json",
     "templates" : [
 	{
 	    "name": "template_block",

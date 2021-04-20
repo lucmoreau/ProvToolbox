@@ -1007,7 +1007,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             if (config.bindings != null && config.bindingsVersion>=3) {
                 try {
-                    cp.generate(doc, config.template, config.packge, config.outfile, config.location,config.location,cp.readTree(new File(config.bindings)));
+                    cp.generate(doc, config.template, config.packge, config.outfile, config.location,config.location, true, "schema.json", cp.readTree(new File(config.bindings)));
                     return CommandLineArguments.STATUS_OK;
 
                 } catch (IOException e) {

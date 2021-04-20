@@ -14,6 +14,8 @@
 
    <properties>
         <jackson.version>2.9.9</jackson.version>
+     <jsweet.transpiler.version>3.0.0</jsweet.transpiler.version>
+     <jsweet.core.version>6.3.0</jsweet.core.version>
    </properties>
 
 
@@ -70,8 +72,25 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.networknt</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>1.0.52</version>
+    </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
 
+  
   </dependencies>
 
   <build>
@@ -86,6 +105,8 @@
           <source>1.9</source>
         </configuration>
       </plugin>
+
+
     </plugins>
 
 
@@ -102,8 +123,19 @@
          <directory>src/test/resources</directory>
          <filtering>true</filtering>
        </testResource>
+      <testResource>
+        <directory>src/test/config</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>log4j2.xml</include>
+        </includes>
+      </testResource>
     </testResources>
+
+
+
   </build>
+
 
 
 

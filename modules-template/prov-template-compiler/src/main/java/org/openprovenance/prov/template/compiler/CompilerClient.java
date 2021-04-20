@@ -82,7 +82,9 @@ public class CompilerClient {
             //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
 
             builder.addMethod(generateFactoryMethodWithBean(allVars, allAtts, name, templateName, packge, bindings_schema));
-        }
+            builder.addMethod(generateExamplarBean(allVars, allAtts, name, templateName, packge, bindings_schema));
+
+            }
 
 
         // System.out.println(allVars);
@@ -359,33 +361,103 @@ public class CompilerClient {
 
 
     public MethodSpec generateFactoryMethodWithBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
-        final String loggerName = compilerUtil.loggerName(template);
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(String.class);
+                .addModifiers(Modifier.STATIC)
+                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
 
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
 
-        builder.addParameter(ClassName.get(packge,compilerUtil.beanNameClass(template)), "bean");
 
-        int count = 1;
         Iterator<String> iter = the_var.fieldNames();
-        String args = "";
         while (iter.hasNext()) {
             String key = iter.next();
-            final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-            String newkey="__"+key;
-            String statement = "$T $N=bean.$N";
-            builder.addStatement(statement, atype, newkey, key);
-
-            if (count > 1) args = args + ", ";
-            args = args + newkey;
-            count++;
+            String newkey = "__" + key;
+            builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(the_var, key), newkey);
         }
-        builder.addStatement("return " + loggerName + "(" + args + ")");
-        
+
+        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
+
+        Iterator<String> iter2 = the_var.fieldNames();
+        String args = "";
+        while (iter2.hasNext()) {
+            String key = iter2.next();
+            String newkey="__"+key;
+            String statement = "bean.$N=$N";
+            builder.addStatement(statement, key, newkey);
+        }
+
+
+        builder.addStatement("return bean");
+
+        MethodSpec method = builder.build();
+
+        return method;
+    }
+
+
+
+
+    public MethodSpec generateExamplarBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("examplar")
+                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.STATIC)
+                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
+
+
+        JsonNode the_var = bindings_schema.get("var");
+        JsonNode the_context = bindings_schema.get("context");
+
+
+        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
+
+        for (QualifiedName q : allVars) {
+            Iterator<String> iter3 = the_var.fieldNames();
+            while (iter3.hasNext()) {
+                String key3 = iter3.next();
+                if (q.getLocalPart().equals(key3)) {
+                    builder.addStatement("bean.$N=$S", q.getLocalPart(), "EX_" + q.getLocalPart());
+                }
+            }
+        }
+
+
+        JsonNode the_var2 = (bindings_schema == null) ? null : bindings_schema.get("var");
+
+
+
+        for (QualifiedName q : allAtts) {
+
+
+            String declaredType = null;
+            Class<?> declaredJavaType = null;
+            if (the_var2 != null) {
+                Iterator<String> iter3 = the_var2.fieldNames();
+
+                while (iter3.hasNext()) {
+                    String key3 = iter3.next();
+                    if (q.getLocalPart().equals(key3)) {
+                        declaredType = compilerUtil.getDeclaredType(the_var2, key3);
+                        declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(the_var2, key3);
+                    }
+                }
+            }
+
+            String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
+
+            final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            if (converter == null) {
+                builder.addStatement("bean.$N=$S",  q.getLocalPart(), example);
+            } else {
+                builder.addStatement("bean.$N=$N($S)",  q.getLocalPart(), converter, example);
+            }
+        }
+
+
+        builder.addStatement("return bean");
+
         MethodSpec method = builder.build();
 
         return method;

@@ -40,6 +40,7 @@ public class CompilerMaven {
         model.addModule(l2p_lib);
 
         addCompilerDeclaration(model);
+        addJunitDependency(model);
 
 
         try {
@@ -52,7 +53,7 @@ public class CompilerMaven {
 
     }
 
-    public boolean makeSubPom(TemplatesCompilerConfig configs, String dir, String name, boolean dependencies) {
+    public boolean makeSubPom(TemplatesCompilerConfig configs, String dir, String name, boolean dependencies, boolean jsweet, boolean jackson) {
         Model model = new Model();
         model.setArtifactId(name);
         model.setName(name);
@@ -72,8 +73,15 @@ public class CompilerMaven {
             //addProvDependency("prov-json", model);
             addProvDependency("prov-template-compiler", model);
             addProvDependency("prov-interop-light", model);
-            addJunitDependency(model);
 
+        }
+
+        if (jsweet) {
+            addJSweetDependency(model);
+        }
+
+        if (jackson) {
+            addJacksonDependency(model);
         }
 
 
@@ -108,6 +116,57 @@ public class CompilerMaven {
         model.addDependency(dep);
     }
 
+    public void addJacksonDependency(Model model) {
+        Dependency dep = new Dependency();
+        dep.setArtifactId("jackson-databind");
+        dep.setGroupId("com.fasterxml.jackson.core");
+        dep.setVersion("2.9.9");
+        dep.setScope("test");
+        model.addDependency(dep);
+    }
+
+    public void addJSweetDependency(Model model) {
+        Plugin plugin = new Plugin();
+        plugin.setArtifactId("jsweet-maven-plugin");
+        plugin.setGroupId("org.jsweet");
+        plugin.setVersion("3.0.0");
+
+        StringBuilder configString = new StringBuilder()
+                .append("<configuration>")
+                .append("<verbose>true</verbose>")
+                .append("<outDir>target/js</outDir>")
+                .append("<tsOut>target/ts</tsOut>")
+                .append("<candiesJsOut>webapp/candies</candiesJsOut>")
+                .append("<targetVersion>ES6</targetVersion>")
+                .append("<module>none</module>")
+                .append("<moduleResolution>classic</moduleResolution>")
+                .append("</configuration>");
+
+        Xpp3Dom config = null;
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        }
+        plugin.setConfiguration(config);
+
+        PluginExecution pe1=new PluginExecution();
+        pe1.addGoal("jsweet");
+        pe1.setId("generate-js");
+        pe1.setPhase("generate-sources");
+
+        PluginExecution pe2=new PluginExecution();
+        pe2.addGoal("clean");
+        pe2.setId("clean");
+        pe2.setPhase("clean");
+        plugin.addExecution(pe1);
+        plugin.addExecution(pe2);
+
+        Build b=new Build();
+        b.addPlugin(plugin);
+        model.setBuild(b);
+    }
+
     public void generateScript(TemplatesCompilerConfig configs) {
         new File(configs.script_dir).mkdirs();
         try {
@@ -137,7 +196,9 @@ public class CompilerMaven {
     }
 
 
-    public JavaFile generateTestFile(TemplatesCompilerConfig configs) {
+
+
+    public JavaFile generateTestFile_l2p(TemplatesCompilerConfig configs) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
 

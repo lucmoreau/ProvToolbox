@@ -173,7 +173,7 @@ public class CompilerBuilder {
         for (QualifiedName q : allVars) {
             final String key = q.getLocalPart();
             seen.add(key);
-            final String newName = varPrefix(key);
+            final String newName = compilerUtil.varPrefix(key);
             final JsonNode entry = the_var.path(key);
             if (entry != null && !(entry instanceof MissingNode)) {
                 String s = entry.get(0).get("@id").textValue();
@@ -207,7 +207,7 @@ public class CompilerBuilder {
                 if (entry != null && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
                     String s = jentry.textValue();
                     String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
-                    newName = attPrefix(key);
+                    newName = compilerUtil.attPrefix(key);
                     builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
                 }
                 if (first) {
@@ -231,29 +231,6 @@ public class CompilerBuilder {
     }
 
 
-    public String getConverterForDeclaredType(Class cl) {
-        if (cl != null) {
-            String keyType = cl.getName();
-            switch (keyType) {
-                case "java.lang.Integer":
-                    return "toInt";
-                case "java.lang.Long":
-                    return "toLong";
-                case "java.lang.String":
-                    return null;
-                case "java.lang.Boolean":
-                    return "toBoolean";
-                case "java.lang.Float":
-                    return "toFloat";
-                case "java.lang.Double":
-                    return "toDouble";
-                default:
-                    throw new UnsupportedOperationException();
-            }
-        } else {
-            return null;
-        }
-    }
 
 
     public MethodSpec generateFactoryMethodWithArray(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
@@ -272,7 +249,7 @@ public class CompilerBuilder {
         while (iter.hasNext()) {
             String key = iter.next();
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
-            final String converter = getConverterForDeclaredType(atype);
+            final String converter = compilerUtil.getConverterForDeclaredType(atype);
             if (converter == null) {
                 String statement = "$T $N=($T) record[" + count + "]";
                 builder.addStatement(statement, atype, key, atype);
@@ -294,29 +271,6 @@ public class CompilerBuilder {
 
 
 
-    public String getDeclaredType(JsonNode the_var, String key) {
-        if (the_var.get(key).get(0).get("@id") != null) {
-            return "prov:QualifiedName";
-        } else {
-            if (the_var.get(key).get(0).get(0) == null) {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
-            }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
-                return keyType;
-            } else {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
-
     public MethodSpec generateMain(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
@@ -328,7 +282,7 @@ public class CompilerBuilder {
 
         ;
         for (QualifiedName q : allVars) {
-            builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
+            builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
         }
 
         JsonNode the_var2 = (bindings_schema == null) ? null : bindings_schema.get("var");
@@ -341,13 +295,13 @@ public class CompilerBuilder {
                 while (iter.hasNext()) {
                     String key = iter.next();
                     if (q.getLocalPart().equals(key)) {
-                        declaredType = getDeclaredType(the_var2, key);
+                        declaredType = compilerUtil.getDeclaredType(the_var2, key);
                     }
                 }
             }
-            String example = generateExampleForType(declaredType, q.getLocalPart());
+            String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
 
-            builder.addStatement("$T $N=$S", String.class, attPrefix(q.getLocalPart()), example);
+            builder.addStatement("$T $N=$S", String.class, compilerUtil.attPrefix(q.getLocalPart()), example);
         }
 
         String args = "";
@@ -356,9 +310,9 @@ public class CompilerBuilder {
         for (QualifiedName q : allVars) {
             if (first) {
                 first = false;
-                args = varPrefix(q.getLocalPart());
+                args = compilerUtil.varPrefix(q.getLocalPart());
             } else {
-                args = args + ", " + varPrefix(q.getLocalPart());
+                args = args + ", " + compilerUtil.varPrefix(q.getLocalPart());
             }
             seen.add(q.getLocalPart());
         }
@@ -366,7 +320,7 @@ public class CompilerBuilder {
 
         for (QualifiedName q : allAtts) {
             if (!(seen.contains(q.getLocalPart()))) {
-                final String key = attPrefix(q.getLocalPart());
+                final String key = compilerUtil.attPrefix(q.getLocalPart());
                 if (first) {
                     first = false;
                     args = key;
@@ -392,9 +346,9 @@ public class CompilerBuilder {
                 String key = iter.next();
                 if (first) {
                     first = false;
-                    args = createExamplar(the_var, key, count++);
+                    args = compilerUtil.createExamplar(the_var, key, count++, pFactory);
                 } else {
-                    args = args + ", " + createExamplar(the_var, key, count++);
+                    args = args + ", " + compilerUtil.createExamplar(the_var, key, count++, pFactory);
                 }
             }
 
@@ -410,71 +364,6 @@ public class CompilerBuilder {
 
         return method;
     }
-
-    String varPrefix(String localPart) {
-        return "__var_" + localPart;
-    }
-
-    String attPrefix(String localPart) {
-        return "__att_" + localPart;
-    }
-
-    public String generateExampleForType(String declaredType, String localPart) {
-        if (declaredType == null) {
-            return "test_" + localPart;
-        } else {
-            switch (declaredType) {
-                case "xsd:dateTime":
-                    return pFactory.newTimeNow().toXMLFormat();
-                case "xsd:float":
-                    return "123.00f";
-                case "xsd:int":
-                    return "12345";
-                default:
-                    return "test_" + localPart;
-            }
-        }
-    }
-
-    public String createExamplar(JsonNode the_var, String key, int num) {
-        if (the_var.get(key).get(0).get("@id") != null) {
-            return "\"v" + num + "\"";
-        } else {
-            if (the_var.get(key).get(0).get(0) == null) {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-                throw new UnsupportedOperationException();
-            }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
-                switch (keyType) {
-                    case "xsd:int":
-                        return "" + num;
-                    case "xsd:long":
-                        return "" + num + "L";
-                    case "xsd:string":
-                        return "\"v" + num + "\"";
-                    case "xsd:boolean":
-                        return "true";
-                    case "xsd:float":
-                        return "" + num + ".01f";
-                    case "xsd:double":
-                        return "" + num + ".01d";
-                    case "xsd:dateTime":
-                        return "\"" + pFactory.newTimeNow().toXMLFormat() + "\"";
-                    default:
-                        throw new UnsupportedOperationException();
-                }
-            } else {
-                System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
-
 
 
 

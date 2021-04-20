@@ -306,4 +306,140 @@ public class CompilerUtil {
     }
 
 
+    public String generateExampleForType(String declaredType, String localPart, ProvFactory pFactory) {
+        if (declaredType == null) {
+            return "test_" + localPart;
+        } else {
+            switch (declaredType) {
+                case "xsd:dateTime":
+                    return pFactory.newTimeNow().toXMLFormat();
+                case "xsd:float":
+                    return "123.00f";
+                case "xsd:int":
+                    return "12345";
+                default:
+                    return "test_" + localPart;
+            }
+        }
+    }
+
+    public String createExamplar(JsonNode the_var, String key, int num, ProvFactory pFactory) {
+        if (the_var.get(key).get(0).get("@id") != null) {
+            return "\"v" + num + "\"";
+        } else {
+            if (the_var.get(key).get(0).get(0) == null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+                throw new UnsupportedOperationException();
+            }
+            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
+            if (hasType != null) {
+                String keyType = hasType.textValue();
+                switch (keyType) {
+                    case "xsd:int":
+                        return "" + num;
+                    case "xsd:long":
+                        return "" + num + "L";
+                    case "xsd:string":
+                        return "\"v" + num + "\"";
+                    case "xsd:boolean":
+                        return "true";
+                    case "xsd:float":
+                        return "" + num + ".01f";
+                    case "xsd:double":
+                        return "" + num + ".01d";
+                    case "xsd:dateTime":
+                        return "\"" + pFactory.newTimeNow().toXMLFormat() + "\"";
+                    default:
+                        throw new UnsupportedOperationException();
+                }
+            } else {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    public String getDeclaredType(JsonNode the_var, String key) {
+        if (the_var.get(key).get(0).get("@id") != null) {
+            return "prov:QualifiedName";
+        } else {
+            if (the_var.get(key).get(0).get(0) == null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
+            if (hasType != null) {
+                String keyType = hasType.textValue();
+                return keyType;
+            } else {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    public String varPrefix(String localPart) {
+        return "__var_" + localPart;
+    }
+
+    public String attPrefix(String localPart) {
+        return "__att_" + localPart;
+    }
+
+
+    public String getConverterForDeclaredType2(Class cl) {
+        if (cl != null) {
+            String keyType = cl.getName();
+            switch (keyType) {
+                case "java.lang.Integer":
+                    return "Integer.valueOf";
+                case "java.lang.Long":
+                    return "Long.valueOf";
+                case "java.lang.String":
+                    return null;
+                case "java.lang.Boolean":
+                    return "Boolean.valueOf";
+                case "java.lang.Float":
+                    return "Float.valueOf";
+                case "java.lang.Double":
+                    return "Double.valueOf";
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public String getConverterForDeclaredType(Class cl) {
+        if (cl != null) {
+            String keyType = cl.getName();
+            switch (keyType) {
+                case "java.lang.Integer":
+                    return "toInt";
+                case "java.lang.Long":
+                    return "toLong";
+                case "java.lang.String":
+                    return null;
+                case "java.lang.Boolean":
+                    return "toBoolean";
+                case "java.lang.Float":
+                    return "toFloat";
+                case "java.lang.Double":
+                    return "toDouble";
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        } else {
+            return null;
+        }
+    }
+
 }

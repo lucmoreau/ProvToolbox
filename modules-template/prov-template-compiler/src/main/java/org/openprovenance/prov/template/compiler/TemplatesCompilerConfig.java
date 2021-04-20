@@ -14,17 +14,32 @@ public class TemplatesCompilerConfig {
     public String logger_package;
     public String script;
     public String script_dir;
+    public boolean jsweet;
+    public boolean sbean;
+    public String jsonschema;
 
-    public TemplateCompilerConfig [] templates;
-   
     @Override
     public String toString() {
-        return "TemplatesCompilerConfig [destination=" + destination + ", version=" + version
-                + ", name=" + name + ", group=" + group + ", description=" + description
-                + ", init_package=" + init_package + ", logger=" + logger + ", logger_package="
-                + logger_package + ", script=" + script + ", templates="
-                + Arrays.toString(templates) + "]";
+        return "TemplatesCompilerConfig{" +
+                "destination='" + destination + '\'' +
+                ", version='" + version + '\'' +
+                ", name='" + name + '\'' +
+                ", group='" + group + '\'' +
+                ", description='" + description + '\'' +
+                ", init_package='" + init_package + '\'' +
+                ", logger='" + logger + '\'' +
+                ", logger_package='" + logger_package + '\'' +
+                ", script='" + script + '\'' +
+                ", script_dir='" + script_dir + '\'' +
+                ", jsweet=" + jsweet +
+                ", sbean=" + sbean +
+                ", jsonschema='" + jsonschema + '\'' +
+                ", templates=" + Arrays.toString(templates) +
+                '}';
     }
-    
+
+
+    public TemplateCompilerConfig [] templates;
+
 
 }

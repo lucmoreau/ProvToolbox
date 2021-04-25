@@ -83,15 +83,15 @@ public class CompilerTest extends TestCase {
         cp.generateJSonSchemaEnd(configs,cli_src_dir);
 
         System.out.println("#### Invoking maven " + path);
-        execute(new String[] {"/usr/local/bin/mvn", "clean", "install"},"target/libs/templates");
+        execute(new String[] {"mvn", "clean", "install"},"target/libs/templates");
 
         final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
         final String templateJsonSchema  = cli_dir + "/src/main/resources/" + configs.jsonschema;
 
         System.out.println("#### jq test " + theExamplarJsonFile);
-        execute(new String[] {"/usr/local/bin/jq", ".", theExamplarJsonFile},".");
+        execute(new String[] {"jq", ".", theExamplarJsonFile},".");
 
-        execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
+        execute(new String[] {"ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
 
         com.networknt.schema.JsonSchema schema=cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
         Set<ValidationMessage> result=cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);

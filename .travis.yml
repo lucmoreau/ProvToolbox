@@ -12,5 +12,7 @@ before_install:
  - sudo apt-get -qq install graphviz > /dev/null
  - sudo apt-get -qq install rpm > /dev/null
  - sudo apt-get -qq install genisoimage > /dev/null
+ - sudo apt-get -qq install jq > /dev/null
+ - sudo apt-get -qq install ajv > /dev/null
  - sudo gem install rdf -v 3.0.13
  - sudo gem install json-ld -v 3.0.2

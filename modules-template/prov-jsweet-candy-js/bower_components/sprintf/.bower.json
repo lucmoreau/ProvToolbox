@@ -1,0 +1,33 @@
+{
+  "name": "sprintf",
+  "description": "JavaScript sprintf implementation",
+  "version": "1.1.2",
+  "main": [
+    "dist/sprintf.min.js",
+    "dist/angular-sprintf.min.js"
+  ],
+  "license": "BSD-3-Clause-Clear",
+  "keywords": [
+    "sprintf",
+    "string",
+    "formatting"
+  ],
+  "authors": [
+    "Alexandru Marasteanu <hello@alexei.ro> (http://alexei.ro/)"
+  ],
+  "homepage": "https://github.com/alexei/sprintf.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alexei/sprintf.js.git"
+  },
+  "ignore": [],
+  "_release": "1.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.1.2",
+    "commit": "ceb9b805e6d594a9c24cdde02890d3c00c6643b7"
+  },
+  "_source": "https://github.com/alexei/sprintf.js.git",
+  "_target": "^1.0.3",
+  "_originalSource": "sprintf"
+}

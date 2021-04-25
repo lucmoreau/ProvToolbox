@@ -11,6 +11,7 @@ before_install:
  - sudo apt-get -qq update > /dev/null
  - sudo apt-get -qq install graphviz > /dev/null
  - sudo apt-get -qq install rpm > /dev/null
+ - sudo apt-get -qq install node > /dev/null
  - sudo apt-get -qq install genisoimage > /dev/null
  - sudo apt-get -qq install jq > /dev/null
  - sudo npm install ajv > /dev/null

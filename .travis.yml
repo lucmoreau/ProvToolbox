@@ -14,6 +14,6 @@ before_install:
  - sudo apt-get -qq install nodejs npm > /dev/null
  - sudo apt-get -qq install genisoimage > /dev/null
  - sudo apt-get -qq install jq > /dev/null
- - sudo npm install ajv > /dev/null
+ - sudo npm install -g ajv > /dev/null
  - sudo gem install rdf -v 3.0.13
  - sudo gem install json-ld -v 3.0.2

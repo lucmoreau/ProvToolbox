@@ -1,0 +1,14 @@
+{
+  "candies": [
+    {
+      "name": "jsweet-core",
+      "version": "6.3.1",
+      "lastUpdateTimestamp": 1609940088000,
+      "modelVersion": "unknown",
+      "transpilerVersion": "${jsweet.transpiler.version}",
+      "jsOutputDirPath": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-jsweet-candy-java/.jsweet/candies/js",
+      "jsDirPath": "META-INF/resources/webjars/jsweet-core/6.3.1",
+      "jsFilesPaths": []
+    }
+  ]
+}

@@ -27,6 +27,8 @@
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld.iml" filepath="$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" filepath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld-xml (1).iml" filepath="$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld-xml (1).iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/prov-jsweet-candy-java.iml" filepath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/prov-jsweet-candy-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/prov-jsweet-candy-js.iml" filepath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/prov-jsweet-candy-js.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" filepath="$PROJECT_DIR$/modules-services/prov-log/prov-log.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" filepath="$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" filepath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" />

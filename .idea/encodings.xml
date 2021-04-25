@@ -63,6 +63,10 @@
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-index-redis/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-template" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-template-compiler" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java" charset="UTF-8" />

@@ -29,8 +29,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="prov-jsonld-xml (1)" />
-    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.14.0" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="module" module-name="prov-interop-light" />
     <orderEntry type="module" module-name="prov-interop" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />

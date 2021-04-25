@@ -3,6 +3,8 @@ package org.openprovenance.prov.template.compiler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 
@@ -71,8 +73,25 @@ public class CompilerJsonSchema {
             required.add(key);
             Map<String, Object> atype = new HashMap<String, Object>();
             atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
-            atype.put("title", "The Schema for " + key);
-            atype.put("type", convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName()));
+            atype.put("title", title(key));
+            final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName());
+            atype.put("type", jsonType);
+            final Object defaultValue=defaultValue(jsonType);
+            if (defaultValue!=null) atype.put("default", defaultValue);
+            //atype.put("required", true);
+
+            final JsonNode entry = the_var.path(key);
+            if (entry != null && !(entry instanceof MissingNode)) {
+                JsonNode firstNode = entry.get(0);
+                if (firstNode instanceof ArrayNode) {
+                    firstNode = ((ArrayNode) firstNode).get(0);
+                }
+                final JsonNode jsonNode = firstNode.get("@documentation");
+                String documentation = compilerUtil.noNode(jsonNode) ? "" : jsonNode.textValue();
+                final JsonNode jsonNode2 = firstNode.get("@type");
+                atype.put("description", documentation + " (" + jsonType + ")" );
+            }
+
 
             properties.put(key, atype);
         }
@@ -80,11 +99,13 @@ public class CompilerJsonSchema {
         String key="isA";
         Map<String, Object> atype = new HashMap<String, Object>();
         atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
-        atype.put("title", "The Schema for " + key);
+        atype.put("title", title(key));
         atype.put("type", "string");
+        atype.put("readOnly", "true");
+        atype.put("default", templateName);
         atype.put("pattern", "^" + templateName + "$");
         properties.put(key, atype);
-
+        atype.put("required", true);
 
         jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^template_block$"))); // Luc Allow more templates
 
@@ -102,6 +123,19 @@ public class CompilerJsonSchema {
 
         ((List<Map<String,Object>>)jsonSchemaAsAMap.get("allOf")).add(ifThenBlock);
 
+    }
+
+    public Object defaultValue(String jsonType) {
+        switch (jsonType) {
+            case "integer": return 0;
+            case "float": return 0.0;
+        }
+        return null;
+    }
+
+    public String title(String key) {
+        //return "The Schema for " + key;
+        return key;
     }
 
     boolean draft04=false;

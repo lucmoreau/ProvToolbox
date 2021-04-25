@@ -61,6 +61,7 @@ public class CompilerClient {
         if (bindings_schema!=null) {
             builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod2(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateClientMethod2PureCsv(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod3static(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
@@ -82,6 +83,7 @@ public class CompilerClient {
             //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
 
             builder.addMethod(generateFactoryMethodWithBean(allVars, allAtts, name, templateName, packge, bindings_schema));
+            builder.addMethod(generateNewBean(allVars, allAtts, name, templateName, packge, bindings_schema));
             builder.addMethod(generateExamplarBean(allVars, allAtts, name, templateName, packge, bindings_schema));
 
             }
@@ -156,7 +158,15 @@ public class CompilerClient {
     }
 
     public MethodSpec generateClientMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template))
+        return generateClientMethod2(allVars,allAtts,name,template,bindings_schema,true);
+    }
+    public MethodSpec generateClientMethod2PureCsv(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+        return generateClientMethod2(allVars,allAtts,name,template,bindings_schema,false);
+    }
+
+
+    public MethodSpec generateClientMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, boolean legacy) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
         String var = "sb";
@@ -177,7 +187,7 @@ public class CompilerClient {
 
         iter = the_var.fieldNames();
 
-        String constant = "[\"" + template + "\"";
+        String constant = (legacy? "[\"" : "\"") + template + "\"";
         while (iter.hasNext()) {
             String key = iter.next();
             final String newName = "__" + key;
@@ -190,26 +200,37 @@ public class CompilerClient {
 
             if (String.class.equals(clazz)) {
                 String myStatement = "$N.append($N)";
+                String myEscapeStatement = "$N.append($T.escapeJavaScript($N))";
+                boolean doEscape=false;
                 if (!isQualifiedName) {
-                    final boolean doEscape = the_var.get(key).get(0).get(0).get("@escape") != null;
+                    doEscape = the_var.get(key).get(0).get(0).get("@escape") != null;
                     if (doEscape) {
-                        myStatement = "$N.append(org.openprovenance.apache.commons.lang.StringEscapeUtils.escapeJavaScript($N))";
+                        foundEscape=true;
                     }
                 }
-                builder.beginControlFlow("if ($N==null)", newName)
-                        .addStatement("$N.append($N)", var, newName)
-                        .nextControlFlow("else")
-                        .addStatement("$N.append($S)", var, "\"")
+                builder.beginControlFlow("if ($N==null)", newName);
+                if (legacy) {
+                    builder.addStatement("$N.append($N)", var, newName);  // in legacy format, we insert a null
+                }
+                builder.nextControlFlow("else")
+                        .addStatement("$N.append($S)", var, "\"");
 
-                        .addStatement(myStatement, var, newName)
-                        .addStatement("$N.append($S)", var, "\"")
+                if (doEscape) {
+                    builder.addStatement(myEscapeStatement, var, ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), newName);
+                } else {
+                    builder.addStatement(myStatement, var, newName);
+                }
+                builder.addStatement("$N.append($S)", var, "\"")
                         .endControlFlow();
             } else {
+                builder.beginControlFlow("if ($N==null)", newName);
+                builder.nextControlFlow("else");
                 builder.addStatement("$N.append($S)", var, constant);
                 builder.addStatement("$N.append($N)", var, newName);
+                builder.endControlFlow();
             }
         }
-        constant = constant + ']';
+        constant = constant + (legacy ? ']' : "");
         builder.addStatement("$N.append($S)", var, constant);
 
 
@@ -217,6 +238,12 @@ public class CompilerClient {
 
         return method;
     }
+
+    public boolean getFoundEscape() {
+        return foundEscape;
+    }
+
+    private boolean foundEscape=false;
 
     public MethodSpec generateClientMethod3static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getNodes")
@@ -398,6 +425,24 @@ public class CompilerClient {
     }
 
 
+    public MethodSpec generateNewBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("newBean")
+                .addModifiers(Modifier.PUBLIC)
+                //.addModifiers(Modifier.STATIC)
+                .returns(ClassName.get(packge, compilerUtil.beanNameClass(template)));
+
+
+        builder.addStatement("$T bean=new $T()", ClassName.get(packge, compilerUtil.beanNameClass(template)), ClassName.get(packge, compilerUtil.beanNameClass(template)));
+
+
+        builder.addStatement("return bean");
+
+        MethodSpec method = builder.build();
+
+        return method;
+    }
+
+
 
 
     public MethodSpec generateExamplarBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
@@ -418,7 +463,7 @@ public class CompilerClient {
             while (iter3.hasNext()) {
                 String key3 = iter3.next();
                 if (q.getLocalPart().equals(key3)) {
-                    builder.addStatement("bean.$N=$S", q.getLocalPart(), "EX_" + q.getLocalPart());
+                    builder.addStatement("bean.$N=$S", q.getLocalPart(), "example_" + q.getLocalPart());
                 }
             }
         }

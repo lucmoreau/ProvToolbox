@@ -12,6 +12,8 @@
     <artifactId>modules-template</artifactId>
 
     <modules>
+        <module>prov-jsweet-candy-js</module>
+        <module>prov-jsweet-candy-java</module>
         <module>prov-template</module>
         <module>prov-template-compiler</module>
     </modules>

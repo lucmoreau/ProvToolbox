@@ -16,6 +16,7 @@
         <module name="prov-n" />
         <module name="prov-service-translation" />
         <module name="prov-storage-index-redis" />
+        <module name="prov-jsweet-candy-js" />
         <module name="docker-service-translator" />
         <module name="prov-jsonld" />
         <module name="ProvToolbox-Tutorial4" />
@@ -36,6 +37,7 @@
         <module name="prov-template" />
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />
+        <module name="prov-jsweet-candy-java" />
         <module name="roundtrip" />
         <module name="prov-model-scala" />
         <module name="toolbox" />
@@ -69,6 +71,8 @@
       <module name="prov-jsonld" target="11" />
       <module name="prov-jsonld-xml" target="11" />
       <module name="prov-jsonld-xml (1)" target="11" />
+      <module name="prov-jsweet-candy-java" target="1.8" />
+      <module name="prov-jsweet-candy-js" target="1.8" />
       <module name="prov-log" target="11" />
       <module name="prov-model" target="11" />
       <module name="prov-model-scala" target="9" />

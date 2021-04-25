@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Getting started with JSON Form</title>
+    <link rel="stylesheet" style="text/css" href="deps/opt/bootstrap.css" />
+</head>
+<style type="text/css">
+    .jsonform-required > label:after {
+        content: ' *';
+        color: red;
+    }
+
+    .jsonform-hasrequired:after {
+        content: '* Required field';
+        display: block;
+        color: red;
+        padding-top: 1em;
+    }
+</style>
+<body>
+<h1>Template Block JSON Form</h1>
+<form></form>
+<div id="res" class="alert"></div>
+<script type="text/javascript" src="deps/jquery.min.js"></script>
+<script type="text/javascript" src="deps/underscore.js"></script>
+<script type="text/javascript" src="deps/opt/jsv.js"></script>
+<script type="text/javascript" src="lib/jsonform.js"></script>
+<script type="text/javascript" src="../../../target/libs/templates/templates_cli/target/js/org/example/templates/block/client/Template_blockBuilder.js"></script>
+<script type="text/javascript" src="../../../target/libs/templates/templates_cli/target/js/org/example/templates/block/client/Template_blockBean.js"></script>
+<script type="text/javascript">
+    let schemaUrl = "../../../target/libs/templates/templates_cli/src/main/resources/schema.json";
+
+
+    function populateBean(values) {
+        var bean = new org.example.templates.block.client.Template_blockBean();
+        var builder=new org.example.templates.block.client.Template_blockBuilder();
+        $.each(values, function (k, v) {
+            bean[k] = v;
+        });
+
+        console.log(bean);
+
+        var csv = bean.invoke(builder);
+        return csv;
+    }
+
+    function createFormConfig(schemaFile,template) {
+        var schemaDef = schemaFile.definitions[template]
+        var required = [];
+        $.each(schemaDef.required, function (i, s) {
+            required.push(s);
+        });
+        required.push({
+            "type": "submit",
+            "title": "Submit"
+        });
+        console.log(schemaDef);
+        console.log(required)
+        var config = {};
+        config.schema = schemaDef;
+        config.form = required;
+        config.onSubmit = function (errors, values) {
+            console.log(values);
+            var csv = populateBean(values);
+            console.log(csv);
+            $('#res').html('<p>' + csv + '</p>');
+        };
+        config.params = {
+            "fieldHtmlClass": "input-small"
+        };
+        return config;
+    }
+
+    $.getJSON( schemaUrl,
+        function (schemaFile) {
+            var config = createFormConfig(schemaFile,"template_block");
+            $('form').jsonForm(config);
+        });
+</script>
+</body>
+</html>

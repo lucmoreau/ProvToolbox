@@ -53,7 +53,7 @@ public class CompilerMaven {
 
     }
 
-    public boolean makeSubPom(TemplatesCompilerConfig configs, String dir, String name, boolean dependencies, boolean jsweet, boolean jackson) {
+    public boolean makeSubPom(TemplatesCompilerConfig configs, String dir, String name, boolean dependencies, boolean jsweet, boolean jackson, boolean escape) {
         Model model = new Model();
         model.setArtifactId(name);
         model.setName(name);
@@ -74,10 +74,14 @@ public class CompilerMaven {
             addProvDependency("prov-template-compiler", model);
             addProvDependency("prov-interop-light", model);
 
+        } else if (escape) {
+            addProvDependency("prov-model", model);
         }
 
         if (jsweet) {
             addJSweetDependency(model);
+            //addProvDependency("prov-jsweet-candy-js", model);
+            addProvDependency("prov-jsweet-candy-java", model);
         }
 
         if (jackson) {

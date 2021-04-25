@@ -333,6 +333,8 @@
 		<junit.version>4.13.2</junit.version>
 
 
+		<jsweet.transpiler.version>3.0.0</jsweet.transpiler.version>
+
 		<resteasy.version>4.3.0.Final</resteasy.version>
 		<jetty.version>9.4.20.v20190813</jetty.version>
 		<servletapi.version>4.0.0</servletapi.version>

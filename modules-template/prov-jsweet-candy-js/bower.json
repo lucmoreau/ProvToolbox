@@ -1,0 +1,26 @@
+{
+  "name": "jsweet-candy-js-quickstart",
+  "homepage": "https://github.com/cincheo/jsweet-candy-js-quickstart",
+  "authors": [
+    "renaudpawlak"
+  ],
+  "description": "Starter project for creating a JSweet candy.",
+  "main": "",
+  "keywords": [
+    "java",
+    "jsweet",
+    "candy"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "sprintf": "^1.0.3"
+  }
+}

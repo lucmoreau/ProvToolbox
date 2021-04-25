@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 
+import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 
@@ -113,7 +114,7 @@ public class ConfigProcessor {
 
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
-        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, false, false);
+        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, false, false, false);
 
         final String cli_test_dir= cli_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile testfile2= compilerClientTest.generateTestFile_cli(configs);
@@ -125,7 +126,7 @@ public class ConfigProcessor {
         final String logger_dir= cli_src_dir + "/" + configs.logger_package.replace('.', '/') + "/";
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
-        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true);
+        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerClient.getFoundEscape());
 
 
         JavaFile logger=compilerLogger.generateLogger(configs);
@@ -137,8 +138,22 @@ public class ConfigProcessor {
         JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
         compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +LOGGER_INTERFACE+ ".java", intface2);
 
+        exportFormManager(configs, cli_dir, cli_lib);
 
         compilerMaven.generateScript(configs);
+    }
+
+    private void exportFormManager(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {
+        if (configs.jsweet) {
+            InputStream is=getClass().getResourceAsStream("/js/FormManager.js");
+            String targetLocation= cli_dir+"/src/main/js";
+            try {
+                FileUtils.copyToFile(is, new File (targetLocation+"/FormManager.js"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     public JsonNode readTree(File file) throws IOException {
@@ -215,6 +230,7 @@ public class ConfigProcessor {
                 val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
                 compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
+
 
             }
 

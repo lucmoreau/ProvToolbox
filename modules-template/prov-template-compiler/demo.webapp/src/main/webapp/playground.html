@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>org.example Template Playground</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.css" />
+</head>
+<style type="text/css">
+    .jsonform-required > label:after {
+        content: ' *';
+        color: red;
+    }
+
+    .jsonform-hasrequired:after {
+        content: '* Required field';
+        display: block;
+        color: red;
+        padding-top: 1em;
+    }
+</style>
+<script type="text/javascript" src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/JSV/lib/jsv.js"></script>
+<script type="text/javascript" src="/webjars/underscore/1.12.0/underscore.js"></script>
+<script type="text/javascript" src="/webjars/JSV/lib/jsv.js"></script>
+<script type="text/javascript" src="/webjars/jsonform/lib/jsonform.js"></script>
+<script type="text/javascript" src="/webjars/templates_cli/0.1.0/js/org/example/templates/block/client/Template_blockBuilder.js"></script>
+<script type="text/javascript" src="/webjars/templates_cli/0.1.0/js/org/example/templates/block/client/Template_blockBean.js"></script>
+
+<script type="text/javascript" src="/webjars/templates_cli/0.1.0/js/org/example/templates/client/Logger.js"></script>
+<script type="text/javascript" src="/webjars/templates_cli/0.1.0/js/FormManager.js"></script>
+
+<body>
+<div class="container">
+    <div class="row header">
+        <div class="col-xs-12 text-center">
+            <h3>Template Testing</h3>
+        </div>
+        <div class="col-xs-2">
+            <div id="template-dropdown">
+                <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">org.example Templates</a>
+            </div>
+        </div>
+
+        <div class="col-xs-7 first-column">
+            <div>
+                <form></form>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <h4>CSV encoding</h4>
+            <div id="result"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+    let schemaUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/schema/schema.json";
+    const logger=new org.example.templates.client.Logger();
+
+    const fm=new FormManager(logger,schemaUrl);
+    fm.createDropdown("#template-dropdown", "fm");
+
+</script>
+
+<script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/dropdown.js"></script>
+<script src="/webjars/bootstrap/3.3.7/js/tab.js"></script>
+<script>
+    $('.dropdown-toggle').dropdown();
+</script>
+
+</html>

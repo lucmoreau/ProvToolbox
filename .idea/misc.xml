@@ -28,6 +28,11 @@
         <option value="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="12.0.1" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />

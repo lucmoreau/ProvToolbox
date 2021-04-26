@@ -17,6 +17,7 @@ public class TemplatesCompilerConfig {
     public boolean jsweet;
     public boolean sbean;
     public String jsonschema;
+    public String documentation;
 
     @Override
     public String toString() {
@@ -34,6 +35,7 @@ public class TemplatesCompilerConfig {
                 ", jsweet=" + jsweet +
                 ", sbean=" + sbean +
                 ", jsonschema='" + jsonschema + '\'' +
+                ", documentation='" + documentation + '\'' +
                 ", templates=" + Arrays.toString(templates) +
                 '}';
     }

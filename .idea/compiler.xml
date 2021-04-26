@@ -23,7 +23,6 @@
         <module name="prov-rdf" />
         <module name="ProvToolbox-Tutorial3" />
         <module name="ProvToolbox-Tutorial2" />
-        <module name="provconvert" />
         <module name="ProvToolbox-Tutorial1" />
         <module name="benchmarks" />
         <module name="service-translator" />

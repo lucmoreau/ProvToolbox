@@ -25,8 +25,6 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
-import org.openprovenance.prov.template.expander.Bindings;
-import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -276,8 +274,9 @@ public class CompilerUtil {
     }
 
 
-    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var, JsonNode the_documentation) {
-        String docString = noNode(the_documentation) ? "No @documentation.\n\n@return a string." : the_documentation.textValue();
+    public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var, JsonNode the_documentation, JsonNode the_return) {
+        String docString = noNode(the_documentation) ? "No @documentation." : the_documentation.textValue();
+        String retString = noNode(the_return) ? "@return not documented." : the_return.textValue();
         builder.addJavadoc(docString);
         builder.addJavadoc("\n\n");
         Iterator<String> iter = the_var.fieldNames();
@@ -299,6 +298,7 @@ public class CompilerUtil {
                 builder.addJavadoc("@param $N -- no bindings schemas \n", key);
             }
         }
+        builder.addJavadoc(retString);
     }
 
     public boolean noNode(final JsonNode jsonNode2) {

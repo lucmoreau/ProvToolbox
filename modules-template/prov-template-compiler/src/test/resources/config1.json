@@ -12,6 +12,7 @@
     "jsweet": true,
     "sbean": true,
     "jsonschema": "schema.json",
+    "documentation": "doc.html",
     "templates" : [
 	{
 	    "name": "template_block",

@@ -1,0 +1,2 @@
+jetty:
+	 mvn jetty:run

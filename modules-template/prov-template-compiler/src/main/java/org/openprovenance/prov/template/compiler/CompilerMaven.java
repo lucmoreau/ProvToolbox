@@ -88,6 +88,9 @@ public class CompilerMaven {
             addJacksonDependency(model);
         }
 
+        if (jsweet) {
+            addBuildHelperMavenPlugin(model);
+        }
 
         try {
             new MavenXpp3Writer().write(new FileWriter(dir + "/pom.xml"), model);
@@ -167,6 +170,100 @@ public class CompilerMaven {
         plugin.addExecution(pe2);
 
         Build b=new Build();
+        b.addPlugin(plugin);
+        model.setBuild(b);
+    }
+
+    public void addBuildHelperMavenPlugin(Model model) {
+        Plugin plugin = new Plugin();
+        plugin.setArtifactId("build-helper-maven-plugin");
+        plugin.setGroupId("org.codehaus.mojo");
+        plugin.setVersion("3.0.0");
+
+
+        StringBuilder configString = new StringBuilder()
+                .append("\n" +
+                        "\n" +
+                        "<configuration>\n" +
+                        "  <resources>\n" +
+                        "    <resource>\n" +
+                        "      <directory>${project.build.directory}</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/json</targetPath>\n" +
+                        "      <includes>\n" +
+                        "        <include>*.json</include>\n" +
+                        "      </includes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>${project.build.directory}/js</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/js</targetPath>\n" +
+                        "      <excludes>\n" +
+                        "        <exclude>**/junk/**</exclude>\n" +
+                        "      </excludes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>src/main/js</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/js</targetPath>\n" +
+                        "      <excludes>\n" +
+                        "        <exclude>**/junk/**</exclude>\n" +
+                        "      </excludes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>src/main/resources</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/schema</targetPath>\n" +
+                        "      <includes>\n" +
+                        "        <includes>schema.json</includes>\n" +
+                        "      </includes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>${project.build.directory}/ts</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/ts</targetPath>\n" +
+                        "      <excludes>\n" +
+                        "        <exclude>**/junk/**</exclude>\n" +
+                        "      </excludes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>/bindings</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/bindings</targetPath>\n" +
+                        "      <excludes>\n" +
+                        "        <exclude>**/junk/**</exclude>\n" +
+                        "      </excludes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>${project.build.directory}/templates</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/templates</targetPath>\n" +
+                        "      <excludes>\n" +
+                        "        <exclude>**/junk/**</exclude>\n" +
+                        "      </excludes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
+                        "      <directory>${project.build.directory}/resources</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/schema</targetPath>\n" +
+                        "      <excludes>\n" +
+                        "        <exclude>**/junk/**</exclude>\n" +
+                        "      </excludes>\n" +
+                        "    </resource>\n" +
+                        "  </resources>\n" +
+                        "</configuration>\n");
+
+
+        Xpp3Dom config = null;
+        try {
+            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        }
+        plugin.setConfiguration(config);
+
+        PluginExecution pe1=new PluginExecution();
+        pe1.addGoal("add-resource");
+        pe1.setId("prepare-webjar");
+        pe1.setPhase("generate-sources");
+
+
+        plugin.addExecution(pe1);
+
+        Build b= model.getBuild();
+        if (b==null) b=new Build();
         b.addPlugin(plugin);
         model.setBuild(b);
     }

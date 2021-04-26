@@ -3,6 +3,7 @@ package org.openprovenance.prov.template;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.ValidationMessage;
 import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -71,16 +72,25 @@ public class CompilerTest extends TestCase {
         final String l2p_test_src_dir=l2p_dir+"/src/test/java";
         final String cli_src_dir=cli_dir+"/src/main/java";
         final String cli_test_src_dir=cli_dir+"/src/test/java";
-
+        final String cli_webjar_dir=cli_dir+"/src/main/resources/META-INF/resources/webjars/" + configs.name + "_cli/" + configs.version;
+        final String cli_webjar_bindings_dir=cli_webjar_dir + "/bindings";
+        final String cli_webjar_templates_dir=cli_webjar_dir + "/templates";
         new File(l2p_src_dir).mkdirs();
         new File(cli_src_dir).mkdirs();
         new File(l2p_test_src_dir).mkdirs();
         new File(cli_test_src_dir).mkdirs();
+        new File(cli_webjar_dir).mkdirs();
+        new File(cli_webjar_bindings_dir).mkdirs();
+        new File(cli_webjar_templates_dir).mkdirs();
 
-        cp.doGenerateServerForEntry1(doc,config,configs,cli_src_dir,  l2p_src_dir);
-        cp.doGenerateProject(configs,root_dir,cli_lib,l2p_lib,l2p_dir,l2p_src_dir,l2p_test_src_dir,cli_test_src_dir);
+        cp.doGenerateServerForEntry1(doc,config,configs,cli_src_dir,  l2p_src_dir,cli_webjar_dir);
+        FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
+        FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
+
+        cp.doGenerateProject(configs,root_dir,cli_lib,l2p_lib,l2p_dir,l2p_src_dir,l2p_test_src_dir,cli_test_src_dir, cli_webjar_dir);
         cp.doGenerateClientAndProject(configs,cli_lib,cli_dir,cli_src_dir);
         cp.generateJSonSchemaEnd(configs,cli_src_dir);
+        cp.generateDocumentationEnd(configs,cli_webjar_dir);
 
         System.out.println("#### Invoking maven " + path);
         execute(new String[] {"mvn", "clean", "install"},"target/libs/templates");

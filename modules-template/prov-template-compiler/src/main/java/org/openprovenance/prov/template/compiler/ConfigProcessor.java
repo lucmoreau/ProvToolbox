@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 
 import org.apache.commons.io.FileUtils;
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 
@@ -35,6 +36,7 @@ public class ConfigProcessor {
     private final CompilerUtil compilerUtil     = new CompilerUtil();
     private final CompilerLogger compilerLogger = new CompilerLogger();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
+    private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
     private final CompilerClient compilerClient;
     private final CompilerBuilder compilerBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
@@ -55,6 +57,12 @@ public class ConfigProcessor {
         this.compilerClientTest =new CompilerClientTest();
     }
 
+    public String readCompilerVersion() {
+        return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
+    }
+
+    final String compilerVersion=readCompilerVersion();
+
     public int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
         TemplatesCompilerConfig configs;
 
@@ -68,26 +76,35 @@ public class ConfigProcessor {
             new File(cli_dir).mkdirs(); 
             final String l2p_lib = configs.name + "_l2p";
             final String l2p_dir = root_dir + "/" + l2p_lib;
-            new File(l2p_dir).mkdirs(); 
-            
+            new File(l2p_dir).mkdirs();
+
             final String l2p_src_dir=l2p_dir+"/src/main/java";
             final String l2p_test_src_dir=l2p_dir+"/src/test/java";
             final String cli_src_dir=cli_dir+"/src/main/java";
             final String cli_test_src_dir=cli_dir+"/src/test/java";
+            final String cli_webjar_dir=cli_dir+"/src/main/resources/META-INF/resources/webjars/" + configs.name + "_cli/" + configs.version;
+            final String cli_webjar_bindings_dir=cli_webjar_dir + "/bindings";
+            final String cli_webjar_templates_dir=cli_webjar_dir + "/templates";
             new File(l2p_src_dir).mkdirs();
             new File(cli_src_dir).mkdirs();
             new File(l2p_test_src_dir).mkdirs();
             new File(cli_test_src_dir).mkdirs();
+            new File(cli_webjar_dir).mkdirs();
+            new File(cli_webjar_bindings_dir).mkdirs();
+            new File(cli_webjar_templates_dir).mkdirs();
 
 
             for (TemplateCompilerConfig config: configs.templates) {
                 System.out.println(config.toString());
-                doGenerateServerForEntry(config,configs,cli_src_dir,l2p_src_dir,pFactory);
+                doGenerateServerForEntry(config,configs,cli_src_dir,l2p_src_dir,pFactory, cli_webjar_dir);
+                FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
+                FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
             }
 
             generateJSonSchemaEnd(configs, cli_src_dir);
+            generateDocumentationEnd(configs, cli_src_dir);
 
-            doGenerateProject(configs, root_dir, cli_lib, l2p_lib, l2p_dir, l2p_src_dir, l2p_test_src_dir, cli_test_src_dir);
+            doGenerateProject(configs, root_dir, cli_lib, l2p_lib, l2p_dir, l2p_src_dir, l2p_test_src_dir, cli_test_src_dir, cli_webjar_dir);
 
             doGenerateClientAndProject(configs, cli_lib, cli_dir, cli_src_dir);
 
@@ -102,7 +119,13 @@ public class ConfigProcessor {
         if (configs.jsonschema!=null) compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
     }
 
-    public void doGenerateProject(TemplatesCompilerConfig configs, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir) {
+    public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
+        if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir);
+
+
+    }
+
+    public void doGenerateProject(TemplatesCompilerConfig configs, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
         final String init_dir= l2p_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile init=compilerBuilderInit.generateInitializer(configs);
         compilerUtil.saveToFile(init_dir, init_dir +INIT + ".java", init);
@@ -172,13 +195,13 @@ public class ConfigProcessor {
 
 
 
-    public void doGenerateServerForEntry(TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory) {
+    public void doGenerateServerForEntry(TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, bindings_schema);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, cli_webjar_dir);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -189,17 +212,17 @@ public class ConfigProcessor {
         }
     }
 
-    public void doGenerateServerForEntry1(Document doc, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir) {
+    public void doGenerateServerForEntry1(Document doc, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, bindings_schema);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, cli_webjar_dir);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource,  boolean sbean, String jsonschema, JsonNode bindings_schema) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, String cli_webjar_dir) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bean=compilerUtil.beanNameClass(templateName);
@@ -229,7 +252,14 @@ public class ConfigProcessor {
                 JavaFile spec4 = compilerContinuation.generateContinuation(doc, continuation, templateName, packge + ".client", resource, bindings_schema);
                 val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
+
+
                 compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
+
+                final String cli_webjar_html_dir = cli_webjar_dir + "/html";
+                new File(cli_webjar_html_dir).mkdirs();
+
+                compilerDocumentation.generateDocumentation(documentation,templateName,cli_webjar_html_dir, bindings_schema);
 
 
             }

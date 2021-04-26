@@ -64,7 +64,9 @@ public class CompilerContinuation {
         CodeBlock.Builder jdoc = CodeBlock.builder();
 
         JsonNode the_documentation = bindings_schema.get("@documentation");
-        String docString = compilerUtil.noNode(the_documentation) ? "No @documentation.\n\n@return a string." : the_documentation.textValue();
+        JsonNode the_return = bindings_schema.get("@return");
+        String docString = compilerUtil.noNode(the_documentation) ? "No @documentation" : the_documentation.textValue();
+        String retString = compilerUtil.noNode(the_return) ? "@return not specified" : the_return.textValue();
         jdoc.add(docString);
         jdoc.add("\n\n");
 
@@ -93,6 +95,8 @@ public class CompilerContinuation {
             }
 
         }
+        jdoc.add(retString);
+
         mbuilder.addJavadoc(jdoc.build());
 
         builder.addMethod(mbuilder.build());

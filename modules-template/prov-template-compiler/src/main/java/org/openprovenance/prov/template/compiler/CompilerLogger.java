@@ -2,13 +2,9 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
-import org.openprovenance.prov.template.log2prov.FileBuilder;
-import org.openprovenance.prov.template.log2prov.Runner;
 
 import javax.lang.model.element.Modifier;
 import java.util.Iterator;
-
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerLogger {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -135,8 +131,9 @@ public class CompilerLogger {
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
         JsonNode the_documentation = bindings_schema.get("@documentation");
+        JsonNode the_return = bindings_schema.get("@return");
         compilerUtil.generateSpecializedParameters(builder, the_var);
-        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation);
+        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
 
         int count = 1;
@@ -166,8 +163,9 @@ public class CompilerLogger {
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
         JsonNode the_documentation = bindings_schema.get("@documentation");
+        JsonNode the_return = bindings_schema.get("@return");
         compilerUtil.generateSpecializedParameters(builder, the_var);
-        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation);
+        compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
 
         int count = 1;

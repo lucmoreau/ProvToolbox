@@ -1,2 +1,2 @@
-@jsweet.lang.Root
+//@jsweet.lang.Root
 package def.sprintf;

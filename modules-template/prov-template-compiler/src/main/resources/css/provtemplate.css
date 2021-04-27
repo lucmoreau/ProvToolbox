@@ -1,0 +1,36 @@
+.jsonform-required > label:after {
+    content: ' *';
+    color: red;
+}
+
+.jsonform-hasrequired:after {
+    content: '* Required field';
+    display: block;
+    color: red;
+    padding-top: 1em;
+}
+
+.csv_column::after {
+    content: '.';
+}
+.csv_type::after {
+    content: ')';
+}
+.csv_type::before {
+    content: '(type: ';
+}
+
+.csv_type {
+    font-style: italic;
+}
+
+.csv_field {
+    font-weight: bold;
+}
+.csv_field_header {
+    font-family: 'Courier New', monospace;;
+}
+
+div.invisible_div {        /* this will hide div with id div_id_name */
+    display:none;
+}

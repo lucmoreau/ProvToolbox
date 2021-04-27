@@ -1,4 +1,6 @@
 
+jetty:
+	cd demo.webapp; make jetty
 
 expand1:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-a.provn -outfile src/main/resources/expanded-a1.provn -bindings src/main/resources/bindings1.provn 

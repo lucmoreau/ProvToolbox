@@ -161,21 +161,27 @@ public class ConfigProcessor {
         JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
         compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +LOGGER_INTERFACE+ ".java", intface2);
 
-        exportFormManager(configs, cli_dir, cli_lib);
+        exportMiscFiles(configs, cli_dir, cli_lib);
 
         compilerMaven.generateScript(configs);
     }
 
-    private void exportFormManager(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {
+    private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {
         if (configs.jsweet) {
-            InputStream is=getClass().getResourceAsStream("/js/FormManager.js");
+            InputStream is=getClass().getResourceAsStream("/js/TemplateManager.js");
             String targetLocation= cli_dir+"/src/main/js";
             try {
-                FileUtils.copyToFile(is, new File (targetLocation+"/FormManager.js"));
+                FileUtils.copyToFile(is, new File (targetLocation+"/TemplateManager.js"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+        }
+        InputStream is=getClass().getResourceAsStream("/css/provtemplate.css");
+        String targetLocation= cli_dir+"/src/main/css";
+        try {
+            FileUtils.copyToFile(is, new File (targetLocation+"/provtemplate.css"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

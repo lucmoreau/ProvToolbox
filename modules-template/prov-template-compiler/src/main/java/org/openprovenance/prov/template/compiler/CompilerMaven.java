@@ -215,6 +215,13 @@ public class CompilerMaven {
                         "      </includes>\n" +
                         "    </resource>\n" +
                         "    <resource>\n" +
+                        "      <directory>src/main/css</directory>\n" +
+                        "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/css</targetPath>\n" +
+                        "      <includes>\n" +
+                        "        <includes>*.css</includes>\n" +
+                        "      </includes>\n" +
+                        "    </resource>\n" +
+                        "    <resource>\n" +
                         "      <directory>${project.build.directory}/ts</directory>\n" +
                         "      <targetPath>META-INF/resources/webjars/${project.artifactId}/${project.version}/ts</targetPath>\n" +
                         "      <excludes>\n" +

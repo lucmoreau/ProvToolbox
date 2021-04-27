@@ -3,7 +3,7 @@
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
     <meta content="utf-8" http-equiv="encoding"/>
-    <title>org.example Template Playground</title>
+    <title>org.example Template Documentation</title>
     <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.css" />
     <link rel="stylesheet" href="/webjars/templates_cli/0.1.0/css/provtemplate.css" />
 </head>
@@ -23,23 +23,22 @@
 <div class="container">
     <div class="row header">
         <div class="col-xs-12 text-center">
-            <h3>Template Testing</h3>
+            <h3>Template Documentation</h3>
         </div>
         <div class="col-xs-2">
-            <div id="template-dropdown-playground">
+            <div id="template-dropdown-documentation">
                 <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">org.example Templates</a>
             </div>
         </div>
 
         <div class="col-xs-7 first-column">
-            <div>
-                <form></form>
-            </div>
-        </div>
+            <div id="documentation">
 
-        <div class="col-sm-3">
-            <h4>CSV encoding</h4>
-            <div id="result"></div>
+            </div>
+
+            <div id="tmp_div" class="invisible_div">
+
+            </div>
         </div>
     </div>
 
@@ -47,10 +46,15 @@
 </body>
 <script>
     let schemaUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/schema/schema.json";
+    let docUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/html/doc.html";
     const logger=new org.example.templates.client.Logger();
 
-    const templateManager=new TemplateManager(logger,schemaUrl);
-    templateManager.createDropdownForPlayground("#template-dropdown-playground", "templateManager");
+    const templateManager=new TemplateManager(logger,schemaUrl,docUrl);
+    templateManager.createDropdownForDocumentation("#template-dropdown-documentation", "templateManager");
+
+
+
+
 
 </script>
 

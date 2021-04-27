@@ -47,32 +47,12 @@ public class CompilerDocumentation {
             if (os==null) {
                 os = new PrintStream(new FileOutputStream(path));
 
-
                 os.println("<html>");
                 os.println("<body>");
                 os.println("<head>");
-                os.println("  <style type=\"text/css\">\n" +
-                        "    .csv_column::after {\n" +
-                        "        content: '.';\n" +
-                        "    }\n" +
-                        "    .csv_type::after {\n" +
-                        "        content: ')';\n" +
-                        "    }\n" +
-                        "    .csv_type::before {\n" +
-                        "        content: '(type: ';\n" +
-                        "    }\n" +
-                        "\n" +
-                        "    .csv_type {\n" +
-                        "\tfont-style: italic;\n" +
-                        "    }\n" +
-                        "\n" +
-                        "    .csv_field {\n" +
-                        "\tfont-weight: bold;\n" +
-                        "    }\n" +
-                        "    .csv_field_header {\n" +
-                        "\tfont-family: 'Courier New', monospace;;\n" +
-                        "    }\n" +
-                        "  </style>");
+                os.println(" <meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\"/>");
+                os.println(" <meta content=\"utf-8\" http-equiv=\"encoding\"/>");
+                os.println(" <link rel='stylesheet' href='../css/provtemplate.css'>");
                 os.println("</head>");
 
             }
@@ -89,7 +69,6 @@ public class CompilerDocumentation {
             os.println("<div class='csv_template' id='" + "template_" + templateName + "'>" );
 
             os.println("<h2>"+templateName+"</h2>");
-
             os.println("<div class='csv_intro'>");
             String docString = compilerUtil.noNode(the_documentation) ? "No @documentation." : the_documentation.textValue();
             os.println(docString);

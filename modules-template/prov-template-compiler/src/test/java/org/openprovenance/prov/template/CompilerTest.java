@@ -90,6 +90,7 @@ public class CompilerTest extends TestCase {
         cp.doGenerateProject(configs,root_dir,cli_lib,l2p_lib,l2p_dir,l2p_src_dir,l2p_test_src_dir,cli_test_src_dir, cli_webjar_dir);
         cp.doGenerateClientAndProject(configs,cli_lib,cli_dir,cli_src_dir);
         cp.generateJSonSchemaEnd(configs,cli_src_dir);
+        cp.generateSQLEnd(configs,cli_src_dir);
         cp.generateDocumentationEnd(configs,cli_webjar_dir);
 
         System.out.println("#### Invoking maven " + path);

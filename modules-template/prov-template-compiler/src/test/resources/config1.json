@@ -12,6 +12,7 @@
     "jsweet": true,
     "sbean": true,
     "jsonschema": "schema.json",
+    "sqlFile": "template.sql",
     "documentation": "doc.html",
     "templates" : [
 	{

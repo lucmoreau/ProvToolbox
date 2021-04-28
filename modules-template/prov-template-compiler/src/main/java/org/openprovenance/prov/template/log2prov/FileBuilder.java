@@ -6,9 +6,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,9 +23,46 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 abstract public class FileBuilder {
     static ObjectMapper mapper = new ObjectMapper();
 
+    static Logger logger= LogManager.getLogger(FileBuilder.class);
+
+
     public static void reader(InputStream is, DocumentProcessor dp) {
         BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
         reader(r, dp);
+    }
+
+    public static void newReader(InputStream r, DocumentProcessor dp) throws IOException {
+        CSVParser parser = CSVParser.parse(r, StandardCharsets.UTF_8, CSVFormat.DEFAULT);
+        List<CSVRecord> records=parser.getRecords();
+        for (CSVRecord record: records) {
+            int size=record.size();
+            Object[] args=new Object[size];
+            String methodName=null;
+            for (int i=0; i<size; i++ ) {
+                String s = record.get(i);
+                if (i==0) {
+                    methodName=s;
+                }
+                if (s==null || s.isEmpty()) {
+                    args[i] = null;
+                } else {
+                    args[i] = s;
+                }
+            }
+            FileBuilder builder=registry.get(methodName);
+            if (builder==null) {
+                logger.info("unknown method " + methodName + " in "+ registry);
+                // skip the ones we don't understand
+                //return utils.composeResponseBadRequest("incorrect template " + method + " for builders " + builders, new UnsupportedOperationException(method));
+            } else {
+                if (builder!=null) {
+                    if (dp!=null) dp.process(builder.make(args));
+
+                } else {
+                    System.out.println("unknown method " + methodName);
+                }
+            }
+        }
     }
 
     public static void reader(BufferedReader r, DocumentProcessor dp) {
@@ -65,25 +109,7 @@ abstract public class FileBuilder {
             try {
                 cl = Class.forName(builder);
                 cl.getDeclaredConstructor(org.openprovenance.prov.model.ProvFactory.class).newInstance(pf);
-            } catch (ClassNotFoundException e) {
-                ok=false;
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                ok=false;
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                ok=false;
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                ok=false;
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                ok=false;
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                ok=false;
-                e.printStackTrace();
-            } catch (SecurityException e) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 ok=false;
                 e.printStackTrace();
             }

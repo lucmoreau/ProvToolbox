@@ -28,6 +28,7 @@ public class ConfigProcessor {
     public static final String GET_BUILDERS_METHOD = "getBuilders";
     public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
     private final ProvFactory pFactory;
+    private final CompilerSQL compilerSQL;
 
     boolean withMain=true; // TODO need to be updatable via command line
 
@@ -48,7 +49,8 @@ public class ConfigProcessor {
 
     public ConfigProcessor(ProvFactory pFactory) {
         this.pFactory=pFactory;
-        this.compilerClient= new CompilerClient(pFactory);
+        this.compilerSQL=new CompilerSQL();
+        this.compilerClient= new CompilerClient(pFactory,compilerSQL);
         this.compilerBuilder= new CompilerBuilder(withMain,compilerClient,pFactory);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
@@ -102,6 +104,8 @@ public class ConfigProcessor {
             }
 
             generateJSonSchemaEnd(configs, cli_src_dir);
+
+            generateSQLEnd(configs, cli_src_dir);
             generateDocumentationEnd(configs, cli_src_dir);
 
             doGenerateProject(configs, root_dir, cli_lib, l2p_lib, l2p_dir, l2p_src_dir, l2p_test_src_dir, cli_test_src_dir, cli_webjar_dir);
@@ -118,6 +122,11 @@ public class ConfigProcessor {
     public void generateJSonSchemaEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
         if (configs.jsonschema!=null) compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
     }
+
+    public void generateSQLEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
+        if (configs.sqlFile!=null) compilerSQL.generateSQLEnd(configs.sqlFile, cli_src_dir +"/../resources");
+    }
+
 
     public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
         if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir);
@@ -261,6 +270,7 @@ public class ConfigProcessor {
 
 
                 compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
+                compilerSQL.generateSQL(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindings_schema);
 
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();

@@ -17,6 +17,7 @@ public class TemplatesCompilerConfig {
     public boolean jsweet;
     public boolean sbean;
     public String jsonschema;
+    public String sqlFile;
     public String documentation;
 
     @Override

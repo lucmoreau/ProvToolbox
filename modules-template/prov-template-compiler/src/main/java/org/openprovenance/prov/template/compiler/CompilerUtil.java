@@ -55,6 +55,10 @@ public class CompilerUtil {
         return "log" + capitalize(template);
 
     }
+    public String sqlName(String template) {
+        return "sqlTuple" ; //+ capitalize(template)
+
+    }
 
 
     public void extractVariablesAndAttributes(Bundle bundle,

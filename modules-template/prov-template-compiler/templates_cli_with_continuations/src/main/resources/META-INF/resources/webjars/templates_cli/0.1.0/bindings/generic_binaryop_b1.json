@@ -1,0 +1,70 @@
+
+{
+	"var": {
+		"operation": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The operation identifier"
+
+			}
+		],
+		"operation_type": [
+			{
+				"@id": "ex:type/*",
+				"@documentation": "The operation type"
+			}
+		],
+		"agent": [
+			{
+				"@id": "ex:agent/*",
+				"@documentation": "The agent identifier"
+			}
+		],
+		"consumed1": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The identifier of the first consumed entity"
+			}
+		],
+		"consumed_value1": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "The value of the first consumed entity",
+				"@escape": true
+			}
+		]],
+		"consumed2": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The identifier of the second consumed entity"
+			}
+		],
+		"consumed_value2": [[
+			{
+				"@type": "xsd:int",
+				"@documentation": "The value of the second consumed entity"
+			}
+		]],
+		"produced": [
+			{
+				"@id": "ex:output/*",
+				"@documentation": "The identifier of the produced entity"
+			}
+		],
+		"produced_type": [
+			{
+				"@id": "ex:Result*",
+				"@documentation": "The type of the produced entity"
+			}
+		],
+		"produced_value": [[
+			{
+				"@type": "xsd:int",
+				"@documentation": "The value of the produced entity"
+			}]]
+	},
+	"context": {
+		"ex": "http://example.org/#"
+	},
+	"template": "https://openprovenance.org/templates/org/openprovenance/generic/binaryop/1.provn"
+}

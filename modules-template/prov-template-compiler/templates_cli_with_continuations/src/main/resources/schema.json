@@ -1,0 +1,105 @@
+{
+  "allOf" : [ {
+    "then" : {
+      "$ref" : "#/definitions/template_block"
+    },
+    "if" : {
+      "type" : "object",
+      "properties" : {
+        "isA" : {
+          "const" : "template_block"
+        }
+      }
+    }
+  } ],
+  "type" : "object",
+  "title" : "The Root Schema",
+  "definitions" : {
+    "template_block" : {
+      "additionalProperties" : false,
+      "type" : "object",
+      "properties" : {
+        "agent" : {
+          "description" : "The agent identifier (string)",
+          "title" : "agent",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/agent"
+        },
+        "produced_value" : {
+          "default" : 0,
+          "description" : "The value of the produced entity (integer)",
+          "title" : "produced_value",
+          "type" : "integer",
+          "$id" : "#/definitions/template_block/properties/produced_value"
+        },
+        "consumed_value1" : {
+          "description" : "The value of the first consumed entity (string)",
+          "title" : "consumed_value1",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/consumed_value1"
+        },
+        "operation_type" : {
+          "description" : "The operation type (string)",
+          "title" : "operation_type",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/operation_type"
+        },
+        "isA" : {
+          "default" : "template_block",
+          "pattern" : "^template_block$",
+          "readOnly" : "true",
+          "title" : "isA",
+          "type" : "string",
+          "required" : true,
+          "$id" : "#/definitions/template_block/properties/isA"
+        },
+        "produced_type" : {
+          "description" : "The type of the produced entity (string)",
+          "title" : "produced_type",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/produced_type"
+        },
+        "consumed_value2" : {
+          "default" : 0,
+          "description" : "The value of the second consumed entity (integer)",
+          "title" : "consumed_value2",
+          "type" : "integer",
+          "$id" : "#/definitions/template_block/properties/consumed_value2"
+        },
+        "operation" : {
+          "description" : "The operation identifier (string)",
+          "title" : "operation",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/operation"
+        },
+        "consumed2" : {
+          "description" : "The identifier of the second consumed entity (string)",
+          "title" : "consumed2",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/consumed2"
+        },
+        "consumed1" : {
+          "description" : "The identifier of the first consumed entity (string)",
+          "title" : "consumed1",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/consumed1"
+        },
+        "produced" : {
+          "description" : "The identifier of the produced entity (string)",
+          "title" : "produced",
+          "type" : "string",
+          "$id" : "#/definitions/template_block/properties/produced"
+        }
+      },
+      "required" : [ "isA", "operation", "operation_type", "agent", "consumed1", "consumed_value1", "consumed2", "consumed_value2", "produced", "produced_type", "produced_value" ],
+      "$id" : "#/definitions/template_block"
+    }
+  },
+  "properties" : {
+    "isA" : {
+      "type" : "string",
+      "pattern" : "^template_block$"
+    }
+  },
+  "$id" : "https://openprovenance.org/template/beans#schema.json"
+}

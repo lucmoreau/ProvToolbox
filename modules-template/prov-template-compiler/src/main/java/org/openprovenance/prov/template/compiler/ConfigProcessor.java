@@ -248,6 +248,7 @@ public class ConfigProcessor {
 
             String destination=destinationDir + bn + ".java";
             String destination2=destinationDir2 + bn + ".java";
+            String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
             String destination4=destinationDir2 + continuation + ".java";
 
@@ -256,6 +257,10 @@ public class ConfigProcessor {
 
             JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
+
+            JavaFile spec2b=compilerClient.generateSQLInterface(packge+ ".client");
+            boolean val2b=compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
+            val2=val2&val2b;
 
             boolean val3=true;
             boolean val4=true;

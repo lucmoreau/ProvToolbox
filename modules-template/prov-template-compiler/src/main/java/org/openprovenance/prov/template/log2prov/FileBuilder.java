@@ -4,12 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -19,6 +23,8 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientInterface;
+import org.openprovenance.prov.template.log2prov.interfaces.ProxySQLInterface;
 
 abstract public class FileBuilder {
     static ObjectMapper mapper = new ObjectMapper();
@@ -31,7 +37,11 @@ abstract public class FileBuilder {
         reader(r, dp);
     }
 
-    public static void newReader(InputStream r, DocumentProcessor dp) throws IOException {
+    static ProxyManagement pm=new ProxyManagement();
+
+
+    public static void newReader(InputStream r, DocumentProcessor dp, RecordProcessor rp) throws IOException {
+
         CSVParser parser = CSVParser.parse(r, StandardCharsets.UTF_8, CSVFormat.DEFAULT);
         List<CSVRecord> records=parser.getRecords();
         for (CSVRecord record: records) {
@@ -50,6 +60,8 @@ abstract public class FileBuilder {
                 }
             }
             FileBuilder builder=registry.get(methodName);
+            Object remoteClientBuilder=clientRegistry.get(methodName);
+            ProxyClientInterface clientBuilder=pm.facadeProxy(ProxyClientInterface.class,remoteClientBuilder);
             if (builder==null) {
                 logger.info("unknown method " + methodName + " in "+ registry);
                 // skip the ones we don't understand
@@ -57,7 +69,9 @@ abstract public class FileBuilder {
             } else {
                 if (builder!=null) {
                     if (dp!=null) dp.process(builder.make(args));
-
+                    if (rp!=null) {
+                        rp.process(clientBuilder.make(args));
+                    }
                 } else {
                     System.out.println("unknown method " + methodName);
                 }
@@ -94,8 +108,9 @@ abstract public class FileBuilder {
     
     public abstract Document make(Object[] objects);
 
-    public static HashMap<String,FileBuilder> registry=new HashMap<String, FileBuilder>();
-    
+    private static HashMap<String,FileBuilder> registry= new HashMap<>();
+    private static HashMap<String,Object> clientRegistry= new HashMap<>();
+
     public static void register(FileBuilder builder) {
         registry.put(builder.getName(),builder); 
     }

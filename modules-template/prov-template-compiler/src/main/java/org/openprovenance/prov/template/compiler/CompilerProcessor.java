@@ -13,15 +13,15 @@ import java.util.Set;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 
-public class CompilerContinuation {
+public class CompilerProcessor {
     private final ProvFactory pFactory;
     private final CompilerUtil compilerUtil=new CompilerUtil();
 
-    public CompilerContinuation(ProvFactory pFactory) {
+    public CompilerProcessor(ProvFactory pFactory) {
         this.pFactory=pFactory;
     }
 
-    public JavaFile generateContinuation(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    public JavaFile generateProcessor(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -37,21 +37,21 @@ public class CompilerContinuation {
         u.forAllStatement(bun.getStatement(), indexed);
 
 
-        return generateContinuation_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, indexed);
+        return generateProcessor_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, indexed);
     }
 
-    public TypeSpec.Builder generateContinuationClassInit(String name, String packge, String supername) {
+    public TypeSpec.Builder generateProcessorClassInit(String name, String packge, String supername) {
         return TypeSpec.interfaceBuilder(name)
               //  .addSuperinterface(ClassName.get(packge,supername))
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    private JavaFile generateContinuation_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
+    private JavaFile generateProcessor_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
 
-        TypeSpec.Builder builder = generateContinuationClassInit(name,ConfigProcessor.CLIENT_PACKAGE,"Bean");
+        TypeSpec.Builder builder = generateProcessorClassInit(name,ConfigProcessor.CLIENT_PACKAGE,"Bean");
 
         final String loggerName = compilerUtil.loggerName(templateName);
-        MethodSpec.Builder mbuilder = MethodSpec.methodBuilder(loggerName)
+        MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("process")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.ABSTRACT)
                 .returns(String.class);

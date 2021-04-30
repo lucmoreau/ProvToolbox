@@ -90,7 +90,7 @@ public class CompilerSimpleBean {
 
         }
 
-        MethodSpec mbuild = generateInvokeContinuation(allVars, allAtts, name, templateName, packge, bindings_schema);
+        MethodSpec mbuild = generateInvokeProcessor(allVars, allAtts, name, templateName, packge, bindings_schema);
 
         builder.addMethod(mbuild);
 
@@ -105,15 +105,15 @@ public class CompilerSimpleBean {
 
     }
 
-    public MethodSpec generateInvokeContinuation(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateInvokeProcessor(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("invoke")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("process")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String.class);
 
         final String loggerName = compilerUtil.loggerName(template);
 
-        builder.addParameter(ClassName.get(packge, compilerUtil.continuationNameClass(template)), "continuation");
+        builder.addParameter(ClassName.get(packge, compilerUtil.processorNameClass(template)), "processor");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -128,7 +128,7 @@ public class CompilerSimpleBean {
             count++;
         }
 
-        builder.addStatement("return continuation." + loggerName + "(" + args + ")");
+        builder.addStatement("return processor.process("  + args + ")");
 
         return builder.build();
 

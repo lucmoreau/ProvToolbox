@@ -145,7 +145,7 @@ public class CompilerLogger {
             args = args + key;
             count++;
         }
-        builder.addStatement("return $N." + loggerName + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
+        builder.addStatement("return $N." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
 
 
         return builder.build();

@@ -43,7 +43,7 @@ public class ConfigProcessor {
     private final CompilerBuilderInit compilerBuilderInit;
 
     private final CompilerSimpleBean compilerSimpleBean;
-    private final CompilerContinuation compilerContinuation;
+    private final CompilerProcessor compilerProcessor;
     private final CompilerJsonSchema compilerJsonSchema;
     private final CompilerClientTest compilerClientTest;
 
@@ -54,7 +54,7 @@ public class ConfigProcessor {
         this.compilerBuilder= new CompilerBuilder(withMain,compilerClient,pFactory);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
-        this.compilerContinuation =new CompilerContinuation(pFactory);
+        this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
         this.compilerClientTest =new CompilerClientTest();
     }
@@ -241,7 +241,7 @@ public class ConfigProcessor {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bean=compilerUtil.beanNameClass(templateName);
-            String continuation=compilerUtil.continuationNameClass(templateName);
+            String processor=compilerUtil.processorNameClass(templateName);
 
             String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
             String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
@@ -250,7 +250,7 @@ public class ConfigProcessor {
             String destination2=destinationDir2 + bn + ".java";
             String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
-            String destination4=destinationDir2 + continuation + ".java";
+            String destination4=destinationDir2 + processor + ".java";
 
             JavaFile spec= compilerBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
             boolean val1=compilerUtil.saveToFile(destinationDir, destination, spec);
@@ -269,7 +269,7 @@ public class ConfigProcessor {
                 JavaFile spec3 = compilerSimpleBean.generateSimpleBean(doc, bean, templateName, packge + ".client", resource, bindings_schema);
                 val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
 
-                JavaFile spec4 = compilerContinuation.generateContinuation(doc, continuation, templateName, packge + ".client", resource, bindings_schema);
+                JavaFile spec4 = compilerProcessor.generateProcessor(doc, processor, templateName, packge + ".client", resource, bindings_schema);
                 val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
 

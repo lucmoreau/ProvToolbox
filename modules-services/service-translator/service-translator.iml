@@ -163,7 +163,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.resteasy:resteasy-client:4.3.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.resteasy:resteasy-client-api:4.3.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.resteasy:resteasy-core-spi:4.3.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: org.quartz-scheduler:quartz:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.2" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.11" level="project" />

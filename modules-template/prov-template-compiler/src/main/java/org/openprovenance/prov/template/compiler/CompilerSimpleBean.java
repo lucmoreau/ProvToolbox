@@ -105,15 +105,20 @@ public class CompilerSimpleBean {
 
     }
 
+    private TypeName processorClassType(String template, String packge) {
+        ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),TypeVariableName.get("T"));
+        return name;
+    }
+
     public MethodSpec generateInvokeProcessor(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("process")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(String.class);
+                .returns(TypeVariableName.get("T")).addTypeVariable(TypeVariableName.get("T"));
 
         final String loggerName = compilerUtil.loggerName(template);
 
-        builder.addParameter(ClassName.get(packge, compilerUtil.processorNameClass(template)), "processor");
+        builder.addParameter(processorClassType(template,packge), "processor");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");

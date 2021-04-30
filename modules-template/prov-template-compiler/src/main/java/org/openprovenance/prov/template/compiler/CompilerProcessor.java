@@ -41,7 +41,7 @@ public class CompilerProcessor {
     }
 
     public TypeSpec.Builder generateProcessorClassInit(String name, String packge, String supername) {
-        return TypeSpec.interfaceBuilder(name)
+        return TypeSpec.interfaceBuilder(name).addTypeVariable(TypeVariableName.get("T"))
               //  .addSuperinterface(ClassName.get(packge,supername))
                 .addModifiers(Modifier.PUBLIC);
     }

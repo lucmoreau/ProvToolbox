@@ -26,7 +26,7 @@ public class CompilerClient {
         return TypeSpec.classBuilder(builderName)
                 .addSuperinterface(ClassName.get(builderPackage,supername))
                 .addSuperinterface(ClassName.get(builderPackage,"SQL"))
-                .addSuperinterface(ClassName.get(processorPackage,processorName))  // implements Processor Interface
+                //.addSuperinterface(ClassName.get(processorPackage,processorName))  // implements Processor Interface
                 .addModifiers(Modifier.PUBLIC);
     }
 
@@ -62,7 +62,7 @@ public class CompilerClient {
 
 
         if (bindings_schema!=null) {
-            builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
+           // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateClientSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
 
@@ -72,6 +72,7 @@ public class CompilerClient {
             builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
 
+            builder.addField(generateField4aBeanConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
 
             builder.addField(FieldSpec.builder(hashmapType, "__successors")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
@@ -96,7 +97,7 @@ public class CompilerClient {
             }
 
         compilerSQL.generateSQLstatements(builder, allVars, allAtts, name, templateName, bindings_schema);
-        builder.addMethod(generateClientSQLMethod(allVars, allAtts, name, templateName, bindings_schema));
+        //builder.addMethod(generateClientSQLMethod(allVars, allAtts, name, templateName, bindings_schema));
 
         builder.addMethod(compilerSQL.generateClientSQLMethod2(allVars, allAtts, name, templateName, bindings_schema));
 
@@ -124,13 +125,13 @@ public class CompilerClient {
         return builder.build();
     }
 
-    public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-        return generateClientMethod_aux(allVars,allAtts,name,template, compilerUtil.loggerName(template),"process", bindings_schema);
-    }
+   // public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+    //    return generateClientMethod_aux(allVars,allAtts,name,template, compilerUtil.loggerName(template),"process", bindings_schema);
+  //  }
 
-    public MethodSpec generateClientSQLMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-        return generateClientMethod_aux(allVars,allAtts,name,template, compilerUtil.sqlName(template),compilerUtil.sqlName(template), bindings_schema);
-    }
+    //public MethodSpec generateClientSQLMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+ //       return generateClientMethod_aux(allVars,allAtts,name,template, compilerUtil.sqlName(template),compilerUtil.sqlName(template), bindings_schema);
+  //  }
 
     public MethodSpec generateClientMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String invoke, String loggerName, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
@@ -181,7 +182,7 @@ public class CompilerClient {
     }
 
     public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
-        final TypeName processorClassName = processorClassType(template, packge);
+        final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         MethodSpec.Builder builder = MethodSpec.methodBuilder("csvConverter")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -226,8 +227,39 @@ public class CompilerClient {
     }
 
 
+    private FieldSpec generateField4aBeanConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
+        TypeName myType=processorClassType(templateName,packge,ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
+        FieldSpec.Builder fbuilder=FieldSpec.builder(myType,"aBeanConverter",Modifier.FINAL, Modifier.PUBLIC);
+
+        JsonNode the_var = bindings_schema.get("var");
+
+        String args = "";
+        String args2 = "";
+
+        boolean first=true;
+        Iterator<String> iter = the_var.fieldNames();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            String newkey = "__" + key;
+            if (first) {
+                first=false;
+            } else {
+                args = args + ", ";
+                args2 = args2 + ", ";
+            }
+            args = args +  compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName() + " " + newkey;
+            args2=args2+ " " + newkey;
+
+        }
+        fbuilder.initializer(" (" + args + ") -> { return $N(" + args2 + "); }", "toBean");
+
+        return fbuilder.build();
+    }
+
+
+
     public MethodSpec generateClientSQLConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
-        final TypeName processorClassName = processorClassType(template, packge);
+        final TypeName processorClassName = processorClassType(template, packge, ClassName.get(String.class));
         MethodSpec.Builder builder = MethodSpec.methodBuilder("sqlConverter")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -284,8 +316,13 @@ public class CompilerClient {
         return method;
     }
 
-    private TypeName processorClassType(String template, String packge) {
+    private TypeName processorClassType(String template, String packge, ParameterizedTypeName parameterizedTypeName) {
         ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),ClassName.get(String.class));
+        return name;
+    }
+
+    private TypeName processorClassType(String template, String packge, ClassName cl) {
+        ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),cl);
         return name;
     }
 

@@ -145,7 +145,7 @@ public class CompilerLogger {
             args = args + key;
             count++;
         }
-        builder.addStatement("return $N." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
+        builder.addStatement("return $N.csvConverter()." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
 
 
         return builder.build();
@@ -177,8 +177,8 @@ public class CompilerLogger {
             args = args + key;
             count++;
         }
-        builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
-
+        //builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
+        builder.addStatement("return $N.aBeanConverter." + "process" +  "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
 
         return builder.build();
 

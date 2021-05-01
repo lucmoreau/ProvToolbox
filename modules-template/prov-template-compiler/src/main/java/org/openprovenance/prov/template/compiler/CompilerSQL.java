@@ -254,14 +254,14 @@ public class CompilerSQL {
                 builder.beginControlFlow("if ($N==null)", newName);
 
                 builder.nextControlFlow("else")
-                        .addStatement("$N.append($S)", var, "'");
+                        .addStatement("$N.append($S)", var, "\"");
 
                 if (doEscape) {
                     builder.addStatement(myEscapeStatement, var, ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), newName);
                 } else {
                     builder.addStatement(myStatement, var, newName);
                 }
-                builder.addStatement("$N.append($S)", var, "'")
+                builder.addStatement("$N.append($S)", var, "\"")
                         .endControlFlow();
             } else {
                 builder.beginControlFlow("if ($N==null)", newName);

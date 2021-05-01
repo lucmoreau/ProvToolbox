@@ -89,6 +89,11 @@ public class CompilerUtil {
         return TypeSpec.interfaceBuilder(name)
                 .addModifiers(Modifier.PUBLIC);
     }
+    public Builder generateInterfaceInitParameter(String name, String type) {
+        return TypeSpec.interfaceBuilder(name)
+                .addTypeVariable(TypeVariableName.get(type))
+                .addModifiers(Modifier.PUBLIC);
+    }
   
     public Builder generateClassBuilder3(String name) {
         return TypeSpec.classBuilder(name)

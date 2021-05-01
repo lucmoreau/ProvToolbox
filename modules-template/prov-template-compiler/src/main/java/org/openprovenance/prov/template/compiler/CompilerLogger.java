@@ -89,6 +89,14 @@ public class CompilerLogger {
                 .returns(String.class);
         builder.addMethod(builder4.build());
 
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(ConfigProcessor.RECORD_CSV_PROCESSOR_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
+                .returns(myType);
+        builder.addMethod(builder5.build());
+
 
         TypeSpec theInterface = builder.build();
 
@@ -145,7 +153,7 @@ public class CompilerLogger {
             args = args + key;
             count++;
         }
-        builder.addStatement("return $N.csvConverter()." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
+        builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name,ConfigProcessor.ARGS_CSV_CONVERSION_METHOD);
 
 
         return builder.build();
@@ -178,7 +186,7 @@ public class CompilerLogger {
             count++;
         }
         //builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
-        builder.addStatement("return $N.aBeanConverter." + "process" +  "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name);
+        builder.addStatement("return $N.$N." + "process" +  "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name, ConfigProcessor.A_ARGS_BEAN_CONVERTER);
 
         return builder.build();
 
@@ -200,4 +208,23 @@ public class CompilerLogger {
 
     }
 
+    public JavaFile generateProcessorArgsInterface(TemplatesCompilerConfig configs) {
+
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter("ProcessorArgsInterface", "T");
+
+        Object [] args=new Object[0];
+
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder("process")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(ArrayTypeName.get(args.getClass()),"args").build())
+                .returns(TypeVariableName.get("T"));
+        builder.addMethod(builder2.build());
+
+        TypeSpec theInterface = builder.build();
+
+        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
+                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by class generateProcessorArgsInterface()", getClass().getName(), configs.name)
+                .build();
+        return myfile;
+    }
 }

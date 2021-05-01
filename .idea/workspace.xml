@@ -11,6 +11,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,11 +129,11 @@
       <recent name="org.openprovenance.prov.core.serialization.Constants" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler.ConfigProcessor" />
       <recent name="org.openprovenance.prov.storage.mongodb.MongoCSVResourceStorage" />
       <recent name="org.openprovenance.prov.service.translation.ActionExpand" />
       <recent name="org.openprovenance.prov.storage.mongodb.mongoDbTest" />
       <recent name="org.openprovenance.prov.storage.mongodb.MongoNonDocumentResourceStorage" />
-      <recent name="org.openprovenance.prov.service.translation.memory.TemplateResourceInMemory" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.storage.mongodb" />
@@ -443,7 +446,7 @@
       <workItem from="1619374548816" duration="240000" />
       <workItem from="1619374883328" duration="590000" />
       <workItem from="1619439600746" duration="18729000" />
-      <workItem from="1619508281636" duration="63625000" />
+      <workItem from="1619508281636" duration="72318000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

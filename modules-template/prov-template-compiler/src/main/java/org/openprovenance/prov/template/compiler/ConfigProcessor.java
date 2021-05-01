@@ -24,9 +24,20 @@ public class ConfigProcessor {
     public static final String GET_SUCCESSOR_METHOD = "getSuccessors";
     public static final String GET_NAME = "getName";
     public static final String LOGGER_INTERFACE = "LoggerInterface";
+    public static final String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
     public static final String TESTER_FILE = "ExampleTest";
     public static final String GET_BUILDERS_METHOD = "getBuilders";
     public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
+
+    public static final String RECORD_CSV_PROCESSOR_METHOD  = "record2csv";
+    public static final String ARGS_CSV_CONVERSION_METHOD   = "args2csv";
+    public static final String BEAN_SQL_CONVERSION_METHOD   = "bean2sql";
+    public static final String A_BEAN_SQL_CONVERTER         = "aBean2SqlConverter";
+    public static final String A_ARGS_BEAN_CONVERTER        = "aArgs2BeanConverter";
+    public static final String A_ARGS_CSV_CONVERTER         = "aArgs2CsVConverter";
+    public static final String A_RECORD_BEAN_CONVERTER      = "aRecord2BeanConverter";
+    public static final String A_RECORD_CSV_CONVERTER       = "aRecord2CsvConverter";
+    public static final String A_RECORD_SQL_CONVERTER       = "aRecord2SqlConverter";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
 
@@ -169,6 +180,9 @@ public class ConfigProcessor {
 
         JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
         compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +LOGGER_INTERFACE+ ".java", intface2);
+
+        JavaFile intface3=compilerLogger.generateProcessorArgsInterface(configs);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + PROCESSOR_ARGS_INTERFACE+ ".java", intface3);
 
         exportMiscFiles(configs, cli_dir, cli_lib);
 

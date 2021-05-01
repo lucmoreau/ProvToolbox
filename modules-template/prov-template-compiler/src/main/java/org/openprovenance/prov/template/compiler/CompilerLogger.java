@@ -143,7 +143,6 @@ public class CompilerLogger {
         compilerUtil.generateSpecializedParameters(builder, the_var);
         compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
-
         int count = 1;
         Iterator<String> iter = the_var.fieldNames();
         String args = "";
@@ -154,11 +153,9 @@ public class CompilerLogger {
             count++;
         }
         builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name,ConfigProcessor.ARGS_CSV_CONVERSION_METHOD);
-
-
         return builder.build();
-
     }
+
     public MethodSpec generateStaticBeanMethod(TemplateCompilerConfig config) {
         final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
 

@@ -8,8 +8,7 @@ import javax.lang.model.element.Modifier;
 import java.util.*;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.A_RECORD_BEAN_CONVERTER;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.PROCESSOR_ARGS_INTERFACE;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerClient {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -58,7 +57,7 @@ public class CompilerClient {
 
     JavaFile generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
 
-        TypeSpec.Builder builder = generateClassInit(name, ConfigProcessor.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName),packge,"Builder");
+        TypeSpec.Builder builder = generateClassInit(name, ConfigProcessor.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName),packge, ConfigProcessor.BUILDER);
 
 
 
@@ -814,4 +813,15 @@ public class CompilerClient {
         return myfile;
     }
 
+    public MethodSpec clientAccessorGenerator(String templateName, String packge) {
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("getClientBuilder")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ClassName.get(ConfigProcessor.CLIENT_PACKAGE, BUILDER));
+
+        builder.addStatement("return new $T()", ClassName.get(packge,compilerUtil.templateNameClass(templateName)));
+
+        return builder.build();
+
+    }
 }

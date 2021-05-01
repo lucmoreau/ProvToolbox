@@ -38,6 +38,7 @@ public class ConfigProcessor {
     public static final String A_RECORD_BEAN_CONVERTER      = "aRecord2BeanConverter";
     public static final String A_RECORD_CSV_CONVERTER       = "aRecord2CsvConverter";
     public static final String A_RECORD_SQL_CONVERTER       = "aRecord2SqlConverter";
+    public static final String BUILDER = "Builder";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
 

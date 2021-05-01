@@ -61,6 +61,8 @@ public class CompilerBuilder {
 
         builder.addMethod(compilerClient.nameAccessorGenerator(templateName));
 
+        builder.addMethod(compilerClient.clientAccessorGenerator(templateName,packge+".client"));
+
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
 
         if (bindings_schema != null) {

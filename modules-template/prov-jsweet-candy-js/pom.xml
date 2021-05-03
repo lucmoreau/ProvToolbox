@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
 		<artifactId>modules-template</artifactId>
 		<groupId>org.openprovenance.prov</groupId>
-		<version>0.9.11-SNAPSHOT</version>
+		<version>0.9.11</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -103,9 +102,7 @@
 						<configuration>
 							<target>
 								<echo message="copying JavaScript lib to resources..." />
-								<copy file="bower_components/sprintf/dist/sprintf.min.js"
-									tofile="src/main/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js"
-									verbose="true" />
+								<copy file="bower_components/sprintf/dist/sprintf.min.js" tofile="src/main/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js" verbose="true" />
 							</target>
 						</configuration>
 						<goals>

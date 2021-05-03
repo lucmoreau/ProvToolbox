@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>modules-template</artifactId>
 		<groupId>org.openprovenance.prov</groupId>
-		<version>0.9.11-SNAPSHOT</version>
+		<version>0.9.11</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -87,7 +87,7 @@
 							<resources>
 								<resource>
 									<directory>${project.build.directory}/resources</directory>
-									<targetPath></targetPath>
+									<targetPath />
 									<excludes>
 										<exclude>**/junk/**</exclude>
 									</excludes>
@@ -106,12 +106,8 @@
 						<configuration>
 							<target>
 								<echo message="copying generated bundles to dist..." />
-								<copy
-									file="${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js"
-									tofile="dist/${project.artifactId}.js" verbose="true" />
-								<copy
-									file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts"
-									tofile="dist/${project.artifactId}.d.ts" verbose="true" />
+								<copy file="${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js" tofile="dist/${project.artifactId}.js" verbose="true" />
+								<copy file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts" tofile="dist/${project.artifactId}.d.ts" verbose="true" />
 							</target>
 						</configuration>
 						<goals>

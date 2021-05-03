@@ -43,7 +43,7 @@ class TemplateManager {
             bean[k] = v;
         });
         console.log(bean);
-        var csv = bean.invoke(builder);
+        var csv = bean.process(builder.aArgs2CsVConverter);
         return csv;
     }
 

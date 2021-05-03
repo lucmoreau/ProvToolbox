@@ -82,7 +82,7 @@ public class mongoJLDDocumentDbTest extends TestCase {
 
        // Template_blockBuilder maker=new Template_blockBuilder(org.openprovenance.prov.xml.ProvFactory.getFactory());
         Template_blockBuilder maker=new Template_blockBuilder(pf);
-        Document graph1=maker.make("op", "Adder", "john", "co1", 10, "co2", 20, "prod", "T", 30);
+        Document graph1=maker.make("op", "Adder", "john", "co1", "10", "co2", 20, "prod", "T", 30);
 
 
 

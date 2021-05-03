@@ -71,7 +71,7 @@ public class CompilerSQL {
 
             final String sqlType = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName());
 
-            res=res + "  " + key + " " + sqlType;
+            res=res + "  " + sqlify(key) + " " + sqlType;
 
 
             final JsonNode entry = the_var.path(key);
@@ -178,12 +178,24 @@ public class CompilerSQL {
             } else {
                 sb.append(", ");
             }
-            sb.append(key);
+            sb.append(sqlify(key));
             count++;
         }
 
         sb.append(")");
         return count;
+    }
+    
+    Map<String,String> nameMap=initNameMap();
+
+    private Map<String, String> initNameMap() {
+        Map<String,String> res=new HashMap<>();
+        res.put("order", "_order");
+        return res;
+    }
+
+    public String sqlify(String key) {
+        return nameMap.getOrDefault(key,key);
     }
 
 
@@ -252,7 +264,7 @@ public class CompilerSQL {
                     }
                 }
                 builder.beginControlFlow("if ($N==null)", newName);
-                builder.addStatement("$N.append($S)", var, "''");
+                builder.addStatement("$N.append($S)", var, "''"); // is it correct, or should it be null?
                 builder.nextControlFlow("else")
                         .addStatement("$N.append($S)", var, "'");
 
@@ -265,7 +277,7 @@ public class CompilerSQL {
                         .endControlFlow();
             } else {
                 builder.beginControlFlow("if ($N==null)", newName);
-                builder.addStatement("$N.append($S)", var, "''");
+                builder.addStatement("$N.append($S)", var, "''");  // is it correct, or should it be null?
                 builder.nextControlFlow("else");
                 builder.addStatement("$N.append($S)", var, constant);
                 builder.addStatement("$N.append($N)", var, newName);

@@ -252,7 +252,7 @@ public class CompilerSQL {
                     }
                 }
                 builder.beginControlFlow("if ($N==null)", newName);
-
+                builder.addStatement("$N.append($S)", var, "''");
                 builder.nextControlFlow("else")
                         .addStatement("$N.append($S)", var, "'");
 
@@ -265,6 +265,7 @@ public class CompilerSQL {
                         .endControlFlow();
             } else {
                 builder.beginControlFlow("if ($N==null)", newName);
+                builder.addStatement("$N.append($S)", var, "''");
                 builder.nextControlFlow("else");
                 builder.addStatement("$N.append($S)", var, constant);
                 builder.addStatement("$N.append($N)", var, newName);

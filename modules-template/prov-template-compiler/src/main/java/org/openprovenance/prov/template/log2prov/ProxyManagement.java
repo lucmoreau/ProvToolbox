@@ -3,11 +3,13 @@ package org.openprovenance.prov.template.log2prov;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ProxyManagement {
+
+    static boolean debug=false;
+
 
     public static class PassthroughInvocationHandler implements InvocationHandler {
 
@@ -23,11 +25,16 @@ public class ProxyManagement {
 
             Class<?>[] unknownInterfaces = unknownObject.getClass().getInterfaces();
             for (Class<?> localInterface : localInterfaces) {
+                boolean found=false;
                 for (Class<?> unknownInterface : unknownInterfaces) {
                     if (unknownInterface.getSimpleName().equals(localInterface.getSimpleName())) {
                         mapper.put(localInterface, unknownInterface);
+                        found=true;
                         break;
                     }
+                }
+                if (!found) { // backup option, use the remote object class as the counterpart for localInterface
+                    mapper.put(localInterface, unknownObject.getClass());
                 }
             }
 
@@ -47,9 +54,9 @@ public class ProxyManagement {
 
         @Override
         public Object invoke(Object proxy, Method lMethod, Object[] args) throws Throwable {
-            System.out.println("Calling invoke with lMethod " + lMethod);
+            if (debug) System.out.println("Calling invoke with lMethod " + lMethod);
             final Method rMethod = mMapper.get(lMethod);
-            System.out.println("Calling invoke with rMethod " + rMethod);
+            if (debug) System.out.println("Calling invoke with rMethod " + rMethod);
             return rMethod.invoke(unknownObject, args);
         }
     }

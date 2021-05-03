@@ -103,6 +103,7 @@ public class CompilerUtil {
     public Builder generateClassBuilder2(String name) {
         return TypeSpec.classBuilder(name)
                 .superclass(FileBuilder.class)
+                .addSuperinterface(ClassName.get(org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface.class))
                 .addModifiers(Modifier.PUBLIC)
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ValueConverter.class, "vc", Modifier.PRIVATE, Modifier.FINAL);

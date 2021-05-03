@@ -68,6 +68,8 @@ public class CompilerMaven {
 
         if (dependencies) {
 
+            addClientBuilderDependency(name.replace("l2p","cli"),configs.group,configs.version, model);
+
             addProvDependency("prov-model", model);
             addProvDependency("prov-n", model);
             //addProvDependency("prov-json", model);
@@ -104,6 +106,14 @@ public class CompilerMaven {
 
     public String getProvPackageId() {
         return "org.openprovenance.prov";
+    }
+
+    public void addClientBuilderDependency(String artifact, String group, String version, Model model) {
+        Dependency dep = new Dependency();
+        dep.setArtifactId(artifact);
+        dep.setGroupId(group);
+        dep.setVersion(version);
+        model.addDependency(dep);
     }
 
     public void addProvDependency(String artifact, Model model) {

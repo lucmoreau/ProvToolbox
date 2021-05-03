@@ -11,6 +11,6 @@ public interface ProxyClientInterface {
 
     String getName();
 
-    String make(Object[] objects);
+    //String make(Object[] objects);
 
 }

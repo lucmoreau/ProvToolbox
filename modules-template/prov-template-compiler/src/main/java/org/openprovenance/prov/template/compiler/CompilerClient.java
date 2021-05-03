@@ -190,6 +190,7 @@ public class CompilerClient {
 
     public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
+        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.ARGS_CSV_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -197,7 +198,7 @@ public class CompilerClient {
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add(loggerName + " client side logging method\n");
-        jdoc.add("@return $T\n" , processorClassName);
+        jdoc.add("@return $T\n" , processorClassNameNotParametrised);
         builder.addJavadoc(jdoc.build());
 
         JsonNode the_var = bindings_schema.get("var");
@@ -327,6 +328,7 @@ public class CompilerClient {
 
     public MethodSpec generateClientSQLConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
         final TypeName processorClassName = processorClassType(template, packge, ClassName.get(String.class));
+        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.BEAN_SQL_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
@@ -334,7 +336,7 @@ public class CompilerClient {
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add(loggerName + " client side logging method\n");
-        jdoc.add("@return $T\n" , processorClassName);
+        jdoc.add("@return $T\n" , processorClassNameNotParametrised);
         builder.addJavadoc(jdoc.build());
 
         JsonNode the_var = bindings_schema.get("var");
@@ -391,6 +393,10 @@ public class CompilerClient {
     private TypeName processorClassType(String template, String packge, ClassName cl) {
         ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),cl);
         return name;
+    }
+
+    private TypeName processorClassType(String template, String packge) {
+        return ClassName.get(packge,compilerUtil.processorNameClass(template));
     }
 
     public MethodSpec generateClientMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, boolean legacy) {

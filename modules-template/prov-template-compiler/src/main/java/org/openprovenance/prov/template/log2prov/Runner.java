@@ -1,9 +1,6 @@
 package org.openprovenance.prov.template.log2prov;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
 import org.openprovenance.prov.model.ProvFactory;
@@ -21,8 +18,9 @@ public class Runner {
         String in=args[0];
         String out=args[1];
         String flag=args[2];
-        if (debug) System.out.println("Start main"); 
-        new Runner(org.openprovenance.prov.vanilla.ProvFactory.getFactory()).processLogWithTime(in, out, flag);
+        String extra=(args.length>3)? args[3]: null;
+        if (debug) System.out.println("Start main");
+        new Runner(org.openprovenance.prov.vanilla.ProvFactory.getFactory()).processLogWithTime(in, out, flag, extra);
         if (debug) System.out.println("End main"); 
     }
 
@@ -31,16 +29,15 @@ public class Runner {
     final CompilerUtil cu=new CompilerUtil();
     
     
-    public void processLogWithTime(String in, String out, String flag) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void processLogWithTime(String in, String out, String flag, String extra) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         long currentTime1=System.currentTimeMillis();
-        long currentTime2=processLog(in, out, flag); 
+        long currentTime2=processLog(in, out, flag, extra);
         long currentTime3=System.currentTimeMillis();
         if (debug) System.out.println("Expand/merge time " + (currentTime2-currentTime1)); 
         if (debug) System.out.println("Save time         " + (currentTime3-currentTime2));
     }
 
-    public long processLog(String in, String out, String flag) throws FileNotFoundException,
-                                                               IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public long processLog(String in, String out, String flag, String extra) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         org.openprovenance.prov.model.IndexedDocument iDoc=new org.openprovenance.prov.model.IndexedDocument(pf,pf.newDocument(),true);
 
 
@@ -48,18 +45,34 @@ public class Runner {
         InputStream is= ("-".equals(in))? System.in: new FileInputStream(in);
 
         DocumentProcessor dp=null;
+        RecordProcessor rp=null;
         if ("-merge".equals(flag)) dp=new DocumentMergerProcessor(iDoc);
-        if ("-nomerge".equals(flag)) dp=new DocumentConcatenatorProcessor(pf.newDocument());;
-        if ("-discard".equals(flag)) dp=new DocumentDiscarderProcessor(pf.newDocument());;
+        if ("-nomerge".equals(flag)) dp=new DocumentConcatenatorProcessor(pf.newDocument());
+        if ("-discard".equals(flag)) dp=new DocumentDiscarderProcessor(pf.newDocument());
 
-        FileBuilder.reader(is,dp);
+        if ("-db".equals(flag)) rp=new RecordSQLProcessor(extra);
+        if ("-dbInit".equals(flag)) {
+            if (rp==null) rp=new RecordSQLProcessor(extra);
+            rp.initDb();
+        }
+
+        FileBuilder.reader(is,dp,rp);
 
         is.close();
 
 
 
         long currentTime2=System.currentTimeMillis();
-        cu.writeDocument(out,dp.getDocument());
+        if (dp!=null) cu.writeDocument(out,dp.getDocument());
+        if (rp!=null) {
+            if (extra!=null) {
+                final PrintWriter pw = new PrintWriter(new FileOutputStream(extra));
+                pw.println(rp.getDocument());
+                pw.close();
+            } else {
+                System.out.println(rp.getDocument());
+            }
+        }
         return currentTime2;
     }
 }

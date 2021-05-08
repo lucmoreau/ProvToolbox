@@ -13,6 +13,9 @@ var org;
                         static escapeJavaScript(format) {
                             return format;
                         }
+                        static escapeCsv(format) {
+                            return "\"" + format + "\"";
+                        }
                     }
                     lang.StringEscapeUtils = StringEscapeUtils;
                     StringEscapeUtils["__class"] = "org.openprovenance.apache.commons.lang.StringEscapeUtils";

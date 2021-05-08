@@ -203,9 +203,7 @@ public class CompilerClient {
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
-        String sb="sb";
         String var = "";
-        builder.addStatement("$T $N=new $T()", StringBuffer.class, sb, StringBuffer.class);
         builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
 
         String args = "";
@@ -227,7 +225,7 @@ public class CompilerClient {
 
         }
 
-        builder.addStatement("return (" + args + ") -> { $N.$N(sb," + args2 + "); return sb.toString(); }", "self",loggerName);
+        builder.addStatement("return (" + args + ") -> { $T sb=new $T();$N.$N(sb," + args2 + "); return sb.toString(); }", StringBuffer.class,StringBuffer.class, "self",loggerName);
 
         MethodSpec method = builder.build();
 
@@ -434,7 +432,7 @@ public class CompilerClient {
 
             if (String.class.equals(clazz)) {
                 String myStatement = "$N.append($N)";
-                String myEscapeStatement = "$N.append($T.escapeJavaScript($N))";
+                String myEscapeStatement = "$N.append($T.escapeCsv($N))";
                 boolean doEscape=false;
                 if (!isQualifiedName) {
                     doEscape = the_var.get(key).get(0).get(0).get("@escape") != null;
@@ -446,16 +444,14 @@ public class CompilerClient {
                 if (legacy) {
                     builder.addStatement("$N.append($N)", var, newName);  // in legacy format, we insert a null
                 }
-                builder.nextControlFlow("else")
-                        .addStatement("$N.append($S)", var, "\"");
+                builder.nextControlFlow("else");
 
                 if (doEscape) {
                     builder.addStatement(myEscapeStatement, var, ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), newName);
                 } else {
                     builder.addStatement(myStatement, var, newName);
                 }
-                builder.addStatement("$N.append($S)", var, "\"")
-                        .endControlFlow();
+                builder.endControlFlow();
             } else {
                 builder.beginControlFlow("if ($N==null)", newName);
                 builder.nextControlFlow("else");

@@ -47,28 +47,50 @@ class TemplateManager {
         return csv;
     }
 
+    defaultSubmitFunction(myself, template, location) {
+        return function (errors, values) {
+            console.log(values);
+            var csv = myself.populateBean(template, values);
+            console.log(csv);
+            var adiv= $('<div>');
+            adiv.append('<p>' + csv + '</p>')
+            if (errors) {
+                adiv.append('<p>Reported errors:</p>')
+                adiv.append(errors)
+            }
+            $(location).html(adiv);
+        }
+    }
+
     createFormConfig(jsonSchema, template) {
         const myself = this;
+        let onSubmit = this.defaultSubmitFunction(myself, template,'#result');
         let schemaDef = jsonSchema.definitions[template]
         let required = [];
         $.each(schemaDef.required, function (i, s) {
-            required.push(s);
+            required.push({
+                "key": s,
+                "onChange": function (evt) {
+                    var value = $(evt.target).val();
+                    if (value) {
+                        console.log (s + ": " + value);
+                        let values=$('form').jsonFormValue();
+                        console.log(values)
+                        onSubmit(undefined,values);
+                    }
+                }
+            });
         });
         required.push({
             "type": "submit",
             "title": "Submit"
         });
-        console.log(schemaDef);
-        console.log(required)
+        //console.log(schemaDef);
+        //console.log(required)
         var config = {};
         config.schema = schemaDef;
         config.form = required;
-        config.onSubmit = function (errors, values) {
-            console.log(values);
-            var csv = myself.populateBean(template, values);
-            console.log(csv);
-            $('#result').html('<p>' + csv + '</p>');
-        };
+        config.onSubmit = onSubmit;
         config.params = {
             "fieldHtmlClass": "input-small"
         };
@@ -96,13 +118,10 @@ class TemplateManager {
         $(id).append(menu);
     }
 
-
-
-
     updateForm(key) {
         console.log("update form " + key)
-        console.log(this.jsonSchema)
         var config = this.createFormConfig(this.jsonSchema, key);
+        console.log(config)
         $('form').jsonForm(config);
     }
 

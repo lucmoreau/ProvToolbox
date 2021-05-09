@@ -8,12 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/dist/prov-jsweet-candy-java.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/dist/prov-jsweet-candy-java.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/dist/prov-jsweet-candy-java.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/dist/prov-jsweet-candy-java.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java/org/openprovenance/apache/commons/lang/StringEscapeUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java/org/openprovenance/apache/commons/lang/StringEscapeUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -456,7 +453,7 @@
       <workItem from="1620238896898" duration="2376000" />
       <workItem from="1620328127838" duration="2934000" />
       <workItem from="1620470798276" duration="211000" />
-      <workItem from="1620471091798" duration="5035000" />
+      <workItem from="1620471091798" duration="10679000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

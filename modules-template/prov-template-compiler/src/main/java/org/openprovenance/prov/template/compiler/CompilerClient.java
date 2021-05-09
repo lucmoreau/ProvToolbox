@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
+import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
 
 import javax.lang.model.element.Modifier;
@@ -419,7 +420,7 @@ public class CompilerClient {
 
         iter = the_var.fieldNames();
 
-        String constant = (legacy? "[\"" : "\"") + template + "\"";
+        String constant = (legacy? "[" : "") + StringEscapeUtils.escapeCsv(template);
         while (iter.hasNext()) {
             String key = iter.next();
             final String newName = "__" + key;

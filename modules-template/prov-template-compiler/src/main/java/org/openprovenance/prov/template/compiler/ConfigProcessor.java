@@ -32,7 +32,8 @@ public class ConfigProcessor {
     public static final String RECORD_CSV_PROCESSOR_METHOD  = "record2csv";
     public static final String ARGS_CSV_CONVERSION_METHOD   = "args2csv";
     public static final String BEAN_SQL_CONVERSION_METHOD   = "bean2sql";
-    public static final String ARGS2RECORD_CONVERTER    = "aArgs2RecordConverter";
+    public static final String PROCESSOR_CONVERTER          = "processorConverter";
+    public static final String ARGS2RECORD_CONVERTER        = "aArgs2RecordConverter";
     public static final String A_BEAN_SQL_CONVERTER         = "aBean2SqlConverter";
     public static final String A_ARGS_BEAN_CONVERTER        = "aArgs2BeanConverter";
     public static final String A_ARGS_CSV_CONVERTER         = "aArgs2CsVConverter";

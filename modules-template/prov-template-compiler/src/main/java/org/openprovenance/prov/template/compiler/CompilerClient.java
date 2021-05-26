@@ -542,7 +542,9 @@ public class CompilerClient {
             if (converter2 == null) {
                 expression = "(" + type + ") record[" + count + "]";
             } else {
-                expression = "(record[" + count + "]==null)?0:" + converter2 + "((String)(record[" + count + "]))";
+                //expression = "(record[" + count + "]==null)?0:" + converter2 + "((String)(record[" + count + "]))";
+                expression= "(record[" + count + "]==null)?0:((record[" + count + "] instanceof String)?" + converter2 + "((String)(record[" + count + "])):(" + type + ")(record[" + count + "]))";
+
             }
             args = args + type + " " + newkey;
             args2=args2+ " " + expression;
@@ -906,8 +908,8 @@ public class CompilerClient {
                 String statement = "bean.$N=($T) record[" + count + "]";
                 builder.addStatement(statement, key, declaredJavaType);
             } else {
-                String statement = "bean.$N=(record[" + count + "]==null)?0:$N((String)(record[" + count + "]))";
-                builder.addStatement(statement, key, converter2);
+                String statement = "bean.$N=(record[" + count + "]==null)?0:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
+                builder.addStatement(statement, key, converter2, declaredJavaType);
             }
             if (count > 1) args = args + ", ";
             args = args + key;

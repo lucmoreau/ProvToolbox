@@ -45,14 +45,13 @@
 </div>
 </body>
 <script>
-    let schemaUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/schema/schema.json";
-    let docUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/html/doc.html";
-    const logger=new org.example.templates.client.Logger();
 
-    const templateManager=new TemplateManager(logger,schemaUrl,docUrl);
+    var schemaUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/schema/schema.json";
+    var docUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/html/doc.html";
+    var logger = new org.example.templates.client.Logger();
+
+    var templateManager = new TemplateManager(logger, schemaUrl, docUrl);
     templateManager.createDropdownForDocumentation("#template-dropdown-documentation", "templateManager");
-
-
 
 
 

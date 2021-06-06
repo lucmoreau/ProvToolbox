@@ -64,13 +64,13 @@ public class CompilerJsonSchema {
         Map<String, Object> properties = new HashMap<String, Object>();
         aSchema.put("properties", properties);
 
-        List<String> required=new LinkedList<>();
-        required.add("isA");
+        List<String> requiredProperties=new LinkedList<>();
+        requiredProperties.add("isA");
 
 
         while (iter.hasNext()) {
             String key = iter.next();
-            required.add(key);
+            requiredProperties.add(key);
             Map<String, Object> atype = new HashMap<String, Object>();
             atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
             atype.put("title", title(key));
@@ -110,7 +110,7 @@ public class CompilerJsonSchema {
         jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^template_block$"))); // Luc Allow more templates
 
 
-        aSchema.put("required", required);
+        aSchema.put("required", requiredProperties);
         aSchema.put("additionalProperties", false);
         ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).put(templateName, aSchema);
 

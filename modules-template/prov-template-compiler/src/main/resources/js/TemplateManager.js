@@ -15,7 +15,7 @@
  * let schemaUrl = "http://domainname/webjars/MODULE/VERSION/schema/schema.json";
  * const logger = new your.application.path.Logger();
 
- * const templateManagerVariableName = new TemplateManager(logger, schemaUrl);
+ * const templateManagerVariableName = new TemplateManager(logger, schemaUrl, docurl, profile);
  * templateManagerVariableName.createDropdown("#template-dropdown", "templateManagerVariableName");
  *
  */
@@ -23,7 +23,7 @@
 
 
 class TemplateManager {
-    constructor(logger, schemaUrl, docUrl) {
+    constructor(logger, schemaUrl, docUrl, profileValue) {
         this.logger = logger;
         this.schemaUrl = schemaUrl;
         this.builders = logger.getBuilders();
@@ -31,9 +31,20 @@ class TemplateManager {
         this.jsonSchema = 0;
         this.builderTable = this.initializeBuilderTable();
         this.loadSchemaFile();
+        this.docUrl=docUrl;
         if (docUrl) this.loadDocumentationFile();
         this.documentationSnippets={};
+        this.profile=profileValue;
+        console.log(this.profile);
+        this.csv_result='#csv_result';
 
+    }
+
+    setCsvResult(location) {
+        this.csv_result=location;
+    }
+    setJsonResult(location) {
+        this.json_result=location;
     }
 
     populateBean(template, values) {
@@ -44,42 +55,70 @@ class TemplateManager {
         });
         console.log(bean);
         var csv = bean.process(builder.aArgs2CsVConverter);
-        return csv;
+        values["isA"]=builder.getName();
+        return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
-    defaultSubmitFunction(myself, template, location) {
+    defaultSubmitFunction(myself, template, csv_location, json_location) {
         return function (errors, values) {
             console.log(values);
-            var csv = myself.populateBean(template, values);
+            let csv_bean = myself.populateBean(template, values);
+            let csv=csv_bean[0];
+            let bean=csv_bean[1];
+            let name=bean["isA"];
             console.log(csv);
-            var adiv= $('<div>');
-            adiv.append('<p>' + csv + '</p>')
-            if (errors) {
-                adiv.append('<p>Reported errors:</p>')
-                adiv.append(errors)
+            if (csv_location) {
+                let csv_div = $('<div>');
+                csv_div.append('<p>' + csv + '</p>')
+                if (errors) {
+                    csv_div.append('<p>Reported errors:</p>')
+                    csv_div.append(errors)
+                }
+                $(csv_location).html(csv_div);
             }
-            $(location).html(adiv);
+
+            if (json_location) {
+                let json_div = $('<div>');
+                json_div.append('<p>' + myself.syntaxHighlight_json(JSON.stringify(bean, null, 2), name) + '</p>');
+                if (errors) {
+                    json_div.append('<p>Reported errors:</p>')
+                    json_div.append(errors)
+                }
+                $(json_location).html(json_div);
+            }
         }
     }
 
     createFormConfig(jsonSchema, template) {
         const myself = this;
-        let onSubmit = this.defaultSubmitFunction(myself, template,'#result');
+        let onSubmit = this.defaultSubmitFunction(myself, template,this.csv_result,this.json_result);
         let schemaDef = jsonSchema.definitions[template]
         let required = [];
-        $.each(schemaDef.required, function (i, s) {
-            required.push({
-                "key": s,
-                "onChange": function (evt) {
-                    var value = $(evt.target).val();
-                    if (value) {
-                        console.log (s + ": " + value);
-                        let values=$('form').jsonFormValue();
-                        console.log(values)
-                        onSubmit(undefined,values);
+        let myprofile;
+        if (this.profile) {
+            myprofile = this.profile[template];
+            if (!myprofile) {
+                myprofile="ALL";
+            }
+        } else {
+            myprofile = "ALL";
+        }
+        console.log(myprofile);
+        $.each(schemaDef.required, function (i, property) {
+            if (myprofile==="ALL" || myprofile.includes(property)) {
+                required.push({
+                    "key": property,
+                    "onChange": function (evt) {
+                        var value = $(evt.target).val();
+                        if (value) {
+                            console.log(property + ": " + value);
+                            let values = $('form').jsonFormValue();
+                            console.log(values)
+                            onSubmit(undefined, values);
+                        }
                     }
-                }
-            });
+                });
+            }
         });
         required.push({
             "type": "submit",
@@ -119,7 +158,8 @@ class TemplateManager {
     }
 
     updateForm(key) {
-        console.log("update form " + key)
+        console.log("update form " + key);
+        this.clearForm();
         var config = this.createFormConfig(this.jsonSchema, key);
         console.log(config)
         $('form').jsonForm(config);
@@ -144,7 +184,7 @@ class TemplateManager {
 
     loadSchemaFile() {
         const myself = this;
-        $.getJSON(schemaUrl,
+        $.getJSON(this.schemaUrl,
             function (schemaFile) {
                 myself.updateSchemaFile(schemaFile);
 
@@ -155,7 +195,7 @@ class TemplateManager {
 
     loadDocumentationFile() {
         const myself = this;
-        $.get(docUrl, function(html_string) {
+        $.get(this.docUrl, function(html_string) {
             $('#tmp_div').html(html_string)
             $.each(myself.names, function(i, k) {
                 myself.documentationSnippets[k]=$("#template_" + k).html();
@@ -184,5 +224,41 @@ class TemplateManager {
         console.log("documentation " + template);
         $('#documentation').html(this.documentationSnippets[template]);
     }
+
+
+    syntaxHighlight_json(json, name) {
+        if (typeof json != 'string') {
+            json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            if (cls==='key') {
+                if (/^"(wasGeneratedBy|prov:)|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|type|\$|actedOnBehalfOf/.test(match)) {
+                    cls='provkeyword';
+                } else if (/^"isA/.test(match)) {
+                    cls='isA';
+                } else {
+                    let regex=new RegExp('^"' + name);
+                    if (regex.test(match)) {
+                        cls='isA';
+                    }
+                }
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
 }
 

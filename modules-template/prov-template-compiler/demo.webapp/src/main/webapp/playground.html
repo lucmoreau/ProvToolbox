@@ -39,17 +39,21 @@
 
         <div class="col-sm-3">
             <h4>CSV encoding</h4>
-            <div id="result"></div>
+            <div id="csv_result"></div>
         </div>
     </div>
 
 </div>
 </body>
 <script>
-    let schemaUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/schema/schema.json";
-    const logger=new org.example.templates.client.Logger();
+    var schemaUrl = "http://localhost:7070/webjars/templates_cli/0.1.0/schema/schema.json";
+    var logger=new org.example.templates.client.Logger();
 
-    const templateManager=new TemplateManager(logger,schemaUrl);
+    var profile = {
+        "template_block": ["isA", "operation", "operation_type", "agent", "consumed1", "consumed_value1", "consumed2", "consumed_value2"]
+    };
+
+    var templateManager=new TemplateManager(logger,schemaUrl, false, profile);
     templateManager.createDropdownForPlayground("#template-dropdown-playground", "templateManager");
 
 </script>

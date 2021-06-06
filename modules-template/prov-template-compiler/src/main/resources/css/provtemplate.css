@@ -34,3 +34,24 @@
 div.invisible_div {        /* this will hide div with id div_id_name */
     display:none;
 }
+
+pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+.pretty .string { color: green; }
+.pretty .uri { color: darkolivegreen; }
+.pretty .number { color: darkorange; }
+.pretty .boolean { color: blue; }
+.pretty .isA { color: blue; }
+.pretty .symbol { color: blue; }
+.pretty .indent { color: #23ff51; }
+.pretty .null { color: magenta; }
+.pretty .operator { color: red; }
+.pretty .key { color: red; }
+.pretty .date { color: red; }
+.pretty .feature { color: saddlebrown; }
+.pretty .attribute { color: skyblue; }
+.pretty .category { color: green; }
+.pretty .provkeyword { color: saddlebrown; }
+.pretty .querykeyword { color: coral;  font-weight: bold; }
+.pretty .phrasekeyword { color: coral;  font-weight: bold; }
+.pretty .snlgkeyword { color: saddlebrown; font-weight: bold; }
+.pretty .templatekeyword { color: royalblue; font-weight: bold; text-decoration: underline; font-variant: small-caps;}

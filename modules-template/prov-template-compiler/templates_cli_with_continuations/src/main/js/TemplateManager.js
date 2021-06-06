@@ -15,7 +15,7 @@
  * let schemaUrl = "http://domainname/webjars/MODULE/VERSION/schema/schema.json";
  * const logger = new your.application.path.Logger();
 
- * const templateManagerVariableName = new TemplateManager(logger, schemaUrl);
+ * const templateManagerVariableName = new TemplateManager(logger, schemaUrl, docUrl, profile);
  * templateManagerVariableName.createDropdown("#template-dropdown", "templateManagerVariableName");
  *
  */

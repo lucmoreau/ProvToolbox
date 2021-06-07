@@ -37,7 +37,6 @@ class TemplateManager {
         this.profile=profileValue;
         console.log(this.profile);
         this.csv_result='#csv_result';
-
     }
 
     setCsvResult(location) {
@@ -45,6 +44,12 @@ class TemplateManager {
     }
     setJsonResult(location) {
         this.json_result=location;
+    }
+    setBean(bean) {
+        this.bean=bean;
+    }
+    getBean() {
+        return this.bean;
     }
 
     populateBean(template, values) {
@@ -58,6 +63,8 @@ class TemplateManager {
         values["isA"]=builder.getName();
         return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
+
+
 
     defaultSubmitFunction(myself, template, csv_location, json_location) {
         return function (errors, values) {
@@ -79,6 +86,7 @@ class TemplateManager {
 
             if (json_location) {
                 let json_div = $('<div>');
+                myself.setBean(bean);
                 json_div.append('<p>' + myself.syntaxHighlight_json(JSON.stringify(bean, null, 2), name) + '</p>');
                 if (errors) {
                     json_div.append('<p>Reported errors:</p>')
@@ -91,7 +99,7 @@ class TemplateManager {
 
     createFormConfig(jsonSchema, template) {
         const myself = this;
-        let onSubmit = this.defaultSubmitFunction(myself, template,this.csv_result,this.json_result);
+        let onSubmit = this.defaultSubmitFunction(myself, template, this.csv_result, this.json_result);
         let schemaDef = jsonSchema.definitions[template]
         let required = [];
         let myprofile;
@@ -105,7 +113,11 @@ class TemplateManager {
         }
         console.log(myprofile);
         $.each(schemaDef.required, function (i, property) {
-            if (myprofile==="ALL" || myprofile.includes(property)) {
+            let compulsory=myprofile.compulsory.includes(property)
+            if (myprofile==="ALL" || compulsory || myprofile.optional.includes(property)) {
+                if (compulsory) {
+                    schemaDef.properties[property].required=true;  // updates schema, and make property mandatory
+                }
                 required.push({
                     "key": property,
                     "onChange": function (evt) {
@@ -238,7 +250,12 @@ class TemplateManager {
                     cls = 'key';
                 } else {
                     cls = 'string';
+                    let regex=new RegExp('^"' + name);
+                    if (regex.test(match)) {
+                        cls='isA';
+                    }
                 }
+		
             } else if (/true|false/.test(match)) {
                 cls = 'boolean';
             } else if (/null/.test(match)) {
@@ -249,11 +266,6 @@ class TemplateManager {
                     cls='provkeyword';
                 } else if (/^"isA/.test(match)) {
                     cls='isA';
-                } else {
-                    let regex=new RegExp('^"' + name);
-                    if (regex.test(match)) {
-                        cls='isA';
-                    }
                 }
             }
             return '<span class="' + cls + '">' + match + '</span>';

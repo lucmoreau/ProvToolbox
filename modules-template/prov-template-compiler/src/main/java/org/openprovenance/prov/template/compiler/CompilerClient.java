@@ -79,6 +79,8 @@ public class CompilerClient {
             builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateClientMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
 
+            builder.addField(generateField4VarArray(allVars,allAtts,name,templateName,packge, bindings_schema));
+
             builder.addField(generateField4aBeanConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
             builder.addField(generateField4aBeanConverter2(allVars,allAtts,name,templateName,packge, bindings_schema));
             builder.addField(generateField4aSQLConverter2(allVars,allAtts,name,templateName,packge, bindings_schema));
@@ -267,6 +269,30 @@ public class CompilerClient {
 
         return fbuilder.build();
     }
+
+    private FieldSpec generateField4VarArray(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
+
+        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), "propertyOrder", Modifier.PUBLIC);
+
+        JsonNode the_var = bindings_schema.get("var");
+
+        String args = "";
+        String args2 = "new String[] { \"isA\" ";
+
+        Iterator<String> iter = the_var.fieldNames();
+        while (iter.hasNext()) {
+            String key = iter.next();
+
+            args2 = args2 + ", ";
+
+            args2=args2+ " " + "\""+ key+"\"";
+
+        }
+        fbuilder.initializer(args2 + "}");
+
+        return fbuilder.build();
+    }
+
 
 
 

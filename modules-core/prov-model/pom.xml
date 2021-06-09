@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-core</artifactId>
-        <version>0.9.14</version>
+        <version>0.9.15-SNAPSHOT</version>
     </parent>
     <artifactId>prov-model</artifactId>
     <name> |---- PROV-MODEL</name>

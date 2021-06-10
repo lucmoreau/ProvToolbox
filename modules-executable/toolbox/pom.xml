@@ -151,7 +151,7 @@
                         </program>
 
                     </programs>
-                    <repositoryLayout>default</repositoryLayout>
+                    <repositoryLayout>flat</repositoryLayout>
                     <repositoryName>repo</repositoryName>
                     <platforms>
                         <platform>windows</platform>

@@ -17,3 +17,7 @@ before_install:
  - sudo npm install -g ajv
  - sudo gem install rdf -v 3.0.13
  - sudo gem install json-ld -v 3.0.2
+
+cache:
+  directories:
+  - $HOME/.m2

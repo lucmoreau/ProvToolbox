@@ -47,21 +47,25 @@ public class RoundTripFromJsonTest extends TestCase {
 				 doc1, true);
     }
 
-    
-    private void testIssue(String issueName) throws Throwable {
-	loadFromJsonSaveAndReload("issues/" + issueName + ".json", true);
-    }
-    
 
-  
-    public void testBundles() throws Throwable {
-	testIssue("issue96");
-	testIssue("issue96-b");
-	testIssue("issue");
-	testIssue("issue2");
-	testIssue("issue3");
-	testIssue("issue4");
-	testIssue("issue5");
-    }
+	private void testIssue(String issueName) throws Throwable {
+		loadFromJsonSaveAndReload("issues/" + issueName + ".json", true);
+	}
+
+
+
+	public void testBundles() throws Throwable {
+		testIssue("issue96");
+		testIssue("issue96-b");
+		testIssue("issue");
+		testIssue("issue2");
+		testIssue("issue3");
+		testIssue("issue4");
+		testIssue("issue5");
+	}
+
+	public void testQualifiedTerm() throws Throwable {
+    	testIssue("issue174");
+	}
 
 }

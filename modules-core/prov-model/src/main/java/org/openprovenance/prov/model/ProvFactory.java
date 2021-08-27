@@ -924,7 +924,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		QualifiedHadMember res=of.createQualifiedHadMember();
 		res.setId(id);
 		res.setCollection(c);
-		res.getEntity().addAll(e);
+		if (e!=null) res.getEntity().addAll(e);
 		return res;
 	}
 

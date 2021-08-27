@@ -1,8 +1,12 @@
 package org.openprovenance.prov.json;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
+import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.xml.UncheckedTestException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -103,6 +107,24 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.xml.RoundTrip
 	    } catch (ProcessingException e) {
 		System.err.println("Parsing failed: " + e.getMessage());
 	    }
-	}	
-	
+	}
+
+	public void testQualifiedSpecialization1() {
+		QualifiedSpecializationOf spe = pFactory.newQualifiedSpecializationOf(null,q("e2"), q("e1"),null);
+		addFurtherAttributes(spe);
+		makeDocAndTest(spe, "target/qualifiedspecialization1");
+	}
+
+	public void testQualifiedAlternate1() {
+		QualifiedAlternateOf alt = pFactory.newQualifiedAlternateOf(null,q("e2"), q("e1"),null);
+		addFurtherAttributes(alt);
+		makeDocAndTest(alt, "target/qualifiedalternate1");
+	}
+	public void testQualifiedHadMember1() {
+		QualifiedHadMember mem = pFactory.newQualifiedHadMember(null,q("e2"), Collections.singleton(q("e1")),null);
+		addFurtherAttributes(mem);
+		makeDocAndTest(mem, "target/qualifiedmember1");
+	}
+
+
 }

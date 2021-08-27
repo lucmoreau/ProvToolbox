@@ -8,9 +8,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/test/resources/issues/issue174.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.15-SNAPSHOT/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.15-SNAPSHOT/bundle.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.15-SNAPSHOT/bundle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvDocumentDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvDocumentDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvJSONStatement.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/java/org/openprovenance/prov/json/ProvJSONStatement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-json/src/test/java/org/openprovenance/prov/json/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/test/java/org/openprovenance/prov/json/RoundTripFromJavaTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-json/src/test/java/org/openprovenance/prov/json/RoundTripFromJsonTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/test/java/org/openprovenance/prov/json/RoundTripFromJsonTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +78,18 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="JPA Structure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="JPA Structure" value="false" />
+      </map>
+    </option>
   </component>
   <component name="JsBowerSettings">
     <bower-package value="" />
@@ -157,28 +180,7 @@
       <recent name="org.openprovenance.prov.benchmarks" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ProxyTest.testProxy1">
-    <configuration name="createdb.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
-      <script-file value="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/sql/createdb.sql" />
-      <script-mode>FILE</script-mode>
-      <data-source id="820a477f-bd9d-4d45-ab36-64f49317b635" />
-      <method v="2" />
-    </configuration>
-    <configuration name="IT" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-translator" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator.roundtrip" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.roundtrip.IT" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.RoundTripFromJsonTest.testQualifiedTerm">
     <configuration name="ProxyTest.testProxy1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-template-compiler" />
       <extension name="coverage">
@@ -206,6 +208,37 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.QualifiedNameTest" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJavaTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-json" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.json.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.json.RoundTripFromJavaTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoundTripFromJsonTest.testQualifiedTerm" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-json" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.json.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.json.RoundTripFromJsonTest" />
+      <option name="METHOD_NAME" value="testQualifiedTerm" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -241,20 +274,20 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Database Script.createdb.sql" />
-      <item itemvalue="JUnit.IT" />
       <item itemvalue="JUnit.ProxyTest.testProxy1" />
       <item itemvalue="JUnit.QualifiedNameTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
       <item itemvalue="ScalaTest.ParserSpec" />
+      <item itemvalue="JUnit.RoundTripFromJavaTest" />
+      <item itemvalue="JUnit.RoundTripFromJsonTest.testQualifiedTerm" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.RoundTripFromJsonTest.testQualifiedTerm" />
+        <item itemvalue="JUnit.RoundTripFromJavaTest" />
         <item itemvalue="ScalaTest.ParserSpec" />
         <item itemvalue="JUnit.QualifiedNameTest" />
         <item itemvalue="JUnit.ProxyTest.testProxy1" />
-        <item itemvalue="JUnit.IT" />
-        <item itemvalue="Database Script.createdb.sql" />
       </list>
     </recent_temporary>
   </component>
@@ -469,6 +502,33 @@
       <workItem from="1623086275638" duration="5856000" />
       <workItem from="1623168480000" duration="1198000" />
       <workItem from="1623264201808" duration="2051000" />
+      <workItem from="1623740497658" duration="597000" />
+      <workItem from="1623752793209" duration="596000" />
+      <workItem from="1624259371439" duration="569000" />
+      <workItem from="1624560037536" duration="1116000" />
+      <workItem from="1624985469421" duration="2337000" />
+      <workItem from="1625077935366" duration="4514000" />
+      <workItem from="1625225504959" duration="4566000" />
+      <workItem from="1625501521419" duration="2384000" />
+      <workItem from="1625602113466" duration="588000" />
+      <workItem from="1625671086885" duration="596000" />
+      <workItem from="1625692917383" duration="8144000" />
+      <workItem from="1625917779537" duration="8261000" />
+      <workItem from="1626419393857" duration="596000" />
+      <workItem from="1626893321776" duration="3877000" />
+      <workItem from="1627798753423" duration="6183000" />
+      <workItem from="1627857935350" duration="595000" />
+      <workItem from="1627914685686" duration="284000" />
+      <workItem from="1627919554186" duration="2900000" />
+      <workItem from="1628186813741" duration="5998000" />
+      <workItem from="1628855076484" duration="669000" />
+      <workItem from="1628855890581" duration="612000" />
+      <workItem from="1628856754653" duration="591000" />
+      <workItem from="1628958691242" duration="1785000" />
+      <workItem from="1629456705403" duration="727000" />
+      <workItem from="1629820781995" duration="598000" />
+      <workItem from="1629875784263" duration="3681000" />
+      <workItem from="1630053818059" duration="5319000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -511,6 +571,17 @@
     </ignored-roots>
     <MESSAGE value="First cut of json-ld serialisation for activities" />
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java</url>
+          <line>134</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

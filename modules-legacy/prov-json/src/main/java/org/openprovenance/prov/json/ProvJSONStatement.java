@@ -22,5 +22,8 @@ enum ProvJSONStatement {
 	bundle,
 	derivedByInsertionFrom,
 	derivedByRemovalFrom,
-	hadDictionaryMember
+	hadDictionaryMember,
+	provext_specializationOf,
+	provext_alternateOf,
+	provext_hadMember
 }

@@ -3,8 +3,10 @@
     <output-path>$PROJECT_DIR$/modules-services/service-translator/target</output-path>
     <properties id="maven-jee-properties">
       <options>
+        <exploded>false</exploded>
         <module>service-translator</module>
         <packaging>war</packaging>
+        <unpackNestedArchives>false</unpackNestedArchives>
       </options>
     </properties>
     <root id="archive" name="service-translator-0.9.15-SNAPSHOT.war">

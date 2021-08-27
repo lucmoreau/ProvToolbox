@@ -127,6 +127,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		return statements;
 	}
 
+
 	@SuppressWarnings("unchecked")
 	private StatementOrBundle decodeStatement(String statementType,
 											  String idStr,
@@ -134,7 +135,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		StatementOrBundle statement;
 		QualifiedName id;
 
-		ProvJSONStatement provStatement = ProvJSONStatement.valueOf(statementType);
+		ProvJSONStatement provStatement = ProvJSONStatement.valueOf(provextAdapt(statementType));
 		switch (provStatement) {
 			case bundle: {
 				id=null; //we will deal with it later, when we have setup the namespace for the bundle
@@ -176,6 +177,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				QualifiedName alternate1 = optionalQualifiedName("prov:alternate1", attributeMap);
 				QualifiedName alternate2 = optionalQualifiedName("prov:alternate2", attributeMap);
 				statement = pf.newAlternateOf(alternate1, alternate2);
+				break;
+			case provext_alternateOf:
+				alternate1 = optionalQualifiedName("prov:alternate1", attributeMap);
+				alternate2 = optionalQualifiedName("prov:alternate2", attributeMap);
+				statement = pf.newQualifiedAlternateOf(null,alternate1, alternate2,null);
 				break;
 			case wasAssociatedWith:
 				QualifiedName activity = optionalQualifiedName("prov:activity", attributeMap);
@@ -280,6 +286,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				//membership.getEntity().addAll(entities);
 				statement = membership;
 				break;
+			case provext_hadMember:
+				collection = optionalQualifiedName("prov:collection", attributeMap);
+				entities = optionalQualifiedNames("prov:entity", attributeMap);
+				statement = pf.newQualifiedHadMember(null,collection,entities,null);
+				break;
 			case mentionOf:
 				QualifiedName specificEntity = optionalQualifiedName("prov:specificEntity",
 						attributeMap);
@@ -292,6 +303,11 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				specificEntity = optionalQualifiedName("prov:specificEntity", attributeMap);
 				generalEntity = optionalQualifiedName("prov:generalEntity", attributeMap);
 				statement = pf.newSpecializationOf(specificEntity, generalEntity);
+				break;
+			case provext_specializationOf:
+				specificEntity = optionalQualifiedName("prov:specificEntity", attributeMap);
+				generalEntity = optionalQualifiedName("prov:generalEntity", attributeMap);
+				statement = pf.newQualifiedSpecializationOf(null,specificEntity, generalEntity, null);
 				break;
 			case wasStartedBy:
 				activity = optionalQualifiedName("prov:activity", attributeMap);
@@ -370,7 +386,7 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 				throw new UnsupportedOperationException(
 						"prov:type is not allowed in a "
 								+ statementType
-								+ "statement - id: "
+								+ " statement - id: "
 								+ idStr);
 			}
 		}
@@ -474,6 +490,10 @@ public class ProvDocumentDeserializer implements JsonDeserializer<Document> {
 		}
 
 		return statement;
+	}
+
+	private String provextAdapt(String statementType) {
+		return statementType.replace("provext:", "provext_");
 	}
 
 	private LangString decodeInternationalizedString(JsonElement element) {

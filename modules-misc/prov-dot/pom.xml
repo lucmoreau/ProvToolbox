@@ -26,8 +26,9 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${jaxb.api.version}</version>
+            <version>${jaxb.runtime.version}</version>
         </dependency>
+
 
         <!-- testing -->
 

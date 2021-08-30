@@ -13,11 +13,6 @@
     <description>A template system for PROV bundles.</description>
 
 
-    <properties>
-        <jackson.version>2.9.9</jackson.version>
-    </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>

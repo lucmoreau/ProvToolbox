@@ -16,17 +16,15 @@
     <orderEntry type="module" module-name="prov-jsonld-xml (1)" scope="TEST" production-on-test="" />
     <orderEntry type="module" module-name="prov-jsonld" scope="TEST" />
     <orderEntry type="module" module-name="prov-model" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.5" level="project" />
     <orderEntry type="module" module-name="prov-jsonld-xml" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.11.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: jakarta.activation:jakarta.activation-api:1.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.12.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.4" level="project" />
     <orderEntry type="module" module-name="prov-model-scala" scope="TEST" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.12.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.scala-lang:scala-library:2.12.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.parboiled:parboiled_2.12:2.1.8" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.chuusai:shapeless_2.12:2.3.3" level="project" />
@@ -35,8 +33,8 @@
     <orderEntry type="module" module-name="prov-jsonld-xml" scope="TEST" production-on-test="" />
     <orderEntry type="module" module-name="prov-model" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: jakarta.activation:jakarta.activation-api:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.8.0" level="project" />
     <orderEntry type="module" module-name="prov-rdf" scope="TEST" />
@@ -121,6 +119,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jvnet.staxex:stax-ex:1.8" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xerces:xercesImpl:2.12.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.openrdf.sesame:sesame-rio-api:4.1.2" level="project" />

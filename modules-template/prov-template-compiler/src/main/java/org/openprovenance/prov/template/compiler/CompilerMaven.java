@@ -121,6 +121,7 @@ public class CompilerMaven {
         dep.setArtifactId(artifact);
         dep.setGroupId(getProvPackageId());
         dep.setVersion(getProvVersion());
+       // dep.setScope("provided");  // NOTE the scope. We need it at compile time to construct the js file. At runtime, we only import the js webjar in the javascript file.
         model.addDependency(dep);
     }
 

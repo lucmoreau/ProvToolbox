@@ -21,18 +21,17 @@
 
         <!-- jaxb -->
 
-        <!-- clashes with  javax.xml.bind:jaxb-api:jar:2.3.1:compile imported by glassfish.jaxb
-        <dependency>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-            <version>2.0.0.Final</version>
-        </dependency>
-        -->
 
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>${jaxb.api.version}</version>
+            <version>${jaxb.runtime.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

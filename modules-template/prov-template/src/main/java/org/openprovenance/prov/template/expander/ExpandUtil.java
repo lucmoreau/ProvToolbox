@@ -38,6 +38,8 @@ public class ExpandUtil {
     public static final String TIME_URI = TMPL_NS + TIME;
     public static final String STARTTIME_URI = TMPL_NS + STARTTIME;
     public static final String ENDTIME_URI = TMPL_NS + ENDTIME;
+    public static final String IFVAR = "if";
+    public static final String IFVAR_URI = TMPL_NS + IFVAR;
 
 
     //private final ProvFactory pf;

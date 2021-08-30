@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -89,6 +88,52 @@ public class StatementCompilerAction implements StatementAction {
     }
 
 
+    @Override
+    public void doAction(WasGeneratedBy s) {
+        //TODO time
+        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasGeneratedBy($N,$N,$N))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));
+
+    }
+
+    @Override
+    public void doAction(WasInvalidatedBy s) {
+        //TODO time
+
+        String ifVarValue = hasIfVarValue(s);
+
+        // conditional include
+        if (ifVarValue==null) {
+            builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasInvalidatedBy($N,$N,$N,null" + generateAttributesAlways(s) + "))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));
+        } else {
+            builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newWasInvalidatedBy($N,$N,$N,null" + generateAttributesAlways(s) + "))", ifVarValue, local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));
+
+        }
+
+
+    }
+
+    /* This method checks if there is a tmpl:if attributes, if so, always removes it from the collection of attributes, and return the value associated with this attribute, to allow for conditional generation of code. */
+
+    public String hasIfVarValue(Statement s) {
+        Collection<Attribute> attributes = pFactory.getAttributes(s);
+        String ifVarValue=null;
+        for (Attribute attribute:attributes) {
+            QualifiedName element=attribute.getElementName();
+            QualifiedName typeq=attribute.getType();
+            Object value=attribute.getValue();
+            if (reservedIfVar(element)) {
+                if (value instanceof QualifiedName) {
+                    QualifiedName vq=(QualifiedName) value;
+                    if (ExpandUtil.isVariable(vq)) {
+                        ifVarValue=vq.getLocalPart();
+
+                    }
+                }
+            }
+        }
+
+        return ifVarValue;
+    }
 
     @Override
     public void doAction(WasStartedBy s) {
@@ -176,6 +221,11 @@ public class StatementCompilerAction implements StatementAction {
         return (attributes.isEmpty()) ? "" : ", attrs";
     }
 
+    public String generateAttributesAlways(Statement s) {
+        Collection<Attribute> attributes = doAttributesAction(s);
+        return (attributes.isEmpty()) ? ", null" : ", attrs";
+    }
+
     public Collection<Attribute> doAttributesAction(Statement s) {
         Collection<Attribute> attributes = pFactory.getAttributes(s);
         if (!(attributes.isEmpty())) {
@@ -212,7 +262,7 @@ public class StatementCompilerAction implements StatementAction {
                     if (value instanceof LangString) {
                         builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
                                 vmap.get(element),
-                                ((LangString)value).getValue(),  // TDDO: ignoring Lang for now
+                                ((LangString)value).getValue(),  // TODO: ignoring Lang for now
                                 vmap.get(typeq));
                     } else {
                         builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
@@ -242,9 +292,11 @@ public class StatementCompilerAction implements StatementAction {
         } else if (ExpandUtil.TIME_URI.equals(elementName)) {
             throw new UnsupportedOperationException();
         } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
-            //builder.addStatement("if ($N!=null) $N.setStartTime($N)", name, name,vq.getLocalPart());
+            // don't include it!
         } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
-            //builder.addStatement("if ($N!=null) $N.setEndTime($N)", name, name,vq.getLocalPart());
+            // don't include it!
+        } else if (ExpandUtil.IFVAR_URI.equals(elementName)) {
+            // don't include it!
         } else {
             // can never be here
             throw new UnsupportedOperationException();
@@ -257,10 +309,16 @@ public class StatementCompilerAction implements StatementAction {
         return (ExpandUtil.LABEL_URI.equals(elementName)) 
                 || (ExpandUtil.TIME_URI.equals(elementName))
                 || (ExpandUtil.STARTTIME_URI.equals(elementName))
-                || (ExpandUtil.ENDTIME_URI.equals(elementName));
+                || (ExpandUtil.ENDTIME_URI.equals(elementName))
+                || (ExpandUtil.IFVAR_URI.equals(elementName));
 
     }
-    
+    public boolean reservedIfVar(QualifiedName element) {
+        final String elementName = element.getUri();
+        return (ExpandUtil.IFVAR_URI.equals(elementName));
+    }
+
+
 
     public String doCollectElementVariable(Statement s, String search) {
         Collection<Attribute> attributes = pFactory.getAttributes(s);
@@ -282,16 +340,6 @@ public class StatementCompilerAction implements StatementAction {
     }
 
 
-    @Override
-    public void doAction(WasGeneratedBy s) {
-        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasGeneratedBy($N,$N,$N))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));              
-       
-    }
-
-    @Override
-    public void doAction(WasInvalidatedBy s) {
-        builder.addStatement("if ($N!=null) " + target + ".add(pf.newWasInvalidatedBy($N,$N,$N))", local(s.getEntity()), local(s.getId()), local(s.getEntity()), local(s.getActivity()));              
-    }
 
     @Override
     public void doAction(HadMember s) {

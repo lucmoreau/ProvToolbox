@@ -155,6 +155,8 @@ public class CompilerJsonSchema {
                 return "integer";
             case "java.lang.Float":
                 return "float";
+            case "java.lang.Boolean":
+                return "boolean";
         }
         throw new UnsupportedOperationException("conversion to json type " + name);
     }

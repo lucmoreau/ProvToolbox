@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-storage</artifactId>
-        <version>0.9.15-SNAPSHOT</version>
+        <version>0.9.15</version>
     </parent>
     <artifactId>prov-storage-index-redis</artifactId>
     <name> |---- PROV-STORAGE-INDEX-REDIS</name>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.15-SNAPSHOT</version>
+            <version>0.9.15</version>
         </dependency>
 
         <dependency>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-api</artifactId>
-            <version>0.9.15-SNAPSHOT</version>
+            <version>0.9.15</version>
             <scope>compile</scope>
         </dependency>
 

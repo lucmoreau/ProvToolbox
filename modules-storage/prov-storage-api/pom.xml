@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-storage</artifactId>
-        <version>0.9.15</version>
+        <version>0.9.16-SNAPSHOT</version>
     </parent>
     <artifactId>prov-storage-api</artifactId>
     <name> |---- PROV-STORAGE-API</name>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.15</version>
+            <version>0.9.16-SNAPSHOT</version>
         </dependency>
 
         <dependency>

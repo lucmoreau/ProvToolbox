@@ -220,7 +220,7 @@ public class CompilerLogger {
         TypeSpec theInterface = builder.build();
 
         JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by class generateProcessorArgsInterface()", getClass().getName(), configs.name)
+                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
                 .build();
         return myfile;
     }

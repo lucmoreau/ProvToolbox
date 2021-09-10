@@ -1,8 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Set;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.openprovenance.prov.model.*;
@@ -46,6 +44,13 @@ public class StatementCompilerAction implements StatementAction {
 
     public String local(QualifiedName id) {
         return (id==null)? "nullqn" : id.getLocalPart();
+    }
+    public List<String> local(List<QualifiedName> ids) {
+        List<String> res=new LinkedList<>();
+        for (QualifiedName id: ids) {
+            res.add(local(id));
+        }
+        return res;
     }
 
     @Override
@@ -226,6 +231,43 @@ public class StatementCompilerAction implements StatementAction {
         return (attributes.isEmpty()) ? ", null" : ", attrs";
     }
 
+    /* Same as doAttributesAction, except that it does not generate code. */
+    public Collection<Attribute> doCheckAttributesAction(Statement s) {
+        Collection<Attribute> attributes = pFactory.getAttributes(s);
+        Collection<Attribute> result = new LinkedList<>();
+        if (!(attributes.isEmpty())) {
+
+            for (Attribute attribute:attributes) {
+                QualifiedName element=attribute.getElementName();
+                QualifiedName typeq=attribute.getType();
+                Object value=attribute.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName vq=(QualifiedName) value;
+                    if (ExpandUtil.isVariable(vq)) {
+                        if (reservedElement(element)) {
+
+                        } else {
+                            result.add(attribute);
+
+                        }
+
+                    } else {
+                        result.add(attribute);
+                    }
+                } else {
+                    if (value instanceof LangString) {
+                        result.add(attribute);
+
+                    } else {
+                        result.add(attribute);
+                    }
+
+                }
+            }
+        }
+        return result;
+    }
+
     public Collection<Attribute> doAttributesAction(Statement s) {
         Collection<Attribute> attributes = pFactory.getAttributes(s);
         if (!(attributes.isEmpty())) {
@@ -373,8 +415,28 @@ public class StatementCompilerAction implements StatementAction {
 
     @Override
     public void doAction(QualifiedHadMember s) {
-        // TODO Auto-generated method stub
-        
+
+        String ifVarValue = hasIfVarValue(s);
+
+        // TODO: generated HadMember if there is no other attribute
+
+        // conditional include
+        if (ifVarValue==null) {
+            if (doCheckAttributesAction(s).isEmpty() && s.getId()==null && s.getEntity().size()==1) {
+                builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newHadMember($N,$N))", ifVarValue, local(s.getCollection()), local(s.getCollection()), local(s.getEntity().get(0)));
+            } else {
+                builder.addStatement("if ($N!=null) " + target + ".add(pf.newQualifiedHadMember($N,$N,$N" + generateAttributesAlways(s) + "))", local(s.getCollection()), local(s.getId()), local(s.getCollection()), local(s.getEntity()));
+            }
+        } else {
+            if (doCheckAttributesAction(s).isEmpty() && s.getId()==null && s.getEntity().size()==1) {
+                builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newHadMember($N,$N))", ifVarValue, local(s.getCollection()), local(s.getCollection()), local(s.getEntity().get(0)));
+            } else {
+                builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newQualifiedHadMember($N,$N,$T.of($N)" + generateAttributesAlways(s) + "))", ifVarValue, local(s.getCollection()), local(s.getId()), local(s.getCollection()), List.class, local(s.getEntity().get(0)));
+            }
+        }
+
+
+
     }
 
     @Override

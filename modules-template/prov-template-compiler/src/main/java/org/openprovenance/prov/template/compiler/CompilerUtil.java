@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.squareup.javapoet.*;
+import org.apache.commons.text.CaseUtils;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
@@ -28,7 +29,7 @@ import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
-import com.google.common.base.CaseFormat;
+//import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
@@ -123,10 +124,11 @@ public class CompilerUtil {
         return builder .build();
     }
       
-    public String camelcase(String s) { 
-        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s); 
+    public String camelcase(String s) {
+        //return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s);  //use guava
+         return CaseUtils.toCamelCase(s,true);
     }
-    
+
     final static ProvUtilities u = new ProvUtilities();
         
 

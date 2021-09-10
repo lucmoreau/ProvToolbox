@@ -8,28 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_12_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_12_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_12_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_xml_2_12_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_12_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_woodstox_woodstox_core_6_2_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_2_0_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.15/bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.15/bundle.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.15/bundle.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/foo.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_19_0.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/TreeTraversal.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/java/org/openprovenance/prov/notation/TreeTraversal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -543,7 +522,7 @@
       <workItem from="1631044194197" duration="2239000" />
       <workItem from="1631118714441" duration="1179000" />
       <workItem from="1631182913936" duration="582000" />
-      <workItem from="1631196377707" duration="17112000" />
+      <workItem from="1631196377707" duration="19138000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -566,6 +545,243 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-text" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-dom" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.xml.bind:jakarta.xml.bind-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-contextaware" />
+    <option featureType="dependencySupport" implementationName="java:org.quartz-scheduler:quartz" />
+    <option featureType="dependencySupport" implementationName="java:javax.activation:javax.activation-api" />
+    <option featureType="dependencySupport" implementationName="java:org.codehaus.plexus:plexus-utils" />
+    <option featureType="dependencySupport" implementationName="java:com.mchange:c3p0" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-model-scala" />
+    <option featureType="dependencySupport" implementationName="java:com.google.code.gson:gson" />
+    <option featureType="dependencySupport" implementationName="java:javax.json:javax.json-api" />
+    <option featureType="dependencySupport" implementationName="java:org.hibernate.javax.persistence:hibernate-jpa-2.1-api" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-queries" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.datatype:jackson-datatype-jsr310" />
+    <option featureType="dependencySupport" implementationName="java:javax.persistence:persistence-api" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-client-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryparser-api" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-core" />
+    <option featureType="dependencySupport" implementationName="java:org.hibernate:hibernate-core" />
+    <option featureType="dependencySupport" implementationName="java:xerces:xercesImpl" />
+    <option featureType="dependencySupport" implementationName="java:com.sun.mail:javax.mail" />
+    <option featureType="dependencySupport" implementationName="java:com.github.fge:json-schema-core" />
+    <option featureType="dependencySupport" implementationName="java:org.mongodb:mongodb-driver-core" />
+    <option featureType="dependencySupport" implementationName="java:org.glassfish.jaxb:txw2" />
+    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-annotations" />
+    <option featureType="dependencySupport" implementationName="java:org.webjars:jquery" />
+    <option featureType="dependencySupport" implementationName="java:commons-lang:commons-lang" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-memory" />
+    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-models" />
+    <option featureType="dependencySupport" implementationName="java:com.google.inject:guice" />
+    <option featureType="dependencySupport" implementationName="java:javax.el:javax.el-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-binary" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-storage" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-query" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-rdfjson" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-storage-api" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.core:jackson-databind" />
+    <option featureType="dependencySupport" implementationName="java:org.webjars:swagger-ui" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-ntriples" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-dataset" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.logging:jboss-logging" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider" />
+    <option featureType="dependencySupport" implementationName="java:org.slf4j:slf4j-api" />
+    <option featureType="dependencySupport" implementationName="java:org.scalatest:scalatest-compatible" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-model" />
+    <option featureType="dependencySupport" implementationName="java:antlr:antlr" />
+    <option featureType="dependencySupport" implementationName="java:org.yaml:snakeyaml" />
+    <option featureType="dependencySupport" implementationName="java:com.github.fge:jackson-coreutils" />
+    <option featureType="dependencySupport" implementationName="java:org.postgresql:postgresql" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-collections4" />
+    <option featureType="dependencySupport" implementationName="java:org.reactivestreams:reactive-streams" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-trix" />
+    <option featureType="dependencySupport" implementationName="java:org.openjdk.jmh:jmh-generator-annprocess" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpclient" />
+    <option featureType="dependencySupport" implementationName="java:org.openjdk.jmh:jmh-core" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-model" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.maven:maven-model" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-rdfxml" />
+    <option featureType="dependencySupport" implementationName="java:com.mchange:mchange-commons-java" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-trig" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-core" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-api" />
+    <option featureType="dependencySupport" implementationName="java:javax.inject:javax.inject" />
+    <option featureType="dependencySupport" implementationName="java:org.mapdb:mapdb" />
+    <option featureType="dependencySupport" implementationName="java:commons-codec:commons-codec" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-interop-light" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.jaxrs:jackson-jaxrs-base" />
+    <option featureType="dependencySupport" implementationName="java:xml-apis:xml-apis" />
+    <option featureType="dependencySupport" implementationName="java:javax.activation:activation" />
+    <option featureType="dependencySupport" implementationName="java:org.codehaus.mojo:animal-sniffer-annotations" />
+    <option featureType="dependencySupport" implementationName="java:org.osgi:org.osgi.annotation.versioning" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss:jandex" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryalgebra-model" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-text" />
+    <option featureType="dependencySupport" implementationName="java:javax.validation:validation-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-federation" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-servlet-initializer" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-binary" />
+    <option featureType="dependencySupport" implementationName="java:org.hibernate.common:hibernate-commons-annotations" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-storage-index-redis" />
+    <option featureType="dependencySupport" implementationName="java:javax.mail:mailapi" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-api" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-spatial" />
+    <option featureType="dependencySupport" implementationName="java:org.jvnet.staxex:stax-ex" />
+    <option featureType="dependencySupport" implementationName="java:com.opencsv:opencsv" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-slf4j-impl" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-service-translation" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.core:jackson-annotations" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-sparqljson" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.core:jackson-core" />
+    <option featureType="dependencySupport" implementationName="java:com.networknt:json-schema-validator" />
+    <option featureType="dependencySupport" implementationName="java:org.slf4j:jcl-over-slf4j" />
+    <option featureType="dependencySupport" implementationName="java:org.parboiled:parboiled_2.12" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-api" />
+    <option featureType="dependencySupport" implementationName="java:org.scala-lang.modules:scala-xml_2.12" />
+    <option featureType="dependencySupport" implementationName="java:com.chuusai:shapeless_2.12" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-template-compiler" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-csv" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-memory" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-dot" />
+    <option featureType="dependencySupport" implementationName="java:com.sun.istack:istack-commons-runtime" />
+    <option featureType="dependencySupport" implementationName="java:org.mozilla:rhino" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-api" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpclient-osgi" />
+    <option featureType="dependencySupport" implementationName="java:javax.enterprise:cdi-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-n3" />
+    <option featureType="dependencySupport" implementationName="java:org.webjars:font-awesome" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.jetty:jetty-util" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-log" />
+    <option featureType="dependencySupport" implementationName="java:io.github.classgraph:classgraph" />
+    <option featureType="dependencySupport" implementationName="java:com.googlecode.libphonenumber:libphonenumber" />
+    <option featureType="dependencySupport" implementationName="java:javax.servlet:javax.servlet-api" />
+    <option featureType="dependencySupport" implementationName="java:log4j:log4j" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-util" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-api" />
+    <option featureType="dependencySupport" implementationName="java:com.github.fge:msg-simple" />
+    <option featureType="dependencySupport" implementationName="java:org.slf4j:slf4j-nop" />
+    <option featureType="dependencySupport" implementationName="java:org.webjars:bootstrap-table" />
+    <option featureType="dependencySupport" implementationName="java:org.javassist:javassist" />
+    <option featureType="dependencySupport" implementationName="java:org.hibernate:hibernate-entitymanager" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryparser-sparql" />
+    <option featureType="dependencySupport" implementationName="java:org.hamcrest:hamcrest-core" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-sparqlxml" />
+    <option featureType="dependencySupport" implementationName="java:org.typelevel:macro-compat_2.12" />
+    <option featureType="dependencySupport" implementationName="java:com.squareup:javapoet" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-nquads" />
+    <option featureType="dependencySupport" implementationName="java:com.zaxxer:HikariCP-java6" />
+    <option featureType="dependencySupport" implementationName="java:commons-io:commons-io" />
+    <option featureType="dependencySupport" implementationName="java:org.glassfish.jaxb:jaxb-runtime" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-core" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-manager" />
+    <option featureType="dependencySupport" implementationName="java:org.scala-lang:scala-library" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-xml" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:fluent-hc" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-event" />
+    <option featureType="dependencySupport" implementationName="java:com.spatial4j:spatial4j" />
+    <option featureType="dependencySupport" implementationName="java:junit:junit" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpclient-cache" />
+    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-core" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-spin" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-highlighter" />
+    <option featureType="dependencySupport" implementationName="java:org.mongojack:mongojack" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpcore" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-lang3" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-sparql" />
+    <option featureType="dependencySupport" implementationName="java:de.undercouch:bson4jackson" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-runtime" />
+    <option featureType="dependencySupport" implementationName="java:net.sf.jopt-simple:jopt-simple" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-http-protocol" />
+    <option featureType="dependencySupport" implementationName="java:org.scalatest:scalatest_2.12" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-lucene-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-http-client" />
+    <option featureType="dependencySupport" implementationName="java:com.google.guava:guava" />
+    <option featureType="dependencySupport" implementationName="java:io.smallrye:smallrye-config" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-sandbox" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-math3" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-jsonld-xml" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.dataformat:jackson-dataformat-xml" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-base" />
+    <option featureType="dependencySupport" implementationName="java:dom4j:dom4j" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryparser-serql" />
+    <option featureType="dependencySupport" implementationName="java:org.codehaus.woodstox:stax2-api" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-jaxb-provider" />
+    <option featureType="dependencySupport" implementationName="java:org.antlr:stringtemplate" />
+    <option featureType="dependencySupport" implementationName="java:org.webjars.bowergithub.ajaxorg:ace-builds" />
+    <option featureType="dependencySupport" implementationName="java:org.jsweet.candies:jquery" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-generator" />
+    <option featureType="dependencySupport" implementationName="java:org.mongodb:mongodb-driver-legacy" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-http" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-join" />
+    <option featureType="dependencySupport" implementationName="java:commons-cli:commons-cli" />
+    <option featureType="dependencySupport" implementationName="java:org.antlr:antlr-runtime" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-rdf" />
+    <option featureType="dependencySupport" implementationName="java:com.github.fge:uri-template" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-json" />
+    <option featureType="dependencySupport" implementationName="java:org.webjars:bootstrap" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-analyzers-common" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-core" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-pool2" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-nativerdf" />
+    <option featureType="dependencySupport" implementationName="java:joda-time:joda-time" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.activation:jakarta.activation-api" />
+    <option featureType="dependencySupport" implementationName="java:javax.interceptor:javax.interceptor-api" />
+    <option featureType="dependencySupport" implementationName="java:org.codehaus.izpack:izpack-wrapper" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-inferencer" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec" />
+    <option featureType="dependencySupport" implementationName="java:com.sun.xml.fastinfoset:FastInfoset" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-lucene" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.jackson.module:jackson-module-jaxb-annotations" />
+    <option featureType="dependencySupport" implementationName="java:org.scalactic:scalactic_2.12" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-core-spi" />
+    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-integration" />
+    <option featureType="dependencySupport" implementationName="java:commons-logging:commons-logging" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-storage-filesystem" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.logging:jboss-logging-annotations" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-sail" />
+    <option featureType="dependencySupport" implementationName="java:javax.xml.bind:jaxb-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-jsonld" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryalgebra-evaluation" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-client" />
+    <option featureType="dependencySupport" implementationName="java:com.github.fge:btf" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-spin" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpcore-osgi" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-queryparser" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-misc" />
+    <option featureType="dependencySupport" implementationName="java:org.jsweet:jsweet-core" />
+    <option featureType="dependencySupport" implementationName="java:aopalliance:aopalliance" />
+    <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-jaxrs2" />
+    <option featureType="dependencySupport" implementationName="java:org.mongodb:mongodb-driver-sync" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-datatypes" />
+    <option featureType="dependencySupport" implementationName="java:org.hsqldb:hsqldb" />
+    <option featureType="dependencySupport" implementationName="java:redis.clients:jedis" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpcore-nio" />
+    <option featureType="dependencySupport" implementationName="java:com.google.code.findbugs:jsr305" />
+    <option featureType="dependencySupport" implementationName="java:com.github.jsonld-java:jsonld-java" />
+    <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:httpmime" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-interop" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-languages" />
+    <option featureType="dependencySupport" implementationName="java:org.mongodb:bson" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-service-core" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-jsonld" />
+    <option featureType="dependencySupport" implementationName="java:com.fasterxml.woodstox:woodstox-core" />
+    <option featureType="dependencySupport" implementationName="java:c3p0:c3p0" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-rio-turtle" />
+    <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryrender" />
+    <option featureType="dependencySupport" implementationName="java:org.eclipse.microprofile.config:microprofile-config-api" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-n" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-template" />
+    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-multipart-provider" />
+    <option featureType="dependencySupport" implementationName="java:org.scala-lang:scala-reflect" />
+    <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-model" />
+    <option featureType="dependencySupport" implementationName="java:com.github.fge:json-schema-validator" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

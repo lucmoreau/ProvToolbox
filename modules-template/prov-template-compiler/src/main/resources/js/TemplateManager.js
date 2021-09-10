@@ -162,7 +162,7 @@ class TemplateManager {
                 // ignore the rejected keys, if any
             } else {
                 let action = dropDownAction(templateManagerVariableName, k);
-                const item = $('<a>').addClass("dropdown-item").attr("href", "#").html(k).attr('onclick', action);
+                const item = $('<a>').addClass("dropdown-item").attr("data-tmpl", k).attr("href", "#").html(k).attr('onclick', action);
                 menu.append($('<li>').append(item));
             }
         });
@@ -212,7 +212,7 @@ class TemplateManager {
             $.each(myself.names, function(i, k) {
                 myself.documentationSnippets[k]=$("#template_" + k).html();
             })
-            console.log(myself.documentationSnippets);
+            //console.log(myself.documentationSnippets);
 
         },'html');
     }

@@ -5,7 +5,7 @@ if [ "$#" -ne 2 ]; then
     exit -1
 fi
 
-export CLASSPATH_PREFIX=$HOME/.m2/repository/${PACKAGE}/${NAME}_l2p/${VERSION}/${NAME}_l2p-${VERSION}.jar
+export CLASSPATH_PREFIX=$HOME/.m2/repository/${PACKAGE}/${NAME}_l2p/${VERSION}/${NAME}_l2p-${VERSION}.jar:$HOME/.m2/repository/${PACKAGE}/${NAME}_cli/${VERSION}/${NAME}_cli-${VERSION}.jar
 
 PROVCONVERT=provconvert
 

@@ -4,7 +4,7 @@
     <parent>
         <artifactId>modules-legacy</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.16</version>
+        <version>0.9.17-SNAPSHOT</version>
     </parent>
     <artifactId>prov-json</artifactId>
     <name> |---- PROV-JSON</name>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.16</version>
+            <version>0.9.17-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.16</version>
+            <version>0.9.17-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -37,7 +37,7 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
             <scope>test</scope>
-            <version>0.9.16</version>
+            <version>0.9.17-SNAPSHOT</version>
             <classifier>tests</classifier>
         </dependency>
 

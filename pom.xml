@@ -295,6 +295,8 @@
 					<configuration>
 						<source>11</source>
 						<target>11</target>
+						<fork>true</fork>
+						<useIncrementalCompilation>true</useIncrementalCompilation>
 					</configuration>
 				</plugin>
 

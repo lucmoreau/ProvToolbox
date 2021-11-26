@@ -84,6 +84,11 @@ public class CompilerLogger {
         builder.addMethod(builder3.build());
 
 
+        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(ConfigProcessor.GET_TYPED_SUCCESSOR_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(CompilerUtil.hashmapType);
+        builder.addMethod(builder3b.build());
+
         MethodSpec.Builder builder4 = MethodSpec.methodBuilder(ConfigProcessor.GET_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(String.class);
@@ -101,7 +106,7 @@ public class CompilerLogger {
         TypeSpec theInterface = builder.build();
 
         JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox for templates config $S", configs.name)
+                .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(), configs.name)
                 .build();
         return myfile;
     }

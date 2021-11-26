@@ -9,6 +9,8 @@ public interface ProxyClientInterface {
 
     HashMap<Integer, int[]> getSuccessors();
 
+    HashMap<Integer, int[]> getTypedSuccessors();
+
     String getName();
 
     //String make(Object[] objects);

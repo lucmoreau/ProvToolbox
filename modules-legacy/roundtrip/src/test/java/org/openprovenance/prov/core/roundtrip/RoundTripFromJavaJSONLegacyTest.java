@@ -1,13 +1,9 @@
 package org.openprovenance.prov.core.roundtrip;
 
 import org.openprovenance.prov.core.RoundTripFromJavaJSONTest;
-import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
-import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.RoundTripFromJavaTest;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class RoundTripFromJavaJSONLegacyTest extends RoundTripFromJavaJSONTest {

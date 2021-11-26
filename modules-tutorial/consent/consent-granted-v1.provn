@@ -1,0 +1,73 @@
+
+//An example encoded in law might be:
+//1.  I (agent) tell the bank (agent) they can not use my demographic identity (entity) for the activity of determining if I quality for a home loan
+//2. but, I (agent) tell the governing body (agent) they can use my anonymized (activity) demographic identity (entity) to the activity of determining if home loans are made fairly.
+
+
+document
+
+
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+  prefix dot <http://openprovenance.org/provtoolbox/dot/ns#>
+
+  prefix ex <https://example.org/ns/#>
+  prefix provext <http://openprovenance.org/prov/extension#>
+
+
+  bundle vargen:view
+
+    entity(var:consent2, [prov:type='ex:ConsentGranted', ex:data='var:dataItem1', ex:purpose='var:purpose2'])
+
+
+
+    entity(var:purpose2, [ex:activity='ex:DeterminingIfLoanDecisionIsFair', prov:type='ex:Purpose'])
+
+
+    entity(var:dataItem1, [prov:type='ex:DemographicIdentity'])
+
+    activity(var:consenting)
+    used(var:consenting, var:purpose2, -)
+    used(var:consenting, var:dataItem1, -)
+    wasGeneratedBy(var:consent2, var:consenting, -)
+
+
+
+    agent(var:customer)
+    agent(var:bank)
+
+    wasAttributedTo(var:dataItem1, var:customer)
+    wasAttributedTo(var:consent2, var:customer)
+    wasAttributedTo(var:purpose2, var:bank)
+
+    activity(var:auditing, [prov:type='ex:DeterminingIfLoanDecisionIsFair'])
+    wasAssociatedWith(var:auditing, var:bank, var:purpose2)
+
+    entity(var:report, [prov:type='var:FairnessReport])
+    wasGeneratedBy(var:report, var:auditing, -)
+
+    activity(var:checking)
+    used(var:checking, var:purpose2, -)
+    used(var:checking, var:consent2, -)
+    wasStartedBy(var:anonymising,var:permission,-, -)
+    wasGeneratedBy(var:permission, var:checking, -)
+
+    activity(var:anonymising)
+    used(var:anonymising, var:dataItem1, -)
+    wasGeneratedBy(var:anonymised1, var:anonymising, -)
+
+    entity(var:permission, [prov:value='ex:OK'])
+
+
+    entity(var:anonymised1, [prov:type='ex:AnonymisedData'])
+    used(var:auditing, var:anonymised1, -)
+    wasDerivedFrom(var:anonymised1,var:dataItem1)
+
+    wasDerivedFrom(var:consent2, var:dataItem1)
+    wasDerivedFrom(var:report, var:anonymised1)
+
+
+ endBundle
+
+ endDocument

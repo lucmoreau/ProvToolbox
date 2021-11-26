@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
@@ -60,7 +61,7 @@ public class IndexedDocument implements StatementAction {
 
 
     /* Collection of WasDerivedFrom edges that have a given entity as a cause. */
-    private HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
+    private HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap= new HashMap<>();
 
     /* Collection of WasDerivedFrom edges that have a given entity as an
      * effect. */
@@ -698,11 +699,12 @@ public class IndexedDocument implements StatementAction {
     }
     
     public Set<QualifiedName> traverseDerivations(QualifiedName from) {
-        Stack<QualifiedName> s=new Stack<QualifiedName>();
+        Stack<QualifiedName> s=new Stack<>();
         s.push(from);
-        return traverseDerivations1(new HashSet<QualifiedName>(),new HashSet<QualifiedName>(),s);
+        return traverseDerivations1(new HashSet<>(),new HashSet<>(),s);
     }
-    
+
+
     public Set<QualifiedName> traverseDerivations1(Set<QualifiedName> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
     
         QualifiedName current=null;
@@ -729,10 +731,77 @@ public class IndexedDocument implements StatementAction {
         }
         
         return last;
-        
-        
-        
     }
+
+    public Set<Pair<QualifiedName,WasDerivedFrom>> traverseDerivationsWithRelations(QualifiedName from) {
+        Stack<QualifiedName> s=new Stack<>();
+        s.push(from);
+        return traverseDerivations2(new HashSet<>(),new HashSet<>(),s);
+    }
+
+    public Set<Pair<QualifiedName,WasDerivedFrom>> traverseDerivations2(Set<Pair<QualifiedName,WasDerivedFrom>> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
+
+        QualifiedName current=null;
+
+        while (!(todo.isEmpty())) {
+
+            current=todo.pop();
+            if (seen.contains(current)) {
+                // move on to next
+            } else {
+                seen.add(current);
+                Collection<WasDerivedFrom> successors=entityCauseWasDerivedFromMap.get(current);
+                if (successors==null || successors.isEmpty()) {
+                    //move on next
+                } else {
+                    for (WasDerivedFrom wdf: successors) {
+                        QualifiedName qn=wdf.getGeneratedEntity();
+                        last.add(Pair.of(qn,wdf));
+                        todo.push(qn);
+                    }
+                }
+            }
+
+        }
+
+        return last;
+    }
+
+
+    public Set<Pair<QualifiedName,WasAttributedTo>> traverseAttributionsWithRelations(QualifiedName from) {
+        Stack<QualifiedName> s=new Stack<>();
+        s.push(from);
+        return traverseAttributions2(new HashSet<>(),new HashSet<>(),s);
+    }
+
+    public Set<Pair<QualifiedName,WasAttributedTo>> traverseAttributions2(Set<Pair<QualifiedName,WasAttributedTo>> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
+
+        QualifiedName current=null;
+
+        while (!(todo.isEmpty())) {
+
+            current=todo.pop();
+            if (seen.contains(current)) {
+                // move on to next
+            } else {
+                seen.add(current);
+                Collection<WasAttributedTo> successors=agentWasAttributedToMap.get(current);
+                if (successors==null || successors.isEmpty()) {
+                    //move on next
+                } else {
+                    for (WasAttributedTo wat: successors) {
+                        QualifiedName qn=wat.getEntity();
+                        last.add(Pair.of(qn,wat));
+                        todo.push(qn);  // this for the case of agent being attributed to another agent? does this exist?
+                    }
+                }
+            }
+
+        }
+
+        return last;
+    }
+
 
 }
 

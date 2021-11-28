@@ -8,49 +8,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/demo_war.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/demo_war_exploded.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_example_templates_cli_0_1_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_example_templates_l2p_0_1_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_interop_0_9_11_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_xml_0_9_11_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_bowergithub_garycourt_jsv_4_0_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_bowergithub_jsonform_jsonform_2_1_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_jquery_3_6_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_npm_underscore_1_12_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_popper_js_1_15_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.17-SNAPSHOT/bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.17-SNAPSHOT/bundle.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.17-SNAPSHOT/bundle.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-alt-granted-v1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-alt-granted-v1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-alt-granted-v1.ttl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-granted-v1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-granted-v1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-granted-v1.ttl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-not-granted-v1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-not-granted-v1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/consent/consent-not-granted-v1.ttl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/CompilerExpansionBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/CompilerTypeManagement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementTypeAction.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaJSONLegacyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaJSONLegacyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaXMLViaLegacyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaXMLViaLegacyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/src/main/java/Example.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/src/main/java/Example.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBuilder.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSimpleBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSimpleBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/interfaces/ProxyClientInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/interfaces/ProxyClientInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,11 +131,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.template.compiler.expansion" />
       <recent name="org.openprovenance.prov.template.log2prov" />
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
       <recent name="org.openprovenance.prov.service.core" />
       <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.interop" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-tutorial/consent" />
@@ -202,11 +175,11 @@
       <recent name="org.openprovenance.prov.scala" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler.expansion" />
       <recent name="org.openprovenance.prov.template.log2prov.interfaces" />
       <recent name="org.openprovenance.prov.template.log2prov" />
       <recent name="org.example.remote" />
       <recent name="org.openprovenance.prov.template.compiler" />
-      <recent name="org.openprovenance.prov.benchmarks" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONLegacyTest">
@@ -284,12 +257,12 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Makefile Target.Makefile" />
-      <item itemvalue="Makefile Target.all" />
-      <item itemvalue="ScalaTest.ModelSpec" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONLegacyTest" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONLD11LegacyTest" />
       <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
+      <item itemvalue="Makefile Target.Makefile" />
+      <item itemvalue="Makefile Target.all" />
+      <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
@@ -562,7 +535,8 @@
       <workItem from="1634300888402" duration="580000" />
       <workItem from="1635337565697" duration="1195000" />
       <workItem from="1637416312689" duration="577000" />
-      <workItem from="1637869383976" duration="17506000" />
+      <workItem from="1637869383976" duration="20414000" />
+      <workItem from="1638083120689" duration="16041000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

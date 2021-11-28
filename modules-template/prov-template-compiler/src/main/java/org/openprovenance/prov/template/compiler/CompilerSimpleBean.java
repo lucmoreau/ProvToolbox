@@ -105,8 +105,12 @@ public class CompilerSimpleBean {
 
     }
 
-    private TypeName processorClassType(String template, String packge) {
+    static TypeName processorClassType(CompilerUtil compilerUtil, String template, String packge) {
         ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),TypeVariableName.get("T"));
+        return name;
+    }
+    public static TypeName processorInterfaceType(CompilerUtil compilerUtil, String template, String packge) {
+        ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(template)+"Interface"),TypeVariableName.get("T"));
         return name;
     }
 
@@ -118,7 +122,7 @@ public class CompilerSimpleBean {
 
         final String loggerName = compilerUtil.loggerName(template);
 
-        builder.addParameter(processorClassType(template,packge), "processor");
+        builder.addParameter(processorClassType(compilerUtil, template,packge), "processor");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");

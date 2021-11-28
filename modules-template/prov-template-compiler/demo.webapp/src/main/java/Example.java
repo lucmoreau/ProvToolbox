@@ -1,16 +1,17 @@
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 
+import org.example.templates.block.Template_blockBuilderTypeManagement;
 import org.example.templates.block.client.Template_blockBuilder;
 import org.example.templates.block.client.Template_blockBean;
 import org.example.templates.client.Logger;
 import org.openprovenance.prov.client.Builder;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.vanilla.ProvFactory;
 
 import static java.util.stream.Collectors.toList;
 
@@ -39,7 +40,7 @@ public class Example {
 
         Builder[]  builders=logger.getBuilders();
 
-        Object [] o=beans.get(0).process(template_blockBuilder.aArgs2RecordConverter());
+        Object [] record=beans.get(0).process(template_blockBuilder.aArgs2RecordConverter());
 
         final int input = 4;
         StringBuffer inputType=new StringBuffer().append(3333);
@@ -58,7 +59,29 @@ public class Example {
 
         System.out.println("end");
 
+        getLevel0(beans, template_blockBuilder);
 
+        System.out.println("end2");
+
+
+
+
+    }
+
+    public static void getLevel0(List<Template_blockBean> beans, Template_blockBuilder template_blockBuilder) {
+        ProvFactory pf=ProvFactory.getFactory();
+
+        Map<QualifiedName, Set<String>> knownTypeMap=new HashMap<>();
+        Map<QualifiedName, Set<String>> unknownTypeMap=new HashMap<>();
+        beans.forEach(bean -> {
+            Object [] arecord=bean.process(template_blockBuilder.aArgs2RecordConverter());
+            String s=new org.example.templates.block.Template_blockBuilder(pf).make(arecord,new Template_blockBuilderTypeManagement<>(knownTypeMap,unknownTypeMap));
+        });
+
+        System.out.println("Known Type Map");
+        knownTypeMap.forEach((k,v) -> {if (k!=null) System.out.println(k.getPrefix()+":"+ k.getLocalPart()+ " -> " + v);});
+        System.out.println("Unknown Type Map");
+        unknownTypeMap.forEach((k,v) -> {if (k!=null) System.out.println(k.getPrefix()+":"+ k.getLocalPart() + " -> " + v);});
     }
 
     public static void constructType(StringBuffer sb, Template_blockBuilder template_blockBuilder, int in, StringBuffer inType) {

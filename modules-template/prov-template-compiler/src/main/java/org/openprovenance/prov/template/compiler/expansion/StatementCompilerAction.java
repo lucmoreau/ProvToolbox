@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.compiler;
+package org.openprovenance.prov.template.compiler.expansion;
 
 import java.util.*;
 
@@ -30,7 +30,7 @@ public class StatementCompilerAction implements StatementAction {
     static final ClassName cl_attribute = ClassName.get("org.openprovenance.prov.model", "Attribute");
     static final TypeName  cl_linkedListOfAttributes = ParameterizedTypeName.get(cl_linkedList, cl_attribute);
     static final TypeName  cl_listOfAttributes = ParameterizedTypeName.get(cl_list, cl_attribute);
-    static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
+    public static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
     public StatementCompilerAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema) {
         this.pFactory=pFactory;

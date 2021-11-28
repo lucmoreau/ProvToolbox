@@ -109,7 +109,11 @@ public class CompilerUtil {
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ValueConverter.class, "vc", Modifier.PRIVATE, Modifier.FINAL);
     }
-    
+
+    public Builder generateTypeManagementClass(String name) {
+        return TypeSpec.classBuilder(name+"TypeManagement")
+                .addModifiers(Modifier.PUBLIC);
+    }
     public MethodSpec generateConstructor2(Hashtable<QualifiedName, String> vmap) {
         com.squareup.javapoet.MethodSpec.Builder builder= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
@@ -129,7 +133,7 @@ public class CompilerUtil {
          return CaseUtils.toCamelCase(s,true);
     }
 
-    final static ProvUtilities u = new ProvUtilities();
+    final public static ProvUtilities u = new ProvUtilities();
         
 
     public Set<QualifiedName> allQualifiedNames(Statement statement) {

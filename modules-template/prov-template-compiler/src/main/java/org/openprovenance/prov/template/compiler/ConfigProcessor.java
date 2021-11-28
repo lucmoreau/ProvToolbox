@@ -8,6 +8,8 @@ import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
+import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -44,6 +46,7 @@ public class ConfigProcessor {
     public static final String BUILDER = "Builder";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
+    private final boolean debugComment;
 
     boolean withMain=true; // TODO need to be updatable via command line
 
@@ -54,8 +57,9 @@ public class ConfigProcessor {
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
     private final CompilerClient compilerClient;
-    private final CompilerBuilder compilerBuilder;
+    private final CompilerExpansionBuilder compilerExpansionBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
+    private final CompilerTypeManagement compilerTypeManagement;
 
     private final CompilerSimpleBean compilerSimpleBean;
     private final CompilerProcessor compilerProcessor;
@@ -63,10 +67,12 @@ public class ConfigProcessor {
     private final CompilerClientTest compilerClientTest;
 
     public ConfigProcessor(ProvFactory pFactory) {
+        this.debugComment=true;
         this.pFactory=pFactory;
         this.compilerSQL=new CompilerSQL();
         this.compilerClient= new CompilerClient(pFactory,compilerSQL);
-        this.compilerBuilder= new CompilerBuilder(withMain,compilerClient,pFactory);
+        this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain,compilerClient,pFactory,debugComment);
+        this.compilerTypeManagement= new CompilerTypeManagement(withMain,compilerClient,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
         this.compilerProcessor =new CompilerProcessor(pFactory);
@@ -258,6 +264,8 @@ public class ConfigProcessor {
     public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, String cli_webjar_dir) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
+            String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
+            String bnTM= compilerUtil.templateNameClass(templateName)+"TypeManagement";
             String bean=compilerUtil.beanNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
 
@@ -265,13 +273,18 @@ public class ConfigProcessor {
             String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
 
             String destination=destinationDir + bn + ".java";
+            String destinationI=destinationDir + bnI + ".java";
+            String destinationTypeManagement=destinationDir + bnTM + ".java";
             String destination2=destinationDir2 + bn + ".java";
             String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
             String destination4=destinationDir2 + processor + ".java";
 
-            JavaFile spec= compilerBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
-            boolean val1=compilerUtil.saveToFile(destinationDir, destination, spec);
+            JavaFile spec0= compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
+            boolean val0=compilerUtil.saveToFile(destinationDir, destination, spec0);
+
+            JavaFile spec1= compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
+            boolean val1=compilerUtil.saveToFile(destinationDir, destinationI, spec1);
 
             JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
@@ -279,6 +292,11 @@ public class ConfigProcessor {
             JavaFile spec2b=compilerClient.generateSQLInterface(packge+ ".client");
             boolean val2b=compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
             val2=val2&val2b;
+
+
+            JavaFile spec5= compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+            boolean val5=compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
+
 
             boolean val3=true;
             boolean val4=true;

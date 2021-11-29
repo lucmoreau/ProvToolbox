@@ -2,6 +2,10 @@
 jetty:
 	cd demo.webapp; make jetty
 
+run:
+	target/libs/bin/example_run src/test/resources/templates/example.csv target/example.png
+	target/libs/bin/example_run kernel src/test/resources/templates/example.csv target/kernel.json
+
 expand1:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-a.provn -outfile src/main/resources/expanded-a1.provn -bindings src/main/resources/bindings1.provn 
 

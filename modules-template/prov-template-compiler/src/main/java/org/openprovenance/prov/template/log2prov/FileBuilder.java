@@ -3,17 +3,12 @@ package org.openprovenance.prov.template.log2prov;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -23,10 +18,12 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyBeanInterface;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface;
-import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientInterface;
+import org.openprovenance.prov.template.log2prov.interfaces.ProxyMakerInterface;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxySQLInterface;
+import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 abstract public class FileBuilder {
     static ObjectMapper mapper = new ObjectMapper();
@@ -46,13 +43,18 @@ abstract public class FileBuilder {
 
     static ProxyManagement pm=new ProxyManagement();
 
-
     public static void reader(InputStream r, DocumentProcessor dp, RecordProcessor rp) throws IOException {
+        reader(r,dp,rp,null);
+    }
+    public static void reader(InputStream r, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp) throws IOException {
 
         CSVParser parser = CSVParser.parse(r, StandardCharsets.UTF_8, CSVFormat.DEFAULT);
         List<CSVRecord> records=parser.getRecords();
 
         Map<String, String> sqlInsert=new HashMap<>();
+
+        final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
+        final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
 
 
         for (CSVRecord record: records) {
@@ -80,21 +82,35 @@ abstract public class FileBuilder {
             } else {
                 if (dp!=null) dp.process(builder.make(args));
                 if (rp!=null) {
-                    Object bean2sqlFun=clientBuilder.bean2sql();
-                    String finalMethodName = methodName;
-                    String insert=sqlInsert.computeIfAbsent(methodName, (s -> {
-                        String tmp=clientBuilder.getSQLInsert();
-                        rp.insertHead(finalMethodName,tmp);
-                        return tmp;
-                    }));
-                    Object bean=clientBuilder.toBean(args);
-                    ProxyBeanInterface proxyBean=pm.facadeProxy(ProxyBeanInterface.class,bean);
-                    rp.process(methodName, (String)proxyBean.process(bean2sqlFun));
+                    processRecordForSql(rp, sqlInsert, args, methodName, clientBuilder);
+                }
+                if (tp!=null) {
+
+                    ProxyMakerInterface makerBuilder=pm.facadeProxy(ProxyMakerInterface.class,builder);
+                    Object typeManager=makerBuilder.getTypeManager(knownTypeMap,unknownTypeMap);
+
+                    makerBuilder.make(args,typeManager);
+
+                    tp.process(methodName,args);
                 }
             }
         }
         if (dp!=null) dp.end();
         if (rp!=null) rp.end();
+        if (tp!=null) tp.end(knownTypeMap,unknownTypeMap);
+    }
+
+    private static void processRecordForSql(RecordProcessor rp, Map<String, String> sqlInsert, Object[] args, String methodName, ProxySQLInterface clientBuilder) {
+        Object bean2sqlFun= clientBuilder.bean2sql();
+        String finalMethodName = methodName;
+        String insert= sqlInsert.computeIfAbsent(methodName, (s -> {
+            String tmp= clientBuilder.getSQLInsert();
+            rp.insertHead(finalMethodName,tmp);
+            return tmp;
+        }));
+        Object bean= clientBuilder.toBean(args);
+        ProxyBeanInterface proxyBean=pm.facadeProxy(ProxyBeanInterface.class,bean);
+        rp.process(methodName, (String)proxyBean.process(bean2sqlFun));
     }
 
     public static void Oldreader(BufferedReader r, DocumentProcessor dp) {

@@ -7,7 +7,7 @@
     "init_package": "org.example.templates",
     "logger": "Logger",
     "logger_package": "org.example.templates.client",
-    "script": "example_dt",
+    "script": "example_run",
     "script_dir": "target/libs/bin",
     "jsweet": true,
     "sbean": true,

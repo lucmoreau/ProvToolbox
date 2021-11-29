@@ -299,7 +299,7 @@ public class CompilerMaven {
                 line = line.replace("${SCRIPT}", configs.script);
                 line = line.replace("${VERSION}", configs.version);
                 line = line.replace("${NAME}", configs.name);
-                line = line.replace("${PACKAGE}", configs.init_package.replace(".", "/"));
+                line = line.replace("${GROUP}", configs.group.replace(".", "/"));
                 line = line.replace("${INIT}", configs.init_package + "." + ConfigProcessor.INIT);
                 os.println(line);
                 line = reader.readLine();

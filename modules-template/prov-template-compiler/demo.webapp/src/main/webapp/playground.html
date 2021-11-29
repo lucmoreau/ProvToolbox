@@ -13,6 +13,7 @@
 <script type="text/javascript" src="/webjars/underscore/1.12.0/underscore.js"></script>
 <script type="text/javascript" src="/webjars/JSV/lib/jsv.js"></script>
 <script type="text/javascript" src="/webjars/jsonform/lib/jsonform.js"></script>
+<script src="/prov-wrt/webjars/prov-jsweet-candy-java/0.9.16/bundle.js"></script>
 <script type="text/javascript" src="/webjars/templates_cli/0.1.0/js/org/example/templates/block/client/Template_blockBuilder.js"></script>
 <script type="text/javascript" src="/webjars/templates_cli/0.1.0/js/org/example/templates/block/client/Template_blockBean.js"></script>
 
@@ -50,7 +51,10 @@
     var logger=new org.example.templates.client.Logger();
 
     var profile = {
-        "template_block": ["isA", "operation", "operation_type", "agent", "consumed1", "consumed_value1", "consumed2", "consumed_value2"]
+        "template_block": {
+            "compulsory": ["isA", "operation", "operation_type", "agent", "consumed1", "consumed_value1", "consumed2", "consumed_value2"],
+            "optional": []
+        }
     };
 
     var templateManager=new TemplateManager(logger,schemaUrl, false, profile);

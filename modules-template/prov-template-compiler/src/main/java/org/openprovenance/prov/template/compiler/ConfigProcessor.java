@@ -22,6 +22,7 @@ public class ConfigProcessor {
     public static final String BUILDER_INTERFACE = "Builder";
     public static final String INIT = "Init";
     public static final String BUILDERS = "builders";
+    public static final String TYPEMANAGERS = "typeManagers";
     public static final String PF = "pf";
     public static final String GET_SUCCESSOR_METHOD = "getSuccessors";
     public static final String GET_TYPED_SUCCESSOR_METHOD = "getTypedSuccessors";

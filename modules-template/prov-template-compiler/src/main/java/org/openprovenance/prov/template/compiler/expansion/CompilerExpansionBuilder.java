@@ -125,6 +125,8 @@ public class CompilerExpansionBuilder {
 
         builder.addMethod(compilerClient.clientAccessorGenerator(templateName,packge+".client"));
 
+        builder.addMethod(compilerClient.typeManagerGenerator(templateName,packge));
+
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
 
         if (bindings_schema != null) {

@@ -72,16 +72,24 @@ public class CompilerTypeManagement {
 
                 mbuilder.addComment("Declare $N", q.getLocalPart());
                 knownTypes.getOrDefault(q.getUri(), new LinkedList<>()).forEach(type -> {
+
                     mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
                     mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
+                    mbuilder.addComment("type " + type);
+
                     mbuilder.addStatement("knownTypeMap.get($N).add($S)", q.getLocalPart(), type);
                     mbuilder.endControlFlow();
+
                 });
 
                 unknownTypes.getOrDefault(q.getUri(), new LinkedList<>()).forEach(type -> {
                     mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
+                    mbuilder.addComment(type);
+                    final String typeVar = type.substring(type.indexOf("#") + 1);
+                    mbuilder.beginControlFlow("if ($N!=null) ", typeVar);
                     mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
-                    mbuilder.addStatement("unknownTypeMap.get($N).add((($T)$N).getUri())", q.getLocalPart(), QualifiedName.class, type.substring(type.indexOf("#") + 1));
+                    mbuilder.addStatement("unknownTypeMap.get($N).add((($T)$N).getUri())", q.getLocalPart(), QualifiedName.class, typeVar);
+                    mbuilder.endControlFlow();
                     mbuilder.endControlFlow();
 
                 });

@@ -273,11 +273,13 @@ public class CompilerExpansionBuilder {
         builder.beginControlFlow("if (the_type!=null && the_type.length!=0)");
         //builder.addStatement("System.err.println(\"the_type \" + the_type[0])");
         //builder.addStatement("System.err.println(\"the_type \" + the_type[1])");
+        builder.beginControlFlow("if ($N[the_type[0]]!=null)", "record");
         builder.addStatement("String uri2=(($T)($N[the_type[0]])).getUri()",QualifiedName.class, "record");
 
         builder.addStatement("mapLevelNP1.computeIfAbsent(uri2, k -> new $T<>())",  LinkedList.class); //store in Lists initially
 
         builder.addStatement("mapLevelNP1.get(uri2).add(new int[] { the_type[0], the_type[1], $N, $N })", tmpVar, "count");
+        builder.endControlFlow();
         builder.endControlFlow();
         builder.endControlFlow();
         builder.endControlFlow();

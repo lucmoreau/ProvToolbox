@@ -431,7 +431,6 @@ public class CompilerExpansionBuilder {
 
         Map<String,String> translator=new HashMap<>();
 
-        boolean first = true;
         Set<String> seen = new HashSet<>();
         for (QualifiedName q : allVars) {
             final String key = q.getLocalPart();
@@ -458,18 +457,17 @@ public class CompilerExpansionBuilder {
 
         for (QualifiedName q : allAtts) {
             final String key = q.getLocalPart();
-            String newName = key;
             if (!(seen.contains(key))) {
                 final JsonNode entry = the_var.path(key);
                 JsonNode jentry;
                 if (entry != null && !(entry instanceof MissingNode) && ((jentry = entry.get(0).get("@id")) != null)) {
                     String s = jentry.textValue();
                     String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";
-                    newName = compilerUtil.attPrefix(key);
+                    final String newName = compilerUtil.attPrefix(key);
+                    translator.put(key,newName);
                     builder.addStatement("$T $N=($N==null)?null:__C_ns.stringToQualifiedName(" + s2 + ",pf)", QualifiedName.class, newName, key, key);
                 }
             }
-            translator.put(key,newName);
         }
 
         final String args = compilerUtil.generateArgumentsListForCall(the_var,translator);

@@ -80,13 +80,13 @@ public class CompilerLogger {
 
         MethodSpec.Builder builder3 = MethodSpec.methodBuilder(ConfigProcessor.GET_SUCCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.hashmapType);
+                .returns(CompilerUtil.mapType);
         builder.addMethod(builder3.build());
 
 
         MethodSpec.Builder builder3b = MethodSpec.methodBuilder(ConfigProcessor.GET_TYPED_SUCCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.hashmapType);
+                .returns(CompilerUtil.mapType);
         builder.addMethod(builder3b.build());
 
         MethodSpec.Builder builder4 = MethodSpec.methodBuilder(ConfigProcessor.GET_NAME)

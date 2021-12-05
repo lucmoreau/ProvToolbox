@@ -47,7 +47,7 @@
 		]],
 		"produced": [
 			{
-				"@id": "ex:output/*",
+				"@id": "ex:*",
 				"@documentation": "The identifier of the produced entity"
 			}
 		],
@@ -64,7 +64,7 @@
 			}]]
 	},
 	"context": {
-		"ex": "http://example.org/#"
+		"ex": "http://example.org/"
 	},
 	"template": "https://openprovenance.org/templates/org/openprovenance/generic/binaryop/1.provn"
 }

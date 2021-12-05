@@ -10,6 +10,8 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
+import org.openprovenance.prov.template.compiler.expansion.CompilerTypePropagate;
+import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +34,9 @@ public class ConfigProcessor {
     public static final String TESTER_FILE = "ExampleTest";
     public static final String GET_BUILDERS_METHOD = "getBuilders";
     public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
+
+    public static final String PROPERTY_ORDER = "propertyOrder";
+    public static final String PROPERTY_ORDER_METHOD  = "getPropertyOrder";
 
     public static final String RECORD_CSV_PROCESSOR_METHOD  = "record2csv";
     public static final String ARGS_CSV_CONVERSION_METHOD   = "args2csv";
@@ -61,6 +66,8 @@ public class ConfigProcessor {
     private final CompilerExpansionBuilder compilerExpansionBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
     private final CompilerTypeManagement compilerTypeManagement;
+    private final CompilerTypedRecord compilerTypedRecord;
+    private final CompilerTypePropagate compilerTypePropagate;
 
     private final CompilerSimpleBean compilerSimpleBean;
     private final CompilerProcessor compilerProcessor;
@@ -74,6 +81,8 @@ public class ConfigProcessor {
         this.compilerClient= new CompilerClient(pFactory,compilerSQL);
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain,compilerClient,pFactory,debugComment);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain,compilerClient,pFactory,debugComment);
+        this.compilerTypePropagate= new CompilerTypePropagate(withMain,compilerClient,pFactory,debugComment);
+        this.compilerTypedRecord = new CompilerTypedRecord(withMain,compilerClient,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
         this.compilerProcessor =new CompilerProcessor(pFactory);
@@ -267,6 +276,8 @@ public class ConfigProcessor {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
             String bnTM= compilerUtil.templateNameClass(templateName)+"TypeManagement";
+            String bnTP= compilerUtil.templateNameClass(templateName)+"TypePropagate";
+            String bnTR= compilerUtil.templateNameClass(templateName)+"TypedRecord";
             String bean=compilerUtil.beanNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
 
@@ -276,10 +287,18 @@ public class ConfigProcessor {
             String destination=destinationDir + bn + ".java";
             String destinationI=destinationDir + bnI + ".java";
             String destinationTypeManagement=destinationDir + bnTM + ".java";
+            String destinationTypePropagate=destinationDir + bnTP + ".java";
+            String destinationTypedRecord=destinationDir + bnTR + ".java";
             String destination2=destinationDir2 + bn + ".java";
             String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
             String destination4=destinationDir2 + processor + ".java";
+
+
+            // generating client first to ensure successor is calculated
+            JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
+            boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
+
 
             JavaFile spec0= compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
             boolean val0=compilerUtil.saveToFile(destinationDir, destination, spec0);
@@ -287,16 +306,18 @@ public class ConfigProcessor {
             JavaFile spec1= compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
             boolean val1=compilerUtil.saveToFile(destinationDir, destinationI, spec1);
 
-            JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
-            boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
-
             JavaFile spec2b=compilerClient.generateSQLInterface(packge+ ".client");
             boolean val2b=compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
             val2=val2&val2b;
 
 
             JavaFile spec5= compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+            JavaFile spec6= compilerTypedRecord.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+            JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+
             boolean val5=compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
+            boolean val6=compilerUtil.saveToFile(destinationDir, destinationTypedRecord, spec6);
+            boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
 
 
             boolean val3=true;

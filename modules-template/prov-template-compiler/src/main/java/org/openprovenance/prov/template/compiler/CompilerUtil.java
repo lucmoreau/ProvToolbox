@@ -114,6 +114,14 @@ public class CompilerUtil {
         return TypeSpec.classBuilder(name+"TypeManagement")
                 .addModifiers(Modifier.PUBLIC);
     }
+    public Builder generateTypePropagateClass(String name) {
+        return TypeSpec.classBuilder(name+"TypePropagate")
+                .addModifiers(Modifier.PUBLIC);
+    }
+    public Builder generateTypedRecordClass(String name) {
+        return TypeSpec.classBuilder(name+"TypedRecord")
+                .addModifiers(Modifier.PUBLIC);
+    }
     public MethodSpec generateConstructor2(Hashtable<QualifiedName, String> vmap) {
         com.squareup.javapoet.MethodSpec.Builder builder= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
@@ -239,7 +247,7 @@ public class CompilerUtil {
         return bindings_schema;
     }
 
-    static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
     public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
         if (the_var.get(key).get(0).get("@id") != null) {
@@ -281,6 +289,40 @@ public class CompilerUtil {
         }
     }
 
+    public Class<?> getJavaDocumentTypeForDeclaredType(JsonNode the_var, String key) {
+        if (the_var.get(key).get(0).get("@id") != null) {
+            return QualifiedName.class;
+        } else {
+            if (the_var.get(key).get(0).get(0) == null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
+            if (hasType != null) {
+                String keyType = hasType.textValue();
+                switch (keyType) {
+                    case "xsd:int":
+                    case "xsd:long":
+                    case "xsd:string":
+                    case "xsd:boolean":
+                    case "xsd:float":
+                    case "xsd:double":
+                    case "xsd:dateTime":
+                        return Object.class;
+                    default:
+                        throw new UnsupportedOperationException();
+                }
+            } else {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + the_var);
+
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
     public void generateSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
@@ -288,6 +330,46 @@ public class CompilerUtil {
             builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
         }
     }
+    public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
+        Iterator<String> iter = the_var.fieldNames();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            builder.addParameter(getJavaDocumentTypeForDeclaredType(the_var, key), key);
+        }
+    }
+    public boolean isVariableDenotingQualifiedName(String key, JsonNode the_var) {
+        final JsonNode entry = the_var.path(key);
+
+        return entry != null && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
+    }
+
+
+
+    public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator) {
+        Iterator<String> iter = the_var.fieldNames();
+        boolean first = true;
+        String args = "";
+        while (iter.hasNext()) {
+            String key = iter.next();
+
+            if (first) {
+                first = false;
+            } else {
+                args = args + ", ";
+            }
+            String newName=key;
+            if (translator!=null) {
+                final String tmp = translator.get(key);
+                if (tmp !=null) {
+                    newName=tmp;
+                }
+            }
+            args = args + newName;
+
+        }
+        return args;
+    }
+
 
 
     public void generateSpecializedParametersJavadoc(MethodSpec.Builder builder, JsonNode the_var, JsonNode the_documentation, JsonNode the_return) {

@@ -13,6 +13,8 @@ public interface ProxyClientInterface {
 
     String getName();
 
+    String [] getPropertyOrder();
+
     //String make(Object[] objects);
 
 }

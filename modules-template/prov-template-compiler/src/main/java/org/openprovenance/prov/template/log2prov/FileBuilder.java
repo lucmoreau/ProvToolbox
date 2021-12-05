@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -97,8 +94,15 @@ abstract public class FileBuilder {
         }
         if (dp!=null) dp.end();
         if (rp!=null) rp.end();
-        if (tp!=null) tp.end(knownTypeMap,unknownTypeMap);
+        if (tp!=null) {
+            final int bound = 6;
+            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, bound);
+            Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
+            tp.computeFeatureVector(types);
+            tp.displayResult();
+        }
     }
+
 
     private static void processRecordForSql(RecordProcessor rp, Map<String, String> sqlInsert, Object[] args, String methodName, ProxySQLInterface clientBuilder) {
         Object bean2sqlFun= clientBuilder.bean2sql();

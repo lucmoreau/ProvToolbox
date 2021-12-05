@@ -38,7 +38,14 @@ public class ProvenanceKernels {
 
         List<Pair<String,Object[]>> records=new LinkedList<>();
 
-        TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,records);
+        int relationOffset=2000;
+
+        Map<String,Integer> knownRelations=Map.of(
+                "template_block.produced.wdf.consumed1", relationOffset+0,
+                "template_block.produced.wdf.consumed2", relationOffset+1       );
+
+
+        TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations, records);
 
        
         FileBuilder.reader(is,dp,rp,trp);

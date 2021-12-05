@@ -17,8 +17,8 @@ import com.squareup.javapoet.TypeName;
 public class StatementCompilerAction implements StatementAction {
 
     private final JsonNode bindings_schema;
-    private Set<QualifiedName> allVars;
-    private Set<QualifiedName> allAtts;
+    private Collection<QualifiedName> allVars;
+    private Collection<QualifiedName> allAtts;
     private Builder builder;
     private String target;
     private ProvFactory pFactory;
@@ -32,7 +32,7 @@ public class StatementCompilerAction implements StatementAction {
     static final TypeName  cl_listOfAttributes = ParameterizedTypeName.get(cl_list, cl_attribute);
     public static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
-    public StatementCompilerAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema) {
+    public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;

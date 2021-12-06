@@ -952,7 +952,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 Method method = clazz.getMethod("main", String[].class);
                 try {
                     if ( config.log2kernel) {
-                        method.invoke(null, new Object[]{new String[]{"kernel", config.infile, config.outfile}});
+                        method.invoke(null, new Object[]{new String[]{"kernel", "-infile", config.infile, "-outfile", config.outfile}});
                     } else {
                         method.invoke(null, new Object[]{new String[]{config.infile, config.outfile, "-merge"}});
                     }

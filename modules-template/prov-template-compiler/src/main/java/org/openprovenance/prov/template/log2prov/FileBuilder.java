@@ -99,7 +99,7 @@ abstract public class FileBuilder {
             tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, bound);
             Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
             tp.computeFeatureVector(types);
-            return tp.displayResult();
+            return tp.getResult();
         }
         return null;
     }

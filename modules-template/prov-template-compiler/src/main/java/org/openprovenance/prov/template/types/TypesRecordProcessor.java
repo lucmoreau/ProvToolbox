@@ -294,15 +294,7 @@ public class TypesRecordProcessor  {
     };
 
 
-    public Map<String, Object> displayResult() {
-
-        try {
-            //om.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-            //om.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
-            om.writerWithDefaultPrettyPrinter().writeValue(System.out, result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Map<String, Object> getResult() {
         return result;
 
     }

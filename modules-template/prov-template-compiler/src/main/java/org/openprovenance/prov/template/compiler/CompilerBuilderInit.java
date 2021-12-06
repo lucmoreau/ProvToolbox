@@ -11,6 +11,8 @@ import org.openprovenance.prov.template.types.ProvenanceKernels;
 
 import javax.lang.model.element.Modifier;
 
+import java.util.List;
+
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBuilderInit {
@@ -83,7 +85,7 @@ public class CompilerBuilderInit {
                 .addException(Exception.class)
                 .addStatement("init()")
                 .beginControlFlow("if ($S.equals(args[0]))","kernel")
-                .addStatement("System.out.println(\"hello \" + args.length)")
+                .addStatement("System.out.println(\"arguments \" + $T.of(args))", List.class)
                 .addStatement("$T.main($N)", ProvenanceKernels.class, "args")
                 .nextControlFlow("else")
                 .addStatement("$T.main($N)", Runner.class, "args")

@@ -46,6 +46,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String BUILDER = "builder";
     public static final String TEMPLATE_BUILDER = "templatebuilder";
     public static final String LOG2PROV = "log2prov";
+    public static final String LOG2KERNEL = "log2kernel";
     public static final String CONFIG = "config";
 
     // see http://commons.apache.org/cli/usage.html
@@ -196,13 +197,17 @@ public class CommandLineArguments implements ErrorCodes {
                 .desc("template builder configuration")
                 .longOpt(TEMPLATE_BUILDER)
                 .build();
-        
+
         Option log2prov = Option.builder(LOG2PROV)
                 .argName("file")
                 .hasArg()
                 .desc("fully qualified ClassName of initialiser in jar file")
                 .longOpt(LOG2PROV)
                 .build();
+
+        Option log2kernel = new Option(LOG2KERNEL, LOG2KERNEL, false, "generating provenance types");
+
+
         Option config = new Option(CONFIG, CONFIG, false, "get configuration");
     
         Options options = new Options();
@@ -236,6 +241,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(builder);
         options.addOption(template_builder);
         options.addOption(log2prov);
+        options.addOption(log2kernel);
         options.addOption(config);
 
         return options;
@@ -285,6 +291,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean builder=false;
         String template_builder=null;
         String log2prov=null;
+        boolean log2kernel=false;
         boolean config=false;
 
 
@@ -334,6 +341,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(BUILDER))  builder = true;
             if (line.hasOption(TEMPLATE_BUILDER))  template_builder = line.getOptionValue(TEMPLATE_BUILDER);
             if (line.hasOption(LOG2PROV))  log2prov = line.getOptionValue(LOG2PROV);
+            if (line.hasOption(LOG2KERNEL))  log2kernel = true;
 
             if (line.hasOption(CONFIG))  config = true;
 
@@ -347,37 +355,39 @@ public class CommandLineArguments implements ErrorCodes {
             	System.out.println("provconvert version " + Configuration.longToolboxVersion);
             	return;
             }
-	    
-	    
-	    
-            InteropFramework interop=new InteropFramework(new CommandLineArguments(verbose,
-                                                                                   debug,
-                                                                                   logfile,
-                                                                                   infile,
-                                                                                   informat,
-                                                                                   outfile,
-                                                                                   outformat,
-                                                                                   namespaces,
-                                                                                   title,
-                                                                                   layout,
-                                                                                   bindings,
-                                                                                   bindingformat,
-                                                                                   bindingsVersion,
-                                                                                   addOrderp,
-                                                                                   allexpanded,
-                                                                                   template,
-                                                                                   builder,
-                                                                                   template_builder,
-                                                                                   packge,
-                                                                                   location,
-                                                                                   generator,
-                                                                                   index,
-                                                                                   merge,
-                                                                                   flatten,
-                                                                                   compare,
-                                                                                   compareOut,
-                                                                                   log2prov,
-                                                                                   config),
+
+
+            final CommandLineArguments commandLineArguments
+                    = new CommandLineArguments( verbose,
+                                                debug,
+                                                logfile,
+                                                infile,
+                                                informat,
+                                                outfile,
+                                                outformat,
+                                                namespaces,
+                                                title,
+                                                layout,
+                                                bindings,
+                                                bindingformat,
+                                                bindingsVersion,
+                                                addOrderp,
+                                                allexpanded,
+                                                template,
+                                                builder,
+                                                template_builder,
+                                                packge,
+                                                location,
+                                                generator,
+                                                index,
+                                                merge,
+                                                flatten,
+                                                compare,
+                                                compareOut,
+                                                log2prov,
+                                                log2kernel,
+                                                config);
+            InteropFramework interop=new InteropFramework(commandLineArguments,
                                                           InteropFramework.getDefaultFactory());
             if (listFormatsp) {
                 java.util.List<java.util.Map<String, String>> formats = interop.getSupportedFormats();
@@ -428,12 +438,13 @@ public class CommandLineArguments implements ErrorCodes {
     public final  String compare;
     public final  String compareOut;
     public final  String log2prov;
+    public final  boolean log2kernel;
     public final  boolean config;
 
     public CommandLineArguments(String verbose, String debug, String logfile,
                                 String infile, String informat, String outfile, String outformat, String namespaces, String title,
                                 String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean config) {
+                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config) {
         this.verbose=verbose;
         this.debug=debug;
         this.logfile=logfile;
@@ -461,6 +472,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.compare=compare;
         this.compareOut=compareOut;
         this.log2prov=log2prov;
+        this.log2kernel=log2kernel;
         this.config=config;
         
     }
@@ -492,6 +504,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.builder=false;
         this.template_builder=null;
         this.log2prov=null;
+        this.log2kernel=false;
         this.config=false;
 
     }

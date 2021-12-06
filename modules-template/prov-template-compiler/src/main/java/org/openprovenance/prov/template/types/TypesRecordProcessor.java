@@ -1,9 +1,7 @@
 package org.openprovenance.prov.template.types;
 
 
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -296,7 +294,7 @@ public class TypesRecordProcessor  {
     };
 
 
-    public void displayResult() {
+    public Map<String, Object> displayResult() {
 
         try {
             //om.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
@@ -305,6 +303,7 @@ public class TypesRecordProcessor  {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return result;
 
     }
 

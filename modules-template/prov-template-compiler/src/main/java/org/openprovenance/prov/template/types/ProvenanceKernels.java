@@ -1,12 +1,14 @@
 package org.openprovenance.prov.template.types;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.template.log2prov.DocumentProcessor;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.RecordProcessor;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -48,7 +50,8 @@ public class ProvenanceKernels {
         TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations, records);
 
        
-        FileBuilder.reader(is,dp,rp,trp);
+        Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);
+        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(out),result);
 
     }
 

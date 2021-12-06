@@ -43,7 +43,7 @@ abstract public class FileBuilder {
     public static void reader(InputStream r, DocumentProcessor dp, RecordProcessor rp) throws IOException {
         reader(r,dp,rp,null);
     }
-    public static void reader(InputStream r, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp) throws IOException {
+    public static Map<String, Object> reader(InputStream r, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp) throws IOException {
 
         CSVParser parser = CSVParser.parse(r, StandardCharsets.UTF_8, CSVFormat.DEFAULT);
         List<CSVRecord> records=parser.getRecords();
@@ -99,8 +99,9 @@ abstract public class FileBuilder {
             tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, bound);
             Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
             tp.computeFeatureVector(types);
-            tp.displayResult();
+            return tp.displayResult();
         }
+        return null;
     }
 
 

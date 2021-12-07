@@ -16,12 +16,20 @@ public class PK_CommandLineArguments {
     public static final String INFILE = "infile";
     public static final String OUTFILE = "outfile";
     public static final String KNOWNTYPES = "knownTypes";
+    public static final String KNOWNRELATIONS = "knownRelations";
+    public static final String RELATION_OFFSET ="relationOffset";
+    public static final String SET_OFFSET ="setOffset";
+    public static final String LEVEL_OFFSET ="levelOffset";
 
 
     public final String debug;
     public final String infile;
     public final String outfile;
     public final String knowntypes;
+    public final String knownrelations;
+    public final int relationOffset;
+    public final int setOffset;
+    public final int levelOffset;
 
 
     static private Options buildOptions() {
@@ -46,11 +54,37 @@ public class PK_CommandLineArguments {
                 .longOpt(OUTFILE)
                 .build();
 
-        Option knowntypes = Option.builder("K")
+        Option knowntypes = Option.builder("T")
                 .argName("file")
                 .hasArg()
                 .desc("known types")
                 .longOpt(KNOWNTYPES)
+                .build();
+
+        Option knownrelations = Option.builder("R")
+                .argName("file")
+                .hasArg()
+                .desc("known types")
+                .longOpt(KNOWNRELATIONS)
+                .build();
+
+        Option relationOffset = Option.builder("r")
+                .argName("int")
+                .hasArg()
+                .desc("relation offset")
+                .longOpt(RELATION_OFFSET)
+                .build();
+        Option setOffset = Option.builder("s")
+                .argName("int")
+                .hasArg()
+                .desc("set offset")
+                .longOpt(SET_OFFSET)
+                .build();
+        Option levelOffset = Option.builder("l")
+                .argName("int")
+                .hasArg()
+                .desc("level offset")
+                .longOpt(LEVEL_OFFSET)
                 .build();
 
         Options options = new Options();
@@ -60,6 +94,10 @@ public class PK_CommandLineArguments {
         options.addOption(infile);
         options.addOption(outfile);
         options.addOption(knowntypes);
+        options.addOption(knownrelations);
+        options.addOption(setOffset);
+        options.addOption(relationOffset);
+        options.addOption(levelOffset);
 
         return options;
 
@@ -73,6 +111,11 @@ public class PK_CommandLineArguments {
         String infile = null;
         String outfile = null;
         String knowntypes = null;
+        String knownrelations = null;
+
+        int relationOffset=2000;
+        int setOffset=100000;
+        int levelOffset=1000000;
 
         try {
             // parse the command line arguments
@@ -80,11 +123,15 @@ public class PK_CommandLineArguments {
             System.out.println("Args " + List.of(args));
 
             CommandLine line = parser.parse(options, args);
-            if (line.hasOption(HELP)) help = HELP;
-            if (line.hasOption(DEBUG)) debug = DEBUG;
-            if (line.hasOption(INFILE)) infile = line.getOptionValue(INFILE);
-            if (line.hasOption(OUTFILE)) outfile = line.getOptionValue(OUTFILE);
-            if (line.hasOption(KNOWNTYPES)) knowntypes = line.getOptionValue(KNOWNTYPES);
+            if (line.hasOption(HELP))               help = HELP;
+            if (line.hasOption(DEBUG))              debug = DEBUG;
+            if (line.hasOption(INFILE))             infile = line.getOptionValue(INFILE);
+            if (line.hasOption(OUTFILE))            outfile = line.getOptionValue(OUTFILE);
+            if (line.hasOption(KNOWNTYPES))         knowntypes = line.getOptionValue(KNOWNTYPES);
+            if (line.hasOption(KNOWNRELATIONS))     knownrelations = line.getOptionValue(KNOWNRELATIONS);
+            if (line.hasOption(SET_OFFSET))         setOffset = Integer.parseInt(line.getOptionValue(SET_OFFSET));
+            if (line.hasOption(RELATION_OFFSET))    relationOffset = Integer.parseInt(line.getOptionValue(SET_OFFSET));
+            if (line.hasOption(LEVEL_OFFSET))       levelOffset = Integer.parseInt(line.getOptionValue(LEVEL_OFFSET));
 
 
             if (help != null) {
@@ -95,7 +142,7 @@ public class PK_CommandLineArguments {
 
 
             final PK_CommandLineArguments commandLineArguments
-                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes);
+                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset);
 
             return commandLineArguments;
 
@@ -106,11 +153,15 @@ public class PK_CommandLineArguments {
         return null;
     }
 
-    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes) {
+    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset) {
         this.debug=debug;
         this.infile=infile;
         this.outfile=outfile;
         this.knowntypes=knowntypes;
+        this.knownrelations=knownrelations;
+        this.setOffset=setOffset;
+        this.relationOffset=relationOffset;
+        this.levelOffset=levelOffset;
     }
 }
 

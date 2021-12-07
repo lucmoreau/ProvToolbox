@@ -2,7 +2,7 @@
 package org.openprovenance.prov.scala
 
 import org.scalatest._
-import org.openprovenance.prov.scala.immutable.ProvFactory
+import org.openprovenance.prov.scala."immutable.ProvFactory
 import org.openprovenance.prov.model.StatementOrBundle.Kind
 import java.util.LinkedList
 

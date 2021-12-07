@@ -1,23 +1,82 @@
 #!/bin/sh
 # file generated automatically by provconvert -templatebuilder <file>
 # modules-template/prov-template-compiler/src/main/resources/org/openprovenance/prov/template/compiler/script.sh
-if [ "$#" -ne 2 ]; then
-    if [ "$#" -ne 3 ]; then
-      echo "Illegal number of parameters: ${SCRIPT} <logfile> <provfile>"
-      echo "Illegal number of parameters: ${SCRIPT} kernel <logfile> <jsonfile>"
-      exit -1
-    fi
-fi
+
+
 
 export CLASSPATH_PREFIX=$HOME/.m2/repository/${GROUP}/${NAME}_l2p/${VERSION}/${NAME}_l2p-${VERSION}.jar:$HOME/.m2/repository/${GROUP}/${NAME}_cli/${VERSION}/${NAME}_cli-${VERSION}.jar
 
 PROVCONVERT=./provconvert
 
+POSITIONAL=()
 
-if [ "$1" = "kernel" ]; then
-   $PROVCONVERT -infile $2 -log2prov ${INIT} -outfile $3 -log2kernel
+ARG1="$1"
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    -r|-relationOffset|--relationOffset)
+      _RELATION_OFFSET="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -s|-setOffset|--setOffset)
+      _SET_OFFSET="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -l|-levelOffset|--levelOffset)
+      _LEVEL_OFFSET="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -T|-knownTypes|--knownTypes)
+      _KNOWN_TYPES="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -R|-knownRelations|--knownRelations)
+      _KNOWN_RELATIONS="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -i|-infile|--infile)
+      _INFILE="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -o|-outfile|--outfile)
+      _OUTFILE="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    --default)
+      export DEFAULT=YES
+      shift # past argument
+      ;;
+    *)    # unknown option
+      POSITIONAL+=("$1") # save it in an array for later
+      shift # past argument
+      ;;
+  esac
+done
+
+if [ -z "$_INFILE" ]; then
+  echo "NO input file"
+  exit 1
+fi
+
+if [ -z "$_OUTFILE" ]; then
+  echo "NO output file"
+  exit 1;
+fi
+
+
+if [ "$ARG1" = "kernel" ]; then
+   (export KNOWN_TYPES="$_KNOWN_TYPES" KNOWN_RELATIONS="$_KNOWN_RELATIONS" RELATION_OFFSET="$_RELATION_OFFSET"; export LEVEL_OFFSET="$_LEVEL_OFFSET"; export SET_OFFSET="$_SET_OFFSET"; $PROVCONVERT -infile $_INFILE -log2prov ${INIT} -outfile $_OUTFILE -log2kernel)
 else
-   $PROVCONVERT -infile $1 -log2prov ${INIT} -outfile $2
+   $PROVCONVERT -infile "$_INFILE" -log2prov ${INIT} -outfile "$_OUTFILE"
 fi
 
 

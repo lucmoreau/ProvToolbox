@@ -952,7 +952,40 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 Method method = clazz.getMethod("main", String[].class);
                 try {
                     if ( config.log2kernel) {
-                        method.invoke(null, new Object[]{new String[]{"kernel", "-infile", config.infile, "-outfile", config.outfile}});
+                        List<String> init=List.of("kernel", "-infile", config.infile, "-outfile", config.outfile);
+                        List<String> ll = new LinkedList<>(init);
+                        Map<String, String> env=System.getenv();
+                        String tmp;
+                        if ((tmp=env.get("LEVEL_OFFSET"))!=null && !tmp.equals("")) {
+                            ll.add("-levelOffset");
+                            ll.add(tmp);
+                            System.out.println(" -----> " + tmp);
+                        }
+                        if ((tmp=env.get("SET_OFFSET"))!=null && !tmp.equals("")) {
+                            ll.add("-setOffset");
+                            ll.add(tmp);
+                            System.out.println(" -----> " + tmp);
+                        }
+                        if ((tmp=env.get("RELATION_OFFSET"))!=null && !tmp.equals("")) {
+                            ll.add("-relationOffset");
+                            ll.add(tmp);
+                            System.out.println(" -----> " + tmp);
+                        }
+                        if ((tmp=env.get("KNOWN_TYPES"))!=null && !tmp.equals("")) {
+                            ll.add("-knownTypes");
+                            ll.add(tmp);
+                            System.out.println(" -----> " + tmp);
+                        }
+                        if ((tmp=env.get("KNOWN_RELATIONS"))!=null && !tmp.equals("")) {
+                            ll.add("-knownRelations");
+                            ll.add(tmp);
+                            System.out.println(" -----> " + tmp);
+                        }
+
+                        System.out.println("log2kernel " + ll);
+
+
+                        method.invoke(null,new Object[]{ll.toArray(new String[]{})});
                     } else {
                         method.invoke(null, new Object[]{new String[]{config.infile, config.outfile, "-merge"}});
                     }

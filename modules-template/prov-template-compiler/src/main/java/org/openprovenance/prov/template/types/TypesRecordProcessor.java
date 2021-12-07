@@ -22,12 +22,14 @@ public class TypesRecordProcessor  {
     private final List<Pair<String, Object[]>> records;
     private final Map<String, Integer> knownRelations;
     private final Map<String, Integer> allRelations;
+    private final int relationOffset;
+    private final int levelOffset;
     private int relationCount;
 
     final Map<Integer,Map<List<List<Integer>>, Integer>> levelRelTypeSetIndex;
 
 
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -40,6 +42,9 @@ public class TypesRecordProcessor  {
         this.relationCount=newPossibleIndex(allRelations.values())+100;
 
         this.levelRelTypeSetIndex=new HashMap<>();
+
+        this.relationOffset=relationOffset;
+        this.levelOffset=levelOffset;
 
         this.records=records;
 
@@ -97,7 +102,7 @@ public class TypesRecordProcessor  {
 
         this.levelRelTypeSetIndex.computeIfAbsent(levelNext, n -> new HashMap<>());
         Map<List<List<Integer>>, Integer> levelNRelTypeSetIndex=levelRelTypeSetIndex.get(levelNext);
-        int count=newPossibleIndex(levelNRelTypeSetIndex.values(), 1000000 * levelNext+ 100000);
+        int count=newPossibleIndex(levelNRelTypeSetIndex.values(), levelOffset * levelNext+ relationOffset);
 
         for (List<List<Integer>> coll: sortedMapLevelNP1pretty.values()) {
            if (levelNRelTypeSetIndex.get(coll)==null) {

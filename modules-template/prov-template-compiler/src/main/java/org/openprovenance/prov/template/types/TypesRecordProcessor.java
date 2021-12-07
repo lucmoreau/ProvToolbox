@@ -10,7 +10,6 @@ import org.openprovenance.prov.template.log2prov.ProxyManagement;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientInterface;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyMakerInterface;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,12 +49,14 @@ public class TypesRecordProcessor  {
 
     }
 
+
     public void process(String methodName, Object [] args) {
         records.add(Pair.of(methodName,args));
     }
 
     final Map<String, Object> result=new HashMap<>();
 
+    final TMap tMap=new TMap();
 
 
     public Map<String, Integer> levelN(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<String, Integer> mapLevelN, int levelNext) {
@@ -92,6 +93,9 @@ public class TypesRecordProcessor  {
         }
 
         result.put("allRelations", allRelations);
+        tMap.allRelations=swap(allRelations);
+        result.put("tmap",tMap);
+
         result.put("mapLevel"+levelNext, mapLevelNP1);
 
 
@@ -111,6 +115,8 @@ public class TypesRecordProcessor  {
         }
 
         result.put("levelNRelTypeSetIndex" + levelNext, levelNRelTypeSetIndex);
+
+        tMap.assign("levelNRelTypeSetIndex", levelNext, swap(levelNRelTypeSetIndex));
 
         Map<String, Integer> levelNS=sortedMapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> levelNRelTypeSetIndex.get(sortedMapLevelNP1pretty.get(s))));
 
@@ -146,6 +152,10 @@ public class TypesRecordProcessor  {
         }
 
         result.put("counts", counts);
+        tMap.features=counts;
+
+        tMap.merge();
+
         return counts;
 
     }
@@ -227,6 +237,10 @@ public class TypesRecordProcessor  {
         }
     }
 
+    public <ALPHA,BETA>  Map<BETA,ALPHA> swap (Map<ALPHA,BETA> m) {
+        return m.keySet().stream().collect(Collectors.toMap(m::get, a->a));
+    }
+
     public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
@@ -249,15 +263,17 @@ public class TypesRecordProcessor  {
         Map<String, Set<Integer>>   knownTypeMap3=  knownTypeMap2.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)->   knownTypeMap2.get(s).stream().map(level0TypeIndex::get).collect(Collectors.toSet())));  //.stream().map(v -> level0TypeIndex.get(v)).collect(Collectors.toSet()))
         Map<String, Set<Integer>> unknownTypeMap3=unknownTypeMap2.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)-> unknownTypeMap2.get(s).stream().map(level0TypeIndex::get).collect(Collectors.toSet())));  //.stream().map(v -> level0TypeIndex.get(v)).collect(Collectors.toSet()))
 
-        Map<String, Set<Integer>> level0 = mergeTypeMaps(knownTypeMap3, unknownTypeMap3);
+        Map<String, Set<Integer>> level0 = mergeMapsOfSets(knownTypeMap3, unknownTypeMap3);
 
 
         result.put("level0TypeIndex", level0TypeIndex);
-        result.put("knownTypeMap2",knownTypeMap2);
-        result.put("knownTypeMap3",knownTypeMap3);
-        result.put("unknownTypeMap2",unknownTypeMap2);
-        result.put("unknownTypeMap3",unknownTypeMap3);
+        //result.put("knownTypeMap2",knownTypeMap2);
+        //result.put("knownTypeMap3",knownTypeMap3);
+        //result.put("unknownTypeMap2",unknownTypeMap2);
+        //result.put("unknownTypeMap3",unknownTypeMap3);
         result.put("level0",level0);
+
+        tMap.level0=swap(level0TypeIndex);
 
 
         Set<Set<Integer>> allSetValues= new HashSet<>(level0.values());
@@ -287,6 +303,7 @@ public class TypesRecordProcessor  {
         Map<String, Integer> level0S=level0.keySet().stream().collect(Collectors.toMap((String s)->s, (String s)->level0TypeSetIndex.get(level0.get(s))));
 
         result.put("level0S",level0S);
+        tMap.level0S=swap(level0TypeSetIndex);
 
 
         return level0S;
@@ -313,15 +330,23 @@ public class TypesRecordProcessor  {
         }
     }
 
-    private Map<String, Set<Integer>> mergeTypeMaps(Map<String, Set<Integer>> knownTypeMap3, Map<String, Set<Integer>> unknownTypeMap3) {
-        Map<String, Set<Integer>> level0=new HashMap<>(unknownTypeMap3);
-
-        knownTypeMap3.forEach((k, v) -> level0.merge(k, v, (Set<Integer> v1, Set<Integer> v2) -> {
-            Set<Integer> set = new TreeSet<>(v1);
+    static public <ALPHA,BETA> Map<ALPHA, Set<BETA>> mergeMapsOfSets(Map<ALPHA, Set<BETA>> map1, Map<ALPHA, Set<BETA>> map2) {
+        Map<ALPHA, Set<BETA>> result=new HashMap<>(map2);
+        map1.forEach((k, v) -> result.merge(k, v, (Set<BETA> v1, Set<BETA> v2) -> {
+            Set<BETA> set = new TreeSet<>(v1);
             set.addAll(v2);
             return set;
         }));
-        return level0;
+        return result;
+    }
+    static public <ALPHA,BETA> Map<ALPHA, List<BETA>> mergeMapsOfLists(Map<ALPHA, List<BETA>> map1, Map<ALPHA, List<BETA>> map2) {
+        Map<ALPHA, List<BETA>> result=new HashMap<>(map2);
+        map1.forEach((k, v) -> result.merge(k, v, (List<BETA> v1, List<BETA> v2) -> {
+            List<BETA> set = new LinkedList<>(v1);
+            set.addAll(v2);
+            return set;
+        }));
+        return result;
     }
 
     private int newPossibleIndex(Collection<Integer> level0Values, int defaultValue) {

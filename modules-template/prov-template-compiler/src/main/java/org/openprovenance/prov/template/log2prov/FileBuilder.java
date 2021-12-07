@@ -148,7 +148,7 @@ abstract public class FileBuilder {
     
     public abstract Document make(Object[] objects);
 
-    private static HashMap<String,FileBuilder> registry= new HashMap<>();
+    private static final HashMap<String,FileBuilder> registry= new HashMap<>();
     public static final HashMap<String,Object> clientRegistry= new HashMap<>();
 
 

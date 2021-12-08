@@ -981,6 +981,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                             ll.add(tmp);
                             System.out.println(" -----> " + tmp);
                         }
+                        if ((tmp=env.get("TRANSLATION"))!=null && !tmp.equals("")) {
+                            ll.add("-translation");
+                            ll.add(tmp);
+                            System.out.println(" -----> " + tmp);
+                        }
 
                         System.out.println("log2kernel " + ll);
 

@@ -8,11 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates/prettyRelations.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/PK_CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/PK_CommandLineArguments.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/ProvenanceKernels.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/ProvenanceKernels.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TMap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/org/openprovenance/prov/template/compiler/script.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/org/openprovenance/prov/template/compiler/script.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +114,7 @@
     <property name="extract.method.default.visibility" value="public" />
     <property name="extractMethod.generateAnnotations" value="false" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-tutorial/consent" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.15" />
@@ -127,11 +132,11 @@
       <recent name="org.openprovenance.prov.service.translation" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates" />
       <recent name="$PROJECT_DIR$/modules-tutorial/consent" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/src/main/webapp" />
       <recent name="$PROJECT_DIR$/modules-template/jsweet-candy-quickstart-master/src/main/java" />
       <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy/src/main/java/org/openprovenance/apache/commons/lang" />
-      <recent name="$PROJECT_DIR$/modules-js2/prov-js-core" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-js2/prov-js-core/src/main/java/org/openprovenance/apache/commons" />
@@ -530,7 +535,7 @@
       <workItem from="1638524822565" duration="2155000" />
       <workItem from="1638546585936" duration="51124000" />
       <workItem from="1638817353046" duration="8915000" />
-      <workItem from="1638886644716" duration="19463000" />
+      <workItem from="1638886644716" duration="28160000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -818,6 +823,11 @@
           <url>file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java</url>
           <line>134</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/log2prov/FileBuilder.java</url>
+          <line>104</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -14,21 +14,22 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TypesRecordProcessor  {
-    static final ObjectMapper om=new ObjectMapper();
 
-    final Map<Integer,Map<String, Integer>> levelTypeIndex;
-    final Map<Integer,Map<Set<Integer>, Integer>> levelTypeSetIndex;
+    private final Map<Integer,Map<String, Integer>> levelTypeIndex;
+    private final Map<Integer,Map<Set<Integer>, Integer>> levelTypeSetIndex;
     private final List<Pair<String, Object[]>> records;
     private final Map<String, Integer> knownRelations;
     private final Map<String, Integer> allRelations;
     private final int relationOffset;
     private final int levelOffset;
+    private final Map<String,String> translation;
+    private final Map<Integer,Map<List<List<Integer>>, Integer>> levelRelTypeSetIndex;
+
+    // stateful
     private int relationCount;
 
-    final Map<Integer,Map<List<List<Integer>>, Integer>> levelRelTypeSetIndex;
 
-
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String,String> translation, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -44,6 +45,7 @@ public class TypesRecordProcessor  {
 
         this.relationOffset=relationOffset;
         this.levelOffset=levelOffset;
+        this.translation=translation;
 
         this.records=records;
 
@@ -156,11 +158,56 @@ public class TypesRecordProcessor  {
 
         tMap.merge();
 
+        Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
+
+        tMap.descriptors=descriptors;
+
         return counts;
 
     }
 
+    public List<String> getDescriptors(Integer k) {
+        Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
+        return m.keySet().stream().map(ss->convertToText(ss,m.get(ss))).collect(Collectors.toList());
+    }
 
+    private String convertToText(List<Integer> ll, Long count) {
+        return  numeral(count)  + translateRelation(tMap.allRelations.get(ll.get(0))) + "(" + ((ll.get(1)<levelOffset)? getDescriptorS0(ll.get(1)) : joinStrings(getDescriptors(ll.get(1)))) + ")";
+    }
+
+    private String numeral(Long count) {
+        if (1L==count) return "";
+        return  count + " ";
+    }
+
+    //Map<String,String> translation=Map.of("template_block.produced.wdf.consumed1", "wdf1", "template_block.produced.wdf.consumed2", "wdf2");
+
+    private String translateRelation(String s) {
+        if (translation!=null) {
+            return translation.getOrDefault(s,s);
+        }
+        return s;
+    }
+
+    public String getDescriptorS0(Integer k) {
+        return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.joining(",", "", ""));
+    }
+
+    public String joinStrings(List<String> ll) {
+        return ll.stream().collect(Collectors.joining(",", "", ""));
+    }
+
+    public String getDescriptor0(Integer k) {
+        return  localName(tMap.level0.get(k));
+    }
+
+    private String localName(String s) {
+        int pos=s.lastIndexOf("#");
+        if (pos>0) return s.substring(pos+1);
+        pos=s.lastIndexOf("/");
+        if (pos>0) return s.substring(pos+1);
+        return s;
+    }
 
     public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder) {
         StringBuffer sb=new StringBuffer();

@@ -16,6 +16,7 @@ public class ProvenanceKernels {
     final static boolean debug=true;
 
     static TypeReference<Map<String,Integer>> mapRef = new TypeReference<>() {};
+    static TypeReference<Map<String,String>> mapStringRef = new TypeReference<>() {};
 
 
     public static void main(String [] args) throws IOException {
@@ -31,6 +32,7 @@ public class ProvenanceKernels {
             int setOffset= cliArgs.setOffset;
             int relationOffset= cliArgs.relationOffset;
             int levelOffset= cliArgs.levelOffset;
+            String translationFile = cliArgs.translation;
 
             InputStream is= ("-".equals(infile))? System.in: new FileInputStream(infile);
             DocumentProcessor dp=new NullDocumentProcessor ();
@@ -45,6 +47,9 @@ public class ProvenanceKernels {
                         "http://www.w3.org/ns/prov#Activity", 2,
                         "http://www.w3.org/ns/prov#Agent", 3);
             }
+
+
+            Map<String, String> translation=((translationFile==null)||(translationFile.equals("")))?Map.of():om.readValue(new File(translationFile),mapStringRef);
 
 
 
@@ -66,7 +71,7 @@ public class ProvenanceKernels {
 
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
-            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, records);
+            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, records);
 
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);
@@ -77,52 +82,4 @@ public class ProvenanceKernels {
         }
     }
 
-    /*
-    public static void mainOld (String [] args) throws IOException {
-        String in=args[1];
-        String out=args[2];
-        if (debug) System.out.println("Start kernel main " + in);
-
-
-
-
-
-        InputStream is= ("-".equals(in))? System.in: new FileInputStream(in);
-        DocumentProcessor dp=new NullDocumentProcessor ();
-        RecordProcessor rp=null;
-
-        Map<String,Integer> knownTypes=Map.of(
-                "http://www.w3.org/ns/prov#Entity" ,1,
-                "http://www.w3.org/ns/prov#Activity", 2,
-                "http://www.w3.org/ns/prov#Agent", 3);
-
-
-        int setOffset=100000;
-
-        Map<Set<Integer>,Integer> knownTypesSets=Map.of(
-                Set.of(1) ,1+  setOffset,
-                Set.of(2), 2+  setOffset,
-                Set.of(3), 3+  setOffset);
-
-        List<Pair<String,Object[]>> records=new LinkedList<>();
-
-        int relationOffset=2000;
-
-        Map<String,Integer> knownRelations=Map.of(
-                "template_block.produced.wdf.consumed1", relationOffset+0,
-                "template_block.produced.wdf.consumed2", relationOffset+1       );
-
-
-
-        TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations, records);
-
-       
-        Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);
-        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(out),result);
-
-    }
-
-
-
-     */
 }

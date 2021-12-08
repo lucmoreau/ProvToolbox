@@ -4,12 +4,14 @@ jetty:
 
 run:
 	target/libs/bin/example_run -infile src/test/resources/templates/example.csv -outfile target/example.png
-	target/libs/bin/example_run kernel -infile src/test/resources/templates/example.csv -outfile target/kernel.json -levelOffset 1000000 -relationOffset 2000 -setOffset 100000 -knownTypes src/test/resources/templates/knownTypes.json -knownRelations src/test/resources/templates/knownRelations.json
+	target/libs/bin/example_run kernel -infile src/test/resources/templates/example.csv -outfile target/kernel.json -levelOffset 1000000 -relationOffset 2000 -setOffset 100000 -knownTypes src/test/resources/templates/knownTypes.json -knownRelations src/test/resources/templates/knownRelations.json -translation src/test/resources/templates/prettyRelations.json
 
 cli.all:
 	jq -c ."tmap"."allLevels" target/kernel.json 
 cli.allc:
 	jq -c ."tmap"."allLevelsCompact" target/kernel.json
+cli.descriptors:
+	jq --sort-keys ."tmap"."descriptors" target/kernel.json
 
 expand1:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-a.provn -outfile src/main/resources/expanded-a1.provn -bindings src/main/resources/bindings1.provn 

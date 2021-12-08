@@ -24,6 +24,7 @@ public  class TMap {
 
     public Map<Integer, List<List<Integer>>> allLevels;
     public Map<Integer, Map<List<Integer>, Long>> allLevelsCompact;
+    public Map<Integer, List<String>> descriptors;
 
     public void assign(String s, int level, Map<Integer, List<List<Integer>>> m) {
 

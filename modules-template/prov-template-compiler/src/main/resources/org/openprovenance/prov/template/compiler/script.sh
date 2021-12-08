@@ -51,6 +51,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -t|-translation|--translation)
+          _TRANSLATION="$2"
+          shift # past argument
+          shift # past value
+          ;;
     --default)
       export DEFAULT=YES
       shift # past argument
@@ -74,7 +79,7 @@ fi
 
 
 if [ "$ARG1" = "kernel" ]; then
-   (export KNOWN_TYPES="$_KNOWN_TYPES" KNOWN_RELATIONS="$_KNOWN_RELATIONS" RELATION_OFFSET="$_RELATION_OFFSET"; export LEVEL_OFFSET="$_LEVEL_OFFSET"; export SET_OFFSET="$_SET_OFFSET"; $PROVCONVERT -infile $_INFILE -log2prov ${INIT} -outfile $_OUTFILE -log2kernel)
+   (export TRANSLATION="$_TRANSLATION" KNOWN_TYPES="$_KNOWN_TYPES" KNOWN_RELATIONS="$_KNOWN_RELATIONS" RELATION_OFFSET="$_RELATION_OFFSET"; export LEVEL_OFFSET="$_LEVEL_OFFSET"; export SET_OFFSET="$_SET_OFFSET"; $PROVCONVERT -infile $_INFILE -log2prov ${INIT} -outfile $_OUTFILE -log2kernel)
 else
    $PROVCONVERT -infile "$_INFILE" -log2prov ${INIT} -outfile "$_OUTFILE"
 fi

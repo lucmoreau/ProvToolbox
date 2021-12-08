@@ -8,6 +8,8 @@ run:
 
 cli.all:
 	jq -c ."tmap"."allLevels" target/kernel.json 
+cli.allc:
+	jq -c ."tmap"."allLevelsCompact" target/kernel.json
 
 expand1:
 	../toolbox/target/appassembler/bin/provconvert -infile src/main/resources/template-a.provn -outfile src/main/resources/expanded-a1.provn -bindings src/main/resources/bindings1.provn 

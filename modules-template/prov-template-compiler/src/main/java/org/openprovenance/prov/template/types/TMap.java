@@ -1,8 +1,10 @@
 package org.openprovenance.prov.template.types;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.types.TypesRecordProcessor.mergeMapsOfLists;
 
@@ -21,6 +23,7 @@ public  class TMap {
     public Map<Integer, Integer> features;
 
     public Map<Integer, List<List<Integer>>> allLevels;
+    public Map<Integer, Map<List<Integer>, Long>> allLevelsCompact;
 
     public void assign(String s, int level, Map<Integer, List<List<Integer>>> m) {
 
@@ -47,5 +50,9 @@ public  class TMap {
         if (level6!=null) allLevels=mergeMapsOfLists(allLevels,level6);
         if (level7!=null) allLevels=mergeMapsOfLists(allLevels,level7);
         if (level8!=null) allLevels=mergeMapsOfLists(allLevels,level8);
+
+        allLevelsCompact= allLevels.keySet().stream().collect(Collectors.toMap((Integer k)-> k,(Integer k)->allLevels.get(k).stream().collect(Collectors.groupingBy((List<Integer> v) -> v, Collectors.counting()))));
+
+
     }
 }

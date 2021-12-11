@@ -26,13 +26,13 @@ public class CompilerTypedRecord {
         this.debugComment=debugComment;
     }
 
-    public JavaFile generateTypeDeclaration(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    public JavaFile generatedTypedRecordConstructor(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
 
-        Set<QualifiedName> allVars = new HashSet<QualifiedName>();
-        Set<QualifiedName> allAtts = new HashSet<QualifiedName>();
+        Set<QualifiedName> allVars = new HashSet<>();
+        Set<QualifiedName> allAtts = new HashSet<>();
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
@@ -63,7 +63,6 @@ public class CompilerTypedRecord {
 
 
         TypeSpec.Builder builder = compilerUtil.generateTypedRecordClass(name);
-        //builder.addTypeVariable(TypeVariableName.get("T"));
 
         final ParameterizedTypeName superinterface=ParameterizedTypeName.get(ClassName.get(packge,name + "Interface"),TypeName.get(Object[].class));
         builder.addSuperinterface(superinterface);

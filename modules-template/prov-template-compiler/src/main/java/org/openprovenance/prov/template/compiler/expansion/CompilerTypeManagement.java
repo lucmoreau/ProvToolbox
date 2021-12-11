@@ -32,8 +32,8 @@ public class CompilerTypeManagement {
 
         Bundle bun = u.getBundle(doc).get(0);
 
-        Set<QualifiedName> allVars = new HashSet<QualifiedName>();
-        Set<QualifiedName> allAtts = new HashSet<QualifiedName>();
+        Set<QualifiedName> allVars = new HashSet<>();
+        Set<QualifiedName> allAtts = new HashSet<>();
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
@@ -44,13 +44,22 @@ public class CompilerTypeManagement {
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
 
+    public Map<String, Collection<String>> getKnownTypes() {
+        return knownTypes;
+    }
+
+    public Map<String, Collection<String>> getUnknownTypes() {
+        return unknownTypes;
+    }
+
+    final Map<String,Collection<String>> knownTypes=new HashMap<>();
+    final Map<String,Collection<String>> unknownTypes=new HashMap<>();
+
+
     public JavaFile generateTypeDeclaration_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
         MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("call")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get("T"));
-
-        final Map<String,Collection<String>> knownTypes=new HashMap<>();
-        final Map<String,Collection<String>> unknownTypes=new HashMap<>();
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -58,7 +67,7 @@ public class CompilerTypeManagement {
         compilerUtil.generateDocumentSpecializedParameters(mbuilder, the_var);
 
 
-        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, knownTypes, unknownTypes);
+        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, knownTypes, unknownTypes, mbuilder);
         for (StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }
@@ -75,8 +84,6 @@ public class CompilerTypeManagement {
 
                     mbuilder.beginControlFlow("if ($N!=null) ", q.getLocalPart());
                     mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", q.getLocalPart(), HashSet.class);
-                    mbuilder.addComment("type " + type);
-
                     mbuilder.addStatement("knownTypeMap.get($N).add($S)", q.getLocalPart(), type);
                     mbuilder.endControlFlow();
 
@@ -109,6 +116,8 @@ public class CompilerTypeManagement {
                 .addModifiers(Modifier.PUBLIC);
         cbuilder.addStatement("this.knownTypeMap=knownTypeMap");
         cbuilder.addStatement("this.unknownTypeMap=unknownTypeMap");
+        cbuilder.addStatement("this.pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()");
+
 
         cbuilder.addParameter(Map_QN_S_of_String,"knownTypeMap");
         cbuilder.addParameter(Map_QN_S_of_String,"unknownTypeMap");
@@ -121,6 +130,7 @@ public class CompilerTypeManagement {
         final ParameterizedTypeName superinterface=ParameterizedTypeName.get(ClassName.get(packge,name + "Interface"),TypeVariableName.get("T"));
         builder.addSuperinterface(superinterface);
 
+        builder.addField(ProvFactory.class,"pf", Modifier.PRIVATE);
 
 
 

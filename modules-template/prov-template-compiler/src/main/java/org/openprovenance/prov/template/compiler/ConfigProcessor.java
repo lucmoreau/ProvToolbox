@@ -6,16 +6,20 @@ import com.squareup.javapoet.*;
 
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
-import org.openprovenance.prov.template.compiler.expansion.CompilerTypePropagate;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+
+import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
+import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
 
 
 public class ConfigProcessor {
@@ -67,7 +71,7 @@ public class ConfigProcessor {
     private final CompilerBuilderInit compilerBuilderInit;
     private final CompilerTypeManagement compilerTypeManagement;
     private final CompilerTypedRecord compilerTypedRecord;
-    private final CompilerTypePropagate compilerTypePropagate;
+   // private final CompilerTypePropagate compilerTypePropagate;
 
     private final CompilerSimpleBean compilerSimpleBean;
     private final CompilerProcessor compilerProcessor;
@@ -79,9 +83,10 @@ public class ConfigProcessor {
         this.pFactory=pFactory;
         this.compilerSQL=new CompilerSQL();
         this.compilerClient= new CompilerClient(pFactory,compilerSQL);
-        this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain,compilerClient,pFactory,debugComment);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain,compilerClient,pFactory,debugComment);
-        this.compilerTypePropagate= new CompilerTypePropagate(withMain,compilerClient,pFactory,debugComment);
+
+        this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain,compilerClient,pFactory,debugComment,compilerTypeManagement);
+        //this.compilerTypePropagate= new CompilerTypePropagate(withMain,compilerClient,pFactory,debugComment);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain,compilerClient,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
@@ -295,13 +300,22 @@ public class ConfigProcessor {
             String destination4=destinationDir2 + processor + ".java";
 
 
+
+
+            IndexedDocument indexed = makeIndexedDodcument(doc);
+            u.getBundle(doc).get(0).getStatement().clear();
+            u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));
+
             // generating client first to ensure successor is calculated
-            JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema);
+            JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema, indexed);
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
-
+            //ensure type declaration code is executed
+            JavaFile spec5= compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+            // before propagation generation
             JavaFile spec0= compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
             boolean val0=compilerUtil.saveToFile(destinationDir, destination, spec0);
+
 
             JavaFile spec1= compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
             boolean val1=compilerUtil.saveToFile(destinationDir, destinationI, spec1);
@@ -311,13 +325,12 @@ public class ConfigProcessor {
             val2=val2&val2b;
 
 
-            JavaFile spec5= compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
-            JavaFile spec6= compilerTypedRecord.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
-            JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+            JavaFile spec6= compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema);
+          //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
 
             boolean val5=compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
             boolean val6=compilerUtil.saveToFile(destinationDir, destinationTypedRecord, spec6);
-            boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
+          //  boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
 
 
             boolean val3=true;
@@ -355,6 +368,18 @@ public class ConfigProcessor {
         }
     }
 
+    private IndexedDocument makeIndexedDodcument(Document doc) {
+        IndexedDocument indexed=new IndexedDocument(pFactory, pFactory.newDocument(),true);
+        Bundle bun=u.getBundle(doc).get(0);
+        u.forAllStatement(bun.getStatement(), indexed);
+
+        indexed.getWasDerivedFrom().forEach(wdf -> {
+            if (wdf.getId() == null) {
+                wdf.setId(gensym());
+            }
+        });
+        return indexed;
+    }
 
 
     public CompilerJsonSchema getCompilerJsonSchema() {

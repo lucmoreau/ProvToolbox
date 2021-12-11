@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.MethodSpec.Builder;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
@@ -18,10 +19,13 @@ public class StatementTypeAction implements StatementAction {
     public static String ENTITY_URI=PROV_NS+"Entity";
     public static String ACTIVITY_URI=PROV_NS+"Activity";
     public static String BUNDLE_URI=PROV_NS+"Bundle";
+    public static String WASDERIVEDFROM_URI=PROV_NS+"WasDerivedFrom";
 
     private final JsonNode bindings_schema;
     private final Map<String, Collection<String>> knownTypes;
     private final Map<String, Collection<String>> unknownTypes;
+    private final Builder mbuilder;
+
     private Set<QualifiedName> allVars;
     private Set<QualifiedName> allAtts;
 
@@ -29,7 +33,7 @@ public class StatementTypeAction implements StatementAction {
     private Hashtable<QualifiedName, String> vmap;
 
 
-    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes) {
+    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
@@ -39,6 +43,7 @@ public class StatementTypeAction implements StatementAction {
         this.bindings_schema=bindings_schema;
         this.knownTypes=knownTypes;
         this.unknownTypes=unknownTypes;
+        this.mbuilder=mbuilder;
     }
 
 
@@ -67,6 +72,19 @@ public class StatementTypeAction implements StatementAction {
             });
         }
     }
+    public void registerTypes2(QualifiedName id, Collection<QualifiedName> types) {
+        if (id !=null) {
+            types.forEach(qn -> {
+                if (ExpandUtil.isVariable(qn)) {
+                    registerUnknownType(id,qn.getUri());
+                } else {
+                    registerAType(id,qn.getUri());
+                }
+            });
+        }
+    }
+
+
 
     public void registerAgent(QualifiedName id) {
         registerAType(id,AGENT_URI);
@@ -83,7 +101,6 @@ public class StatementTypeAction implements StatementAction {
 
     private void registerAType(QualifiedName id, String type) {
         if (id !=null) {
-            System.out.println("registering " + id + " type " + type);
             final String uri = id.getUri();
             knownTypes.computeIfAbsent(uri, k -> new HashSet<>());
             knownTypes.get(uri).add(type);
@@ -174,12 +191,76 @@ public class StatementTypeAction implements StatementAction {
         registerActivity(s.getActivity());
     }
 
+
+
+    public Collection<QualifiedName> doCollectElementVariables(Statement s, String search) {
+        Collection<Attribute> attributes = pFactory.getAttributes(s);
+        if (!(attributes.isEmpty())) {
+            boolean found=false;
+            Collection<QualifiedName> res=new LinkedList<>();
+            for (Attribute attribute:attributes) {
+                QualifiedName element=attribute.getElementName();
+                Object value=attribute.getValue();
+                if (value instanceof QualifiedName) {
+                    QualifiedName vq=(QualifiedName) value;
+                    if (search.equals(element.getUri())) {
+                        res.add(vq);
+                        found=true;
+                    }
+                }
+            }
+            if (found) return res;
+        }
+        return null;
+    }
+
+
+    public static String bnNS="http://openprovenance.org/blank#";
+    public static String bnPrefix="bn";
+
+    static int count=0;
+    static public QualifiedName gensym() {
+        return new org.openprovenance.prov.vanilla.QualifiedName(bnNS, "n" + (count++), bnPrefix);
+    }
+
+
     @Override
     public void doAction(WasDerivedFrom s) {
+        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, ExpandUtil.ACTIVITY_TYPE_URI);
+        if (s.getId()==null) {
+            s.setId(gensym());
+        }
+
+        mbuilder.addComment("wdf $N", s.getId().getUri());
+
+        registerAType(s.getId(),WASDERIVEDFROM_URI);
         registerTypes(s.getId(),s.getType());
+        registerTypes2(s.getId(),qualifiedNames);
+
         registerEntity(s.getUsedEntity());
         registerEntity(s.getGeneratedEntity());
         registerActivity(s.getActivity());
+
+
+        dynamicRegisterTypes(s, qualifiedNames);
+
+
+    }
+
+    private void dynamicRegisterTypes(Identifiable s, Collection<QualifiedName> qualifiedNames) {
+        String tmp="_tmp_"+ s.getId().getLocalPart();
+        mbuilder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, tmp, s.getId().getNamespaceURI(), s.getId().getLocalPart(), s.getId().getPrefix());
+        mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
+        mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, WASDERIVEDFROM_URI);
+
+        qualifiedNames.forEach(q -> {
+            if (ExpandUtil.isVariable(q)) {
+                mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
+                mbuilder.addStatement("unknownTypeMap.get($N).add($N.getUri())", tmp, q.getLocalPart());
+            } else {
+                mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, q.getUri());
+            }
+        });
     }
 
     @Override
@@ -268,7 +349,7 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         registerBundle(bun.getId());
-        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, knownTypes, unknownTypes);
+        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, knownTypes, unknownTypes, mbuilder);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

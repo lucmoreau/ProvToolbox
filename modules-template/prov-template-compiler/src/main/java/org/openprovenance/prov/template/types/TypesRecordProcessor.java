@@ -61,7 +61,7 @@ public class TypesRecordProcessor  {
     final TMap tMap=new TMap();
 
 
-    public Map<String, Integer> levelN(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<String, Integer> mapLevelN, int levelNext) {
+    public Map<String, Integer> levelN(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<String, Integer> mapLevelN, int levelNext, Map<String, Integer> mapLevel0) {
         final Map<String, Collection<int[]>> mapLevelNP1 = new HashMap<>();
         final Map<String, Collection<List<Integer>>> mapLevelNP1pretty = new HashMap<>();
 
@@ -78,8 +78,8 @@ public class TypesRecordProcessor  {
 
             final Map<String, Collection<int[]>> mapLevelNP1_tmp = new HashMap<>();
 
-            makerBuilder.propagateTypes(typedRecord, mapLevelN, mapLevelNP1_tmp);
-            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)-> mapLevelNP1_tmp.get(s).stream().map(a -> constructType(a,clientBuilder)).collect(Collectors.toList())));
+            makerBuilder.propagateTypes(typedRecord, mapLevelN, mapLevelNP1_tmp, mapLevel0);
+            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)-> mapLevelNP1_tmp.get(s).stream().map(a -> constructType(a,clientBuilder,tMap)).collect(Collectors.toList())));
 
             mapLevelNP1_tmp.keySet().forEach(key -> {
                 mapLevelNP1.computeIfAbsent(key, s->new LinkedList<>());
@@ -209,14 +209,15 @@ public class TypesRecordProcessor  {
         return s;
     }
 
-    public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder) {
+    public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap) {
         StringBuffer sb=new StringBuffer();
 
         // [ 8, 9, 100001, 4 ]
         int out=typeRecord[0];
         int outType=typeRecord[1];
-        int in=typeRecord[3];
-        int inType=typeRecord[2];
+        int relType=typeRecord[2];
+        int inType=typeRecord[3];
+        int in=typeRecord[4];
 
         sb.append(clientBuilder.getName());
         sb.append(".");
@@ -225,6 +226,9 @@ public class TypesRecordProcessor  {
         sb.append(niceRelationName(StatementOrBundle.Kind.values()[outType]));
         sb.append(".");
         sb.append(clientBuilder.getPropertyOrder()[in]);
+        sb.append("[");
+        sb.append(tMap.level0S.get(relType).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",","","")));
+        sb.append("]");
 
         String rel=sb.toString();
         if (allRelations.get(rel)==null) {
@@ -373,7 +377,7 @@ public class TypesRecordProcessor  {
 
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
-            level= levelN(registry, clientRegistry, pm, level, i);
+            level= levelN(registry, clientRegistry, pm, level, i, level0);
         }
     }
 

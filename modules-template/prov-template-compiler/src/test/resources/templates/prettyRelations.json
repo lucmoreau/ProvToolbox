@@ -1,4 +1,4 @@
 {
-    "template_block.produced.wdf.consumed1": "wdf1",
-    "template_block.produced.wdf.consumed2": "wdf2"
+    "template_block.produced.wdf.consumed1[WasDerivedFrom,DerivationConsumed1,Operation1]": "consumed1",
+    "template_block.produced.wdf.consumed2[WasDerivedFrom,DerivationConsumed2,Operation1]": "consumed2"
 }

@@ -15,6 +15,7 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder.levelNMapType;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder.levelNP1CMapType;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_QN_S_of_String;
+import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
 
 public class CompilerClient {
@@ -38,20 +39,15 @@ public class CompilerClient {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public JavaFile generateClientLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    public JavaFile generateClientLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
 
-        Set<QualifiedName> allVars=new HashSet<QualifiedName>();
-        Set<QualifiedName> allAtts=new HashSet<QualifiedName>();
+        Set<QualifiedName> allVars=new HashSet<>();
+        Set<QualifiedName> allAtts=new HashSet<>();
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
-
-
-
-        IndexedDocument indexed=new IndexedDocument(pFactory, pFactory.newDocument(),true);
-        u.forAllStatement(bun.getStatement(), indexed);
 
 
         return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, indexed);
@@ -1314,7 +1310,7 @@ public class CompilerClient {
     }
 
     // move to expansion subpackage
-
+/*
     public MethodSpec typePropagateGenerator(String templateName, String packge) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypePropagate")
@@ -1332,6 +1328,8 @@ public class CompilerClient {
         return builder.build();
 
     }
+
+ */
     // move to expansion subpackage
 
     public MethodSpec typedRecordGenerator(String templateName, String packge) {

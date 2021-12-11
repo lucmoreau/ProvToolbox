@@ -11,7 +11,9 @@ public interface ProxyMakerInterface {
     Object make(Object[] record, Object _processor);   // public <T> T make(Object[] record, Template_blockBuilderInterface<T> _processor) {
     Object getTypeManager(Map<QualifiedName, Set<String>> ktm, Map<QualifiedName, Set<String>> utm);
     Object getTypedRecord();
-    void propagateTypes(Object[] record, Map<String, Integer> mapLevelN,
-                               Map<String, Collection<int[]>> mapLevelNP1);
+    void propagateTypes(Object[] record,
+                        Map<String, Integer> mapLevelN,
+                        Map<String, Collection<int[]>> mapLevelNP1,
+                        Map<String, Integer> mapLevel0);
 
 }

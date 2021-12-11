@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class ProxyManagement {
 
-    static boolean debug=false;
+    static public boolean debug=false;
 
 
     public static class PassthroughInvocationHandler implements InvocationHandler {

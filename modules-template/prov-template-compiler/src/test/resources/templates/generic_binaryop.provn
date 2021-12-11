@@ -2,6 +2,7 @@ document
  prefix tmpl <http://openprovenance.org/tmpl#>
  prefix var <http://openprovenance.org/var#>
  prefix vargen <http://openprovenance.org/vargen#>
+ prefix ex <http://example.org/>
 
 
  bundle vargen:b
@@ -14,7 +15,7 @@ document
   used(var:operation, var:consumed2, - )  
   entity(var:produced,[prov:type='var:produced_type',prov:value='var:produced_value'])
   wasGeneratedBy(var:produced, var:operation, - )
-  wasDerivedFrom(var:produced, var:consumed1)
-  wasDerivedFrom(var:produced, var:consumed2)
+  wasDerivedFrom(var:produced, var:consumed1, [tmpl:activityType='var:operation_type', tmpl:activityType='ex:DerivationConsumed1', ex:test='ex:value'])
+  wasDerivedFrom(var:produced, var:consumed2, [tmpl:activityType='var:operation_type', tmpl:activityType='ex:DerivationConsumed2'])
  endBundle
 endDocument

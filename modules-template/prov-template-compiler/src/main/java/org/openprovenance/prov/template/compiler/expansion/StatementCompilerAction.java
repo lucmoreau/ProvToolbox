@@ -14,6 +14,9 @@ import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
+import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.bnNS;
+import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
+
 public class StatementCompilerAction implements StatementAction {
 
     private final JsonNode bindings_schema;
@@ -29,7 +32,6 @@ public class StatementCompilerAction implements StatementAction {
     static final ClassName cl_linkedList = ClassName.get("java.util", "LinkedList");
     static final ClassName cl_attribute = ClassName.get("org.openprovenance.prov.model", "Attribute");
     static final TypeName  cl_linkedListOfAttributes = ParameterizedTypeName.get(cl_linkedList, cl_attribute);
-    static final TypeName  cl_listOfAttributes = ParameterizedTypeName.get(cl_list, cl_attribute);
     public static final TypeName  cl_collectionOfAttributes = ParameterizedTypeName.get(cl_collection, cl_attribute);
 
     public StatementCompilerAction(ProvFactory pFactory, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema) {
@@ -183,18 +185,30 @@ public class StatementCompilerAction implements StatementAction {
             builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newActedOnBehalfOf($N,$N,$N,null" + generateAttributes(s) + "))", delegate, responsible, local(s.getId()), delegate, responsible);
         } else {
             final String activity = local(s.getActivity());  // known to be non null
-            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newActedOnBehalfOf($N,$N,$N,$N" + generateAttributes(s) + "))", delegate, responsible, local(s.getId()), delegate, responsible, activity);
+            builder.addStatement("if (($N!=null)" +
+                    " &&  ($N!=null)) " + target + ".add(pf.newActedOnBehalfOf($N,$N,$N,$N" + generateAttributes(s) + "))", delegate, responsible, local(s.getId()), delegate, responsible, activity);
         }
     }
 
+    public String localNotBlank(QualifiedName id) {
+        return ((id==null)||(id.getNamespaceURI().equals(bnNS)))? "nullqn" : id.getLocalPart();
+    }
     @Override
     public void doAction(WasDerivedFrom s) {
+        if (s.getId()==null) {
+            s.setId(gensym());
+        }
         final String generated = local(s.getGeneratedEntity());
         final String used = local(s.getUsedEntity());
 
 
+        final String attrs = generateAttributes(s);
+        if ("".equals(attrs)) {
+            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, localNotBlank(s.getId()), generated, used);
+        } else {
+            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N,null,null,null" + attrs + "))", generated, used, localNotBlank(s.getId()), generated, used);
 
-        builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, local(s.getId()), generated, used);             
+        }
     }
 
     @Override
@@ -279,26 +293,26 @@ public class StatementCompilerAction implements StatementAction {
                 Object value=attribute.getValue();
                 if (value instanceof QualifiedName) {
                     QualifiedName vq=(QualifiedName) value;
-                    if (ExpandUtil.isVariable(vq)) {
-                        if (reservedElement(element)) {
-                            doReservedAttributeAction(builder,element,vq,typeq);
-                        } else {
+                    if (reservedElement(element)) {
+                        doReservedAttributeAction(builder, element, vq, typeq);
+                    } else {
+                        if (ExpandUtil.isVariable(vq)) {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
                             String localPart = vq.getLocalPart();
 
-                                builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
-                                                    localPart,
-                                                    vmap.get(element),
-                                                    localPart,
-                                                    localPart);
+                            builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
+                                    localPart,
+                                    vmap.get(element),
+                                    localPart,
+                                    localPart);
 
+
+                        } else {
+                            builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",
+                                    vmap.get(element),
+                                    vmap.get(vq),
+                                    vmap.get(typeq));
                         }
-
-                    } else {
-                        builder.addStatement("attrs.add(pf.newAttribute($N,$N,$N))",
-                                             vmap.get(element),
-                                             vmap.get(vq),
-                                             vmap.get(typeq));
                     }
                 } else {
                     if (value instanceof LangString) {
@@ -308,11 +322,10 @@ public class StatementCompilerAction implements StatementAction {
                                 vmap.get(typeq));
                     } else {
                         builder.addStatement("attrs.add(pf.newAttribute($N,$S,$N))",
-                                            vmap.get(element),
-                                            value.toString(),
-                                            vmap.get(typeq));
+                                vmap.get(element),
+                                value.toString(),
+                                vmap.get(typeq));
                     }
-                    
                 }
             }
         }
@@ -323,21 +336,23 @@ public class StatementCompilerAction implements StatementAction {
                                            QualifiedName element,
                                            QualifiedName vq,
                                            QualifiedName typeq) {
-        final String elementName = element.getUri();
-        if (ExpandUtil.LABEL_URI.equals(elementName)) {
+        final String elementUri = element.getUri();
+        if (ExpandUtil.LABEL_URI.equals(elementUri)) {
             builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
                                  vq.getLocalPart(),
                                  vmap.get(pFactory.getName().PROV_LABEL),
                                  vq.getLocalPart(),
                                  vq.getLocalPart());
            
-        } else if (ExpandUtil.TIME_URI.equals(elementName)) {
+        } else if (ExpandUtil.TIME_URI.equals(elementUri)) {
             throw new UnsupportedOperationException();
-        } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
+        } else if (ExpandUtil.STARTTIME_URI.equals(elementUri)) {
             // don't include it!
-        } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
+        } else if (ExpandUtil.ENDTIME_URI.equals(elementUri)) {
             // don't include it!
-        } else if (ExpandUtil.IFVAR_URI.equals(elementName)) {
+        } else if (ExpandUtil.IFVAR_URI.equals(elementUri)) {
+            // don't include it!
+        } else if (ExpandUtil.ACTIVITY_TYPE_URI.equals(elementUri)) {
             // don't include it!
         } else {
             // can never be here
@@ -352,6 +367,7 @@ public class StatementCompilerAction implements StatementAction {
                 || (ExpandUtil.TIME_URI.equals(elementName))
                 || (ExpandUtil.STARTTIME_URI.equals(elementName))
                 || (ExpandUtil.ENDTIME_URI.equals(elementName))
+                || (ExpandUtil.ACTIVITY_TYPE_URI.equals(elementName))
                 || (ExpandUtil.IFVAR_URI.equals(elementName));
 
     }
@@ -380,6 +396,8 @@ public class StatementCompilerAction implements StatementAction {
         }
         return null;
     }
+
+
 
 
 

@@ -1,5 +1,7 @@
 {
     "http://www.w3.org/ns/prov#Entity": 1,
     "http://www.w3.org/ns/prov#Activity": 2,
-    "http://www.w3.org/ns/prov#Agent": 3
+    "http://www.w3.org/ns/prov#Agent": 3,
+
+    "http://www.w3.org/ns/prov#WasDerivedFrom": 20
 }

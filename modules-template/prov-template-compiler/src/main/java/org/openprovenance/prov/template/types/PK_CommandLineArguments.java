@@ -131,7 +131,7 @@ public class PK_CommandLineArguments {
         try {
             // parse the command line arguments
             Options options = buildOptions();
-            System.out.println("Args " + List.of(args));
+	    //            System.out.println("Args " + List.of(args));
 
             CommandLine line = parser.parse(options, args);
             if (line.hasOption(HELP))               help = HELP;

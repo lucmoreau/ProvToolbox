@@ -209,11 +209,11 @@ public class BindingTest extends TestCase {
 
         Bindings bindings2=Bindings.fromDocument_v2(new Utility().readDocument(filename, pf),pf);
 
-        System.out.println("bindings2 --> " + bindings2);
-        System.out.println("bindings1 --> " + bindings1);
+	//        System.out.println("bindings2 --> " + bindings2);
+	//        System.out.println("bindings1 --> " + bindings1);
         
         bindings1.addVariableBindingsAsAttributeBindings();
-        System.out.println("bindings1 --> " + bindings1);
+	//        System.out.println("bindings1 --> " + bindings1);
         
         assertEquals(bindings1, bindings2);
     }
@@ -239,8 +239,8 @@ public class BindingTest extends TestCase {
         
         Bindings bindings_v2=BindingsJson.fromBean(bb2,pf);
         
-        System.out.println("bindings1 --> " + bindings_v1);
-        System.out.println("bindings2 --> " + bindings_v2);
+	//        System.out.println("bindings1 --> " + bindings_v1);
+	//        System.out.println("bindings2 --> " + bindings_v2);
 
         assertEquals(bindings_v1, bindings_v2);
 

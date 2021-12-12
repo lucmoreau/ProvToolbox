@@ -41,6 +41,11 @@ public class ExpandUtil {
     public static final String IFVAR = "if";
     public static final String IFVAR_URI = TMPL_NS + IFVAR;
 
+    public static final String ACTIVITY_TYPE = "activityType";
+    public static final String ACTIVITY_TYPE_URI = TMPL_NS + ACTIVITY_TYPE;
+    public static final String ACTIVITY = "activity";
+    public static final String TMPL_ACTIVITY_URI = TMPL_NS + ACTIVITY;
+
 
     //private final ProvFactory pf;
 

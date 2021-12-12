@@ -57,7 +57,7 @@
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.30" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.5" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.5" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.14.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.15.0" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-csv:1.7" />
           <element id="archive" name="prov-interop-light-0.9.17-SNAPSHOT.jar">
             <element id="module-output" name="prov-interop-light" />

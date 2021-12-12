@@ -25,9 +25,14 @@ public class CompilerTypeManagement {
         this.withMain=withMain;
         this.compilerClient=compilerClient;
         this.debugComment=debugComment;
+
     }
+    private Map<String,Collection<String>> knownTypes;
+    private Map<String,Collection<String>> unknownTypes;
 
     public JavaFile generateTypeDeclaration(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+        knownTypes=new HashMap<>();
+        unknownTypes=new HashMap<>();
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -52,8 +57,6 @@ public class CompilerTypeManagement {
         return unknownTypes;
     }
 
-    final Map<String,Collection<String>> knownTypes=new HashMap<>();
-    final Map<String,Collection<String>> unknownTypes=new HashMap<>();
 
 
     public JavaFile generateTypeDeclaration_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {

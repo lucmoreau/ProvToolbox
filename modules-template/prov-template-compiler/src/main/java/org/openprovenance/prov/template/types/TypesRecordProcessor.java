@@ -201,7 +201,7 @@ public class TypesRecordProcessor  {
         return  localName(tMap.level0.get(k));
     }
 
-    private String localName(String s) {
+    public static String localName(String s) {
         int pos=s.lastIndexOf("#");
         if (pos>0) return s.substring(pos+1);
         pos=s.lastIndexOf("/");
@@ -226,9 +226,11 @@ public class TypesRecordProcessor  {
         sb.append(niceRelationName(StatementOrBundle.Kind.values()[outType]));
         sb.append(".");
         sb.append(clientBuilder.getPropertyOrder()[in]);
-        sb.append("[");
-        sb.append(tMap.level0S.get(relType).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",","","")));
-        sb.append("]");
+        if (relType!=-1) {
+            sb.append("[");
+            sb.append(tMap.level0S.get(relType).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",", "", "")));
+            sb.append("]");
+        }
 
         String rel=sb.toString();
         if (allRelations.get(rel)==null) {

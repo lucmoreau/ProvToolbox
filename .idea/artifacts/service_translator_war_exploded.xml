@@ -165,7 +165,7 @@
           <element id="library" level="project" name="Maven: jakarta.activation:jakarta.activation-api:2.0.0" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-collections4:4.4" />
           <element id="library" level="project" name="Maven: javax.json:javax.json-api:1.1.2" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.14.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.15.0" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
           <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-servlet-initializer:4.3.0.Final" />
           <element id="library" level="project" name="Maven: org.jboss.resteasy:resteasy-core:4.3.0.Final" />
@@ -204,8 +204,8 @@
           <element id="library" level="project" name="Maven: org.webjars:font-awesome:4.7.0" />
           <element id="library" level="project" name="Maven: org.webjars.bowergithub.ajaxorg:ace-builds:1.4.5" />
           <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-util:9.4.20.v20190813" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.14.0" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.14.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.15.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.15.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -206,7 +206,7 @@ public class StatementCompilerAction implements StatementAction {
         if ("".equals(attrs)) {
             builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N))", generated, used, localNotBlank(s.getId()), generated, used);
         } else {
-            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N,null,null,null" + attrs + "))", generated, used, localNotBlank(s.getId()), generated, used);
+            builder.addStatement("if (($N!=null) &&  ($N!=null)) " + target + ".add(pf.newWasDerivedFrom($N,$N,$N,nullqn,nullqn,nullqn" + attrs + "))", generated, used, localNotBlank(s.getId()), generated, used);
 
         }
     }

@@ -1574,10 +1574,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return res;
 	}
 	public Collection<Attribute> getAttributes(Statement statement) {
-		Collection<Attribute> result=new LinkedList<Attribute>();
-		if (statement instanceof HasType) result.addAll(((HasType)statement).getType());
+		Collection<Attribute> result=new LinkedList<>();
+		if (statement instanceof HasType)     result.addAll(((HasType)statement).getType());
 		if (statement instanceof HasLocation) result.addAll(((HasLocation)statement).getLocation());
-		if (statement instanceof HasRole) result.addAll(((HasRole)statement).getRole());
+		if (statement instanceof HasRole)     result.addAll(((HasRole)statement).getRole());
 		if (statement instanceof HasValue) {
 			Value val=((HasValue)statement).getValue();
 			if (val!=null) {
@@ -1586,7 +1586,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		}
 		if (statement instanceof HasOther) {
 			for (Other o: ((HasOther)statement).getOther()) {
-				result.add((Attribute)o);
+				result.add(o);
 			}
 		}
 		return result;

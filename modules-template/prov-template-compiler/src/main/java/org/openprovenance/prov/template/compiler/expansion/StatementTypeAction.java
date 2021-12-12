@@ -8,10 +8,12 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.expander.MissingAttributeValue;
 
 import java.util.*;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_ACTIVITY_URI;
 
 public class StatementTypeAction implements StatementAction {
 
@@ -58,7 +60,6 @@ public class StatementTypeAction implements StatementAction {
 
     public void registerTypes(QualifiedName id, List<Type> types) {
         if (id !=null) {
-            final String uri = id.getUri();
             types.forEach(type -> {
                 Object o=type.getValue();
                 if (o instanceof QualifiedName) {
@@ -72,13 +73,40 @@ public class StatementTypeAction implements StatementAction {
             });
         }
     }
-    public void registerTypes2(QualifiedName id, Collection<QualifiedName> types) {
+    public void registerTypes(QualifiedName id, String suffix, List<Type> types) {
         if (id !=null) {
+            types.forEach(type -> {
+                Object o=type.getValue();
+                if (o instanceof QualifiedName) {
+                    QualifiedName qn=(QualifiedName) o;
+                    if (ExpandUtil.isVariable(qn)) {
+                        registerUnknownType(id,suffix,qn.getUri());
+                    } else {
+                        registerAType(id,suffix,qn.getUri());
+                    }
+                }
+            });
+        }
+    }
+    public void registerTypes2(QualifiedName id, Collection<QualifiedName> types) {
+        if ((id !=null) && (types!=null)) {
             types.forEach(qn -> {
                 if (ExpandUtil.isVariable(qn)) {
                     registerUnknownType(id,qn.getUri());
                 } else {
                     registerAType(id,qn.getUri());
+                }
+            });
+        }
+    }
+
+    public void registerTypes2(QualifiedName id, String suffix, Collection<QualifiedName> types) {
+        if ((id !=null) && (types!=null)) {
+            types.forEach(qn -> {
+                if (ExpandUtil.isVariable(qn)) {
+                    registerUnknownType(id,suffix, qn.getUri());
+                } else {
+                    registerAType(id, suffix, qn.getUri());
                 }
             });
         }
@@ -106,9 +134,23 @@ public class StatementTypeAction implements StatementAction {
             knownTypes.get(uri).add(type);
         }
     }
+    private void registerAType(QualifiedName id, String suffix, String type) {
+        if (id !=null) {
+            final String uri = id.getUri() + suffix;
+            knownTypes.computeIfAbsent(uri, k -> new HashSet<>());
+            knownTypes.get(uri).add(type);
+        }
+    }
     private void registerUnknownType(QualifiedName id, String type) {
         if (id !=null) {
             final String uri = id.getUri();
+            unknownTypes.computeIfAbsent(uri, k -> new HashSet<>());
+            unknownTypes.get(uri).add(type);
+        }
+    }
+    private void registerUnknownType(QualifiedName id, String suffix, String type) {
+        if (id !=null) {
+            final String uri = id.getUri()+suffix;
             unknownTypes.computeIfAbsent(uri, k -> new HashSet<>());
             unknownTypes.get(uri).add(type);
         }
@@ -194,24 +236,7 @@ public class StatementTypeAction implements StatementAction {
 
 
     public Collection<QualifiedName> doCollectElementVariables(Statement s, String search) {
-        Collection<Attribute> attributes = pFactory.getAttributes(s);
-        if (!(attributes.isEmpty())) {
-            boolean found=false;
-            Collection<QualifiedName> res=new LinkedList<>();
-            for (Attribute attribute:attributes) {
-                QualifiedName element=attribute.getElementName();
-                Object value=attribute.getValue();
-                if (value instanceof QualifiedName) {
-                    QualifiedName vq=(QualifiedName) value;
-                    if (search.equals(element.getUri())) {
-                        res.add(vq);
-                        found=true;
-                    }
-                }
-            }
-            if (found) return res;
-        }
-        return null;
+        return CompilerExpansionBuilder.doCollectElementVariables(pFactory,s,search);
     }
 
 
@@ -234,22 +259,29 @@ public class StatementTypeAction implements StatementAction {
         mbuilder.addComment("wdf $N", s.getId().getUri());
 
         registerAType(s.getId(),WASDERIVEDFROM_URI);
-        registerTypes(s.getId(),s.getType());
-        registerTypes2(s.getId(),qualifiedNames);
+        registerTypes(s.getId(), s.getType());
 
         registerEntity(s.getUsedEntity());
         registerEntity(s.getGeneratedEntity());
         registerActivity(s.getActivity());
 
 
-        dynamicRegisterTypes(s, qualifiedNames);
+        if (qualifiedNames!=null && !qualifiedNames.isEmpty()) {
+            registerTypes2(s.getId(), qualifiedNames);
 
+            dynamicRegisterTypes(s, qualifiedNames);
+        }
 
     }
 
     private void dynamicRegisterTypes(Identifiable s, Collection<QualifiedName> qualifiedNames) {
+        if (qualifiedNames==null) return;
         String tmp="_tmp_"+ s.getId().getLocalPart();
-        mbuilder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, tmp, s.getId().getNamespaceURI(), s.getId().getLocalPart(), s.getId().getPrefix());
+        Collection<QualifiedName> activities=doCollectElementVariables((Statement) s, TMPL_ACTIVITY_URI);
+        if (activities==null || activities.isEmpty()) throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in relation " + s);
+        final String localPart = s.getId().getLocalPart() + "." ;
+        String suffix = activities.stream().findFirst().get().getLocalPart();
+        mbuilder.addStatement("$T $N=pf.newQualifiedName($S,$S+$N.getLocalPart(),$S)", QualifiedName.class, tmp, s.getId().getNamespaceURI(), localPart, suffix, s.getId().getPrefix());
         mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
         mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, WASDERIVEDFROM_URI);
 

@@ -9,14 +9,16 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.*;
 import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
+import org.openprovenance.prov.template.expander.MissingAttributeValue;
+import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
-import static org.openprovenance.prov.template.expander.ExpandUtil.ACTIVITY_TYPE;
-import static org.openprovenance.prov.template.expander.ExpandUtil.ACTIVITY_TYPE_URI;
+import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.ACTIVITY_URI;
+import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -240,31 +242,90 @@ public class CompilerExpansionBuilder {
             if (compilerUtil.isVariableDenotingQualifiedName(key,the_var)) {
                 if ((successors.get(key)!=null)  || (successors2.get(key)!=null)) {
 
-                    final List<QualifiedName> identifiers = successors.get(key).stream().map(p -> p.getRight().getId()).collect(Collectors.toList());
-                    builder.addComment("" + identifiers);
-                    builder.addComment("" + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-                    builder.addComment("" + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+                    if (successors.get(key) != null) {
 
+                        final List<WasDerivedFrom> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
+                        final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
 
-                    builder.addComment("" + successors.get(key).stream().map(p -> doCollectElementVariables(p.getRight(),ACTIVITY_TYPE_URI)).collect(Collectors.toList()));
-                    builder.addComment("propagating for $N", key);
+                        builder.addComment("" + identifiers);
+                        builder.addComment("" + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+                        builder.addComment("" + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
 
-                   //builder.addStatement("System.out.println(\"maplevelN \" + mapLevelN.get($S))",identifiers.get(0).getUri());
-                    final String tmpa = "l0a_" + count;
-                    final String tmpb = "l0b_" + count;
-                    builder.addStatement("$T $N=mapLevel0.get($S)",Integer.class, tmpa, identifiers.get(0).getUri());
-                    builder.addStatement("int $N=($N==null)?-1:$N",tmpb,tmpa,tmpa);
+                        final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables(p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
+                        final List<Collection<QualifiedName>> optionalActivities = relations.stream().map(p -> doCollectElementVariables(p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
 
-                    builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$N)", count,tmpb);
+                        builder.addComment("" + optionalActivityTypes);
+                        builder.addComment("" + optionalActivities);
+
+                        if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0)==null) {
+                            builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
+                        } else {
+
+                            final QualifiedName firstRelationIdentifier = identifiers.get(0);
+                            final WasDerivedFrom firstRelation = relations.get(0);
+
+                            final Optional<QualifiedName> firstActivityType = optionalActivityTypes.get(0).stream().findFirst();
+                            if (firstActivityType.isEmpty()) {
+
+                                builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
+
+                            } else {
+
+                                if (optionalActivities.isEmpty() || optionalActivities.get(0) == null)
+                                    throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
+                                final Optional<QualifiedName> firstActivity = optionalActivities.get(0).stream().findFirst();
+                                if (firstActivity.isEmpty())
+                                    throw new MissingAttributeValue(TMPL_ACTIVITY_URI + " in " + firstRelation);
+
+                                builder.addComment("propagating for $N", key);
+
+                                //builder.addStatement("System.out.println(\"maplevelN \" + mapLevelN.get($S))",identifiers.get(0).getUri());
+                                final String tmpa = "l0a_" + count;
+                                final String tmpb = "l0b_" + count;
+
+                                //TypesRecordProcessor.localName(firstActivity.get().getUri())
+                                builder.addStatement("$T $N=mapLevel0.get($S + (($T)record[$L]).getLocalPart())", Integer.class, tmpa, firstRelationIdentifier.getUri() + ".", QualifiedName.class, findPosition(TypesRecordProcessor.localName(firstActivity.get().getUri()), the_var));
+                                builder.addStatement("int $N=($N==null)?-1:$N", tmpb, tmpa, tmpa);
+
+                                builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$N)", count, tmpb);
+                            }
+                        }
+                    }
+                    } else {
+                        builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
+                    }
                 }
-            }
+
+
             count++;
         }
         return builder.build();
     }
 
+    private int findPosition(String name, JsonNode the_var) {
+        Iterator<String> iter = the_var.fieldNames();
+
+        int count=1;
+        while (iter.hasNext()) {
+            String key = iter.next();
+            if (key.equals(name)) return count;
+            count++;
+        }
+        return count;
+    }
+
+    static public String escape (QualifiedName qn) {
+        String uri=qn.getUri();
+        return uri.replace("/","_").replace("#","_").replace(":","_").replace(".","_");
+    }
+
 
     public Collection<QualifiedName> doCollectElementVariables(Statement s, String search) {
+        return doCollectElementVariables(pFactory,s,search);
+    }
+
+
+    static public Collection<QualifiedName> doCollectElementVariables(ProvFactory pFactory, Statement s, String search) {
         Collection<Attribute> attributes = pFactory.getAttributes(s);
         if (!(attributes.isEmpty())) {
             boolean found=false;
@@ -272,13 +333,9 @@ public class CompilerExpansionBuilder {
             for (Attribute attribute:attributes) {
                 QualifiedName element=attribute.getElementName();
                 Object value=attribute.getValue();
-                System.out.println("+++ attr " + value);
-
                 if (value instanceof QualifiedName) {
-                    System.out.println("+++ attr value " + search);
                     QualifiedName vq=(QualifiedName) value;
                     if (search.equals(element.getUri())) {
-                        System.out.println("+++ attr " + "found");
                         res.add(vq);
                         found=true;
                     }
@@ -288,7 +345,6 @@ public class CompilerExpansionBuilder {
         }
         return null;
     }
-
 
 
     public MethodSpec generateTypePropagatorN() {

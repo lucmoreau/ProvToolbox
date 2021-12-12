@@ -108,23 +108,23 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> namedActedOnBehalfOfMap=new HashMap<QualifiedName, Collection<ActedOnBehalfOf>>();
     private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> responsibleActedOnBehalfOfMap=new HashMap<QualifiedName, Collection<ActedOnBehalfOf>>();
     private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> delegateActedOnBehalfOfMap=new HashMap<QualifiedName, Collection<ActedOnBehalfOf>>();
-            
-    
+
+
     private HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
     private HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
     private Collection<WasInvalidatedBy> anonWasInvalidatedBy=new LinkedList<WasInvalidatedBy>();
     private HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
-    
+
     private HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
     private HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
     private Collection<SpecializationOf> anonSpecializationOf=new LinkedList<SpecializationOf>();
     private HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
-    
+
     private Collection<AlternateOf> anonAlternateOf=new LinkedList<AlternateOf>();
     private HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
     private HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
     private HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
-    
+
     private HashMap<QualifiedName, Collection<WasInfluencedBy>> influenceeWasInfluencedByMap=new HashMap<QualifiedName, Collection<WasInfluencedBy>>();
     private HashMap<QualifiedName, Collection<WasInfluencedBy>> influencerWasInfluencedByMap=new HashMap<QualifiedName, Collection<WasInfluencedBy>>();
     private Collection<WasInfluencedBy> anonWasInfluencedBy=new LinkedList<WasInfluencedBy>();
@@ -141,7 +141,7 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap=new HashMap<QualifiedName, Collection<HadMember>>();
     private HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap=new HashMap<QualifiedName, Collection<HadMember>>();
     private HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap=new HashMap<QualifiedName, Collection<HadMember>>();
-      
+
 
     /** Return all used edges for this graph. */
     public Collection<Used> getUsed() {
@@ -212,8 +212,8 @@ public class IndexedDocument implements StatementAction {
     /** Return all WasAssociatedWith edges with entity a as a cause. */
     public Collection<WasAssociatedWith> getWasAssociatedWith(Agent a) {
         return agentWasAssociatedWithMap.get(a.getId());
-    
-}
+
+    }
 
 
 
@@ -235,31 +235,31 @@ public class IndexedDocument implements StatementAction {
 
 
     void mergeAttributes(Element existing, Element newElement) {
-        Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
+        Set<LangString> set=new HashSet<>(newElement.getLabel());
         set.removeAll(existing.getLabel());
         existing.getLabel().addAll(set);
 
-        Set<Location> set2=new HashSet<Location>(newElement.getLocation());
+        Set<Location> set2=new HashSet<>(newElement.getLocation());
         set2.removeAll(existing.getLocation());
         existing.getLocation().addAll(set2);
 
-        Set<Type> set3=new HashSet<Type>(newElement.getType());
+        Set<Type> set3=new HashSet<>(newElement.getType());
         set3.removeAll(existing.getType());
         existing.getType().addAll(set3);
 
-        Set<Other> set4=new HashSet<Other>(newElement.getOther());
+        Set<Other> set4=new HashSet<>(newElement.getOther());
         set4.removeAll(existing.getOther());
-        existing.getOther().addAll(set4);	
+        existing.getOther().addAll(set4);
     }
-    
+
     void mergeAttributes(Influence existing, Influence newElement) {
-        Set<LangString> set=new HashSet<LangString>(newElement.getLabel());
+        Set<LangString> set=new HashSet<>(newElement.getLabel());
         set.removeAll(existing.getLabel());
         existing.getLabel().addAll(set);
 
         if (existing instanceof HasLocation) {
             HasLocation existing2=(HasLocation) existing;
-            Set<Location> set2=new HashSet<Location>(((HasLocation)newElement).getLocation());
+            Set<Location> set2=new HashSet<>(((HasLocation)newElement).getLocation());
             set2.removeAll(existing2.getLocation());
             existing2.getLocation().addAll(set2);
         }
@@ -270,7 +270,7 @@ public class IndexedDocument implements StatementAction {
 
         Set<Other> set4=new HashSet<Other>(newElement.getOther());
         set4.removeAll(existing.getOther());
-        existing.getOther().addAll(set4);	
+        existing.getOther().addAll(set4);
     }
     <T extends Statement> void mergeAttributes(T existing, T newElement) {
         if (existing instanceof Element) {
@@ -357,7 +357,7 @@ public class IndexedDocument implements StatementAction {
         this.flatten=flatten;
 
         if (doc!=null) {
-            this.nss=doc.getNamespace();          
+            this.nss=doc.getNamespace();
             u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
         }
 
@@ -410,200 +410,200 @@ public class IndexedDocument implements StatementAction {
 
 
     /** Add an  edge to the graph. Update namedRelationMap, effectRelationMap and causeRelationMap, accordingly.
-      Edges with different attributes are considered distinct.
-    */
+     Edges with different attributes are considered distinct.
+     */
 
-   public <T extends Relation> T add(T statement,
-                                     int num,
-                                     Collection<T> anonRelationCollection,
-                                     HashMap<QualifiedName, Collection<T>> namedRelationMap,
-                                     HashMap<QualifiedName, Collection<T>> effectRelationMap,
-                                     HashMap<QualifiedName, Collection<T>> causeRelationMap) {
-	QualifiedName aid2 = u.getEffect(statement); //wib.getInformed();
-	QualifiedName aid1 = u.getCause(statement); //wib.getInformant();
+    public <T extends Relation> T add(T statement,
+                                      int num,
+                                      Collection<T> anonRelationCollection,
+                                      HashMap<QualifiedName, Collection<T>> namedRelationMap,
+                                      HashMap<QualifiedName, Collection<T>> effectRelationMap,
+                                      HashMap<QualifiedName, Collection<T>> causeRelationMap) {
+        QualifiedName aid2 = u.getEffect(statement); //wib.getInformed();
+        QualifiedName aid1 = u.getCause(statement); //wib.getInformant();
 
-	statement = pFactory.newStatement(statement); // clone
-	
-	QualifiedName id;
-	if (statement instanceof Identifiable) {
-	    id=((Identifiable)statement).getId();	
-	} else {
-	    id=null;
-	}
+        statement = pFactory.newStatement(statement); // clone
 
-	if (id == null) {
+        QualifiedName id;
+        if (statement instanceof Identifiable) {
+            id=((Identifiable)statement).getId();
+        } else {
+            id=null;
+        }
 
-	    boolean found = false;
-	    Collection<T> relationCollection = effectRelationMap.get(aid2);
-	    if (relationCollection == null) {
-	        relationCollection = new LinkedList<T>();
-	        relationCollection.add(statement);
-	        effectRelationMap.put(aid2, relationCollection);
-	    } else {
-	        for (T u : relationCollection) {
-	            if (u.equals(statement)) {
-	                found = true;
-	                statement = u;
-	                break;
-	            }
-		}
-	        if (!found) {
-	            relationCollection.add(statement);
-	        }
-	    }
+        if (id == null) {
 
-	    relationCollection = causeRelationMap.get(aid1);
-	    if (relationCollection == null) {
-		relationCollection = new LinkedList<T>();
-		relationCollection.add(statement);
-		causeRelationMap.put(aid1, relationCollection);
-	    } else {
-		if (!found) {
-		    // if we had not found it in the first table, then we
-		    // have to add it here too
-		    relationCollection.add(statement);
-		}
-	    }
+            boolean found = false;
+            Collection<T> relationCollection = effectRelationMap.get(aid2);
+            if (relationCollection == null) {
+                relationCollection = new LinkedList<T>();
+                relationCollection.add(statement);
+                effectRelationMap.put(aid2, relationCollection);
+            } else {
+                for (T u : relationCollection) {
+                    if (u.equals(statement)) {
+                        found = true;
+                        statement = u;
+                        break;
+                    }
+                }
+                if (!found) {
+                    relationCollection.add(statement);
+                }
+            }
 
-	    if (!found) {
-		anonRelationCollection.add(statement);
-	    }
-	} else {
-	    Collection<T> relationCollection=namedRelationMap.get(id);
-	    if (relationCollection==null) {
-		relationCollection=new LinkedList<T>();
-		relationCollection.add(statement);
-		namedRelationMap.put(id, relationCollection);
-	    } else {
-		boolean found=false;
-		for (T u1: relationCollection) {
-		    if (sameEdge(u1,statement,num)) {
-			found=true;
-			mergeAttributes(u1, statement);
-			break;			
-		    }
-		}
-		if (!found) {
-		    relationCollection.add(statement);
-		}
-	    }
-	}
-	return statement;
-   }
+            relationCollection = causeRelationMap.get(aid1);
+            if (relationCollection == null) {
+                relationCollection = new LinkedList<T>();
+                relationCollection.add(statement);
+                causeRelationMap.put(aid1, relationCollection);
+            } else {
+                if (!found) {
+                    // if we had not found it in the first table, then we
+                    // have to add it here too
+                    relationCollection.add(statement);
+                }
+            }
+
+            if (!found) {
+                anonRelationCollection.add(statement);
+            }
+        } else {
+            Collection<T> relationCollection=namedRelationMap.get(id);
+            if (relationCollection==null) {
+                relationCollection=new LinkedList<T>();
+                relationCollection.add(statement);
+                namedRelationMap.put(id, relationCollection);
+            } else {
+                boolean found=false;
+                for (T u1: relationCollection) {
+                    if (sameEdge(u1,statement,num)) {
+                        found=true;
+                        mergeAttributes(u1, statement);
+                        break;
+                    }
+                }
+                if (!found) {
+                    relationCollection.add(statement);
+                }
+            }
+        }
+        return statement;
+    }
 
 
-   @Override
-   public void doAction(Activity s) {
-       add(s);
+    @Override
+    public void doAction(Activity s) {
+        add(s);
 
-   }
-   @Override
-   public void doAction(Used s) {
-       add(s);
-   }  
-   @Override
-   public void doAction(WasStartedBy s) {
-       add(s);
-   }
-   @Override
-   public void doAction(Agent s) {
-       add(s);	
-   }
-   @Override
-   public void doAction(AlternateOf s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasAssociatedWith s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasAttributedTo s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasInfluencedBy s) {
-       add(s);
-   }
-   @Override
-   public void doAction(ActedOnBehalfOf s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasDerivedFrom s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasEndedBy s) {
-       add(s);
-   }
-   @Override
-   public void doAction(Entity s) {
-       add(s);	
-   }
-   @Override
-   public void doAction(WasGeneratedBy s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasInvalidatedBy s) {
-       add(s);
-   }
-   @Override
-   public void doAction(HadMember s) {
-       add(s);		
-   }
-   @Override
-   public void doAction(MentionOf s) {
-       throw new UnsupportedOperationException();			
-   }
-   @Override
-   public void doAction(SpecializationOf s) {
-       add(s);
-   }
-   @Override
-   public void doAction(QualifiedSpecializationOf s) {
-       add(s);
-   }
-   public void doAction(QualifiedAlternateOf s) {
-       add(s);
-   }
-   public void doAction(QualifiedHadMember s) {
-       add(s);
-   }
-   @Override
-   public void doAction(WasInformedBy s) {
-       add(s);
-   }
-   @Override
-   public void doAction(DerivedByInsertionFrom s) {
-       throw new UnsupportedOperationException();
-   }
-   @Override
-   public void doAction(DictionaryMembership s) {
-       throw new UnsupportedOperationException();	
-   }
-   @Override
-   public void doAction(DerivedByRemovalFrom s) {
-       throw new UnsupportedOperationException();	
-   }
+    }
+    @Override
+    public void doAction(Used s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasStartedBy s) {
+        add(s);
+    }
+    @Override
+    public void doAction(Agent s) {
+        add(s);
+    }
+    @Override
+    public void doAction(AlternateOf s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasAssociatedWith s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasAttributedTo s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasInfluencedBy s) {
+        add(s);
+    }
+    @Override
+    public void doAction(ActedOnBehalfOf s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasDerivedFrom s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasEndedBy s) {
+        add(s);
+    }
+    @Override
+    public void doAction(Entity s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasGeneratedBy s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasInvalidatedBy s) {
+        add(s);
+    }
+    @Override
+    public void doAction(HadMember s) {
+        add(s);
+    }
+    @Override
+    public void doAction(MentionOf s) {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public void doAction(SpecializationOf s) {
+        add(s);
+    }
+    @Override
+    public void doAction(QualifiedSpecializationOf s) {
+        add(s);
+    }
+    public void doAction(QualifiedAlternateOf s) {
+        add(s);
+    }
+    public void doAction(QualifiedHadMember s) {
+        add(s);
+    }
+    @Override
+    public void doAction(WasInformedBy s) {
+        add(s);
+    }
+    @Override
+    public void doAction(DerivedByInsertionFrom s) {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public void doAction(DictionaryMembership s) {
+        throw new UnsupportedOperationException();
+    }
+    @Override
+    public void doAction(DerivedByRemovalFrom s) {
+        throw new UnsupportedOperationException();
+    }
 
     HashMap<QualifiedName,IndexedDocument> bundleMap=new HashMap<QualifiedName,IndexedDocument>();
-    
+
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
-	if (flatten) {
-	    provUtilities.forAllStatement(bun.getStatement(), this);
-	} else {
-	    IndexedDocument iDoc=bundleMap.get(bun.getId());
-	    if (iDoc==null) {
-		iDoc=new IndexedDocument(pFactory, null,flatten);
-		bundleMap.put(bun.getId(),iDoc);
-	    }	    
-	    u.forAllStatement(bun.getStatement(), iDoc);
-	}
+        if (flatten) {
+            provUtilities.forAllStatement(bun.getStatement(), this);
+        } else {
+            IndexedDocument iDoc=bundleMap.get(bun.getId());
+            if (iDoc==null) {
+                iDoc=new IndexedDocument(pFactory, null,flatten);
+                bundleMap.put(bun.getId(),iDoc);
+            }
+            u.forAllStatement(bun.getStatement(), iDoc);
+        }
     }
-    
+
     public Document toDocument() {
         Document res=pFactory.newDocument();
         List<StatementOrBundle> statementOrBundle = res.getStatementOrBundle();
@@ -688,16 +688,16 @@ public class IndexedDocument implements StatementAction {
 
 
     }
-    
+
     /** This function allows a document to be merged with this IndexedDocument. If flatten is true, bundles include in the document will be flattend into this one.
-     * 
-     * 
+     *
+     *
      * @param doc the document to be merge into this
      */
     public void merge(Document doc) {
         u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
     }
-    
+
     public Set<QualifiedName> traverseDerivations(QualifiedName from) {
         Stack<QualifiedName> s=new Stack<>();
         s.push(from);
@@ -706,11 +706,11 @@ public class IndexedDocument implements StatementAction {
 
 
     public Set<QualifiedName> traverseDerivations1(Set<QualifiedName> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
-    
+
         QualifiedName current=null;
-        
+
         while (!(todo.isEmpty())) {
-        
+
             current=todo.pop();
             if (seen.contains(current)) {
                 // move on to next
@@ -727,9 +727,9 @@ public class IndexedDocument implements StatementAction {
                     }
                 }
             }
-        
+
         }
-        
+
         return last;
     }
 

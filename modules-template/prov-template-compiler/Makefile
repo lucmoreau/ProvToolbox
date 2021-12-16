@@ -4,7 +4,7 @@ jetty:
 
 run:
 	target/libs/bin/example_run -infile src/test/resources/templates/example.csv -outfile target/example.png
-	target/libs/bin/example_run kernel -infile src/test/resources/templates/example.csv -outfile target/kernel.json -levelOffset 1000000 -relationOffset 2000 -setOffset 100000 -knownTypes src/test/resources/templates/knownTypes.json -knownRelations src/test/resources/templates/knownRelations.json -translation src/test/resources/templates/prettyRelations.json
+	target/libs/bin/example_run kernel -infile src/test/resources/templates/example.csv -outfile target/kernel.json -levelOffset 1000000 -relationOffset 2000 -setOffset 100000 -levelNumber 4 -knownTypes src/test/resources/templates/knownTypes.json -knownRelations src/test/resources/templates/knownRelations.json -translation src/test/resources/templates/prettyRelations.json
 
 cli.all:
 	jq -c ."tmap"."allLevels" target/kernel.json 

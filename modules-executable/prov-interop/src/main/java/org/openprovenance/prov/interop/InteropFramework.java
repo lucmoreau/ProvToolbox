@@ -960,6 +960,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                             ll.add("-levelOffset");
                             ll.add(tmp);
                         }
+                        if ((tmp=env.get("LEVEL_NUMBER"))!=null && !tmp.equals("")) {
+                            ll.add("-levelNumber");
+                            ll.add(tmp);
+                        }
                         if ((tmp=env.get("SET_OFFSET"))!=null && !tmp.equals("")) {
                             ll.add("-setOffset");
                             ll.add(tmp);
@@ -982,7 +986,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         }
 
                        logger.debug("log2kernel " + ll);
-
 
                         method.invoke(null,new Object[]{ll.toArray(new String[]{})});
                     } else {

@@ -95,7 +95,7 @@ abstract public class FileBuilder {
         if (dp!=null) dp.end();
         if (rp!=null) rp.end();
         if (tp!=null) {
-            final int bound = 6;
+            final int bound = tp.getLevelNumber();
             tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, bound);
             Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
             tp.computeFeatureVector(types);

@@ -24,12 +24,13 @@ public class TypesRecordProcessor  {
     private final int levelOffset;
     private final Map<String,String> translation;
     private final Map<Integer,Map<List<List<Integer>>, Integer>> levelRelTypeSetIndex;
+    private final int levelNumber;
 
     // stateful
     private int relationCount;
 
 
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String,String> translation, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String,String> translation, int levelNumber, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -49,6 +50,7 @@ public class TypesRecordProcessor  {
 
         this.records=records;
 
+        this.levelNumber=levelNumber;
     }
 
 
@@ -376,7 +378,7 @@ public class TypesRecordProcessor  {
 
     public void computeLevels(HashMap<String,FileBuilder> registry, HashMap<String,Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, int bound) {
         Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap);
-
+System.out.println("computeLevels " + bound);
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
             level= levelN(registry, clientRegistry, pm, level, i, level0);
@@ -425,4 +427,7 @@ public class TypesRecordProcessor  {
     }
 
 
+    public int getLevelNumber() {
+        return levelNumber;
+    }
 }

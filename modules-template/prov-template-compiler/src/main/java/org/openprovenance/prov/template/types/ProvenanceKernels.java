@@ -33,6 +33,7 @@ public class ProvenanceKernels {
             int relationOffset= cliArgs.relationOffset;
             int levelOffset= cliArgs.levelOffset;
             String translationFile = cliArgs.translation;
+            int levelNumber = cliArgs.levelNumber;
 
             InputStream is= ("-".equals(infile))? System.in: new FileInputStream(infile);
             DocumentProcessor dp=new NullDocumentProcessor ();
@@ -71,7 +72,7 @@ public class ProvenanceKernels {
 
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
-            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, records);
+            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, records);
 
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);

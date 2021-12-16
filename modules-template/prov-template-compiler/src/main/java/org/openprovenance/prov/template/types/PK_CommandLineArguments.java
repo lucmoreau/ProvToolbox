@@ -21,6 +21,7 @@ public class PK_CommandLineArguments {
     public static final String SET_OFFSET ="setOffset";
     public static final String LEVEL_OFFSET ="levelOffset";
     public static final String TRANSLATION ="translation";
+    public static final String LEVEL_NUMBER ="levelNumber";
 
 
     public final String debug;
@@ -31,6 +32,7 @@ public class PK_CommandLineArguments {
     public final int relationOffset;
     public final int setOffset;
     public final int levelOffset;
+    public final int levelNumber;
     public final String translation;
 
 
@@ -88,12 +90,17 @@ public class PK_CommandLineArguments {
                 .desc("level offset")
                 .longOpt(LEVEL_OFFSET)
                 .build();
-
         Option translation = Option.builder("t")
                 .argName("file")
                 .hasArg()
                 .desc("relation translation for pretty printing of types")
                 .longOpt(TRANSLATION)
+                .build();
+        Option levelNumber = Option.builder("L")
+                .argName("int")
+                .hasArg()
+                .desc("level number")
+                .longOpt(LEVEL_NUMBER)
                 .build();
 
         Options options = new Options();
@@ -108,6 +115,7 @@ public class PK_CommandLineArguments {
         options.addOption(relationOffset);
         options.addOption(levelOffset);
         options.addOption(translation);
+        options.addOption(levelNumber);
 
         return options;
 
@@ -127,6 +135,7 @@ public class PK_CommandLineArguments {
         int relationOffset=2000;
         int setOffset=100000;
         int levelOffset=1000000;
+        int levelNumber=4;
 
         try {
             // parse the command line arguments
@@ -143,6 +152,7 @@ public class PK_CommandLineArguments {
             if (line.hasOption(SET_OFFSET))         setOffset = Integer.parseInt(line.getOptionValue(SET_OFFSET));
             if (line.hasOption(RELATION_OFFSET))    relationOffset = Integer.parseInt(line.getOptionValue(SET_OFFSET));
             if (line.hasOption(LEVEL_OFFSET))       levelOffset = Integer.parseInt(line.getOptionValue(LEVEL_OFFSET));
+            if (line.hasOption(LEVEL_NUMBER))       levelNumber = Integer.parseInt(line.getOptionValue(LEVEL_NUMBER));
             if (line.hasOption(TRANSLATION))        translation =  line.getOptionValue(TRANSLATION);
 
 
@@ -154,7 +164,7 @@ public class PK_CommandLineArguments {
 
 
             final PK_CommandLineArguments commandLineArguments
-                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset, translation);
+                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset, levelNumber, translation);
 
             return commandLineArguments;
 
@@ -165,7 +175,7 @@ public class PK_CommandLineArguments {
         return null;
     }
 
-    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset, String translation) {
+    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset, int levelNumber, String translation) {
         this.debug=debug;
         this.infile=infile;
         this.outfile=outfile;
@@ -175,6 +185,7 @@ public class PK_CommandLineArguments {
         this.relationOffset=relationOffset;
         this.levelOffset=levelOffset;
         this.translation=translation;
+        this.levelNumber=levelNumber;
     }
 }
 

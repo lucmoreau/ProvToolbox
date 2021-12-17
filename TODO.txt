@@ -1,4 +1,10 @@
 
+prov-template-compiler:
+- selector for which relation to traverse
+- selector for membership forward or backward
+- relation/type filtering
+
+
 - inefficient processing in deep copy,
     - should avoid copying freshly created lists
     - rewrite populateAttributes to use split2 or similar in ProvUtilities.

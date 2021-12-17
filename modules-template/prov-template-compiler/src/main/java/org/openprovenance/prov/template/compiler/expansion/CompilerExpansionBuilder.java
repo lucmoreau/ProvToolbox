@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
-import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.ACTIVITY_URI;
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class CompilerExpansionBuilder {
@@ -231,25 +230,28 @@ public class CompilerExpansionBuilder {
         JsonNode the_context = bindings_schema.get("context");
         Iterator<String> iter = the_var.fieldNames();
 
-        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors =compilerClient.getSuccessors();
+        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1=compilerClient.getSuccessors1();
         Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2=compilerClient.getSuccessors2();
+        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3=compilerClient.getSuccessors3();
+        Map<String, Set<Pair<QualifiedName, SpecializationOf>>>successors4=compilerClient.getSuccessors4();
 
-        Map<String, Collection<String>> knownTypes=compilerTypeManagement.getKnownTypes();
-        Map<String, Collection<String>> unknownTypes=compilerTypeManagement.getUnknownTypes();
+
+        Map<String, Collection<String>> knownTypes   = compilerTypeManagement.getKnownTypes();
+        Map<String, Collection<String>> unknownTypes = compilerTypeManagement.getUnknownTypes();
 
         while (iter.hasNext()) {
             String key = iter.next();
             if (compilerUtil.isVariableDenotingQualifiedName(key,the_var)) {
-                if ((successors.get(key)!=null)  || (successors2.get(key)!=null)) {
+                if ((successors1.get(key) != null) || (successors2.get(key) != null) || (successors3.get(key) != null) || (successors4.get(key) != null)) {
 
-                    if (successors.get(key) != null) {
+                    if (successors1.get(key) != null) {
 
-                        final List<WasDerivedFrom> relations = successors.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
+                        final List<WasDerivedFrom> relations = successors1.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
                         final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
 
                         builder.addComment("" + identifiers);
-                        builder.addComment("" + successors.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-                        builder.addComment("" + successors.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+                        builder.addComment("" + successors1.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+                        builder.addComment("" + successors1.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
 
                         final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables(p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
                         final List<Collection<QualifiedName>> optionalActivities = relations.stream().map(p -> doCollectElementVariables(p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
@@ -257,7 +259,7 @@ public class CompilerExpansionBuilder {
                         builder.addComment("" + optionalActivityTypes);
                         builder.addComment("" + optionalActivities);
 
-                        if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0)==null) {
+                        if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0) == null) {
                             builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
                         } else {
 
@@ -290,12 +292,11 @@ public class CompilerExpansionBuilder {
                                 builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$N)", count, tmpb);
                             }
                         }
-                    }
                     } else {
                         builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
                     }
                 }
-
+            }
 
             count++;
         }

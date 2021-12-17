@@ -277,7 +277,7 @@ public class TypesRecordProcessor  {
             case PROV_ALTERNATE:
                 return "alt";
             case PROV_SPECIALIZATION:
-                return "spec";
+                return "spe";
             case PROV_MENTION:
                 return "mention";
             case PROV_MEMBERSHIP:

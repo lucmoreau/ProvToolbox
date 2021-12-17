@@ -138,9 +138,9 @@ public class IndexedDocument implements StatementAction {
     private HashMap<QualifiedName, Collection<WasEndedBy>> namedWasEndedByMap=new HashMap<QualifiedName, Collection<WasEndedBy>>();
     private HashMap<QualifiedName, Collection<WasEndedBy>> entityWasEndedByMap=new HashMap<QualifiedName, Collection<WasEndedBy>>();
     private Collection<HadMember> anonHadMember=new LinkedList<HadMember>();
-    private HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap=new HashMap<QualifiedName, Collection<HadMember>>();
-    private HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap=new HashMap<QualifiedName, Collection<HadMember>>();
-    private HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap=new HashMap<QualifiedName, Collection<HadMember>>();
+    private HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap= new HashMap<>();
+    private HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap= new HashMap<>();
+    private HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
 
 
     /** Return all used edges for this graph. */
@@ -793,6 +793,115 @@ public class IndexedDocument implements StatementAction {
                         QualifiedName qn=wat.getEntity();
                         last.add(Pair.of(qn,wat));
                         todo.push(qn);  // this for the case of agent being attributed to another agent? does this exist?
+                    }
+                }
+            }
+
+        }
+
+        return last;
+    }
+
+
+    public Set<Pair<QualifiedName, HadMember>> traverseMembershipsWithRelations(QualifiedName from) {
+        Stack<QualifiedName> s=new Stack<>();
+        s.push(from);
+        return traverseMembership2(new HashSet<>(),new HashSet<>(),s);
+    }
+
+    public Set<Pair<QualifiedName,HadMember>> traverseMembership2(Set<Pair<QualifiedName,HadMember>> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
+
+        QualifiedName current=null;
+
+        while (!(todo.isEmpty())) {
+
+            current=todo.pop();
+            if (seen.contains(current)) {
+                // move on to next
+            } else {
+                seen.add(current);
+                Collection<HadMember> successors=entityHadMemberMap.get(current);//
+                if (successors==null || successors.isEmpty()) {
+                    //move on next
+                } else {
+                    for (HadMember mem: successors) {
+                        QualifiedName qn=mem.getCollection();
+                        last.add(Pair.of(qn,mem));
+                        todo.push(qn);
+                    }
+                }
+            }
+
+        }
+
+        return last;
+    }
+
+    public Set<Pair<QualifiedName, HadMember>> traverseReverseMembershipsWithRelations(QualifiedName from) {
+        Stack<QualifiedName> s=new Stack<>();
+        s.push(from);
+        return traverseReverseMembership2(new HashSet<>(),new HashSet<>(),s);
+    }
+
+    public Set<Pair<QualifiedName,HadMember>> traverseReverseMembership2(Set<Pair<QualifiedName,HadMember>> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
+
+        QualifiedName current=null;
+
+        while (!(todo.isEmpty())) {
+
+            current=todo.pop();
+            if (seen.contains(current)) {
+                // move on to next
+            } else {
+                seen.add(current);
+                Collection<HadMember> successors=collHadMemberMap.get(current);
+                if (successors==null || successors.isEmpty()) {
+                    //move on next
+                } else {
+                    for (HadMember mem: successors) {
+                        List<QualifiedName> qns=mem.getEntity();
+                        for (QualifiedName qn: qns) {
+                            last.add(Pair.of(qn, mem));
+                            todo.push(qn);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return last;
+    }
+
+
+
+
+
+    public Set<Pair<QualifiedName,SpecializationOf>> traverseSpecializationsWithRelations(QualifiedName from) {
+        Stack<QualifiedName> s=new Stack<>();
+        s.push(from);
+        return traverseSpecializations2(new HashSet<>(),new HashSet<>(),s);
+    }
+
+    public Set<Pair<QualifiedName,SpecializationOf>> traverseSpecializations2(Set<Pair<QualifiedName,SpecializationOf>> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
+
+        QualifiedName current=null;
+
+        while (!(todo.isEmpty())) {
+
+            current=todo.pop();
+            if (seen.contains(current)) {
+                // move on to next
+            } else {
+                seen.add(current);
+                Collection<SpecializationOf> successors=genericEntitySpecializationOfMap.get(current);
+                if (successors==null || successors.isEmpty()) {
+                    //move on next
+                } else {
+                    for (SpecializationOf spe: successors) {
+                        QualifiedName qn=spe.getSpecificEntity();
+                        last.add(Pair.of(qn,spe));
+                        todo.push(qn);
                     }
                 }
             }

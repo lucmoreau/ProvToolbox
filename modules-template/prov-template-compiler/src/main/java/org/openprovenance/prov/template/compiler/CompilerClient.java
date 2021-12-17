@@ -12,10 +12,7 @@ import java.util.*;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.mapType;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder.levelNMapType;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder.levelNP1CMapType;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_QN_S_of_String;
-import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
 
 public class CompilerClient {
@@ -899,8 +896,10 @@ public class CompilerClient {
     }
 
     public void calculateTypedSuccessors(Set<QualifiedName> allVars, JsonNode bindings_schema, IndexedDocument indexed,
-                                         Map<String,Set<Pair<QualifiedName, WasDerivedFrom>>> successors,
-                                         Map<String,Set<Pair<QualifiedName, WasAttributedTo>>> successors2) {
+                                         Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>   successors1,
+                                         Map<String, Set<Pair<QualifiedName, WasAttributedTo>>>  successors2,
+                                         Map<String, Set<Pair<QualifiedName, HadMember>>>        successors3,
+                                         Map<String, Set<Pair<QualifiedName, SpecializationOf>>> successors4) {
         JsonNode the_var = bindings_schema.get("var");
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
@@ -908,10 +907,14 @@ public class CompilerClient {
             if (compilerUtil.isVariableDenotingQualifiedName(key,the_var)) {
                 for (QualifiedName qn : allVars) {
                     if (key.equals(qn.getLocalPart())) {
-                        final Set<Pair<QualifiedName, WasDerivedFrom>> pairs = indexed.traverseDerivationsWithRelations(qn);
-                        if (!pairs.isEmpty()) successors.put(key, pairs);
+                        final Set<Pair<QualifiedName, WasDerivedFrom>> pairs1 = indexed.traverseDerivationsWithRelations(qn);
+                        if (!pairs1.isEmpty()) successors1.put(key, pairs1);
                         final Set<Pair<QualifiedName, WasAttributedTo>> pairs2 = indexed.traverseAttributionsWithRelations(qn);
                         if (!pairs2.isEmpty()) successors2.put(key, pairs2);
+                        final Set<Pair<QualifiedName, HadMember>> pairs3 = indexed.traverseReverseMembershipsWithRelations(qn); // note Reverse relation
+                        if (!pairs3.isEmpty()) successors3.put(key, pairs3);
+                        final Set<Pair<QualifiedName, SpecializationOf>> pairs4 = indexed.traverseSpecializationsWithRelations(qn); // note Reverse relation
+                        if (!pairs4.isEmpty()) successors4.put(key, pairs4);
                         break;
                     }
                 }
@@ -919,16 +922,26 @@ public class CompilerClient {
         }
     }
 
-    public Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>> getSuccessors() {
-        return successors;
+    public Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>> getSuccessors1() {
+        return successors1;
     }
 
     public Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> getSuccessors2() {
         return successors2;
     }
 
-    final Map<String,Set<Pair<QualifiedName, WasDerivedFrom>>> successors=new HashMap<>();
-    final Map<String,Set<Pair<QualifiedName, WasAttributedTo>>> successors2=new HashMap<>();
+    public Map<String, Set<Pair<QualifiedName, HadMember>>> getSuccessors3() {
+        return successors3;
+    }
+    public Map<String, Set<Pair<QualifiedName, SpecializationOf>>> getSuccessors4() {
+        return successors4;
+    }
+
+    final Map<String,Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1 = new HashMap<>();
+    final Map<String,Set<Pair<QualifiedName, WasAttributedTo>>> successors2 = new HashMap<>();
+    final Map<String,Set<Pair<QualifiedName, HadMember>>>       successors3 = new HashMap<>();
+    final Map<String,Set<Pair<QualifiedName, SpecializationOf>>>successors4 = new HashMap<>();
+
 
     public MethodSpec generateClientMethod5static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getTypedSuccessors")
@@ -940,12 +953,12 @@ public class CompilerClient {
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
 
-        calculateTypedSuccessors(allVars,bindings_schema,indexed,successors,successors2);
+        calculateTypedSuccessors(allVars,bindings_schema,indexed, successors1,successors2,successors3,successors4);
 
 
         Iterator<String> iter2 = the_var.fieldNames();
         int count2 = 0;
-        HashMap<QualifiedName, Integer> index = new HashMap<QualifiedName, Integer>();
+        HashMap<QualifiedName, Integer> index = new HashMap<>();
         while (iter2.hasNext()) {
             count2++;
             String key = iter2.next();
@@ -968,18 +981,22 @@ public class CompilerClient {
             if (the_var.get(key).get(0).get("@id") != null) {
 
 
-                Set<Pair<QualifiedName, WasDerivedFrom>>   successors = new HashSet<>();
+                Set<Pair<QualifiedName, WasDerivedFrom>>  successors1 = new HashSet<>();
                 Set<Pair<QualifiedName, WasAttributedTo>> successors2 = new HashSet<>();
+                Set<Pair<QualifiedName, HadMember>>       successors3 = new HashSet<>();
+                Set<Pair<QualifiedName, SpecializationOf>>successors4 = new HashSet<>();
                 for (QualifiedName qn : allVars) {
                     if (key.equals(qn.getLocalPart())) {
-                        successors = indexed.traverseDerivationsWithRelations(qn);  // TODO: make use of the successors/successor2 precalculated above.
+                        successors1 = indexed.traverseDerivationsWithRelations(qn);  // TODO: make use of the successors/successor2 precalculated above.
                         successors2 = indexed.traverseAttributionsWithRelations(qn); // TODO: make use of the successors/successor2 precalculated above.
+                        successors3 = indexed.traverseReverseMembershipsWithRelations(qn);  // TODO: make use of the successors/successor2 precalculated above. // NOTE: Reverse relation
+                        successors4 = indexed.traverseSpecializationsWithRelations(qn);  // TODO: make use of the successors/successor2 precalculated above. // NOTE: Reverse relation
                         break;
                     }
                 }
                 String initializer = "";
                 boolean first = true;
-                for (Pair<QualifiedName, WasDerivedFrom> successor : successors) {
+                for (Pair<QualifiedName, WasDerivedFrom> successor : successors1) {
                     int i = index.get(successor.getLeft());
                     if (first) {
                         first = false;
@@ -996,6 +1013,24 @@ public class CompilerClient {
                         initializer = initializer + ", ";
                     }
                     initializer = initializer + i + ", " + relationTypeNumber(successor2.getRight()) + " /* " +  successor2.getRight().getKind() + " */";
+                }
+                for (Pair<QualifiedName, HadMember> successor3 : successors3) {
+                    int i = index.get(successor3.getLeft());
+                    if (first) {
+                        first = false;
+                    } else {
+                        initializer = initializer + ", ";
+                    }
+                    initializer = initializer + i + ", " + relationTypeNumber(successor3.getRight()) + " /* " +  successor3.getRight().getKind() + " */";
+                }
+                for (Pair<QualifiedName, SpecializationOf> successor4 : successors4) {
+                    int i = index.get(successor4.getLeft());
+                    if (first) {
+                        first = false;
+                    } else {
+                        initializer = initializer + ", ";
+                    }
+                    initializer = initializer + i + ", " + relationTypeNumber(successor4.getRight()) + " /* " +  successor4.getRight().getKind() + " */";
                 }
 
                 builder.addStatement("table.put($L,new int[] { " + initializer + "})", count);

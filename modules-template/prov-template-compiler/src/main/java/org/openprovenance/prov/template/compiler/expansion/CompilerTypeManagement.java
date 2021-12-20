@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 
@@ -49,6 +50,23 @@ public class CompilerTypeManagement {
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
 
+    // Map<String, Map<String, Function<Object, String>>> propertyConverters
+    static public final ParameterizedTypeName Map_S_Map_S_to_Function =
+            ParameterizedTypeName.get(ClassName.get(Map.class),
+                    TypeName.get(String.class),
+                    ParameterizedTypeName.get(ClassName.get(Map.class),
+                            TypeName.get(String.class),
+                            ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class),TypeName.get(String.class))));
+
+    // Map<String, Function<Object, String>>
+    static public final ParameterizedTypeName Map_S_to_Function =
+            ParameterizedTypeName.get(ClassName.get(Map.class),
+                    TypeName.get(String.class),
+                    ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class),TypeName.get(String.class)));
+    // Function<Object, String>
+    static public final ParameterizedTypeName Function_O_S =
+                    ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class),TypeName.get(String.class));
+
     public Map<String, Collection<String>> getKnownTypes() {
         return knownTypes;
     }
@@ -70,7 +88,7 @@ public class CompilerTypeManagement {
         compilerUtil.generateDocumentSpecializedParameters(mbuilder, the_var);
 
 
-        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, knownTypes, unknownTypes, mbuilder);
+        StatementTypeAction action = new StatementTypeAction(pFactory, allVars, allAtts, null, null, "__C_document.getStatementOrBundle()", bindings_schema, knownTypes, unknownTypes, mbuilder,compilerUtil);
         for (StatementOrBundle s : doc.getStatementOrBundle()) {
             u.doAction(s, action);
         }
@@ -119,13 +137,13 @@ public class CompilerTypeManagement {
                 .addModifiers(Modifier.PUBLIC);
         cbuilder.addStatement("this.knownTypeMap=knownTypeMap");
         cbuilder.addStatement("this.unknownTypeMap=unknownTypeMap");
+        cbuilder.addStatement("this.propertyConverters=propertyConverters");
         cbuilder.addStatement("this.pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()");
 
 
         cbuilder.addParameter(Map_QN_S_of_String,"knownTypeMap");
         cbuilder.addParameter(Map_QN_S_of_String,"unknownTypeMap");
-
-
+        cbuilder.addParameter(Map_S_Map_S_to_Function, "propertyConverters");
 
         TypeSpec.Builder builder = compilerUtil.generateTypeManagementClass(name);
         builder.addTypeVariable(TypeVariableName.get("T"));
@@ -139,6 +157,8 @@ public class CompilerTypeManagement {
 
         builder.addField(Map_QN_S_of_String,"knownTypeMap", Modifier.PRIVATE);
         builder.addField(Map_QN_S_of_String,"unknownTypeMap", Modifier.PRIVATE);
+        builder.addField(Map_S_Map_S_to_Function,"propertyConverters", Modifier.PRIVATE);
+
         builder.addMethod(cbuilder.build());
         builder.addMethod(mbuilder.build());
 

@@ -984,8 +984,16 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                             ll.add("-translation");
                             ll.add(tmp);
                         }
+                        if ((tmp=env.get("ADDLEVEL0"))!=null && !tmp.equals("")) {
+                            ll.add("-addlevel0");
+                            ll.add(tmp);
+                        }
+                        if ((tmp=env.get("PROPERTY_CONVERTERS"))!=null && !tmp.equals("")) {
+                            ll.add("-propertyConverters");
+                            ll.add(tmp);
+                        }
 
-                       logger.debug("log2kernel " + ll);
+                        logger.debug("log2kernel " + ll);
 
                         method.invoke(null,new Object[]{ll.toArray(new String[]{})});
                     } else {

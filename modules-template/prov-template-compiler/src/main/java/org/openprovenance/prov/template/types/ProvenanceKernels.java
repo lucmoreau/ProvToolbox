@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.RecordProcessor;
 
 import java.io.*;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ public class ProvenanceKernels {
 
     static TypeReference<Map<String,Integer>> mapRef = new TypeReference<>() {};
     static TypeReference<Map<String,String>> mapStringRef = new TypeReference<>() {};
+    static TypeReference<Map<String,Map<String,String>>> propertyConverterRef = new TypeReference<>() {};
 
 
     public static void main(String [] args) throws IOException {
@@ -34,6 +36,9 @@ public class ProvenanceKernels {
             int levelOffset= cliArgs.levelOffset;
             String translationFile = cliArgs.translation;
             int levelNumber = cliArgs.levelNumber;
+            boolean addLevel0ToAllLevels=cliArgs.addLevel0ToAllLevels;
+            String propertyConverters=cliArgs.propertyConverters;
+
 
             InputStream is= ("-".equals(infile))? System.in: new FileInputStream(infile);
             DocumentProcessor dp=new NullDocumentProcessor ();
@@ -72,7 +77,10 @@ public class ProvenanceKernels {
 
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
-            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, records);
+            Map<String,Map<String,String>> propertyConvertersMap=(propertyConverters==null)?Map.of():om.readValue(new File(propertyConverters), propertyConverterRef);
+
+
+            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, records);
 
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);

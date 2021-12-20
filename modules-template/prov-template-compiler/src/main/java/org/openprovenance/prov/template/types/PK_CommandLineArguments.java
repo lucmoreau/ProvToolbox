@@ -22,6 +22,8 @@ public class PK_CommandLineArguments {
     public static final String LEVEL_OFFSET ="levelOffset";
     public static final String TRANSLATION ="translation";
     public static final String LEVEL_NUMBER ="levelNumber";
+    public static final String ADD_LEVEL0 ="addLevel0ToAllLevels";
+    public static final String PROPERTY_CONVERTERS ="propertyConverters";
 
 
     public final String debug;
@@ -34,6 +36,8 @@ public class PK_CommandLineArguments {
     public final int levelOffset;
     public final int levelNumber;
     public final String translation;
+    public final boolean addLevel0ToAllLevels;
+    public String propertyConverters;
 
 
     static private Options buildOptions() {
@@ -42,6 +46,7 @@ public class PK_CommandLineArguments {
 
         Option debug = new Option(DEBUG, DEBUG, false, "debug mode");
 
+        Option addLevel0 = new Option(ADD_LEVEL0, ADD_LEVEL0, false, "add level0 to all levels");
 
         Option infile = Option.builder("i")
                 .argName("file")
@@ -103,6 +108,16 @@ public class PK_CommandLineArguments {
                 .longOpt(LEVEL_NUMBER)
                 .build();
 
+
+        Option propertyConverters = Option.builder("p")
+                .argName("files")
+                .hasArg()
+                .desc("property converters ")
+                .longOpt(PROPERTY_CONVERTERS)
+                .build();
+
+
+
         Options options = new Options();
 
         options.addOption(help);
@@ -116,6 +131,8 @@ public class PK_CommandLineArguments {
         options.addOption(levelOffset);
         options.addOption(translation);
         options.addOption(levelNumber);
+        options.addOption(addLevel0);
+        options.addOption(propertyConverters);
 
         return options;
 
@@ -136,6 +153,8 @@ public class PK_CommandLineArguments {
         int setOffset=100000;
         int levelOffset=1000000;
         int levelNumber=4;
+        boolean addLevel0=false;
+        String propertyConverters=null;
 
         try {
             // parse the command line arguments
@@ -154,7 +173,9 @@ public class PK_CommandLineArguments {
             if (line.hasOption(LEVEL_OFFSET))       levelOffset = Integer.parseInt(line.getOptionValue(LEVEL_OFFSET));
             if (line.hasOption(LEVEL_NUMBER))       levelNumber = Integer.parseInt(line.getOptionValue(LEVEL_NUMBER));
             if (line.hasOption(TRANSLATION))        translation =  line.getOptionValue(TRANSLATION);
+            if (line.hasOption(PROPERTY_CONVERTERS)) propertyConverters=line.getOptionValue(PROPERTY_CONVERTERS);
 
+            if (line.hasOption(ADD_LEVEL0))         addLevel0 = true;
 
             if (help != null) {
                 HelpFormatter formatter = new HelpFormatter();
@@ -164,7 +185,7 @@ public class PK_CommandLineArguments {
 
 
             final PK_CommandLineArguments commandLineArguments
-                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset, levelNumber, translation);
+                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset, levelNumber, translation, addLevel0, propertyConverters);
 
             return commandLineArguments;
 
@@ -175,7 +196,7 @@ public class PK_CommandLineArguments {
         return null;
     }
 
-    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset, int levelNumber, String translation) {
+    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset, int levelNumber, String translation, boolean addLevel0, String propertyConverters) {
         this.debug=debug;
         this.infile=infile;
         this.outfile=outfile;
@@ -186,6 +207,8 @@ public class PK_CommandLineArguments {
         this.levelOffset=levelOffset;
         this.translation=translation;
         this.levelNumber=levelNumber;
+        this.addLevel0ToAllLevels=addLevel0;
+        this.propertyConverters=propertyConverters;
     }
 }
 

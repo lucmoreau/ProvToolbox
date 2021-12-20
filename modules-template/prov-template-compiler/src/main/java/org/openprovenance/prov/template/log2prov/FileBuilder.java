@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -52,7 +53,7 @@ abstract public class FileBuilder {
 
         final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
         final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
-
+        Map<String, Map<String, Function<Object, String>>> propertyConverters=null;
 
         for (CSVRecord record: records) {
             int size=record.size();
@@ -84,7 +85,9 @@ abstract public class FileBuilder {
                 if (tp!=null) {
 
                     ProxyMakerInterface makerBuilder=pm.facadeProxy(ProxyMakerInterface.class,builder);
-                    Object typeManager=makerBuilder.getTypeManager(knownTypeMap,unknownTypeMap);
+                    propertyConverters=tp.getPropertyConverters();
+
+                    Object typeManager=makerBuilder.getTypeManager(knownTypeMap,unknownTypeMap,propertyConverters);
 
                     makerBuilder.make(args,typeManager);
 
@@ -96,7 +99,7 @@ abstract public class FileBuilder {
         if (rp!=null) rp.end();
         if (tp!=null) {
             final int bound = tp.getLevelNumber();
-            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, bound);
+            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, propertyConverters, bound);
             Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
             tp.computeFeatureVector(types);
             return tp.getResult();

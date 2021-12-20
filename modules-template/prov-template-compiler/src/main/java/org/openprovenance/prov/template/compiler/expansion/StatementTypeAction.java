@@ -1,19 +1,23 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.MethodSpec.Builder;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.expander.MissingAttributeValue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Function_O_S;
+import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_S_to_Function;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_ACTIVITY_URI;
+import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
 
 public class StatementTypeAction implements StatementAction {
 
@@ -27,6 +31,7 @@ public class StatementTypeAction implements StatementAction {
     private final Map<String, Collection<String>> knownTypes;
     private final Map<String, Collection<String>> unknownTypes;
     private final Builder mbuilder;
+    private final CompilerUtil compilerUtil;
 
     private Set<QualifiedName> allVars;
     private Set<QualifiedName> allAtts;
@@ -35,7 +40,7 @@ public class StatementTypeAction implements StatementAction {
     private Hashtable<QualifiedName, String> vmap;
 
 
-    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder) {
+    public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
         this.pFactory=pFactory;
         this.allVars=allVars;
         this.allAtts=allAtts;
@@ -46,6 +51,7 @@ public class StatementTypeAction implements StatementAction {
         this.knownTypes=knownTypes;
         this.unknownTypes=unknownTypes;
         this.mbuilder=mbuilder;
+        this.compilerUtil=compilerUtil;
     }
 
 
@@ -161,6 +167,7 @@ public class StatementTypeAction implements StatementAction {
     public void doAction(Activity s) {
         registerTypes(s.getId(),s.getType());
         registerActivity(s.getId());
+        doRegisterTypesForAttributes(s, pFactory.getAttributes(s), ACTIVITY_URI);
     }
 
     @Override
@@ -198,6 +205,8 @@ public class StatementTypeAction implements StatementAction {
     public void doAction(Agent s) {
         registerTypes(s.getId(),s.getType());
         registerAgent(s.getId());
+        doRegisterTypesForAttributes(s, pFactory.getAttributes(s), AGENT_URI);
+
     }
 
     @Override
@@ -274,6 +283,63 @@ public class StatementTypeAction implements StatementAction {
 
     }
 
+
+    static int anotherCounter=0;
+    private void doRegisterTypesForAttributes(Identifiable s,Collection<Attribute> attributes, String expressionUri) {
+        if (ExpandUtil.isGensymVariable(s.getId())) return;
+        JsonNode the_var = bindings_schema.get("var");
+
+        String tmp_Conv="tmp_Conv"+(anotherCounter++);
+        mbuilder.addStatement("$T $N=propertyConverters.get($S)", Map_S_to_Function, tmp_Conv, expressionUri);
+
+        mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv);
+        Map<String,String> seen=new HashMap<>();
+
+        attributes.forEach(attr -> {
+            String attributeUri = attr.getElementName().getUri();
+            final Object value = attr.getValue();
+            if (TMPL_NS.equals(attr.getElementName().getNamespaceURI())) return; // don't do anything if it's a tmpl attribute
+            if (TMPL_NS.equals(attr.getElementName().getNamespaceURI())) return; // don't do anything if it's a tmpl attribute
+            String tmp_Conv2 = seen.get(attributeUri);
+            boolean first_encounter=true;
+            if (tmp_Conv2==null) {
+                tmp_Conv2 = tmp_Conv + "_" + cleanUpName(attributeUri);
+                seen.put(attributeUri, tmp_Conv2);
+            } else {
+                first_encounter=false;
+            }
+            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_S, tmp_Conv2, tmp_Conv, attributeUri);
+            mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
+            mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
+            if (value instanceof QualifiedName) {
+                QualifiedName qn=(QualifiedName) value;
+                if (ExpandUtil.isVariable(qn)) {
+                    String key=qn.getLocalPart();
+                    final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                    if (atype.equals(QualifiedName.class)) {
+                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).add($N.apply($N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key);
+                    } else {
+                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).add($N.apply($N))", key, s.getId().getLocalPart(), tmp_Conv2, key);
+                    }
+                } else {
+                    mbuilder.addStatement("knownTypeMap.get($N).add($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, qn.getUri());
+                }
+            } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
+                String aString=String.valueOf(value);
+                mbuilder.addStatement("unknownTypeMap.get($N).add($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, aString);
+            } else {
+                throw new UnsupportedOperationException("doRegisterTypesForAttributes with attribute value " + value + " for element " +attributeUri);
+            }
+            mbuilder.endControlFlow();
+        });
+
+        mbuilder.endControlFlow();
+    }
+
+    private String cleanUpName(String elementName) {
+        return Base64.getEncoder().withoutPadding().encodeToString(elementName.getBytes(StandardCharsets.UTF_8));
+    }
+
     private void dynamicRegisterTypes(Identifiable s, Collection<QualifiedName> qualifiedNames) {
         if (qualifiedNames==null) return;
         String tmp="_tmp_"+ s.getId().getLocalPart();
@@ -320,6 +386,8 @@ public class StatementTypeAction implements StatementAction {
     public void doAction(Entity s) {
         registerTypes(s.getId(),s.getType());
         registerEntity(s.getId());
+        doRegisterTypesForAttributes(s, pFactory.getAttributes(s), ENTITY_URI);
+
     }
 
 
@@ -381,7 +449,7 @@ public class StatementTypeAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         registerBundle(bun.getId());
-        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, knownTypes, unknownTypes, mbuilder);
+        StatementTypeAction action2=new StatementTypeAction(pFactory, allVars, allAtts, vmap, null, null, bindings_schema, knownTypes, unknownTypes, mbuilder, compilerUtil);
         
         for (Statement s: bun.getStatement()) {
             provUtilities.doAction(s, action2);

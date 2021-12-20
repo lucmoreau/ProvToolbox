@@ -1,5 +1,12 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+
+==0.9.19==
+* further upgrade to log4j 2.17.0 (following log4shell vulnerability)
+* prov-template-compiler: allows for level0 type to be added to all levels (option -addLevel0)
+* prov-tempalte-compiler: allows for domain specific types to be added from properties (option -propertyConverters)
+
+
 ==0.9.18==
 * further upgrade to log4j 2.16.0 (following log4shell vulnerability)
 * prov-template-compiler: -levelNumber option to determine type inference level

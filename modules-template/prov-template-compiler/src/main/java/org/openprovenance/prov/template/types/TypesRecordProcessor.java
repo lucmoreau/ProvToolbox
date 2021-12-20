@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.types;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
@@ -10,7 +9,9 @@ import org.openprovenance.prov.template.log2prov.ProxyManagement;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientInterface;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyMakerInterface;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TypesRecordProcessor  {
@@ -25,12 +26,14 @@ public class TypesRecordProcessor  {
     private final Map<String,String> translation;
     private final Map<Integer,Map<List<List<Integer>>, Integer>> levelRelTypeSetIndex;
     private final int levelNumber;
+    private final boolean addLevel0ToAllLevels;
+    private final Map<String, Map<String, Function<Object,String>>> propertyConverters;
 
     // stateful
     private int relationCount;
 
 
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String,String> translation, int levelNumber, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, String>> propertyConverters, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -51,6 +54,9 @@ public class TypesRecordProcessor  {
         this.records=records;
 
         this.levelNumber=levelNumber;
+        this.addLevel0ToAllLevels=addLevel0ToAllLevels;
+        this.propertyConverters=(propertyConverters==null)? null:initialisePropertyConverters(propertyConverters);
+
     }
 
 
@@ -103,7 +109,18 @@ public class TypesRecordProcessor  {
         result.put("mapLevel"+levelNext, mapLevelNP1);
 
 
-        Map<String, List<List<Integer>>> sortedMapLevelNP1pretty=mapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> mapLevelNP1pretty.get(s).stream().sorted(collectionComparator).collect(Collectors.toList())));
+        Map<String, List<List<Integer>>>    sortedMapLevelNP1pretty=mapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> mapLevelNP1pretty.get(s).stream().sorted(collectionComparator).collect(Collectors.toList())));
+
+
+        // optionally add level0 type (if -addLevel0 is set)
+        final Map<String, List<List<Integer>>> tmp_finalSortedMapLevelNP1pretty = sortedMapLevelNP1pretty;
+        sortedMapLevelNP1pretty=(!addLevel0ToAllLevels)?tmp_finalSortedMapLevelNP1pretty:tmp_finalSortedMapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> {
+            List<List<Integer>> ll=tmp_finalSortedMapLevelNP1pretty.get(s);
+            ll.add(0, List.of(-1,mapLevel0.get(s)));
+            return ll;
+        }));
+
+
 
         result.put("level"+levelNext, sortedMapLevelNP1pretty);
 
@@ -122,7 +139,8 @@ public class TypesRecordProcessor  {
 
         tMap.assign("levelNRelTypeSetIndex", levelNext, swap(levelNRelTypeSetIndex));
 
-        Map<String, Integer> levelNS=sortedMapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> levelNRelTypeSetIndex.get(sortedMapLevelNP1pretty.get(s))));
+        Map<String, List<List<Integer>>> finalSortedMapLevelNP1pretty1 = sortedMapLevelNP1pretty;
+        Map<String, Integer> levelNS=sortedMapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> levelNRelTypeSetIndex.get(finalSortedMapLevelNP1pretty1.get(s))));
 
         result.put("level"+levelNext+"S", levelNS);
 
@@ -174,7 +192,11 @@ public class TypesRecordProcessor  {
     }
 
     private String convertToText(List<Integer> ll, Long count) {
-        return  numeral(count)  + translateRelation(tMap.allRelations.get(ll.get(0))) + "(" + ((ll.get(1)<levelOffset)? getDescriptorS0(ll.get(1)) : joinStrings(getDescriptors(ll.get(1)))) + ")";
+        if (ll.get(0)==-1) {  // was added when -addLevel0, the next element is a level0 type value
+            return getDescriptorS0(ll.get(1));
+        } else {
+            return numeral(count) + translateRelation(tMap.allRelations.get(ll.get(0))) + "(" + ((ll.get(1) < levelOffset) ? getDescriptorS0(ll.get(1)) : joinStrings(getDescriptors(ll.get(1)))) + ")";
+        }
     }
 
     private String numeral(Long count) {
@@ -296,7 +318,7 @@ public class TypesRecordProcessor  {
         return m.keySet().stream().collect(Collectors.toMap(m::get, a->a));
     }
 
-    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap) {
+    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, Function<Object, String>>> propertyConverters) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
 
@@ -376,9 +398,8 @@ public class TypesRecordProcessor  {
 
     }
 
-    public void computeLevels(HashMap<String,FileBuilder> registry, HashMap<String,Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, int bound) {
-        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap);
-System.out.println("computeLevels " + bound);
+    public void computeLevels(HashMap<String,FileBuilder> registry, HashMap<String,Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, Function<Object, String>>> propertyConverters, int bound) {
+        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap,propertyConverters);
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
             level= levelN(registry, clientRegistry, pm, level, i, level0);
@@ -429,5 +450,26 @@ System.out.println("computeLevels " + bound);
 
     public int getLevelNumber() {
         return levelNumber;
+    }
+
+    public Map<String, Map<String, Function<Object, String>>> getPropertyConverters() {
+        return propertyConverters;
+    }
+
+    public Map<String,Map<String, Function<Object,String>>> initialisePropertyConverters(Map<String, Map<String, String>> converters) {
+        return converters.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> initialise(converters.get(s))));
+    }
+
+    private Map<String,Function<Object,String>> initialise(Map<String, String> m) {
+        return m.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> initialize(s, m.get(s))));
+    }
+
+    private Function<Object,String> initialize(String property, String classname) {
+        try {
+            return (Function<Object,String>) Class.forName(classname).getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("fail to initialize property converter " + classname + " for property " + property);
+        }
     }
 }

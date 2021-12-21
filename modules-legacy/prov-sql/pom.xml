@@ -5,7 +5,7 @@
     <parent>
         <artifactId>modules-legacy</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.19</version>
+        <version>0.9.20-SNAPSHOT</version>
     </parent>
 
 
@@ -23,19 +23,19 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.19</version>
+            <version>0.9.20-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.19</version>
+            <version>0.9.20-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.19</version>
+            <version>0.9.20-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>

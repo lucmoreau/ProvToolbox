@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-legacy</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.20-SNAPSHOT</version>
+        <version>0.9.20</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.20-SNAPSHOT</version>
+            <version>0.9.20</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -37,13 +37,13 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.20-SNAPSHOT</version>
+            <version>0.9.20</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-xml</artifactId>
-            <version>0.9.20-SNAPSHOT</version>
+            <version>0.9.20</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>

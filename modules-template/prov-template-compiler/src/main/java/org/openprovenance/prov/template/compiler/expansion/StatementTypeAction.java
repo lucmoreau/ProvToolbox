@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Function_O_S;
+import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Function_O_Col_S;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_S_to_Function;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_ACTIVITY_URI;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
@@ -308,7 +308,7 @@ public class StatementTypeAction implements StatementAction {
             } else {
                 first_encounter=false;
             }
-            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_S, tmp_Conv2, tmp_Conv, attributeUri);
+            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
             mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
             mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
             if (value instanceof QualifiedName) {
@@ -317,16 +317,16 @@ public class StatementTypeAction implements StatementAction {
                     String key=qn.getLocalPart();
                     final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
                     if (atype.equals(QualifiedName.class)) {
-                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).add($N.apply($N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key);
+                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key);
                     } else {
-                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).add($N.apply($N))", key, s.getId().getLocalPart(), tmp_Conv2, key);
+                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N))", key, s.getId().getLocalPart(), tmp_Conv2, key);
                     }
                 } else {
-                    mbuilder.addStatement("knownTypeMap.get($N).add($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, qn.getUri());
+                    mbuilder.addStatement("knownTypeMap.get($N).addAll($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, qn.getUri());
                 }
             } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
                 String aString=String.valueOf(value);
-                mbuilder.addStatement("unknownTypeMap.get($N).add($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, aString);
+                mbuilder.addStatement("unknownTypeMap.get($N).addAll($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, aString);
             } else {
                 throw new UnsupportedOperationException("doRegisterTypesForAttributes with attribute value " + value + " for element " +attributeUri);
             }

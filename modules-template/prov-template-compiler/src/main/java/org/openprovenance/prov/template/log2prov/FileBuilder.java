@@ -53,7 +53,7 @@ abstract public class FileBuilder {
 
         final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
         final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
-        Map<String, Map<String, Function<Object, String>>> propertyConverters=null;
+        Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters=null;
 
         for (CSVRecord record: records) {
             int size=record.size();

@@ -18,7 +18,7 @@ public class ProvenanceKernels {
 
     static TypeReference<Map<String,Integer>> mapRef = new TypeReference<>() {};
     static TypeReference<Map<String,String>> mapStringRef = new TypeReference<>() {};
-    static TypeReference<Map<String,Map<String,String>>> propertyConverterRef = new TypeReference<>() {};
+    static TypeReference<Map<String,Map<String,List<String>>>> propertyConverterRef = new TypeReference<>() {};
 
 
     public static void main(String [] args) throws IOException {
@@ -77,7 +77,7 @@ public class ProvenanceKernels {
 
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
-            Map<String,Map<String,String>> propertyConvertersMap=(propertyConverters==null)?Map.of():om.readValue(new File(propertyConverters), propertyConverterRef);
+            Map<String,Map<String,List<String>>> propertyConvertersMap=(propertyConverters==null)?Map.of():om.readValue(new File(propertyConverters), propertyConverterRef);
 
 
             TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, records);

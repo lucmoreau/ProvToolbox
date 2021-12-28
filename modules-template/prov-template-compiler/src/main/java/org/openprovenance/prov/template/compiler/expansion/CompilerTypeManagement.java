@@ -50,22 +50,19 @@ public class CompilerTypeManagement {
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
 
-    // Map<String, Map<String, Function<Object, String>>> propertyConverters
-    static public final ParameterizedTypeName Map_S_Map_S_to_Function =
-            ParameterizedTypeName.get(ClassName.get(Map.class),
-                    TypeName.get(String.class),
-                    ParameterizedTypeName.get(ClassName.get(Map.class),
-                            TypeName.get(String.class),
-                            ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class),TypeName.get(String.class))));
 
-    // Map<String, Function<Object, String>>
+
+    // Function<Object, Collection<String>>
+    static public final ParameterizedTypeName Function_O_Col_S =
+                    ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class), ParameterizedTypeName.get(ClassName.get(Collection.class),TypeName.get(String.class)));
+
+    // Map<String, Function<Object,  Collection<String>>>
     static public final ParameterizedTypeName Map_S_to_Function =
-            ParameterizedTypeName.get(ClassName.get(Map.class),
-                    TypeName.get(String.class),
-                    ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class),TypeName.get(String.class)));
-    // Function<Object, String>
-    static public final ParameterizedTypeName Function_O_S =
-                    ParameterizedTypeName.get(ClassName.get(Function.class), TypeName.get(Object.class),TypeName.get(String.class));
+            ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), Function_O_Col_S);
+
+    // Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters
+    static public final ParameterizedTypeName Map_S_Map_S_to_Function =
+            ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class),Map_S_to_Function);
 
     public Map<String, Collection<String>> getKnownTypes() {
         return knownTypes;

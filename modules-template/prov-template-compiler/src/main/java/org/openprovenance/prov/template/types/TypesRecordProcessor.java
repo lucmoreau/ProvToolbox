@@ -11,6 +11,7 @@ import org.openprovenance.prov.template.log2prov.interfaces.ProxyMakerInterface;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,13 +28,13 @@ public class TypesRecordProcessor  {
     private final Map<Integer,Map<List<List<Integer>>, Integer>> levelRelTypeSetIndex;
     private final int levelNumber;
     private final boolean addLevel0ToAllLevels;
-    private final Map<String, Map<String, Function<Object,String>>> propertyConverters;
+    private final Map<String, Map<String, Function<Object,Collection<String>>>> propertyConverters;
 
     // stateful
     private int relationCount;
 
 
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, String>> propertyConverters, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, List<String>>> propertyConverters, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -318,7 +319,7 @@ public class TypesRecordProcessor  {
         return m.keySet().stream().collect(Collectors.toMap(m::get, a->a));
     }
 
-    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, Function<Object, String>>> propertyConverters) {
+    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
 
@@ -398,7 +399,7 @@ public class TypesRecordProcessor  {
 
     }
 
-    public void computeLevels(HashMap<String,FileBuilder> registry, HashMap<String,Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, Function<Object, String>>> propertyConverters, int bound) {
+    public void computeLevels(HashMap<String,FileBuilder> registry, HashMap<String,Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters, int bound) {
         Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap,propertyConverters);
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
@@ -452,21 +453,33 @@ public class TypesRecordProcessor  {
         return levelNumber;
     }
 
-    public Map<String, Map<String, Function<Object, String>>> getPropertyConverters() {
+    public Map<String, Map<String, Function<Object, Collection<String>>>> getPropertyConverters() {
         return propertyConverters;
     }
 
-    public Map<String,Map<String, Function<Object,String>>> initialisePropertyConverters(Map<String, Map<String, String>> converters) {
+    public Map<String, Map<String, Function<Object, Collection<String>>>> initialisePropertyConverters(Map<String, Map<String, List<String>>> converters) {
         return converters.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> initialise(converters.get(s))));
     }
 
-    private Map<String,Function<Object,String>> initialise(Map<String, String> m) {
-        return m.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> initialize(s, m.get(s))));
+    public Map<String, Function<Object, Collection<String>>> initialise(Map<String, List<String>> m) {
+        return m.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> m.get(s).stream().map(fname -> initialize(s, fname)).reduce(identity,compose)));
     }
 
-    private Function<Object,String> initialize(String property, String classname) {
+    final private Function<Object, Collection<String>> identity= o->List.of();
+
+    final private BinaryOperator<Function<Object, Collection<String>>> compose= (f1, f2) -> o -> {
+        List<String> ll=new LinkedList<>();
+        final Collection<String> c1 = f1.apply(o);
+        if (c1!=null) ll.addAll(c1);
+        final Collection<String> c2 = f2.apply(o);
+        if (c2!=null) ll.addAll(c2);
+        return ll;
+    };
+
+
+    private Function<Object, Collection<String>> initialize(String property, String classname) {
         try {
-            return (Function<Object,String>) Class.forName(classname).getConstructor().newInstance();
+            return (Function<Object,Collection<String>>) Class.forName(classname).getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("fail to initialize property converter " + classname + " for property " + property);

@@ -1,5 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+==0.9.20==
+* prov-tempalte-compiler:  allow for collections of level0 application specific types
 
 ==0.9.19==
 * further upgrade to log4j 2.17.0 (following log4shell vulnerability)

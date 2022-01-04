@@ -354,6 +354,8 @@ public class StatementCompilerAction implements StatementAction {
             // don't include it!
         } else if (ExpandUtil.ACTIVITY_TYPE_URI.equals(elementUri)) {
             // don't include it!
+        }else if (ExpandUtil.TMPL_ACTIVITY_URI.equals(elementUri)) {
+            // don't include it!
         } else {
             // can never be here
             throw new UnsupportedOperationException();
@@ -368,6 +370,7 @@ public class StatementCompilerAction implements StatementAction {
                 || (ExpandUtil.STARTTIME_URI.equals(elementName))
                 || (ExpandUtil.ENDTIME_URI.equals(elementName))
                 || (ExpandUtil.ACTIVITY_TYPE_URI.equals(elementName))
+                || (ExpandUtil.TMPL_ACTIVITY_URI.equals(elementName))
                 || (ExpandUtil.IFVAR_URI.equals(elementName));
 
     }

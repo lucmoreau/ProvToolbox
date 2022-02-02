@@ -345,7 +345,7 @@ public class StatementCompilerAction implements StatementAction {
                                  vq.getLocalPart());
            
         } else if (ExpandUtil.TIME_URI.equals(elementUri)) {
-            throw new UnsupportedOperationException();
+           // don't include it!
         } else if (ExpandUtil.STARTTIME_URI.equals(elementUri)) {
             // don't include it!
         } else if (ExpandUtil.ENDTIME_URI.equals(elementUri)) {

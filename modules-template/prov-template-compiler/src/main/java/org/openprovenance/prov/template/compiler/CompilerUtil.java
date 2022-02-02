@@ -422,7 +422,9 @@ public class CompilerUtil {
     }
 
     public String createExamplar(JsonNode the_var, String key, int num, ProvFactory pFactory) {
-        if (the_var.get(key).get(0).get("@id") != null) {
+        if (the_var.get(key).get(0).get("@examplar") != null) {
+            return the_var.get(key).get(0).get("@examplar").toString();
+        } else if (the_var.get(key).get(0).get("@id") != null) {
             return "\"v" + num + "\"";
         } else {
             if (the_var.get(key).get(0).get(0) == null) {
@@ -458,6 +460,7 @@ public class CompilerUtil {
                 throw new UnsupportedOperationException();
             }
         }
+
     }
 
     public String getDeclaredType(JsonNode the_var, String key) {

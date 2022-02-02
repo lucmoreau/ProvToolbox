@@ -838,7 +838,7 @@ public class CompilerClient {
 
         Iterator<String> iter2 = the_var.fieldNames();
         int count2 = 0;
-        HashMap<QualifiedName, Integer> index = new HashMap<QualifiedName, Integer>();
+        HashMap<QualifiedName, Integer> index = new HashMap<>();
         while (iter2.hasNext()) {
             count2++;
             String key = iter2.next();

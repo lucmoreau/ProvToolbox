@@ -1,6 +1,7 @@
 #!/bin/sh
+# ${COMMENTS}
 # file generated automatically by provconvert -templatebuilder <file>
-# modules-template/prov-template-compiler/src/main/resources/org/openprovenance/prov/template/compiler/script.sh
+# source code in modules-template/prov-template-compiler/src/main/resources/script.sh
 
 
 
@@ -99,6 +100,3 @@ else
    $PROVCONVERT -infile "$_INFILE" -log2prov ${INIT} -outfile "$_OUTFILE"
 fi
 
-
-
-#  LocalWords:  pdtlib

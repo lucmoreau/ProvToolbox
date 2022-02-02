@@ -64,43 +64,43 @@
 
     <pack name="provconvert-exec" preselected="yes" required="yes">
       <description>provconvert binary</description>
-      
+
       <fileset dir="bin" targetdir="$INSTALL_PATH/bin"/>
-      
+
       <executable targetfile="$INSTALL_PATH/bin/provconvert"
-		  stage="never"
-		  keep="true">
-	<os family="unix"/>
+                  stage="never"
+                  keep="true">
+        <os family="unix"/>
       </executable>
-      
+
       <executable targetfile="$INSTALL_PATH/bin/provconvert.bat"
-		  stage="never"
-		  keep="true">
-	<os family="windows"/>
+                  stage="never"
+                  keep="true">
+        <os family="windows"/>
       </executable>
-      
+
       <executable targetfile="/bin/ln"
-		  stage="postinstall"
-		  keep="true"
-		  failure="warn">
+                  stage="postinstall"
+                  keep="true"
+                  failure="warn">
         <args>
           <arg value="-s"/>
           <arg value="$INSTALL_PATH/bin/provconvert"/>
           <arg value="/usr/local/bin/provconvert"/>
         </args>
-	<os family="mac"/>
+        <os family="mac"/>
       </executable>
 
       <executable targetfile="/usr/bin/ln"
-		  stage="postinstall"
-		  keep="true"
-		  failure="warn">
+                  stage="postinstall"
+                  keep="true"
+                  failure="warn">
         <args>
           <arg value="-s"/>
           <arg value="$INSTALL_PATH/bin/provconvert"/>
           <arg value="/usr/local/bin/provconvert"/>
         </args>
-	<os family="linux"/>
+        <os family="linux"/>
       </executable>
 
       <executable keep="true" failure="ask" stage="uninstall" targetfile="/bin/rm">
@@ -110,8 +110,8 @@
         </args>
         <os family="unix"/>
       </executable>
-      
-      
+
+
     </pack>
   </packs>
 </installation>

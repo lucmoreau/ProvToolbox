@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openprovenance.prov:prov-generator:0.9.21">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-generator/0.9.21/prov-generator-0.9.21.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-generator/0.9.21/prov-generator-0.9.21-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openprovenance/prov/prov-generator/0.9.21/prov-generator-0.9.21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

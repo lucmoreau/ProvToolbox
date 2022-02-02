@@ -28,11 +28,15 @@ public class CompilerClientTest {
                 .returns(void.class)
                 ;
 
+        int count=0;
+        String resvar="res";
+
         for (TemplateCompilerConfig template: configs.templates) {
             String bn=compilerUtil.templateNameClass(template.name);
             mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/example_" + template.name + ".json\"))");
-            mbuilder.addStatement("Object res=$T.examplar()", ClassName.get(template.package_+ ".client", bn));
-            mbuilder.addStatement("new $T().writeValue(System.out,res)",  ObjectMapper.class);
+            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(template.package_+ ".client", bn));
+            mbuilder.addStatement("new $T().writeValue(System.out,$N)",  ObjectMapper.class, resvar+count);
+            count++;
         }
 
         MethodSpec method=mbuilder.build();

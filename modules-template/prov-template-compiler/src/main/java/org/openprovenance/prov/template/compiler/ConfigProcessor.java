@@ -65,6 +65,7 @@ public class ConfigProcessor {
     private final CompilerUtil compilerUtil     = new CompilerUtil();
     private final CompilerLogger compilerLogger = new CompilerLogger();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
+    private final CompilerScript compilerScript   = new CompilerScript(this);
     private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
     private final CompilerClient compilerClient;
     private final CompilerExpansionBuilder compilerExpansionBuilder;
@@ -211,7 +212,7 @@ public class ConfigProcessor {
 
         exportMiscFiles(configs, cli_dir, cli_lib);
 
-        compilerMaven.generateScript(configs);
+        compilerScript.generateScript(configs);
     }
 
     private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {

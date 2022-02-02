@@ -457,7 +457,7 @@
 
     <properties>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
-        <izpack.version>5.0.3</izpack.version>
+        <izpack.version>5.1.2</izpack.version>
 
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
     </properties>

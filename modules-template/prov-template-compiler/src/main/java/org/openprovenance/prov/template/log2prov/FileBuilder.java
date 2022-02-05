@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.commons.csv.CSVFormat;
@@ -53,7 +54,7 @@ abstract public class FileBuilder {
 
         final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
         final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
-        Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters=null;
+        Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters=null;
 
         for (CSVRecord record: records) {
             int size=record.size();

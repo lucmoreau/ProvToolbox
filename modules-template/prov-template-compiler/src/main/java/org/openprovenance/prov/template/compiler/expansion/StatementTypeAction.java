@@ -289,6 +289,8 @@ public class StatementTypeAction implements StatementAction {
         if (ExpandUtil.isGensymVariable(s.getId())) return;
         JsonNode the_var = bindings_schema.get("var");
 
+        mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
+
         String tmp_Conv="tmp_Conv"+(anotherCounter++);
         mbuilder.addStatement("$T $N=propertyConverters.get($S)", Map_S_to_Function, tmp_Conv, expressionUri);
 
@@ -310,29 +312,32 @@ public class StatementTypeAction implements StatementAction {
             }
             if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
             mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
-            mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
+
             if (value instanceof QualifiedName) {
                 QualifiedName qn=(QualifiedName) value;
                 if (ExpandUtil.isVariable(qn)) {
                     String key=qn.getLocalPart();
                     final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                    mbuilder.addStatement("unknownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
                     if (atype.equals(QualifiedName.class)) {
-                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key);
+                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
                     } else {
-                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N))", key, s.getId().getLocalPart(), tmp_Conv2, key);
+                        mbuilder.addStatement("if ($N!=null) unknownTypeMap.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
                     }
                 } else {
-                    mbuilder.addStatement("knownTypeMap.get($N).addAll($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, qn.getUri());
+                    mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new HashSet<>())",s.getId().getLocalPart());
+                    mbuilder.addStatement("knownTypeMap.get($N).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), tmp_Conv2, qn.getUri(), s.getId().getLocalPart());
                 }
             } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
                 String aString=String.valueOf(value);
-                mbuilder.addStatement("unknownTypeMap.get($N).addAll($N.apply($S))", s.getId().getLocalPart(), tmp_Conv2, aString);
+                mbuilder.addStatement("unknownTypeMap.get($N).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), tmp_Conv2, aString, s.getId().getLocalPart());
             } else {
                 throw new UnsupportedOperationException("doRegisterTypesForAttributes with attribute value " + value + " for element " +attributeUri);
             }
             mbuilder.endControlFlow();
         });
 
+        mbuilder.endControlFlow();
         mbuilder.endControlFlow();
     }
 

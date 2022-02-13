@@ -46,7 +46,6 @@ public  class TMap {
 
      */
     public Map<Integer, List<Descriptor>> structuredDescriptors;
-    public Map<Integer, List<String>> descriptors2;
 
 
     public void assign(String s, int level, Map<Integer, List<List<Integer>>> m) {

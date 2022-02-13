@@ -180,24 +180,23 @@ public class TypesRecordProcessor  {
 
         tMap.merge();
 
-        Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
+        //Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
         Map<Integer,List<Descriptor>> structuredDescriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getStructuredDescriptors));
-        Map<Integer,List<String>> descriptors2=structuredDescriptors.keySet().stream().collect(Collectors.toMap((Integer k) -> k, (Integer k) -> structuredDescriptors.get(k).stream().map(Descriptor::toText).collect(Collectors.toList())));
+        Map<Integer,List<String>> descriptors=structuredDescriptors.keySet().stream().collect(Collectors.toMap((Integer k) -> k, (Integer k) -> structuredDescriptors.get(k).stream().map(d -> d.toText(this::translateRelation)).collect(Collectors.toList())));
 
         tMap.descriptors=descriptors;
-        tMap.descriptors2=descriptors2;
         tMap.structuredDescriptors =structuredDescriptors;
 
         return counts;
 
     }
 
+    /*
     public List<String> getDescriptors(Integer k) {
         final Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
         return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss)).toText()).collect(Collectors.toList());
     }
 
-    /*
     private String convertToTextOLD(List<Integer> ll, Long count) {
         if (ll.get(0)==-1) {  // was added when -addLevel0, the next element is a level0 type value
             return getDescriptorS0(ll.get(1));
@@ -205,8 +204,6 @@ public class TypesRecordProcessor  {
             return numeral(count) + translateRelation(tMap.allRelations.get(ll.get(0))) + "(" + ((ll.get(1) < levelOffset) ? getDescriptorS0(ll.get(1)) : joinStrings(getDescriptors(ll.get(1)))) + ")";
         }
     }
-
-
 
     private String convertToText(List<Integer> ll, Long count) {
         return convertToDescriptor(ll,count).toText();
@@ -219,23 +216,24 @@ public class TypesRecordProcessor  {
 
     public List<Descriptor> getStructuredDescriptorsN(Integer k) {
         Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
-        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss))).collect(Collectors.toList());
+        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss))).sorted().collect(Collectors.toList());
     }
 
     public List<Descriptor> getStructuredDescriptors0(Integer k) {
         return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
     }
+
     public List<String> getStructuredDescriptorString0(Integer k) {
         return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
     }
+
     private Descriptor convertToDescriptor(List<Integer> ll, Long count) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
             return new DescriptorAtom(getStructuredDescriptorString0(ll.get(1)));
         } else {
-            return new DescriptorTree(count, translateRelation(tMap.allRelations.get(ll.get(0))), getStructuredDescriptors(ll.get(1)));
+            return new DescriptorTree(count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1)));
         }
     }
-
 
     static String numeral(Long count) {
         if (1L==count) return "";
@@ -407,7 +405,6 @@ public class TypesRecordProcessor  {
         int nextIndexS= newPossibleIndex(level0SValues);
 
 
-
         List<Set<Integer>> orderedS=newTypeSets.stream().sorted(collectionComparator).collect(Collectors.toList());
         for (Set<Integer> s: orderedS) {
             level0TypeSetIndex.put(s,nextIndexS);
@@ -416,6 +413,7 @@ public class TypesRecordProcessor  {
 
 
         result.put("level0STypeIndex",level0TypeSetIndex);
+
 
 
         Map<String, Integer> level0S=level0.keySet().stream().collect(Collectors.toMap((String s)->s, (String s)->level0TypeSetIndex.get(level0.get(s))));

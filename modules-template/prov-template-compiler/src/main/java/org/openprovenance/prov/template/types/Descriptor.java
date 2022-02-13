@@ -1,6 +1,8 @@
 package org.openprovenance.prov.template.types;
 
-public interface Descriptor {
+import java.util.function.Function;
+
+public interface Descriptor extends Comparable<Descriptor>{
     String getCategory();
-    String toText();
+    String toText(Function<String,String> relationTranslator);
 }

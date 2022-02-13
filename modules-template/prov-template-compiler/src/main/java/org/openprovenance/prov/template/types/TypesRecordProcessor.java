@@ -181,19 +181,24 @@ public class TypesRecordProcessor  {
         tMap.merge();
 
         Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
+        Map<Integer,List<Descriptor>> structuredDescriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getStructuredDescriptors));
+        Map<Integer,List<String>> descriptors2=structuredDescriptors.keySet().stream().collect(Collectors.toMap((Integer k) -> k, (Integer k) -> structuredDescriptors.get(k).stream().map(Descriptor::toText).collect(Collectors.toList())));
 
         tMap.descriptors=descriptors;
+        tMap.descriptors2=descriptors2;
+        tMap.structuredDescriptors =structuredDescriptors;
 
         return counts;
 
     }
 
     public List<String> getDescriptors(Integer k) {
-        Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
-        return m.keySet().stream().map(ss->convertToText(ss,m.get(ss))).collect(Collectors.toList());
+        final Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
+        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss)).toText()).collect(Collectors.toList());
     }
 
-    private String convertToText(List<Integer> ll, Long count) {
+    /*
+    private String convertToTextOLD(List<Integer> ll, Long count) {
         if (ll.get(0)==-1) {  // was added when -addLevel0, the next element is a level0 type value
             return getDescriptorS0(ll.get(1));
         } else {
@@ -201,7 +206,38 @@ public class TypesRecordProcessor  {
         }
     }
 
-    private String numeral(Long count) {
+
+
+    private String convertToText(List<Integer> ll, Long count) {
+        return convertToDescriptor(ll,count).toText();
+    }
+   */
+
+    public List<Descriptor> getStructuredDescriptors(Integer k) {
+        return (k < levelOffset) ? getStructuredDescriptors0(k) : getStructuredDescriptorsN(k);
+    }
+
+    public List<Descriptor> getStructuredDescriptorsN(Integer k) {
+        Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
+        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss))).collect(Collectors.toList());
+    }
+
+    public List<Descriptor> getStructuredDescriptors0(Integer k) {
+        return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
+    }
+    public List<String> getStructuredDescriptorString0(Integer k) {
+        return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
+    }
+    private Descriptor convertToDescriptor(List<Integer> ll, Long count) {
+        if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
+            return new DescriptorAtom(getStructuredDescriptorString0(ll.get(1)));
+        } else {
+            return new DescriptorTree(count, translateRelation(tMap.allRelations.get(ll.get(0))), getStructuredDescriptors(ll.get(1)));
+        }
+    }
+
+
+    static String numeral(Long count) {
         if (1L==count) return "";
         return  count + " ";
     }
@@ -215,6 +251,7 @@ public class TypesRecordProcessor  {
         return s;
     }
 
+    /*
     public String getDescriptorS0(Integer k) {
         return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.joining(",", "", ""));
     }
@@ -223,6 +260,8 @@ public class TypesRecordProcessor  {
         return ll.stream().collect(Collectors.joining(",", "", ""));
     }
 
+
+     */
     public String getDescriptor0(Integer k) {
         return  localName(tMap.level0.get(k));
     }

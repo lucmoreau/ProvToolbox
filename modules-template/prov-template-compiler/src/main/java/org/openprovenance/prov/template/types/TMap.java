@@ -1,5 +1,10 @@
 package org.openprovenance.prov.template.types;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.openprovenance.prov.vanilla.WasEndedBy;
+import org.openprovenance.prov.vanilla.WasStartedBy;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,18 @@ public  class TMap {
     public Map<Integer, List<String>> descriptors;
 
     public Map<Integer, List<List<Integer>>> [] levelArray=new Map[MAX_SIZE];
+
+    /*
+
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = "@type")
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = DescriptorAtom.class, name = "atom"),
+            @JsonSubTypes.Type(value = DescriptorTree.class, name = "tree")
+    })
+
+     */
+    public Map<Integer, List<Descriptor>> structuredDescriptors;
+    public Map<Integer, List<String>> descriptors2;
 
 
     public void assign(String s, int level, Map<Integer, List<List<Integer>>> m) {

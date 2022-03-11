@@ -8,12 +8,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.23-SNAPSHOT/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.23-SNAPSHOT/bundle.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.23-SNAPSHOT/bundle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/Descriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/Descriptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/DescriptorAtom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/DescriptorAtom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/DescriptorTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/DescriptorTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/PK_CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/PK_CommandLineArguments.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/ProvenanceKernels.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/ProvenanceKernels.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/script.sh" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/script.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -540,6 +552,11 @@
       <workItem from="1642626527944" duration="894000" />
       <workItem from="1643272569952" duration="28659000" />
       <workItem from="1644740503361" duration="10181000" />
+      <workItem from="1644770324920" duration="7200000" />
+      <workItem from="1645357435723" duration="1983000" />
+      <workItem from="1645469586674" duration="1040000" />
+      <workItem from="1645558609252" duration="10342000" />
+      <workItem from="1646946126698" duration="2372000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -8,14 +8,17 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@JsonPropertyOrder({"@type", "value"})
+@JsonPropertyOrder({"@type", "number", "value"})
 public class DescriptorAtom implements Descriptor {
+    Integer number;
     List<String> value;
 
-    public DescriptorAtom(String value) {
+    public DescriptorAtom(Integer number, String value) {
+        this.number=number;
         this.value = List.of(value);
     }
-    public DescriptorAtom(List<String> value) {
+    public DescriptorAtom(Integer number, List<String> value) {
+        this.number=number;
         this.value = value;
     }
 
@@ -30,6 +33,9 @@ public class DescriptorAtom implements Descriptor {
         return "atom";
     }
 
+    public Integer getNumber() {
+        return number;
+    }
     public List<String> getValue() {
         return value;
     }

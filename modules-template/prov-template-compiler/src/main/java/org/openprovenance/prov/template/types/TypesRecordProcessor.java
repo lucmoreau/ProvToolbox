@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.types;
 
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.openprovenance.apache.commons.lang.ArrayUtils;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -33,9 +34,10 @@ public class TypesRecordProcessor  {
 
     // stateful
     private int relationCount;
+    private final Collection<String> rejectedTypes;
 
 
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, List<String>>> propertyConverters, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, List<String>>> propertyConverters, Collection<String> rejectedTypes, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -54,6 +56,7 @@ public class TypesRecordProcessor  {
         this.translation=translation;
 
         this.records=records;
+        this.rejectedTypes=rejectedTypes;
 
         this.levelNumber=levelNumber;
         this.addLevel0ToAllLevels=addLevel0ToAllLevels;
@@ -89,7 +92,8 @@ public class TypesRecordProcessor  {
             final Map<String, Collection<int[]>> mapLevelNP1_tmp = new HashMap<>();
 
             makerBuilder.propagateTypes(typedRecord, mapLevelN, mapLevelNP1_tmp, mapLevel0);
-            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)-> mapLevelNP1_tmp.get(s).stream().map(a -> constructType(a,clientBuilder,tMap)).collect(Collectors.toList())));
+            final Map<String, Collection<int[]>> mapLevelNP1_tmp2=mapLevelNP1_tmp.keySet().stream().collect(Collectors.toMap((k)->k, (k) -> filterTypes(mapLevelNP1_tmp.get(k),clientBuilder,tMap)));
+            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp2.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)-> mapLevelNP1_tmp2.get(s).stream().map(a -> constructType(a,clientBuilder,tMap)).collect(Collectors.toList())));
 
             mapLevelNP1_tmp.keySet().forEach(key -> {
                 mapLevelNP1.computeIfAbsent(key, s->new LinkedList<>());
@@ -150,6 +154,7 @@ public class TypesRecordProcessor  {
 
 
     }
+
 
     public Map<String, Collection<Integer>> computeTypesPerNode(int bound) {
         Map<String,Collection<Integer>> types=new HashMap<>();
@@ -220,7 +225,8 @@ public class TypesRecordProcessor  {
     }
 
     public List<Descriptor> getStructuredDescriptors0(Integer k) {
-        return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
+        //return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
+        return Collections.singletonList(new DescriptorAtom(k, tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList())));
     }
 
     public List<String> getStructuredDescriptorString0(Integer k) {
@@ -229,9 +235,9 @@ public class TypesRecordProcessor  {
 
     private Descriptor convertToDescriptor(List<Integer> ll, Long count) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
-            return new DescriptorAtom(getStructuredDescriptorString0(ll.get(1)));
+            return new DescriptorAtom(ll.get(1),getStructuredDescriptorString0(ll.get(1)));
         } else {
-            return new DescriptorTree(count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1)));
+            return new DescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1)));
         }
     }
 
@@ -272,8 +278,14 @@ public class TypesRecordProcessor  {
         return s;
     }
 
-    public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap) {
-        StringBuffer sb=new StringBuffer();
+
+    public Collection<int[]> filterTypes(Collection<int[]> types, ProxyClientInterface clientBuilder, TMap tMap) {
+        return types.stream().filter((r) -> filterTypeRecord(r,clientBuilder,tMap)).collect(Collectors.toList());
+    }
+
+    public boolean filterTypeRecord(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap) {
+
+        if ((rejectedTypes==null) || rejectedTypes.isEmpty()) return true;
 
         // [ 8, 9, 100001, 4 ]
         int out=typeRecord[0];
@@ -282,20 +294,26 @@ public class TypesRecordProcessor  {
         int inType=typeRecord[3];
         int in=typeRecord[4];
 
-        sb.append(clientBuilder.getName());
-        sb.append(".");
-        sb.append(clientBuilder.getPropertyOrder()[out]);
-        sb.append(".");
-        sb.append(niceRelationName(StatementOrBundle.Kind.values()[outType]));
-        sb.append(".");
-        sb.append(clientBuilder.getPropertyOrder()[in]);
-        if (relType!=-1) {
-            sb.append("[");
-            sb.append(tMap.level0S.get(relType).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",", "", "")));
-            sb.append("]");
-        }
+        String rel = prettifyType(clientBuilder, tMap, out, outType, relType, in);
 
-        String rel=sb.toString();
+
+
+        final boolean result = !rejectedTypes.contains(rel);
+        if (result) System.out.println("filter Type Record: " + rel);
+        return result;
+    }
+
+    public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap) {
+
+        // [ 8, 9, 100001, 4 ]
+        int out=typeRecord[0];
+        int outType=typeRecord[1];
+        int relType=typeRecord[2];
+        int inType=typeRecord[3];
+        int in=typeRecord[4];
+
+        String rel = prettifyType(clientBuilder, tMap, out, outType, relType, in);
+
         if (allRelations.get(rel)==null) {
             allRelations.put(rel,relationCount);
             relationCount++;
@@ -303,6 +321,24 @@ public class TypesRecordProcessor  {
 
         return List.of(allRelations.get(rel),inType);
 
+    }
+
+    private String prettifyType(ProxyClientInterface clientBuilder, TMap tMap, int out, int outType, int relType, int in) {
+        StringBuffer sb=new StringBuffer();
+        sb.append(clientBuilder.getName());
+        sb.append(".");
+        sb.append(clientBuilder.getPropertyOrder()[out]);
+        sb.append(".");
+        sb.append(niceRelationName(StatementOrBundle.Kind.values()[outType]));
+        sb.append(".");
+        sb.append(clientBuilder.getPropertyOrder()[in]);
+        if (relType !=-1) {
+            sb.append("[");
+            sb.append(tMap.level0S.get(relType).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",", "", "")));
+            sb.append("]");
+        }
+        String rel=sb.toString();
+        return rel;
     }
 
     private static String niceRelationName(StatementOrBundle.Kind value) {

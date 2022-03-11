@@ -10,15 +10,17 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.types.TypesRecordProcessor.numeral;
 
-@JsonPropertyOrder({"@type", "count", "relation", "arguments"})
+@JsonPropertyOrder({"@type", "number", "count", "relation", "arguments"})
 public class DescriptorTree implements Descriptor {
     final String category="tree";
+    final Integer number;
     long count;
     String relation;
     List<Descriptor> arguments;
 
 
-    public DescriptorTree(long count, String relation, List<Descriptor> arguments) {
+    public DescriptorTree(Integer number, long count, String relation, List<Descriptor> arguments) {
+        this.number=number;
         this.count=count;
         this.relation = relation;
         this.arguments = arguments;
@@ -33,6 +35,10 @@ public class DescriptorTree implements Descriptor {
     @JsonProperty("@type")
     public String getCategory() {
         return category;
+    }
+
+    public Integer getNumber() {
+        return number;
     }
 
     public long getCount() {

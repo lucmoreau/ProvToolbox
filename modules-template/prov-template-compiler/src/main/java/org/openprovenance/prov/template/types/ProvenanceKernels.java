@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class ProvenanceKernels {
     final static boolean debug=true;
 
+    static TypeReference<Collection<String>> collRef = new TypeReference<>() {};
     static TypeReference<Map<String,Integer>> mapRef = new TypeReference<>() {};
     static TypeReference<Map<String,String>> mapStringRef = new TypeReference<>() {};
     static TypeReference<Map<String,Map<String,List<String>>>> propertyConverterRef = new TypeReference<>() {};
@@ -31,6 +32,7 @@ public class ProvenanceKernels {
             String outfile = cliArgs.outfile;
             String knowntypesFile = cliArgs.knowntypes;
             String knownrelationsFile = cliArgs.knownrelations;
+            String rejectedTypesFile = cliArgs.rejectedTypes;
             int setOffset= cliArgs.setOffset;
             int relationOffset= cliArgs.relationOffset;
             int levelOffset= cliArgs.levelOffset;
@@ -79,8 +81,13 @@ public class ProvenanceKernels {
 
             Map<String,Map<String,List<String>>> propertyConvertersMap=(propertyConverters==null)?Map.of():om.readValue(new File(propertyConverters), propertyConverterRef);
 
+            Collection<String> rejectedTypes=new LinkedList<>();
 
-            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, records);
+            if (rejectedTypesFile!=null) {
+                rejectedTypes = om.readValue(new File(rejectedTypesFile), collRef);
+            }
+
+            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, rejectedTypes, records);
 
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);

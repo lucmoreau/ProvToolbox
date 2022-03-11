@@ -1,5 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+==0.9.23==
+* prov-template-compiler:  added type numbers to structured type description
+* prov-template-compiler: allowing for relation filtering when computing provenance types
+
 ==0.9.22==
 * prov-template-compiler:  structured provenance types
 

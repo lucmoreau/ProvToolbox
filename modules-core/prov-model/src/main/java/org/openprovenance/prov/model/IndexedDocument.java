@@ -838,9 +838,9 @@ public class IndexedDocument implements StatementAction {
     }
 
     public Set<Pair<QualifiedName, HadMember>> traverseReverseMembershipsWithRelations(QualifiedName from) {
-        Stack<QualifiedName> s=new Stack<>();
-        s.push(from);
-        return traverseReverseMembership2(new HashSet<>(),new HashSet<>(),s);
+        Stack<QualifiedName> todo=new Stack<>();
+        todo.push(from);
+        return traverseReverseMembership2(new HashSet<>(),new HashSet<>(),todo);
     }
 
     public Set<Pair<QualifiedName,HadMember>> traverseReverseMembership2(Set<Pair<QualifiedName,HadMember>> last, Set<QualifiedName> seen, Stack<QualifiedName> todo) {
@@ -859,10 +859,11 @@ public class IndexedDocument implements StatementAction {
                     //move on next
                 } else {
                     for (HadMember mem: successors) {
+                        if (!mem.getCollection().equals(current)) throw new  org.openprovenance.prov.model.exception.InvalidIndexException("HadMember not indexed properly " + current + ": " + mem);
                         List<QualifiedName> qns=mem.getEntity();
                         for (QualifiedName qn: qns) {
                             last.add(Pair.of(qn, mem));
-                            todo.push(qn);
+                           // This makes not sense to have this: todo.push(qn);
                         }
                     }
                 }

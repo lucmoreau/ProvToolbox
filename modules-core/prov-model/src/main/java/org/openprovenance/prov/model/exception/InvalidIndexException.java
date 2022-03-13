@@ -6,7 +6,7 @@ package org.openprovenance.prov.model.exception;
  * @author lavm
  *
  */
-public class InvalidCaseException extends RuntimeException {
+public class InvalidIndexException extends RuntimeException {
 
 
     /**
@@ -17,14 +17,14 @@ public class InvalidCaseException extends RuntimeException {
     /**
      *
      */
-    public InvalidCaseException() {
+    public InvalidIndexException() {
         // TODO Auto-generated constructor stub
     }
 
     /**
      * @param message a message
      */
-    public InvalidCaseException(String message) {
+    public InvalidIndexException(String message) {
         super(message);
         // TODO Auto-generated constructor stub
     }
@@ -32,7 +32,7 @@ public class InvalidCaseException extends RuntimeException {
     /**
      * @param cause the exception
      */
-    public InvalidCaseException(Throwable cause) {
+    public InvalidIndexException(Throwable cause) {
         super(cause);
         // TODO Auto-generated constructor stub
     }
@@ -41,7 +41,7 @@ public class InvalidCaseException extends RuntimeException {
      * @param message a message
      * @param cause the exception
      */
-    public InvalidCaseException(String message, Throwable cause) {
+    public InvalidIndexException(String message, Throwable cause) {
         super(message, cause);
         // TODO Auto-generated constructor stub
     }

@@ -244,6 +244,9 @@ public class CompilerExpansionBuilder {
         while (iter.hasNext()) {
             String key = iter.next();
             if (compilerUtil.isVariableDenotingQualifiedName(key,the_var)) {
+                builder.addComment("Variable: " + key);
+                builder.addComment("Count: " + count);
+
                 if ((successors1.get(key) != null) || (successors2.get(key) != null) || (successors3.get(key) != null) || (successors4.get(key) != null)) {
 
                     if (successors1.get(key) != null) {
@@ -251,15 +254,15 @@ public class CompilerExpansionBuilder {
                         final List<WasDerivedFrom> relations = successors1.get(key).stream().map(Pair::getRight).collect(Collectors.toList());
                         final List<QualifiedName> identifiers = relations.stream().map(Identifiable::getId).collect(Collectors.toList());
 
-                        builder.addComment("" + identifiers);
-                        builder.addComment("" + successors1.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
-                        builder.addComment("" + successors1.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+                        builder.addComment("Identifiers: " + identifiers);
+                        builder.addComment("KnownTypes: " + successors1.get(key).stream().map(p -> knownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
+                        builder.addComment("UnknownTypes: " + successors1.get(key).stream().map(p -> unknownTypes.get(p.getRight().getId().getUri())).collect(Collectors.toList()));
 
                         final List<Collection<QualifiedName>> optionalActivityTypes = relations.stream().map(p -> doCollectElementVariables(p, ACTIVITY_TYPE_URI)).collect(Collectors.toList());
                         final List<Collection<QualifiedName>> optionalActivities = relations.stream().map(p -> doCollectElementVariables(p, TMPL_ACTIVITY_URI)).collect(Collectors.toList());
 
-                        builder.addComment("" + optionalActivityTypes);
-                        builder.addComment("" + optionalActivities);
+                        builder.addComment("ActivityTypes: " + optionalActivityTypes);
+                        builder.addComment("Activities: " + optionalActivities);
 
                         if (optionalActivityTypes.isEmpty() || optionalActivityTypes.get(0) == null) {
                             builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
@@ -297,8 +300,11 @@ public class CompilerExpansionBuilder {
                     } else {
                         builder.addStatement("propagateTypes_n(record,mapLevelN,mapLevelNP1,$L,$L)", count, -1);
                     }
+                } else {
+                    builder.addComment("No successor for: " + count);
                 }
             }
+            builder.addComment("");
 
             count++;
         }
@@ -378,12 +384,17 @@ public class CompilerExpansionBuilder {
         builder.beginControlFlow("if ($N!=null)",tmpVar);
         builder.addStatement("$T the_type=successors.get($N)", TypeName.get(int[].class), "count");
         builder.beginControlFlow("if (the_type!=null && the_type.length!=0)");
-        builder.beginControlFlow("if ($N[the_type[0]]!=null)", "record");
-        builder.addStatement("String uri2=(($T)($N[the_type[0]])).getUri()",QualifiedName.class, "record");
+        builder.addStatement("int theLength=the_type.length/2");
+        builder.beginControlFlow("for (int _count=0; _count<theLength; _count++) ");
+        //builder.addStatement("System.out.println(\"count is \" + count + \" and _count is \" + _count)");
+
+        builder.beginControlFlow("if ($N[the_type[_count*2+0]]!=null)", "record");
+        builder.addStatement("String uri2=(($T)($N[the_type[_count*2+0]])).getUri()",QualifiedName.class, "record");
 
         builder.addStatement("mapLevelNP1.computeIfAbsent(uri2, k -> new $T<>())",  LinkedList.class); //store in Lists initially
 
-        builder.addStatement("mapLevelNP1.get(uri2).add(new int[] { the_type[0], the_type[1], rel, $N, $N })", tmpVar, "count");
+        builder.addStatement("mapLevelNP1.get(uri2).add(new int[] { the_type[_count*2+0], the_type[_count*2+1], rel, $N, $N })", tmpVar, "count");
+        builder.endControlFlow();
         builder.endControlFlow();
         builder.endControlFlow();
         builder.endControlFlow();

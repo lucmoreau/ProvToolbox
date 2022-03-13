@@ -2,7 +2,8 @@ package org.openprovenance.prov.template.types;
 
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.openprovenance.apache.commons.lang.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -18,6 +19,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TypesRecordProcessor  {
+
+    static Logger logger = LogManager.getLogger(TypesRecordProcessor.class);
 
     private final Map<Integer,Map<String, Integer>> levelTypeIndex;
     private final Map<Integer,Map<Set<Integer>, Integer>> levelTypeSetIndex;
@@ -75,6 +78,10 @@ public class TypesRecordProcessor  {
 
 
     public Map<String, Integer> levelN(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<String, Integer> mapLevelN, int levelNext, Map<String, Integer> mapLevel0) {
+
+
+
+
         final Map<String, Collection<int[]>> mapLevelNP1 = new HashMap<>();
         final Map<String, Collection<List<Integer>>> mapLevelNP1pretty = new HashMap<>();
 
@@ -171,11 +178,12 @@ public class TypesRecordProcessor  {
 
 
     public Map<Integer, Integer> computeFeatureVector(Map<String, Collection<Integer>> types) {
+        System.out.println("computedFeatureVector");
         Map<Integer,Integer> counts=new HashMap<>();
         final Collection<Collection<Integer>> allCollections = types.values();
         for (Collection<Integer> coll: allCollections) {
             for (int value: coll) {
-                counts.computeIfAbsent(value, k -> 0);
+                counts.putIfAbsent(value, 0);
                 counts.put(value,1+counts.get(value));
             }
         }
@@ -187,10 +195,11 @@ public class TypesRecordProcessor  {
 
         //Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
         Map<Integer,List<Descriptor>> structuredDescriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getStructuredDescriptors));
-        Map<Integer,List<String>> descriptors=structuredDescriptors.keySet().stream().collect(Collectors.toMap((Integer k) -> k, (Integer k) -> structuredDescriptors.get(k).stream().map(d -> d.toText(this::translateRelation)).collect(Collectors.toList())));
-
-        tMap.descriptors=descriptors;
         tMap.structuredDescriptors =structuredDescriptors;
+
+        // ignoring the textual descriptors
+       // Map<Integer,List<String>> descriptors=structuredDescriptors.keySet().stream().collect(Collectors.toMap((Integer k) -> k, (Integer k) -> structuredDescriptors.get(k).stream().map(d -> d.toText(this::translateRelation)).collect(Collectors.toList())));
+      //  tMap.descriptors=descriptors;
 
         return counts;
 
@@ -299,18 +308,18 @@ public class TypesRecordProcessor  {
 
 
         final boolean result = !rejectedTypes.contains(rel);
-        if (result) System.out.println("filter Type Record: " + rel);
+        //if (result) System.out.println("filter Type Record: " + rel);
         return result;
     }
 
     public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap) {
 
         // [ 8, 9, 100001, 4 ]
-        int out=typeRecord[0];
-        int outType=typeRecord[1];
-        int relType=typeRecord[2];
-        int inType=typeRecord[3];
-        int in=typeRecord[4];
+        int out     = typeRecord[0];
+        int outType = typeRecord[1];
+        int relType = typeRecord[2];
+        int inType  = typeRecord[3];
+        int in      = typeRecord[4];
 
         String rel = prettifyType(clientBuilder, tMap, out, outType, relType, in);
 
@@ -477,8 +486,10 @@ public class TypesRecordProcessor  {
         Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap,propertyConverters);
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
+            System.out.println("levelN " + i);
             level= levelN(registry, clientRegistry, pm, level, i, level0);
         }
+        System.out.println("Done computeLevels");
     }
 
     static public <ALPHA,BETA> Map<ALPHA, Set<BETA>> mergeMapsOfSets(Map<ALPHA, Set<BETA>> map1, Map<ALPHA, Set<BETA>> map2) {

@@ -91,11 +91,17 @@ public class ProvenanceKernels {
 
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);
+            global_result=result;
             if (outfile!=null) {
                 om.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(outfile), result);
             }
 
+            System.out.println("completed Provenance Kernels");
+
+
         }
     }
+
+    public static Map<String, Object> global_result=null;
 
 }

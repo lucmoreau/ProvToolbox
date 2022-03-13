@@ -8,7 +8,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/exception/InvalidIndexException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.24-SNAPSHOT/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.24-SNAPSHOT/bundle.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.24-SNAPSHOT/bundle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/exception/InvalidCaseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/exception/InvalidCaseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/exception/UncheckedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/exception/UncheckedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/CompilerExpansionBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/CompilerExpansionBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/ProvenanceKernels.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/ProvenanceKernels.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,11 +170,11 @@
       <recent name="org.openprovenance.prov.service.core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.model.exception" />
       <recent name="org.openprovenance.prov.template.types" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.template.compiler.expansion" />
       <recent name="org.openprovenance.prov.template.log2prov.interfaces" />
-      <recent name="org.openprovenance.prov.template.log2prov" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONLegacyTest">
@@ -539,7 +549,7 @@
       <workItem from="1645357435723" duration="1983000" />
       <workItem from="1645469586674" duration="1040000" />
       <workItem from="1645558609252" duration="10342000" />
-      <workItem from="1646946126698" duration="2438000" />
+      <workItem from="1646946126698" duration="23693000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

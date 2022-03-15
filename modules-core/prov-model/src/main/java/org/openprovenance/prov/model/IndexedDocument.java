@@ -723,7 +723,7 @@ public class IndexedDocument implements StatementAction {
                     for (WasDerivedFrom wdf: successors) {
                         QualifiedName qn=wdf.getGeneratedEntity();
                         last.add(qn);
-                        todo.push(qn);
+                        // This makes not sense to have this:  todo.push(qn);
                     }
                 }
             }
@@ -757,7 +757,7 @@ public class IndexedDocument implements StatementAction {
                     for (WasDerivedFrom wdf: successors) {
                         QualifiedName qn=wdf.getGeneratedEntity();
                         last.add(Pair.of(qn,wdf));
-                        todo.push(qn);
+                        // This makes not sense to have this: todo.push(qn);
                     }
                 }
             }
@@ -792,7 +792,7 @@ public class IndexedDocument implements StatementAction {
                     for (WasAttributedTo wat: successors) {
                         QualifiedName qn=wat.getEntity();
                         last.add(Pair.of(qn,wat));
-                        todo.push(qn);  // this for the case of agent being attributed to another agent? does this exist?
+                        // This makes not sense to have this: todo.push(qn);  // this for the case of agent being attributed to another agent? does this exist?
                     }
                 }
             }
@@ -827,7 +827,7 @@ public class IndexedDocument implements StatementAction {
                     for (HadMember mem: successors) {
                         QualifiedName qn=mem.getCollection();
                         last.add(Pair.of(qn,mem));
-                        todo.push(qn);
+                        // This makes not sense to have this: todo.push(qn);
                     }
                 }
             }
@@ -902,7 +902,7 @@ public class IndexedDocument implements StatementAction {
                     for (SpecializationOf spe: successors) {
                         QualifiedName qn=spe.getSpecificEntity();
                         last.add(Pair.of(qn,spe));
-                        todo.push(qn);
+                        // This makes not sense to have this: todo.push(qn);
                     }
                 }
             }

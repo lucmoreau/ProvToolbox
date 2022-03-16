@@ -837,6 +837,7 @@ public class IndexedDocument implements StatementAction {
         return last;
     }
 
+
     public Set<Pair<QualifiedName, HadMember>> traverseReverseMembershipsWithRelations(QualifiedName from) {
         Stack<QualifiedName> todo=new Stack<>();
         todo.push(from);
@@ -863,7 +864,7 @@ public class IndexedDocument implements StatementAction {
                         List<QualifiedName> qns=mem.getEntity();
                         for (QualifiedName qn: qns) {
                             last.add(Pair.of(qn, mem));
-                           // This makes not sense to have this: todo.push(qn);
+                            // This makes not sense to have this: todo.push(qn);
                         }
                     }
                 }
@@ -873,7 +874,6 @@ public class IndexedDocument implements StatementAction {
 
         return last;
     }
-
 
 
 

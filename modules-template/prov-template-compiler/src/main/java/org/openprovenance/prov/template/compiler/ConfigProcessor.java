@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.*;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
@@ -17,6 +18,8 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
@@ -308,13 +311,15 @@ public class ConfigProcessor {
             u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));
 
             // generating client first to ensure successor is calculated
-            JavaFile spec2=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema, indexed);
+            Pair<JavaFile, Map<Integer, List<Integer>>> tmp=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema, indexed);
+            JavaFile spec2=tmp.getLeft();
+            Map<Integer, List<Integer>> successorTable=tmp.getRight();
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
             //ensure type declaration code is executed
             JavaFile spec5= compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
             // before propagation generation
-            JavaFile spec0= compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema);
+            JavaFile spec0= compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema,successorTable);
             boolean val0=compilerUtil.saveToFile(destinationDir, destination, spec0);
 
 

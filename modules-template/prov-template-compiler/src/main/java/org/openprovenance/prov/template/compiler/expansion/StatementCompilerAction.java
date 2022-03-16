@@ -193,6 +193,11 @@ public class StatementCompilerAction implements StatementAction {
     public String localNotBlank(QualifiedName id) {
         return ((id==null)||(id.getNamespaceURI().equals(bnNS)))? "nullqn" : id.getLocalPart();
     }
+
+    public boolean nullOrBlank(QualifiedName id) {
+        return (id==null)||(id.getNamespaceURI().equals(bnNS));
+    }
+
     @Override
     public void doAction(WasDerivedFrom s) {
         if (s.getId()==null) {
@@ -436,23 +441,26 @@ public class StatementCompilerAction implements StatementAction {
 
     @Override
     public void doAction(QualifiedHadMember s) {
+        if (s.getId()==null) {
+            s.setId(gensym());
+        }
 
         String ifVarValue = hasIfVarValue(s);
 
-        // TODO: generated HadMember if there is no other attribute
+        // TODO: need to support case where there are multiple entities.  At the moment, only $T.of($N)
 
         // conditional include
         if (ifVarValue==null) {
-            if (doCheckAttributesAction(s).isEmpty() && s.getId()==null && s.getEntity().size()==1) {
-                builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newHadMember($N,$N))", ifVarValue, local(s.getCollection()), local(s.getCollection()), local(s.getEntity().get(0)));
+            if (doCheckAttributesAction(s).isEmpty() && nullOrBlank(s.getId()) && s.getEntity().size()==1) {
+                builder.addStatement("if ($N!=null) " + target + ".add(pf.newHadMember($N,$N))", local(s.getCollection()), local(s.getCollection()), local(s.getEntity().get(0)));
             } else {
-                builder.addStatement("if ($N!=null) " + target + ".add(pf.newQualifiedHadMember($N,$N,$N" + generateAttributesAlways(s) + "))", local(s.getCollection()), local(s.getId()), local(s.getCollection()), local(s.getEntity()));
+                builder.addStatement("if ($N!=null) " + target + ".add(pf.newQualifiedHadMember($N,$N,$T.of($N)" + generateAttributesAlways(s) + "))", local(s.getCollection()), localNotBlank(s.getId()), local(s.getCollection()), List.class, local(s.getEntity().get(0)));
             }
         } else {
-            if (doCheckAttributesAction(s).isEmpty() && s.getId()==null && s.getEntity().size()==1) {
+            if (doCheckAttributesAction(s).isEmpty() && nullOrBlank(s.getId()) && s.getEntity().size()==1) {
                 builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newHadMember($N,$N))", ifVarValue, local(s.getCollection()), local(s.getCollection()), local(s.getEntity().get(0)));
             } else {
-                builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newQualifiedHadMember($N,$N,$T.of($N)" + generateAttributesAlways(s) + "))", ifVarValue, local(s.getCollection()), local(s.getId()), local(s.getCollection()), List.class, local(s.getEntity().get(0)));
+                builder.addStatement("if ((toBoolean($N))&&($N!=null)) " + target + ".add(pf.newQualifiedHadMember($N,$N,$T.of($N)" + generateAttributesAlways(s) + "))", ifVarValue, local(s.getCollection()), localNotBlank(s.getId()), local(s.getCollection()), List.class, local(s.getEntity().get(0)));
             }
         }
 

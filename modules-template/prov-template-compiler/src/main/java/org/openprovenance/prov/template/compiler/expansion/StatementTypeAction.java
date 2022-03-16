@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Function_O_Col_S;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_S_to_Function;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_ACTIVITY_URI;
@@ -26,6 +27,7 @@ public class StatementTypeAction implements StatementAction {
     public static String ACTIVITY_URI=PROV_NS+"Activity";
     public static String BUNDLE_URI=PROV_NS+"Bundle";
     public static String WASDERIVEDFROM_URI=PROV_NS+"WasDerivedFrom";
+    public static String QUALIFIEDHADMEMBER_URI=PROV_EXT_NS+"HadMember";
 
     private final JsonNode bindings_schema;
     private final Map<String, Collection<String>> knownTypes;
@@ -278,7 +280,7 @@ public class StatementTypeAction implements StatementAction {
         if (qualifiedNames!=null && !qualifiedNames.isEmpty()) {
             registerTypes2(s.getId(), qualifiedNames);
 
-            dynamicRegisterTypes(s, qualifiedNames);
+            dynamicRegisterTypes(s, qualifiedNames, WASDERIVEDFROM_URI);
         }
 
     }
@@ -345,7 +347,7 @@ public class StatementTypeAction implements StatementAction {
         return Base64.getEncoder().withoutPadding().encodeToString(elementName.getBytes(StandardCharsets.UTF_8));
     }
 
-    private void dynamicRegisterTypes(Identifiable s, Collection<QualifiedName> qualifiedNames) {
+    private void dynamicRegisterTypes(Identifiable s, Collection<QualifiedName> qualifiedNames, String relationURI) {
         if (qualifiedNames==null) return;
         String tmp="_tmp_"+ s.getId().getLocalPart();
         Collection<QualifiedName> activities=doCollectElementVariables((Statement) s, TMPL_ACTIVITY_URI);
@@ -354,7 +356,7 @@ public class StatementTypeAction implements StatementAction {
         String suffix = activities.stream().findFirst().get().getLocalPart();
         mbuilder.addStatement("$T $N=pf.newQualifiedName($S,$S+$N.getLocalPart(),$S)", QualifiedName.class, tmp, s.getId().getNamespaceURI(), localPart, suffix, s.getId().getPrefix());
         mbuilder.addStatement("knownTypeMap.computeIfAbsent($N, k -> new $T<>())", tmp, HashSet.class);
-        mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, WASDERIVEDFROM_URI);
+        mbuilder.addStatement("knownTypeMap.get($N).add($S)", tmp, relationURI);
 
         qualifiedNames.forEach(q -> {
             if (ExpandUtil.isVariable(q)) {
@@ -433,9 +435,26 @@ public class StatementTypeAction implements StatementAction {
 
     @Override
     public void doAction(QualifiedHadMember s) {
+        final Collection<QualifiedName> qualifiedNames = doCollectElementVariables(s, ExpandUtil.ACTIVITY_TYPE_URI);
+        if (s.getId()==null) {
+            s.setId(gensym());
+        }
+        mbuilder.addComment("qualified mem $N", s.getId().getUri());
+
         registerTypes(s.getId(),s.getType());
         registerEntity(s.getCollection());
         s.getEntity().forEach(this::registerEntity);
+
+
+        registerAType(s.getId(), QUALIFIEDHADMEMBER_URI);
+
+
+
+        if (qualifiedNames!=null && !qualifiedNames.isEmpty()) {
+            registerTypes2(s.getId(), qualifiedNames);
+            dynamicRegisterTypes(s, qualifiedNames, QUALIFIEDHADMEMBER_URI);
+        }
+
     }
 
     @Override

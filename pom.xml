@@ -5,7 +5,7 @@
 	<groupId>org.openprovenance.prov</groupId>
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-	<version>0.9.24-SNAPSHOT</version>
+	<version>0.9.24</version>
 	<url>http://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</connection>
 		<developerConnection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</developerConnection>
 		<url>https://github.com/lucmoreau/ProvToolbox.git</url>
-		<tag>HEAD</tag>
+		<tag>ProvToolbox-0.9.24</tag>
 	</scm>
 
 	<modules>

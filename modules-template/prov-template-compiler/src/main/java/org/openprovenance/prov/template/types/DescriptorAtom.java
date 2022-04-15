@@ -1,10 +1,14 @@
 package org.openprovenance.prov.template.types;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -12,14 +16,19 @@ import java.util.stream.Collectors;
 public class DescriptorAtom implements Descriptor {
     Integer number;
     List<String> value;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    Map<String, Set<String>> idata;
 
     public DescriptorAtom(Integer number, String value) {
         this.number=number;
         this.value = List.of(value);
     }
-    public DescriptorAtom(Integer number, List<String> value) {
+    public DescriptorAtom(Integer number, List<String> value, Map<String, Set<String>> idata) {
         this.number=number;
         this.value = value;
+        if (idata!=null && !idata.isEmpty()) {
+            this.idata=new HashMap<>(idata);
+        }
     }
 
     @Override
@@ -38,6 +47,9 @@ public class DescriptorAtom implements Descriptor {
     }
     public List<String> getValue() {
         return value;
+    }
+    public Map<String,Set<String>> getIdata() {
+        return idata;
     }
 
     /**

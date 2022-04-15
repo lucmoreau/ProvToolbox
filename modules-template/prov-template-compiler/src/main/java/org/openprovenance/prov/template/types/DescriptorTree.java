@@ -106,6 +106,7 @@ public class DescriptorTree implements Descriptor {
         }
         if (o instanceof DescriptorTree) {
             DescriptorTree that=(DescriptorTree) o;
+
             final int relCompare = this.relation.compareTo(that.getRelation());
             if (relCompare !=0) { return relCompare; }
 

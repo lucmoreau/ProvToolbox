@@ -17,8 +17,7 @@ import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Function_O_Col_S;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_S_to_Function;
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_ACTIVITY_URI;
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
+import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class StatementTypeAction implements StatementAction {
 
@@ -169,7 +168,10 @@ public class StatementTypeAction implements StatementAction {
     public void doAction(Activity s) {
         registerTypes(s.getId(),s.getType());
         registerActivity(s.getId());
-        doRegisterTypesForAttributes(s, pFactory.getAttributes(s), ACTIVITY_URI);
+        final Collection<Attribute> attributes = pFactory.getAttributes(s);
+        doRegisterTypesForAttributes(s, attributes, ACTIVITY_URI);
+        doRegisterIDataForAttributes(s, attributes, s.getType(), ACTIVITY_URI);
+
     }
 
     @Override
@@ -207,8 +209,9 @@ public class StatementTypeAction implements StatementAction {
     public void doAction(Agent s) {
         registerTypes(s.getId(),s.getType());
         registerAgent(s.getId());
-        doRegisterTypesForAttributes(s, pFactory.getAttributes(s), AGENT_URI);
-
+        final Collection<Attribute> attributes = pFactory.getAttributes(s);
+        doRegisterTypesForAttributes(s, attributes, AGENT_URI);
+        doRegisterIDataForAttributes(s, attributes, s.getType(), AGENT_URI);
     }
 
     @Override
@@ -305,10 +308,11 @@ public class StatementTypeAction implements StatementAction {
             if (TMPL_NS.equals(attr.getElementName().getNamespaceURI())) return; // don't do anything if it's a tmpl attribute
             if (TMPL_NS.equals(attr.getElementName().getNamespaceURI())) return; // don't do anything if it's a tmpl attribute
             String tmp_Conv2 = seen.get(attributeUri);
-            boolean first_encounter=true;
+            boolean first_encounter;
             if (tmp_Conv2==null) {
                 tmp_Conv2 = tmp_Conv + "_" + cleanUpName(attributeUri);
                 seen.put(attributeUri, tmp_Conv2);
+                first_encounter=true;
             } else {
                 first_encounter=false;
             }
@@ -332,9 +336,123 @@ public class StatementTypeAction implements StatementAction {
                 }
             } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
                 String aString=String.valueOf(value);
+                if (value instanceof LangString) {
+                    LangString ls=(LangString) value;
+                    final String lang = ls.getLang();
+                    if (lang !=null) {
+                        aString = ls.getValue() + "~" + lang;
+                    } else {
+                        aString = ls.getValue();
+                    }
+                }
                 mbuilder.addStatement("unknownTypeMap.get($N).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), tmp_Conv2, aString, s.getId().getLocalPart());
             } else {
                 throw new UnsupportedOperationException("doRegisterTypesForAttributes with attribute value " + value + " for element " +attributeUri);
+            }
+            mbuilder.endControlFlow();
+        });
+
+        mbuilder.endControlFlow();
+        mbuilder.endControlFlow();
+    }
+
+    static int iDataCounter=0;
+
+    private void doRegisterIDataForAttributes(Identifiable s, Collection<Attribute> attributes, List<Type> types, String expressionUri) {
+        if (ExpandUtil.isGensymVariable(s.getId())) return;
+        JsonNode the_var = bindings_schema.get("var");
+
+        mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
+
+        String tmp_Conv="itmp_Conv"+(iDataCounter++);
+        mbuilder.addStatement("$T $N=null;", Map_S_to_Function, tmp_Conv);
+
+        for (Type type: types) {
+// LUC use each tyep here
+            Object o=type.getValue();
+            if (o instanceof QualifiedName) {
+                QualifiedName qn=(QualifiedName) o;
+                if (isVariable(qn)) {
+                    mbuilder.addStatement("if (($N==null)&&($N!=null)) $N=idataConverters.get($N.getUri())", tmp_Conv, qn.getLocalPart(), tmp_Conv, qn.getLocalPart());
+                } else {
+                    mbuilder.addStatement("if ($N==null) $N=idataConverters.get($S)", tmp_Conv, tmp_Conv, qn.getUri());
+                }
+            } else if (o instanceof String) {
+                String str=(String)o;
+                mbuilder.addStatement("if ($N==null) $N=idataConverters.get($S)", tmp_Conv, tmp_Conv, str);
+
+            } else {
+                throw new UnsupportedOperationException("doRegisterIDataForAttributes: Not supported type " + o);
+            }
+        }
+
+        mbuilder.addStatement("if ($N==null) $N=idataConverters.get($S)", tmp_Conv, tmp_Conv, expressionUri);
+
+        mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv);
+        Map<String,String> seen=new HashMap<>();
+
+        Collection<Attribute> attributes2= new LinkedList<>(attributes);
+        attributes2.add(pFactory.newAttribute(pFactory.newQualifiedName(PROV_EXT_NS,"id","provxt"),s.getId(), pFactory.getName().PROV_QUALIFIED_NAME) );
+
+        attributes2.forEach(attr -> {
+            String attributeUri = attr.getElementName().getUri();
+            final Object value = attr.getValue();
+            if (TMPL_NS.equals(attr.getElementName().getNamespaceURI())) return; // don't do anything if it's a tmpl attribute
+            if (TMPL_NS.equals(attr.getElementName().getNamespaceURI())) return; // don't do anything if it's a tmpl attribute
+            String tmp_Conv2 = seen.get(attributeUri);
+            boolean first_encounter;
+            if (tmp_Conv2==null) {
+                tmp_Conv2 = tmp_Conv + "_" + cleanUpName(attributeUri);
+                seen.put(attributeUri, tmp_Conv2);
+                first_encounter=true;
+            } else {
+                first_encounter=false;
+            }
+            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
+            mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
+
+            if (value instanceof QualifiedName) {
+                QualifiedName qn=(QualifiedName) value;
+                if (ExpandUtil.isVariable(qn)) {
+                    String key=qn.getLocalPart();
+                    final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+                    mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
+                    if (atype.equals(QualifiedName.class)) {
+                       //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                        mbuilder.beginControlFlow("if /* option 1 */ ($N!=null)",key);
+                        mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
+                        mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($N.getUri(), $N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, key, s.getId().getLocalPart());
+                        mbuilder.endControlFlow();
+                    } else {
+                        //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
+                        mbuilder.beginControlFlow("if /* option 2 */ ($N!=null)",key);
+                        mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
+                        mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($N, $N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, key, s.getId().getLocalPart());
+                        mbuilder.endControlFlow();
+                    }
+                } else {
+                    mbuilder.addStatement("// option 3");
+                    mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
+                    mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
+                    mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, qn.getUri(), s.getId().getLocalPart());
+                }
+            } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
+                String aString=String.valueOf(value);
+                if (value instanceof LangString) {
+                    LangString ls=(LangString) value;
+                    final String lang = ls.getLang();
+                    if (lang !=null) {
+                        aString = ls.getValue() + "~" + lang;
+                    } else {
+                        aString = ls.getValue();
+                    }
+                }
+                mbuilder.addStatement("// option 4");
+                mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
+                mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
+                mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, aString, s.getId().getLocalPart());
+            } else {
+                throw new UnsupportedOperationException("doRegisterIDataForAttributes with attribute value " + value + " for element " +attributeUri);
             }
             mbuilder.endControlFlow();
         });
@@ -393,8 +511,9 @@ public class StatementTypeAction implements StatementAction {
     public void doAction(Entity s) {
         registerTypes(s.getId(),s.getType());
         registerEntity(s.getId());
-        doRegisterTypesForAttributes(s, pFactory.getAttributes(s), ENTITY_URI);
-
+        final Collection<Attribute> attributes = pFactory.getAttributes(s);
+        doRegisterTypesForAttributes(s, attributes, ENTITY_URI);
+        doRegisterIDataForAttributes(s, attributes, s.getType(), ENTITY_URI);
     }
 
 

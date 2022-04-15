@@ -34,13 +34,15 @@ public class TypesRecordProcessor  {
     private final int levelNumber;
     private final boolean addLevel0ToAllLevels;
     private final Map<String, Map<String, BiFunction<Object,String,Collection<String>>>> propertyConverters;
+    private final Map<String, Map<String, BiFunction<Object,String,Collection<String>>>> idataConverters;
 
     // stateful
     private int relationCount;
     private final Collection<String> rejectedTypes;
+    private Map<Integer, List<String>> level0SR;
 
 
-    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, List<String>>> propertyConverters, Collection<String> rejectedTypes, List<Pair<String, Object[]>> records) {
+    public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, List<String>>> propertyConverters, Map<String, Map<String, List<String>>> idataConverters, Collection<String> rejectedTypes, List<Pair<String, Object[]>> records) {
         this.levelTypeIndex=new HashMap<>();
         this.levelTypeIndex.put(0, new HashMap<>(knownLevel0TypeIndex));
 
@@ -64,6 +66,7 @@ public class TypesRecordProcessor  {
         this.levelNumber=levelNumber;
         this.addLevel0ToAllLevels=addLevel0ToAllLevels;
         this.propertyConverters=(propertyConverters==null)? null:initialisePropertyConverters(propertyConverters);
+        this.idataConverters=(idataConverters==null)? null:initialisePropertyConverters(idataConverters);
 
     }
 
@@ -193,8 +196,11 @@ public class TypesRecordProcessor  {
 
         tMap.merge();
 
+
+        Map<String, Map<String, Set<String>>> idata=(Map<String, Map<String, Set<String>>>) result.get("idata0");
+
         //Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
-        Map<Integer,List<Descriptor>> structuredDescriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getStructuredDescriptors));
+        Map<Integer,List<Descriptor>> structuredDescriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, k1 -> getStructuredDescriptors(k1,idata)));
         tMap.structuredDescriptors =structuredDescriptors;
 
         // ignoring the textual descriptors
@@ -205,48 +211,45 @@ public class TypesRecordProcessor  {
 
     }
 
-    /*
-    public List<String> getDescriptors(Integer k) {
-        final Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
-        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss)).toText()).collect(Collectors.toList());
+    public List<Descriptor> getStructuredDescriptors(Integer k, Map<String, Map<String, Set<String>>> idata) {
+        return (k < levelOffset) ? getStructuredDescriptors0(k,idata) : getStructuredDescriptorsN(k,idata);
     }
 
-    private String convertToTextOLD(List<Integer> ll, Long count) {
-        if (ll.get(0)==-1) {  // was added when -addLevel0, the next element is a level0 type value
-            return getDescriptorS0(ll.get(1));
-        } else {
-            return numeral(count) + translateRelation(tMap.allRelations.get(ll.get(0))) + "(" + ((ll.get(1) < levelOffset) ? getDescriptorS0(ll.get(1)) : joinStrings(getDescriptors(ll.get(1)))) + ")";
-        }
-    }
-
-    private String convertToText(List<Integer> ll, Long count) {
-        return convertToDescriptor(ll,count).toText();
-    }
-   */
-
-    public List<Descriptor> getStructuredDescriptors(Integer k) {
-        return (k < levelOffset) ? getStructuredDescriptors0(k) : getStructuredDescriptorsN(k);
-    }
-
-    public List<Descriptor> getStructuredDescriptorsN(Integer k) {
+    public List<Descriptor> getStructuredDescriptorsN(Integer k, Map<String, Map<String, Set<String>>> idata) {
         Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
-        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss))).sorted().collect(Collectors.toList());
+        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss), idata)).sorted().collect(Collectors.toList());
     }
 
-    public List<Descriptor> getStructuredDescriptors0(Integer k) {
+
+    BinaryOperator<Map<String, Set<String>>> mergeIDataMaps = (m1, m2) -> {
+        if (m2==null) return m1;
+        Map<String, Set<String>> res = (m1==null)? new HashMap<>() : new HashMap<>(m1);
+        m2.keySet().forEach(k -> {
+            res.computeIfAbsent(k, _k -> new HashSet<>());
+            res.get(k).addAll(m2.get(k));
+        });
+        return res;
+    };
+
+    // LUC TODO: add idata here??? in DescriptorAtom
+    public List<Descriptor> getStructuredDescriptors0(Integer k, Map<String, Map<String, Set<String>>> idata) {
         //return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
-        return Collections.singletonList(new DescriptorAtom(k, tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList())));
+        return Collections.singletonList(new DescriptorAtom(k,
+                                                            tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList()),
+                                                            getIdata(k, idata)));
     }
 
     public List<String> getStructuredDescriptorString0(Integer k) {
         return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
     }
 
-    private Descriptor convertToDescriptor(List<Integer> ll, Long count) {
+    private Descriptor convertToDescriptor(List<Integer> ll, Long count, Map<String, Map<String, Set<String>>> idata) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
-            return new DescriptorAtom(ll.get(1),getStructuredDescriptorString0(ll.get(1)));
+            return new DescriptorAtom(ll.get(1),
+                                      getStructuredDescriptorString0(ll.get(1)),
+                                      getIdata(ll.get(1), idata));
         } else {
-            return new DescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1)));
+            return new DescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1), idata));
         }
     }
 
@@ -255,7 +258,6 @@ public class TypesRecordProcessor  {
         return  count + " ";
     }
 
-    //Map<String,String> translation=Map.of("template_block.produced.wdf.consumed1", "wdf1", "template_block.produced.wdf.consumed2", "wdf2");
 
     private String translateRelation(String s) {
         if (translation!=null) {
@@ -264,21 +266,20 @@ public class TypesRecordProcessor  {
         return s;
     }
 
-    /*
-    public String getDescriptorS0(Integer k) {
-        return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.joining(",", "", ""));
-    }
 
-    public String joinStrings(List<String> ll) {
-        return ll.stream().collect(Collectors.joining(",", "", ""));
-    }
-
-
-     */
     public String getDescriptor0(Integer k) {
         return  localName(tMap.level0.get(k));
     }
 
+
+
+    public Map<String, Set<String>> getIdata(Integer k, Map<String, Map<String, Set<String>>> idata) {
+
+        final List<String> strings = level0SR.get(k);
+        if (strings==null) return null;
+        Map<String, Set<String>> res= strings.stream().map(idata::get).reduce(new HashMap<>(), mergeIDataMaps);
+        return res;
+    }
     public static String localName(String s) {
         int pos=s.lastIndexOf("#");
         if (pos>0) return s.substring(pos+1);
@@ -402,9 +403,10 @@ public class TypesRecordProcessor  {
         return m.keySet().stream().collect(Collectors.toMap(m::get, a->a));
     }
 
-    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters) {
+    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters, Map<QualifiedName, Map<String, Set<String>>> idata) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
+        Map<String,Map<String, Set<String>>> idata2  =         idata.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, idata::get));
 
         final Map<String, Integer> level0TypeIndex = levelTypeIndex.get(0);
         final Collection<Integer> level0Values = level0TypeIndex.values();
@@ -428,11 +430,9 @@ public class TypesRecordProcessor  {
 
 
         result.put("level0TypeIndex", level0TypeIndex);
-        //result.put("knownTypeMap2",knownTypeMap2);
-        //result.put("knownTypeMap3",knownTypeMap3);
-        //result.put("unknownTypeMap2",unknownTypeMap2);
-        //result.put("unknownTypeMap3",unknownTypeMap3);
+
         result.put("level0",level0);
+        result.put("idata0", idata2);
 
         tMap.level0=swap(level0TypeIndex);
 
@@ -464,6 +464,12 @@ public class TypesRecordProcessor  {
         Map<String, Integer> level0S=level0.keySet().stream().collect(Collectors.toMap((String s)->s, (String s)->level0TypeSetIndex.get(level0.get(s))));
 
         result.put("level0S",level0S);
+
+        final Map<Integer, List<String>> level0SR = invertMapUsingGroupingBy(level0S);
+        result.put("level0SR", level0SR);
+
+        this.level0SR=level0SR;
+
         tMap.level0S=swap(level0TypeSetIndex);
 
 
@@ -482,8 +488,8 @@ public class TypesRecordProcessor  {
 
     }
 
-    public void computeLevels(HashMap<String,FileBuilder> registry, HashMap<String,Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters, int bound) {
-        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap,propertyConverters);
+    public void computeLevels(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters, Map<QualifiedName, Map<String, Set<String>>> idata, int bound) {
+        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap, propertyConverters, idata);
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
             System.out.println("levelN " + i);
@@ -509,6 +515,13 @@ public class TypesRecordProcessor  {
             return set;
         }));
         return result;
+    }
+
+    private static <V, K> Map<V, List<K>> invertMapUsingGroupingBy(Map<K, V> map) {
+        Map<V, List<K>> inversedMap = map.entrySet()
+                .stream()
+                .collect(Collectors.groupingBy(Map.Entry::getValue, Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
+        return inversedMap;
     }
 
     private int newPossibleIndex(Collection<Integer> level0Values, int defaultValue) {
@@ -540,6 +553,10 @@ public class TypesRecordProcessor  {
 
     public Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> getPropertyConverters() {
         return propertyConverters;
+    }
+
+    public Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> getIDataConverters() {
+        return idataConverters;
     }
 
     public Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> initialisePropertyConverters(Map<String, Map<String, List<String>>> converters) {

@@ -10,7 +10,11 @@ import java.util.function.BiFunction;
 // This interface is useful to invoke method on generated classes, by means of the ProxyManagement class, without having to share any package/classes.
 public interface ProxyMakerInterface {
     Object make(Object[] record, Object _processor);   // public <T> T make(Object[] record, Template_blockBuilderInterface<T> _processor) {
-    Object getTypeManager(Map<QualifiedName, Set<String>> ktm, Map<QualifiedName, Set<String>> utm, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters);
+    Object getTypeManager(Map<QualifiedName, Set<String>> ktm,
+                          Map<QualifiedName, Set<String>> utm,
+                          Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters,
+                          Map<QualifiedName, Map<String,Set<String>>> idata,
+                          Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters);
     Object getTypedRecord();
     void propagateTypes(Object[] record,
                         Map<String, Integer> mapLevelN,

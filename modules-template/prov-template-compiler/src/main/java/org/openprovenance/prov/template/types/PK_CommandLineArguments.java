@@ -24,6 +24,7 @@ public class PK_CommandLineArguments {
     public static final String LEVEL_NUMBER ="levelNumber";
     public static final String ADD_LEVEL0 ="addLevel0ToAllLevels";
     public static final String PROPERTY_CONVERTERS ="propertyConverters";
+    public static final String IDATA_CONVERTERS ="idataConverters";
     public static final String REJECTED_TYPES ="rejectedTypes";
 
 
@@ -39,6 +40,7 @@ public class PK_CommandLineArguments {
     public final String translation;
     public final boolean addLevel0ToAllLevels;
     public String propertyConverters;
+    public String idataConverters;
     public String rejectedTypes;
 
 
@@ -118,6 +120,12 @@ public class PK_CommandLineArguments {
                 .longOpt(PROPERTY_CONVERTERS)
                 .build();
 
+        Option idataConverters = Option.builder("i")
+                .argName("files")
+                .hasArg()
+                .desc("property converters ")
+                .longOpt(IDATA_CONVERTERS)
+                .build();
 
         Option rejectedTypes = Option.builder("K")
                 .argName("files")
@@ -143,6 +151,7 @@ public class PK_CommandLineArguments {
         options.addOption(levelNumber);
         options.addOption(addLevel0);
         options.addOption(propertyConverters);
+        options.addOption(idataConverters);
         options.addOption(rejectedTypes);
 
         return options;
@@ -166,6 +175,7 @@ public class PK_CommandLineArguments {
         int levelNumber=4;
         boolean addLevel0=false;
         String propertyConverters=null;
+        String idataConverters=null;
         String rejectedTypesFile=null;
 
         try {
@@ -186,6 +196,7 @@ public class PK_CommandLineArguments {
             if (line.hasOption(LEVEL_NUMBER))       levelNumber = Integer.parseInt(line.getOptionValue(LEVEL_NUMBER));
             if (line.hasOption(TRANSLATION))        translation =  line.getOptionValue(TRANSLATION);
             if (line.hasOption(PROPERTY_CONVERTERS)) propertyConverters=line.getOptionValue(PROPERTY_CONVERTERS);
+            if (line.hasOption(IDATA_CONVERTERS))    idataConverters=line.getOptionValue(IDATA_CONVERTERS);
             if (line.hasOption(REJECTED_TYPES))      rejectedTypesFile=line.getOptionValue(REJECTED_TYPES);
 
             if (line.hasOption(ADD_LEVEL0))         addLevel0 = true;
@@ -198,7 +209,7 @@ public class PK_CommandLineArguments {
 
 
             final PK_CommandLineArguments commandLineArguments
-                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset, levelNumber, translation, addLevel0, propertyConverters, rejectedTypesFile);
+                    = new PK_CommandLineArguments(debug, infile, outfile, knowntypes, knownrelations, setOffset, relationOffset, levelOffset, levelNumber, translation, addLevel0, propertyConverters, idataConverters, rejectedTypesFile);
 
             return commandLineArguments;
 
@@ -209,7 +220,7 @@ public class PK_CommandLineArguments {
         return null;
     }
 
-    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset, int levelNumber, String translation, boolean addLevel0, String propertyConverters, String rejectedTypesFile) {
+    public PK_CommandLineArguments(String debug, String infile, String outfile, String knowntypes, String knownrelations, int setOffset, int relationOffset, int levelOffset, int levelNumber, String translation, boolean addLevel0, String propertyConverters, String idataConverters, String rejectedTypesFile) {
         this.debug=debug;
         this.infile=infile;
         this.outfile=outfile;
@@ -222,6 +233,7 @@ public class PK_CommandLineArguments {
         this.levelNumber=levelNumber;
         this.addLevel0ToAllLevels=addLevel0;
         this.propertyConverters=propertyConverters;
+        this.idataConverters=idataConverters;
         this.rejectedTypes=rejectedTypesFile;
     }
 }

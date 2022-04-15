@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -54,7 +53,9 @@ abstract public class FileBuilder {
 
         final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
         final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
+        final Map<QualifiedName, Map<String,Set<String>>> idata = new HashMap<>();
         Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters=null;
+        Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters=null;
 
         for (CSVRecord record: records) {
             int size=record.size();
@@ -87,8 +88,9 @@ abstract public class FileBuilder {
 
                     ProxyMakerInterface makerBuilder=pm.facadeProxy(ProxyMakerInterface.class,builder);
                     propertyConverters=tp.getPropertyConverters();
+                    idataConverters=tp.getIDataConverters();
 
-                    Object typeManager=makerBuilder.getTypeManager(knownTypeMap,unknownTypeMap,propertyConverters);
+                    Object typeManager=makerBuilder.getTypeManager(knownTypeMap,unknownTypeMap,propertyConverters,idata,idataConverters);
 
                     makerBuilder.make(args,typeManager);
 
@@ -100,7 +102,7 @@ abstract public class FileBuilder {
         if (rp!=null) rp.end();
         if (tp!=null) {
             final int bound = tp.getLevelNumber();
-            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, propertyConverters, bound);
+            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, propertyConverters, idataConverters, idata, bound);
             Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
             tp.computeFeatureVector(types);
             return tp.getResult();

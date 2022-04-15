@@ -1,5 +1,8 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+==0.9.25==
+* prov-template-compiler: allow for instance data to be gathered with provenance types (idata field in structured representation)
+
 ==0.9.24==
 * prov-template-compiler: refactored type propagation
 * prov-template-compiler: fixed issue with relation indexing (no transitive closure)

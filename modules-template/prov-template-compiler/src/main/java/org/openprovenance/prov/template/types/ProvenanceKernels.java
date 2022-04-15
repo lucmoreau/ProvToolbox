@@ -40,6 +40,7 @@ public class ProvenanceKernels {
             int levelNumber = cliArgs.levelNumber;
             boolean addLevel0ToAllLevels=cliArgs.addLevel0ToAllLevels;
             String propertyConverters=cliArgs.propertyConverters;
+            String idataConverters=cliArgs.idataConverters;
 
 
             InputStream is= ("-".equals(infile))? System.in: new FileInputStream(infile);
@@ -80,6 +81,7 @@ public class ProvenanceKernels {
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
             Map<String,Map<String,List<String>>> propertyConvertersMap=(propertyConverters==null)?Map.of():om.readValue(new File(propertyConverters), propertyConverterRef);
+            Map<String,Map<String,List<String>>> idataConvertersMap=(idataConverters==null)?Map.of():om.readValue(new File(idataConverters), propertyConverterRef);
 
             Collection<String> rejectedTypes=new LinkedList<>();
 
@@ -87,7 +89,7 @@ public class ProvenanceKernels {
                 rejectedTypes = om.readValue(new File(rejectedTypesFile), collRef);
             }
 
-            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, rejectedTypes, records);
+            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, idataConvertersMap, rejectedTypes, records);
 
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);

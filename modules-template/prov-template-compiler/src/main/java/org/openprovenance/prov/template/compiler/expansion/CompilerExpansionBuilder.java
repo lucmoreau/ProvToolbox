@@ -942,7 +942,11 @@ public class CompilerExpansionBuilder {
         builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"unknownTypeMap").build());
         builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"propertyConverters").build());
 
-        builder.addStatement("return new $T($N,$N,$N)", ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"), "knownTypeMap", "unknownTypeMap", "propertyConverters");
+        builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"idata").build());
+        builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"idataConverters").build());
+
+
+        builder.addStatement("return new $T($N,$N,$N,$N,$N)", ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"), "knownTypeMap", "unknownTypeMap", "propertyConverters", "idata", "idataConverters");
 
         return builder.build();
 

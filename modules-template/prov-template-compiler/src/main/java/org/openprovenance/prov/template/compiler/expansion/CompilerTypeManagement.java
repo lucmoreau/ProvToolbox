@@ -50,6 +50,7 @@ public class CompilerTypeManagement {
 
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
+    static public final ParameterizedTypeName Map_QN_Map_String_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(String.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class))));
 
 
 
@@ -138,12 +139,20 @@ public class CompilerTypeManagement {
         cbuilder.addStatement("this.knownTypeMap=knownTypeMap");
         cbuilder.addStatement("this.unknownTypeMap=unknownTypeMap");
         cbuilder.addStatement("this.propertyConverters=propertyConverters");
+
+        cbuilder.addStatement("this.idata=idata");
+        cbuilder.addStatement("this.idataConverters=idataConverters");
+
+
         cbuilder.addStatement("this.pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()");
 
 
         cbuilder.addParameter(Map_QN_S_of_String,"knownTypeMap");
         cbuilder.addParameter(Map_QN_S_of_String,"unknownTypeMap");
         cbuilder.addParameter(Map_S_Map_S_to_Function, "propertyConverters");
+
+        cbuilder.addParameter(Map_QN_Map_String_S_of_String,"idata");
+        cbuilder.addParameter(Map_S_Map_S_to_Function, "idataConverters");
 
         TypeSpec.Builder builder = compilerUtil.generateTypeManagementClass(name);
         builder.addTypeVariable(TypeVariableName.get("T"));
@@ -158,6 +167,9 @@ public class CompilerTypeManagement {
         builder.addField(Map_QN_S_of_String,"knownTypeMap", Modifier.PRIVATE);
         builder.addField(Map_QN_S_of_String,"unknownTypeMap", Modifier.PRIVATE);
         builder.addField(Map_S_Map_S_to_Function,"propertyConverters", Modifier.PRIVATE);
+
+        builder.addField(Map_QN_Map_String_S_of_String,"idata", Modifier.PRIVATE);
+        builder.addField(Map_S_Map_S_to_Function,"idataConverters", Modifier.PRIVATE);
 
         builder.addMethod(cbuilder.build());
         builder.addMethod(mbuilder.build());

@@ -9,7 +9,6 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.RecordProcessor;
 
 import java.io.*;
-import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,12 @@ public class ProvenanceKernels {
 
 
     public static void main(String [] args) throws IOException {
+        Map<String, Object> result=new ProvenanceKernels().do_main(args);
+        global_result=result;
+    }
+
+    public Map<String, Object> do_main(String [] args) throws IOException {
+
         String [] args0=Arrays.copyOfRange(args,1,args.length);
         PK_CommandLineArguments cliArgs=PK_CommandLineArguments.parse("<Executable> " + args[0], args0);
         ObjectMapper om=new ObjectMapper();
@@ -60,23 +65,11 @@ public class ProvenanceKernels {
 
             Map<String, String> translation=((translationFile==null)||(translationFile.equals("")))?Map.of():om.readValue(new File(translationFile),mapStringRef);
 
-
-
-
             Map<Set<Integer>,Integer> knownTypesSets=knownTypes.keySet().stream().collect(Collectors.toMap(k->Set.of(knownTypes.get(k)), knownTypes::get));
-
-                    /*
-                    Map.of(
-                    Set.of(1) ,1+  setOffset,
-                    Set.of(2), 2+  setOffset,
-                    Set.of(3), 3+  setOffset);
-                     */
 
             List<Pair<String,Object[]>> records=new LinkedList<>();
 
-
             final Map<String,Integer> knownRelations=(knownrelationsFile==null)?  new HashMap<>(): om.readValue(new File(knownrelationsFile),mapRef) ;
-
 
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
@@ -89,19 +82,26 @@ public class ProvenanceKernels {
                 rejectedTypes = om.readValue(new File(rejectedTypesFile), collRef);
             }
 
-            TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes,knownTypesSets,knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, idataConvertersMap, rejectedTypes, records);
-
+            TypesRecordProcessor trp = newTypesRecordProcessor(relationOffset, levelOffset, levelNumber, addLevel0ToAllLevels, knownTypes, translation, knownTypesSets, records, knownRelations2, propertyConvertersMap, idataConvertersMap, rejectedTypes);
 
             Map<String, Object> result=FileBuilder.reader(is,dp,rp,trp);
-            global_result=result;
+
             if (outfile!=null) {
                 om.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(outfile), result);
             }
 
             System.out.println("completed Provenance Kernels");
 
+            return result;
+
 
         }
+        return null;
+    }
+
+    public TypesRecordProcessor newTypesRecordProcessor(int relationOffset, int levelOffset, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Integer> knownTypes, Map<String, String> translation, Map<Set<Integer>, Integer> knownTypesSets, List<Pair<String, Object[]>> records, Map<String, Integer> knownRelations2, Map<String, Map<String, List<String>>> propertyConvertersMap, Map<String, Map<String, List<String>>> idataConvertersMap, Collection<String> rejectedTypes) {
+        TypesRecordProcessor trp=new TypesRecordProcessor(knownTypes, knownTypesSets, knownRelations2, relationOffset, levelOffset, translation, levelNumber, addLevel0ToAllLevels, propertyConvertersMap, idataConvertersMap, rejectedTypes, records);
+        return trp;
     }
 
     public static Map<String, Object> global_result=null;

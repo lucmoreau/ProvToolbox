@@ -181,7 +181,7 @@ public class TypesRecordProcessor  {
 
 
     public Map<Integer, Integer> computeFeatureVector(Map<String, Collection<Integer>> types) {
-        System.out.println("computedFeatureVector");
+        logger.info("computing FeatureVector");
         Map<Integer,Integer> counts=new HashMap<>();
         final Collection<Collection<Integer>> allCollections = types.values();
         for (Collection<Integer> coll: allCollections) {
@@ -195,7 +195,6 @@ public class TypesRecordProcessor  {
         tMap.features=counts;
 
         tMap.merge();
-
 
         Map<String, Map<String, Set<String>>> idata=(Map<String, Map<String, Set<String>>>) result.get("idata0");
 
@@ -231,13 +230,14 @@ public class TypesRecordProcessor  {
         return res;
     };
 
-    // LUC TODO: add idata here??? in DescriptorAtom
     public List<Descriptor> getStructuredDescriptors0(Integer k, Map<String, Map<String, Set<String>>> idata) {
         //return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
-        return Collections.singletonList(new DescriptorAtom(k,
+        return Collections.singletonList(newDescriptorAtom(k,
                                                             tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList()),
                                                             getIdata(k, idata)));
     }
+
+
 
     public List<String> getStructuredDescriptorString0(Integer k) {
         return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
@@ -245,14 +245,20 @@ public class TypesRecordProcessor  {
 
     private Descriptor convertToDescriptor(List<Integer> ll, Long count, Map<String, Map<String, Set<String>>> idata) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
-            return new DescriptorAtom(ll.get(1),
+            return newDescriptorAtom(ll.get(1),
                                       getStructuredDescriptorString0(ll.get(1)),
                                       getIdata(ll.get(1), idata));
         } else {
-            return new DescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1), idata));
+            return newDescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1), idata));
         }
     }
 
+    public Descriptor newDescriptorTree(Integer i, Long count, String s, List<Descriptor> structuredDescriptors) {
+        return new DescriptorTree(i, count, s, structuredDescriptors);
+    }
+    public Descriptor newDescriptorAtom(Integer k, List<String> value, Map<String, Set<String>> idata) {
+        return new DescriptorAtom(k, value, idata);
+    }
     static String numeral(Long count) {
         if (1L==count) return "";
         return  count + " ";
@@ -403,7 +409,7 @@ public class TypesRecordProcessor  {
         return m.keySet().stream().collect(Collectors.toMap(m::get, a->a));
     }
 
-    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters, Map<QualifiedName, Map<String, Set<String>>> idata) {
+    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
         Map<String,Map<String, Set<String>>> idata2  =         idata.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, idata::get));
@@ -488,8 +494,8 @@ public class TypesRecordProcessor  {
 
     }
 
-    public void computeLevels(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters, Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters, Map<QualifiedName, Map<String, Set<String>>> idata, int bound) {
-        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap, propertyConverters, idata);
+    public void computeLevels(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap,  Map<QualifiedName, Map<String, Set<String>>> idata, int bound) {
+        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap, idata);
         Map<String, Integer> level=level0;
         for (int i=1; i <bound; i++) {
             System.out.println("levelN " + i);

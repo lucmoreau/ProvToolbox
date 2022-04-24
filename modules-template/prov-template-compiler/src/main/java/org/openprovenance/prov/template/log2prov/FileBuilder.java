@@ -39,7 +39,7 @@ abstract public class FileBuilder {
         }
     }
 
-    static ProxyManagement pm=new ProxyManagement();
+    public static ProxyManagement pm=new ProxyManagement();
 
     public static void reader(InputStream r, DocumentProcessor dp, RecordProcessor rp) throws IOException {
         reader(r,dp,rp,null);
@@ -54,9 +54,21 @@ abstract public class FileBuilder {
         final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
         final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
         final Map<QualifiedName, Map<String,Set<String>>> idata = new HashMap<>();
-        Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters=null;
-        Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters=null;
 
+        processRecords(records, dp, rp, tp, sqlInsert, knownTypeMap, unknownTypeMap, idata);
+        if (dp!=null) dp.end();
+        if (rp!=null) rp.end();
+        if (tp!=null) {
+            final int bound = tp.getLevelNumber();
+            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, idata, bound);
+            Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
+            tp.computeFeatureVector(types);
+            return tp.getResult();
+        }
+        return null;
+    }
+
+    public static void processRecords(List<CSVRecord> records, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
         for (CSVRecord record: records) {
             int size=record.size();
             Object[] args=new Object[size];
@@ -72,42 +84,35 @@ abstract public class FileBuilder {
                     args[i] = s;
                 }
             }
-            FileBuilder builder=registry.get(methodName);
-            Object remoteClientBuilder=clientRegistry.get(methodName);
-            ProxySQLInterface clientBuilder=pm.facadeProxy(ProxySQLInterface.class,remoteClientBuilder);
-            if (builder==null) {
-                logger.info("unknown method " + methodName + " in "+ registry);
-                // skip the ones we don't understand
-                //return utils.composeResponseBadRequest("incorrect template " + method + " for builders " + builders, new UnsupportedOperationException(method));
-            } else {
-                if (dp!=null) dp.process(builder.make(args));
-                if (rp!=null) {
-                    processRecordForSql(rp, sqlInsert, args, methodName, clientBuilder);
-                }
-                if (tp!=null) {
+            processRecord(methodName, args, dp, rp, tp, sqlInsert, knownTypeMap, unknownTypeMap, idata);
+        }
+    }
 
-                    ProxyMakerInterface makerBuilder=pm.facadeProxy(ProxyMakerInterface.class,builder);
-                    propertyConverters=tp.getPropertyConverters();
-                    idataConverters=tp.getIDataConverters();
+    public static void processRecord(String methodName, Object[] args, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
+        FileBuilder builder=registry.get(methodName);
+        Object remoteClientBuilder=clientRegistry.get(methodName);
+        ProxySQLInterface clientBuilder=pm.facadeProxy(ProxySQLInterface.class,remoteClientBuilder);
+        if (builder==null) {
+            logger.info("unknown method " + methodName + " in "+ registry);
+            // skip the ones we don't understand
+            //return utils.composeResponseBadRequest("incorrect template " + method + " for builders " + builders, new UnsupportedOperationException(method));
+        } else {
+            if (dp !=null) dp.process(builder.make(args));
+            if (rp !=null) {
+                processRecordForSql(rp, sqlInsert, args, methodName, clientBuilder);
+            }
+            if (tp !=null) {
 
-                    Object typeManager=makerBuilder.getTypeManager(knownTypeMap,unknownTypeMap,propertyConverters,idata,idataConverters);
+                ProxyMakerInterface makerBuilder=pm.facadeProxy(ProxyMakerInterface.class,builder);
+                Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters= tp.getPropertyConverters();
+                Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters= tp.getIDataConverters();
+                Object typeManager=makerBuilder.getTypeManager(knownTypeMap, unknownTypeMap,propertyConverters, idata,idataConverters);
 
-                    makerBuilder.make(args,typeManager);
+                makerBuilder.make(args,typeManager);
 
-                    tp.process(methodName,args);
-                }
+                tp.process(methodName, args);
             }
         }
-        if (dp!=null) dp.end();
-        if (rp!=null) rp.end();
-        if (tp!=null) {
-            final int bound = tp.getLevelNumber();
-            tp.computeLevels(registry, clientRegistry, pm, knownTypeMap, unknownTypeMap, propertyConverters, idataConverters, idata, bound);
-            Map<String, Collection<Integer>> types=tp.computeTypesPerNode(bound);
-            tp.computeFeatureVector(types);
-            return tp.getResult();
-        }
-        return null;
     }
 
 
@@ -154,7 +159,7 @@ abstract public class FileBuilder {
     
     public abstract Document make(Object[] objects);
 
-    private static final HashMap<String,FileBuilder> registry= new HashMap<>();
+    public static final HashMap<String,FileBuilder> registry= new HashMap<>();
     public static final HashMap<String,Object> clientRegistry= new HashMap<>();
 
 

@@ -37,8 +37,9 @@ public class StatementTypeAction implements StatementAction {
     private Set<QualifiedName> allVars;
     private Set<QualifiedName> allAtts;
 
-    private ProvFactory pFactory;
+    private final ProvFactory pFactory;
     private Hashtable<QualifiedName, String> vmap;
+    final public QualifiedName PROV_EXT_NS_ID;
 
 
     public StatementTypeAction(ProvFactory pFactory, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Hashtable<QualifiedName, String> vmap, Builder builder, String target, JsonNode bindings_schema, Map<String, Collection<String>> knownTypes, Map<String, Collection<String>> unknownTypes, Builder mbuilder, CompilerUtil compilerUtil) {
@@ -53,6 +54,8 @@ public class StatementTypeAction implements StatementAction {
         this.unknownTypes=unknownTypes;
         this.mbuilder=mbuilder;
         this.compilerUtil=compilerUtil;
+        PROV_EXT_NS_ID = pFactory.newQualifiedName(PROV_EXT_NS, "id", "provxt");
+
     }
 
 
@@ -392,7 +395,8 @@ public class StatementTypeAction implements StatementAction {
         Map<String,String> seen=new HashMap<>();
 
         Collection<Attribute> attributes2= new LinkedList<>(attributes);
-        attributes2.add(pFactory.newAttribute(pFactory.newQualifiedName(PROV_EXT_NS,"id","provxt"),s.getId(), pFactory.getName().PROV_QUALIFIED_NAME) );
+
+        attributes2.add(pFactory.newAttribute(PROV_EXT_NS_ID,s.getId(), pFactory.getName().PROV_QUALIFIED_NAME) );
 
         attributes2.forEach(attr -> {
             String attributeUri = attr.getElementName().getUri();

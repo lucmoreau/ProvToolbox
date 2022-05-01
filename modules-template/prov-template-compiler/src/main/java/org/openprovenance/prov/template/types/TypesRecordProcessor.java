@@ -173,7 +173,7 @@ public class TypesRecordProcessor  {
             levelNS.keySet().forEach(k -> {
                 types.computeIfAbsent(k, n -> new HashSet<>());
                 types.get(k).add(levelNS.get(k));
-                });
+            });
         }
         result.put("allTypes",types);
         return types;
@@ -233,20 +233,20 @@ public class TypesRecordProcessor  {
     public List<Descriptor> getStructuredDescriptors0(Integer k, Map<String, Map<String, Set<String>>> idata) {
         //return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
         return Collections.singletonList(newDescriptorAtom(k,
-                                                            tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList()),
-                                                            getIdata(k, idata)));
+                                                           getStructuredDescriptorStringLevel0(k),
+                                                           getIdata(k, idata)));
     }
 
 
-
-    public List<String> getStructuredDescriptorString0(Integer k) {
+    public List<String> getStructuredDescriptorStringLevel0(Integer k) {
+        if (tMap.level0S.get(k).isEmpty()) throw new UnsupportedOperationException("should not be empty");
         return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
     }
 
     private Descriptor convertToDescriptor(List<Integer> ll, Long count, Map<String, Map<String, Set<String>>> idata) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
             return newDescriptorAtom(ll.get(1),
-                                      getStructuredDescriptorString0(ll.get(1)),
+                                      getStructuredDescriptorStringLevel0(ll.get(1)),
                                       getIdata(ll.get(1), idata));
         } else {
             return newDescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1), idata));

@@ -213,8 +213,18 @@ public class StatementTypeAction implements StatementAction {
         registerTypes(s.getId(),s.getType());
         registerAgent(s.getId());
         final Collection<Attribute> attributes = pFactory.getAttributes(s);
+        attributes.add(pFactory.newType(pFactory.newQualifiedName(PROV_NS,"Agent", "prov"),pFactory.getName().PROV_QUALIFIED_NAME));
         doRegisterTypesForAttributes(s, attributes, AGENT_URI);
         doRegisterIDataForAttributes(s, attributes, s.getType(), AGENT_URI);
+    }
+
+    @Override
+    public void doAction(Entity s) {
+        registerTypes(s.getId(),s.getType());
+        registerEntity(s.getId());
+        final Collection<Attribute> attributes = pFactory.getAttributes(s);
+        doRegisterTypesForAttributes(s, attributes, ENTITY_URI);
+        doRegisterIDataForAttributes(s, attributes, s.getType(), ENTITY_URI);
     }
 
     @Override
@@ -294,6 +304,8 @@ public class StatementTypeAction implements StatementAction {
 
     static int anotherCounter=0;
     private void doRegisterTypesForAttributes(Identifiable s,Collection<Attribute> attributes, String expressionUri) {
+
+
         if (ExpandUtil.isGensymVariable(s.getId())) return;
         JsonNode the_var = bindings_schema.get("var");
 
@@ -511,14 +523,6 @@ public class StatementTypeAction implements StatementAction {
         
     }
 
-    @Override
-    public void doAction(Entity s) {
-        registerTypes(s.getId(),s.getType());
-        registerEntity(s.getId());
-        final Collection<Attribute> attributes = pFactory.getAttributes(s);
-        doRegisterTypesForAttributes(s, attributes, ENTITY_URI);
-        doRegisterIDataForAttributes(s, attributes, s.getType(), ENTITY_URI);
-    }
 
 
 

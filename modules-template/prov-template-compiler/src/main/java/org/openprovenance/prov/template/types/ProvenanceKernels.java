@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 public class ProvenanceKernels {
     final static boolean debug=true;
 
-    static TypeReference<Collection<String>> collRef = new TypeReference<>() {};
-    static TypeReference<Map<String,Integer>> mapRef = new TypeReference<>() {};
-    static TypeReference<Map<String,String>> mapStringRef = new TypeReference<>() {};
-    static TypeReference<Map<String,Map<String,List<String>>>> propertyConverterRef = new TypeReference<>() {};
+    public final static TypeReference<Collection<String>> collRef = new TypeReference<>() {};
+    public final static TypeReference<Map<String,Integer>> mapRef = new TypeReference<>() {};
+    public final static TypeReference<Map<String,String>> mapStringRef = new TypeReference<>() {};
+    public final static TypeReference<Map<String,Map<String,List<String>>>> propertyConverterRef = new TypeReference<>() {};
 
 
     public static void main(String [] args) throws IOException {
@@ -73,8 +73,8 @@ public class ProvenanceKernels {
 
             final Map<String,Integer> knownRelations2 = knownRelations.keySet().stream().collect(Collectors.toMap(r -> r, r -> knownRelations.get(r) + relationOffset));
 
-            Map<String,Map<String,List<String>>> propertyConvertersMap=(propertyConverters==null)?Map.of():om.readValue(new File(propertyConverters), propertyConverterRef);
-            Map<String,Map<String,List<String>>> idataConvertersMap=(idataConverters==null)?Map.of():om.readValue(new File(idataConverters), propertyConverterRef);
+            Map<String,Map<String,List<String>>> propertyConvertersMap= loadPropertyConvertersMap(propertyConverters, om);
+            Map<String,Map<String,List<String>>> idataConvertersMap= loadPropertyConvertersMap(idataConverters, om);
 
             Collection<String> rejectedTypes=new LinkedList<>();
 
@@ -97,6 +97,10 @@ public class ProvenanceKernels {
 
         }
         return null;
+    }
+
+    static public Map<String, Map<String, List<String>>> loadPropertyConvertersMap(String propertyConverters, ObjectMapper om) throws IOException {
+        return (propertyConverters == null) ? Map.of() : om.readValue(new File(propertyConverters), propertyConverterRef);
     }
 
     public TypesRecordProcessor newTypesRecordProcessor(int relationOffset, int levelOffset, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Integer> knownTypes, Map<String, String> translation, Map<Set<Integer>, Integer> knownTypesSets, List<Pair<String, Object[]>> records, Map<String, Integer> knownRelations2, Map<String, Map<String, List<String>>> propertyConvertersMap, Map<String, Map<String, List<String>>> idataConvertersMap, Collection<String> rejectedTypes) {

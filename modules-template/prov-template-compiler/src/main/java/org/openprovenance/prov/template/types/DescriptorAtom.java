@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -19,10 +17,13 @@ public class DescriptorAtom implements Descriptor {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<String, Set<String>> idata;
 
+    /*
     public DescriptorAtom(Integer number, String value) {
         this.number=number;
         this.value = List.of(value);
     }
+
+     */
     public DescriptorAtom(Integer number, List<String> value, Map<String, Set<String>> idata) {
         this.number=number;
         this.value = value;
@@ -97,7 +98,51 @@ public class DescriptorAtom implements Descriptor {
             return -1;
         }
         if (o instanceof DescriptorAtom) {
-            return this.value.toString().compareTo(((DescriptorAtom)o).value.toString());
+            final DescriptorAtom that = (DescriptorAtom) o;
+            final int relCompare = this.value.toString().compareTo(that.value.toString());
+            if (relCompare !=0) { return relCompare; }
+
+            if (this.idata==null) {
+                if (that.idata==null) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            } else {
+                if (that.idata==null) {
+                    return 1;
+                }
+            }
+
+            List<String> allIdataKeys  = new LinkedList<>();
+            allIdataKeys.addAll(this.idata.keySet());
+            allIdataKeys.addAll(that.idata.keySet());
+            allIdataKeys.sort(String::compareTo);
+
+            AtomicInteger theComparison= new AtomicInteger();
+
+            for (String k: allIdataKeys) {
+                Set<String> thisData=this.idata.get(k);
+                Set<String> thatData=this.idata.get(k);
+                if (thisData==null) {
+                    theComparison.set(1);
+                    break;
+                }
+                if (thatData==null) {
+                    theComparison.set(-1);
+                    break;
+                }
+                List<String> thisL=thisData.stream().sorted(String::compareTo).collect(Collectors.toList());
+                List<String> thatL=thatData.stream().sorted(String::compareTo).collect(Collectors.toList());
+                if (thisL.equals(thatL)) {
+                    // continue iteration
+                } else {
+                    theComparison.set(thisL.toString().compareTo(thatL.toString()));
+                    break;
+                }
+            }
+
+            return theComparison.get();
         }
         throw new InvalidCaseException(o.toString());
     }

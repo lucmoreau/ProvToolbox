@@ -11,16 +11,14 @@ import java.util.function.BiFunction;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.log2prov.interfaces.ProxyBeanInterface;
-import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientAccessorInterface;
-import org.openprovenance.prov.template.log2prov.interfaces.ProxyMakerInterface;
-import org.openprovenance.prov.template.log2prov.interfaces.ProxySQLInterface;
+import org.openprovenance.prov.template.log2prov.interfaces.*;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 abstract public class FileBuilder {
@@ -105,7 +103,7 @@ abstract public class FileBuilder {
 
                 ProxyMakerInterface makerBuilder=pm.facadeProxy(ProxyMakerInterface.class,builder);
                 Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters= tp.getPropertyConverters();
-                Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters= tp.getIDataConverters();
+                Map<String, Map<String, TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>>> idataConverters= tp.getIDataConverters();
                 Object typeManager=makerBuilder.getTypeManager(knownTypeMap, unknownTypeMap,propertyConverters, idata,idataConverters);
 
                 makerBuilder.make(args,typeManager);

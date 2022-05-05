@@ -146,4 +146,17 @@ public class DescriptorAtom implements Descriptor {
         }
         throw new InvalidCaseException(o.toString());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DescriptorAtom that = (DescriptorAtom) o;
+        return Objects.equals(number, that.number) && Objects.equals(value, that.value) && Objects.equals(idata, that.idata);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, value, idata);
+    }
 }

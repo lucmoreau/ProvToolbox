@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.log2prov.interfaces;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ public interface ProxyMakerInterface {
                           Map<QualifiedName, Set<String>> utm,
                           Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters,
                           Map<QualifiedName, Map<String,Set<String>>> idata,
-                          Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> idataConverters);
+                          Map<String, Map<String, TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>>> idataConverters);
     Object getTypedRecord();
     void propagateTypes(Object[] record,
                         Map<String, Integer> mapLevelN,

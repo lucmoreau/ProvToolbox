@@ -10,6 +10,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.ProxyManagement;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyClientInterface;
 import org.openprovenance.prov.template.log2prov.interfaces.ProxyMakerInterface;
+import org.openprovenance.prov.template.log2prov.interfaces.TriFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -34,7 +35,7 @@ public class TypesRecordProcessor  {
     private final int levelNumber;
     private final boolean addLevel0ToAllLevels;
     private final Map<String, Map<String, BiFunction<Object,String,Collection<String>>>> propertyConverters;
-    private final Map<String, Map<String, BiFunction<Object,String,Collection<String>>>> idataConverters;
+    private final Map<String, Map<String, TriFunction<Object,String,String, Collection<Pair<String,Collection<String>>>>>> idataConverters;
 
     // stateful
     private int relationCount;
@@ -66,7 +67,7 @@ public class TypesRecordProcessor  {
         this.levelNumber=levelNumber;
         this.addLevel0ToAllLevels=addLevel0ToAllLevels;
         this.propertyConverters=(propertyConverters==null)? null:initialisePropertyConverters(propertyConverters);
-        this.idataConverters=(idataConverters==null)? null:initialisePropertyConverters(idataConverters);
+        this.idataConverters=(idataConverters==null)? null:initialiseDataConverters(idataConverters);
 
     }
 
@@ -561,20 +562,27 @@ public class TypesRecordProcessor  {
         return propertyConverters;
     }
 
-    public Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> getIDataConverters() {
+    public Map<String, Map<String, TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>>> getIDataConverters() {
         return idataConverters;
     }
 
     public Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> initialisePropertyConverters(Map<String, Map<String, List<String>>> converters) {
         return converters.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> initialise(converters.get(s))));
     }
+    public Map<String, Map<String, TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>>> initialiseDataConverters(Map<String, Map<String, List<String>>> converters) {
+        return converters.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> initialise2(converters.get(s))));
+    }
 
     public Map<String, BiFunction<Object, String, Collection<String>>> initialise(Map<String, List<String>> m) {
         return m.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> m.get(s).stream().map(fname -> initialize(s, fname)).reduce(biidentity,bicompose)));
     }
+    public Map<String, TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>> initialise2(Map<String, List<String>> m) {
+        return m.keySet().stream().collect(Collectors.toMap((String s)-> s, (String s) -> m.get(s).stream().map(fname -> initialize2(s, fname)).reduce(triidentity,tricompose)));
+    }
 
     final private Function<Object, Collection<String>> identity= o->List.of();
     final private BiFunction<Object, String,Collection<String>> biidentity= (o,s)->List.of();
+    final private TriFunction<Object, String, String, Collection<Pair<String,Collection<String>>>> triidentity= (o,s,k)->List.of();
 
     final private BinaryOperator<Function<Object, Collection<String>>> compose= (f1, f2) -> o -> {
         List<String> ll=new LinkedList<>();
@@ -593,10 +601,29 @@ public class TypesRecordProcessor  {
         if (c2!=null) ll.addAll(c2);
         return ll;
     };
-
+    final private BinaryOperator<TriFunction<Object, String, String, Collection<Pair<String,Collection<String>>>>> tricompose= (f1, f2) -> (o,s,k) -> {
+        List<Pair<String,Collection<String>>> ll=new LinkedList<>();
+        final Collection<Pair<String, Collection<String>>> coll1 = f1.apply(o,s,k);
+        if (coll1!=null) {
+            ll.addAll(coll1);
+        }
+        final Collection<Pair<String, Collection<String>>> coll2 = f2.apply(o,s,k);
+        if (coll2!=null) {
+             ll.addAll(coll2);
+        }
+        return ll;
+    };
     private BiFunction<Object, String, Collection<String>> initialize(String property, String classname) {
         try {
             return (BiFunction<Object,String, Collection<String>>) Class.forName(classname).getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("fail to initialize property converter " + classname + " for property " + property);
+        }
+    }
+    private TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>> initialize2(String property, String classname) {
+        try {
+            return (TriFunction<Object,String, String, Collection<Pair<String,Collection<String>>>>) Class.forName(classname).getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("fail to initialize property converter " + classname + " for property " + property);

@@ -3,14 +3,15 @@ package org.openprovenance.prov.template.compiler.expansion;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.CompilerClient;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.log2prov.interfaces.TriFunction;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 
@@ -50,13 +51,20 @@ public class CompilerTypeManagement {
 
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
+
     static public final ParameterizedTypeName Map_QN_Map_String_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(String.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class))));
 
 
 
-    // Function<Object, Collection<String>>
+    // BiFunction<Object, String Collection<String>>
     static public final ParameterizedTypeName Function_O_Col_S =
                     ParameterizedTypeName.get(ClassName.get(BiFunction.class), TypeName.get(Object.class), TypeName.get(String.class), ParameterizedTypeName.get(ClassName.get(Collection.class),TypeName.get(String.class)));
+
+
+    static public final ParameterizedTypeName CollectionOfPairsOfStringAndString =ParameterizedTypeName.get(ClassName.get(Collection.class),ParameterizedTypeName.get(ClassName.get(Pair.class), TypeName.get(String.class), ParameterizedTypeName.get(ClassName.get(Collection.class),TypeName.get(String.class))));
+
+    // TriFunction<Object, String, String, Pair<String, Collection<String>>>
+    static public final ParameterizedTypeName TriFunction_O_Col_S = ParameterizedTypeName.get(ClassName.get(TriFunction.class), TypeName.get(Object.class), TypeName.get(String.class), TypeName.get(String.class), CollectionOfPairsOfStringAndString);
 
     // Map<String, Function<Object,  Collection<String>>>
     static public final ParameterizedTypeName Map_S_to_Function =
@@ -65,6 +73,15 @@ public class CompilerTypeManagement {
     // Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters
     static public final ParameterizedTypeName Map_S_Map_S_to_Function =
             ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class),Map_S_to_Function);
+
+    // Map<String, Function<Object,  Collection<String>>>
+    static public final ParameterizedTypeName Map_S_to_TriFunction =
+            ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TriFunction_O_Col_S);
+
+    // Map<String, Map<String, Function<Object, Collection<String>>>> propertyConverters
+    static public final ParameterizedTypeName Map_S_Map_S_to_TriFunction =
+            ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class),Map_S_to_TriFunction);
+
 
     public Map<String, Collection<String>> getKnownTypes() {
         return knownTypes;
@@ -152,7 +169,7 @@ public class CompilerTypeManagement {
         cbuilder.addParameter(Map_S_Map_S_to_Function, "propertyConverters");
 
         cbuilder.addParameter(Map_QN_Map_String_S_of_String,"idata");
-        cbuilder.addParameter(Map_S_Map_S_to_Function, "idataConverters");
+        cbuilder.addParameter(Map_S_Map_S_to_TriFunction, "idataConverters");
 
         TypeSpec.Builder builder = compilerUtil.generateTypeManagementClass(name);
         builder.addTypeVariable(TypeVariableName.get("T"));
@@ -169,7 +186,7 @@ public class CompilerTypeManagement {
         builder.addField(Map_S_Map_S_to_Function,"propertyConverters", Modifier.PRIVATE);
 
         builder.addField(Map_QN_Map_String_S_of_String,"idata", Modifier.PRIVATE);
-        builder.addField(Map_S_Map_S_to_Function,"idataConverters", Modifier.PRIVATE);
+        builder.addField(Map_S_Map_S_to_TriFunction,"idataConverters", Modifier.PRIVATE);
 
         builder.addMethod(cbuilder.build());
         builder.addMethod(mbuilder.build());

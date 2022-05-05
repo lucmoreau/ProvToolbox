@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.expansion;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec.Builder;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
@@ -15,8 +16,7 @@ import java.util.*;
 
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Function_O_Col_S;
-import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.Map_S_to_Function;
+import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class StatementTypeAction implements StatementAction {
@@ -380,7 +380,7 @@ public class StatementTypeAction implements StatementAction {
         mbuilder.beginControlFlow("if ($N!=null) ", s.getId().getLocalPart());
 
         String tmp_Conv="itmp_Conv"+(iDataCounter++);
-        mbuilder.addStatement("$T $N=null;", Map_S_to_Function, tmp_Conv);
+        mbuilder.addStatement("$T $N=null;", Map_S_to_TriFunction, tmp_Conv);
 
         for (Type type: types) {
 // LUC use each tyep here
@@ -424,7 +424,7 @@ public class StatementTypeAction implements StatementAction {
             } else {
                 first_encounter=false;
             }
-            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", Function_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
+            if (first_encounter) mbuilder.addStatement("$T $N=$N.get($S)", TriFunction_O_Col_S, tmp_Conv2, tmp_Conv, attributeUri);
             mbuilder.beginControlFlow("if ($N!=null) ", tmp_Conv2);
 
             if (value instanceof QualifiedName) {
@@ -436,21 +436,42 @@ public class StatementTypeAction implements StatementAction {
                     if (atype.equals(QualifiedName.class)) {
                        //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N.getUri(), $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
                         mbuilder.beginControlFlow("if /* option 1 */ ($N!=null)",key);
-                        mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
-                        mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($N.getUri(), $N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, key, s.getId().getLocalPart());
+                        String pairVariable="p";
+                        String pairVariable2="p2";
+                        mbuilder.addStatement("$T $N=$N.apply($N.getUri(), $N.getUri(), $S))", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
+                        CodeBlock.Builder subBuilder = CodeBlock.builder();
+                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                        subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
+                        mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
+                        mbuilder.addCode(subBuilder.build());
+                        mbuilder.endControlFlow(")");
                         mbuilder.endControlFlow();
                     } else {
                         //mbuilder.addStatement("if ($N!=null) idata.get($N).addAll($N.apply($N, $N.getUri()))", key, s.getId().getLocalPart(), tmp_Conv2, key, s.getId().getLocalPart());
                         mbuilder.beginControlFlow("if /* option 2 */ ($N!=null)",key);
-                        mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
-                        mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($N, $N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, key, s.getId().getLocalPart());
+                        String pairVariable="p";
+                        String pairVariable2="p2";
+                        mbuilder.addStatement("$T $N=$N.apply($N,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key,  s.getId().getLocalPart(), attributeUri);
+                        CodeBlock.Builder subBuilder = CodeBlock.builder();
+                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                        subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(),  pairVariable2, pairVariable2);
+                        mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
+                        mbuilder.addCode(subBuilder.build());
+                        mbuilder.endControlFlow(")");
                         mbuilder.endControlFlow();
                     }
                 } else {
                     mbuilder.addStatement("// option 3");
                     mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
-                    mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
-                    mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, qn.getUri(), s.getId().getLocalPart());
+                    String pairVariable="p";
+                    String pairVariable2="p2";
+                    mbuilder.addStatement("$T $N=$N.apply($S,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, attributeUri,  s.getId().getLocalPart(), attributeUri);
+                    CodeBlock.Builder subBuilder = CodeBlock.builder();
+                    subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                    subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
+                    mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
+                    mbuilder.addCode(subBuilder.build());
+                    mbuilder.endControlFlow(")");
                 }
             } else if ((value instanceof String)  || (value instanceof LangString) || (value instanceof Integer)) {
                 String aString=String.valueOf(value);
@@ -465,8 +486,15 @@ public class StatementTypeAction implements StatementAction {
                 }
                 mbuilder.addStatement("// option 4");
                 mbuilder.addStatement("idata.computeIfAbsent($N, k -> new $T<>())",s.getId().getLocalPart(), HashMap.class);
-                mbuilder.addStatement("idata.get($N).computeIfAbsent($S, k -> new $T<>())",s.getId().getLocalPart(), attributeUri, HashSet.class);
-                mbuilder.addStatement("idata.get($N).get($S).addAll($N.apply($S,$N.getUri()))", s.getId().getLocalPart(), attributeUri, tmp_Conv2, aString, s.getId().getLocalPart());
+                String pairVariable="p";
+                String pairVariable2="p2";
+                mbuilder.addStatement("$T $N=$N.apply($S, $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, aString, s.getId().getLocalPart(),attributeUri);
+                CodeBlock.Builder subBuilder = CodeBlock.builder();
+                subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(),  pairVariable2, pairVariable2);
+                mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
+                mbuilder.addCode(subBuilder.build());
+                mbuilder.endControlFlow(")");
             } else {
                 throw new UnsupportedOperationException("doRegisterIDataForAttributes with attribute value " + value + " for element " +attributeUri);
             }

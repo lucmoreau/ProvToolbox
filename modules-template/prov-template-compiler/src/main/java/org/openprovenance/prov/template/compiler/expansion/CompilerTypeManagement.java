@@ -52,7 +52,7 @@ public class CompilerTypeManagement {
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
 
-    static public final ParameterizedTypeName Map_QN_Map_String_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(String.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class))));
+    static public final ParameterizedTypeName Map_QN_Map_String_C_of_String =ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(String.class),ParameterizedTypeName.get(ClassName.get(List.class),TypeName.get(String.class))));
 
 
 
@@ -168,7 +168,7 @@ public class CompilerTypeManagement {
         cbuilder.addParameter(Map_QN_S_of_String,"unknownTypeMap");
         cbuilder.addParameter(Map_S_Map_S_to_Function, "propertyConverters");
 
-        cbuilder.addParameter(Map_QN_Map_String_S_of_String,"idata");
+        cbuilder.addParameter(Map_QN_Map_String_C_of_String,"idata");
         cbuilder.addParameter(Map_S_Map_S_to_TriFunction, "idataConverters");
 
         TypeSpec.Builder builder = compilerUtil.generateTypeManagementClass(name);
@@ -185,7 +185,7 @@ public class CompilerTypeManagement {
         builder.addField(Map_QN_S_of_String,"unknownTypeMap", Modifier.PRIVATE);
         builder.addField(Map_S_Map_S_to_Function,"propertyConverters", Modifier.PRIVATE);
 
-        builder.addField(Map_QN_Map_String_S_of_String,"idata", Modifier.PRIVATE);
+        builder.addField(Map_QN_Map_String_C_of_String,"idata", Modifier.PRIVATE);
         builder.addField(Map_S_Map_S_to_TriFunction,"idataConverters", Modifier.PRIVATE);
 
         builder.addMethod(cbuilder.build());

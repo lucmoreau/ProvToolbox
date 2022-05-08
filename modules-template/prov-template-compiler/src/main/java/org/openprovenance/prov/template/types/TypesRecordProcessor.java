@@ -103,8 +103,8 @@ public class TypesRecordProcessor  {
             final Map<String, Collection<int[]>> mapLevelNP1_tmp = new HashMap<>();
 
             makerBuilder.propagateTypes(typedRecord, mapLevelN, mapLevelNP1_tmp, mapLevel0);
-            final Map<String, Collection<int[]>> mapLevelNP1_tmp2=mapLevelNP1_tmp.keySet().stream().collect(Collectors.toMap((k)->k, (k) -> filterTypes(mapLevelNP1_tmp.get(k),clientBuilder,tMap)));
-            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp2.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s)-> mapLevelNP1_tmp2.get(s).stream().map(a -> constructType(a,clientBuilder,tMap)).collect(Collectors.toList())));
+            final Map<String, Collection<int[]>>   mapLevelNP1_tmp2     =mapLevelNP1_tmp .keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> filterTypes(mapLevelNP1_tmp.get(k),clientBuilder,tMap)));
+            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp2.keySet().stream().collect(Collectors.toMap((k) -> k, (k)-> mapLevelNP1_tmp2.get(k).stream().map(a -> constructType(a,clientBuilder,tMap,k)).collect(Collectors.toList())));
 
             mapLevelNP1_tmp.keySet().forEach(key -> {
                 mapLevelNP1.computeIfAbsent(key, s->new LinkedList<>());
@@ -124,6 +124,7 @@ public class TypesRecordProcessor  {
         result.put("tmap",tMap);
 
         result.put("mapLevel"+levelNext, mapLevelNP1);
+
 
 
         Map<String, List<List<Integer>>>    sortedMapLevelNP1pretty=mapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> mapLevelNP1pretty.get(s).stream().sorted(collectionComparator).collect(Collectors.toList())));
@@ -320,7 +321,7 @@ public class TypesRecordProcessor  {
         return result;
     }
 
-    public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap) {
+    public List<Integer> constructType(int[] typeRecord, ProxyClientInterface clientBuilder, TMap tMap, String k) {
 
         // [ 8, 9, 100001, 4 ]
         int out     = typeRecord[0];
@@ -330,6 +331,9 @@ public class TypesRecordProcessor  {
         int in      = typeRecord[4];
 
         String rel = prettifyType(clientBuilder, tMap, out, outType, relType, in);
+
+        System.out.println(" ==> k " + k);
+        
 
         if (allRelations.get(rel)==null) {
             allRelations.put(rel,relationCount);
@@ -413,7 +417,7 @@ public class TypesRecordProcessor  {
     public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
-        Map<String,Map<String, Set<String>>> idata2  =         idata.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, idata::get));
+        Map<String,Map<String, Set<String>>> idata2  =    idata.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, idata::get));
 
         final Map<String, Integer> level0TypeIndex = levelTypeIndex.get(0);
         final Collection<Integer> level0Values = level0TypeIndex.values();
@@ -496,12 +500,17 @@ public class TypesRecordProcessor  {
     }
 
     public void computeLevels(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap,  Map<QualifiedName, Map<String, Set<String>>> idata, int bound) {
-        Map<String, Integer> level0= level0(knownTypeMap, unknownTypeMap, idata);
-        Map<String, Integer> level=level0;
+        final Map<String, Integer> level0 = level0(knownTypeMap, unknownTypeMap, idata);
+        Map<String, Integer> level  = level0;
         for (int i=1; i <bound; i++) {
             System.out.println("levelN " + i);
-            level= levelN(registry, clientRegistry, pm, level, i, level0);
+            level = levelN(registry, clientRegistry, pm, level, i, level0);
         }
+        final int[] count = {1};
+        final Map<String, Integer> uniqId = level0.keySet().stream().collect(Collectors.toMap((id) -> id, (id) -> count[0]++));
+        final Map<Integer, String> uniqIdR = swap(uniqId);
+        result.put("uniqId",uniqId);
+        result.put("uniqIdR", uniqIdR);
         System.out.println("Done computeLevels");
     }
 

@@ -122,6 +122,7 @@ public class StatementTypeAction implements StatementAction {
         }
     }
 
+    static final Class<LinkedList> collectionClass=LinkedList.class;
 
 
     public void registerAgent(QualifiedName id) {
@@ -440,7 +441,7 @@ public class StatementTypeAction implements StatementAction {
                         String pairVariable2="p2";
                         mbuilder.addStatement("$T $N=$N.apply($N.getUri(), $N.getUri(), $S))", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key, s.getId().getLocalPart(), attributeUri);
                         CodeBlock.Builder subBuilder = CodeBlock.builder();
-                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
                         subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
                         mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
                         mbuilder.addCode(subBuilder.build());
@@ -453,7 +454,7 @@ public class StatementTypeAction implements StatementAction {
                         String pairVariable2="p2";
                         mbuilder.addStatement("$T $N=$N.apply($N,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, key,  s.getId().getLocalPart(), attributeUri);
                         CodeBlock.Builder subBuilder = CodeBlock.builder();
-                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                        subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
                         subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(),  pairVariable2, pairVariable2);
                         mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
                         mbuilder.addCode(subBuilder.build());
@@ -467,7 +468,7 @@ public class StatementTypeAction implements StatementAction {
                     String pairVariable2="p2";
                     mbuilder.addStatement("$T $N=$N.apply($S,  $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, attributeUri,  s.getId().getLocalPart(), attributeUri);
                     CodeBlock.Builder subBuilder = CodeBlock.builder();
-                    subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                    subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
                     subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(), pairVariable2, pairVariable2);
                     mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
                     mbuilder.addCode(subBuilder.build());
@@ -490,7 +491,7 @@ public class StatementTypeAction implements StatementAction {
                 String pairVariable2="p2";
                 mbuilder.addStatement("$T $N=$N.apply($S, $N.getUri(), $S)", CollectionOfPairsOfStringAndString, pairVariable, tmp_Conv2, aString, s.getId().getLocalPart(),attributeUri);
                 CodeBlock.Builder subBuilder = CodeBlock.builder();
-                subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, HashSet.class);
+                subBuilder.addStatement("idata.get($N).computeIfAbsent($N.getLeft(), k -> new $T<>())",s.getId().getLocalPart(), pairVariable2, collectionClass);
                 subBuilder.addStatement("idata.get($N).get($N.getLeft()).addAll($N.getRight())", s.getId().getLocalPart(),  pairVariable2, pairVariable2);
                 mbuilder.beginControlFlow("$N.forEach(p2 -> ", pairVariable);
                 mbuilder.addCode(subBuilder.build());

@@ -41,6 +41,9 @@ public class TypesRecordProcessor  {
     private int relationCount;
     private final Collection<String> rejectedTypes;
     private Map<Integer, List<String>> level0SR;
+    private Map<String, Integer> uniqId;
+    private Map<Integer, String> uniqIdR;
+    private Map<String, Map<String, Collection<String>>> idata0;
 
 
     public TypesRecordProcessor(Map<String, Integer> knownLevel0TypeIndex, Map<Set<Integer>, Integer> knownTypesSets, Map<String, Integer> knownRelations, int relationOffset, int levelOffset, Map<String, String> translation, int levelNumber, boolean addLevel0ToAllLevels, Map<String, Map<String, List<String>>> propertyConverters, Map<String, Map<String, List<String>>> idataConverters, Collection<String> rejectedTypes, List<Pair<String, Object[]>> records) {
@@ -102,9 +105,9 @@ public class TypesRecordProcessor  {
 
             final Map<String, Collection<int[]>> mapLevelNP1_tmp = new HashMap<>();
 
-            makerBuilder.propagateTypes(typedRecord, mapLevelN, mapLevelNP1_tmp, mapLevel0);
+            makerBuilder.propagateTypes(typedRecord, mapLevelN, mapLevelNP1_tmp, mapLevel0, uniqId);
             final Map<String, Collection<int[]>>   mapLevelNP1_tmp2     =mapLevelNP1_tmp .keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> filterTypes(mapLevelNP1_tmp.get(k),clientBuilder,tMap)));
-            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp2.keySet().stream().collect(Collectors.toMap((k) -> k, (k)-> mapLevelNP1_tmp2.get(k).stream().map(a -> constructType(a,clientBuilder,tMap,k)).collect(Collectors.toList())));
+            Map<String, Collection<List<Integer>>> mapLevelNP1pretty_tmp=mapLevelNP1_tmp2.keySet().stream().collect(Collectors.toMap((k) -> k, (k) -> mapLevelNP1_tmp2.get(k).stream().map(a -> constructType(a,clientBuilder,tMap,k)).collect(Collectors.toList())));
 
             mapLevelNP1_tmp.keySet().forEach(key -> {
                 mapLevelNP1.computeIfAbsent(key, s->new LinkedList<>());
@@ -134,7 +137,7 @@ public class TypesRecordProcessor  {
         final Map<String, List<List<Integer>>> tmp_finalSortedMapLevelNP1pretty = sortedMapLevelNP1pretty;
         sortedMapLevelNP1pretty=(!addLevel0ToAllLevels)?tmp_finalSortedMapLevelNP1pretty:tmp_finalSortedMapLevelNP1pretty.keySet().stream().collect(Collectors.toMap((String s) -> s, (String s) -> {
             List<List<Integer>> ll=tmp_finalSortedMapLevelNP1pretty.get(s);
-            ll.add(0, List.of(-1,mapLevel0.get(s)));
+            ll.add(0, List.of(-1,mapLevel0.get(s), uniqId.get(s)));
             return ll;
         }));
 
@@ -198,7 +201,7 @@ public class TypesRecordProcessor  {
 
         tMap.merge();
 
-        Map<String, Map<String, Set<String>>> idata=(Map<String, Map<String, Set<String>>>) result.get("idata0");
+        Map<String, Map<String, Collection<String>>> idata=(Map<String, Map<String, Collection<String>>>) result.get("idata0");
 
         //Map<Integer,List<String>> descriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, this::getDescriptors));
         Map<Integer,List<Descriptor>> structuredDescriptors= tMap.allLevelsCompact.keySet().stream().collect(Collectors.toMap((Integer k) -> k, k1 -> getStructuredDescriptors(k1,idata)));
@@ -212,19 +215,19 @@ public class TypesRecordProcessor  {
 
     }
 
-    public List<Descriptor> getStructuredDescriptors(Integer k, Map<String, Map<String, Set<String>>> idata) {
+    public List<Descriptor> getStructuredDescriptors(Integer k, Map<String, Map<String, Collection<String>>> idata) {
         return (k < levelOffset) ? getStructuredDescriptors0(k,idata) : getStructuredDescriptorsN(k,idata);
     }
 
-    public List<Descriptor> getStructuredDescriptorsN(Integer k, Map<String, Map<String, Set<String>>> idata) {
+    public List<Descriptor> getStructuredDescriptorsN(Integer k, Map<String, Map<String, Collection<String>>> idata) {
         Map<List<Integer>, Long> m=tMap.allLevelsCompact.get(k);
-        return m.keySet().stream().map(ss->convertToDescriptor(ss,m.get(ss), idata)).sorted().collect(Collectors.toList());
+        return m.keySet().stream().map(ss->convertToDescriptor(ss, m.get(ss), idata)).sorted().collect(Collectors.toList());
     }
 
 
-    BinaryOperator<Map<String, Set<String>>> mergeIDataMaps = (m1, m2) -> {
+    BinaryOperator<Map<String, Collection<String>>> mergeIDataMaps = (m1, m2) -> {
         if (m2==null) return m1;
-        Map<String, Set<String>> res = (m1==null)? new HashMap<>() : new HashMap<>(m1);
+        Map<String, Collection<String>> res = (m1==null)? new HashMap<>() : new HashMap<>(m1);
         m2.keySet().forEach(k -> {
             res.computeIfAbsent(k, _k -> new HashSet<>());
             res.get(k).addAll(m2.get(k));
@@ -232,11 +235,13 @@ public class TypesRecordProcessor  {
         return res;
     };
 
-    public List<Descriptor> getStructuredDescriptors0(Integer k, Map<String, Map<String, Set<String>>> idata) {
+    public List<Descriptor> getStructuredDescriptors0(Integer k, Map<String, Map<String, Collection<String>>> idata) {
         //return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
+        final Integer relType = tMap.new_level0.get(k).get(0).get(1);
+        final int idForIdata  = tMap.new_level0.get(k).get(0).get(2);
         return Collections.singletonList(newDescriptorAtom(k,
-                                                           getStructuredDescriptorStringLevel0(k),
-                                                           getIdata(k, idata)));
+                                                           getStructuredDescriptorStringLevel0(relType),
+                                                           retrieveIData(idForIdata,idata)   ));
     }
 
 
@@ -245,20 +250,36 @@ public class TypesRecordProcessor  {
         return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
     }
 
-    private Descriptor convertToDescriptor(List<Integer> ll, Long count, Map<String, Map<String, Set<String>>> idata) {
+    private Descriptor convertToDescriptor(List<Integer> ll, Long count, Map<String, Map<String, Collection<String>>> idata) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
+            final Integer relType = tMap.new_level0.get(ll.get(1)).get(0).get(1);
+
             return newDescriptorAtom(ll.get(1),
-                                      getStructuredDescriptorStringLevel0(ll.get(1)),
-                                      getIdata(ll.get(1), idata));
-        } else {
+                                      getStructuredDescriptorStringLevel0(relType),
+                                      retrieveIData(ll.get(2),idata) );
+        } else if (ll.get(0)==-2) {
+            if (true) throw new UnsupportedOperationException();
+            return newDescriptorAtom(ll.get(1),
+                                     List.of("LUC FIXME " + ll.get(1)),
+                                     retrieveIData(ll.get(2),idata));
+
+        }else {
             return newDescriptorTree(ll.get(1), count, tMap.allRelations.get(ll.get(0)), getStructuredDescriptors(ll.get(1), idata));
         }
+    }
+
+    private Map<String, Collection<String>> retrieveIData(Integer id, Map<String, Map<String, Collection<String>>> idata0) {
+        if (id==null) return null;
+        String k=this.uniqIdR.get(id);
+        if (k==null) return null;
+        Map<String, Collection<String>> idata=idata0.get(k);
+        return idata;
     }
 
     public Descriptor newDescriptorTree(Integer i, Long count, String s, List<Descriptor> structuredDescriptors) {
         return new DescriptorTree(i, count, s, structuredDescriptors);
     }
-    public Descriptor newDescriptorAtom(Integer k, List<String> value, Map<String, Set<String>> idata) {
+    public Descriptor newDescriptorAtom(Integer k, List<String> value, Map<String, Collection<String>> idata) {
         return new DescriptorAtom(k, value, idata);
     }
     static String numeral(Long count) {
@@ -281,11 +302,11 @@ public class TypesRecordProcessor  {
 
 
 
-    public Map<String, Set<String>> getIdata(Integer k, Map<String, Map<String, Set<String>>> idata) {
+    public Map<String, Collection<String>> getIdata(Integer k, Map<String, Map<String, Collection<String>>> idata) {
 
         final List<String> strings = level0SR.get(k);
         if (strings==null) return null;
-        Map<String, Set<String>> res= strings.stream().map(idata::get).reduce(new HashMap<>(), mergeIDataMaps);
+        Map<String, Collection<String>> res= strings.stream().map(idata::get).reduce(new HashMap<>(), mergeIDataMaps);
         return res;
     }
     public static String localName(String s) {
@@ -306,11 +327,12 @@ public class TypesRecordProcessor  {
         if ((rejectedTypes==null) || rejectedTypes.isEmpty()) return true;
 
         // [ 8, 9, 100001, 4 ]
-        int out=typeRecord[0];
-        int outType=typeRecord[1];
-        int relType=typeRecord[2];
-        int inType=typeRecord[3];
-        int in=typeRecord[4];
+        int out     = typeRecord[0];
+        int outType = typeRecord[1];
+        int relType = typeRecord[2];
+        int inType  = typeRecord[3];
+        int in      = typeRecord[4];
+        int id      = typeRecord[5];
 
         String rel = prettifyType(clientBuilder, tMap, out, outType, relType, in);
 
@@ -329,18 +351,22 @@ public class TypesRecordProcessor  {
         int relType = typeRecord[2];
         int inType  = typeRecord[3];
         int in      = typeRecord[4];
+        int id      = typeRecord[5];
 
         String rel = prettifyType(clientBuilder, tMap, out, outType, relType, in);
 
-        System.out.println(" ==> k " + k);
-        
 
         if (allRelations.get(rel)==null) {
             allRelations.put(rel,relationCount);
             relationCount++;
         }
 
-        return List.of(allRelations.get(rel),inType);
+        if (id>0) {
+            Map<String, Collection<String>> anyIData=idata0.get(uniqIdR.get(id));
+            if (anyIData==null || anyIData.isEmpty()) id=0;
+        }
+
+        return List.of(allRelations.get(rel),inType,id);
 
     }
 
@@ -354,8 +380,10 @@ public class TypesRecordProcessor  {
         sb.append(".");
         sb.append(clientBuilder.getPropertyOrder()[in]);
         if (relType !=-1) {
+            final List<List<Integer>> lists = tMap.new_level0.get(relType);
+            int relType2=lists.get(0).get(1);
             sb.append("[");
-            sb.append(tMap.level0S.get(relType).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",", "", "")));
+            sb.append(tMap.level0S.get(relType2).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",", "", "")));
             sb.append("]");
         }
         String rel=sb.toString();
@@ -414,10 +442,10 @@ public class TypesRecordProcessor  {
         return m.keySet().stream().collect(Collectors.toMap(m::get, a->a));
     }
 
-    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
+    public Map<String, Integer> level0(Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Collection<String>>> idata) {
         Map<String, Set<String>> knownTypeMap2  =  knownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, knownTypeMap::get));
         Map<String, Set<String>> unknownTypeMap2=unknownTypeMap.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, unknownTypeMap::get));
-        Map<String,Map<String, Set<String>>> idata2  =    idata.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, idata::get));
+        Map<String,Map<String, Collection<String>>> idata2  =    idata.keySet().stream().collect(Collectors.toMap(QualifiedName::getUri, idata::get));
 
         final Map<String, Integer> level0TypeIndex = levelTypeIndex.get(0);
         final Collection<Integer> level0Values = level0TypeIndex.values();
@@ -444,6 +472,7 @@ public class TypesRecordProcessor  {
 
         result.put("level0",level0);
         result.put("idata0", idata2);
+        this.idata0=idata2;
 
         tMap.level0=swap(level0TypeIndex);
 
@@ -484,7 +513,50 @@ public class TypesRecordProcessor  {
         tMap.level0S=swap(level0TypeSetIndex);
 
 
-        return level0S;
+        final int[] count = {1};
+        final Map<String, Integer> uniqId = level0S.keySet().stream().collect(Collectors.toMap((id) -> id, (id) -> count[0]++));
+        final Map<Integer, String> uniqIdR = swap(uniqId);
+        result.put("uniqId",uniqId);
+        result.put("uniqIdR", uniqIdR);
+        this.uniqId=uniqId;
+        this.uniqIdR=uniqIdR;
+
+        int levelZero=0;
+
+        Map<String, List<List<Integer>>> levelNRelTypeSetIndex0_tmp=level0.keySet().stream().collect(Collectors.toMap(id->id, s -> {
+            int id=uniqId.get(s);
+            if (id>0) {
+                Map<String, Collection<String>> anyIData=idata0.get(s);
+                if (anyIData==null || anyIData.isEmpty()) id=0;
+            }
+            return List.of(List.of(-2, level0TypeSetIndex.get(level0.get(s)), id));
+        }));
+
+        final int[] count0 = {5000};
+        Map<List<List<Integer>>, Integer> levelNRelTypeSetIndex0=new HashMap<>();
+
+        Map<String, Integer> new_level0S=new HashMap<>();
+
+        levelNRelTypeSetIndex0_tmp.keySet().stream().forEach(k -> {
+            List<List<Integer>> aset=levelNRelTypeSetIndex0_tmp.get(k);
+            if (levelNRelTypeSetIndex0.get(aset)==null) {
+                levelNRelTypeSetIndex0.put(aset, count0[0]++);
+            }
+            new_level0S.put(k,levelNRelTypeSetIndex0.get(aset));
+            if (count0[0]==levelOffset) {
+                throw new UnsupportedOperationException("FATAL SITUATION: levelOffset too small, please increase" + levelOffset);
+            }
+        });
+
+        result.put("levelNRelTypeSetIndex" + levelZero, levelNRelTypeSetIndex0);
+
+        result.put("new_level0S", new_level0S);
+
+        tMap.assign("IGNOREME", 0,swap(levelNRelTypeSetIndex0));
+
+
+        //return level0S;
+        return new_level0S;
 
     }
     static Comparator<Collection<Integer>> collectionComparator = (o1, o2) -> {
@@ -499,18 +571,17 @@ public class TypesRecordProcessor  {
 
     }
 
-    public void computeLevels(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap,  Map<QualifiedName, Map<String, Set<String>>> idata, int bound) {
+    public void computeLevels(HashMap<String, FileBuilder> registry, HashMap<String, Object> clientRegistry, ProxyManagement pm, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap,  Map<QualifiedName, Map<String, Collection<String>>> idata, int bound) {
         final Map<String, Integer> level0 = level0(knownTypeMap, unknownTypeMap, idata);
+
+
+
         Map<String, Integer> level  = level0;
         for (int i=1; i <bound; i++) {
             System.out.println("levelN " + i);
             level = levelN(registry, clientRegistry, pm, level, i, level0);
         }
-        final int[] count = {1};
-        final Map<String, Integer> uniqId = level0.keySet().stream().collect(Collectors.toMap((id) -> id, (id) -> count[0]++));
-        final Map<Integer, String> uniqIdR = swap(uniqId);
-        result.put("uniqId",uniqId);
-        result.put("uniqIdR", uniqIdR);
+
         System.out.println("Done computeLevels");
     }
 

@@ -14,12 +14,13 @@ public interface ProxyMakerInterface {
     Object getTypeManager(Map<QualifiedName, Set<String>> ktm,
                           Map<QualifiedName, Set<String>> utm,
                           Map<String, Map<String, BiFunction<Object, String, Collection<String>>>> propertyConverters,
-                          Map<QualifiedName, Map<String,Set<String>>> idata,
+                          Map<QualifiedName, Map<String,Collection<String>>> idata,
                           Map<String, Map<String, TriFunction<Object, String, String, Collection<Pair<String, Collection<String>>>>>> idataConverters);
     Object getTypedRecord();
     void propagateTypes(Object[] record,
                         Map<String, Integer> mapLevelN,
                         Map<String, Collection<int[]>> mapLevelNP1,
-                        Map<String, Integer> mapLevel0);
+                        Map<String, Integer> mapLevel0,
+                        Map<String, Integer> uniqId);
 
 }

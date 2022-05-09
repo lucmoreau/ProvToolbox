@@ -51,8 +51,9 @@ public class CompilerTypeManagement {
 
 
     static public final ParameterizedTypeName Map_QN_S_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Set.class),TypeName.get(String.class)));
+    static public final ParameterizedTypeName Map_QN_Col_of_String=ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Collection.class),TypeName.get(String.class)));
 
-    static public final ParameterizedTypeName Map_QN_Map_String_C_of_String =ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(String.class),ParameterizedTypeName.get(ClassName.get(List.class),TypeName.get(String.class))));
+    static public final ParameterizedTypeName Map_QN_Map_String_C_of_String =ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(QualifiedName.class),ParameterizedTypeName.get(ClassName.get(Map.class),TypeName.get(String.class),ParameterizedTypeName.get(ClassName.get(Collection.class),TypeName.get(String.class))));
 
 
 

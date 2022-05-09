@@ -15,7 +15,7 @@ public class DescriptorAtom implements Descriptor {
     Integer number;
     List<String> value;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    Map<String, Set<String>> idata;
+    Map<String, Collection<String>> idata;
 
     /*
     public DescriptorAtom(Integer number, String value) {
@@ -24,7 +24,7 @@ public class DescriptorAtom implements Descriptor {
     }
 
      */
-    public DescriptorAtom(Integer number, List<String> value, Map<String, Set<String>> idata) {
+    public DescriptorAtom(Integer number, List<String> value, Map<String, Collection<String>> idata) {
         this.number=number;
         this.value = value;
         if (idata!=null && !idata.isEmpty()) {
@@ -49,7 +49,7 @@ public class DescriptorAtom implements Descriptor {
     public List<String> getValue() {
         return value;
     }
-    public Map<String,Set<String>> getIdata() {
+    public Map<String,Collection<String>> getIdata() {
         return idata;
     }
 
@@ -122,8 +122,8 @@ public class DescriptorAtom implements Descriptor {
             AtomicInteger theComparison= new AtomicInteger();
 
             for (String k: allIdataKeys) {
-                Set<String> thisData=this.idata.get(k);
-                Set<String> thatData=this.idata.get(k);
+                Collection<String> thisData=this.idata.get(k);
+                Collection<String> thatData=this.idata.get(k);
                 if (thisData==null) {
                     theComparison.set(1);
                     break;

@@ -122,7 +122,7 @@ public class StatementTypeAction implements StatementAction {
         }
     }
 
-    static final Class<LinkedList> collectionClass=LinkedList.class;
+    static final Class<HashSet> collectionClass=HashSet.class;
 
 
     public void registerAgent(QualifiedName id) {

@@ -51,7 +51,7 @@ abstract public class FileBuilder {
 
         final Map<QualifiedName, Set<String>> knownTypeMap = new HashMap<>();
         final Map<QualifiedName, Set<String>> unknownTypeMap = new HashMap<>();
-        final Map<QualifiedName, Map<String,Set<String>>> idata = new HashMap<>();
+        final Map<QualifiedName, Map<String,Collection<String>>> idata = new HashMap<>();
 
         processRecords(records, dp, rp, tp, sqlInsert, knownTypeMap, unknownTypeMap, idata);
         if (dp!=null) dp.end();
@@ -66,7 +66,7 @@ abstract public class FileBuilder {
         return null;
     }
 
-    public static void processRecords(List<CSVRecord> records, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
+    public static void processRecords(List<CSVRecord> records, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Collection<String>>> idata) {
         for (CSVRecord record: records) {
             int size=record.size();
             Object[] args=new Object[size];
@@ -86,7 +86,7 @@ abstract public class FileBuilder {
         }
     }
 
-    public static void processRecord(String methodName, Object[] args, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Set<String>>> idata) {
+    public static void processRecord(String methodName, Object[] args, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Collection<String>>> idata) {
         FileBuilder builder=registry.get(methodName);
         Object remoteClientBuilder=clientRegistry.get(methodName);
         ProxySQLInterface clientBuilder=pm.facadeProxy(ProxySQLInterface.class,remoteClientBuilder);

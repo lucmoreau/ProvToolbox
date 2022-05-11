@@ -9,7 +9,7 @@
         <unpackNestedArchives>false</unpackNestedArchives>
       </options>
     </properties>
-    <root id="archive" name="service-translator-0.9.26-SNAPSHOT.war">
+    <root id="archive" name="service-translator-0.9.27-SNAPSHOT.war">
       <element id="artifact" artifact-name="service-translator:war exploded" />
     </root>
   </artifact>

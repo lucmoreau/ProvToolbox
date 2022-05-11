@@ -7,54 +7,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop-light/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-json/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-n/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-rdf/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-sql/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-xml/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-misc/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-misc/prov-dot/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-misc/prov-generator/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-log/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.26/bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.26/bundle.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.26/bundle.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial3/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml.releaseBackup" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/release.properties" afterDir="false" />
-    </list>
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -587,7 +540,7 @@
       <workItem from="1646946126698" duration="53707000" />
       <workItem from="1648301825149" duration="1824000" />
       <workItem from="1648583632969" duration="45996000" />
-      <workItem from="1650606299523" duration="88701000" />
+      <workItem from="1650606299523" duration="89327000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

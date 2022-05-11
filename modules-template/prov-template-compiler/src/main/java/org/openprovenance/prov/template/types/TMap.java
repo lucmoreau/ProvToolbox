@@ -1,11 +1,5 @@
 package org.openprovenance.prov.template.types;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.openprovenance.prov.vanilla.WasEndedBy;
-import org.openprovenance.prov.vanilla.WasStartedBy;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,10 +9,13 @@ import static org.openprovenance.prov.template.types.TypesRecordProcessor.mergeM
 
 public  class TMap {
     public static final int MAX_SIZE = 50;
-    public Map<Integer, String> level0;
-    public Map<Integer, Set<Integer>> level0S;
+    /* A Mapping from integer to the corresponding type. */
+    public Map<Integer, String> primitive;
+    /* A mapping from integer to a set of primitive types, denoted by their integers */
+    public Map<Integer, Set<Integer>> primitive_Set;
     public Map<Integer, String> allRelations;
-    public Map<Integer, List<List<Integer>>> new_level0;
+
+    public Map<Integer, List<List<Integer>>> level0;
     public Map<Integer, List<List<Integer>>> level1;
     public Map<Integer, List<List<Integer>>> level2;
     public Map<Integer, List<List<Integer>>> level3;
@@ -52,7 +49,7 @@ public  class TMap {
     public void assign(String s, int level, Map<Integer, List<List<Integer>>> m) {
         levelArray[level]=m;
         switch (level) {
-            case 0: new_level0=m; return;
+            case 0: level0 =m; return;
             case 1: level1=m; return;
             case 2: level2=m; return;
             case 3: level3=m; return;
@@ -79,7 +76,7 @@ public  class TMap {
         if (level8!=null) allLevels=mergeMapsOfLists(allLevels,level8);
         if (level9!=null) allLevels=mergeMapsOfLists(allLevels,level9);
         if (level10!=null) allLevels=mergeMapsOfLists(allLevels,level10);
-        if (new_level0!=null) allLevels=mergeMapsOfLists(allLevels,new_level0);
+        if (level0 !=null) allLevels=mergeMapsOfLists(allLevels, level0);
 
         for (int i =11; i<MAX_SIZE; i++) {
             if (levelArray[i]!=null) {

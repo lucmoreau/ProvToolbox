@@ -237,8 +237,8 @@ public class TypesRecordProcessor  {
 
     public List<Descriptor> getStructuredDescriptors0(Integer k, Map<String, Map<String, Collection<String>>> idata) {
         //return tMap.level0S.get(k).stream().map(d -> new DescriptorAtom(getDescriptor0(d))).collect(Collectors.toList());
-        final Integer relType = tMap.new_level0.get(k).get(0).get(1);
-        final int idForIdata  = tMap.new_level0.get(k).get(0).get(2);
+        final Integer relType = tMap.level0.get(k).get(0).get(1);
+        final int idForIdata  = tMap.level0.get(k).get(0).get(2);
         return Collections.singletonList(newDescriptorAtom(k,
                                                            getStructuredDescriptorStringLevel0(relType),
                                                            retrieveIData(idForIdata,idata)   ));
@@ -246,13 +246,13 @@ public class TypesRecordProcessor  {
 
 
     public List<String> getStructuredDescriptorStringLevel0(Integer k) {
-        if (tMap.level0S.get(k).isEmpty()) throw new UnsupportedOperationException("should not be empty");
-        return tMap.level0S.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
+        if (tMap.primitive_Set.get(k).isEmpty()) throw new UnsupportedOperationException("should not be empty");
+        return tMap.primitive_Set.get(k).stream().map(this::getDescriptor0).collect(Collectors.toList());
     }
 
     private Descriptor convertToDescriptor(List<Integer> ll, Long count, Map<String, Map<String, Collection<String>>> idata) {
         if (ll.get(0)==-1) {  // when -addLevel0 option is provided, the next element is a level0 type value
-            final Integer relType = tMap.new_level0.get(ll.get(1)).get(0).get(1);
+            final Integer relType = tMap.level0.get(ll.get(1)).get(0).get(1);
 
             return newDescriptorAtom(ll.get(1),
                                       getStructuredDescriptorStringLevel0(relType),
@@ -297,7 +297,7 @@ public class TypesRecordProcessor  {
 
 
     public String getDescriptor0(Integer k) {
-        return  localName(tMap.level0.get(k));
+        return  localName(tMap.primitive.get(k));
     }
 
 
@@ -380,10 +380,10 @@ public class TypesRecordProcessor  {
         sb.append(".");
         sb.append(clientBuilder.getPropertyOrder()[in]);
         if (relType !=-1) {
-            final List<List<Integer>> lists = tMap.new_level0.get(relType);
+            final List<List<Integer>> lists = tMap.level0.get(relType);
             int relType2=lists.get(0).get(1);
             sb.append("[");
-            sb.append(tMap.level0S.get(relType2).stream().map(i -> localName(tMap.level0.get(i))).collect(Collectors.joining(",", "", "")));
+            sb.append(tMap.primitive_Set.get(relType2).stream().map(i -> localName(tMap.primitive.get(i))).collect(Collectors.joining(",", "", "")));
             sb.append("]");
         }
         String rel=sb.toString();
@@ -474,7 +474,7 @@ public class TypesRecordProcessor  {
         result.put("idata0", idata2);
         this.idata0=idata2;
 
-        tMap.level0=swap(level0TypeIndex);
+        tMap.primitive =swap(level0TypeIndex);
 
 
         Set<Set<Integer>> allSetValues= new HashSet<>(level0.values());
@@ -510,7 +510,7 @@ public class TypesRecordProcessor  {
 
         this.level0SR=level0SR;
 
-        tMap.level0S=swap(level0TypeSetIndex);
+        tMap.primitive_Set =swap(level0TypeSetIndex);
 
 
         final int[] count = {1};

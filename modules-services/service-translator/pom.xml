@@ -2,7 +2,7 @@
     <parent>
         <artifactId>modules-services</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.26</version>
+        <version>0.9.27-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -18,13 +18,13 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop-light</artifactId>
-            <version>0.9.26</version>
+            <version>0.9.27-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-rdf</artifactId>
-            <version>0.9.26</version>
+            <version>0.9.27-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.log4j</groupId>
@@ -48,13 +48,13 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
-            <version>0.9.26</version>
+            <version>0.9.27-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
-            <version>0.9.26</version>
+            <version>0.9.27-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
-            <version>0.9.26</version>
+            <version>0.9.27-SNAPSHOT</version>
         </dependency>
 
         <!-- for testing -->
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.26</version>
+            <version>0.9.27-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>

@@ -55,9 +55,9 @@ class TemplateManager {
     populateBean(template, values) {
         var builder = this.builderTable[template];
         var bean = builder.newBean();
-        $.each(values, function (k, v) {
-            bean[k] = v;
-        });
+        for (const k in values) {
+            bean[k] = values[k];
+        }
         console.log(bean);
         var csv = bean.process(builder.aArgs2CsVConverter);
         values["isA"]=builder.getName();
@@ -185,7 +185,7 @@ class TemplateManager {
     initializeBuilderTable() {
         const names = [];
         const table = {};
-        $.each(this.builders, function (i, f) {
+        this.builders.forEach(function (f) {
             names.push(f.getName());
             table[f.getName()] = f;
         });

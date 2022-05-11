@@ -75,7 +75,7 @@ public class Example {
         Map<QualifiedName, Set<String>> unknownTypeMap=new HashMap<>();
         beans.forEach(bean -> {
             Object [] arecord=bean.process(template_blockBuilder.aArgs2RecordConverter());
-            String s=new org.example.templates.block.Template_blockBuilder(pf).make(arecord,new Template_blockBuilderTypeManagement<>(knownTypeMap,unknownTypeMap));
+            String s=new org.example.templates.block.Template_blockBuilder(pf).make(arecord,new Template_blockBuilderTypeManagement<String>(knownTypeMap,unknownTypeMap, new HashMap(),new HashMap(), new HashMap()));
         });
 
         System.out.println("Known Type Map");

@@ -90,4 +90,28 @@ public  class TMap {
 
 
     }
+    public TMap() {}
+
+    public TMap(TMap tmap) {
+        this.primitive = tmap.primitive;
+        this.primitive_Set = tmap.primitive_Set;
+        this.allRelations = tmap.allRelations;
+        this.level0 = tmap.level0;
+        this.level1 = tmap.level1;
+        this.level2 = tmap.level2;
+        this.level3 = tmap.level3;
+        this.level4 = tmap.level4;
+        this.level5 = tmap.level5;
+        this.level6 = tmap.level6;
+        this.level7 = tmap.level7;
+        this.level8 = tmap.level8;
+        this.level9 = tmap.level9;
+        this.level10 = tmap.level10;
+        this.features = tmap.features;
+        this.allLevels = tmap.allLevels;
+        this.allLevelsCompact = tmap.allLevelsCompact;
+        this.descriptors = tmap.descriptors;
+        this.levelArray = tmap.levelArray;
+        this.structuredDescriptors = tmap.structuredDescriptors;
+    }
 }

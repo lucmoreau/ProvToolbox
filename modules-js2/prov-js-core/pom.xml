@@ -28,7 +28,7 @@
 	</licenses>
 	<properties>
 		<log4j.version>1.2.17</log4j.version>
-		<jackson.version>2.9.9</jackson.version>
+		<jackson.version>2.12.7.1</jackson.version>
 		<jsweet.transpiler.version>3.0.0</jsweet.transpiler.version>
 		<jsweet.core.version>6.3.0</jsweet.core.version>
 		<java.version.release>11</java.version.release>

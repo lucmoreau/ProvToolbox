@@ -151,7 +151,7 @@ public class TypesRecordProcessor  {
         int count=newPossibleIndex(levelNRelTypeSetIndex.values(), levelOffset * levelNext+ relationOffset);
 
         for (List<List<Integer>> coll: sortedMapLevelNP1pretty.values()) {
-           if (levelNRelTypeSetIndex.get(coll)==null) {
+           if (levelNRelTypeSetIndex.get(coll)==null) {   //LUC: using List<List<Integer>> as key, relying on equal method
                levelNRelTypeSetIndex.put(coll,count++);
            }
         }

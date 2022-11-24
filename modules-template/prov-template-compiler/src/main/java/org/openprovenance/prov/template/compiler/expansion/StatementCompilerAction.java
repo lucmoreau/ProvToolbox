@@ -145,7 +145,6 @@ public class StatementCompilerAction implements StatementAction {
     @Override
     public void doAction(WasStartedBy s) {
         // TODO Auto-generated method stub
-        
     }
 
     @Override

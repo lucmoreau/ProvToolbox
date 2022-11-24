@@ -754,7 +754,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
         }
 
-        if (filename == "-") {
+        if (Objects.equals(filename, "-")) {
             if (informat == null) {
                 throw new InteropException("File format for standard input not specified");
             }
@@ -783,7 +783,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
         }
 
-        if (filename == "-") {
+        if (Objects.equals(filename, "-")) {
             if (outformat == null) {
                 throw new InteropException("File format for standard output not specified");
             }
@@ -911,7 +911,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (config.infile == null && config.generator == null && config.template_builder == null && config.merge == null)
             return CommandLineArguments.STATUS_NO_INPUT;
 
-        if ((config.infile == "-") && (config.bindings == "-"))
+        if ((Objects.equals(config.infile, "-")) && (Objects.equals(config.bindings, "-")))
             throw new InteropException(
                     "Cannot use standard input for both infile and bindings");
         

@@ -291,7 +291,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+					<version>${mvn.compiler.plugin}</version>
 					<configuration>
 						<source>11</source>
 						<target>11</target>
@@ -334,6 +334,7 @@
 	<properties>
 		<junit.version>4.13.2</junit.version>
 
+		<mvn.compiler.plugin>3.8.1</mvn.compiler.plugin>
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 

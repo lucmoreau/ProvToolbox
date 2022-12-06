@@ -147,7 +147,7 @@ public class CompilerMaven {
         Plugin plugin = new Plugin();
         plugin.setArtifactId("jsweet-maven-plugin");
         plugin.setGroupId("org.jsweet");
-        plugin.setVersion("3.0.0");
+        plugin.setVersion("3.1.0");
 
         StringBuilder configString = new StringBuilder()
                 .append("<configuration>")

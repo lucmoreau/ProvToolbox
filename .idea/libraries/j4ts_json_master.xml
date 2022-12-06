@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="j4ts-json-master">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/modules-js/prov-js-core/j4ts-json-master.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

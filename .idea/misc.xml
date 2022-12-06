@@ -33,11 +33,13 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="12.0.1" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
 </project>

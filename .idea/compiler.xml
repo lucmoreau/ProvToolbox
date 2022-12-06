@@ -23,13 +23,11 @@
         <module name="ProvToolbox-Tutorial4" />
         <module name="prov-rdf" />
         <module name="ProvToolbox-Tutorial3" />
-        <module name="ProvToolbox-Tutorial2" />
-        <module name="ProvToolbox-Tutorial1" />
         <module name="benchmarks" />
+        <module name="provconvert" />
         <module name="service-translator" />
         <module name="prov-json" />
         <module name="prov-model" />
-        <module name="ProvToolbox-Tutorial5" />
         <module name="prov-sql" />
         <module name="prov-interop" />
         <module name="prov-interop-light" />
@@ -55,7 +53,7 @@
       <module name="benchmarks" target="12" />
       <module name="demo" target="9" />
       <module name="docker-service-translator" target="11" />
-      <module name="jsweet-quickstart" target="1.11" />
+      <module name="jsweet-quickstart" target="11" />
       <module name="modules-core" target="1.5" />
       <module name="modules-executable" target="1.5" />
       <module name="modules-legacy" target="1.5" />

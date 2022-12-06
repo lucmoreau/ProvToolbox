@@ -8,19 +8,118 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/0.9.28-SNAPSHOT/bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.28-SNAPSHOT/bundle.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/0.9.28-SNAPSHOT/bundle.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_izpack_izpack_wrapper_5_1_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_26.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/j4ts_json_master.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/main6.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/test8.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/main4.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/test17.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/main12.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/scala.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/test11.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/main1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/test4.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/main3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/test/test13.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-js/prov-js-core/bak/bak.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-js/prov-js-core/src/prov-js-core.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-js2/modules-js2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/main/main9.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-json/src/test/test3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/main/main17.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-n/src/test/test16.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-rdf/src/main/main5.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-rdf/src/test/test6.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-sql/src/main/main7.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-sql/src/test/test15.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-xml/src/main/main14.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-legacy/prov-xml/src/test/test14.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/test10.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-generator/src/main/main16.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-generator/src/test/test7.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/main13.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/test/test12.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/main8.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/test2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/main11.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.webapp.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/main15.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/test9.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/templates_cli_with_continuations/src/main/main10.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/templates_cli_with_continuations/src/test/test1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/main2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/test5.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/tutorial1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial2/tutorial2.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial5/tutorial5.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial6/tutorial6.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/demo_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/demo_war.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/demo_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/demo_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/service_translator_war_exploded.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_xml_2_9_9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_9_9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_woodstox_woodstox_core_5_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_14_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_core_2_14_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_woodstox_stax2_api_3_1_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jsweet_candies_jquery_1_10_0_20170726.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_dot_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_generator_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_interop_0_9_11_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_interop_light_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_xml_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_n_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_template_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_template_compiler_0_9_21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_xml_0_9_11_SNAPSHOT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_scala_library_2_12_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/DescriptorAtom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/DescriptorAtom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TypesRecordProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProvToolbox.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ProvToolbox.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/license.txt" beforeDir="false" afterPath="$PROJECT_DIR$/license.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/prov-jsonld-xml.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-model-scala.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/prov-model.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/modules-executable.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/modules-executable.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-js/prov-js-core/jsweet-quickstart.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-js/prov-js-core/jsweet-quickstart.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/benchmarks/benchmarks.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/benchmarks.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/modules-legacy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/modules-legacy.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-sql/prov-sql.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/modules-misc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/modules-misc.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/prov-dot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-generator/prov-generator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-generator/prov-generator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/modules-services.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/modules-services.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/prov-service-core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/modules-template.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/modules-template.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerMaven.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerMaven.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/modules-tutorial.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/modules-tutorial.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +192,13 @@
   <component name="JsBowerSettings">
     <bower-package value="" />
     <bower.json value="" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
@@ -221,6 +327,19 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.core" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.RoundTripFromJavaXMLTest" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="demo" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="demo" />
+      <option name="filePath" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -844,7 +963,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

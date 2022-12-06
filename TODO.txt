@@ -1,3 +1,14 @@
+
+macos https://github.com/perdian/macosappbundler-maven-plugin
+
+https://docs.oracle.com/en/graalvm/enterprise/22/docs/reference-manual/native-image/guides/use-native-image-maven-plugin/
+
+https://lauxnch4j.sourceforge.net
+
+
+
+
+
 Issue with LangString
       Function<Object, Collection<String>> tmp_Conv85_aHR0cDovL29wZW5wcm92ZW5hbmNlLm9yZy9wcm92dG9vbGJveC9kb3QvbnMjZmlsbGNvbG9y=tmp_Conv85.get("http://openprovenance.org/provtoolbox/dot/ns#fillcolor");
       if (tmp_Conv85_aHR0cDovL29wZW5wcm92ZW5hbmNlLm9yZy9wcm92dG9vbGJveC9kb3QvbnMjZmlsbGNvbG9y!=null)  {

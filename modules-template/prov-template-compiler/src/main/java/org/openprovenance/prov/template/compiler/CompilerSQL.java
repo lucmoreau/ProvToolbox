@@ -56,7 +56,7 @@ public class CompilerSQL {
         Iterator<String> iter = the_var.fieldNames();
         boolean first = true;
         
-        res=res + "\n" + "CREATE TABLE " + templateName + "\n(\n";
+        res=res + "\n" + "CREATE TABLE IF NOT EXISTS " + templateName + "\n(\n";
 
 
 

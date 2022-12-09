@@ -335,6 +335,8 @@
 		<junit.version>4.13.2</junit.version>
 
 		<mvn.compiler.plugin>3.8.1</mvn.compiler.plugin>
+		<jar.plugin.version>3.3.0</jar.plugin.version>
+		<war.plugin.version>3.3.1</war.plugin.version>
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 
@@ -364,6 +366,7 @@
 		<log4j.version>2.17.1</log4j.version>
 
 		<commons.io.version>2.8.0</commons.io.version>
+		<commons.csv.version>1.9.0</commons.csv.version>
 
 		<!-- jaxb -->
 		<jaxb.runtime.version>2.3.1</jaxb.runtime.version> <!-- now glassfish implementation -->

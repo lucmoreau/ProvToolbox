@@ -90,16 +90,10 @@
       <module name="prov-xml" target="9" />
       <module name="provconvert" target="11" />
       <module name="ProvToolbox" target="1.5" />
-      <module name="ProvToolbox-Tutorial1" target="11" />
-      <module name="ProvToolbox-Tutorial2" target="11" />
       <module name="ProvToolbox-Tutorial3" target="11" />
       <module name="ProvToolbox-Tutorial4" target="11" />
-      <module name="ProvToolbox-Tutorial5" target="11" />
-      <module name="ProvToolbox-Tutorial6" target="1.8" />
       <module name="roundtrip" target="11" />
       <module name="service-translator" target="11" />
-      <module name="storage-index-redis" target="11" />
-      <module name="storage-mongodb" target="11" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

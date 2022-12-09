@@ -1,9 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -250,42 +247,53 @@ public class CompilerUtil {
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
     public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
-        if (the_var.get(key).get(0).get("@id") != null) {
-            return String.class;
+        JsonNode the_key = the_var.get(key);
+        if (the_key.get(0).get("@id") != null) {
+            JsonNode jsonNode = the_key.get(0).get("@type");
+            String idType =  (jsonNode==null)?null:jsonNode.textValue();
+            if (idType==null) {
+                return String.class;
+            } else {
+                return getClassForType(idType);
+            }
         } else {
-            if (the_var.get(key).get(0).get(0) == null) {
+            if (the_key.get(0).get(0) == null) {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
 
                 throw new UnsupportedOperationException();
             }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
+            JsonNode hasType = the_key.get(0).get(0).get("@type");
             if (hasType != null) {
                 String keyType = hasType.textValue();
-                switch (keyType) {
-                    case "xsd:int":
-                        return Integer.class;
-                    case "xsd:long":
-                        return Long.class;
-                    case "xsd:string":
-                        return String.class;
-                    case "xsd:boolean":
-                        return Boolean.class;
-                    case "xsd:float":
-                        return Float.class;
-                    case "xsd:double":
-                        return Double.class;
-                    case "xsd:dateTime":
-                        return String.class;
-                    default:
-                        throw new UnsupportedOperationException();
-                }
+                return getClassForType(keyType);
             } else {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
 
                 throw new UnsupportedOperationException();
             }
+        }
+    }
+
+    private Class<? extends Serializable> getClassForType(String keyType) {
+        switch (keyType) {
+            case "xsd:int":
+                return Integer.class;
+            case "xsd:long":
+                return Long.class;
+            case "xsd:string":
+                return String.class;
+            case "xsd:boolean":
+                return Boolean.class;
+            case "xsd:float":
+                return Float.class;
+            case "xsd:double":
+                return Double.class;
+            case "xsd:dateTime":
+                return String.class;
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 
@@ -425,7 +433,21 @@ public class CompilerUtil {
         if (the_var.get(key).get(0).get("@examplar") != null) {
             return the_var.get(key).get(0).get("@examplar").toString();
         } else if (the_var.get(key).get(0).get("@id") != null) {
-            return "\"v" + num + "\"";
+            JsonNode jsonNode1 = the_var.get(key);
+            JsonNode jsonNode2=(jsonNode1==null)?null:jsonNode1.get(0);
+            JsonNode jsonNode3=(jsonNode2==null)?null:jsonNode2.get("@type");
+            String idType =  (jsonNode3==null)?null:jsonNode3.textValue();
+            String example = generateExampleForType(idType,key, pFactory);
+            Class<?> declaredJavaType=getJavaTypeForDeclaredType(the_var, key);
+            final String converter = getConverterForDeclaredType2(declaredJavaType);
+
+            if (converter == null) {
+                return "\"v" + num + "\"";
+            } else {
+                return converter + "(" + example + ")";
+            }
+
+
         } else {
             if (the_var.get(key).get(0).get(0) == null) {
                 System.out.println("key is " + key);

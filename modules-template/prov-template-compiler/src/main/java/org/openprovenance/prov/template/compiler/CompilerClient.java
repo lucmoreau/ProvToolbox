@@ -1277,11 +1277,27 @@ public class CompilerClient {
         builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
 
         for (QualifiedName q : allVars) {
+            JsonNode jsonNode1 = the_var.get(q.getLocalPart());
+            JsonNode jsonNode2=(jsonNode1==null)?null:jsonNode1.get(0);
+            JsonNode jsonNode3=(jsonNode2==null)?null:jsonNode2.get("@type");
+            String idType =  (jsonNode3==null)?null:jsonNode3.textValue();
             Iterator<String> iter3 = the_var.fieldNames();
             while (iter3.hasNext()) {
                 String key3 = iter3.next();
                 if (q.getLocalPart().equals(key3)) {
-                    builder.addStatement("bean.$N=$S", q.getLocalPart(), "example_" + q.getLocalPart());
+                    if (idType==null) {
+                        builder.addStatement("bean.$N=$S", q.getLocalPart(), "example_" + q.getLocalPart());
+                    } else {
+                        String example = compilerUtil.generateExampleForType(idType, q.getLocalPart(), pFactory);
+                        Class<?> declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(the_var, key3);
+
+                        final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+                        if (converter == null) {
+                            builder.addStatement("bean.$N=$S",  q.getLocalPart(), example);
+                        } else {
+                            builder.addStatement("bean.$N=$N($S)",  q.getLocalPart(), converter, example);
+                        }
+                    }
                 }
             }
         }

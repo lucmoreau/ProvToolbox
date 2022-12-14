@@ -37,11 +37,24 @@ class TemplateManager {
         this.profile=profileValue;
         console.log(this.profile);
         this.csv_result='#csv_result';
+        this.filenameConverter={};
+    }
+
+    setFilenameConverter(obj) {
+        this.filenameConverter=obj;
+    }
+
+    setImageUrlPrefix(location)  {
+        this.image_url_prefix=location;
+    }
+    setImageLocation(location)  {
+        this.image_location=location;
     }
 
     setCsvResult(location) {
-        this.csv_result=location;
+        this.csv_result = location;
     }
+
     setJsonResult(location) {
         this.json_result=location;
     }
@@ -235,6 +248,13 @@ class TemplateManager {
     insertDocumentation(template) {
         console.log("documentation " + template);
         $('#documentation').html(this.documentationSnippets[template]);
+
+        if (this.image_location && this.image_url_prefix)  {
+            let img=$('<img/>').attr("src", this.image_url_prefix + (this.filenameConverter[template] || template) + ".png");
+            $(this.image_location).html(img);
+            console.log("added image at " + this.image_location);
+            console.log(img);
+        }
     }
 
 

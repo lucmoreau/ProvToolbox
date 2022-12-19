@@ -1199,6 +1199,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory,configFile);
+                toDot.setMaxStringLength(maxStringLength);
                 toDot.convert(document, os, config.title);
                 break;
             }
@@ -1218,7 +1219,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 } else {
                     toDot = new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL);
                 }
-
+                toDot.setMaxStringLength(maxStringLength);
                 toDot.convert(document, dotFileOut, os, extensionMap.get(format), config.title);
                 tmp.delete();
                 break;
@@ -1272,11 +1273,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory)));
 
         serializer.putAll(
-                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)),
-                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))
+                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG), maxStringLength),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG), maxStringLength),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF), maxStringLength),
+                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG), maxStringLength),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT), maxStringLength)
 
                                 ) );
 
@@ -1297,11 +1298,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
 
         serializer.putAll(
-                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)),
-                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))
+                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG), maxStringLength),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG), maxStringLength),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF), maxStringLength),
+                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG), maxStringLength),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT), maxStringLength)
 
                 ) );
 
@@ -1322,11 +1323,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
 
         serializer.putAll(
-                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG)),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG)),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF)),
-                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG)),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT))
+                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG), maxStringLength),
+                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG), maxStringLength),
+                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF), maxStringLength),
+                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG), maxStringLength),
+                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT), maxStringLength)
 
                 ) );
 
@@ -1388,6 +1389,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
     }
 
+    private Integer maxStringLength=100;
+
+    public void setMaxStringLength(Integer maxStringLength) {
+        this.maxStringLength = maxStringLength;
+        serializerMap.put(
+        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG),maxStringLength));
+    }
 
 
     /**
@@ -1442,6 +1450,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory, configFile);
+                toDot.setMaxStringLength(maxStringLength);
                 toDot.setLayout(config.layout);
                 toDot.convert(document, filename, config.title);
                 break;
@@ -1462,6 +1471,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 } else {
                     toDot = new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL);
                 }
+                toDot.setMaxStringLength(maxStringLength);
                 toDot.setLayout(config.layout);
                 toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
                 tmp.delete();

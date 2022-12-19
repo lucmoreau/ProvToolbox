@@ -9,10 +9,17 @@ import java.util.Collection;
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
     private final ProvFactory pFactory;
     private final String extension;
+    private final Integer maxStringLength;
 
+    public ProvSerialiser(ProvFactory pFactory, String extension, Integer maxStringLength) {
+        this.pFactory=pFactory;
+        this.extension=extension;
+        this.maxStringLength=maxStringLength;
+    }
     public ProvSerialiser(ProvFactory pFactory, String extension) {
         this.pFactory=pFactory;
         this.extension=extension;
+        this.maxStringLength=null;
     }
 
     /**
@@ -25,7 +32,9 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
 
-        new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL).convert(document, out, extension, "title");
+        ProvToDot provToDot = new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL);
+        provToDot.setMaxStringLength(maxStringLength);
+        provToDot.convert(document, out, extension, "title");
 
     }
 

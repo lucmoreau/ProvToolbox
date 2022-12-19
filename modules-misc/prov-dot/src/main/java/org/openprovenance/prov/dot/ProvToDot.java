@@ -47,6 +47,8 @@ import org.openprovenance.prov.model.WasInformedBy;
 import org.openprovenance.prov.model.WasInvalidatedBy;
 import org.openprovenance.prov.model.WasStartedBy;
 
+import static java.lang.Math.min;
+
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {
@@ -95,7 +97,11 @@ public class ProvToDot {
 
      */
 
+    private Integer maxStringLength=null;
 
+    public void setMaxStringLength(Integer maxStringLength) {
+        this.maxStringLength = maxStringLength;
+    }
 
     public ProvToDot(ProvFactory pf) {
         this.pf=pf;
@@ -568,7 +574,7 @@ public class ProvToDot {
         if (o!=null && !o.isEmpty()) {
             String val=getStringValue(o.get(0));
             if (val.length()>MAX_TOOLTIP_LENGTH) {
-                val=val.substring(0,Math.min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
+                val=val.substring(0, min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
             }
             properties.put("tooltip", val);
         }
@@ -1164,8 +1170,17 @@ public class ProvToDot {
         return "\"" + name + "\"";
     }
 
+    boolean ellipsis=true;
+
     public String htmlify(String name) {
-        return name.replace("&","&amp;")
+        if (maxStringLength!=null) {
+            name=name.substring(0,min(name.length(),maxStringLength));
+            if (ellipsis) {
+                name = name + "...";
+            }
+        }
+        return name
+                .replace("&","&amp;")
                 .replace("<","&lt;")
                 .replace(">","&gt;");
     }

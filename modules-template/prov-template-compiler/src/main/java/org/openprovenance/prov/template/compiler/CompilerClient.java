@@ -66,7 +66,7 @@ public class CompilerClient {
 
         if (bindings_schema!=null) {
            // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema, bindingsSchema));
+            builder.addMethod(generateClientCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
             builder.addMethod(generateClientSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateArgsToRecordMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateProcessorConverter(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
@@ -209,7 +209,7 @@ public class CompilerClient {
         return generateClientMethod2(allVars,allAtts,name,template,bindings_schema,false);
     }
 
-    public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.ARGS_CSV_CONVERSION_METHOD)
@@ -223,18 +223,16 @@ public class CompilerClient {
         builder.addJavadoc(jdoc.build());
 
 
-        //JsonNode the_var = bindings_schema.get("var");
         Iterator<String> iter= descriptorUtils.fieldNames(bindingsSchema);
 
-        //JsonNode the_context = bindings_schema.get("context");
-        String var = "";
+
         builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
 
         String args = "";
         String args2 = "";
 
         boolean first=true;
-        //Iterator<String> iter = the_var.fieldNames();
+
         while (iter.hasNext()) {
             String key = iter.next();
             String newkey = "__" + key;

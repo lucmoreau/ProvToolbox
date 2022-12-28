@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class DescriptorUtils {
@@ -37,7 +38,10 @@ public class DescriptorUtils {
         om.registerModule(aModule);
     }
 
-    public Iterator<String> fieldNames(TemplateBindingsSchema descriptor) {
+    public Iterator<String> fieldNamesIterator(TemplateBindingsSchema descriptor) {
         return descriptor.getVar().keySet().iterator();
+    }
+    public Collection<String> fieldNames(TemplateBindingsSchema descriptor) {
+        return descriptor.getVar().keySet();
     }
 }

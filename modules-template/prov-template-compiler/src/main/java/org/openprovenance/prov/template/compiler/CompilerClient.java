@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -223,18 +224,17 @@ public class CompilerClient {
         builder.addJavadoc(jdoc.build());
 
 
-        Iterator<String> iter= descriptorUtils.fieldNames(bindingsSchema);
-
-
         builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
+
+        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
         String args = "";
         String args2 = "";
 
         boolean first=true;
 
-        while (iter.hasNext()) {
-            String key = iter.next();
+        for (String key: variables) {
             String newkey = "__" + key;
             if (first) {
                 first=false;
@@ -242,7 +242,7 @@ public class CompilerClient {
                 args = args + ", ";
                 args2 = args2 + ", ";
             }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key).getName() + " " + newkey;
+            args = args +  compilerUtil.getJavaTypeForDeclaredType(var, key).getName() + " " + newkey;
             args2=args2+ " " + newkey;
 
         }

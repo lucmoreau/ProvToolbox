@@ -125,10 +125,10 @@ public class CompilerClient {
 
             }
 
-        compilerSQL.generateSQLstatements(builder, allVars, allAtts, name, templateName, bindings_schema);
+        compilerSQL.generateSQLstatements(builder, allVars, allAtts, name, templateName, bindings_schema, bindingsSchema);
         //builder.addMethod(generateClientSQLMethod(allVars, allAtts, name, templateName, bindings_schema));
 
-        builder.addMethod(compilerSQL.generateClientSQLMethod2(allVars, allAtts, name, templateName, bindings_schema));
+        builder.addMethod(compilerSQL.generateClientSQLMethod2(allVars, allAtts, name, templateName, bindings_schema, bindingsSchema));
 
 
         // System.out.println(allVars);With group by decision aggregate record with Seq

@@ -93,7 +93,7 @@ public class ConfigProcessor {
     public ConfigProcessor(ProvFactory pFactory) {
         this.debugComment=true;
         this.pFactory=pFactory;
-        this.compilerSQL=new CompilerSQL();
+        this.compilerSQL=new CompilerSQL(true, "ID");
         this.compilerClient= new CompilerClient(pFactory,compilerSQL);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain,compilerClient,pFactory,debugComment);
 
@@ -368,7 +368,7 @@ public class ConfigProcessor {
 
 
                 compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
-                compilerSQL.generateSQL(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindings_schema);
+                compilerSQL.generateSQL(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
 
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();

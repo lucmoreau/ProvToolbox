@@ -14,6 +14,8 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
+import org.openprovenance.prov.template.descriptors.DescriptorUtils;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -60,6 +62,7 @@ public class ConfigProcessor {
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
+    public static final DescriptorUtils descriptorUtils;
 
     boolean withMain=true; // TODO need to be updatable via command line
 
@@ -82,6 +85,11 @@ public class ConfigProcessor {
     private final CompilerJsonSchema compilerJsonSchema;
     private final CompilerClientTest compilerClientTest;
 
+    static {
+        descriptorUtils = new DescriptorUtils();
+        descriptorUtils.setupDeserializer(objectMapper);
+    }
+
     public ConfigProcessor(ProvFactory pFactory) {
         this.debugComment=true;
         this.pFactory=pFactory;
@@ -97,6 +105,8 @@ public class ConfigProcessor {
         this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
         this.compilerClientTest =new CompilerClientTest();
+
+
     }
 
     public String readCompilerVersion() {
@@ -241,6 +251,10 @@ public class ConfigProcessor {
         return objectMapper.readTree(file);
     }
 
+    public TemplateBindingsSchema getBindingsSchema(String location) {
+        return compilerUtil.getBindingsSchema(location);
+    }
+
     public Document readDocumentFromFile(TemplateCompilerConfig config) throws ClassNotFoundException,
             NoSuchMethodException,
             SecurityException,
@@ -255,11 +269,12 @@ public class ConfigProcessor {
 
     public void doGenerateServerForEntry(TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
+        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, cli_webjar_dir);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -272,15 +287,16 @@ public class ConfigProcessor {
 
     public void doGenerateServerForEntry1(Document doc, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
+        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, cli_webjar_dir);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, String cli_webjar_dir) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String cli_webjar_dir) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -311,7 +327,7 @@ public class ConfigProcessor {
             u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));
 
             // generating client first to ensure successor is calculated
-            Pair<JavaFile, Map<Integer, List<Integer>>> tmp=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema, indexed);
+            Pair<JavaFile, Map<Integer, List<Integer>>> tmp=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema, bindingsSchema, indexed);
             JavaFile spec2=tmp.getLeft();
             Map<Integer, List<Integer>> successorTable=tmp.getRight();
             boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
@@ -391,10 +407,6 @@ public class ConfigProcessor {
     public CompilerJsonSchema getCompilerJsonSchema() {
         return compilerJsonSchema;
     }
-
-
-
-
 
 
 }

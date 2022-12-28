@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -244,7 +245,51 @@ public class CompilerUtil {
         return bindings_schema;
     }
 
+    public TemplateBindingsSchema getBindingsSchema(TemplateCompilerConfig config) {
+        TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
+        return bindingsSchema;
+    }
+
+    public TemplateBindingsSchema getBindingsSchema(String bindings) {
+        TemplateBindingsSchema bindingsSchema=null;
+        if (bindings != null) {
+            try {
+                bindingsSchema = objectMapper.readValue(new File(bindings),TemplateBindingsSchema.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bindingsSchema;
+    }
+
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+
+    public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
+        Descriptor descriptor=varMap.get(key).get(0);
+        switch (descriptor.getDescriptorType()) {
+            case ATTRIBUTE:
+                AttributeDescriptor ad=((AttributeDescriptorList) descriptor).getItems().get(0);
+                String hasType = ad.getType();
+                if (hasType != null) {
+                    return getClassForType(hasType);
+                } else {
+                    System.out.println("key is " + key);
+                    System.out.println("decl is " + varMap);
+
+                    throw new UnsupportedOperationException();
+                }
+
+            case NAME:
+                NameDescriptor nd=(NameDescriptor) descriptor;
+                String idType=nd.getType();
+                if (idType==null) {
+                    return String.class;
+                } else {
+                    return getClassForType(idType);
+                }
+        }
+        throw new UnsupportedOperationException("This exception is never reached");
+    }
 
     public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
         JsonNode the_key = the_var.get(key);

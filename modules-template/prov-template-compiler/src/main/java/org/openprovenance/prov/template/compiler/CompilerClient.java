@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -36,7 +37,7 @@ public class CompilerClient {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<JavaFile, Map<Integer, List<Integer>>> generateClientLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
+    public Pair<JavaFile, Map<Integer, List<Integer>>> generateClientLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -47,7 +48,7 @@ public class CompilerClient {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, indexed);
+        return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, bindingsSchema, indexed);
 
     }
 
@@ -55,7 +56,7 @@ public class CompilerClient {
     static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
 
-    Pair<JavaFile, Map<Integer, List<Integer>>> generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
+    Pair<JavaFile, Map<Integer, List<Integer>>> generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
 
         TypeSpec.Builder builder = generateClassInit(name, ConfigProcessor.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName),packge, ConfigProcessor.BUILDER);
 
@@ -65,7 +66,7 @@ public class CompilerClient {
 
         if (bindings_schema!=null) {
            // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
+            builder.addMethod(generateClientCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema, bindingsSchema));
             builder.addMethod(generateClientSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateArgsToRecordMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateProcessorConverter(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
@@ -208,7 +209,7 @@ public class CompilerClient {
         return generateClientMethod2(allVars,allAtts,name,template,bindings_schema,false);
     }
 
-    public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.ARGS_CSV_CONVERSION_METHOD)
@@ -221,8 +222,11 @@ public class CompilerClient {
         jdoc.add("@return $T\n" , processorClassNameNotParametrised);
         builder.addJavadoc(jdoc.build());
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
+
+        //JsonNode the_var = bindings_schema.get("var");
+        Iterator<String> iter= descriptorUtils.fieldNames(bindingsSchema);
+
+        //JsonNode the_context = bindings_schema.get("context");
         String var = "";
         builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
 
@@ -230,7 +234,7 @@ public class CompilerClient {
         String args2 = "";
 
         boolean first=true;
-        Iterator<String> iter = the_var.fieldNames();
+        //Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
             String newkey = "__" + key;
@@ -240,7 +244,7 @@ public class CompilerClient {
                 args = args + ", ";
                 args2 = args2 + ", ";
             }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName() + " " + newkey;
+            args = args +  compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key).getName() + " " + newkey;
             args2=args2+ " " + newkey;
 
         }

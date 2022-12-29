@@ -6,6 +6,8 @@
     "version": "0.1.0",
     "init_package": "org.example.templates",
     "logger": "Logger",
+    "templateBuilders": "TemplateBuilders",
+    "tableConfigurator": "TableConfigurator",
     "logger_package": "org.example.templates.client",
     "script": "example_run",
     "script_dir": "target/libs/bin",

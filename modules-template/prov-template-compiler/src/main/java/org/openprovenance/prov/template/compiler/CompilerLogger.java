@@ -62,7 +62,7 @@ public class CompilerLogger {
         TypeSpec theLogger = builder.build();
 
         JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N", getClass().getName(), configs.name)
+                .addFileComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateLogger()", configs.name)
                 .build();
         return myfile;
     }
@@ -106,7 +106,7 @@ public class CompilerLogger {
         TypeSpec theInterface = builder.build();
 
         JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(), configs.name)
+                .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(),  configs.name)
                 .build();
         return myfile;
     }
@@ -127,7 +127,7 @@ public class CompilerLogger {
         TypeSpec theInterface = builder.build();
 
         JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S", getClass().getName(), configs.name)
+                .addFileComment("Generated Automatically by ProvToolbox ($N.generateLoggerInterface()) for templates config $S", getClass().getName(), configs.name)
                 .build();
         return myfile;
     }

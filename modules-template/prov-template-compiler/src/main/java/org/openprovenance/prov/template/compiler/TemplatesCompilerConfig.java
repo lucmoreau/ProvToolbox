@@ -11,6 +11,8 @@ public class TemplatesCompilerConfig {
     public String description;
     public String init_package;
     public String logger;
+    public String templateBuilders;
+    public String tableConfigurator;
     public String logger_package;
     public String script;
     public String script_dir;
@@ -30,12 +32,15 @@ public class TemplatesCompilerConfig {
                 ", description='" + description + '\'' +
                 ", init_package='" + init_package + '\'' +
                 ", logger='" + logger + '\'' +
+                ", templateBuilders='" + templateBuilders + '\'' +
+                ", tableConfigurator='" + tableConfigurator + '\'' +
                 ", logger_package='" + logger_package + '\'' +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
                 ", jsweet=" + jsweet +
                 ", sbean=" + sbean +
                 ", jsonschema='" + jsonschema + '\'' +
+                ", sqlFile='" + sqlFile + '\'' +
                 ", documentation='" + documentation + '\'' +
                 ", templates=" + Arrays.toString(templates) +
                 '}';

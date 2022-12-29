@@ -70,6 +70,8 @@ public class ConfigProcessor {
 
     private final CompilerUtil compilerUtil     = new CompilerUtil();
     private final CompilerLogger compilerLogger = new CompilerLogger();
+    private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
+    private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerScript compilerScript   = new CompilerScript(this);
     private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
@@ -226,6 +228,12 @@ public class ConfigProcessor {
         exportMiscFiles(configs, cli_dir, cli_lib);
 
         compilerScript.generateScript(configs);
+
+        JavaFile templateBuilders=compilerTemplateBuilders.generateTemplateBuilders(configs);
+        compilerUtil.saveToFile(logger_dir, logger_dir + configs.templateBuilders+ ".java", templateBuilders);
+
+        JavaFile tableConfigurator=compilerTableConfigurator.generateTableConfigurator(configs);
+        compilerUtil.saveToFile(logger_dir, logger_dir + configs.tableConfigurator+ ".java", tableConfigurator);
     }
 
     private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {

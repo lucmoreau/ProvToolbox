@@ -13,7 +13,9 @@ public class TemplatesCompilerConfig {
     public String logger;
     public String templateBuilders;
     public String tableConfigurator;
+    public String beanProcessor;
     public String logger_package;
+    public String configurator_package;
     public String script;
     public String script_dir;
     public boolean jsweet;

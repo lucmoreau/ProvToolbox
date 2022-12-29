@@ -59,6 +59,11 @@ public class ConfigProcessor {
     public static final String A_RECORD_CSV_CONVERTER       = "aRecord2CsvConverter";
     public static final String A_RECORD_SQL_CONVERTER       = "aRecord2SqlConverter";
     public static final String BUILDER = "Builder";
+    public static final String SQL_CONFIGURATOR = "SqlConfigurator";
+    public static final String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
+    public static final String CSV_CONFIGURATOR = "CsvConfigurator";
+    public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
+    public static final String PROCESS_METHOD_NAME = "process";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -72,6 +77,8 @@ public class ConfigProcessor {
     private final CompilerLogger compilerLogger = new CompilerLogger();
     private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
+    private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
+    private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerScript compilerScript   = new CompilerScript(this);
     private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
@@ -207,6 +214,7 @@ public class ConfigProcessor {
     }
 
     public void doGenerateClientAndProject(TemplatesCompilerConfig configs, String cli_lib, String cli_dir, String cli_src_dir) {
+        final String configurator_dir= cli_src_dir + "/" + configs.configurator_package.replace('.', '/') + "/";
         final String logger_dir= cli_src_dir + "/" + configs.logger_package.replace('.', '/') + "/";
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
@@ -234,6 +242,23 @@ public class ConfigProcessor {
 
         JavaFile tableConfigurator=compilerTableConfigurator.generateTableConfigurator(configs);
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.tableConfigurator+ ".java", tableConfigurator);
+
+        JavaFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs);
+        compilerUtil.saveToFile(logger_dir, logger_dir + configs.beanProcessor+ ".java", beanProcessor);
+
+        new File(configurator_dir).mkdirs();
+        JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_CONFIGURATOR + ".java", configurationSql);
+
+        JavaFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + PROPERTY_ORDER_CONFIGURATOR + ".java", configurationPropertyOrder);
+
+        JavaFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + CSV_CONFIGURATOR + ".java", configurationCsv);
+
+        JavaFile configurationSqlInsert= compilerConfigurations.generateSqlInsertConfigurator(configs,SQL_INSERT_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_INSERT_CONFIGURATOR + ".java", configurationSqlInsert);
+
     }
 
     private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {

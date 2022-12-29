@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class CompilerLogger {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -57,6 +59,8 @@ public class CompilerLogger {
             builder.addMethod(generateStaticLogMethod(config));
             builder.addMethod(generateStaticBeanMethod(config));
         }
+        
+        builder.addMethod(generateInitializeBeanTableMethod(configs));
 
 
         TypeSpec theLogger = builder.build();
@@ -65,6 +69,38 @@ public class CompilerLogger {
                 .addFileComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateLogger()", configs.name)
                 .build();
         return myfile;
+    }
+
+    static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
+    static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
+
+    private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("initializeBeanTable")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addTypeVariable(TypeVariableName.get("T"))
+                .returns(mapType);
+
+        builder.addComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateInitializeBeanTableMethod()", configs.name);
+
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(configs.logger_package,configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
+
+        String  packge = configs.logger_package;
+
+        builder.addStatement("$T aTable=new $T()",mapType,mapType2);
+
+        for (TemplateCompilerConfig config : configs.templates) {
+
+            //        aTable.put(allBuilders.anticipating_impactBuilder  .getName(), configurator.anticipating_impact     (allBuilders.anticipating_impactBuilder));
+            String thisBuilderName = ConfigProcessor.PREFIX_LOG_VAR + config.name;
+            builder.addStatement("aTable.put($N.getName(),configurator.$N($N))", thisBuilderName,  config.name, thisBuilderName);
+
+        }
+
+
+        builder.addStatement("return aTable");
+
+        return builder.build();
+
     }
 
     JavaFile generateBuilderInterface(TemplatesCompilerConfig configs) {

@@ -64,6 +64,14 @@ public class DescriptorUtils {
         Function<NameDescriptor, Boolean> nf=(nd)->InputFieldValue.isInput(nd.getInput());
         return getFromDescriptor(descriptor, af, nf);
     }
+    public boolean isCompulsoryInput(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var==null) throw new NullPointerException("isCompulsoryInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        Function<AttributeDescriptor, Boolean> af=(ad)->InputFieldValue.isCompulsoryInput(ad.getInput());
+        Function<NameDescriptor, Boolean> nf=(nd)->InputFieldValue.isCompulsoryInput(nd.getInput());
+        return getFromDescriptor(descriptor, af, nf);
+    }
 
     private <T> T getFromDescriptor(Descriptor descriptor, Function<AttributeDescriptor,T> af, Function<NameDescriptor,T> nf) {
         switch (descriptor.getDescriptorType()) {

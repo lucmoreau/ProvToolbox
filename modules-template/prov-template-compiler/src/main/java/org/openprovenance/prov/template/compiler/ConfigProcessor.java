@@ -46,9 +46,11 @@ public class ConfigProcessor {
 
     public static final String PROPERTY_ORDER = "propertyOrder";
     public static final String OUTPUTS = "outputs";
+    public static final String COMPULSORY_INPUTS = "compulsoryInputs";
     public static final String INPUTS = "inputs";
     public static final String PROPERTY_ORDER_METHOD  = "getPropertyOrder";
     public static final String OUTPUTS_METHOD  = "getOutputs";
+    public static final String COMPULSORY_INPUTS_METHOD = "getCompulsoryInputs";
     public static final String INPUTS_METHOD  = "getInputs";
 
     public static final String RECORD_CSV_PROCESSOR_METHOD  = "record2csv";

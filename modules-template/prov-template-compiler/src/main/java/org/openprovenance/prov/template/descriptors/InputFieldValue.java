@@ -51,5 +51,18 @@ public enum InputFieldValue {
         }
         throw new UnsupportedOperationException("never reaching this point");
     }
+    @JsonIgnore
+    static public boolean isCompulsoryInput (InputFieldValue inputFieldValue) {
+        if (inputFieldValue == null) return false;
+        switch (inputFieldValue) {
+            case Compulsory:
+                return true;
+            case Optional:
+                return false;
+            case False:
+                return false;
+        }
+        throw new UnsupportedOperationException("never reaching this point");
+    }
 
 }

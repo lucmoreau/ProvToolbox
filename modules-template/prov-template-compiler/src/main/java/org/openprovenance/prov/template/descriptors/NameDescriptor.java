@@ -14,7 +14,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
         "@id",
         "@type",
         "@documentation",
-        "@examplar"
+        "@examplar",
+        "@input",
+        "@output",
 })
 public class NameDescriptor implements Descriptor {
 
@@ -26,6 +28,10 @@ public class NameDescriptor implements Descriptor {
     private String documentation;
     @JsonProperty("@examplar")
     private String examplar;
+    @JsonProperty("@input")
+    private InputFieldValue input;
+    @JsonProperty("@output")
+    private OutputFieldValue output;
 
     @JsonProperty("@id")
     public String getId() {
@@ -67,6 +73,25 @@ public class NameDescriptor implements Descriptor {
         this.examplar = examplar;
     }
 
+    @JsonProperty("@input")
+    public InputFieldValue getInput() {
+        return input;
+    }
+
+    @JsonProperty("@input")
+    public void setInput(InputFieldValue input) {
+        this.input = input;
+    }
+
+    @JsonProperty("@output")
+    public OutputFieldValue getOutput() {
+        return output;
+    }
+
+    @JsonProperty("@output")
+    public void setOutput(OutputFieldValue output) {
+        this.output = output;
+    }
 
     @Override
     public String toString() {
@@ -74,20 +99,19 @@ public class NameDescriptor implements Descriptor {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(id).append(type).append(documentation).append(examplar).toHashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NameDescriptor that = (NameDescriptor) o;
+
+        return new EqualsBuilder().append(id, that.id).append(type, that.type).append(documentation, that.documentation).append(examplar, that.examplar).append(input, that.input).append(output, that.output).isEquals();
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof NameDescriptor)) {
-            return false;
-        }
-        NameDescriptor rhs = ((NameDescriptor) other);
-        return new EqualsBuilder().append(id, rhs.id).append(type, rhs.type).append(documentation, rhs.documentation).append(examplar, rhs.examplar).isEquals();
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(type).append(documentation).append(examplar).append(input).append(output).toHashCode();
     }
 
     @JsonIgnore

@@ -45,7 +45,11 @@ public class ConfigProcessor {
     public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
 
     public static final String PROPERTY_ORDER = "propertyOrder";
+    public static final String OUTPUTS = "outputs";
+    public static final String INPUTS = "inputs";
     public static final String PROPERTY_ORDER_METHOD  = "getPropertyOrder";
+    public static final String OUTPUTS_METHOD  = "getOutputs";
+    public static final String INPUTS_METHOD  = "getInputs";
 
     public static final String RECORD_CSV_PROCESSOR_METHOD  = "record2csv";
     public static final String ARGS_CSV_CONVERSION_METHOD   = "args2csv";

@@ -12,6 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 
 public class DescriptorUtils {
     public void setupDeserializer(ObjectMapper om) {
@@ -44,4 +46,34 @@ public class DescriptorUtils {
     public Collection<String> fieldNames(TemplateBindingsSchema descriptor) {
         return descriptor.getVar().keySet();
     }
+
+    public boolean isOutput(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var==null) throw new NullPointerException("isOutput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        Function<AttributeDescriptor, Boolean> af=(ad)->OutputFieldValue.isOutput(ad.getOutput());
+        Function<NameDescriptor, Boolean> nf=(nd)->OutputFieldValue.isOutput(nd.getOutput());
+        return getFromDescriptor(descriptor, af, nf);
+
+    }
+    public boolean isInput(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var==null) throw new NullPointerException("isInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        Function<AttributeDescriptor, Boolean> af=(ad)->InputFieldValue.isInput(ad.getInput());
+        Function<NameDescriptor, Boolean> nf=(nd)->InputFieldValue.isInput(nd.getInput());
+        return getFromDescriptor(descriptor, af, nf);
+    }
+
+    private <T> T getFromDescriptor(Descriptor descriptor, Function<AttributeDescriptor,T> af, Function<NameDescriptor,T> nf) {
+        switch (descriptor.getDescriptorType()) {
+            case ATTRIBUTE:
+                return af.apply(((AttributeDescriptorList) descriptor).getItems().get(0));
+            case NAME:
+                return nf.apply((NameDescriptor) descriptor);
+        }
+        throw new UnsupportedOperationException("never reaching this point");
+    }
+
+
 }

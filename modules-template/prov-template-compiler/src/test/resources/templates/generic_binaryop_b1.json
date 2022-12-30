@@ -4,14 +4,16 @@
 		"operation": [
 			{
 				"@id": "ex:*",
-				"@documentation": "The operation identifier"
-
+				"@documentation": "The operation identifier",
+				"@output": "true",
+				"@input": "optional"
 			}
 		],
 		"operation_type": [
 			{
 				"@id": "ex:type/*",
-				"@documentation": "The operation type"
+				"@documentation": "The operation type",
+				"@input": "optional"
 			}
 		],
 		"agent": [
@@ -23,44 +25,54 @@
 		"consumed1": [
 			{
 				"@id": "ex:*",
-				"@documentation": "The identifier of the first consumed entity"
+				"@documentation": "The identifier of the first consumed entity",
+				"@input": "compulsory"
 			}
 		],
 		"consumed_value1": [[
 			{
 				"@type": "xsd:string",
 				"@documentation": "The value of the first consumed entity",
-				"@escape": true
+				"@escape": true,
+				"@input": "compulsory"
 			}
 		]],
 		"consumed2": [
 			{
 				"@id": "ex:*",
-				"@documentation": "The identifier of the second consumed entity"
+				"@documentation": "The identifier of the second consumed entity",
+				"@input": "optional"
 			}
 		],
 		"consumed_value2": [[
 			{
 				"@type": "xsd:int",
-				"@documentation": "The value of the second consumed entity"
+				"@documentation": "The value of the second consumed entity",
+				"@input": "optional"
 			}
 		]],
 		"produced": [
 			{
 				"@id": "ex:*",
-				"@documentation": "The identifier of the produced entity"
+				"@documentation": "The identifier of the produced entity",
+				"@input": "false",
+				"@output": "true"
 			}
 		],
 		"produced_type": [
 			{
 				"@id": "ex:Result*",
-				"@documentation": "The type of the produced entity"
+				"@documentation": "The type of the produced entity",
+				"@input": "false",
+				"@output": "optional"
 			}
 		],
 		"produced_value": [[
 			{
 				"@type": "xsd:int",
-				"@documentation": "The value of the produced entity"
+				"@documentation": "The value of the produced entity",
+				"@input": "false",
+				"@output": "true"
 			}]]
 	},
 	"context": {

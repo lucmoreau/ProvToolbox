@@ -12,11 +12,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "@value",
-    "@type",
-    "@documentation",
+        "@value",
+        "@type",
+        "@documentation",
         "@escape",
-        "@examplar"
+        "@examplar",
+        "@input",
+        "@output"
 })
 public class AttributeDescriptor implements Descriptor {
 
@@ -30,6 +32,10 @@ public class AttributeDescriptor implements Descriptor {
     private String escape;
     @JsonProperty("@examplar")
     private String examplar;
+    @JsonProperty("@input")
+    private InputFieldValue input;
+    @JsonProperty("@output")
+    private OutputFieldValue output;
 
     @JsonProperty("@value")
     public String getValue() {
@@ -81,6 +87,26 @@ public class AttributeDescriptor implements Descriptor {
         this.examplar = examplar;
     }
 
+    @JsonProperty("@input")
+    public InputFieldValue getInput() {
+        return input;
+    }
+
+    @JsonProperty("@input")
+    public void setInput(InputFieldValue input) {
+        this.input = input;
+    }
+
+    @JsonProperty("@output")
+    public OutputFieldValue getOutput() {
+        return output;
+    }
+
+    @JsonProperty("@output")
+    public void setOutput(OutputFieldValue output) {
+        this.output = output;
+    }
+
 
     @Override
     public String toString() {
@@ -88,20 +114,19 @@ public class AttributeDescriptor implements Descriptor {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(value).append(type).append(documentation).append(escape).append(examplar).toHashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AttributeDescriptor that = (AttributeDescriptor) o;
+
+        return new EqualsBuilder().append(value, that.value).append(type, that.type).append(documentation, that.documentation).append(escape, that.escape).append(examplar, that.examplar).append(input, that.input).append(output, that.output).isEquals();
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof AttributeDescriptor)) {
-            return false;
-        }
-        AttributeDescriptor rhs = ((AttributeDescriptor) other);
-        return new EqualsBuilder().append(value, rhs.value).append(type, rhs.type).append(documentation, rhs.documentation).append(escape, rhs.escape).append(examplar,rhs.examplar).isEquals();
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(value).append(type).append(documentation).append(escape).append(examplar).append(input).append(output).toHashCode();
     }
 
     @JsonIgnore

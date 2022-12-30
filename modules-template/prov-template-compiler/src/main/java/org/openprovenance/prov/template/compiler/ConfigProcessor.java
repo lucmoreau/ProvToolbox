@@ -68,6 +68,7 @@ public class ConfigProcessor {
     public static final String SQL_CONFIGURATOR = "SqlConfigurator";
     public static final String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     public static final String CSV_CONFIGURATOR = "CsvConfigurator";
+    public static final String BEAN_COMPLETER = "BeanCompleter";
     public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     public static final String PROCESS_METHOD_NAME = "process";
     private final ProvFactory pFactory;
@@ -84,6 +85,7 @@ public class ConfigProcessor {
     private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
+    private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerScript compilerScript   = new CompilerScript(this);
@@ -251,6 +253,9 @@ public class ConfigProcessor {
 
         JavaFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs);
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.beanProcessor+ ".java", beanProcessor);
+
+        JavaFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_COMPLETER + ".java", beanCompleter);
 
         new File(configurator_dir).mkdirs();
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR);

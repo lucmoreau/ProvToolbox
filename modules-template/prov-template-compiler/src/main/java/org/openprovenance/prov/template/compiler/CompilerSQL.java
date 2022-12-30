@@ -53,13 +53,13 @@ public class CompilerSQL {
 
     Map<String,String> tableDeclarations=new HashMap<>();
 
-    public void generateSQL(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema) {
+    public void generateSQL(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema) {
 
         String res="";
 
 
-        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
-        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+        Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(templateBindingsSchema);
 
         boolean first = true;
 
@@ -77,7 +77,7 @@ public class CompilerSQL {
 
         String documentation=null;
 
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+        for (String key: descriptorUtils.fieldNames(templateBindingsSchema)) {
 
             if (first) {
                 first=false;

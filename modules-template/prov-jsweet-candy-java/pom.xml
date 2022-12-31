@@ -52,6 +52,7 @@
 					<verbose>true</verbose>
 					<bundle>true</bundle>
 					<declaration>true</declaration>
+					<module>commonjs</module>
 					<outDir>${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}</outDir>
 					<dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
 					<targetVersion>ES6</targetVersion>

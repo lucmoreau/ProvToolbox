@@ -12,10 +12,17 @@
   <description>A template system for PROV bundles.</description>
 
 
+  <repositories>
+    <repository>
+      <id>jsweet-central</id>
+      <name>libs-release</name>
+      <url>https://repository.jsweet.org/artifactory/libs-release-local</url>
+    </repository>
+  </repositories>
+
    <properties>
      <jsweet.core.version>6.3.0</jsweet.core.version>
    </properties>
-
 
   <dependencies>
     <dependency>
@@ -103,6 +110,28 @@
       <version>1.4</version>
       <scope>compile</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.jsweet.ext</groupId>
+      <artifactId>typescript.java-ts.core</artifactId>
+      <version>2.0.3</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jsweet.ext/sourcemap-builder -->
+    <dependency>
+      <groupId>org.jsweet.ext</groupId>
+      <artifactId>sourcemap-builder</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jsweet</groupId>
+      <artifactId>j4ts</artifactId>
+      <version>2.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jsweet.ext/typescript.java-ts.core -->
+
+
 
 
   </dependencies>

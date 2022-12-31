@@ -9,6 +9,11 @@
     <remote-repository>
       <option name="id" value="jsweet-central" />
       <option name="name" value="libs-release" />
+      <option name="url" value="https://repository.jsweet.org/artifactory/libs-release-local" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jsweet-central" />
+      <option name="name" value="libs-release" />
       <option name="url" value="http://repository.jsweet.org/artifactory/libs-release-local" />
     </remote-repository>
     <remote-repository>

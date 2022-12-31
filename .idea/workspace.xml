@@ -8,9 +8,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_eclipsesource_minimal_json_minimal_json_0_9_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_gson_gson_2_8_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_martiansoftware_jsap_2_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jsweet_ext_sourcemap_builder_1_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jsweet_ext_typescript_java_ts_core_2_0_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jsweet_j4ts_2_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jsweet_jsweet_transpiler_3_0_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_osgi_org_osgi_core_4_3_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_tukaani_xz_1_8.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java/java/sql/ResultSet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/demo_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/demo_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/prov-interop.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/prov-storage-mongodb.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanCompleter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +136,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="public" />
     <property name="extractMethod.generateAnnotations" value="false" />
-    <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Global Libraries" />
@@ -575,7 +594,7 @@
       <workItem from="1663428715154" duration="841000" />
       <workItem from="1663494531348" duration="805000" />
       <workItem from="1664639231385" duration="4944000" />
-      <workItem from="1671617609037" duration="36941000" />
+      <workItem from="1671617609037" duration="51543000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

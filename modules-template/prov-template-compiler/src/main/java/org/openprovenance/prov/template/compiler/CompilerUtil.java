@@ -610,4 +610,28 @@ public class CompilerUtil {
         }
     }
 
+    public String getResultSetMethodForClass(Class<?> cl) {
+        if (cl != null) {
+            String keyType = cl.getName();
+            switch (keyType) {
+                case "java.lang.Integer":
+                    return "getInt";
+                case "java.lang.Long":
+                    return "getLong";
+                case "java.lang.String":
+                    return "getString";
+                case "java.lang.Boolean":
+                    return "getBoolean";
+                case "java.lang.Float":
+                    return "getFloat";
+                case "java.lang.Double":
+                    return "getDouble";
+                default:
+                    throw new UnsupportedOperationException("Unknown class " + keyType);
+            }
+        } else {
+            return null;
+        }
+    }
+
 }

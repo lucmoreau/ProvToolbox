@@ -128,6 +128,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.networknt:json-schema-validator:1.0.52" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.17.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.commons:commons-csv:1.7" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jsweet.ext:sourcemap-builder:1.0.0" level="project" />
     <orderEntry type="module" module-name="prov-generator" scope="PROVIDED" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.0.Final" level="project" />

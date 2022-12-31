@@ -71,6 +71,7 @@ public class ConfigProcessor {
     public static final String BEAN_COMPLETER = "BeanCompleter";
     public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     public static final String PROCESS_METHOD_NAME = "process";
+    public static final String GETTER = "Getter";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;

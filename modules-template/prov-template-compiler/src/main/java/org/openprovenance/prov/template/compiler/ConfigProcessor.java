@@ -71,10 +71,12 @@ public class ConfigProcessor {
     public static final String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     public static final String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
     public static final String BEAN_COMPLETER = "BeanCompleter";
+    public static final String BEAN_ENACTOR = "BeanEnactor";
     public static final String QUERY_INVOKER = "QueryInvoker";
     public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     public static final String PROCESS_METHOD_NAME = "process";
     public static final String GETTER = "Getter";
+    public static final String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
     public static final String INSERT_PREFIX = "insert_";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
@@ -91,6 +93,7 @@ public class ConfigProcessor {
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
     private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
+    private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
     private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
@@ -263,6 +266,10 @@ public class ConfigProcessor {
         JavaFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_COMPLETER + ".java", beanCompleter);
 
+        JavaFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_ENACTOR + ".java", beanEnactor);
+
+
         JavaFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + QUERY_INVOKER + ".java", queryComposer);
 
@@ -283,6 +290,8 @@ public class ConfigProcessor {
         JavaFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + CONVERTER_CONFIGURATOR + ".java", configurationConverter);
 
+        JavaFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + ENACTOR_CONFIGURATOR + ".java", configurationEnactor);
     }
 
     private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {

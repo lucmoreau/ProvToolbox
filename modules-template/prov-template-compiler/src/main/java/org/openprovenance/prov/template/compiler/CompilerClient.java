@@ -578,8 +578,8 @@ public class CompilerClient {
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Returns a converter from Processor taking arguments to Processor taking record\n");
         jdoc.add("@param processor a transformer for this template\n");
-        //jdoc.add("@param T the type of data returned by the transformer\n");  //LUC TODO: to be added when all templates are polymorphic
-        jdoc.add("@return $T\n" , processorClassNameNotParametrised);
+        jdoc.add("@param <T> type variable for the result of processor\n");
+        jdoc.add("@return $T&lt;$T&gt;\n" , processorClassNameNotParametrised, TypeVariableName.get("T"));
         builder.addJavadoc(jdoc.build());
 
         JsonNode the_var = bindings_schema.get("var");

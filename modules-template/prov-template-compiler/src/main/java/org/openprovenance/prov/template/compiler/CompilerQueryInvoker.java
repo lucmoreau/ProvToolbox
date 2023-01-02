@@ -4,7 +4,9 @@ import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
@@ -26,7 +28,7 @@ public class CompilerQueryInvoker {
 
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(QUERY_COMPOSER);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(QUERY_INVOKER);
 
         builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
 
@@ -41,7 +43,7 @@ public class CompilerQueryInvoker {
         builder.addMethod(cbuilder.build());
 
 
-        boolean foundTime=false;
+        Set<String> foundSpecialTypes=new HashSet<>();
 
         for (TemplateCompilerConfig config : configs.templates) {
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
@@ -70,8 +72,9 @@ public class CompilerQueryInvoker {
                     }
                     final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
                     if (sqlType !=null) {
-                        addValueWithSpecialType(sqlType,mspec, sbVar, key);
-                        foundTime=true;
+                        String fun= converterForSpecialType(sqlType,mspec, sbVar, key);
+                        mspec.addStatement("$N.append($N(bean.$N))", sbVar, fun, key);
+                        foundSpecialTypes.add(sqlType);
                     } else {
                         mspec.addStatement("$N.append(bean.$N)", sbVar, key);
                     }
@@ -84,22 +87,35 @@ public class CompilerQueryInvoker {
             builder.addMethod(mspec.build());
         }
 
-        if (foundTime) {
+        if (foundSpecialTypes.contains("timestamptz")) {
             final String timeVariable = "time";
-            MethodSpec.Builder cbuilder2= MethodSpec.methodBuilder("addBeanTime")
+            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz")
                     .addModifiers(Modifier.FINAL)
-                    .addParameter(StringBuilder.class, sbVar)
                     .addParameter(String.class, timeVariable)
+                    .returns(String.class)
                     .beginControlFlow("if ($N==null)", timeVariable)
-                    .addStatement("$N.append($S)", sbVar, "NULL")
+                    .addStatement("return $S",  "NULL")
                     .nextControlFlow("else")
-                    .addStatement("$N.append($S)", sbVar, "'")
-                    .addStatement("$N.append($N)", sbVar, timeVariable)
-                    .addStatement("$N.append($S)", sbVar, "'::timestamptz")
+                    .addStatement("return $S+$N+$S", "'", timeVariable, "'::timestamptz")
                     .endControlFlow();
 
-            builder.addMethod(cbuilder2.build());
+            builder.addMethod(mbuilder2.build());
         }
+        if (foundSpecialTypes.contains("nullableTEXT")) {
+            final String strVariable = "str";
+            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT")
+                    .addModifiers(Modifier.FINAL)
+                    .addParameter(String.class, strVariable)
+                    .returns(String.class)
+                    .beginControlFlow("if ($N==null)", strVariable)
+                    .addStatement("return $S",  "''::TEXT")
+                    .nextControlFlow("else")
+                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT")
+                    .endControlFlow();
+
+            builder.addMethod(mbuilder3.build());
+        }
+
 
 
         TypeSpec theLogger = builder.build();
@@ -110,19 +126,15 @@ public class CompilerQueryInvoker {
         return myfile;
     }
 
-    public void addValueWithSpecialType(String specialType, MethodSpec.Builder mspec, String sbVar, String key) {
+    public String converterForSpecialType(String specialType, MethodSpec.Builder mspec, String sbVar, String key) {
         switch (specialType) {
             case "timestamptz":
-                mspec.addStatement("addBeanTime($N,bean.$N)", sbVar, key);
-                break;
-            case "nullable":
-                mspec.addStatement("addBeanTime($N,bean.$N)", sbVar, key);
-                break;
-
+                return "convertToTimestamptz";
+            case "nullableTEXT":
+                return "convertToNullableTEXT";
             default:
                 throw new IllegalStateException("Unexpected value: " + specialType);
         }
-
     }
 
 

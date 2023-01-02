@@ -83,5 +83,14 @@ public class DescriptorUtils {
         throw new UnsupportedOperationException("never reaching this point");
     }
 
+    public String getSqlType(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var=templateBindingsSchema.getVar().get(key);
+        if (var==null) throw new NullPointerException("getSqlType could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor=var.get(0);
+        return getFromDescriptor(descriptor,
+                AttributeDescriptor::getSqlType,
+                (nd) -> null);
+    }
+
 
 }

@@ -69,9 +69,11 @@ public class ConfigProcessor {
     public static final String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     public static final String CSV_CONFIGURATOR = "CsvConfigurator";
     public static final String BEAN_COMPLETER = "BeanCompleter";
+    public static final String QUERY_COMPOSER = "QueryComposer";
     public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     public static final String PROCESS_METHOD_NAME = "process";
     public static final String GETTER = "Getter";
+    public static final String INSERT_PREFIX = "insert_";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -87,6 +89,7 @@ public class ConfigProcessor {
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
     private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
+    private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerScript compilerScript   = new CompilerScript(this);
@@ -257,6 +260,10 @@ public class ConfigProcessor {
 
         JavaFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_COMPLETER + ".java", beanCompleter);
+
+        JavaFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + QUERY_COMPOSER + ".java", queryComposer);
+
 
         new File(configurator_dir).mkdirs();
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR);

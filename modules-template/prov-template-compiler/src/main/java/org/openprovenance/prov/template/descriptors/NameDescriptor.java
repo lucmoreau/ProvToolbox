@@ -93,6 +93,7 @@ public class NameDescriptor implements Descriptor {
         this.output = output;
     }
 
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

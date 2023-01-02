@@ -18,7 +18,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
         "@escape",
         "@examplar",
         "@input",
-        "@output"
+        "@output",
+        "@sql.type"
 })
 public class AttributeDescriptor implements Descriptor {
 
@@ -36,6 +37,9 @@ public class AttributeDescriptor implements Descriptor {
     private InputFieldValue input;
     @JsonProperty("@output")
     private OutputFieldValue output;
+    @JsonProperty("@sql.type")
+    private String sqlType;
+
 
     @JsonProperty("@value")
     public String getValue() {
@@ -107,6 +111,14 @@ public class AttributeDescriptor implements Descriptor {
         this.output = output;
     }
 
+    @JsonProperty("@sql.type")
+    public String getSqlType() {
+        return sqlType;
+    }
+    @JsonProperty("@sql.type")
+    public void setSqlType(String sqlType) {
+        this.sqlType = sqlType;
+    }
 
     @Override
     public String toString() {

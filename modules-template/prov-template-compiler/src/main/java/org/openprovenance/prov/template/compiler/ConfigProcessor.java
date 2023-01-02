@@ -68,6 +68,8 @@ public class ConfigProcessor {
     public static final String SQL_CONFIGURATOR = "SqlConfigurator";
     public static final String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     public static final String CSV_CONFIGURATOR = "CsvConfigurator";
+    public static final String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
+    public static final String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
     public static final String BEAN_COMPLETER = "BeanCompleter";
     public static final String QUERY_INVOKER = "QueryInvoker";
     public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
@@ -277,6 +279,9 @@ public class ConfigProcessor {
 
         JavaFile configurationSqlInsert= compilerConfigurations.generateSqlInsertConfigurator(configs,SQL_INSERT_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_INSERT_CONFIGURATOR + ".java", configurationSqlInsert);
+
+        JavaFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + CONVERTER_CONFIGURATOR + ".java", configurationConverter);
 
     }
 

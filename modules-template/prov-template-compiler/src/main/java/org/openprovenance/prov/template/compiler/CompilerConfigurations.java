@@ -15,6 +15,7 @@ public class CompilerConfigurations {
     }
 
     static final ParameterizedTypeName processorOfString = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
+    static final ParameterizedTypeName processorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeVariableName.get("?"));
     static final TypeName stringArray = ArrayTypeName.get(String[].class);
 
 
@@ -66,12 +67,14 @@ public class CompilerConfigurations {
     public JavaFile generateSqlInsertConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
         return  generateConfigurator(configs, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator");
     }
+    public JavaFile generateConverterConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
+        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator");
+    }
 
     public void generateMethodRecord2SqlConverter(String builderParameter, MethodSpec.Builder mspec) {
         mspec.addStatement("return $N.aRecord2SqlConverter", builderParameter);
     }
     public void generateMethodRecord2CsvConverter(String builderParameter, MethodSpec.Builder mspec) {
-        // expressing_policyBuilder.processorConverter(expressing_policyBuilder.aArgs2CsVConverter)
         mspec.addStatement("return $N.processorConverter($N.aArgs2CsVConverter)", builderParameter,builderParameter);
     }
     public void generatePropertyOrder(String builderParameter, MethodSpec.Builder mspec) {
@@ -79,6 +82,9 @@ public class CompilerConfigurations {
     }
     public void generateSqlInsert(String builderParameter, MethodSpec.Builder mspec) {
         mspec.addStatement("return $N.getSQLInsert()", builderParameter);
+    }
+    public void generateMethodRecordConverter(String builderParameter, MethodSpec.Builder mspec) {
+        mspec.addStatement("return $N.aRecord2BeanConverter", builderParameter);
     }
 
 }

@@ -73,11 +73,13 @@ public class ConfigProcessor {
     public static final String BEAN_COMPLETER = "BeanCompleter";
     public static final String BEAN_ENACTOR = "BeanEnactor";
     public static final String QUERY_INVOKER = "QueryInvoker";
+    public static final String BEAN_CHECKER = "BeanChecker";
     public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     public static final String PROCESS_METHOD_NAME = "process";
     public static final String GETTER = "Getter";
     public static final String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
     public static final String INSERT_PREFIX = "insert_";
+    public static final String NOT_NULL_METHOD = "notNull";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -95,6 +97,7 @@ public class ConfigProcessor {
     private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
     private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
     private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
+    private final CompilerBeanChecker compilerBeanChecker = new CompilerBeanChecker();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerScript compilerScript   = new CompilerScript(this);
@@ -272,6 +275,9 @@ public class ConfigProcessor {
 
         JavaFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + QUERY_INVOKER + ".java", queryComposer);
+
+        JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(configs);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_CHECKER + ".java", beanChecker);
 
 
         new File(configurator_dir).mkdirs();

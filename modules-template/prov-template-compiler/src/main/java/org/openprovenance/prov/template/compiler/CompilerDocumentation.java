@@ -20,7 +20,7 @@ public class CompilerDocumentation {
 
 
     public Map<String, Object> initializeSchemaMap() {
-        final HashMap<String, Object> res = new HashMap<String, Object>();
+        final HashMap<String, Object> res = new HashMap<>();
         res.put("definitions", new HashMap<String, Object>());
         res.put("allOf", new LinkedList<HashMap<String,Object>>());
         res.put("type", "object");

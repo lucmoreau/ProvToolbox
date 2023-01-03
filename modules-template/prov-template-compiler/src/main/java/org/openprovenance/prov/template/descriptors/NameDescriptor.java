@@ -9,6 +9,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Map;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "@id",
@@ -17,6 +19,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
         "@examplar",
         "@input",
         "@output",
+        Descriptor.SQL_TABLE,
+        Descriptor.SQL_NEW_INPUTS
 })
 public class NameDescriptor implements Descriptor {
 
@@ -32,6 +36,10 @@ public class NameDescriptor implements Descriptor {
     private InputFieldValue input;
     @JsonProperty("@output")
     private OutputFieldValue output;
+    @JsonProperty("@sql.table")
+    private String table;
+    @JsonProperty("@sql.new.inputs")
+    private Map<String,String> newInputs;
 
     @JsonProperty("@id")
     public String getId() {
@@ -93,10 +101,38 @@ public class NameDescriptor implements Descriptor {
         this.output = output;
     }
 
+    @JsonProperty("@sql.table")
+    public String getTable() {
+        return table;
+    }
+
+    @JsonProperty("@sql.new.inputs")
+    public Map<String, String> getNewInputs() {
+        return newInputs;
+    }
+
+    @JsonProperty("@sql.new.inputs")
+    public void setNewInputs(Map<String, String> newInputs) {
+        this.newInputs = newInputs;
+    }
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "NameDescriptor{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", documentation='" + documentation + '\'' +
+                ", examplar='" + examplar + '\'' +
+                ", input=" + input +
+                ", output=" + output +
+                ", table='" + table + '\'' +
+                ", newInputs=" + newInputs +
+                '}';
+    }
+
+    @JsonProperty("@sql.table")
+    public void setTable(String table) {
+        this.table = table;
     }
 
     @Override
@@ -107,12 +143,12 @@ public class NameDescriptor implements Descriptor {
 
         NameDescriptor that = (NameDescriptor) o;
 
-        return new EqualsBuilder().append(id, that.id).append(type, that.type).append(documentation, that.documentation).append(examplar, that.examplar).append(input, that.input).append(output, that.output).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(type, that.type).append(documentation, that.documentation).append(examplar, that.examplar).append(input, that.input).append(output, that.output).append(table, that.table).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(type).append(documentation).append(examplar).append(input).append(output).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(type).append(documentation).append(examplar).append(input).append(output).append(table).toHashCode();
     }
 
     @JsonIgnore

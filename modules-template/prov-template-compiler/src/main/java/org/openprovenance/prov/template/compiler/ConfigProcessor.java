@@ -80,6 +80,9 @@ public class ConfigProcessor {
     public static final String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
     public static final String INSERT_PREFIX = "insert_";
     public static final String NOT_NULL_METHOD = "notNull";
+    public static final String INPUT_PREFIX = "input_";
+    public static final String NULLABLE_TEXT = "nullableTEXT";
+    public static final String TIMESTAMPTZ = "timestamptz";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -441,6 +444,7 @@ public class ConfigProcessor {
 
                 compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
                 compilerSQL.generateSQL(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
+                compilerSQL.generateSQLInsertFunction(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
 
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();

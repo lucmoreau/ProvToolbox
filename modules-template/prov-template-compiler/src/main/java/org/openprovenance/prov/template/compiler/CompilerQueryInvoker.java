@@ -87,7 +87,7 @@ public class CompilerQueryInvoker {
             builder.addMethod(mspec.build());
         }
 
-        if (foundSpecialTypes.contains("timestamptz")) {
+        if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
             final String timeVariable = "time";
             MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz")
                     .addModifiers(Modifier.FINAL)
@@ -101,7 +101,7 @@ public class CompilerQueryInvoker {
 
             builder.addMethod(mbuilder2.build());
         }
-        if (foundSpecialTypes.contains("nullableTEXT")) {
+        if (foundSpecialTypes.contains(NULLABLE_TEXT)) {
             final String strVariable = "str";
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT")
                     .addModifiers(Modifier.FINAL)
@@ -128,9 +128,9 @@ public class CompilerQueryInvoker {
 
     public String converterForSpecialType(String specialType, MethodSpec.Builder mspec, String sbVar, String key) {
         switch (specialType) {
-            case "timestamptz":
+            case TIMESTAMPTZ:
                 return "convertToTimestamptz";
-            case "nullableTEXT":
+            case NULLABLE_TEXT:
                 return "convertToNullableTEXT";
             default:
                 throw new IllegalStateException("Unexpected value: " + specialType);

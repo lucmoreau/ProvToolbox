@@ -9,10 +9,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class DescriptorUtils {
@@ -54,8 +51,38 @@ public class DescriptorUtils {
         Function<AttributeDescriptor, Boolean> af=(ad)->OutputFieldValue.isOutput(ad.getOutput());
         Function<NameDescriptor, Boolean> nf=(nd)->OutputFieldValue.isOutput(nd.getOutput());
         return getFromDescriptor(descriptor, af, nf);
-
     }
+    public boolean isOutputName(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null)
+            throw new NullPointerException("isOutputName could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor = var.get(0);
+        Function<AttributeDescriptor, Boolean> af = (ad) -> false;
+        Function<NameDescriptor, Boolean> nf = (nd) -> OutputFieldValue.isOutput(nd.getOutput());
+        return getFromDescriptor(descriptor, af, nf);
+    }
+    public Optional<String> getOutputSqlTable(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null)
+            throw new NullPointerException("getSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor = var.get(0);
+        Function<AttributeDescriptor, Optional<String>> af = (ad) -> Optional.empty();
+        Function<NameDescriptor, Optional<String>> nf = (nd) -> Optional.ofNullable(nd.getTable());
+        return getFromDescriptor(descriptor, af, nf);
+    }
+    public Optional<Map<String,String>> getSqlNewInputs(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null)
+            throw new NullPointerException("getSqlNewInputs could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor = var.get(0);
+        Function<AttributeDescriptor, Optional<Map<String,String>>> af = (ad) -> Optional.empty();
+        Function<NameDescriptor, Optional<Map<String,String>>> nf = (nd) -> {
+            Map<String, String> newInputs = nd.getNewInputs();
+            return Optional.ofNullable((newInputs==null)?null:(newInputs.isEmpty())? null: newInputs);
+        };
+        return getFromDescriptor(descriptor, af, nf);
+    }
+
     public boolean isInput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
         if (var==null) throw new NullPointerException("isInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
@@ -73,7 +100,7 @@ public class DescriptorUtils {
         return getFromDescriptor(descriptor, af, nf);
     }
 
-    private <T> T getFromDescriptor(Descriptor descriptor, Function<AttributeDescriptor,T> af, Function<NameDescriptor,T> nf) {
+    public <T> T getFromDescriptor(Descriptor descriptor, Function<AttributeDescriptor,T> af, Function<NameDescriptor,T> nf) {
         switch (descriptor.getDescriptorType()) {
             case ATTRIBUTE:
                 return af.apply(((AttributeDescriptorList) descriptor).getItems().get(0));
@@ -93,4 +120,11 @@ public class DescriptorUtils {
     }
 
 
+    public void checkSqlInputs(Map<String, String> theInputs, String key, TemplateBindingsSchema templateBindingsSchema) {
+        for (String value: theInputs.values()) {
+            if (!isInput(value, templateBindingsSchema)) {
+                throw new UnsupportedOperationException("Input value " + value + " is not known in template descriptor form " + templateBindingsSchema.getTemplate());
+            }
+        }
+    }
 }

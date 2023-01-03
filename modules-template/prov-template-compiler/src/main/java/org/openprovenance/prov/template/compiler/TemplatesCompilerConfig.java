@@ -1,6 +1,9 @@
 package org.openprovenance.prov.template.compiler;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Arrays;
+import java.util.Map;
 
 public class TemplatesCompilerConfig {
     public String destination;
@@ -36,7 +39,9 @@ public class TemplatesCompilerConfig {
                 ", logger='" + logger + '\'' +
                 ", templateBuilders='" + templateBuilders + '\'' +
                 ", tableConfigurator='" + tableConfigurator + '\'' +
+                ", beanProcessor='" + beanProcessor + '\'' +
                 ", logger_package='" + logger_package + '\'' +
+                ", configurator_package='" + configurator_package + '\'' +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
                 ", jsweet=" + jsweet +
@@ -45,11 +50,15 @@ public class TemplatesCompilerConfig {
                 ", sqlFile='" + sqlFile + '\'' +
                 ", documentation='" + documentation + '\'' +
                 ", templates=" + Arrays.toString(templates) +
+                ", sqlTables=" + sqlTables +
                 '}';
     }
 
 
     public TemplateCompilerConfig [] templates;
+
+    @JsonProperty("sql.tables")
+    public Map<String,Map<String,String>> sqlTables;
 
 
 }

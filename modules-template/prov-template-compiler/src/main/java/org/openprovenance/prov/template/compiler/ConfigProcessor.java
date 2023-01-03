@@ -349,7 +349,7 @@ public class ConfigProcessor {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -364,14 +364,14 @@ public class ConfigProcessor {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String cli_webjar_dir) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -445,6 +445,7 @@ public class ConfigProcessor {
                 compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
                 compilerSQL.generateSQL(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
                 compilerSQL.generateSQLInsertFunction(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
+                compilerSQL.generateSQLPrimitiveTables(sqlTables);
 
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();

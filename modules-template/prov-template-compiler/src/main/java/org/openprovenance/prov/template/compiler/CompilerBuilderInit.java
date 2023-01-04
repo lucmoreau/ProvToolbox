@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -46,6 +47,7 @@ public class CompilerBuilderInit {
         block.addStatement("$N = new String[$L]",TYPEMANAGERS, size);
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
+            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             block.addStatement("$N[$L]=$S",BUILDERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name));
             block.addStatement("$N[$L]=$S",TYPEMANAGERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
             count++;

@@ -83,6 +83,7 @@ public class ConfigProcessor {
     public static final String INSERT_PREFIX = "insert_";
     public static final String NOT_NULL_METHOD = "notNull";
     public static final String INPUT_PREFIX = "input_";
+    public static final String SHARED_PREFIX = "shared_";
     public static final String NULLABLE_TEXT = "nullableTEXT";
     public static final String TIMESTAMPTZ = "timestamptz";
     private final ProvFactory pFactory;
@@ -191,12 +192,15 @@ public class ConfigProcessor {
                     CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
                     String simple=config.consistsOf;
                     boolean found=false;
+                    System.out.println("==> Found " + config);
                     for (TemplateCompilerConfig aconfig2: configs.templates) {
                         if (Objects.equals(aconfig2.name, simple)) {
                             found=true;
-                            System.out.println("Found " + aconfig2);
+
+                            System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
-                            doGenerateServerForEntry(config, sc, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
+                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition();
+                            doGenerateServerForEntry(config, sc2, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
                         }
                     }
                     if (!found) throw new UnsupportedOperationException("Composite template configuration referencing unknown template " + simple);
@@ -367,7 +371,7 @@ public class ConfigProcessor {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -386,7 +390,7 @@ public class ConfigProcessor {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -400,14 +404,14 @@ public class ConfigProcessor {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -437,58 +441,75 @@ public class ConfigProcessor {
             u.getBundle(doc).get(0).getStatement().clear();
             u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));
 
-            // generating client first to ensure successor is calculated
-            Pair<JavaFile, Map<Integer, List<Integer>>> tmp=compilerClient.generateClientLib(doc,bn,templateName,packge+ ".client", resource, bindings_schema, bindingsSchema, indexed);
-            JavaFile spec2=tmp.getLeft();
-            Map<Integer, List<Integer>> successorTable=tmp.getRight();
-            boolean val2=compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
-            //ensure type declaration code is executed
-            JavaFile spec5= compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
-            // before propagation generation
-            JavaFile spec0= compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema,successorTable);
-            boolean val0=compilerUtil.saveToFile(destinationDir, destination, spec0);
-
-
-            JavaFile spec1= compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
-            boolean val1=compilerUtil.saveToFile(destinationDir, destinationI, spec1);
-
-            JavaFile spec2b=compilerClient.generateSQLInterface(packge+ ".client");
-            boolean val2b=compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
-            val2=val2&val2b;
-
-
-            JavaFile spec6= compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema);
-          //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
-
-            boolean val5=compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
-            boolean val6=compilerUtil.saveToFile(destinationDir, destinationTypedRecord, spec6);
-          //  boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
-
-
+            boolean val0=true;
+            boolean val1=true;
+            boolean val2=true;
+            boolean val2b=true;
+            boolean val5=true;
+            boolean val6=true;
             boolean val3=true;
             boolean val4=true;
 
+            if (!inComposition) {
+                // generating client first to ensure successor is calculated
+                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerClient.generateClientLib(doc, bn, templateName, packge + ".client", resource, bindings_schema, bindingsSchema, indexed);
+                JavaFile spec2 = tmp.getLeft();
+                Map<Integer, List<Integer>> successorTable = tmp.getRight();
+                val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
+
+                //ensure type declaration code is executed
+                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+                // before propagation generation
+                JavaFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema, successorTable);
+                val0 = compilerUtil.saveToFile(destinationDir, destination, spec0);
+
+
+                JavaFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
+                val1 = compilerUtil.saveToFile(destinationDir, destinationI, spec1);
+
+                JavaFile spec2b = compilerClient.generateSQLInterface(packge + ".client");
+                val2b = compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
+                val2 = val2 & val2b;
+
+
+                JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema);
+                //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+
+                val5 = compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
+                val6 = compilerUtil.saveToFile(destinationDir, destinationTypedRecord, spec6);
+                //  boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
+
+            }
+
+
             if (sbean) {
-                JavaFile spec3 = compilerSimpleBean.generateSimpleBean(doc, bean, templateName, packge + ".client", resource, bindings_schema);
-                val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
+                if (!inComposition) {
+                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(doc, bean, templateName, packge + ".client", resource, bindings_schema);
+                    val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
+                }
 
                 JavaFile spec4 = compilerProcessor.generateProcessor(doc, processor, templateName, packge + ".client", resource, bindings_schema);
                 val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
 
+                if (!inComposition) {
 
-                compilerJsonSchema.generateJSonSchema(jsonschema,templateName,cli_src_dir + "/../resources", bindings_schema);
-                compilerSQL.generateSQL(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
-                compilerSQL.generateSQLInsertFunction(jsonschema+"SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
-                compilerSQL.generateSQLPrimitiveTables(sqlTables);
+                    compilerJsonSchema.generateJSonSchema(jsonschema, templateName, cli_src_dir + "/../resources", bindings_schema);
+                    compilerSQL.generateSQL(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
+                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
+                    compilerSQL.generateSQLPrimitiveTables(sqlTables);
+                }
 
-                final String cli_webjar_html_dir = cli_webjar_dir + "/html";
-                new File(cli_webjar_html_dir).mkdirs();
+                if (inComposition) {
+                    compilerSQL.generateSQLInsertFunctionWithSharing(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList("anticipating"));
+                }
 
-                compilerDocumentation.generateDocumentation(documentation,templateName,cli_webjar_html_dir, bindings_schema);
-
-
+                if (!inComposition) {
+                    final String cli_webjar_html_dir = cli_webjar_dir + "/html";
+                    new File(cli_webjar_html_dir).mkdirs();
+                    compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindings_schema);
+                }
             }
 
 

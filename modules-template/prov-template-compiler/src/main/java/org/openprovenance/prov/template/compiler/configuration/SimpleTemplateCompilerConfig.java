@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
@@ -31,5 +32,18 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
                 '}';
     }
 
+    @JsonIgnore
+    public boolean inComposition=false;
 
+
+    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition() {
+        SimpleTemplateCompilerConfig clone= new SimpleTemplateCompilerConfig();
+        clone.template=template;
+        clone.type_=type_;
+        clone.name=name+"_shared";
+        clone.package_=package_;
+        clone.bindings=bindings;
+        clone.inComposition=true;
+        return clone;
+    }
 }

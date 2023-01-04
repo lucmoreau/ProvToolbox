@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -20,6 +21,8 @@ public class CompilerTemplateBuilders {
 
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
+            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, templateNameClass);

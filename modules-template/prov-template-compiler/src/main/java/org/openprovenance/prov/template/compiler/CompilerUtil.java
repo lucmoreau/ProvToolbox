@@ -23,6 +23,8 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -233,7 +235,7 @@ public class CompilerUtil {
     }
 
 
-    public JsonNode get_bindings_schema(TemplateCompilerConfig config) {
+    public JsonNode get_bindings_schema(SimpleTemplateCompilerConfig config) {
         JsonNode bindings_schema=null;
         if (config.bindings != null) {
             try {
@@ -245,7 +247,7 @@ public class CompilerUtil {
         return bindings_schema;
     }
 
-    public TemplateBindingsSchema getBindingsSchema(TemplateCompilerConfig config) {
+    public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config) {
         TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
         return bindingsSchema;
     }

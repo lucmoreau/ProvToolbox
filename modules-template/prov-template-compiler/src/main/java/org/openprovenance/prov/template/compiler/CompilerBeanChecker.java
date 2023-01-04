@@ -1,6 +1,9 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -38,7 +41,8 @@ public class CompilerBeanChecker {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
+            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";

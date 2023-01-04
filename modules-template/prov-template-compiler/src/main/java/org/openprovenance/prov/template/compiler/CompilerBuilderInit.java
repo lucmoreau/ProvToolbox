@@ -5,6 +5,8 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.Runner;
 import org.openprovenance.prov.template.types.ProvenanceKernels;

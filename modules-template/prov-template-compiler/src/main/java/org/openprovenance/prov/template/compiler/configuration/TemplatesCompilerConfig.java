@@ -1,6 +1,8 @@
-package org.openprovenance.prov.template.compiler;
+package org.openprovenance.prov.template.compiler.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -55,6 +57,12 @@ public class TemplatesCompilerConfig {
     }
 
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = SimpleTemplateCompilerConfig.class, name = "simple"),
+            @JsonSubTypes.Type(value = CompositeTemplateCompilerConfig.class, name = "composite")
+    })
+    @JsonProperty("templates")
     public TemplateCompilerConfig [] templates;
 
     @JsonProperty("sql.tables")

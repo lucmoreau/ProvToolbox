@@ -2,6 +2,9 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
 import javax.lang.model.element.Modifier;
 import java.util.HashMap;
@@ -56,8 +59,10 @@ public class CompilerLogger {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            builder.addMethod(generateStaticLogMethod(config));
-            builder.addMethod(generateStaticBeanMethod(config));
+            if (config instanceof SimpleTemplateCompilerConfig) {
+                builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config));
+                builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config));
+            }
         }
         
         builder.addMethod(generateInitializeBeanTableMethod(configs));
@@ -168,7 +173,7 @@ public class CompilerLogger {
         return myfile;
     }
 
-    public MethodSpec generateStaticLogMethod(TemplateCompilerConfig config) {
+    public MethodSpec generateStaticLogMethod(SimpleTemplateCompilerConfig config) {
         final String loggerName = compilerUtil.loggerName(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
@@ -197,7 +202,7 @@ public class CompilerLogger {
         return builder.build();
     }
 
-    public MethodSpec generateStaticBeanMethod(TemplateCompilerConfig config) {
+    public MethodSpec generateStaticBeanMethod(SimpleTemplateCompilerConfig config) {
         final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)

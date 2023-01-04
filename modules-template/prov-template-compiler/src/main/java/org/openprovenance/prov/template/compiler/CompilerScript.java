@@ -1,5 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;

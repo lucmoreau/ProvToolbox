@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
@@ -22,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
@@ -153,6 +155,7 @@ public class ConfigProcessor {
 
         try {
             configs = objectMapper.readValue(new File(template_builder), TemplatesCompilerConfig.class);
+            System.out.println(configs);
             final String root_dir = configs.destination + "/" + configs.name;
             new File(root_dir).mkdirs(); 
             final String cli_lib = configs.name + "_cli";
@@ -178,11 +181,26 @@ public class ConfigProcessor {
             new File(cli_webjar_templates_dir).mkdirs();
 
 
-            for (TemplateCompilerConfig config: configs.templates) {
-                System.out.println(config.toString());
-                doGenerateServerForEntry(config,configs,cli_src_dir,l2p_src_dir,pFactory, cli_webjar_dir);
-                FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
-                FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
+            for (TemplateCompilerConfig aconfig: configs.templates) {
+                if (TemplateConfigurationEnum.isSimple(aconfig)) {
+                    SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
+                    doGenerateServerForEntry(config, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
+                    FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
+                    FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
+                } else {
+                    CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
+                    String simple=config.consistsOf;
+                    boolean found=false;
+                    for (TemplateCompilerConfig aconfig2: configs.templates) {
+                        if (Objects.equals(aconfig2.name, simple)) {
+                            found=true;
+                            System.out.println("Found " + aconfig2);
+                            SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
+                            doGenerateServerForEntry(config, sc, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
+                        }
+                    }
+                    if (!found) throw new UnsupportedOperationException("Composite template configuration referencing unknown template " + simple);
+                }
             }
 
             generateJSonSchemaEnd(configs, cli_src_dir);
@@ -330,7 +348,7 @@ public class ConfigProcessor {
         return compilerUtil.getBindingsSchema(location);
     }
 
-    public Document readDocumentFromFile(TemplateCompilerConfig config) throws ClassNotFoundException,
+    public Document readDocumentFromFile(SimpleTemplateCompilerConfig config) throws ClassNotFoundException,
             NoSuchMethodException,
             SecurityException,
             InstantiationException,
@@ -342,7 +360,7 @@ public class ConfigProcessor {
 
 
 
-    public void doGenerateServerForEntry(TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
+    public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
@@ -360,7 +378,25 @@ public class ConfigProcessor {
         }
     }
 
-    public void doGenerateServerForEntry1(Document doc, TemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
+
+    public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig,SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
+        JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
+        TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
+
+        Document doc;
+        try {
+            doc = readDocumentFromFile(config);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir);
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
+                | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            System.out.println("could not find Interop Framework");
+            e.printStackTrace();
+
+            System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
+        }
+    }
+    public void doGenerateServerForEntry1(Document doc, SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {

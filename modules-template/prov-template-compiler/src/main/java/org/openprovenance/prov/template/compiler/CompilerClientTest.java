@@ -5,7 +5,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
 import javax.lang.model.element.Modifier;
 

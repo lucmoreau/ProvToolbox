@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.ValidationMessage;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
-import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
-import org.openprovenance.prov.template.compiler.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,8 +55,7 @@ public class CompilerTest extends TestCase {
 
         TemplatesCompilerConfig configs = objectMapper.readValue(new File(path), TemplatesCompilerConfig.class);
         TemplateCompilerConfig config = configs.templates[0];
-        System.out.println(configs);
-        Document doc = u.readDocument(config.template, pf);
+        System.out.println("=====> \n" + configs);
 
 
         final String root_dir = configs.destination + "/" + configs.name;
@@ -83,9 +83,15 @@ public class CompilerTest extends TestCase {
         new File(cli_webjar_bindings_dir).mkdirs();
         new File(cli_webjar_templates_dir).mkdirs();
 
-        cp.doGenerateServerForEntry1(doc,config,configs,cli_src_dir,  l2p_src_dir,cli_webjar_dir);
-        FileUtils.copyFileToDirectory(new File(config.template), new File(cli_webjar_templates_dir));
-        FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
+
+        if (TemplateConfigurationEnum.isSimple(config)) {
+            SimpleTemplateCompilerConfig aconfig=(SimpleTemplateCompilerConfig)config;
+            cp.doGenerateServerForEntry1(u.readDocument(aconfig.template, pf), aconfig, configs, cli_src_dir, l2p_src_dir, cli_webjar_dir);
+            FileUtils.copyFileToDirectory(new File(aconfig.template), new File(cli_webjar_templates_dir));
+            FileUtils.copyFileToDirectory(new File(aconfig.bindings), new File(cli_webjar_bindings_dir));
+        } else {
+            throw new UnsupportedOperationException(" Type is " + config);
+        }
 
         cp.doGenerateProject(configs,root_dir,cli_lib,l2p_lib,l2p_dir,l2p_src_dir,l2p_test_src_dir,cli_test_src_dir, cli_webjar_dir);
         cp.doGenerateClientAndProject(configs,cli_lib,cli_dir,cli_src_dir);

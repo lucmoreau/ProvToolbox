@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
 import java.io.*;
 import java.util.*;
@@ -191,10 +192,12 @@ public class CompilerDocumentation {
     }
 
     public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
-        os.println("</body>");
-        os.println("</html>");
+        if (os!=null) { // insure this had been initialised
+            os.println("</body>");
+            os.println("</html>");
 
-        getOutputStream().close();
+            getOutputStream().close();
+        }
 
     }
 

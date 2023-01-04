@@ -11,11 +11,11 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.attribute.PosixFilePermissions;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.TESTER_FILE;
 

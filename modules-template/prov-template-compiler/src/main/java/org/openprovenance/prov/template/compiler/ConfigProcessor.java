@@ -497,7 +497,6 @@ public class ConfigProcessor {
 
                     compilerJsonSchema.generateJSonSchema(jsonschema, templateName, cli_src_dir + "/../resources", bindings_schema);
                     compilerSQL.generateSQL(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
-                    //compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
                     compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
 
                     compilerSQL.generateSQLPrimitiveTables(sqlTables);

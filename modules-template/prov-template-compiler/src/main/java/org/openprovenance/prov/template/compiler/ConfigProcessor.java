@@ -83,6 +83,9 @@ public class ConfigProcessor {
     public static final String SHARED_PREFIX = "shared_";
     public static final String NULLABLE_TEXT = "nullableTEXT";
     public static final String TIMESTAMPTZ = "timestamptz";
+    public static final String RECORDS_VAR = "records";
+    public static final String ARECORD_VAR = "arecord";
+    public static final String INPUT_TABLE = "input_table";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;

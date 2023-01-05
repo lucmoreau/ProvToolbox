@@ -120,11 +120,12 @@ public class DescriptorUtils {
     }
 
 
-    public void checkSqlInputs(Map<String, String> theInputs, String key, TemplateBindingsSchema templateBindingsSchema) {
+    public Map<String, String> checkSqlInputs(Map<String, String> theInputs, TemplateBindingsSchema templateBindingsSchema) {
         for (String value: theInputs.values()) {
             if (!isInput(value, templateBindingsSchema)) {
                 throw new UnsupportedOperationException("Input value " + value + " is not known in template descriptor form " + templateBindingsSchema.getTemplate());
             }
         }
+        return theInputs;
     }
 }

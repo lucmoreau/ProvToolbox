@@ -89,6 +89,42 @@ public class QueryBuilder {
         return queryBuilder;
     }
 
+    public static QueryBuilder functionCall(String function, List<?> values, String alias) {
+        if (function == null) {
+            throw new IllegalArgumentException();
+        }
+
+        var sqlBuilder = new StringBuilder();
+
+        sqlBuilder.append(function);
+
+
+        var queryBuilder = new QueryBuilder(sqlBuilder);
+        queryBuilder.args(values);
+        queryBuilder.alias(alias);
+
+        return queryBuilder;
+    }
+    public QueryBuilder selectExp(String... columns) {
+        if (columns == null || columns.length == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        sqlBuilder.append("SELECT ");
+
+
+        for (var i = 0; i < columns.length; i++) {
+            if (i > 0) {
+                sqlBuilder.append(", ");
+            }
+
+            sqlBuilder.append(columns[i]);
+        }
+
+        sqlBuilder.append("\n");
+        return this;
+    }
+
     /**
      * Appends a "from" clause to a query.
      *
@@ -128,8 +164,9 @@ public class QueryBuilder {
 
         sqlBuilder.append(" FROM (");
         sqlBuilder.append(queryBuilder.getSQL());
-        sqlBuilder.append(") ");
+        sqlBuilder.append(") AS ");
         sqlBuilder.append(alias);
+        sqlBuilder.append(" ");
 
         parameters.addAll(queryBuilder.parameters);
 
@@ -687,6 +724,44 @@ public class QueryBuilder {
     }
 
     /**
+     * Appends arguments to a function call
+     *
+     * @param values
+     * The values to insert.
+     *
+     * @return
+     * The {@link QueryBuilder} instance.
+     */
+    public QueryBuilder args(List<?> values) {
+        if (values == null) {
+            throw new IllegalArgumentException();
+        }
+
+        if (values.isEmpty()) {
+            sqlBuilder.append( " () ");
+            return this;
+        }
+
+        sqlBuilder.append(" (");
+
+
+        var n = values.size();
+
+        for (var i = 0; i < n; i++) {
+            if (i > 0) {
+                sqlBuilder.append(", ");
+            }
+
+            sqlBuilder.append(values.get(i));
+        }
+
+        sqlBuilder.append(")\n");
+
+
+        return this;
+    }
+
+    /**
      * Appends commont table expression CTE
      *
      * @param values
@@ -1200,7 +1275,7 @@ public class QueryBuilder {
                 }
 
                 if (parameterBuilder.length() == 0) {
-                    throw new IllegalArgumentException("Missing parameter name.");
+                    //throw new IllegalArgumentException("Missing parameter name.");
                 }
 
                 parameters.add(parameterBuilder.toString());
@@ -1233,8 +1308,13 @@ public class QueryBuilder {
         }
     }
 
+
+
     static Unquote unquote(String val) {
         return new Unquote(val);
+    }
+    static Unquote arrayOf(String val) {
+        return new Unquote(val + " []");
     }
 
     private void encode(Object value) {

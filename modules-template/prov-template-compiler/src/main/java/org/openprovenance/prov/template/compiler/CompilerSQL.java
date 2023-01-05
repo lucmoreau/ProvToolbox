@@ -360,7 +360,13 @@ public class CompilerSQL {
 
 
     public void generateSQLInsertFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-        new CompilerSqlComposer(withRelationId,tableKey, functionDeclarations).generateSQLInsertFunction(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
+        new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations).generateSQLInsertFunction(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
+
+        if (shared!=null && shared.size()>0) {
+            new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations).generateSQLInsertArrayFunction(jsonschema, templateName, root_dir, templateBindingsSchema, shared);
+        }
+
+
     }
 
 

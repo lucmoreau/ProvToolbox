@@ -7,6 +7,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
@@ -238,7 +239,7 @@ public class CompilerSQL {
     }
 
 
-    String convertToSQLType(String name) {
+    static public String convertToSQLType(String name) {
         switch (name) {
             case "java.lang.String":
                 return "TEXT";
@@ -541,13 +542,13 @@ public class CompilerSQL {
                 }
                 res.append(SMALL_INDENTATION);
                 appendPossiblySharedOutput(res, key, isShared).append(" ").append(theSqlType);
-
             }
-
         }
 
         res.append("\n)\n");
         if (debugComment) res.append(" -- return\n");
+
+        new CompilerSqlComposer(withRelationId,tableKey).generateSQLInsertFunctionWithSharing(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
 
         res.append("returns table(");
 

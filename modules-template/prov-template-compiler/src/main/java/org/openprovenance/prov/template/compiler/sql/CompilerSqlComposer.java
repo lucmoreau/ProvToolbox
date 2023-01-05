@@ -9,11 +9,12 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.template.compiler.CompilerSQL.SMALL_INDENTATION;
 import static org.openprovenance.prov.template.compiler.CompilerSQL.convertToSQLType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 
-public class CompilerSqlComposite {
+public class CompilerSqlComposer {
     private final CompilerUtil compilerUtil=new CompilerUtil();
     final Map<String,String> functionDeclarations;
 
@@ -21,13 +22,13 @@ public class CompilerSqlComposite {
     final public boolean withRelationId;
     private final String tableKey;
 
-    public CompilerSqlComposite(boolean withRelationId, String tableKey, Map<String, String> functionDeclarations) {
+    public CompilerSqlComposer(boolean withRelationId, String tableKey, Map<String, String> functionDeclarations) {
         this.withRelationId=withRelationId;
         this.tableKey=tableKey;
         this.functionDeclarations = functionDeclarations;
     }
 
-    public void generateSQLInsertFunctionWithSharing(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+    public void generateSQLInsertFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
         String HACK_orig_templateName=templateName.replace("_shared","");
 
 
@@ -148,10 +149,22 @@ public class CompilerSqlComposite {
 
         functionDeclarations.put(templateName, fun.getSQL());
 
-        System.out.println("\n\n" + fun.getSQL() + "\n\n");
+        //System.out.println("\n\n" + fun.getSQL() + "\n\n");
 
 
 
+    }
+
+
+
+    private void generateVariableTokensTable(StringBuilder res, String key) {
+        res.append("-- shared output \n");
+        res
+                .append(SMALL_INDENTATION).append(key).append("_tokens as (\n")
+                .append(SMALL_INDENTATION).append("SELECT token,  nextval('activity_id_seq') as id\n")
+                .append(SMALL_INDENTATION).append(SMALL_INDENTATION).append("FROM (SELECT DISTINCT ").append(key).append("_token as token\n")
+                .append(SMALL_INDENTATION).append(SMALL_INDENTATION).append(SMALL_INDENTATION).append("FROM constant_table) AS ").append(key).append("_tokens\n")
+                .append(SMALL_INDENTATION).append(")\n");
     }
 
     private String newTableWithId(String key) {

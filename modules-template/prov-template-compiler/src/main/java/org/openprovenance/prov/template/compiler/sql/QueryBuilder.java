@@ -514,7 +514,7 @@ public class QueryBuilder {
      * The {@link QueryBuilder} instance.
      */
     public QueryBuilder returning(Collection<String> outputs) {
-        return returning(true,outputs);
+        return returning(false,outputs);
     }
 
     public QueryBuilder returning(boolean brackets, Collection<String> outputs) {

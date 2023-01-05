@@ -7,7 +7,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
+import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposite;
 import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
@@ -63,9 +63,9 @@ public class CompilerSQL {
     }
 
 
-    Map<String,String> tableDeclarations=new HashMap<>();
-    Map<String,String> functionDeclarations=new HashMap<>();
-    Map<String,String> primitiveDeclarations=new HashMap<>();
+    Map<String,String> tableDeclarations=new LinkedHashMap<>();
+    Map<String,String> functionDeclarations=new LinkedHashMap<>();
+    Map<String,String> primitiveDeclarations=new LinkedHashMap<>();
 
     public void generateSQL(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema) {
 
@@ -502,6 +502,10 @@ public class CompilerSQL {
     }
 
     public void generateSQLInsertFunctionWithSharing(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+        new CompilerSqlComposite(withRelationId,tableKey, functionDeclarations).generateSQLInsertFunctionWithSharing(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
+    }
+
+    public void generateSQLInsertFunctionWithSharingOLD(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
         // FIXME
         String HACK_orig_templateName=templateName.replace("_shared","");
@@ -547,8 +551,6 @@ public class CompilerSQL {
 
         res.append("\n)\n");
         if (debugComment) res.append(" -- return\n");
-
-        new CompilerSqlComposer(withRelationId,tableKey).generateSQLInsertFunctionWithSharing(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
 
         res.append("returns table(");
 

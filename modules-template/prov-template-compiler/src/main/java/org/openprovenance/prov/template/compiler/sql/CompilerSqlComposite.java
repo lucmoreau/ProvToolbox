@@ -13,17 +13,18 @@ import static org.openprovenance.prov.template.compiler.CompilerSQL.convertToSQL
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 
-public class CompilerSqlComposer {
-    private final boolean debugComment=true;
+public class CompilerSqlComposite {
     private final CompilerUtil compilerUtil=new CompilerUtil();
+    final Map<String,String> functionDeclarations;
 
 
     final public boolean withRelationId;
     private final String tableKey;
 
-    public CompilerSqlComposer(boolean withRelationId, String tableKey) {
+    public CompilerSqlComposite(boolean withRelationId, String tableKey, Map<String, String> functionDeclarations) {
         this.withRelationId=withRelationId;
         this.tableKey=tableKey;
+        this.functionDeclarations = functionDeclarations;
     }
 
     public void generateSQLInsertFunctionWithSharing(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
@@ -31,15 +32,12 @@ public class CompilerSqlComposer {
 
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
-        Collection<String> variables = descriptorUtils.fieldNames(templateBindingsSchema);
 
         final String insertFunctionName=INSERT_PREFIX+templateName;
 
-        StringBuilder res=new StringBuilder();
 
 
 
-        //QueryBuilder queryBuilder=new QueryBuilder("");
 
 
         Map<String,?> funParams=descriptorUtils
@@ -79,7 +77,7 @@ public class CompilerSqlComposer {
                                                         String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
                                                         String new_table = newTableWithId(key);
                                                         String new_id = the_table + "_id";
-                                                        return select(new_id).from(new_table); //"(SELECT "+ new_id + " FROM " + new_table + " ) ";
+                                                        return select(new_id).from(new_table);
                                                     }
                                                 }
                                             },
@@ -115,7 +113,7 @@ public class CompilerSqlComposer {
                                                 return new QueryBuilder("")
                                                         .insertInto(the_table)
                                                         .values(otherInputs.apply(key))
-                                                        .returning(false, new LinkedList<>(){{add(the_table+".ID" + " AS " + the_table+"_id");}})
+                                                        .returning(new LinkedList<>(){{add(the_table+".ID" + " AS " + the_table+"_id");}})
                                                         ;
                                             },
                                             (x, y) -> y,
@@ -147,6 +145,8 @@ public class CompilerSqlComposer {
                                 .returning(outputs)
                                 .bodyEnd(""));
 
+
+        functionDeclarations.put(templateName, fun.getSQL());
 
         System.out.println("\n\n" + fun.getSQL() + "\n\n");
 

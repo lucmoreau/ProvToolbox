@@ -20,10 +20,7 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
@@ -371,7 +368,7 @@ public class ConfigProcessor {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>());
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -390,7 +387,7 @@ public class ConfigProcessor {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -404,14 +401,15 @@ public class ConfigProcessor {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>());
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition) {
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema,
+                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -504,7 +502,7 @@ public class ConfigProcessor {
 
                 if (inComposition) {
                     //FIXME: sharing is hard coded
-                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList("anticipating"));
+                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, sharing);
                 }
 
                 if (!inComposition) {

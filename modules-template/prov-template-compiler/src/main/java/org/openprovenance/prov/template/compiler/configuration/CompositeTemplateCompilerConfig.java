@@ -1,19 +1,18 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
-
-import java.util.Arrays;
+import java.util.List;
 
 public class CompositeTemplateCompilerConfig extends TemplateCompilerConfig {
 
     public String consistsOf;
-    public String [] instances;
+    public List<String> sharing;
 
     @Override
     public String toString() {
         return "CompositeTemplateCompilerConfig{" +
                 "consistsOf='" + consistsOf + '\'' +
-                ", instances=" + Arrays.toString(instances) +
-                ", type='" + type_ + '\'' +
+                ", sharing=" + sharing +
+                ", type_='" + type_ + '\'' +
                 ", name='" + name + '\'' +
                 ", package_='" + package_ + '\'' +
                 '}';

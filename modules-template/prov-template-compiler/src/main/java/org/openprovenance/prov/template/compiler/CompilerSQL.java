@@ -52,6 +52,10 @@ public class CompilerSQL {
                 ps.println(functionDeclarations.get(k));
                 ps.println("\n\n");
             }
+            for (String k: arrayFunctionDeclarations.keySet()) {
+                ps.println(arrayFunctionDeclarations.get(k));
+                ps.println("\n\n");
+            }
 
 
             ps.close();
@@ -65,6 +69,8 @@ public class CompilerSQL {
     Map<String,String> tableDeclarations=new LinkedHashMap<>();
     Map<String,String> functionDeclarations=new LinkedHashMap<>();
     Map<String,String> primitiveDeclarations=new LinkedHashMap<>();
+    Map<String,String> arrayFunctionDeclarations=new LinkedHashMap<>();
+
 
     public void generateSQL(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema) {
 
@@ -360,10 +366,10 @@ public class CompilerSQL {
 
 
     public void generateSQLInsertFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-        new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations).generateSQLInsertFunction(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
+        new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName,root_dir,templateBindingsSchema,shared);
 
         if (shared!=null && shared.size()>0) {
-            new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations).generateSQLInsertArrayFunction(jsonschema, templateName, root_dir, templateBindingsSchema, shared);
+            new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(jsonschema, templateName, root_dir, templateBindingsSchema, shared);
         }
 
 

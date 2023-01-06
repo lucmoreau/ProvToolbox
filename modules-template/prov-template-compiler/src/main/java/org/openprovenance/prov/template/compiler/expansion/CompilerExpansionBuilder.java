@@ -9,6 +9,7 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
+import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.expander.MissingAttributeValue;
@@ -26,7 +27,7 @@ public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil=new CompilerUtil();
     private final ProvFactory pFactory;
     private final boolean withMain;
-    private final CompilerClient compilerClient;
+    private final CompilerCommon compilerCommon;
     private final boolean debugComment;
     private final CompilerTypeManagement compilerTypeManagement;
 
@@ -35,10 +36,10 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public CompilerExpansionBuilder(boolean withMain, CompilerClient compilerClient, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
+    public CompilerExpansionBuilder(boolean withMain, CompilerCommon compilerCommon, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
         this.pFactory=pFactory;
         this.withMain=withMain;
-        this.compilerClient=compilerClient;
+        this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
         this.compilerTypeManagement=compilerTypeManagement;
     }
@@ -124,13 +125,13 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema));
 
 
-        builder.addMethod(compilerClient.nameAccessorGenerator(templateName));
+        builder.addMethod(compilerCommon.nameAccessorGenerator(templateName));
 
-        builder.addMethod(compilerClient.clientAccessorGenerator(templateName,packge+".client"));
+        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,packge+".client"));
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-        builder.addMethod(compilerClient.typedRecordGenerator(templateName,packge));
+        builder.addMethod(compilerCommon.typedRecordGenerator(templateName,packge));
 
 
         builder.addMethod(generateTypePropagator(allVars, allAtts, doc, vmap, packge+".client", bindings_schema,successorTable));
@@ -242,11 +243,11 @@ public class CompilerExpansionBuilder {
         JsonNode the_context = bindings_schema.get("context");
         Iterator<String> iter = the_var.fieldNames();
 
-        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1=compilerClient.getSuccessors1();
-        Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2=compilerClient.getSuccessors2();
-        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3=compilerClient.getSuccessors3();
-        Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b=compilerClient.getSuccessors3b();
-        Map<String, Set<Pair<QualifiedName, SpecializationOf>>>successors4=compilerClient.getSuccessors4();
+        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1= compilerCommon.getSuccessors1();
+        Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2= compilerCommon.getSuccessors2();
+        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3= compilerCommon.getSuccessors3();
+        Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b= compilerCommon.getSuccessors3b();
+        Map<String, Set<Pair<QualifiedName, SpecializationOf>>>successors4= compilerCommon.getSuccessors4();
 
 
         Map<String, Collection<String>> knownTypes   = compilerTypeManagement.getKnownTypes();

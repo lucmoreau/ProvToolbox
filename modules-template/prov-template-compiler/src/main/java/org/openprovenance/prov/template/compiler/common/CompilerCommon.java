@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.compiler;
+package org.openprovenance.prov.template.compiler.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
@@ -6,6 +6,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
+import org.openprovenance.prov.template.compiler.CompilerSQL;
+import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -17,14 +20,14 @@ import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
 
-public class CompilerClient {
+public class CompilerCommon {
     private final CompilerUtil compilerUtil=new CompilerUtil();
     private final ProvFactory pFactory;
 
     private final boolean debugComment=true;
     private final CompilerSQL compilerSQL;
 
-    public CompilerClient(ProvFactory pFactory, CompilerSQL compilerSQL) {
+    public CompilerCommon(ProvFactory pFactory, CompilerSQL compilerSQL) {
         this.pFactory=pFactory;
         this.compilerSQL=compilerSQL;
     }
@@ -38,7 +41,7 @@ public class CompilerClient {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<JavaFile, Map<Integer, List<Integer>>> generateClientLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
+    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -49,7 +52,7 @@ public class CompilerClient {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateClientLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, bindingsSchema, indexed);
+        return generateCommonLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, bindingsSchema, indexed);
 
     }
 
@@ -57,7 +60,7 @@ public class CompilerClient {
     static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
 
-    Pair<JavaFile, Map<Integer, List<Integer>>> generateClientLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
+    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
 
         TypeSpec.Builder builder = generateClassInit(name, ConfigProcessor.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName),packge, ConfigProcessor.BUILDER);
 
@@ -67,24 +70,24 @@ public class CompilerClient {
 
         if (bindings_schema!=null) {
            // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
-            builder.addMethod(generateClientSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
+            builder.addMethod(generateCommonSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateArgsToRecordMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateProcessorConverter(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateProcessorConverter2(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateApplyMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
 
 
-            builder.addMethod(generateClientMethod2(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientMethod2PureCsv(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientMethod3static(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientMethod3(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateClientMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
-            final Pair<MethodSpec, Map<Integer, List<Integer>>> methodSpecMapPair = generateClientMethod5static(allVars, allAtts, name, templateName, bindings_schema, indexed);
+            builder.addMethod(generateCommonMethod2(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateCommonMethod2PureCsv(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateCommonMethod3static(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateCommonMethod3(allVars, allAtts, name, templateName, bindings_schema));
+            builder.addMethod(generateCommonMethod4static(allVars, allAtts, name, templateName, bindings_schema, indexed));
+            final Pair<MethodSpec, Map<Integer, List<Integer>>> methodSpecMapPair = generateCommonMethod5static(allVars, allAtts, name, templateName, bindings_schema, indexed);
             builder.addMethod(methodSpecMapPair.getLeft());
             successorTable=methodSpecMapPair.getRight();
 
-            builder.addMethod(generateClientMethod6static(allVars, allAtts, name, templateName, bindings_schema, indexed));
+            builder.addMethod(generateCommonMethod6static(allVars, allAtts, name, templateName, bindings_schema, indexed));
 
             builder.addField(generateFieldPropertyOrder(allVars,allAtts,name,templateName,packge, bindings_schema));
             builder.addField(generateFieldOutputs(allVars,allAtts,name,templateName,packge, bindingsSchema));
@@ -111,8 +114,8 @@ public class CompilerClient {
                     .initializer("__getNodes()")
                     .build());
 
-            builder.addMethod(generateClientMethod4(allVars, allAtts, name, templateName, bindings_schema, indexed));
-            builder.addMethod(generateClientMethod4b(allVars, allAtts, name, templateName, bindings_schema, indexed));
+            builder.addMethod(generateCommonMethod4(allVars, allAtts, name, templateName, bindings_schema, indexed));
+            builder.addMethod(generateCommonMethod4b(allVars, allAtts, name, templateName, bindings_schema, indexed));
             builder.addMethod(nameAccessorGenerator(templateName));
             builder.addMethod(generatePropertyOrderMethod());
             builder.addMethod(generateOutputsMethod());
@@ -134,7 +137,7 @@ public class CompilerClient {
         compilerSQL.generateSQLstatements(builder, allVars, allAtts, name, templateName, bindings_schema, bindingsSchema);
         //builder.addMethod(generateClientSQLMethod(allVars, allAtts, name, templateName, bindings_schema));
 
-        builder.addMethod(compilerSQL.generateClientSQLMethod2(allVars, allAtts, name, templateName, bindings_schema, bindingsSchema));
+        builder.addMethod(compilerSQL.generateCommonSQLMethod2(allVars, allAtts, name, templateName, bindings_schema, bindingsSchema));
 
 
         // System.out.println(allVars);With group by decision aggregate record with Seq
@@ -159,14 +162,6 @@ public class CompilerClient {
                 .addStatement("return $S", templateName);
         return builder.build();
     }
-
-   // public MethodSpec generateClientMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-    //    return generateClientMethod_aux(allVars,allAtts,name,template, compilerUtil.loggerName(template),"process", bindings_schema);
-  //  }
-
-    //public MethodSpec generateClientSQLMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
- //       return generateClientMethod_aux(allVars,allAtts,name,template, compilerUtil.sqlName(template),compilerUtil.sqlName(template), bindings_schema);
-  //  }
 
     public MethodSpec generateClientMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String invoke, String loggerName, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
@@ -209,20 +204,20 @@ public class CompilerClient {
         return method;
     }
 
-    public MethodSpec generateClientMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-        return generateClientMethod2(allVars,allAtts,name,template,bindings_schema,true);
+    public MethodSpec generateCommonMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+        return generateCommonMethod2(allVars,allAtts,name,template,bindings_schema,true);
     }
-    public MethodSpec generateClientMethod2PureCsv(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
-        return generateClientMethod2(allVars,allAtts,name,template,bindings_schema,false);
+    public MethodSpec generateCommonMethod2PureCsv(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+        return generateCommonMethod2(allVars,allAtts,name,template,bindings_schema,false);
     }
 
-    public MethodSpec generateClientCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateCommonCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.ARGS_CSV_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientCSVConverterMethod_aux()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonCSVConverterMethod_aux()");
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add(loggerName + " client side logging method\n");
@@ -455,13 +450,13 @@ public class CompilerClient {
 
 
 
-    public MethodSpec generateClientSQLConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateCommonSQLConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
         final TypeName processorClassName = processorClassType(template, packge, ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.BEAN_SQL_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientSQLConverterMethod_aux()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonSQLConverterMethod_aux()");
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add(loggerName + " client side logging method\n");
@@ -739,13 +734,13 @@ public class CompilerClient {
         return ClassName.get(packge,compilerUtil.processorNameClass(template));
     }
 
-    public MethodSpec generateClientMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, boolean legacy) {
+    public MethodSpec generateCommonMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, boolean legacy) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
         String var = "sb";
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod2()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod2()");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -817,12 +812,12 @@ public class CompilerClient {
 
     private boolean foundEscape=false;
 
-    public MethodSpec generateClientMethod3static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+    public MethodSpec generateCommonMethod3static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getNodes")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(int[].class);
         String var = "sb";
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod3static()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod3static()");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -859,11 +854,11 @@ public class CompilerClient {
         return method;
     }
 
-    public MethodSpec generateClientMethod3(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
+    public MethodSpec generateCommonMethod3(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getNodes")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(int[].class);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod3()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod3()");
 
 
         builder.addStatement("return __nodes");
@@ -916,11 +911,11 @@ public class CompilerClient {
         builder5.addStatement("return $N", ConfigProcessor.A_RECORD_CSV_CONVERTER);
         return builder5.build();
     }
-    public MethodSpec generateClientMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
+    public MethodSpec generateCommonMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getSuccessors")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(mapType);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod4()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod4()");
 
         builder.addStatement("return __successors");
 
@@ -928,24 +923,22 @@ public class CompilerClient {
 
         return method;
     }
-    public MethodSpec generateClientMethod4b(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
+    public MethodSpec generateCommonMethod4b(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypedSuccessors")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(mapType);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod4b()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod4b()");
 
         builder.addStatement("return __successors2");
 
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
-    public MethodSpec generateClientMethod4static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
+    public MethodSpec generateCommonMethod4static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getSuccessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(mapType);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod4static()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod4static()");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -1073,12 +1066,12 @@ public class CompilerClient {
     Map<String,Set<Pair<QualifiedName, SpecializationOf>>>successors4 = new HashMap<>();
 
 
-    public Pair<MethodSpec, Map<Integer, List<Integer>>> generateClientMethod5static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
+    public Pair<MethodSpec, Map<Integer, List<Integer>>> generateCommonMethod5static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getTypedSuccessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(mapType);
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod5static()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod5static()");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -1202,12 +1195,12 @@ public class CompilerClient {
     }
 
 
-    public MethodSpec generateClientMethod6static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
+    public MethodSpec generateCommonMethod6static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getAllTypes")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(TypeName.get(String[].class));
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateClientMethod6static()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod6static()");
 
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
@@ -1480,43 +1473,19 @@ public class CompilerClient {
     }
 
     //move to expansion subpackage
-    public MethodSpec clientAccessorGenerator(String templateName, String packge) {
+    public MethodSpec commonAccessorGenerator(String templateName, String packge) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getClientBuilder")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(ConfigProcessor.CLIENT_PACKAGE, BUILDER));
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".clientAccessorGenerator()");
+        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".commonAccessorGenerator()");
 
         builder.addStatement("return new $T()", ClassName.get(packge,compilerUtil.templateNameClass(templateName)));
 
         return builder.build();
 
     }
-
-
-    // move to expansion subpackage
-/*
-    public MethodSpec typePropagateGenerator(String templateName, String packge) {
-
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypePropagate")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypePropagate"));
-
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".typePropagateGenerator()");
-
-        builder.addParameter(ParameterSpec.builder(Object[].class,"record").build());
-        builder.addParameter(ParameterSpec.builder(levelNMapType,"levelN").build());
-        builder.addParameter(ParameterSpec.builder(levelNP1CMapType,"levelNPC1").build());
-
-        builder.addStatement("return new $T($N,$N,$N,getClientBuilder())", ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypePropagate"), "record","levelN", "levelNPC1");
-
-        return builder.build();
-
-    }
-
- */
-    // move to expansion subpackage
 
     public MethodSpec typedRecordGenerator(String templateName, String packge) {
 

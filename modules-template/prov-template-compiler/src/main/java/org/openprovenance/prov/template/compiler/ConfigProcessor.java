@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
@@ -111,7 +112,7 @@ public class ConfigProcessor {
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
     private final CompilerScript compilerScript   = new CompilerScript(this);
     private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
-    private final CompilerClient compilerClient;
+    private final CompilerCommon compilerCommon;
     private final CompilerExpansionBuilder compilerExpansionBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
     private final CompilerTypeManagement compilerTypeManagement;
@@ -132,12 +133,12 @@ public class ConfigProcessor {
         this.debugComment=true;
         this.pFactory=pFactory;
         this.compilerSQL=new CompilerSQL(true, "ID");
-        this.compilerClient= new CompilerClient(pFactory,compilerSQL);
-        this.compilerTypeManagement= new CompilerTypeManagement(withMain,compilerClient,pFactory,debugComment);
+        this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
+        this.compilerTypeManagement= new CompilerTypeManagement(withMain, compilerCommon,pFactory,debugComment);
 
-        this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain,compilerClient,pFactory,debugComment,compilerTypeManagement);
+        this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
         //this.compilerTypePropagate= new CompilerTypePropagate(withMain,compilerClient,pFactory,debugComment);
-        this.compilerTypedRecord = new CompilerTypedRecord(withMain,compilerClient,pFactory,debugComment);
+        this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean();
         this.compilerProcessor =new CompilerProcessor(pFactory);
@@ -266,7 +267,7 @@ public class ConfigProcessor {
         final String logger_dir= cli_src_dir + "/" + configs.logger_package.replace('.', '/') + "/";
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
-        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerClient.getFoundEscape());
+        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
 
 
         JavaFile logger=compilerLogger.generateLogger(configs);
@@ -460,7 +461,7 @@ public class ConfigProcessor {
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerClient.generateClientLib(doc, bn, templateName, packge + ".client", resource, bindings_schema, bindingsSchema, indexed);
+                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", resource, bindings_schema, bindingsSchema, indexed);
                 JavaFile spec2 = tmp.getLeft();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
@@ -475,7 +476,7 @@ public class ConfigProcessor {
                 JavaFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
                 val1 = compilerUtil.saveToFile(destinationDir, destinationI, spec1);
 
-                JavaFile spec2b = compilerClient.generateSQLInterface(packge + ".client");
+                JavaFile spec2b = compilerCommon.generateSQLInterface(packge + ".client");
                 val2b = compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
                 val2 = val2 & val2b;
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.template.compiler.CompilerClient;
+import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.log2prov.interfaces.TriFunction;
 
@@ -19,14 +19,14 @@ public class CompilerTypeManagement {
     private final CompilerUtil compilerUtil=new CompilerUtil();
     private final ProvFactory pFactory;
     private final boolean withMain;
-    private final CompilerClient compilerClient;
+    private final CompilerCommon compilerCommon;
     private final boolean debugComment;
 
 
-    public CompilerTypeManagement(boolean withMain, CompilerClient compilerClient, ProvFactory pFactory, boolean debugComment) {
+    public CompilerTypeManagement(boolean withMain, CompilerCommon compilerCommon, ProvFactory pFactory, boolean debugComment) {
         this.pFactory=pFactory;
         this.withMain=withMain;
-        this.compilerClient=compilerClient;
+        this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
 
     }

@@ -3,7 +3,7 @@ package org.openprovenance.prov.template.compiler.expansion;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.template.compiler.CompilerClient;
+import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 
 import javax.lang.model.element.Modifier;
@@ -15,14 +15,14 @@ public class CompilerTypedRecord {
     private final CompilerUtil compilerUtil=new CompilerUtil();
     private final ProvFactory pFactory;
     private final boolean withMain;
-    private final CompilerClient compilerClient;
+    private final CompilerCommon compilerCommon;
     private final boolean debugComment;
 
 
-    public CompilerTypedRecord(boolean withMain, CompilerClient compilerClient, ProvFactory pFactory, boolean debugComment) {
+    public CompilerTypedRecord(boolean withMain, CompilerCommon compilerCommon, ProvFactory pFactory, boolean debugComment) {
         this.pFactory=pFactory;
         this.withMain=withMain;
-        this.compilerClient=compilerClient;
+        this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
     }
 

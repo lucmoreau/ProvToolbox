@@ -7,8 +7,8 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.CLIENT_PACKAGE;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.PROCESSOR_ARGS_INTERFACE;
+import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
+import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR_ARGS_INTERFACE;
 
 public class CompilerConfigurations {
     private final CompilerUtil compilerUtil=new CompilerUtil();

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -31,7 +32,7 @@ public class CompilerQueryInvoker {
 
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(QUERY_INVOKER);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.QUERY_INVOKER);
 
         builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
 
@@ -56,13 +57,13 @@ public class CompilerQueryInvoker {
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(ConfigProcessor.PROCESS_METHOD_NAME)
+            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className);
 
             mspec.addStatement("$N.append($S)", sbVar, "select * from ");
-            String startCallString=INSERT_PREFIX + config.name + " (";
+            String startCallString= Constants.INSERT_PREFIX + config.name + " (";
             mspec.addStatement("$N.append($S)", sbVar, startCallString);
 
             boolean first=true;
@@ -92,7 +93,7 @@ public class CompilerQueryInvoker {
             builder.addMethod(mspec.build());
         }
 
-        if (foundSpecialTypes.contains(TIMESTAMPTZ)) {
+        if (foundSpecialTypes.contains(Constants.TIMESTAMPTZ)) {
             final String timeVariable = "time";
             MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz")
                     .addModifiers(Modifier.FINAL)
@@ -106,7 +107,7 @@ public class CompilerQueryInvoker {
 
             builder.addMethod(mbuilder2.build());
         }
-        if (foundSpecialTypes.contains(NULLABLE_TEXT)) {
+        if (foundSpecialTypes.contains(Constants.NULLABLE_TEXT)) {
             final String strVariable = "str";
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT")
                     .addModifiers(Modifier.FINAL)
@@ -133,9 +134,9 @@ public class CompilerQueryInvoker {
 
     public String converterForSpecialType(String specialType, MethodSpec.Builder mspec, String sbVar, String key) {
         switch (specialType) {
-            case TIMESTAMPTZ:
+            case Constants.TIMESTAMPTZ:
                 return "convertToTimestamptz";
-            case NULLABLE_TEXT:
+            case Constants.NULLABLE_TEXT:
                 return "convertToNullableTEXT";
             default:
                 throw new IllegalStateException("Unexpected value: " + specialType);

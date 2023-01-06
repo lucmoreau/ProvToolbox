@@ -125,7 +125,7 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema));
 
 
-        builder.addMethod(compilerCommon.nameAccessorGenerator(templateName));
+        builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
         builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,packge+".client"));
 

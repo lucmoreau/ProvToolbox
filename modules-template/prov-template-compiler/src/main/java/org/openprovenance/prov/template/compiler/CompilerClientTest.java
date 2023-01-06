@@ -10,7 +10,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.TESTER_FILE;
+import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_FILE;
 
 public class CompilerClientTest {
 

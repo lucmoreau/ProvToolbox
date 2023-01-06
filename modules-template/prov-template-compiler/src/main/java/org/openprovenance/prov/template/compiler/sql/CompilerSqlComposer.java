@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.compiler.sql;
 
 import org.openprovenance.prov.template.compiler.CompilerUtil;
-import org.openprovenance.prov.template.compiler.ConfigProcessor;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -37,7 +37,7 @@ public class CompilerSqlComposer {
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
 
-        final String insertFunctionName=INSERT_PREFIX+templateName;
+        final String insertFunctionName= Constants.INSERT_PREFIX+templateName;
 
 
 
@@ -72,7 +72,7 @@ public class CompilerSqlComposer {
                 .collect(Collectors.toMap(  this::sqlify,
                                             key -> {
                                                 if (descriptorUtils.isInput(key, templateBindingsSchema)) {
-                                                    return unquote(ConfigProcessor.INPUT_PREFIX + sqlify(key));
+                                                    return unquote(Constants.INPUT_PREFIX + sqlify(key));
                                                 } else {
                                                     boolean isShared = shared.contains(key);
                                                     if (isShared) {
@@ -97,7 +97,7 @@ public class CompilerSqlComposer {
                         descriptorUtils.checkSqlInputs(theInputs, templateBindingsSchema);
                         List<String> newIns = new ArrayList<>(theInputs.keySet());
                         Map<String,Object> m=newIns.stream().collect(Collectors.toMap(  i -> i,
-                                                                                        i ->  unquote(ConfigProcessor.INPUT_PREFIX + sqlify(theInputs.get(i))),
+                                                                                        i ->  unquote(Constants.INPUT_PREFIX + sqlify(theInputs.get(i))),
                                                                                         (x, y) -> y,
                                                                                         LinkedHashMap::new));
                         return m;
@@ -171,7 +171,7 @@ public class CompilerSqlComposer {
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
 
-        final String insertFunctionName=INSERT_PREFIX+templateName+"_array";
+        final String insertFunctionName= Constants.INSERT_PREFIX+templateName+"_array";
 
 
         final Predicate<String> isOutput=(key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
@@ -181,7 +181,7 @@ public class CompilerSqlComposer {
 
 
         Map<String,?> funParams=new HashMap<>() {{
-            put(RECORDS_VAR, arrayOf(templateType(templateName)));
+            put(Constants.RECORDS_VAR, arrayOf(templateType(templateName)));
         }};
 
 
@@ -207,11 +207,11 @@ public class CompilerSqlComposer {
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
                                             key -> select("token","(select cast(nextval('activity_id_seq') as INT)) as id")  //FIXME activity_id_seq is hard coded
-                                                    .from(select("DISTINCT " + key + " AS " +  "token").from(INPUT_TABLE),
+                                                    .from(select("DISTINCT " + key + " AS " +  "token").from(Constants.INPUT_TABLE),
                                                             table_tokens(key)),
                                             (x, y) -> y,
                                             () -> new LinkedHashMap<String, Object>() {{
-                                                put(INPUT_TABLE, select("*").from("unnest (" + RECORDS_VAR + ")"));
+                                                put(Constants.INPUT_TABLE, select("*").from("unnest (" + Constants.RECORDS_VAR + ")"));
                                             }}));
 
         Map<String,Object> cteValues2=descriptorUtils
@@ -229,10 +229,10 @@ public class CompilerSqlComposer {
                 .fieldNames(templateBindingsSchema)
                 .stream()
                 .filter(key -> isOutput.test(key) && !shared.contains(key))
-                .map(key -> "(" + ARECORD_VAR + ")." + sqlify(key))
+                .map(key -> "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
                 .collect(Collectors.toCollection(() -> new LinkedList<>(){{
                                                             if (withRelationId) {
-                                                                add("(" + ARECORD_VAR + ")." + tableKey);
+                                                                add("(" + Constants.ARECORD_VAR + ")." + tableKey);
                                                             }}}));
 
         insertColumns.add("ID");
@@ -279,8 +279,8 @@ public class CompilerSqlComposer {
                                 .cte(cteValues1)
                                 .selectExp(insertColumns.toArray(ARRAY_OF_STRING))
                                 .from(select(table_token_id_pairs("anticipating")+".id",
-                                             functionCall(  "insert_anticipating_impact_shared",theArguments,ARECORD_VAR).getSQL())
-                                                .from(INPUT_TABLE)
+                                             functionCall(  "insert_anticipating_impact_shared",theArguments, Constants.ARECORD_VAR).getSQL())
+                                                .from(Constants.INPUT_TABLE)
                                                 .join(select(table_tokens("anticipating") + ".id", table_tokens("anticipating") + ".token")
                                                         .from("anticipating_tokens"),
                                                         table_token_id_pairs("anticipating"))
@@ -323,7 +323,7 @@ public class CompilerSqlComposer {
         final String defaultSqlType = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
         final String overrideSqlType = descriptorUtils.getSqlType(key, templateBindingsSchema);
         String theSqlType;
-        if (overrideSqlType!=null && !NULLABLE_TEXT.equals(overrideSqlType)) {
+        if (overrideSqlType!=null && !Constants.NULLABLE_TEXT.equals(overrideSqlType)) {
             theSqlType=overrideSqlType;
         } else {
             theSqlType=defaultSqlType;
@@ -332,7 +332,7 @@ public class CompilerSqlComposer {
     }
 
     private String appendPossiblySharedOutput(String key, boolean isShared) {
-        return (isShared ? ConfigProcessor.SHARED_PREFIX : ConfigProcessor.INPUT_PREFIX) + sqlify(key);
+        return (isShared ? Constants.SHARED_PREFIX : Constants.INPUT_PREFIX) + sqlify(key);
     }
 
 

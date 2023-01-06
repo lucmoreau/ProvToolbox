@@ -1,34 +1,22 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBeanEnactor {
-    public static final String REALISER = "realiser";
     private final CompilerUtil compilerUtil=new CompilerUtil();
 
 
     public CompilerBeanEnactor() {
     }
-
-    static final TypeVariableName typeT = TypeVariableName.get("T");
-    static final TypeVariableName typeResultSet = TypeVariableName.get("ResultSet");
-    static final TypeName classType=ParameterizedTypeName.get(ClassName.get(Class.class),typeT);
-    static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class),typeT);
-    static final TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(Object.class));
-    static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class),typeT);
-    static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),typeResultSet,typeT);
-
 
 
     JavaFile generateBeanEnactor(TemplatesCompilerConfig configs) {
@@ -38,21 +26,21 @@ public class CompilerBeanEnactor {
 
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(BEAN_ENACTOR);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_ENACTOR);
         builder.addModifiers(Modifier.ABSTRACT);
-        builder.addTypeVariable(typeResultSet);
+        builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(configs.configurator_package, QUERY_INVOKER);
-        ClassName beanCompleterClass = ClassName.get(configs.configurator_package, BEAN_COMPLETER);
+        ClassName queryInvokerClass = ClassName.get(configs.configurator_package, Constants.QUERY_INVOKER);
+        ClassName beanCompleterClass = ClassName.get(configs.configurator_package, Constants.BEAN_COMPLETER);
 
         ClassName beanProcessorClass = ClassName.get(configs.logger_package, configs.beanProcessor);
         builder.addSuperinterface(beanProcessorClass);
 
 
 
-        TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(ConfigProcessor.ENACTOR_IMPLEMENTATION);
-        inface.addTypeVariable(typeResultSet);
+        TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.ENACTOR_IMPLEMENTATION);
+        inface.addTypeVariable(typeResult);
         MethodSpec.Builder method1 = MethodSpec.methodBuilder("generic_enact")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(typeT,"bean").build())
@@ -64,10 +52,9 @@ public class CompilerBeanEnactor {
 
         inface.addMethod(method1.build());
 
-        //    abstract public BeanCompleter beanCompleterFactory(ResultSet rs);
         MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeResultSet,"rs").build())
+                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
                 .returns(beanCompleterClass);
 
         inface.addMethod(method2.build());
@@ -80,16 +67,16 @@ public class CompilerBeanEnactor {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(configs.configurator_package+"."+BEAN_ENACTOR,ENACTOR_IMPLEMENTATION),typeResultSet);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(configs.configurator_package+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
-        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, REALISER, Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
 
 
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ENACTOR_IMPLEMENTATION_TYPE, REALISER)
+                .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
                 .addParameter(beanProcessorClass, "checker")
-                .addStatement("this.$N = $N", REALISER, REALISER)
+                .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker");
 
         builder.addMethod(cbuilder3.build());
@@ -103,7 +90,7 @@ public class CompilerBeanEnactor {
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(ConfigProcessor.PROCESS_METHOD_NAME)
+            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className);
@@ -111,7 +98,7 @@ public class CompilerBeanEnactor {
             mspec.addStatement("return $N.generic_enact(bean,\n" +
                     "                b -> checker.process(b),\n" +
                     "                (sb,b) -> new $T(sb).process(b),\n" +
-                    "                (rs,b) -> $N.beanCompleterFactory(rs).process(b))", REALISER, queryInvokerClass, REALISER);
+                    "                (rs,b) -> $N.beanCompleterFactory(rs).process(b))", Constants.REALISER, queryInvokerClass, Constants.REALISER);
 
 
             builder.addMethod(mspec.build());

@@ -12,93 +12,38 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuilder;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
+import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.expansion.StatementTypeAction.gensym;
 
 
-public class ConfigProcessor {
-    public static final String IS_A = "isA";
-    public static final String PREFIX_LOG_VAR = "___";
-    public static final String GET_NODES_METHOD = "getNodes";
-    public static final String BUILDER_INTERFACE = "Builder";
-    public static final String INIT = "Init";
-    public static final String BUILDERS = "builders";
-    public static final String TYPEMANAGERS = "typeManagers";
-    public static final String PF = "pf";
-    public static final String GET_SUCCESSOR_METHOD = "getSuccessors";
-    public static final String GET_TYPED_SUCCESSOR_METHOD = "getTypedSuccessors";
-    public static final String GET_NAME = "getName";
-    public static final String LOGGER_INTERFACE = "LoggerInterface";
-    public static final String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
-    public static final String TESTER_FILE = "ExampleTest";
-    public static final String GET_BUILDERS_METHOD = "getBuilders";
-    public static final String CLIENT_PACKAGE = "org.openprovenance.prov.client";
-
-    public static final String PROPERTY_ORDER = "propertyOrder";
-    public static final String OUTPUTS = "outputs";
-    public static final String COMPULSORY_INPUTS = "compulsoryInputs";
-    public static final String INPUTS = "inputs";
-    public static final String PROPERTY_ORDER_METHOD  = "getPropertyOrder";
-    public static final String OUTPUTS_METHOD  = "getOutputs";
-    public static final String COMPULSORY_INPUTS_METHOD = "getCompulsoryInputs";
-    public static final String INPUTS_METHOD  = "getInputs";
-
-    public static final String RECORD_CSV_PROCESSOR_METHOD  = "record2csv";
-    public static final String ARGS_CSV_CONVERSION_METHOD   = "args2csv";
-    public static final String BEAN_SQL_CONVERSION_METHOD   = "bean2sql";
-    public static final String PROCESSOR_CONVERTER          = "processorConverter";
-    public static final String ARGS2RECORD_CONVERTER        = "aArgs2RecordConverter";
-    public static final String A_BEAN_SQL_CONVERTER         = "aBean2SqlConverter";
-    public static final String A_ARGS_BEAN_CONVERTER        = "aArgs2BeanConverter";
-    public static final String A_ARGS_CSV_CONVERTER         = "aArgs2CsVConverter";
-    public static final String A_RECORD_BEAN_CONVERTER      = "aRecord2BeanConverter";
-    public static final String A_RECORD_CSV_CONVERTER       = "aRecord2CsvConverter";
-    public static final String A_RECORD_SQL_CONVERTER       = "aRecord2SqlConverter";
-    public static final String BUILDER = "Builder";
-    public static final String SQL_CONFIGURATOR = "SqlConfigurator";
-    public static final String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
-    public static final String CSV_CONFIGURATOR = "CsvConfigurator";
-    public static final String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
-    public static final String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
-    public static final String BEAN_COMPLETER = "BeanCompleter";
-    public static final String BEAN_ENACTOR = "BeanEnactor";
-    public static final String QUERY_INVOKER = "QueryInvoker";
-    public static final String BEAN_CHECKER = "BeanChecker";
-    public static final String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
-    public static final String PROCESS_METHOD_NAME = "process";
-    public static final String GETTER = "Getter";
-    public static final String ENACTOR_IMPLEMENTATION = "EnactorImplementation";
-    public static final String INSERT_PREFIX = "insert_";
-    public static final String NOT_NULL_METHOD = "notNull";
-    public static final String INPUT_PREFIX = "input_";
-    public static final String SHARED_PREFIX = "shared_";
-    public static final String NULLABLE_TEXT = "nullableTEXT";
-    public static final String TIMESTAMPTZ = "timestamptz";
-    public static final String RECORDS_VAR = "records";
-    public static final String ARECORD_VAR = "arecord";
-    public static final String INPUT_TABLE = "input_table";
-    public static final String JAVADOC_NO_DOCUMENTATION = "-- no @documentation";
-    public static final String PROCESSOR_PROCESS_METHOD_NAME = "process";
+public class ConfigProcessor implements Constants {
+    static final TypeVariableName typeResult = TypeVariableName.get("RESULT");
+    static final TypeVariableName typeT = TypeVariableName.get("T");
+    static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
+    static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
+    static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeT);
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
     public static final DescriptorUtils descriptorUtils;
-
+    private final CompilerIntegrator compilerIntegrator;
     boolean withMain=true; // TODO need to be updatable via command line
-
     public static final ObjectMapper objectMapper = new ObjectMapper();
-
     private final CompilerUtil compilerUtil     = new CompilerUtil();
     private final CompilerLogger compilerLogger = new CompilerLogger();
     private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
@@ -117,8 +62,6 @@ public class ConfigProcessor {
     private final CompilerBuilderInit compilerBuilderInit;
     private final CompilerTypeManagement compilerTypeManagement;
     private final CompilerTypedRecord compilerTypedRecord;
-   // private final CompilerTypePropagate compilerTypePropagate;
-
     private final CompilerSimpleBean compilerSimpleBean;
     private final CompilerProcessor compilerProcessor;
     private final CompilerJsonSchema compilerJsonSchema;
@@ -134,29 +77,23 @@ public class ConfigProcessor {
         this.pFactory=pFactory;
         this.compilerSQL=new CompilerSQL(true, "ID");
         this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
+        this.compilerIntegrator=new CompilerIntegrator(compilerCommon);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain, compilerCommon,pFactory,debugComment);
-
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
-        //this.compilerTypePropagate= new CompilerTypePropagate(withMain,compilerClient,pFactory,debugComment);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerSimpleBean =new CompilerSimpleBean();
         this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
         this.compilerClientTest =new CompilerClientTest();
-
-
     }
 
     public String readCompilerVersion() {
         return Configuration.getPropertiesFromClasspath(getClass(),"compiler.properties").getProperty("compiler.version");
     }
-
     final String compilerVersion=readCompilerVersion();
-
     public int processTemplateGenerationConfig(String template_builder, ProvFactory pFactory) {
         TemplatesCompilerConfig configs;
-
 
         try {
             configs = objectMapper.readValue(new File(template_builder), TemplatesCompilerConfig.class);
@@ -235,11 +172,8 @@ public class ConfigProcessor {
         if (configs.sqlFile!=null) compilerSQL.generateSQLEnd(configs.sqlFile, cli_src_dir +"/../resources");
     }
 
-
     public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
         if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir);
-
-
     }
 
     public void doGenerateProject(TemplatesCompilerConfig configs, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
@@ -250,8 +184,6 @@ public class ConfigProcessor {
         final String l2p_test_dir= l2p_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile testfile=compilerMaven.generateTestFile_l2p(configs);
         compilerUtil.saveToFile(l2p_test_dir, l2p_test_dir +TESTER_FILE+ ".java", testfile);
-
-
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
         compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, false, false, false);
@@ -366,8 +298,6 @@ public class ConfigProcessor {
         return compilerUtil.readDocumentFromFile(config.template);
     }
 
-
-
     public void doGenerateServerForEntry(SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
@@ -386,7 +316,6 @@ public class ConfigProcessor {
         }
     }
 
-
     public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig,SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
@@ -404,6 +333,7 @@ public class ConfigProcessor {
             System.out.println(Arrays.asList("doc", config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", bindings_schema));
         }
     }
+
     public void doGenerateServerForEntry1(Document doc, SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
@@ -426,10 +356,12 @@ public class ConfigProcessor {
             String bean=compilerUtil.beanNameClass(templateName);
             String outputs=compilerUtil.outputsNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
+            String integratorBuilder=compilerUtil.integratorBuilderNameClass(templateName);
+            String integrator=compilerUtil.integratorNameClass(templateName);
 
             String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
             String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
-            String destinationDir2b=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/" + "ouputs" + "/";
+            String destinationDir2b=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/" + "integrator" + "/";
 
             String destination=destinationDir + bn + ".java";
             String destinationI=destinationDir + bnI + ".java";
@@ -442,10 +374,12 @@ public class ConfigProcessor {
             String destination3b=destinationDir2b + outputs + ".java";
             String destination4=destinationDir2 + processor + ".java";
 
+            String destination7=destinationDir2b + integratorBuilder + ".java";
+            String destination7b=destinationDir2b + integrator + ".java";
 
 
 
-            IndexedDocument indexed = makeIndexedDodcument(doc);
+            IndexedDocument indexed = makeIndexedDocument(doc);
             u.getBundle(doc).get(0).getStatement().clear();
             u.getBundle(doc).get(0).getStatement().addAll(u.getStatement(indexed.toDocument()));
 
@@ -458,6 +392,8 @@ public class ConfigProcessor {
             boolean val6=true;
             boolean val3=true;
             boolean val4=true;
+
+            boolean val7=true;
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
@@ -482,26 +418,33 @@ public class ConfigProcessor {
 
 
                 JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema);
-                //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+                //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, res"ource, bindings_schema);
 
                 val5 = compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
                 val6 = compilerUtil.saveToFile(destinationDir, destinationTypedRecord, spec6);
                 //  boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
+
 
             }
 
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, false);
+                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, !IN_INTEGRATOR);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
-                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.outputs", bindingsSchema, true);
+                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
+
+                    JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packge + ".client.integrator", bindingsSchema);
+                    val3 = compilerUtil.saveToFile(destinationDir2b, destination7, spec7);
+
+
+                    JavaFile spec4 = compilerProcessor.generateProcessor(templateName, packge + ".client", bindingsSchema, !IN_INTEGRATOR);
+                    val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
+
+                    JavaFile spec4b = compilerProcessor.generateProcessor(templateName, packge + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
+                    val4 = val4 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec4b);
                 }
-
-                JavaFile spec4 = compilerProcessor.generateProcessor(doc, processor, templateName, packge + ".client", resource, bindings_schema);
-                val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
-
 
                 if (!inComposition) {
 
@@ -513,7 +456,6 @@ public class ConfigProcessor {
                 }
 
                 if (inComposition) {
-                    //FIXME: sharing is hard coded
                     compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, sharing);
                 }
 
@@ -536,7 +478,7 @@ public class ConfigProcessor {
         }
     }
 
-    private IndexedDocument makeIndexedDodcument(Document doc) {
+    private IndexedDocument makeIndexedDocument(Document doc) {
         IndexedDocument indexed=new IndexedDocument(pFactory, pFactory.newDocument(),true);
         Bundle bun=u.getBundle(doc).get(0);
         u.forAllStatement(bun.getStatement(), indexed);
@@ -549,10 +491,8 @@ public class ConfigProcessor {
         return indexed;
     }
 
-
     public CompilerJsonSchema getCompilerJsonSchema() {
         return compilerJsonSchema;
     }
-
 
 }

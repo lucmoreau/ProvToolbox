@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -10,12 +11,12 @@ import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.openprovenance.prov.template.compiler.CompilerBeanEnactor.typeT;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerSimpleBean {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
-    public static final String PROCESSOR_PARAMETER_NAME = "__processor";
+    public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
 
@@ -30,7 +31,7 @@ public class CompilerSimpleBean {
 
         }
 
-        FieldSpec.Builder b0 = FieldSpec.builder(String.class, IS_A)
+        FieldSpec.Builder b0 = FieldSpec.builder(String.class, Constants.IS_A)
                 .addModifiers(Modifier.PUBLIC,Modifier.FINAL)
                 .initializer("$S",templateName);
 
@@ -48,14 +49,14 @@ public class CompilerSimpleBean {
                 Descriptor descriptor=theVar.get(key).get(0);
                 Function<NameDescriptor,Void> nf=
                         (nd) -> {
-                            String documentation=nd.getDocumentation()==null? ConfigProcessor.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
+                            String documentation=nd.getDocumentation()==null? Constants.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
                             String type=nd.getType()==null? JAVADOC_NO_DOCUMENTATION : nd.getType();
                             b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
                             return null;
                         };
                 Function<AttributeDescriptor,Void> af=
                         (nd) -> {
-                            String documentation=nd.getDocumentation()==null? ConfigProcessor.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
+                            String documentation=nd.getDocumentation()==null? Constants.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
                             String type=nd.getType()==null? JAVADOC_NO_DOCUMENTATION : nd.getType();
                             b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
                             return null;
@@ -72,9 +73,9 @@ public class CompilerSimpleBean {
             builder.addMethod(mbuild);
         }
 
-        TypeSpec bean = builder.build();
+        TypeSpec spec = builder.build();
 
-        return compilerUtil.saveToFileWithComment(bean, templateName, packge, getClass().getName());
+        return compilerUtil.specWithComment(spec, templateName, packge, getClass().getName());
 
     }
 
@@ -89,14 +90,14 @@ public class CompilerSimpleBean {
             throw new IllegalStateException("Template " + template + " contains variable " + PROCESSOR_PARAMETER_NAME + " " + fieldNames);
         }
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(PROCESSOR_PROCESS_METHOD_NAME)
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(typeT)
                 .addTypeVariable(typeT);
 
         builder.addParameter(processorClassType(template,packge), PROCESSOR_PARAMETER_NAME);
 
-        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, PROCESSOR_PROCESS_METHOD_NAME, String.join(", ", fieldNames));
+        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME, String.join(", ", fieldNames));
 
         return builder.build();
 

@@ -1,13 +1,14 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-import static org.openprovenance.prov.template.compiler.CompilerBeanEnactor.typeT;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBeanChecker {
@@ -21,11 +22,11 @@ public class CompilerBeanChecker {
     public JavaFile generateBeanChecker(TemplatesCompilerConfig configs) {
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(BEAN_CHECKER);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_CHECKER);
 
         builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
 
-        MethodSpec.Builder mspec0 = MethodSpec.methodBuilder(NOT_NULL_METHOD)
+        MethodSpec.Builder mspec0 = MethodSpec.methodBuilder(Constants.NOT_NULL_METHOD)
                 .addModifiers(Modifier.PRIVATE,Modifier.FINAL, Modifier.STATIC)
                 .addParameter(ParameterSpec.builder(typeT,"object").build())
                 .addParameter(ParameterSpec.builder(String.class,"field").build())
@@ -47,7 +48,7 @@ public class CompilerBeanChecker {
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(ConfigProcessor.PROCESS_METHOD_NAME)
+            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className);
@@ -56,7 +57,7 @@ public class CompilerBeanChecker {
 
             for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
                 if (descriptorUtils.isCompulsoryInput(key,bindingsSchema)) {
-                    mspec.addStatement("$N(bean.$N,$S)", NOT_NULL_METHOD, key, key);
+                    mspec.addStatement("$N(bean.$N,$S)", Constants.NOT_NULL_METHOD, key, key);
 
                 }
             }

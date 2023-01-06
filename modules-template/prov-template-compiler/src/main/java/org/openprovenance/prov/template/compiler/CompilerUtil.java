@@ -31,11 +31,21 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 //import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.TypeSpec.Builder;
 
+import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 
 
 public class CompilerUtil {
-    
+
+
+    public static final TypeVariableName typeT = TypeVariableName.get("T");
+    static final TypeName classType=ParameterizedTypeName.get(ClassName.get(Class.class), typeT);
+    static final TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(Object.class));
+    public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+
+    public String generateNewNameForVariable(String key) {
+        return GENERATED_VAR_PREFIX + key;
+    }
 
     public String capitalize(String templateName) {
         return templateName.substring(0, 1).toUpperCase()+templateName.substring(1);
@@ -54,6 +64,12 @@ public class CompilerUtil {
         return capitalize(templateName) + "Processor";
     }
 
+    public String integratorBuilderNameClass(String templateName) {
+        return capitalize(templateName) + "IntegratorBuilder";
+    }
+    public String integratorNameClass(String templateName) {
+        return capitalize(templateName) + "Integrator";
+    }
     public String loggerName(String template) {
         return "log" + capitalize(template);
 
@@ -266,7 +282,7 @@ public class CompilerUtil {
         return bindingsSchema;
     }
 
-    static final public ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    static final public ParameterizedTypeName mapIntArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
     public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
         Descriptor descriptor=varMap.get(key).get(0);
@@ -638,7 +654,7 @@ public class CompilerUtil {
         }
     }
 
-    JavaFile saveToFileWithComment(TypeSpec typeSpec, String templateName, String packge, String className) {
+    public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, String className) {
         return JavaFile.builder(packge, typeSpec)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", className, templateName)
                 .build();

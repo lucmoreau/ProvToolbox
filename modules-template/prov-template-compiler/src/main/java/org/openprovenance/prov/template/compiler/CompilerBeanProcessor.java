@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -25,7 +26,7 @@ public class CompilerBeanProcessor {
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);
-            MethodSpec mspec = MethodSpec.methodBuilder(ConfigProcessor.PROCESS_METHOD_NAME)
+            MethodSpec mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className)

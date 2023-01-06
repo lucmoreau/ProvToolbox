@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -28,7 +29,7 @@ public class CompilerTemplateBuilders {
             final ClassName className = ClassName.get(packge, templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, config.name + "Builder")
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                    .initializer(configs.logger + "." + ConfigProcessor.PREFIX_LOG_VAR + config.name)
+                    .initializer(configs.logger + "." + Constants.PREFIX_LOG_VAR + config.name)
                     .build();
 
             builder.addField(fspec);

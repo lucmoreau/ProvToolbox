@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -15,8 +16,6 @@ import org.openprovenance.prov.template.types.ProvenanceKernels;
 import javax.lang.model.element.Modifier;
 
 import java.util.List;
-
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBuilderInit {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -34,22 +33,22 @@ public class CompilerBuilderInit {
 
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(INIT);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.INIT);
 
-        builder.addField(String[].class,BUILDERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
-        builder.addField(String[].class,TYPEMANAGERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        builder.addField(String[].class, Constants.BUILDERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        builder.addField(String[].class, Constants.TYPEMANAGERS, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
 
 
-        builder.addField(ProvFactory.class,PF, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        builder.addField(ProvFactory.class, Constants.PF, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
 
         CodeBlock.Builder block = CodeBlock.builder();
-        block.addStatement("$N = new String[$L]",BUILDERS, size);
-        block.addStatement("$N = new String[$L]",TYPEMANAGERS, size);
+        block.addStatement("$N = new String[$L]", Constants.BUILDERS, size);
+        block.addStatement("$N = new String[$L]", Constants.TYPEMANAGERS, size);
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            block.addStatement("$N[$L]=$S",BUILDERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name));
-            block.addStatement("$N[$L]=$S",TYPEMANAGERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
+            block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name));
+            block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
             count++;
         }
         block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.vanilla.ProvFactory.class);
@@ -60,7 +59,7 @@ public class CompilerBuilderInit {
 
 
         builder.addMethod(MethodSpec.methodBuilder("init")
-                .addStatement("return $T.registerBuilders($N,$N)", FileBuilder.class,BUILDERS,PF)
+                .addStatement("return $T.registerBuilders($N,$N)", FileBuilder.class, Constants.BUILDERS, Constants.PF)
                 .returns(boolean.class)
                 .addModifiers(Modifier.STATIC)
                 .addModifiers(Modifier.PUBLIC)

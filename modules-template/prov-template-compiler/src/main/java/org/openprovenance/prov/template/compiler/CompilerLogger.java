@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -21,7 +22,7 @@ public class CompilerLogger {
     JavaFile generateLogger(TemplatesCompilerConfig configs) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
-        builder.addSuperinterface(ClassName.get(ConfigProcessor.CLIENT_PACKAGE, "LoggerInterface"));
+        builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, "LoggerInterface"));
 
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
@@ -29,7 +30,7 @@ public class CompilerLogger {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, templateNameClass);
-            FieldSpec fspec = FieldSpec.builder(className, ConfigProcessor.PREFIX_LOG_VAR + config.name)
+            FieldSpec fspec = FieldSpec.builder(className, Constants.PREFIX_LOG_VAR + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("new $T()", className)
                     .build();
@@ -46,9 +47,9 @@ public class CompilerLogger {
             } else {
                 names = names + ", ";
             }
-            names = names + ConfigProcessor.PREFIX_LOG_VAR + config.name;
+            names = names + Constants.PREFIX_LOG_VAR + config.name;
         }
-        ClassName cln = ClassName.get(ConfigProcessor.CLIENT_PACKAGE, "Builder");
+        ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
         FieldSpec fspec = FieldSpec.builder(builderArrayType, "__builders")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
@@ -99,7 +100,7 @@ public class CompilerLogger {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
 
             //        aTable.put(allBuilders.anticipating_impactBuilder  .getName(), configurator.anticipating_impact     (allBuilders.anticipating_impactBuilder));
-            String thisBuilderName = ConfigProcessor.PREFIX_LOG_VAR + config.name;
+            String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
             builder.addStatement("aTable.put($N.getName(),configurator.$N($N))", thisBuilderName,  config.name, thisBuilderName);
 
         }
@@ -113,34 +114,34 @@ public class CompilerLogger {
 
     JavaFile generateBuilderInterface(TemplatesCompilerConfig configs) {
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(ConfigProcessor.BUILDER_INTERFACE);
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.BUILDER_INTERFACE);
 
 
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(ConfigProcessor.GET_NODES_METHOD)
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_NODES_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(int[].class);
         builder.addMethod(builder2.build());
 
 
-        MethodSpec.Builder builder3 = MethodSpec.methodBuilder(ConfigProcessor.GET_SUCCESSOR_METHOD)
+        MethodSpec.Builder builder3 = MethodSpec.methodBuilder(Constants.GET_SUCCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.mapType);
+                .returns(CompilerUtil.mapIntArrayType);
         builder.addMethod(builder3.build());
 
 
-        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(ConfigProcessor.GET_TYPED_SUCCESSOR_METHOD)
+        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(Constants.GET_TYPED_SUCCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.mapType);
+                .returns(CompilerUtil.mapIntArrayType);
         builder.addMethod(builder3b.build());
 
-        MethodSpec.Builder builder4 = MethodSpec.methodBuilder(ConfigProcessor.GET_NAME)
+        MethodSpec.Builder builder4 = MethodSpec.methodBuilder(Constants.GET_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(String.class);
         builder.addMethod(builder4.build());
 
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
 
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(ConfigProcessor.RECORD_CSV_PROCESSOR_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
                 .returns(myType);
@@ -149,7 +150,7 @@ public class CompilerLogger {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
+        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(),  configs.name)
                 .build();
         return myfile;
@@ -157,12 +158,12 @@ public class CompilerLogger {
 
     JavaFile generateLoggerInterface(TemplatesCompilerConfig configs) {
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(ConfigProcessor.LOGGER_INTERFACE);
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
 
-        ClassName cln = ClassName.get(ConfigProcessor.CLIENT_PACKAGE, "Builder");
+        ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
 
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(ConfigProcessor.GET_BUILDERS_METHOD)
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_BUILDERS_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(builderArrayType);
         builder.addMethod(builder2.build());
@@ -170,7 +171,7 @@ public class CompilerLogger {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
+        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateLoggerInterface()) for templates config $S", getClass().getName(), configs.name)
                 .build();
         return myfile;
@@ -201,7 +202,7 @@ public class CompilerLogger {
             args = args + key;
             count++;
         }
-        builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name,ConfigProcessor.ARGS_CSV_CONVERSION_METHOD);
+        builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", Constants.PREFIX_LOG_VAR + config.name, Constants.ARGS_CSV_CONVERSION_METHOD);
         return builder.build();
     }
 
@@ -232,7 +233,7 @@ public class CompilerLogger {
             count++;
         }
         //builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
-        builder.addStatement("return $N.$N." + "process" +  "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name, ConfigProcessor.A_ARGS_BEAN_CONVERTER);
+        builder.addStatement("return $N.$N." + "process" +  "(" + args + ")", Constants.PREFIX_LOG_VAR + config.name, Constants.A_ARGS_BEAN_CONVERTER);
 
         return builder.build();
 
@@ -268,7 +269,7 @@ public class CompilerLogger {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
+        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
                 .build();
         return myfile;

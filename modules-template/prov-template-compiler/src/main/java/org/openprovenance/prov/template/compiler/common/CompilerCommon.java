@@ -8,14 +8,14 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.CompilerSQL;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
-import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
 
-import static org.openprovenance.prov.template.compiler.CompilerUtil.mapType;
+import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
+import static org.openprovenance.prov.template.compiler.CompilerUtil.mapIntArrayType;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
@@ -52,17 +52,14 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(doc, allVars,allAtts,name, templateName, packge, resource, bindings_schema, bindingsSchema, indexed);
+        return generateCommonLib_aux(allVars,allAtts,name, templateName, packge, bindings_schema, bindingsSchema, indexed);
 
     }
 
 
-    static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
 
-
-    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed) {
-
-        TypeSpec.Builder builder = generateClassInit(name, ConfigProcessor.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName),packge, ConfigProcessor.BUILDER);
+        TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName),packge, Constants.BUILDER);
 
 
         Map<Integer, List<Integer>> successorTable=null;
@@ -73,7 +70,7 @@ public class CompilerCommon {
             builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
             builder.addMethod(generateCommonSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateArgsToRecordMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
-            builder.addMethod(generateProcessorConverter(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
+            builder.addMethod(generateProcessorConverter(templateName, packge, bindingsSchema,false));
             builder.addMethod(generateProcessorConverter2(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateApplyMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
 
@@ -101,11 +98,11 @@ public class CompilerCommon {
             builder.addField(generateField4aRecord2SqlConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
             builder.addField(generateField4aRecord2CsvConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
 
-            builder.addField(FieldSpec.builder(mapType, "__successors")
+            builder.addField(FieldSpec.builder(mapIntArrayType, "__successors")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("__getSuccessors()")
                     .build());
-            builder.addField(FieldSpec.builder(mapType, "__successors2")
+            builder.addField(FieldSpec.builder(mapIntArrayType, "__successors2")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("__getTypedSuccessors()")
                     .build());
@@ -116,7 +113,7 @@ public class CompilerCommon {
 
             builder.addMethod(generateCommonMethod4(allVars, allAtts, name, templateName, bindings_schema, indexed));
             builder.addMethod(generateCommonMethod4b(allVars, allAtts, name, templateName, bindings_schema, indexed));
-            builder.addMethod(nameAccessorGenerator(templateName));
+            builder.addMethod(generateNameAccessor(templateName));
             builder.addMethod(generatePropertyOrderMethod());
             builder.addMethod(generateOutputsMethod());
             builder.addMethod(generateCompulsoryInputsMethod());
@@ -152,11 +149,11 @@ public class CompilerCommon {
     }
 
 
-    public MethodSpec nameAccessorGenerator(String templateName) {
+    public MethodSpec generateNameAccessor(String templateName) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getName")
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Override.class)
+                //.addAnnotation(Override.class)
 
                 .returns(String.class)
                 .addStatement("return $S", templateName);
@@ -214,7 +211,7 @@ public class CompilerCommon {
     public MethodSpec generateCommonCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.ARGS_CSV_CONVERSION_METHOD)
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonCSVConverterMethod_aux()");
@@ -258,7 +255,7 @@ public class CompilerCommon {
 
     private FieldSpec generateField4aBeanConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
         TypeName myType=processorClassType(templateName,packge,ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, ConfigProcessor.A_ARGS_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_ARGS_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
         JsonNode the_var = bindings_schema.get("var");
 
@@ -287,7 +284,7 @@ public class CompilerCommon {
 
     private FieldSpec generateFieldPropertyOrder(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
 
-        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), PROPERTY_ORDER, Modifier.PUBLIC, Modifier.STATIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.PROPERTY_ORDER, Modifier.PUBLIC, Modifier.STATIC);
 
         JsonNode the_var = bindings_schema.get("var");
 
@@ -310,7 +307,7 @@ public class CompilerCommon {
 
     private FieldSpec generateFieldOutputs(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
 
-        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), OUTPUTS, Modifier.PUBLIC, Modifier.STATIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.OUTPUTS, Modifier.PUBLIC, Modifier.STATIC);
 
         Map<String, List<Descriptor>> var = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
@@ -335,7 +332,7 @@ public class CompilerCommon {
     }
     private FieldSpec generateFieldInputs(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
 
-        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), INPUTS, Modifier.PUBLIC, Modifier.STATIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.INPUTS, Modifier.PUBLIC, Modifier.STATIC);
 
         Map<String, List<Descriptor>> var = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
@@ -360,7 +357,7 @@ public class CompilerCommon {
     }
     private FieldSpec generateFieldCompulsoryInputs(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
 
-        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), COMPULSORY_INPUTS, Modifier.PUBLIC, Modifier.STATIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.COMPULSORY_INPUTS, Modifier.PUBLIC, Modifier.STATIC);
 
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
@@ -391,8 +388,8 @@ public class CompilerCommon {
 
 
     private FieldSpec generateField4aBeanConverter2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, A_RECORD_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
+        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
         fbuilder.initializer(" (Object [] record) -> { return $N(record); }", "toBean");
@@ -403,10 +400,10 @@ public class CompilerCommon {
     private FieldSpec generateField4aSQLConverter2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
 
         final TypeName processorClassName = processorClassType(templateName, packge, ClassName.get(String.class));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName,ConfigProcessor.A_BEAN_SQL_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.A_BEAN_SQL_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
-        fbuilder.initializer("$N()",ConfigProcessor.BEAN_SQL_CONVERSION_METHOD);
+        fbuilder.initializer("$N()", Constants.BEAN_SQL_CONVERSION_METHOD);
 
         return fbuilder.build();
     }
@@ -415,10 +412,10 @@ public class CompilerCommon {
     private FieldSpec generateField4aArgs2CsvConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
 
         final TypeName processorClassName = processorClassType(templateName, packge, ClassName.get(String.class));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName,ConfigProcessor.A_ARGS_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.A_ARGS_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
-        fbuilder.initializer("$N()",ConfigProcessor.ARGS_CSV_CONVERSION_METHOD);
+        fbuilder.initializer("$N()", Constants.ARGS_CSV_CONVERSION_METHOD);
 
         return fbuilder.build();
     }
@@ -426,11 +423,11 @@ public class CompilerCommon {
 
     private FieldSpec generateField4aRecord2SqlConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
 
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, ConfigProcessor.A_RECORD_SQL_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_SQL_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
-        fbuilder.initializer(" (Object [] record) -> { return $N(record).process($N); }", "toBean",ConfigProcessor.A_BEAN_SQL_CONVERTER);
+        fbuilder.initializer(" (Object [] record) -> { return $N(record).process($N); }", "toBean", Constants.A_BEAN_SQL_CONVERTER);
 
         return fbuilder.build();
     }
@@ -438,11 +435,11 @@ public class CompilerCommon {
 
     private FieldSpec generateField4aRecord2CsvConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
 
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, ConfigProcessor.A_RECORD_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
-        fbuilder.initializer(" (Object [] record) -> { return $N(record).process($N); }", "toBean", ConfigProcessor.A_ARGS_CSV_CONVERTER);
+        fbuilder.initializer(" (Object [] record) -> { return $N(record).process($N); }", "toBean", Constants.A_ARGS_CSV_CONVERTER);
 
         return fbuilder.build();
     }
@@ -453,7 +450,7 @@ public class CompilerCommon {
     public MethodSpec generateCommonSQLConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
         final TypeName processorClassName = processorClassType(template, packge, ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.BEAN_SQL_CONVERSION_METHOD)
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.BEAN_SQL_CONVERSION_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonSQLConverterMethod_aux()");
@@ -512,7 +509,7 @@ public class CompilerCommon {
     public MethodSpec generateArgsToRecordMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
         final TypeName processorClassName = processorClassType(template, packge, ArrayTypeName.of(Object.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.ARGS2RECORD_CONVERTER)
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS2RECORD_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(processorClassName);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateArgsToRecordMethod()");
@@ -556,68 +553,81 @@ public class CompilerCommon {
         return method;
     }
 
-    public MethodSpec generateProcessorConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
-        final TypeName processorClassName = processorClassType(template, packge, TypeVariableName.get("T"));
-        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.PROCESSOR_CONVERTER)
+    public MethodSpec generateProcessorConverter(String template, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator) {
+
+        final TypeName returnClassName=inIntegrator ? integratorClassType(template, packge, typeT) : processorClassType(template, packge, typeT);
+
+        final TypeName returnClassNameNotParametrised = inIntegrator ? integratorClassType(template, packge): processorClassType(template, packge);
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
                 .addTypeVariable(TypeVariableName.get("T"))
-                .returns(processorClassName);
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateProcessorConverter()");
+                .returns(returnClassName);
+        if (debugComment)
+            builder.addComment("Generated by method $N", getClass().getName() + ".generateProcessorConverter()");
 
-        TypeName parameterType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),TypeVariableName.get("T"));
+        TypeName parameterType = ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE), TypeVariableName.get("T"));
 
 
-        builder.addParameter(parameterType, "processor", Modifier.FINAL);
+        String processor = compilerUtil.generateNewNameForVariable("processor");
+        builder.addParameter(parameterType, processor, Modifier.FINAL);
 
         CodeBlock.Builder jdoc = CodeBlock.builder();
         jdoc.add("Returns a converter from Processor taking arguments to Processor taking record\n");
-        jdoc.add("@param processor a transformer for this template\n");
+        jdoc.add("@param $N a transformer for this template\n", processor);
         jdoc.add("@param <T> type variable for the result of processor\n");
-        jdoc.add("@return $T&lt;$T&gt;\n" , processorClassNameNotParametrised, TypeVariableName.get("T"));
+        jdoc.add("@return $T&lt;$T&gt;\n", returnClassNameNotParametrised, TypeVariableName.get("T"));
         builder.addJavadoc(jdoc.build());
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-        String var = "";
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
 
-        String args = "";
-        String args2 = "";
+        StringBuilder args = new StringBuilder();
+        StringBuilder args2 = new StringBuilder();
 
-        boolean first=true;
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
-            String newkey = "__" + key;
-            if (first) {
-                first=false;
-            } else {
-                args = args + ", ";
-                args2 = args2 + ", ";
+        boolean first = true;
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
+
+        for (String key : fieldNames) {
+            String newKey = compilerUtil.generateNewNameForVariable(key);
+            boolean isOutput=descriptorUtils.isOutput(key,bindingsSchema);
+            if (!inIntegrator || !isOutput) {
+                if (first) {
+                    first = false;
+                } else {
+                    args.append(", ");
+                }
+                args.append(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName()).append(" ").append(newKey);
             }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName() + " " + newkey;
-            args2=args2+ " " + newkey;
+        }
+        first = true;
+
+        for (String key : fieldNames) {
+            String newKey = compilerUtil.generateNewNameForVariable(key);
+            boolean isOutput=descriptorUtils.isOutput(key,bindingsSchema);
+            if (first) {
+                first = false;
+            } else {
+                args2.append(", ");
+            }
+            if (inIntegrator && isOutput) {
+                args2.append(" null");
+            } else {
+                args2.append(" ").append(newKey);
+            }
 
         }
 
+        builder.addStatement("return ($L) -> {  return $N.process(new Object [] { getName(), $L}); }", args, processor, args2);
 
-
-        builder.addStatement("return (" + args + ") -> {  return processor.process(new Object [] { getName(), " + args2 + "}); }");
-
-
-
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
     public MethodSpec generateProcessorConverter2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
         final TypeName processorClassName = processorClassType(template, packge, TypeVariableName.get("T"));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
-        TypeName returnType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),TypeVariableName.get("T"));
-        TypeName returnTypeNotParametrised =ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE);
+        TypeName returnType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),TypeVariableName.get("T"));
+        TypeName returnTypeNotParametrised =ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE);
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(ConfigProcessor.PROCESSOR_CONVERTER)
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
                 .addTypeVariable(TypeVariableName.get("T"))
                 .returns(returnType);
@@ -646,7 +656,7 @@ public class CompilerCommon {
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
-            String newkey = "__" + key;
+            String newkey = compilerUtil.generateNewNameForVariable(key);
             if (first) {
                 first=false;
             } else {
@@ -715,6 +725,10 @@ public class CompilerCommon {
         ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),t);
         return name;
     }
+    private TypeName integratorClassType(String template, String packge, TypeVariableName t) {
+        ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.integratorNameClass(template)),t);
+        return name;
+    }
 
     private TypeName processorClassType(String template, String packge, ParameterizedTypeName parameterizedTypeName) {
         ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),parameterizedTypeName);
@@ -733,6 +747,10 @@ public class CompilerCommon {
     private TypeName processorClassType(String template, String packge) {
         return ClassName.get(packge,compilerUtil.processorNameClass(template));
     }
+    private TypeName integratorClassType(String template, String packge) {
+        return ClassName.get(packge,compilerUtil.integratorNameClass(template));
+    }
+
 
     public MethodSpec generateCommonMethod2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, boolean legacy) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
@@ -749,7 +767,7 @@ public class CompilerCommon {
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
-            String newkey = "__" + key;
+            String newkey = compilerUtil.generateNewNameForVariable(key);
             builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(the_var, key), newkey);
         }
 
@@ -759,7 +777,7 @@ public class CompilerCommon {
         String constant = (legacy? "[" : "") + StringEscapeUtils.escapeCsv(template);
         while (iter.hasNext()) {
             String key = iter.next();
-            final String newName = "__" + key;
+            final String newName = compilerUtil.generateNewNameForVariable(key);
             final Class<?> clazz = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
             final boolean isQualifiedName = the_var.get(key).get(0).get("@id") != null;
 
@@ -869,52 +887,52 @@ public class CompilerCommon {
         return method;
     }
 
-    TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+    TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
 
     public MethodSpec generatePropertyOrderMethod() {
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(ConfigProcessor.PROPERTY_ORDER_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         if (debugComment) builder5.addComment("Generated by method $N", getClass().getName()+".generatePropertyOrderMethod()");
-        builder5.addStatement("return $N", PROPERTY_ORDER);
+        builder5.addStatement("return $N", Constants.PROPERTY_ORDER);
         return builder5.build();
     }
     public MethodSpec generateOutputsMethod() {
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(OUTPUTS_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.OUTPUTS_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         if (debugComment) builder5.addComment("Generated by method $N", getClass().getName()+".generateOutputsMethod()");
-        builder5.addStatement("return $N", OUTPUTS);
+        builder5.addStatement("return $N", Constants.OUTPUTS);
         return builder5.build();
     }
     public MethodSpec generateCompulsoryInputsMethod() {
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(COMPULSORY_INPUTS_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.COMPULSORY_INPUTS_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         if (debugComment) builder5.addComment("Generated by method $N", getClass().getName()+".generateCompulsoryInputsMethod()");
-        builder5.addStatement("return $N", COMPULSORY_INPUTS);
+        builder5.addStatement("return $N", Constants.COMPULSORY_INPUTS);
         return builder5.build();
     }
     public MethodSpec generateInputsMethod() {
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(INPUTS_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.INPUTS_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String[].class);
         if (debugComment) builder5.addComment("Generated by method $N", getClass().getName()+".generateInputsMethod()");
-        builder5.addStatement("return $N", INPUTS);
+        builder5.addStatement("return $N", Constants.INPUTS);
         return builder5.build();
     }
     public MethodSpec generateRecordCsvProcessorMethod() {
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(ConfigProcessor.RECORD_CSV_PROCESSOR_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
                 .returns(myType);
-        builder5.addStatement("return $N", ConfigProcessor.A_RECORD_CSV_CONVERTER);
+        builder5.addStatement("return $N", Constants.A_RECORD_CSV_CONVERTER);
         return builder5.build();
     }
     public MethodSpec generateCommonMethod4(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getSuccessors")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(mapType);
+                .returns(mapIntArrayType);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod4()");
 
         builder.addStatement("return __successors");
@@ -926,7 +944,7 @@ public class CompilerCommon {
     public MethodSpec generateCommonMethod4b(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getTypedSuccessors")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(mapType);
+                .returns(mapIntArrayType);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod4b()");
 
         builder.addStatement("return __successors2");
@@ -937,7 +955,7 @@ public class CompilerCommon {
     public MethodSpec generateCommonMethod4static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getSuccessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(mapType);
+                .returns(mapIntArrayType);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod4static()");
 
         JsonNode the_var = bindings_schema.get("var");
@@ -957,7 +975,7 @@ public class CompilerCommon {
             }
         }
 
-        builder.addStatement("$T table = new $T()", mapType, hashmapType);
+        builder.addStatement("$T table = new $T()", mapIntArrayType, CompilerUtil.hashmapType);
 
         Iterator<String> iter = the_var.fieldNames();
 
@@ -1069,7 +1087,7 @@ public class CompilerCommon {
     public Pair<MethodSpec, Map<Integer, List<Integer>>> generateCommonMethod5static(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, JsonNode bindings_schema, IndexedDocument indexed) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("__getTypedSuccessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(mapType);
+                .returns(mapIntArrayType);
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateCommonMethod5static()");
 
@@ -1100,7 +1118,7 @@ public class CompilerCommon {
             }
         }
 
-        builder.addStatement("$T table = new $T()", mapType, hashmapType);
+        builder.addStatement("$T table = new $T()", mapIntArrayType, CompilerUtil.hashmapType);
 
         Iterator<String> iter = the_var.fieldNames();
 
@@ -1276,7 +1294,7 @@ public class CompilerCommon {
         Iterator<String> iter = the_var.fieldNames();
         while (iter.hasNext()) {
             String key = iter.next();
-            String newkey = "__" + key;
+            String newkey = compilerUtil.generateNewNameForVariable(key);
             builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(the_var, key), newkey);
         }
 
@@ -1286,7 +1304,7 @@ public class CompilerCommon {
         String args = "";
         while (iter2.hasNext()) {
             String key = iter2.next();
-            String newkey="__"+key;
+            String newkey= compilerUtil.generateNewNameForVariable(key);
             String statement = "bean.$N=$N";
             builder.addStatement(statement, key, newkey);
         }
@@ -1466,7 +1484,7 @@ public class CompilerCommon {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
+        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated by ProvToolbox method $N", getClass().getName()+".generateSQLInterface()")
                 .build();
         return myfile;
@@ -1477,7 +1495,7 @@ public class CompilerCommon {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getClientBuilder")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(ConfigProcessor.CLIENT_PACKAGE, BUILDER));
+                .returns(ClassName.get(Constants.CLIENT_PACKAGE, Constants.BUILDER));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".commonAccessorGenerator()");
 

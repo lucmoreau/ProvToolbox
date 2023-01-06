@@ -1,8 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
-import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -12,12 +10,12 @@ import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.CompilerBeanEnactor.typeT;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerSimpleBean {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
-
+    public static final String PROCESSOR_PARAMETER_NAME = "__processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
 
@@ -32,10 +30,9 @@ public class CompilerSimpleBean {
 
         }
 
-        FieldSpec.Builder b0 = FieldSpec.builder(String.class, "isA");
-        b0.addModifiers(Modifier.PUBLIC);
-        b0.addModifiers(Modifier.FINAL);
-        b0.initializer("$S",templateName);
+        FieldSpec.Builder b0 = FieldSpec.builder(String.class, IS_A)
+                .addModifiers(Modifier.PUBLIC,Modifier.FINAL)
+                .initializer("$S",templateName);
 
         builder.addField(b0.build());
 
@@ -77,41 +74,29 @@ public class CompilerSimpleBean {
 
         TypeSpec bean = builder.build();
 
-        JavaFile myfile = JavaFile.builder(packge, bean)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", getClass().getName(), templateName)
-                .build();
-
-        return myfile;
+        return compilerUtil.saveToFileWithComment(bean, templateName, packge, getClass().getName());
 
     }
 
-    static TypeName processorClassType(CompilerUtil compilerUtil, String template, String packge) {
-        ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),TypeVariableName.get("T"));
-        return name;
-    }
-    public static TypeName processorInterfaceType(CompilerUtil compilerUtil, String template, String packge) {
-        ParameterizedTypeName name=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(template)+"Interface"),TypeVariableName.get("T"));
-        return name;
+    private TypeName processorClassType(String template, String packge) {
+        return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),typeT);
     }
 
     public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema) {
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("process")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(TypeVariableName.get("T")).addTypeVariable(TypeVariableName.get("T"));
-
-        builder.addParameter(processorClassType(compilerUtil, template,packge), "processor");
-
-
-        int count = 1;
-        StringBuilder args = new StringBuilder();
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            if (count > 1) args.append(", ");
-            args.append(key);
-            count++;
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
+        if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
+            throw new IllegalStateException("Template " + template + " contains variable " + PROCESSOR_PARAMETER_NAME + " " + fieldNames);
         }
 
-        builder.addStatement("return processor.process("  + args + ")");
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(PROCESSOR_PROCESS_METHOD_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(typeT)
+                .addTypeVariable(typeT);
+
+        builder.addParameter(processorClassType(template,packge), PROCESSOR_PARAMETER_NAME);
+
+        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, PROCESSOR_PROCESS_METHOD_NAME, String.join(", ", fieldNames));
 
         return builder.build();
 

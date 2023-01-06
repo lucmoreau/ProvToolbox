@@ -24,7 +24,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -639,4 +638,9 @@ public class CompilerUtil {
         }
     }
 
+    JavaFile saveToFileWithComment(TypeSpec typeSpec, String templateName, String packge, String className) {
+        return JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", className, templateName)
+                .build();
+    }
 }

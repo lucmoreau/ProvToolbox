@@ -30,6 +30,11 @@ public class CompilerExpansionBuilder {
     private final boolean debugComment;
     private final CompilerTypeManagement compilerTypeManagement;
 
+    private TypeName processorInterfaceType(String template, String packge) {
+        return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(template)+"Interface"),TypeVariableName.get("T"));
+    }
+
+
     public CompilerExpansionBuilder(boolean withMain, CompilerClient compilerClient, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
         this.pFactory=pFactory;
         this.withMain=withMain;
@@ -140,7 +145,7 @@ public class CompilerExpansionBuilder {
             builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
             builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
-            builder.addMethod(generateFactoryMethodWithArrayAndContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
+            builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema));
         }
 
 
@@ -688,7 +693,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.generateSpecializedParameters(builder, the_var);
 
-        builder.addParameter(CompilerSimpleBean.processorInterfaceType(compilerUtil, template, packge), "processor");
+        builder.addParameter(processorInterfaceType(template, packge), "processor");
 
         Iterator<String> iter2 = the_context.fieldNames();
         while (iter2.hasNext()) {
@@ -793,7 +798,7 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
-    public MethodSpec generateFactoryMethodWithArrayAndContinuation(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name,  String template, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get("T"))
@@ -804,10 +809,9 @@ public class CompilerExpansionBuilder {
 
 
         JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
 
         builder.addParameter(Object[].class, "record");
-        builder.addParameter(CompilerSimpleBean.processorInterfaceType(compilerUtil, template, packge), "_processor");
+        builder.addParameter(processorInterfaceType(template, packge), "_processor");
 
         int count = 1;
         Iterator<String> iter = the_var.fieldNames();

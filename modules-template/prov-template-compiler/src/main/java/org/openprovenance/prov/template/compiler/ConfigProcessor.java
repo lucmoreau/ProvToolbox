@@ -27,6 +27,7 @@ import static org.openprovenance.prov.template.compiler.expansion.StatementTypeA
 
 
 public class ConfigProcessor {
+    public static final String IS_A = "isA";
     public static final String PREFIX_LOG_VAR = "___";
     public static final String GET_NODES_METHOD = "getNodes";
     public static final String BUILDER_INTERFACE = "Builder";
@@ -87,6 +88,7 @@ public class ConfigProcessor {
     public static final String ARECORD_VAR = "arecord";
     public static final String INPUT_TABLE = "input_table";
     public static final String JAVADOC_NO_DOCUMENTATION = "-- no @documentation";
+    public static final String PROCESSOR_PROCESS_METHOD_NAME = "process";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;

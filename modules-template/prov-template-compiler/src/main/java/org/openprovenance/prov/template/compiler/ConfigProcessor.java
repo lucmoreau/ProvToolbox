@@ -86,6 +86,7 @@ public class ConfigProcessor {
     public static final String RECORDS_VAR = "records";
     public static final String ARECORD_VAR = "arecord";
     public static final String INPUT_TABLE = "input_table";
+    public static final String JAVADOC_NO_DOCUMENTATION = "-- no @documentation";
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -136,7 +137,7 @@ public class ConfigProcessor {
         //this.compilerTypePropagate= new CompilerTypePropagate(withMain,compilerClient,pFactory,debugComment);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain,compilerClient,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
-        this.compilerSimpleBean =new CompilerSimpleBean(pFactory);
+        this.compilerSimpleBean =new CompilerSimpleBean();
         this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
         this.compilerClientTest =new CompilerClientTest();
@@ -420,10 +421,12 @@ public class ConfigProcessor {
             String bnTP= compilerUtil.templateNameClass(templateName)+"TypePropagate";
             String bnTR= compilerUtil.templateNameClass(templateName)+"TypedRecord";
             String bean=compilerUtil.beanNameClass(templateName);
+            String outputs=compilerUtil.outputsNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
 
             String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
             String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
+            String destinationDir2b=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/" + "ouputs" + "/";
 
             String destination=destinationDir + bn + ".java";
             String destinationI=destinationDir + bnI + ".java";
@@ -433,6 +436,7 @@ public class ConfigProcessor {
             String destination2=destinationDir2 + bn + ".java";
             String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
+            String destination3b=destinationDir2b + outputs + ".java";
             String destination4=destinationDir2 + processor + ".java";
 
 
@@ -486,8 +490,10 @@ public class ConfigProcessor {
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(doc, bean, templateName, packge + ".client", resource, bindings_schema);
+                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, false);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
+                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.outputs", bindingsSchema, true);
+                    val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
                 }
 
                 JavaFile spec4 = compilerProcessor.generateProcessor(doc, processor, templateName, packge + ".client", resource, bindings_schema);

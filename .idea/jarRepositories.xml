@@ -27,14 +27,14 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="mvn.prov.toolbox.snapshots" />
-      <option name="name" value="maven snapshot repository for PROV toolbox" />
-      <option name="url" value="http://openprovenance.org/java/maven-snapshots/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="jsweet-snapshots" />
       <option name="name" value="libs-snapshot" />
       <option name="url" value="http://repository.jsweet.org/artifactory/libs-snapshot-local" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mvn.prov.toolbox.snapshots" />
+      <option name="name" value="maven snapshot repository for PROV toolbox" />
+      <option name="url" value="http://openprovenance.org/java/maven-snapshots/" />
     </remote-repository>
   </component>
 </project>

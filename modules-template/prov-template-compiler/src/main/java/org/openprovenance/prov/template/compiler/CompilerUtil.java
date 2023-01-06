@@ -48,6 +48,9 @@ public class CompilerUtil {
     public String beanNameClass(String templateName) {
         return capitalize(templateName) + "Bean";
     }
+    public String outputsNameClass(String templateName) {
+        return capitalize(templateName) + "Outputs";
+    }
     public String processorNameClass(String templateName) {
         return capitalize(templateName) + "Processor";
     }

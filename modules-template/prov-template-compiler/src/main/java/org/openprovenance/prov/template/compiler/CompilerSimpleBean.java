@@ -1,57 +1,36 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
+import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.NameDescriptor;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-import java.io.*;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerSimpleBean {
-    private final ProvFactory pFactory;
+    public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
+
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
-    public CompilerSimpleBean(ProvFactory pFactory) {
-        this.pFactory = pFactory;
-    }
 
-    public JavaFile generateSimpleBean(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    public JavaFile generateSimpleBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean outputsOnly) {
 
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(outputsOnly? compilerUtil.outputsNameClass(templateName): compilerUtil.beanNameClass(templateName));
 
-        Bundle bun = u.getBundle(doc).get(0);
+        if (outputsOnly) {
+            builder.addJavadoc("A Bean only containing the outputs of this template.");
+        } else {
+            builder.addJavadoc("A Bean to capture all variables of this template.");
 
-        Set<QualifiedName> allVars = new HashSet<QualifiedName>();
-        Set<QualifiedName> allAtts = new HashSet<QualifiedName>();
-
-        compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
-
-
-        IndexedDocument indexed = new IndexedDocument(pFactory, pFactory.newDocument(), true);
-        u.forAllStatement(bun.getStatement(), indexed);
-
-
-        return generateSimpleBean_aux(doc, allVars, allAtts, name, templateName, packge, resource, bindings_schema, indexed);
-    }
-
-    public TypeSpec.Builder generateBeanClassInit(String name, String packge, String supername) {
-        return TypeSpec.classBuilder(name)
-                //  .addSuperinterface(ClassName.get(packge,supername))
-                .addModifiers(Modifier.PUBLIC);
-    }
-
-    private JavaFile generateSimpleBean_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, IndexedDocument indexed) {
-
-        TypeSpec.Builder builder = generateBeanClassInit(name, ConfigProcessor.CLIENT_PACKAGE, "Bean");
-
-
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-
+        }
 
         FieldSpec.Builder b0 = FieldSpec.builder(String.class, "isA");
         b0.addModifiers(Modifier.PUBLIC);
@@ -60,40 +39,41 @@ public class CompilerSimpleBean {
 
         builder.addField(b0.build());
 
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+
+        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+            if (!outputsOnly || descriptorUtils.isOutput(key, bindingsSchema)) {
 
 
+                FieldSpec.Builder b = FieldSpec.builder(compilerUtil.getJavaTypeForDeclaredType(theVar, key), key);
+                b.addModifiers(Modifier.PUBLIC);
 
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
+                Descriptor descriptor=theVar.get(key).get(0);
+                Function<NameDescriptor,Void> nf=
+                        (nd) -> {
+                            String documentation=nd.getDocumentation()==null? ConfigProcessor.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
+                            String type=nd.getType()==null? JAVADOC_NO_DOCUMENTATION : nd.getType();
+                            b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
+                            return null;
+                        };
+                Function<AttributeDescriptor,Void> af=
+                        (nd) -> {
+                            String documentation=nd.getDocumentation()==null? ConfigProcessor.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
+                            String type=nd.getType()==null? JAVADOC_NO_DOCUMENTATION : nd.getType();
+                            b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
+                            return null;
+                        };
+                descriptorUtils.getFromDescriptor(descriptor,af,nf);
 
+                builder.addField(b.build());
 
-            FieldSpec.Builder b = FieldSpec.builder(compilerUtil.getJavaTypeForDeclaredType(the_var, key), key);
-            b.addModifiers(Modifier.PUBLIC);
-
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && !(entry instanceof MissingNode)) {
-                JsonNode firstNode = entry.get(0);
-                if (firstNode instanceof ArrayNode) {
-                    firstNode = ((ArrayNode) firstNode).get(0);
-                }
-                final JsonNode jsonNode = firstNode.get("@documentation");
-                String documentation = compilerUtil.noNode(jsonNode) ? "-- no @documentation" : jsonNode.textValue();
-                final JsonNode jsonNode2 = firstNode.get("@type");
-                String type = compilerUtil.noNode(jsonNode2) ? "xsd:string" : jsonNode2.textValue();
-                b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
-            } else {
-                b.addJavadoc("$N -- no bindings schemas \n", key);
             }
-
-            builder.addField(b.build());
-
         }
 
-        MethodSpec mbuild = generateInvokeProcessor(allVars, allAtts, name, templateName, packge, bindings_schema);
-
-        builder.addMethod(mbuild);
-
+        if (!outputsOnly) {
+            MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema);
+            builder.addMethod(mbuild);
+        }
 
         TypeSpec bean = builder.build();
 
@@ -114,26 +94,20 @@ public class CompilerSimpleBean {
         return name;
     }
 
-    public MethodSpec generateInvokeProcessor(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("process")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get("T")).addTypeVariable(TypeVariableName.get("T"));
 
-        final String loggerName = compilerUtil.loggerName(template);
-
         builder.addParameter(processorClassType(compilerUtil, template,packge), "processor");
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
 
         int count = 1;
-        Iterator<String> iter = the_var.fieldNames();
-        String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (count > 1) args = args + ", ";
-            args = args + key;
+        StringBuilder args = new StringBuilder();
+        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+            if (count > 1) args.append(", ");
+            args.append(key);
             count++;
         }
 

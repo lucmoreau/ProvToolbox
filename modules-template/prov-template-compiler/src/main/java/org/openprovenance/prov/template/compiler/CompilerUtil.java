@@ -60,6 +60,9 @@ public class CompilerUtil {
     public String outputsNameClass(String templateName) {
         return capitalize(templateName) + "Outputs";
     }
+    public String inputsNameClass(String templateName) {
+        return capitalize(templateName) + "Inputs";
+    }
     public String processorNameClass(String templateName) {
         return capitalize(templateName) + "Processor";
     }

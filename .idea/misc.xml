@@ -29,6 +29,7 @@
         <option value="$PROJECT_DIR$/modules-core/jsweet-quickstart/pom.xml" />
         <option value="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" />
         <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

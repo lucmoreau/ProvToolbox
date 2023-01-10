@@ -23,7 +23,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.4.20.v20190813" level="project" />
-    <orderEntry type="library" name="Maven: org.example:templates_cli:0.1.0" level="project" />
+    <orderEntry type="module" module-name="templates_cli" />
     <orderEntry type="module" module-name="prov-model" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.2" level="project" />
@@ -40,7 +40,7 @@
     <orderEntry type="library" name="Maven: org.webjars.npm:underscore:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: org.webjars.bowergithub.garycourt:jsv:4.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.webjars.bowergithub.jsonform:jsonform:2.1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.example:templates_l2p:0.1.0" level="project" />
+    <orderEntry type="module" module-name="templates_l2p" />
     <orderEntry type="module" module-name="prov-n" />
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.4" level="project" />
     <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />

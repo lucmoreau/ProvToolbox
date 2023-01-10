@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
@@ -13,6 +14,8 @@ import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.common.Constants.INPUTS;
+import static org.openprovenance.prov.template.compiler.common.Constants.OUTPUTS;
 
 public class CompilerSimpleBean {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
@@ -20,16 +23,39 @@ public class CompilerSimpleBean {
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
 
-    public JavaFile generateSimpleBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean outputsOnly) {
+    public JavaFile generateSimpleBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(outputsOnly? compilerUtil.outputsNameClass(templateName): compilerUtil.beanNameClass(templateName));
-
-        if (outputsOnly) {
-            builder.addJavadoc("A Bean only containing the outputs of this template.");
-        } else {
-            builder.addJavadoc("A Bean to capture all variables of this template.");
-
+        String name;
+        switch (beanKind) {
+            case INPUTS:
+                name= compilerUtil.inputsNameClass(templateName);
+                break;
+            case OUTPUTS:
+                name= compilerUtil.outputsNameClass(templateName);
+                break;
+            case COMMON:
+                name= compilerUtil.beanNameClass(templateName);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + beanKind);
         }
+
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
+
+        switch (beanKind) {
+            case INPUTS:
+                builder.addJavadoc("A Bean only containing the input of this template.");
+                break;
+            case OUTPUTS:
+                builder.addJavadoc("A Bean only containing the outputs of this template.");
+                break;
+            case COMMON:
+                builder.addJavadoc("A Bean to capture all variables of this template.");
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + beanKind);
+        }
+
 
         FieldSpec.Builder b0 = FieldSpec.builder(String.class, Constants.IS_A)
                 .addModifiers(Modifier.PUBLIC,Modifier.FINAL)
@@ -40,7 +66,9 @@ public class CompilerSimpleBean {
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            if (!outputsOnly || descriptorUtils.isOutput(key, bindingsSchema)) {
+            if (beanKind==BeanKind.COMMON
+                    || (beanKind==BeanKind.OUTPUTS && descriptorUtils.isOutput(key, bindingsSchema))
+                    || (beanKind==BeanKind.INPUTS && descriptorUtils.isInput(key, bindingsSchema))){
 
 
                 FieldSpec.Builder b = FieldSpec.builder(compilerUtil.getJavaTypeForDeclaredType(theVar, key), key);
@@ -68,7 +96,7 @@ public class CompilerSimpleBean {
             }
         }
 
-        if (!outputsOnly) {
+        if (beanKind==BeanKind.COMMON) {
             MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema);
             builder.addMethod(mbuild);
         }

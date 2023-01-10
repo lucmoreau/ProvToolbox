@@ -42,8 +42,11 @@ public interface Constants {
     String CSV_CONFIGURATOR = "CsvConfigurator";
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
+    String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
     String BEAN_COMPLETER = "BeanCompleter";
+    String BEAN_COMPLETER2 = "BeanCompleter2";
     String BEAN_ENACTOR = "BeanEnactor";
+    String BEAN_ENACTOR2 = "BeanEnactor2";
     String QUERY_INVOKER = "QueryInvoker";
     String BEAN_CHECKER = "BeanChecker";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";

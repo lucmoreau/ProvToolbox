@@ -46,6 +46,9 @@
       <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" filepath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" filepath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/templates_cli.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/templates_cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_l2p/templates_l2p.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_l2p/templates_l2p.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" />
     </modules>
   </component>

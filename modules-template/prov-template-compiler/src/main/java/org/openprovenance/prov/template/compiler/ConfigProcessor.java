@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
@@ -33,6 +34,7 @@ import static org.openprovenance.prov.template.compiler.expansion.StatementTypeA
 
 public class ConfigProcessor implements Constants {
     static final TypeVariableName typeResult = TypeVariableName.get("RESULT");
+    public static final TypeVariableName typeOutput = TypeVariableName.get("OUTPUT");
     static final TypeVariableName typeT = TypeVariableName.get("T");
     static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
     static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
@@ -50,7 +52,9 @@ public class ConfigProcessor implements Constants {
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
     private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
+    private final CompilerBeanCompleter2 compilerBeanCompleter2 = new CompilerBeanCompleter2();
     private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
+    private final CompilerBeanEnactor2 compilerBeanEnactor2 = new CompilerBeanEnactor2();
     private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
     private final CompilerBeanChecker compilerBeanChecker = new CompilerBeanChecker();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
@@ -196,6 +200,7 @@ public class ConfigProcessor implements Constants {
 
     public void doGenerateClientAndProject(TemplatesCompilerConfig configs, String cli_lib, String cli_dir, String cli_src_dir) {
         final String configurator_dir= cli_src_dir + "/" + configs.configurator_package.replace('.', '/') + "/";
+        final String configurator_dir2= cli_src_dir + "/" + configs.configurator_package.replace('.', '/') + "2/";
         final String logger_dir= cli_src_dir + "/" + configs.logger_package.replace('.', '/') + "/";
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
@@ -227,11 +232,23 @@ public class ConfigProcessor implements Constants {
         JavaFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs);
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.beanProcessor+ ".java", beanProcessor);
 
+        new File(configurator_dir).mkdirs();
+
+        new File(configurator_dir2).mkdirs();
+
+
         JavaFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_COMPLETER + ".java", beanCompleter);
 
+        JavaFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs);
+        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_COMPLETER2 + ".java", beanCompleter2);
+
+
         JavaFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_ENACTOR + ".java", beanEnactor);
+
+        JavaFile beanEnactor2=compilerBeanEnactor2.generateBeanEnactor2(configs);
+        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_ENACTOR2 + ".java", beanEnactor2);
 
 
         JavaFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs);
@@ -241,7 +258,6 @@ public class ConfigProcessor implements Constants {
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_CHECKER + ".java", beanChecker);
 
 
-        new File(configurator_dir).mkdirs();
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_CONFIGURATOR + ".java", configurationSql);
 
@@ -259,6 +275,9 @@ public class ConfigProcessor implements Constants {
 
         JavaFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + ENACTOR_CONFIGURATOR + ".java", configurationEnactor);
+
+        JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs,ENACTOR_CONFIGURATOR2);
+        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + ENACTOR_CONFIGURATOR2 + ".java", configurationEnactor2);
     }
 
     private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {
@@ -355,6 +374,7 @@ public class ConfigProcessor implements Constants {
             String bnTR= compilerUtil.templateNameClass(templateName)+"TypedRecord";
             String bean=compilerUtil.beanNameClass(templateName);
             String outputs=compilerUtil.outputsNameClass(templateName);
+            String inputs=compilerUtil.inputsNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
             String integratorBuilder=compilerUtil.integratorBuilderNameClass(templateName);
             String integrator=compilerUtil.integratorNameClass(templateName);
@@ -372,6 +392,7 @@ public class ConfigProcessor implements Constants {
             String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
             String destination3b=destinationDir2b + outputs + ".java";
+            String destination3c=destinationDir2b + inputs + ".java";
             String destination4=destinationDir2 + processor + ".java";
 
             String destination7=destinationDir2b + integratorBuilder + ".java";
@@ -430,10 +451,12 @@ public class ConfigProcessor implements Constants {
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, !IN_INTEGRATOR);
+                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, BeanKind.COMMON);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
-                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
+                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.OUTPUTS);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
+                    JavaFile spec3c = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.INPUTS);
+                    val3 = compilerUtil.saveToFile(destinationDir2b, destination3c, spec3c);
 
                     JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packge + ".client.integrator", bindingsSchema);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination7, spec7);

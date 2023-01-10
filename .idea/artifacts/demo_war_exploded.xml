@@ -15,7 +15,9 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-util:9.4.20.v20190813" />
-          <element id="library" level="project" name="Maven: org.example:templates_cli:0.1.0" />
+          <element id="archive" name="templates_cli-0.1.0.jar">
+            <element id="module-output" name="templates_cli" />
+          </element>
           <element id="archive" name="prov-model-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-model" />
           </element>
@@ -34,7 +36,9 @@
           <element id="library" level="project" name="Maven: org.webjars.npm:underscore:1.12.0" />
           <element id="library" level="project" name="Maven: org.webjars.bowergithub.garycourt:jsv:4.0.2" />
           <element id="library" level="project" name="Maven: org.webjars.bowergithub.jsonform:jsonform:2.1.5" />
-          <element id="library" level="project" name="Maven: org.example:templates_l2p:0.1.0" />
+          <element id="archive" name="templates_l2p-0.1.0.jar">
+            <element id="module-output" name="templates_l2p" />
+          </element>
           <element id="archive" name="prov-n-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-n" />
           </element>

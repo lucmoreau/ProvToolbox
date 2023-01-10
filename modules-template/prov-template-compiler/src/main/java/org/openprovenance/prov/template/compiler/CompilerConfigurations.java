@@ -90,6 +90,10 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor));
     }
 
+    public JavaFile generateEnactorConfigurator2(TemplatesCompilerConfig configs, String theConfiguratorName) {
+        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", ClassName.get(configs.logger_package,configs.beanProcessor));
+    }
+
     public void generateMethodRecord2SqlConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
         mspec.addStatement("return $N.aRecord2SqlConverter", builderParameter);
     }
@@ -106,6 +110,19 @@ public class CompilerConfigurations {
         mspec.addStatement("return $N.aRecord2BeanConverter", builderParameter);
     }
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+        mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);
+
+
+        mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
+                "                    $T bean=beanConverter.process(array);\n" +
+                "                    return $N.process(bean);\n" +
+                "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType,enactorVar);
+        mspec.addStatement("return enactor");
+    }
+    public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+        mspec.addComment("Novel stuff");
+        mspec.addStatement("$T novel=builder.getIntegrator().newOutput()", Object.class);
+        mspec.addComment("Original stuff");
         mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);
 
 

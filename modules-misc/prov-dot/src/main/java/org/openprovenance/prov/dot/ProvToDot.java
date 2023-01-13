@@ -1181,12 +1181,10 @@ public class ProvToDot {
     }
 
     public String htmlify(String name, boolean truncate) {
-        if (truncate) {
-            if (maxStringLength != null) {
-                name = name.substring(0, min(name.length(), maxStringLength));
-                if (ellipsis) {
-                    name = name + "...";
-                }
+        if (truncate && (maxStringLength != null) && (name.length() > maxStringLength)) {
+            name = name.substring(0, maxStringLength);
+            if (ellipsis) {
+                name = name + "...";
             }
         }
         return name

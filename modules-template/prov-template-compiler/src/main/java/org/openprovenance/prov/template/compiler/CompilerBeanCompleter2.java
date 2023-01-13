@@ -92,35 +92,49 @@ public class CompilerBeanCompleter2 {
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
+            final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
             String packge = config.package_ + ".client.integrator";
-            final ClassName cutputClassName = ClassName.get(packge, outputBeanNameClass);
-            MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(cutputClassName,"bean").build())
-                    .returns(cutputClassName);
 
-
-            for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-                if (descriptorUtils.isOutput(key,bindingsSchema)) {
-                    Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                    mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
-                }
-            }
-
-            mspec.addStatement("return bean");
-
+            final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
+            MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
             builder.addMethod(mspec.build());
+
+
+            final ClassName inputClassName = ClassName.get(packge, inputBeanNameClass);
+            MethodSpec.Builder mspec2 = createProcessMethod(bindingsSchema, inputClassName, false);
+            builder.addMethod(mspec2.build());
         }
 
 
         TypeSpec theLogger = builder.build();
-
         JavaFile myfile = JavaFile.builder(configs.configurator_package + "2", theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanCompleter() for templates config $N", getClass().getName(), configs.name)
                 .build();
         return myfile;
     }
 
+    private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName cutputClassName, boolean isOutput) {
+        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ParameterSpec.builder(cutputClassName,"bean").build())
+                .returns(cutputClassName);
+
+
+        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+            if (isOutput && descriptorUtils.isOutput(key, bindingsSchema)) {
+                Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
+                mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+            } else {
+                if (!isOutput && descriptorUtils.isInput(key, bindingsSchema)) {
+                    Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
+                    mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+                }
+            }
+        }
+
+        mspec.addStatement("return bean");
+        return mspec;
+    }
 
 
 }

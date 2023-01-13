@@ -667,7 +667,7 @@ public class ProvToDot {
         for (LangString lab: ((HasLabel)ann).getLabel()) {
             label=label+"	<TR>\n";
             label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + htmlify(lab.getValue()) + "</TD>\n";
+            label=label+"	    <TD align=\"left\">" + htmlify(lab.getValue(), true) + "</TD>\n";
             label=label+"	</TR>\n";
         }
         if (ann instanceof HasValue) {
@@ -733,6 +733,8 @@ public class ProvToDot {
         return count;
     }
 
+    /*
+
     public String convertValue(Attribute v) {
         if (v.getValue() instanceof QualifiedName) {
             QualifiedName name=(QualifiedName) v.getValue();
@@ -743,6 +745,8 @@ public class ProvToDot {
         int j=label.lastIndexOf("/");
         return htmlify(label.substring(Math.max(i,j)+1, label.length()));
     }
+
+     */
 
     public String nonEmptyLocalName(QualifiedName name) {
         final String localPart = name.getLocalPart();
@@ -785,19 +789,19 @@ public class ProvToDot {
         Object val=t.getValue();
         if (val instanceof QualifiedName) {
             QualifiedName q=(QualifiedName)val;
-            return htmlify(q.getPrefix() +  ":" + q.getLocalPart());
+            return htmlify(q.getPrefix() +  ":" + q.getLocalPart(), true);
             //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
             //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
         } if (val instanceof LangString) {
             LangString ls=(LangString)val;
             if (ls.getLang()==null) {
-                return htmlify(ls.getValue());
+                return htmlify(ls.getValue(), true);
             } else {
-                return htmlify(ls.getValue()) + "@" + ls.getLang();
+                return htmlify(ls.getValue(), true) + "@" + ls.getLang();
 
             }
         } else {
-            return htmlify(""+val);
+            return htmlify(""+val, true);
         }
     }
     public String getPropertyValueFromAny (Attribute o) {
@@ -1173,10 +1177,16 @@ public class ProvToDot {
     boolean ellipsis=true;
 
     public String htmlify(String name) {
-        if (maxStringLength!=null) {
-            name=name.substring(0,min(name.length(),maxStringLength));
-            if (ellipsis) {
-                name = name + "...";
+        return htmlify(name,false);
+    }
+
+    public String htmlify(String name, boolean truncate) {
+        if (truncate) {
+            if (maxStringLength != null) {
+                name = name.substring(0, min(name.length(), maxStringLength));
+                if (ellipsis) {
+                    name = name + "...";
+                }
             }
         }
         return name

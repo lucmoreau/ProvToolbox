@@ -53,6 +53,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
     private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
     private final CompilerBeanCompleter2 compilerBeanCompleter2 = new CompilerBeanCompleter2();
+    private final CompilerTypeConverter compilerTypeConverter = new CompilerTypeConverter();
     private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
     private final CompilerBeanEnactor2 compilerBeanEnactor2 = new CompilerBeanEnactor2();
     private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
@@ -243,6 +244,9 @@ public class ConfigProcessor implements Constants {
         JavaFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs);
         compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_COMPLETER2 + ".java", beanCompleter2);
 
+        JavaFile typeConverter=compilerTypeConverter.generateTypeConverter(configs);
+        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + TYPE_CONVERTER + ".java", typeConverter);
+
 
         JavaFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_ENACTOR + ".java", beanEnactor);
@@ -278,6 +282,8 @@ public class ConfigProcessor implements Constants {
 
         JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs,ENACTOR_CONFIGURATOR2);
         compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + ENACTOR_CONFIGURATOR2 + ".java", configurationEnactor2);
+
+
     }
 
     private void exportMiscFiles(TemplatesCompilerConfig configs, String cli_dir, String cli_lib) {

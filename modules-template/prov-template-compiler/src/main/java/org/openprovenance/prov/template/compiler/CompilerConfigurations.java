@@ -23,7 +23,12 @@ public class CompilerConfigurations {
     String enactorVar = "beanEnactor";
 
 
-    public JavaFile generateConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, TypeName typeName, QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator, String generatorMethod, TypeName beanProcessor) {
+    public JavaFile generateConfigurator(TemplatesCompilerConfig configs,
+                                         String theConfiguratorName,
+                                         TypeName typeName,
+                                         QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
+                                         String generatorMethod,
+                                         TypeName beanProcessor) {
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
 
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package,configs.tableConfigurator), typeName);
@@ -120,16 +125,17 @@ public class CompilerConfigurations {
         mspec.addStatement("return enactor");
     }
     public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
-        mspec.addComment("Novel stuff");
-        mspec.addStatement("$T novel=builder.getIntegrator().newOutput()", Object.class);
-        mspec.addComment("Original stuff");
+        //mspec.addComment("Novel stuff");
+        //mspec.addStatement("$T novel=builder.getIntegrator().newOutput()", Object.class);
+        //mspec.addComment("Original stuff");
         mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);
-
-
         mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
                 "                    $T bean=beanConverter.process(array);\n" +
                 "                    return $N.process(bean);\n" +
                 "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType,enactorVar);
         mspec.addStatement("return enactor");
     }
+
+
+
 }

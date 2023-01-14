@@ -147,6 +147,10 @@ public class CompilerLogger {
                 .returns(myType);
         builder.addMethod(builder5.build());
 
+        MethodSpec.Builder builder6 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String[].class);
+        builder.addMethod(builder6.build());
 
         TypeSpec theInterface = builder.build();
 

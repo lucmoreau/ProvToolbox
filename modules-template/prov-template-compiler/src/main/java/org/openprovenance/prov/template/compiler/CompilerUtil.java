@@ -41,6 +41,10 @@ public class CompilerUtil {
     public static final TypeVariableName typeT = TypeVariableName.get("T");
     static final TypeName classType=ParameterizedTypeName.get(ClassName.get(Class.class), typeT);
     static final TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(Object.class));
+    static final TypeName hashMapType=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),ClassName.get(Object.class));
+
+    static final TypeName mapTypeT=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),typeT);
+    static final TypeName hashMapTypeT=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),typeT);
     public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
 
     public String generateNewNameForVariable(String key) {

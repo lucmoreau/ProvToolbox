@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * Provides a fluent API for programmatically constructing and executing SQL
  * queries.
  */
-public class QueryBuilder {
+public class QueryBuilder_TODELETE {
     private StringBuilder sqlBuilder;
 
     private List<String> parameters = new LinkedList<>();
@@ -44,7 +44,7 @@ public class QueryBuilder {
      * @param sql
      * The existing SQL query.
      */
-    public QueryBuilder(String sql) {
+    public QueryBuilder_TODELETE(String sql) {
         if (sql == null) {
             throw new IllegalArgumentException();
         }
@@ -54,7 +54,7 @@ public class QueryBuilder {
         append(sql);
     }
 
-    private QueryBuilder(StringBuilder sqlBuilder) {
+    private QueryBuilder_TODELETE(StringBuilder sqlBuilder) {
         this.sqlBuilder = sqlBuilder;
     }
 
@@ -65,9 +65,9 @@ public class QueryBuilder {
      * The column names.
      *
      * @return
-     * The new {@link QueryBuilder} instance.
+     * The new {@link QueryBuilder_TODELETE} instance.
      */
-    public static QueryBuilder select(String... columns) {
+    public static QueryBuilder_TODELETE select(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -76,7 +76,7 @@ public class QueryBuilder {
 
         sqlBuilder.append("SELECT ");
 
-        var queryBuilder = new QueryBuilder(sqlBuilder);
+        var queryBuilder = new QueryBuilder_TODELETE(sqlBuilder);
 
         for (var i = 0; i < columns.length; i++) {
             if (i > 0) {
@@ -90,7 +90,7 @@ public class QueryBuilder {
     }
 
 
-    public static QueryBuilder functionCall(String function, List<?> values, String alias) {
+    public static QueryBuilder_TODELETE functionCall(String function, List<?> values, String alias) {
         if (function == null) {
             throw new IllegalArgumentException();
         }
@@ -100,13 +100,13 @@ public class QueryBuilder {
         sqlBuilder.append(function);
 
 
-        var queryBuilder = new QueryBuilder(sqlBuilder);
+        var queryBuilder = new QueryBuilder_TODELETE(sqlBuilder);
         queryBuilder.args(values);
         queryBuilder.alias(alias);
 
         return queryBuilder;
     }
-    public QueryBuilder selectExp(String... columns) {
+    public QueryBuilder_TODELETE selectExp(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -133,9 +133,9 @@ public class QueryBuilder {
      * The table names.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder from(String... tables) {
+    public QueryBuilder_TODELETE from(String... tables) {
         if (tables == null || tables.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -156,9 +156,9 @@ public class QueryBuilder {
      * The subquery's alias.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder from(QueryBuilder queryBuilder, String alias) {
+    public QueryBuilder_TODELETE from(QueryBuilder_TODELETE queryBuilder, String alias) {
         if (queryBuilder == null || alias == null) {
             throw new IllegalArgumentException();
         }
@@ -181,9 +181,9 @@ public class QueryBuilder {
      * The table name.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder join(String table) {
+    public QueryBuilder_TODELETE join(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -204,9 +204,9 @@ public class QueryBuilder {
      * The subquery's alias.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder join(QueryBuilder queryBuilder, String alias) {
+    public QueryBuilder_TODELETE join(QueryBuilder_TODELETE queryBuilder, String alias) {
         if (queryBuilder == null || alias == null) {
             throw new IllegalArgumentException();
         }
@@ -228,9 +228,9 @@ public class QueryBuilder {
      * The table name.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder leftJoin(String table) {
+    public QueryBuilder_TODELETE leftJoin(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -248,9 +248,9 @@ public class QueryBuilder {
      * The table name.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder rightJoin(String table) {
+    public QueryBuilder_TODELETE rightJoin(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -268,9 +268,9 @@ public class QueryBuilder {
      * The clause predicates.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder on(String... predicates) {
+    public QueryBuilder_TODELETE on(String... predicates) {
         return filter("on", predicates);
     }
 
@@ -281,13 +281,13 @@ public class QueryBuilder {
      * The clause predicates.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder where(String... predicates) {
+    public QueryBuilder_TODELETE where(String... predicates) {
         return filter("where", predicates);
     }
 
-    private QueryBuilder filter(String clause, String... predicates) {
+    private QueryBuilder_TODELETE filter(String clause, String... predicates) {
         if (predicates == null) {
             throw new IllegalArgumentException();
         }
@@ -429,7 +429,7 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String equalTo(QueryBuilder queryBuilder) {
+    public static String equalTo(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -446,7 +446,7 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String notEqualTo(QueryBuilder queryBuilder) {
+    public static String notEqualTo(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -463,7 +463,7 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String in(QueryBuilder queryBuilder) {
+    public static String in(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -480,7 +480,7 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String notIn(QueryBuilder queryBuilder) {
+    public static String notIn(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -497,7 +497,7 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String exists(QueryBuilder queryBuilder) {
+    public static String exists(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -514,7 +514,7 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String notExists(QueryBuilder queryBuilder) {
+    public static String notExists(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -529,9 +529,9 @@ public class QueryBuilder {
      * The column names.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder orderBy(String... columns) {
+    public QueryBuilder_TODELETE orderBy(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -549,13 +549,13 @@ public class QueryBuilder {
      * The column names.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder returning(Collection<String> outputs) {
+    public QueryBuilder_TODELETE returning(Collection<String> outputs) {
         return returning(false,outputs);
     }
 
-    public QueryBuilder returning(boolean brackets, Collection<String> outputs) {
+    public QueryBuilder_TODELETE returning(boolean brackets, Collection<String> outputs) {
         if (outputs == null || outputs.size() == 0) {
             throw new IllegalArgumentException();
         }
@@ -568,9 +568,9 @@ public class QueryBuilder {
      * Appends alias
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder alias(String alias) {
+    public QueryBuilder_TODELETE alias(String alias) {
 
         sqlBuilder.append(" AS ").append(alias).append(" ");
 
@@ -581,9 +581,9 @@ public class QueryBuilder {
      * Appends comment
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder comment(String comment) {
+    public QueryBuilder_TODELETE comment(String comment) {
         sqlBuilder.append("\n-- ").append(comment).append("\n");
         return this;
     }
@@ -594,9 +594,9 @@ public class QueryBuilder {
      *
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder defaultValues() {
+    public QueryBuilder_TODELETE defaultValues() {
 
         sqlBuilder.append(" DEFAULT VALUES ");
 
@@ -609,9 +609,9 @@ public class QueryBuilder {
      * The limit count.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder limit(int count) {
+    public QueryBuilder_TODELETE limit(int count) {
         if (count < 0) {
             throw new IllegalArgumentException();
         }
@@ -626,9 +626,9 @@ public class QueryBuilder {
      * Appends a "for update" clause to a query.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder forUpdate() {
+    public QueryBuilder_TODELETE forUpdate() {
         sqlBuilder.append(" for update");
 
         return this;
@@ -641,9 +641,9 @@ public class QueryBuilder {
      * The query builder to append.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder union(QueryBuilder queryBuilder) {
+    public QueryBuilder_TODELETE union(QueryBuilder_TODELETE queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -663,9 +663,9 @@ public class QueryBuilder {
      * The table name.
      *
      * @return
-     * The new {@link QueryBuilder} instance.
+     * The new {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder insertInto(String table) {
+    public QueryBuilder_TODELETE insertInto(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -673,7 +673,7 @@ public class QueryBuilder {
         sqlBuilder.append("INSERT INTO ");
         sqlBuilder.append(table);
 
-        return new QueryBuilder(sqlBuilder);
+        return new QueryBuilder_TODELETE(sqlBuilder);
     }
 
     /**
@@ -683,9 +683,9 @@ public class QueryBuilder {
      * The values to insert.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder values(Map<String, ?> values) {
+    public QueryBuilder_TODELETE values(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
@@ -731,9 +731,9 @@ public class QueryBuilder {
      * The values to insert.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder args(List<?> values) {
+    public QueryBuilder_TODELETE args(List<?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
@@ -769,9 +769,9 @@ public class QueryBuilder {
      * The values to insert.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder cte(Map<String, ?> values) {
+    public QueryBuilder_TODELETE cte(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
@@ -804,9 +804,9 @@ public class QueryBuilder {
      * The table name.
      *
      * @return
-     * The new {@link QueryBuilder} instance.
+     * The new {@link QueryBuilder_TODELETE} instance.
      */
-    public static QueryBuilder update(String table) {
+    public static QueryBuilder_TODELETE update(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -816,7 +816,7 @@ public class QueryBuilder {
         sqlBuilder.append("update ");
         sqlBuilder.append(table);
 
-        return new QueryBuilder(sqlBuilder);
+        return new QueryBuilder_TODELETE(sqlBuilder);
     }
 
     /**
@@ -826,9 +826,9 @@ public class QueryBuilder {
      * The values to update.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder set(Map<String, ?> values) {
+    public QueryBuilder_TODELETE set(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
@@ -860,9 +860,9 @@ public class QueryBuilder {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder bodyEnd (String key) {
+    public QueryBuilder_TODELETE bodyEnd (String key) {
         if (key == null) {
             throw new IllegalArgumentException();
         }
@@ -880,9 +880,9 @@ public class QueryBuilder {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder bodyStart(String key) {
+    public QueryBuilder_TODELETE bodyStart(String key) {
         if (key == null) {
             throw new IllegalArgumentException();
         }
@@ -893,7 +893,7 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder next(QueryBuilder qb) {
+    public QueryBuilder_TODELETE next(QueryBuilder_TODELETE qb) {
         if (qb == null) {
             throw new IllegalArgumentException();
         }
@@ -912,9 +912,9 @@ public class QueryBuilder {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder returns(String relation, Map<String, ?> params) {
+    public QueryBuilder_TODELETE returns(String relation, Map<String, ?> params) {
         if (params == null || relation==null) {
             throw new IllegalArgumentException();
         }
@@ -948,9 +948,9 @@ public class QueryBuilder {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      */
-    public QueryBuilder params(Map<String, ?> params) {
+    public QueryBuilder_TODELETE params(Map<String, ?> params) {
         if (params == null) {
             throw new IllegalArgumentException();
         }
@@ -984,9 +984,9 @@ public class QueryBuilder {
      * The function name.
      *
      * @return
-     * The new {@link QueryBuilder} instance.
+     * The new {@link QueryBuilder_TODELETE} instance.
      */
-    public static QueryBuilder createFunction(String fun) {
+    public static QueryBuilder_TODELETE createFunction(String fun) {
         if (fun == null) {
             throw new IllegalArgumentException();
         }
@@ -996,7 +996,7 @@ public class QueryBuilder {
         sqlBuilder.append("CREATE OR REPLACE FUNCTION ");
         sqlBuilder.append(fun);
 
-        return new QueryBuilder(sqlBuilder);
+        return new QueryBuilder_TODELETE(sqlBuilder);
     }
 
     /**
@@ -1006,9 +1006,9 @@ public class QueryBuilder {
      * The table name.
      *
      * @return
-     * The new {@link QueryBuilder} instance.
+     * The new {@link QueryBuilder_TODELETE} instance.
      */
-    public static QueryBuilder deleteFrom(String table) {
+    public static QueryBuilder_TODELETE deleteFrom(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -1018,7 +1018,7 @@ public class QueryBuilder {
         sqlBuilder.append("delete from ");
         sqlBuilder.append(table);
 
-        return new QueryBuilder(sqlBuilder);
+        return new QueryBuilder_TODELETE(sqlBuilder);
     }
 
     /**
@@ -1028,12 +1028,12 @@ public class QueryBuilder {
      * The connection on which the query will be executed.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      *
      * @throws SQLException
      * If an error occurs while executing the query.
      */
-    public QueryBuilder execute(Connection connection) throws SQLException {
+    public QueryBuilder_TODELETE execute(Connection connection) throws SQLException {
         return execute(connection, new HashMap<>());
     }
 
@@ -1047,12 +1047,12 @@ public class QueryBuilder {
      * The query arguments.
      *
      * @return
-     * The {@link QueryBuilder} instance.
+     * The {@link QueryBuilder_TODELETE} instance.
      *
      * @throws SQLException
      * If an error occurs while executing the query.
      */
-    public QueryBuilder execute(Connection connection, Map<String, ?> arguments) throws SQLException {
+    public QueryBuilder_TODELETE execute(Connection connection, Map<String, ?> arguments) throws SQLException {
         if (connection == null || arguments == null) {
             throw new IllegalArgumentException();
         }
@@ -1339,8 +1339,8 @@ public class QueryBuilder {
 
                 sqlBuilder.append("'");
             }
-        } else if (value instanceof QueryBuilder) {
-            var queryBuilder = (QueryBuilder)value;
+        } else if (value instanceof QueryBuilder_TODELETE) {
+            var queryBuilder = (QueryBuilder_TODELETE)value;
 
             sqlBuilder.append("(");
             sqlBuilder.append(queryBuilder.getSQL());

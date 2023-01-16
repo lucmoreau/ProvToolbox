@@ -5,6 +5,7 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
+import java.io.ByteArrayOutputStream;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.convertToSQLType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
+import static org.openprovenance.prov.template.compiler.sql.QueryBuilder_TODELETE.*;
 
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
@@ -66,6 +67,7 @@ public class CompilerSqlComposer {
                                                                 put(tableKey, unquote("INT"));
                                                  }}}));
 
+        /*
         Map<String,Object> insertValues=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
@@ -89,6 +91,29 @@ public class CompilerSqlComposer {
                                             LinkedHashMap::new));
 
 
+         */
+        Map<String,Object> insertValues2=descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .collect(Collectors.toMap(  this::sqlify,
+                        key -> {
+                            if (descriptorUtils.isInput(key, templateBindingsSchema)) {
+                                return unquote(Constants.INPUT_PREFIX + sqlify(key));
+                            } else {
+                                boolean isShared = shared.contains(key);
+                                if (isShared) {
+                                    return unquote(appendPossiblySharedOutput(key, isShared));
+                                } else {
+                                    String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                                    String new_table = newTableWithId(key);
+                                    String new_id = the_table + "_id";
+                                    return (Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select(new_id).apply(pp).from(new_table);
+                                }
+                            }
+                        },
+                        (x, y) -> y,
+                        LinkedHashMap::new));
+
         Function<String,Map<String,?>> otherInputs=
                 (key) -> {
                     Optional<Map<String, String>> sqlNewInputs = descriptorUtils.getSqlNewInputs(key, templateBindingsSchema);
@@ -107,6 +132,7 @@ public class CompilerSqlComposer {
                 };
 
 
+        /*
         Map<String,Object> cteValues=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
@@ -114,7 +140,7 @@ public class CompilerSqlComposer {
                 .collect(Collectors.toMap(  this::newTableWithId,
                                             key -> {
                                                 String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
-                                                return new QueryBuilder("")
+                                                return new QueryBuilder_TODELETE("")
                                                         .insertInto(the_table)
                                                         .values(otherInputs.apply(key))
                                                         .returning(new LinkedList<>(){{add(the_table+".ID" + " AS " + the_table+"_id");}})
@@ -122,6 +148,26 @@ public class CompilerSqlComposer {
                                             },
                                             (x, y) -> y,
                                             LinkedHashMap::new));
+
+
+         */
+
+        Map<String,Function<PrettyPrinter, ?>> cteValues2=
+               descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
+                .collect(Collectors.toMap(  this::newTableWithId,
+                        key -> {
+                            String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                            return (pp) -> new QueryBuilder(pp)
+                                    .insertInto(the_table)
+                                    .values(otherInputs.apply(key))
+                                    .returning(new LinkedList<>(){{add(the_table+".ID" + " AS " + the_table+"_id");}})
+                                    ;
+                        },
+                        (x, y) -> y,
+                        LinkedHashMap::new));
 
 
         List<String> outputs=descriptorUtils
@@ -137,8 +183,9 @@ public class CompilerSqlComposer {
 
 
 
-        QueryBuilder fun=
-                new QueryBuilder("")
+        /*
+        QueryBuilder_TODELETE fun_TODELETE=
+                new QueryBuilder_TODELETE("")
                         .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertFunctionWithSharing")
                         .next(createFunction(insertFunctionName)
                                 .params(funParams)
@@ -151,10 +198,32 @@ public class CompilerSqlComposer {
                                 .bodyEnd(""));
 
 
-        functionDeclarations.put(templateName, fun.getSQL());
+         */
 
-        //System.out.println("\n\n" + fun.getSQL() + "\n\n");
+        //functionDeclarations.put(templateName, fun_TODELETE.getSQL());
 
+
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+
+        QueryBuilder fun=
+                new QueryBuilder(baos)
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertFunctionWithSharing")
+                        .next(QueryBuilder.createFunction(insertFunctionName))
+                                .params(funParams)
+                                .returns("table", functionReturns)
+                                .bodyStart("")
+                                .cte(cteValues2)
+                                .insertInto(HACK_orig_templateName)
+                                .values(insertValues2)
+                                .returning(outputs)
+                                .bodyEnd("");
+
+        fun.flush();
+        String sql=baos.toString();
+
+        functionDeclarations.put(templateName, sql);
+
+        System.out.println("=== PRETTY ==>\n " + sql + "\n===========");
 
 
     }
@@ -201,25 +270,25 @@ public class CompilerSqlComposer {
 
 
 
-        Map<String,Object> cteValues1=descriptorUtils
+        Map<String,Function<PrettyPrinter, ?>> cteValues1=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
-                                            key -> select("token","(select cast(nextval('activity_id_seq') as INT)) as id")  //FIXME activity_id_seq is hard coded
-                                                    .from(select("DISTINCT " + key + " AS " +  "token").from(Constants.INPUT_TABLE),
+                                            key ->  (pp) -> QueryBuilder.select("token","(select cast(nextval('activity_id_seq') as INT)) as id").apply(pp)  //FIXME activity_id_seq is hard coded
+                                                    .from((pp1) -> QueryBuilder.select("DISTINCT " + key + " AS " +  "token").apply(pp1).from(Constants.INPUT_TABLE),
                                                             table_tokens(key)),
                                             (x, y) -> y,
-                                            () -> new LinkedHashMap<String, Object>() {{
-                                                put(Constants.INPUT_TABLE, select("*").from("unnest (" + Constants.RECORDS_VAR + ")"));
+                                            () -> new LinkedHashMap<String, Function<PrettyPrinter, ?>>() {{
+                                                put(Constants.INPUT_TABLE, pp -> QueryBuilder.select("*").apply(pp).from("unnest (" + Constants.RECORDS_VAR + ")"));
                                             }}));
 
-        Map<String,Object> cteValues2=descriptorUtils
+        Map<String,Function<PrettyPrinter, Object>> cteValues2=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_ids,
-                                            key -> select("insert_into_activity(id) as id")  //FIXME insert_into_activity is hard coded
+                                            key -> (pp) -> QueryBuilder.select("insert_into_activity(id) as id").apply(pp) //FIXME insert_into_activity is hard coded
                                                     .from(table_tokens(key)),
                                             (x, y) -> y,
                                             LinkedHashMap::new));
@@ -269,8 +338,9 @@ public class CompilerSqlComposer {
                 "    time timestamptz\n" +
                 ");\n\n";
 
-        QueryBuilder fun=
-                new QueryBuilder("").comment(PRELUDE_TO_AUTO_GENERATE)
+
+        QueryBuilder_TODELETE fun_TO_DELETE=
+                new QueryBuilder_TODELETE("").comment(PRELUDE_TO_AUTO_GENERATE)
                         .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertArrayFunction")
                         .next(createFunction(insertFunctionName)
                                 .params(funParams)
@@ -290,9 +360,40 @@ public class CompilerSqlComposer {
                                 .bodyEnd(""));
 
 
-        arrayFunctionDeclarations.put(insertFunctionName, fun.getSQL());
 
-        System.out.println("\n\n" + fun.getSQL() + "\n\n");
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+
+
+        QueryBuilder fun=
+                new QueryBuilder(baos).comment(PRELUDE_TO_AUTO_GENERATE)
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertArrayFunction")
+                        .next(QueryBuilder.createFunction(insertFunctionName))
+                                .params(funParams)
+                                .returns("table", functionReturns)
+                                .bodyStart("")
+                                .cte(cteValues1)
+                                .selectExp(insertColumns.toArray(ARRAY_OF_STRING))
+                                .from((pp)-> QueryBuilder.select(table_token_id_pairs("anticipating")+".id",
+                                                QueryBuilder.functionCall(  "insert_anticipating_impact_shared",theArguments, Constants.ARECORD_VAR)).apply(pp)
+                                                .from(Constants.INPUT_TABLE)
+                                                .join((pp1) -> QueryBuilder.select(table_tokens("anticipating") + ".id", table_tokens("anticipating") + ".token").apply(pp1)
+                                                                .from("anticipating_tokens"),
+                                                        table_token_id_pairs("anticipating"))
+                                                .on("anticipating=",table_token_id_pairs("anticipating")+".token"),
+                                        "inserted_rows")
+
+                                .bodyEnd("");
+
+        fun.flush();
+        String sql=baos.toString();
+
+
+
+
+        arrayFunctionDeclarations.put(insertFunctionName, sql);
+
+        System.out.println("=== ORIGINAL2 ==>\n " + fun_TO_DELETE.getSQL()+ "\n===========");
+        System.out.println("=== PRETTY2 ==>\n " + sql + "\n===========");
 
 
 

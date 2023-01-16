@@ -15,15 +15,12 @@ package org.openprovenance.prov.template.compiler.sql;
  */
 
 
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //import static org.httprpc.kilo.util.Collections.mapOf;
@@ -32,9 +29,8 @@ import java.util.stream.Collectors;
  * Provides a fluent API for programmatically constructing and executing SQL
  * queries.
  */
-public class QueryBuilder2 {
+public class QueryBuilder {
     private StringBuilder sqlBuilder;
-    protected PrettyPrinter prettyPrinter;
 
     private List<String> parameters = new LinkedList<>();
 
@@ -45,42 +41,21 @@ public class QueryBuilder2 {
     /**
      * Constructs a query builder from an existing SQL query.
      *
-     * @param o
+     * @param sql
      * The existing SQL query.
      */
-    public QueryBuilder2(OutputStream o) {
-        if (o == null) {
+    public QueryBuilder(String sql) {
+        if (sql == null) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder = new StringBuilder();
-        prettyPrinter= newPrettyPrinter(o);
 
-
+        append(sql);
     }
 
-    public QueryBuilder2(PrettyPrinter pp) {
-        if (pp == null) {
-            throw new IllegalArgumentException();
-        }
-
-        sqlBuilder = new StringBuilder();
-        prettyPrinter= pp;
-
-
-    }
-
-    public PrettyPrinter getPrettyPrinter() {
-        return prettyPrinter;
-    }
-
-    private static PrettyPrinter newPrettyPrinter(OutputStream o) {
-        return new PrettyPrinter(o, 120);
-    }
-
-    private QueryBuilder2(StringBuilder sqlBuilder, PrettyPrinter prettyPrinter) {
+    private QueryBuilder(StringBuilder sqlBuilder) {
         this.sqlBuilder = sqlBuilder;
-        this.prettyPrinter=prettyPrinter;
     }
 
     /**
@@ -90,63 +65,48 @@ public class QueryBuilder2 {
      * The column names.
      *
      * @return
-     * The new {@link QueryBuilder2} instance.
+     * The new {@link QueryBuilder} instance.
      */
-    public static Function<PrettyPrinter,QueryBuilder2> select(String... columns) {
+    public static QueryBuilder select(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
-        } else {
-
-            return (pp)
-                    -> {
-
-                var sqlBuilder = new StringBuilder();
-
-
-                sqlBuilder.append("SELECT ");
-                pp.begin(2);
-                pp.write("SELECT ");
-
-                var queryBuilder = new QueryBuilder2(sqlBuilder, pp);
-
-                for (var i = 0; i < columns.length; i++) {
-                    if (i > 0) {
-                        queryBuilder.sqlBuilder.append(", ");
-                        queryBuilder.prettyPrinter.comma();
-                    }
-
-                    queryBuilder.append(columns[i]);
-
-                    queryBuilder.prettyPrinter.write(" ");
-                    queryBuilder.prettyPrinter.write(columns[i]);
-                }
-
-                pp.end();
-
-                return queryBuilder;
-            };
         }
+
+        var sqlBuilder = new StringBuilder();
+
+        sqlBuilder.append("SELECT ");
+
+        var queryBuilder = new QueryBuilder(sqlBuilder);
+
+        for (var i = 0; i < columns.length; i++) {
+            if (i > 0) {
+                queryBuilder.sqlBuilder.append(", ");
+            }
+
+            queryBuilder.append(columns[i]);
+        }
+
+        return queryBuilder;
     }
 
-    public static QueryBuilder2 functionCall(String function, List<?> values, String alias) {
+
+    public static QueryBuilder functionCall(String function, List<?> values, String alias) {
         if (function == null) {
             throw new IllegalArgumentException();
         }
 
         var sqlBuilder = new StringBuilder();
-        PrettyPrinter prettyPrinter = newPrettyPrinter(null);
 
         sqlBuilder.append(function);
-        prettyPrinter.write(function);
 
 
-        var queryBuilder = new QueryBuilder2(sqlBuilder,prettyPrinter);
+        var queryBuilder = new QueryBuilder(sqlBuilder);
         queryBuilder.args(values);
         queryBuilder.alias(alias);
 
         return queryBuilder;
     }
-    public QueryBuilder2 selectExp(String... columns) {
+    public QueryBuilder selectExp(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -173,26 +133,15 @@ public class QueryBuilder2 {
      * The table names.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 from(String... tables) {
+    public QueryBuilder from(String... tables) {
         if (tables == null || tables.length == 0) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append(" FROM ");
         sqlBuilder.append(String.join(", ", tables));
-
-        prettyPrinter.write(" FROM ");
-        boolean first=true;
-        for (String table: tables) {
-            if (first) {
-                first=false;
-            } else {
-                prettyPrinter.comma();
-            }
-            prettyPrinter.write(table);
-        }
 
         return this;
     }
@@ -207,9 +156,9 @@ public class QueryBuilder2 {
      * The subquery's alias.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 from(QueryBuilder2 queryBuilder, String alias) {
+    public QueryBuilder from(QueryBuilder queryBuilder, String alias) {
         if (queryBuilder == null || alias == null) {
             throw new IllegalArgumentException();
         }
@@ -232,9 +181,9 @@ public class QueryBuilder2 {
      * The table name.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 join(String table) {
+    public QueryBuilder join(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -255,9 +204,9 @@ public class QueryBuilder2 {
      * The subquery's alias.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 join(QueryBuilder2 queryBuilder, String alias) {
+    public QueryBuilder join(QueryBuilder queryBuilder, String alias) {
         if (queryBuilder == null || alias == null) {
             throw new IllegalArgumentException();
         }
@@ -279,9 +228,9 @@ public class QueryBuilder2 {
      * The table name.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 leftJoin(String table) {
+    public QueryBuilder leftJoin(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -299,9 +248,9 @@ public class QueryBuilder2 {
      * The table name.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 rightJoin(String table) {
+    public QueryBuilder rightJoin(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -319,9 +268,9 @@ public class QueryBuilder2 {
      * The clause predicates.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 on(String... predicates) {
+    public QueryBuilder on(String... predicates) {
         return filter("on", predicates);
     }
 
@@ -332,13 +281,13 @@ public class QueryBuilder2 {
      * The clause predicates.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 where(String... predicates) {
+    public QueryBuilder where(String... predicates) {
         return filter("where", predicates);
     }
 
-    private QueryBuilder2 filter(String clause, String... predicates) {
+    private QueryBuilder filter(String clause, String... predicates) {
         if (predicates == null) {
             throw new IllegalArgumentException();
         }
@@ -480,7 +429,7 @@ public class QueryBuilder2 {
      * @return
      * The conditional text.
      */
-    public static String equalTo(QueryBuilder2 queryBuilder) {
+    public static String equalTo(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -497,7 +446,7 @@ public class QueryBuilder2 {
      * @return
      * The conditional text.
      */
-    public static String notEqualTo(QueryBuilder2 queryBuilder) {
+    public static String notEqualTo(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -514,7 +463,7 @@ public class QueryBuilder2 {
      * @return
      * The conditional text.
      */
-    public static String in(QueryBuilder2 queryBuilder) {
+    public static String in(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -531,7 +480,7 @@ public class QueryBuilder2 {
      * @return
      * The conditional text.
      */
-    public static String notIn(QueryBuilder2 queryBuilder) {
+    public static String notIn(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -548,7 +497,7 @@ public class QueryBuilder2 {
      * @return
      * The conditional text.
      */
-    public static String exists(QueryBuilder2 queryBuilder) {
+    public static String exists(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -565,7 +514,7 @@ public class QueryBuilder2 {
      * @return
      * The conditional text.
      */
-    public static String notExists(QueryBuilder2 queryBuilder) {
+    public static String notExists(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -580,9 +529,9 @@ public class QueryBuilder2 {
      * The column names.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 orderBy(String... columns) {
+    public QueryBuilder orderBy(String... columns) {
         if (columns == null || columns.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -600,42 +549,18 @@ public class QueryBuilder2 {
      * The column names.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2
-    returning(Collection<String> outputs) {
+    public QueryBuilder returning(Collection<String> outputs) {
         return returning(false,outputs);
     }
 
-    public QueryBuilder2 returning(boolean brackets, Collection<String> outputs) {
+    public QueryBuilder returning(boolean brackets, Collection<String> outputs) {
         if (outputs == null || outputs.size() == 0) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append("\nRETURNING ").append(brackets?"(":"").append(String.join(", ", outputs)).append(brackets?")":"");
-
-        prettyPrinter.newline(0);
-        prettyPrinter.write("RETURNING ");
-
-        if (brackets) {
-            prettyPrinter.open();
-        } else {
-            prettyPrinter.begin(0);
-        }
-        boolean first=true;
-        for (String output:outputs) {
-            if (first) {
-                first=false;
-            } else {
-                prettyPrinter.comma();
-            }
-            prettyPrinter.write(output);
-        }
-        if (brackets) {
-            prettyPrinter.close();
-        } else {
-            prettyPrinter.end();
-        }
 
         return this;
     }
@@ -643,14 +568,11 @@ public class QueryBuilder2 {
      * Appends alias
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 alias(String alias) {
+    public QueryBuilder alias(String alias) {
 
         sqlBuilder.append(" AS ").append(alias).append(" ");
-        prettyPrinter.write(" AS ");
-        prettyPrinter.write(alias);
-        prettyPrinter.write(" ");
 
         return this;
     }
@@ -659,15 +581,10 @@ public class QueryBuilder2 {
      * Appends comment
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 comment(String comment) {
+    public QueryBuilder comment(String comment) {
         sqlBuilder.append("\n-- ").append(comment).append("\n");
-
-        prettyPrinter.newline(0);
-        prettyPrinter.write("\n-- ");
-        prettyPrinter.write(comment);
-        prettyPrinter.newline(0);
         return this;
     }
 
@@ -677,9 +594,9 @@ public class QueryBuilder2 {
      *
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 defaultValues() {
+    public QueryBuilder defaultValues() {
 
         sqlBuilder.append(" DEFAULT VALUES ");
 
@@ -692,9 +609,9 @@ public class QueryBuilder2 {
      * The limit count.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 limit(int count) {
+    public QueryBuilder limit(int count) {
         if (count < 0) {
             throw new IllegalArgumentException();
         }
@@ -709,9 +626,9 @@ public class QueryBuilder2 {
      * Appends a "for update" clause to a query.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 forUpdate() {
+    public QueryBuilder forUpdate() {
         sqlBuilder.append(" for update");
 
         return this;
@@ -724,9 +641,9 @@ public class QueryBuilder2 {
      * The query builder to append.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 union(QueryBuilder2 queryBuilder) {
+    public QueryBuilder union(QueryBuilder queryBuilder) {
         if (queryBuilder == null) {
             throw new IllegalArgumentException();
         }
@@ -746,9 +663,9 @@ public class QueryBuilder2 {
      * The table name.
      *
      * @return
-     * The new {@link QueryBuilder2} instance.
+     * The new {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 insertInto(String table) {
+    public QueryBuilder insertInto(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
@@ -756,12 +673,7 @@ public class QueryBuilder2 {
         sqlBuilder.append("INSERT INTO ");
         sqlBuilder.append(table);
 
-        prettyPrinter.begin(1);
-        prettyPrinter.write("INSERT INTO ");
-        prettyPrinter.write(table);
-        prettyPrinter.end();
-
-        return new QueryBuilder2(sqlBuilder, prettyPrinter);
+        return new QueryBuilder(sqlBuilder);
     }
 
     /**
@@ -771,21 +683,19 @@ public class QueryBuilder2 {
      * The values to insert.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 values(Map<String, ?> values) {
+    public QueryBuilder values(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
 
         if (values.isEmpty()) {
             sqlBuilder.append( " DEFAULT VALUES ");
-            prettyPrinter.write(" DEFAULT VALUES ");
             return this;
         }
 
         sqlBuilder.append(" (");
-        prettyPrinter.open();
 
         List<String> columns = new ArrayList<>(values.keySet());
 
@@ -794,30 +704,22 @@ public class QueryBuilder2 {
         for (var i = 0; i < n; i++) {
             if (i > 0) {
                 sqlBuilder.append(", ");
-                prettyPrinter.comma();
             }
 
             sqlBuilder.append(columns.get(i));
-            prettyPrinter.write(columns.get(i));
         }
 
         sqlBuilder.append(")\n values (");
-        prettyPrinter.close();
-
-        prettyPrinter.newline(0);
-        prettyPrinter.write("VALUES ");
-        prettyPrinter.open();
 
         for (var i = 0; i < n; i++) {
             if (i > 0) {
                 sqlBuilder.append(", ");
-                prettyPrinter.comma();
             }
+
             encode(values.get(columns.get(i)));
         }
 
         sqlBuilder.append(")");
-        prettyPrinter.close();
 
         return this;
     }
@@ -829,9 +731,9 @@ public class QueryBuilder2 {
      * The values to insert.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 args(List<?> values) {
+    public QueryBuilder args(List<?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
@@ -867,17 +769,14 @@ public class QueryBuilder2 {
      * The values to insert.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 cte(Map<String, Function<PrettyPrinter,?>> values) {
+    public QueryBuilder cte(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append("WITH ");
-        prettyPrinter.write("WITH");
-        prettyPrinter.begin(2);
-        prettyPrinter.newline(0);
 
         List<String> columns = new ArrayList<>(values.keySet());
 
@@ -886,20 +785,14 @@ public class QueryBuilder2 {
         for (var i = 0; i < n; i++) {
             if (i > 0) {
                 sqlBuilder.append(", ");
-                prettyPrinter.comma();
             }
             sqlBuilder.append("\n");
+
             sqlBuilder.append(columns.get(i)).append(" AS ");
-
-
-            prettyPrinter.write(columns.get(i));
-            prettyPrinter.write(" AS /**/ ");
             encode(values.get(columns.get(i)));
         }
 
         sqlBuilder.append("\n");
-        prettyPrinter.end();
-        prettyPrinter.newline(0);
 
         return this;
     }
@@ -911,23 +804,19 @@ public class QueryBuilder2 {
      * The table name.
      *
      * @return
-     * The new {@link QueryBuilder2} instance.
+     * The new {@link QueryBuilder} instance.
      */
-    public static QueryBuilder2 update(String table) {
+    public static QueryBuilder update(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
 
         var sqlBuilder = new StringBuilder();
-        PrettyPrinter prettyPrinter = newPrettyPrinter(null);
 
         sqlBuilder.append("update ");
         sqlBuilder.append(table);
 
-        prettyPrinter.write("update ");
-        prettyPrinter.write(table);
-
-        return new QueryBuilder2(sqlBuilder, prettyPrinter);
+        return new QueryBuilder(sqlBuilder);
     }
 
     /**
@@ -937,9 +826,9 @@ public class QueryBuilder2 {
      * The values to update.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 set(Map<String, ?> values) {
+    public QueryBuilder set(Map<String, ?> values) {
         if (values == null) {
             throw new IllegalArgumentException();
         }
@@ -971,21 +860,15 @@ public class QueryBuilder2 {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 bodyEnd (String key) {
+    public QueryBuilder bodyEnd (String key) {
         if (key == null) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append("\n$").append(key).append("$ language SQL;\n");
 
-        prettyPrinter.end();
-        prettyPrinter.newline(0);
-        prettyPrinter.write("$");
-        prettyPrinter.write(key);
-        prettyPrinter.write("$ language SQL;\n");
-        prettyPrinter.end();
 
         return this;
     }
@@ -997,47 +880,30 @@ public class QueryBuilder2 {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 bodyStart(String key) {
+    public QueryBuilder bodyStart(String key) {
         if (key == null) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append("\nAS $").append(key).append("$\n");
 
-        prettyPrinter.newline(0);
-        prettyPrinter.begin(1);
-        prettyPrinter.write("AS $");
-        prettyPrinter.write(key);
-        prettyPrinter.write("$");
-        prettyPrinter.newline(0);
-
-
 
         return this;
     }
 
-    public <T extends QueryBuilder2> T next(Function<PrettyPrinter,T>  qb) {
+    public QueryBuilder next(QueryBuilder qb) {
         if (qb == null) {
             throw new IllegalArgumentException();
         }
 
-       //sqlBuilder.append("\n").append(qb.apply(prettyPrinter).getSQL());
-
-        prettyPrinter.newline(0);
-        prettyPrinter.begin(2);
+        sqlBuilder.append("\n").append(qb.getSQL());
 
 
-        return qb.apply(prettyPrinter);
-    }
-
-    List<Supplier<Void>> suppliers =new LinkedList<>();
-
-    public QueryBuilder2 andThen (Supplier<Void> supplier) {
-        suppliers.add(supplier);
         return this;
     }
+
 
     /**
      * Appends return clause to an "create function" statement.
@@ -1046,39 +912,30 @@ public class QueryBuilder2 {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 returns(String relation, Map<String, ?> params) {
+    public QueryBuilder returns(String relation, Map<String, ?> params) {
         if (params == null || relation==null) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append("\nRETURNS ").append(relation).append("(");
 
-        prettyPrinter.newline(0);
-        prettyPrinter.write("RETURNS ");
-        prettyPrinter.write(relation);
-        prettyPrinter.open();
-
         var i = 0;
 
         for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (i > 0) {
                 sqlBuilder.append(", ");
-                prettyPrinter.comma();
             }
 
             sqlBuilder.append(entry.getKey());
             sqlBuilder.append(" ");
-            prettyPrinter.write(entry.getKey());
-            prettyPrinter.write(" ");
 
             encode(entry.getValue());
 
             i++;
         }
         sqlBuilder.append(")");
-        prettyPrinter.close();
 
         return this;
     }
@@ -1091,58 +948,34 @@ public class QueryBuilder2 {
      * The params of the function.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder2 params(Map<String, ?> params) {
+    public QueryBuilder params(Map<String, ?> params) {
         if (params == null) {
             throw new IllegalArgumentException();
         }
 
         sqlBuilder.append("(");
-        prettyPrinter.open();
 
         var i = 0;
 
         for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (i > 0) {
                 sqlBuilder.append(", ");
-                prettyPrinter.comma();
             }
 
             sqlBuilder.append(entry.getKey());
             sqlBuilder.append(" ");
-            prettyPrinter.write(entry.getKey());
-            prettyPrinter.write(" ");
 
             encode(entry.getValue());
 
             i++;
         }
         sqlBuilder.append(")");
-        prettyPrinter.close();
 
         return this;
     }
 
-    public QueryBuilder2 end() {
-        for (Supplier<Void> supplier: suppliers) {
-            supplier.get();
-        }
-        prettyPrinter.end();
-        return null;
-    };
-
-    static class FunctionQueryBuilder extends QueryBuilder2 {
-
-        public FunctionQueryBuilder(StringBuilder sqlBuilder, PrettyPrinter prettyPrinter)  {
-            super(sqlBuilder, prettyPrinter);
-        }
-
-        public QueryBuilder2 end() {
-            prettyPrinter.end();
-            return null;
-        };
-    }
 
     /**
      * Creates a "create function" statement.
@@ -1151,22 +984,19 @@ public class QueryBuilder2 {
      * The function name.
      *
      * @return
-     * The new {@link QueryBuilder2} instance.
+     * The new {@link QueryBuilder} instance.
      */
-    public static Function<PrettyPrinter,FunctionQueryBuilder> createFunction(String fun) {
-       return (pp) -> {
-           if (fun == null) {
-               throw new IllegalArgumentException();
-           }
+    public static QueryBuilder createFunction(String fun) {
+        if (fun == null) {
+            throw new IllegalArgumentException();
+        }
 
-           var sqlBuilder = new StringBuilder();
+        var sqlBuilder = new StringBuilder();
 
-           pp.begin(1);
-           pp.write("CREATE OR REPLACE FUNCTION ");
-           pp.write(fun);
+        sqlBuilder.append("CREATE OR REPLACE FUNCTION ");
+        sqlBuilder.append(fun);
 
-           return new FunctionQueryBuilder(sqlBuilder, pp);
-       };
+        return new QueryBuilder(sqlBuilder);
     }
 
     /**
@@ -1176,20 +1006,19 @@ public class QueryBuilder2 {
      * The table name.
      *
      * @return
-     * The new {@link QueryBuilder2} instance.
+     * The new {@link QueryBuilder} instance.
      */
-    public static QueryBuilder2 deleteFrom(String table) {
+    public static QueryBuilder deleteFrom(String table) {
         if (table == null) {
             throw new IllegalArgumentException();
         }
 
         var sqlBuilder = new StringBuilder();
-        PrettyPrinter prettyPrinter = newPrettyPrinter(null);
 
         sqlBuilder.append("delete from ");
         sqlBuilder.append(table);
 
-        return new QueryBuilder2(sqlBuilder, prettyPrinter);
+        return new QueryBuilder(sqlBuilder);
     }
 
     /**
@@ -1199,12 +1028,12 @@ public class QueryBuilder2 {
      * The connection on which the query will be executed.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      *
      * @throws SQLException
      * If an error occurs while executing the query.
      */
-    public QueryBuilder2 execute(Connection connection) throws SQLException {
+    public QueryBuilder execute(Connection connection) throws SQLException {
         return execute(connection, new HashMap<>());
     }
 
@@ -1218,12 +1047,12 @@ public class QueryBuilder2 {
      * The query arguments.
      *
      * @return
-     * The {@link QueryBuilder2} instance.
+     * The {@link QueryBuilder} instance.
      *
      * @throws SQLException
      * If an error occurs while executing the query.
      */
-    public QueryBuilder2 execute(Connection connection, Map<String, ?> arguments) throws SQLException {
+    public QueryBuilder execute(Connection connection, Map<String, ?> arguments) throws SQLException {
         if (connection == null || arguments == null) {
             throw new IllegalArgumentException();
         }
@@ -1419,7 +1248,7 @@ public class QueryBuilder2 {
      * The generated SQL.
      */
     public String getSQL() {
-        return "GET SQL";
+        return sqlBuilder.toString();
     }
 
     private void append(String sql) {
@@ -1453,21 +1282,16 @@ public class QueryBuilder2 {
                 parameters.add(parameterBuilder.toString());
 
                 sqlBuilder.append("?");
-                prettyPrinter.write("?");
-
             } else if (c == '?' && !quoted) {
                 parameters.add(null);
 
                 sqlBuilder.append(c);
-                prettyPrinter.write(String.valueOf(c));
             } else {
                 if (c == '\'') {
                     quoted = !quoted;
                 }
 
                 sqlBuilder.append(c);
-                prettyPrinter.write(String.valueOf(c));
-
             }
         }
     }
@@ -1502,46 +1326,29 @@ public class QueryBuilder2 {
                 append(string);
             } else {
                 sqlBuilder.append("'");
-                prettyPrinter.write("'");
 
                 for (int i = 0, n = string.length(); i < n; i++) {
                     var c = string.charAt(i);
 
                     if (c == '\'') {
                         sqlBuilder.append(c);
-                        prettyPrinter.write(String.valueOf(c));
                     }
 
                     sqlBuilder.append(c);
-                    prettyPrinter.write(String.valueOf(c));
-
                 }
 
                 sqlBuilder.append("'");
-                prettyPrinter.write("'");
-
             }
-        } else if (value instanceof  Function) {
-            var queryBuilderMaker = (Function<PrettyPrinter,QueryBuilder2>)value;
+        } else if (value instanceof QueryBuilder) {
+            var queryBuilder = (QueryBuilder)value;
 
-            //sqlBuilder.append("(");
-           // sqlBuilder.append(queryBuilder.getSQL());
-            //sqlBuilder.append(")");
-
-            prettyPrinter.open();
-            prettyPrinter.begin(0);
-            QueryBuilder2 queryBuilder=queryBuilderMaker.apply(prettyPrinter);
-
-            prettyPrinter.end();
-            prettyPrinter.close();
-
-            //prettyPrinter.write(queryBuilder.getSQL());
-
+            sqlBuilder.append("(");
+            sqlBuilder.append(queryBuilder.getSQL());
+            sqlBuilder.append(")");
 
             parameters.addAll(queryBuilder.parameters);
         } else {
             sqlBuilder.append(value);
-            prettyPrinter.write(value.toString());
         }
     }
 

@@ -147,6 +147,7 @@ public class QueryBuilder {
 
             var queryBuilder = new QueryBuilder(sqlBuilder, prettyPrinter);
             queryBuilder.args(values);
+            prettyPrinter.write(" ");
             queryBuilder.alias(alias);
 
             return queryBuilder;
@@ -157,7 +158,6 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("SELECT ");
 
         prettyPrinter.write("SELECT ");
         prettyPrinter.begin(0);
@@ -165,16 +165,13 @@ public class QueryBuilder {
 
         for (var i = 0; i < columns.length; i++) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
 
-            sqlBuilder.append(columns[i]);
             prettyPrinter.write(columns[i]);
         }
         prettyPrinter.end();
 
-        sqlBuilder.append("\n");
         prettyPrinter.newline(0);
         return this;
     }
@@ -193,8 +190,7 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append(" FROM ");
-        sqlBuilder.append(String.join(", ", tables));
+
 
         prettyPrinter.write("FROM ");
         boolean first=true;
@@ -252,13 +248,6 @@ public class QueryBuilder {
         prettyPrinter.write(" ");
         prettyPrinter.write(alias);
 
-/*
-        sqlBuilder.append(queryBuilder.getSQL());
-        sqlBuilder.append(") AS ");
-        sqlBuilder.append(alias);
-        sqlBuilder.append(" ");
-
- */
 
         parameters.addAll(queryBuilder.parameters);
 
@@ -281,8 +270,8 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append(" join ");
-        sqlBuilder.append(table);
+        prettyPrinter.write(" join ");
+        prettyPrinter.write(table);
 
         return this;
     }
@@ -356,8 +345,9 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append(" right join ");
-        sqlBuilder.append(table);
+        prettyPrinter.write(" right join ");
+        prettyPrinter.write(table);
+
 
         return this;
     }
@@ -393,19 +383,13 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append(" ");
-        sqlBuilder.append(clause);
-        sqlBuilder.append(" ");
-
         prettyPrinter.write(clause);
         prettyPrinter.write(" ");
 
         for (var i = 0; i < predicates.length; i++) {
             if (i > 0) {
-                sqlBuilder.append(" ");
                 prettyPrinter.write(" ");
             }
-
             append(predicates[i]);
 
         }
@@ -667,8 +651,6 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("\nRETURNING ").append(brackets?"(":"").append(String.join(", ", outputs)).append(brackets?")":"");
-
         prettyPrinter.newline(0);
         prettyPrinter.write("RETURNING ");
 
@@ -702,9 +684,8 @@ public class QueryBuilder {
      */
     public QueryBuilder alias(String alias) {
 
-        sqlBuilder.append(" AS ").append(alias).append(" ");
 
-        prettyPrinter.write(" AS ");
+        prettyPrinter.write("AS ");
         prettyPrinter.write(alias);
         prettyPrinter.write(" ");
 
@@ -718,7 +699,6 @@ public class QueryBuilder {
      * The {@link QueryBuilder} instance.
      */
     public QueryBuilder comment(String comment) {
-        sqlBuilder.append("\n-- ").append(comment).append("\n");
 
         prettyPrinter.newline(0);
         prettyPrinter.write("\n-- ");
@@ -737,7 +717,7 @@ public class QueryBuilder {
      */
     public QueryBuilder defaultValues() {
 
-        sqlBuilder.append(" DEFAULT VALUES ");
+        prettyPrinter.write(" DEFAULT VALUES ");
 
         return this;
     }
@@ -809,15 +789,14 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("INSERT INTO ");
-        sqlBuilder.append(table);
+
 
         prettyPrinter.begin(1);
         prettyPrinter.write("INSERT INTO ");
         prettyPrinter.write(table);
         prettyPrinter.end();
 
-        return new QueryBuilder(sqlBuilder, prettyPrinter);
+        return this;
     }
 
     /**
@@ -835,12 +814,10 @@ public class QueryBuilder {
         }
 
         if (values.isEmpty()) {
-            sqlBuilder.append( " DEFAULT VALUES ");
             prettyPrinter.write(" DEFAULT VALUES ");
             return this;
         }
 
-        sqlBuilder.append(" (");
         prettyPrinter.open();
 
         List<String> columns = new ArrayList<>(values.keySet());
@@ -849,15 +826,12 @@ public class QueryBuilder {
 
         for (var i = 0; i < n; i++) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
 
-            sqlBuilder.append(columns.get(i));
             prettyPrinter.write(columns.get(i));
         }
 
-        sqlBuilder.append(")\n values (");
         prettyPrinter.close();
 
         prettyPrinter.newline(0);
@@ -866,13 +840,11 @@ public class QueryBuilder {
 
         for (var i = 0; i < n; i++) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
             encode(values.get(columns.get(i)));
         }
 
-        sqlBuilder.append(")");
         prettyPrinter.close();
 
         return this;
@@ -893,11 +865,10 @@ public class QueryBuilder {
         }
 
         if (values.isEmpty()) {
-            sqlBuilder.append( " () ");
+            prettyPrinter.write("()");
             return this;
         }
 
-        sqlBuilder.append(" (");
 
         prettyPrinter.open();
 
@@ -906,17 +877,13 @@ public class QueryBuilder {
 
         for (var i = 0; i < n; i++) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
 
-            sqlBuilder.append(values.get(i));
             prettyPrinter.write(String.valueOf(values.get(i)));
         }
 
-        sqlBuilder.append(")\n");
         prettyPrinter.close();
-
 
         return this;
     }
@@ -935,7 +902,6 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("WITH ");
         prettyPrinter.write("WITH");
         prettyPrinter.begin(2);
         prettyPrinter.newline(0);
@@ -946,19 +912,14 @@ public class QueryBuilder {
 
         for (var i = 0; i < n; i++) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
-            sqlBuilder.append("\n");
-            sqlBuilder.append(columns.get(i)).append(" AS ");
-
 
             prettyPrinter.write(columns.get(i));
             prettyPrinter.write(" AS ");
             encode(values.get(columns.get(i)));
         }
 
-        sqlBuilder.append("\n");
         prettyPrinter.end();
         prettyPrinter.newline(0);
 
@@ -1039,7 +1000,6 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("\n$").append(key).append("$ language SQL;\n");
 
         prettyPrinter.end();
         prettyPrinter.newline(0);
@@ -1065,7 +1025,6 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("\nAS $").append(key).append("$\n");
 
         prettyPrinter.newline(0);
         prettyPrinter.begin(1);
@@ -1073,7 +1032,6 @@ public class QueryBuilder {
         prettyPrinter.write(key);
         prettyPrinter.write("$");
         prettyPrinter.newline(0);
-
 
 
         return this;
@@ -1114,7 +1072,6 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("\nRETURNS ").append(relation).append("(");
 
         prettyPrinter.newline(0);
         prettyPrinter.write("RETURNS ");
@@ -1125,12 +1082,9 @@ public class QueryBuilder {
 
         for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
 
-            sqlBuilder.append(entry.getKey());
-            sqlBuilder.append(" ");
             prettyPrinter.write(entry.getKey());
             prettyPrinter.write(" ");
 
@@ -1138,9 +1092,7 @@ public class QueryBuilder {
 
             i++;
         }
-        sqlBuilder.append(")");
         prettyPrinter.close();
-
         return this;
     }
 
@@ -1159,19 +1111,15 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append("(");
         prettyPrinter.open();
 
         var i = 0;
 
         for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (i > 0) {
-                sqlBuilder.append(", ");
                 prettyPrinter.comma();
             }
 
-            sqlBuilder.append(entry.getKey());
-            sqlBuilder.append(" ");
             prettyPrinter.write(entry.getKey());
             prettyPrinter.write(" ");
 
@@ -1179,7 +1127,6 @@ public class QueryBuilder {
 
             i++;
         }
-        sqlBuilder.append(")");
         prettyPrinter.close();
 
         return this;
@@ -1517,20 +1464,17 @@ public class QueryBuilder {
 
                 parameters.add(parameterBuilder.toString());
 
-                sqlBuilder.append("?");
                 prettyPrinter.write("?");
 
             } else if (c == '?' && !quoted) {
                 parameters.add(null);
 
-                sqlBuilder.append(c);
                 prettyPrinter.write(String.valueOf(c));
             } else {
                 if (c == '\'') {
                     quoted = !quoted;
                 }
 
-                sqlBuilder.append(c);
                 prettyPrinter.write(String.valueOf(c));
 
             }
@@ -1566,23 +1510,19 @@ public class QueryBuilder {
             if (string.startsWith(":") || string.equals("?")) {
                 append(string);
             } else {
-                sqlBuilder.append("'");
                 prettyPrinter.write("'");
 
                 for (int i = 0, n = string.length(); i < n; i++) {
                     var c = string.charAt(i);
 
                     if (c == '\'') {
-                        sqlBuilder.append(c);
                         prettyPrinter.write(String.valueOf(c));
                     }
 
-                    sqlBuilder.append(c);
                     prettyPrinter.write(String.valueOf(c));
 
                 }
 
-                sqlBuilder.append("'");
                 prettyPrinter.write("'");
 
             }
@@ -1605,7 +1545,6 @@ public class QueryBuilder {
 
             parameters.addAll(queryBuilder.parameters);
         } else {
-            sqlBuilder.append(value);
             prettyPrinter.write(value.toString());
         }
     }

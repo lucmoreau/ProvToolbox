@@ -4,25 +4,26 @@ package org.openprovenance.prov.template.compiler.sql;
 // Simple PrettyPrinter -- Andrew C. Myers, March 1999
 //   For use in Cornell University Computer Science 412/413
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class PrettyPrinter
 {
-    private final OutputStream o;
+    private final ByteArrayOutputStream o;
 
     // A pretty-printer formats text onto an
     // output stream "o" while keeping the width of the output
     // within "width" characters if possible
-    public PrettyPrinter(OutputStream o, int width) {
+    public PrettyPrinter(ByteArrayOutputStream o, int width) {
         output = new DataOutputStream(o);
         this.width = width;
         current = input = new Block(null, 0);
         this.o=o;
     }
 
-    public OutputStream getOutputStream() {
+    public ByteArrayOutputStream getOutputStream() {
         return o;
     }
 
@@ -153,24 +154,21 @@ class Overrun extends Exception {
 
 abstract class Item {
     Item() { next = null; }
-    int format(int lmargin, int pos, int rmargin, boolean canBreak)
-            throws Overrun {
+    int format(int lmargin, int pos, int rmargin, boolean canBreak) throws Overrun {
         // try to format a whole sequence of items in the manner of format1
         if (pos > rmargin) throw new Overrun(pos - rmargin);
         pos = format1(lmargin, pos, rmargin, canBreak);
         if (next == null) return pos;
         else return next.format(lmargin, pos, rmargin, canBreak);
     }
-    abstract int format1(int lmargin, int pos, int rmargin, boolean canBreak)
-            throws Overrun;
+    abstract int format1(int lmargin, int pos, int rmargin, boolean canBreak) throws Overrun;
     // Try to format this item with a current cursor position of
     // "pos", left and right margins as specified. Returns the
     // final position. If breaks
     // may be broken, "canBreak" is set. Return the new cursor
     // position and set any contained breaks appropriately if formatting
     // was successful. Requires rmargin > lmargin, pos <= rmargin.
-    abstract int sendOutput(DataOutputStream o, int lmargin, int pos)
-            throws IOException;
+    abstract int sendOutput(DataOutputStream o, int lmargin, int pos) throws IOException;
     // Send the output associated with this item to "o", using the
     // current break settings.
     Item next;
@@ -181,17 +179,16 @@ class Block extends Item {
     Item first;
     Item last;
     int indent;
-    Block(Block parent_, int indent_) {
-        parent = parent_;
-        first = last = null;
-        indent = indent_;
+    Block(Block parent, int indent) {
+        this.parent = parent;
+        this.first = this.last = null;
+        this.indent = indent;
     }
     void add(Item it) {
         if (first == null) first = it; else last.next = it;
         last = it;
     }
-    int format1(int lmargin, int pos, int rmargin, boolean canBreak)
-            throws Overrun
+    int format1(int lmargin, int pos, int rmargin, boolean canBreak) throws Overrun
     {
         if (first == null) return pos;
         try {
@@ -216,8 +213,7 @@ class Block extends Item {
 class StringItem extends Item {
     String s;
     StringItem(String s_) { s = s_; }
-    int format1(int lmargin, int pos, int rmargin, boolean canBreak)
-            throws Overrun {
+    int format1(int lmargin, int pos, int rmargin, boolean canBreak) throws Overrun {
         pos += s.length();
         if (pos > rmargin) throw new Overrun(rmargin - pos);
         return pos;
@@ -230,8 +226,7 @@ class StringItem extends Item {
 class StringItem0 extends Item {
     String s;
     StringItem0(String s_) { s = s_; }
-    int format1(int lmargin, int pos, int rmargin, boolean canBreak)
-            throws Overrun {
+    int format1(int lmargin, int pos, int rmargin, boolean canBreak) throws Overrun {
         pos += 0;
         if (pos > rmargin) throw new Overrun(rmargin - pos);
         return pos;
@@ -247,8 +242,7 @@ class AllowBreak extends Item {
     int indent;
     boolean broken = true;
     AllowBreak(int n_) { indent = n_; }
-    int format1(int lmargin, int pos, int rmargin, boolean canBreak)
-            throws Overrun {
+    int format1(int lmargin, int pos, int rmargin, boolean canBreak)  throws Overrun {
         if (canBreak) {
             broken = true;
             return lmargin + indent;
@@ -257,8 +251,7 @@ class AllowBreak extends Item {
             return pos;
         }
     }
-    int sendOutput(DataOutputStream o, int lmargin, int pos)
-            throws IOException {
+    int sendOutput(DataOutputStream o, int lmargin, int pos)  throws IOException {
         if (broken) {
             o.writeBytes("\r\n");
             for (int i = 0; i < lmargin + indent; i++) o.writeBytes(" ");
@@ -271,14 +264,12 @@ class AllowBreak extends Item {
 
 class Newline extends AllowBreak {
     Newline(int n_) { super(n_); }
-    int format1(int lmargin, int pos, int rmargin, boolean canBreak, boolean forceBreak)
-            throws Overrun {
+    int format1(int lmargin, int pos, int rmargin, boolean canBreak, boolean forceBreak) throws Overrun {
         if (!canBreak) throw new Overrun(1);
         broken = true;
         return lmargin + indent;
     }
-    int sendOutput(DataOutputStream o, int lmargin, int pos)
-            throws IOException {
+    int sendOutput(DataOutputStream o, int lmargin, int pos) throws IOException {
         o.writeBytes("\r\n");
         for (int i = 0; i < lmargin + indent; i++) o.writeBytes(" ");
         return lmargin + indent;

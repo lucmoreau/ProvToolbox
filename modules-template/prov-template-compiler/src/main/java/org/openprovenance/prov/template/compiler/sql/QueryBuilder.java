@@ -15,6 +15,7 @@ package org.openprovenance.prov.template.compiler.sql;
  */
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,7 +49,8 @@ public class QueryBuilder {
      * @param o
      * The existing SQL query.
      */
-    public QueryBuilder(OutputStream o) {
+    public QueryBuilder(ByteArrayOutputStream o) {
+
         if (o == null) {
             throw new IllegalArgumentException();
         }
@@ -57,6 +59,10 @@ public class QueryBuilder {
         prettyPrinter= newPrettyPrinter(o);
 
 
+    }
+
+    public QueryBuilder() {
+        this(new ByteArrayOutputStream());
     }
 
     public QueryBuilder(PrettyPrinter pp) {
@@ -74,8 +80,8 @@ public class QueryBuilder {
         return prettyPrinter;
     }
 
-    private static PrettyPrinter newPrettyPrinter(OutputStream o) {
-        return new PrettyPrinter(o, 120);
+    private static PrettyPrinter newPrettyPrinter(ByteArrayOutputStream o) {
+        return new PrettyPrinter(o, 160);
     }
 
     private QueryBuilder(StringBuilder sqlBuilder, PrettyPrinter prettyPrinter) {
@@ -124,7 +130,7 @@ public class QueryBuilder {
                 }
 
                 pp.end();
-                pp.newline(0);
+                pp.write(" "); pp.allowBreak(0);
 
                 return queryBuilder;
             };
@@ -375,7 +381,7 @@ public class QueryBuilder {
      * The {@link QueryBuilder} instance.
      */
     public QueryBuilder where(String... predicates) {
-        return filter("where", predicates);
+        return filter(" WHERE", predicates);
     }
 
     private QueryBuilder filter(String clause, String... predicates) {
@@ -406,8 +412,8 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String and(String... predicates) {
-        return conditional("and", predicates);
+    public QueryBuilder and(String... predicates) {
+        return conditional(" AND", predicates);
     }
 
     /**
@@ -419,37 +425,37 @@ public class QueryBuilder {
      * @return
      * The conditional text.
      */
-    public static String or(String... predicates) {
-        return conditional("or", predicates);
+    public QueryBuilder or(String... predicates) {
+        return conditional(" OR", predicates);
     }
 
-    private static String conditional(String operator, String... predicates) {
+    private QueryBuilder conditional(String operator, String... predicates) {
         if (predicates == null || predicates.length == 0) {
             throw new IllegalArgumentException();
         }
 
-        var stringBuilder = new StringBuilder();
+        prettyPrinter.write(operator);
+        prettyPrinter.write(" ");
 
-        stringBuilder.append(operator);
-        stringBuilder.append(" ");
+
 
         if (predicates.length > 1) {
-            stringBuilder.append("(");
+            prettyPrinter.open();
         }
 
         for (var i = 0; i < predicates.length; i++) {
             if (i > 0) {
-                stringBuilder.append(" ");
+                prettyPrinter.write(" ");
             }
-
-            stringBuilder.append(predicates[i]);
+            prettyPrinter.write(predicates[i]);
         }
 
         if (predicates.length > 1) {
-            stringBuilder.append(")");
+            prettyPrinter.close();
         }
 
-        return stringBuilder.toString();
+        return this;
+
     }
 
     /**
@@ -756,23 +762,26 @@ public class QueryBuilder {
     /**
      * Appends a "union" clause to a query.
      *
-     * @param queryBuilder
+     * @param queryBuilderFun
      * The query builder to append.
      *
      * @return
      * The {@link QueryBuilder} instance.
      */
-    public QueryBuilder union(QueryBuilder queryBuilder) {
-        if (queryBuilder == null) {
+    public QueryBuilder union(Function<PrettyPrinter,QueryBuilder> queryBuilderFun) {
+        if (queryBuilderFun == null) {
             throw new IllegalArgumentException();
         }
 
-        sqlBuilder.append(" union ");
-        sqlBuilder.append(queryBuilder.getSQL());
+        prettyPrinter.write("UNION ");
+        QueryBuilder queryBuilder=queryBuilderFun.apply(prettyPrinter);
+
+        //sqlBuilder.append(" union ");
+        //sqlBuilder.append(queryBuilder.getSQL());
 
         parameters.addAll(queryBuilder.parameters);
 
-        return this;
+        return queryBuilder;
     }
 
     /**
@@ -1431,7 +1440,8 @@ public class QueryBuilder {
      * The generated SQL.
      */
     public String getSQL() {
-        return "GET SQL";
+        flush();
+        return prettyPrinter.getOutputStream().toString();
     }
 
     private void append(String sql) {

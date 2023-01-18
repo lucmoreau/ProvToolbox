@@ -22,7 +22,7 @@ public class CompilerBeanProcessor {
 
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+            //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);

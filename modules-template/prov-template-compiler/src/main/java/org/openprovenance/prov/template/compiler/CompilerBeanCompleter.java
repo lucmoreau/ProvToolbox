@@ -120,8 +120,6 @@ public class CompilerBeanCompleter {
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";
@@ -130,16 +128,22 @@ public class CompilerBeanCompleter {
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className);
+            if (config instanceof SimpleTemplateCompilerConfig) {
 
+                TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-            for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-                if (descriptorUtils.isOutput(key,bindingsSchema)) {
-                    Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                    mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+                for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
+                    if (descriptorUtils.isOutput(key, bindingsSchema)) {
+                        Class<?> cl = compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
+                        mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+                    }
                 }
-            }
 
-            mspec.addStatement("return bean");
+                mspec.addStatement("return bean");
+
+            } else {
+                mspec.addStatement("throw new $T()", UnsupportedOperationException.class);
+            }
 
             builder.addMethod(mspec.build());
         }

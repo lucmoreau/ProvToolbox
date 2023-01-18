@@ -50,9 +50,6 @@ public class CompilerQueryInvoker {
         Set<String> foundSpecialTypes=new HashSet<>();
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-
-            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";
@@ -62,33 +59,41 @@ public class CompilerQueryInvoker {
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className);
 
-            mspec.addStatement("$N.append($S)", sbVar, "select * from ");
-            String startCallString= Constants.INSERT_PREFIX + config.name + " (";
-            mspec.addStatement("$N.append($S)", sbVar, startCallString);
+            if (config instanceof SimpleTemplateCompilerConfig) {
 
-            boolean first=true;
+                TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-            for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-                if (descriptorUtils.isInput(key,bindingsSchema)) {
-                    Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                    if (first) {
-                        first=false;
-                    } else {
-                        mspec.addStatement("$N.append($S)", sbVar, ",");
-                    }
-                    final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
-                    if (sqlType !=null) {
-                        String fun= converterForSpecialType(sqlType,mspec, sbVar, key);
-                        mspec.addStatement("$N.append($N(bean.$N))", sbVar, fun, key);
-                        foundSpecialTypes.add(sqlType);
-                    } else {
-                        mspec.addStatement("$N.append(bean.$N)", sbVar, key);
+                mspec.addStatement("$N.append($S)", sbVar, "select * from ");
+                String startCallString= Constants.INSERT_PREFIX + config.name + " (";
+                mspec.addStatement("$N.append($S)", sbVar, startCallString);
+
+                boolean first=true;
+
+                for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+                    if (descriptorUtils.isInput(key,bindingsSchema)) {
+                        Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
+                        if (first) {
+                            first=false;
+                        } else {
+                            mspec.addStatement("$N.append($S)", sbVar, ",");
+                        }
+                        final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
+                        if (sqlType !=null) {
+                            String fun= converterForSpecialType(sqlType,mspec, sbVar, key);
+                            mspec.addStatement("$N.append($N(bean.$N))", sbVar, fun, key);
+                            foundSpecialTypes.add(sqlType);
+                        } else {
+                            mspec.addStatement("$N.append(bean.$N)", sbVar, key);
+                        }
                     }
                 }
+                String endCallString=");";
+                mspec.addStatement("$N.append($S)", sbVar, endCallString);
+                mspec.addStatement("return bean");
+            } else {
+                compositeQueryInvoker(sbVar, config, mspec);
+
             }
-            String endCallString=");";
-            mspec.addStatement("$N.append($S)", sbVar, endCallString);
-            mspec.addStatement("return bean");
 
             builder.addMethod(mspec.build());
         }
@@ -130,6 +135,13 @@ public class CompilerQueryInvoker {
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateQueryInvoker() for templates config $N", getClass().getName(), configs.name)
                 .build();
         return myfile;
+    }
+
+    public void compositeQueryInvoker(String sbVar, TemplateCompilerConfig config, MethodSpec.Builder mspec) {
+        mspec.addComment("Generated Automatically by ProvToolbox ($N.$N()) for template $N",getClass().getName(), "compositeQueryInvoker", config.name);
+
+        mspec.addStatement("$N.append($S)", sbVar, "---- query invoker to be written for  " + config.name);
+        mspec.addStatement("return bean");
     }
 
     public String converterForSpecialType(String specialType, MethodSpec.Builder mspec, String sbVar, String key) {

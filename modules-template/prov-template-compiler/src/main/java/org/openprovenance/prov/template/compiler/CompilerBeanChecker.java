@@ -42,8 +42,7 @@ public class CompilerBeanChecker {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
+
 
             final String beanNameClass = compilerUtil.beanNameClass(config.name);
             String packge = config.package_ + ".client";
@@ -54,14 +53,19 @@ public class CompilerBeanChecker {
                     .returns(className);
 
 
+            if (config instanceof SimpleTemplateCompilerConfig) {
+                TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-            for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-                if (descriptorUtils.isCompulsoryInput(key,bindingsSchema)) {
-                    mspec.addStatement("$N(bean.$N,$S)", Constants.NOT_NULL_METHOD, key, key);
+                for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
+                    if (descriptorUtils.isCompulsoryInput(key, bindingsSchema)) {
+                        mspec.addStatement("$N(bean.$N,$S)", Constants.NOT_NULL_METHOD, key, key);
 
+                    }
                 }
+                mspec.addStatement("return bean");
+            } else {
+                mspec.addStatement("return bean");
             }
-            mspec.addStatement("return bean");
 
             builder.addMethod(mspec.build());
         }

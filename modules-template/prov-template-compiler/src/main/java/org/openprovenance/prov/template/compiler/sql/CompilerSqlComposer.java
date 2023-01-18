@@ -18,6 +18,7 @@ import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote
 
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
+    public static final String COMPOSITE = "_composite";
     private final CompilerUtil compilerUtil=new CompilerUtil();
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
@@ -34,7 +35,7 @@ public class CompilerSqlComposer {
     }
 
     public void generateSQLInsertFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-        String HACK_orig_templateName=templateName.replace("_shared","");
+        String HACK_orig_templateName=templateName.replace(COMPOSITE,"");
 
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
@@ -163,13 +164,12 @@ public class CompilerSqlComposer {
     }
 
     public String templateType(String templateName) {
-        String HACK_orig_templateName=templateName.replace("_shared","");
+        String HACK_orig_templateName=templateName.replace(COMPOSITE,"");
         return HACK_orig_templateName+"_type";
     }
 
 
     public void generateSQLInsertArrayFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-        String HACK_orig_templateName=templateName.replace("_shared","");
 
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
@@ -259,8 +259,8 @@ public class CompilerSqlComposer {
                 "$$ language SQL;\n" +
                 "\n" +
                 "\n" +
-                "DROP TYPE IF EXISTS anticipating_impact_type CASCADE;\n" +
-                "CREATE TYPE anticipating_impact_type AS\n" +
+                "DROP TYPE IF EXISTS anticipating_impact_composite_type CASCADE;\n" +
+                "CREATE TYPE anticipating_impact_composite_type AS\n" +
                 "(\n" +
                 "    impact INT,\n" +
                 "    aspect1 INT,\n" +
@@ -287,7 +287,7 @@ public class CompilerSqlComposer {
                                 .cte(cteValues1)
                                 .selectExp(insertColumns.toArray(ARRAY_OF_STRING))
                                 .from((pp)-> QueryBuilder.select(table_token_id_pairs("anticipating")+".id",
-                                                QueryBuilder.functionCall(  "insert_anticipating_impact_shared",theArguments, Constants.ARECORD_VAR)).apply(pp)
+                                                QueryBuilder.functionCall(  "insert_anticipating_impact_composite",theArguments, Constants.ARECORD_VAR)).apply(pp)
                                                 .from(Constants.INPUT_TABLE)
                                                 .join((pp1) -> QueryBuilder.select(table_tokens("anticipating") + ".id", table_tokens("anticipating") + ".token").apply(pp1)
                                                                 .from("anticipating_tokens"),

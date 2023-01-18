@@ -18,7 +18,6 @@ import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote
 
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
-    public static final String COMPOSITE = "_composite";
     private final CompilerUtil compilerUtil=new CompilerUtil();
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
@@ -34,9 +33,11 @@ public class CompilerSqlComposer {
         this.arrayFunctionDeclarations = arrayFunctionDeclarations;
     }
 
-    public void generateSQLInsertFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-        String HACK_orig_templateName=templateName.replace(COMPOSITE,"");
+    public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
+
+
+        String orig_templateName=(consistOf==null)?templateName:consistOf;
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
 
@@ -129,15 +130,12 @@ public class CompilerSqlComposer {
                 .fieldNames(templateBindingsSchema)
                 .stream()
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
-                .map(key -> HACK_orig_templateName + "." + key)
+                .map(key -> orig_templateName + "." + key)
                 .collect(Collectors.toCollection(() -> new LinkedList<>() {{
                     if (withRelationId) {
-                        add(HACK_orig_templateName + "." + tableKey);
+                        add(orig_templateName + "." + tableKey);
                     }
                 }}));
-
-
-
 
 
         QueryBuilder fun=
@@ -148,7 +146,7 @@ public class CompilerSqlComposer {
                                 .returns("table", functionReturns)
                                 .bodyStart("")
                                 .cte(cteValues2)
-                                .insertInto(HACK_orig_templateName)
+                                .insertInto(orig_templateName)
                                 .values(insertValues2)
                                 .returning(outputs)
                                 .bodyEnd("");
@@ -160,31 +158,23 @@ public class CompilerSqlComposer {
 
         System.out.println("=== PRETTY ==>\n " + sql + "\n===========");
 
-
     }
 
-    public String templateType(String templateName) {
-        String HACK_orig_templateName=templateName.replace(COMPOSITE,"");
-        return HACK_orig_templateName+"_type";
-    }
+    public void generateSQLInsertArrayFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
-
-    public void generateSQLInsertArrayFunction(String jsonschema, String templateName, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-
+        String template_type=((consistOf==null)?templateName:consistOf)+"_type";
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
 
         final String insertFunctionName= Constants.INSERT_PREFIX+templateName+"_array";
 
 
-        final Predicate<String> isOutput=(key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
-        final Predicate<String> isInput=(key) -> descriptorUtils.isInput(key, templateBindingsSchema);
-
-
+        final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
+        final Predicate<String> isInput  = (key) -> descriptorUtils.isInput (key, templateBindingsSchema);
 
 
         Map<String,?> funParams=new HashMap<>() {{
-            put(Constants.RECORDS_VAR, arrayOf(templateType(templateName)));
+            put(Constants.RECORDS_VAR, arrayOf(template_type));
         }};
 
 

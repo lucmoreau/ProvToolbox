@@ -481,17 +481,19 @@ public class ConfigProcessor implements Constants {
 
                     compilerJsonSchema.generateJSonSchema(jsonschema, templateName, cli_src_dir + "/../resources", bindings_schema);
                     compilerSQL.generateSQL(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
-                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
+                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
 
                     compilerSQL.generateSQLPrimitiveTables(sqlTables);
                 }
 
                 if (inComposition) {
-                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, sharing);
 
                     if (consistsOf==null) {
                         throw new NullPointerException("No composed class has been specified for composite " + templateName);
                     }
+
+                    compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing);
+
 
                     JavaFile spec7b = compilerIntegrator.generateCompositeBean(templateName, consistsOf,packge + ".client", bindingsSchema, sharing);
                     if (spec7b!=null) {

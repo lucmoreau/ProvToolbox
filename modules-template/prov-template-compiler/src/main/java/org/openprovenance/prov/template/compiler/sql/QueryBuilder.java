@@ -115,11 +115,9 @@ public class QueryBuilder {
 
                 for (var i = 0; i < columns.length; i++) {
                     if (i > 0) {
-                    //    queryBuilder.sqlBuilder.append(", ");
                         pp.comma();
                     }
 
-                    //queryBuilder.append(columns[i]);
                     if (columns[i] instanceof String) {
                         pp.write((String)columns[i]);
                     } else {

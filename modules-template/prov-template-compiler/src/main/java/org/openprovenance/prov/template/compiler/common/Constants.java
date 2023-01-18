@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler.common;
 
 public interface Constants {
     String IS_A = "isA";
+    String ELEMENTS = "__elements";
     String PREFIX_LOG_VAR = "___";
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";
@@ -58,7 +59,7 @@ public interface Constants {
     String INSERT_PREFIX = "insert_";
     String NOT_NULL_METHOD = "notNull";
     String INPUT_PREFIX = "input_";
-    String SHARED_PREFIX = "shared_";
+    String SHARED_PREFIX = "composite_";
     String NULLABLE_TEXT = "nullableTEXT";
     String TIMESTAMPTZ = "timestamptz";
     String RECORDS_VAR = "records";
@@ -69,4 +70,6 @@ public interface Constants {
     String GENERATED_VAR_PREFIX = "__";
     boolean IN_INTEGRATOR = true;
     String REALISER = "realiser";
+    String OPENPROVENANCE_COMPOSITE_BEAN_JSON = "openprovenance:composite-bean.json";
+    String RESOURCE_COMPOSITE_BEAN_JSON = "/composite/composite-bean.json";
 }

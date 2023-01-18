@@ -36,11 +36,11 @@ public class SimpleTemplateCompilerConfig extends TemplateCompilerConfig {
     public boolean inComposition=false;
 
 
-    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition() {
+    public SimpleTemplateCompilerConfig cloneAsInstanceInComposition(String newName) {
         SimpleTemplateCompilerConfig clone= new SimpleTemplateCompilerConfig();
         clone.template=template;
         clone.type_=type_;
-        clone.name=name+"_shared";
+        clone.name= newName; //this.name +"_shared";
         clone.package_=package_;
         clone.bindings=bindings;
         clone.inComposition=true;

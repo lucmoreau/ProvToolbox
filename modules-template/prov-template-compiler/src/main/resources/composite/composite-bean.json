@@ -1,0 +1,30 @@
+
+{
+	"var": {
+		"bean": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The bean identifier",
+				"@output": "true"
+			}
+		],
+		"count": [[
+			{
+				"@type": "xsd:int",
+				"@documentation": "The number of records being composed",
+				"@input": "compulsory"
+			}
+		]],
+		"type": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The type of bean being composed",
+				"@input": "compulsory"
+			}
+		]
+	},
+	"context": {
+		"ex": "http://example.org/"
+	},
+	"template": "https://openprovenance.org/templates/org/openprovenance/generic/binaryop/1.provn"
+}

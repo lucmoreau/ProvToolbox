@@ -1,0 +1,11 @@
+document
+ prefix tmpl <http://openprovenance.org/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+ prefix ex <http://example.org/>
+
+
+ bundle vargen:b
+  entity(var:bean,[tmpl:count='var:count', prov:type='var:type'])
+ endBundle
+endDocument

@@ -23,7 +23,7 @@ public class CompilerSimpleBean {
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
 
-    public JavaFile generateSimpleBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+    public JavaFile generateSimpleBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistOf) {
 
         String name;
         switch (beanKind) {
@@ -34,6 +34,9 @@ public class CompilerSimpleBean {
                 name= compilerUtil.outputsNameClass(templateName);
                 break;
             case COMMON:
+                name= compilerUtil.beanNameClass(templateName);
+                break;
+            case COMPOSITE:
                 name= compilerUtil.beanNameClass(templateName);
                 break;
             default:
@@ -52,6 +55,9 @@ public class CompilerSimpleBean {
             case COMMON:
                 builder.addJavadoc("A Bean to capture all variables of this template.");
                 break;
+            case COMPOSITE:
+                builder.addJavadoc("A Composite Bean to include the beans to be composed");
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + beanKind);
         }
@@ -67,6 +73,7 @@ public class CompilerSimpleBean {
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (beanKind==BeanKind.COMMON
+                    || (beanKind==BeanKind.COMPOSITE)
                     || (beanKind==BeanKind.OUTPUTS && descriptorUtils.isOutput(key, bindingsSchema))
                     || (beanKind==BeanKind.INPUTS && descriptorUtils.isInput(key, bindingsSchema))){
 
@@ -99,11 +106,32 @@ public class CompilerSimpleBean {
         if (beanKind==BeanKind.COMMON) {
             MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema);
             builder.addMethod(mbuild);
+
+        } else if (beanKind==BeanKind.COMPOSITE) {
+
+
+            generateCompositeList(consistOf, packge, builder);
+
+
         }
 
         TypeSpec spec = builder.build();
 
         return compilerUtil.specWithComment(spec, templateName, packge, getClass().getName());
+
+    }
+
+    private void generateCompositeList(String templateName, String packge, TypeSpec.Builder builder) {
+        ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(packge,compilerUtil.beanNameClass(templateName))   );
+        FieldSpec.Builder b1 = FieldSpec.builder(elementList, ELEMENTS)
+                .addModifiers(Modifier.PUBLIC);
+
+
+
+        b1.addJavadoc("List of composed templates generated Automatically by ProvToolbox ($N.$N()) for template $N.", this.getClass().getSimpleName(), "generateCompositeList", templateName);
+
+        builder.addField(b1.build());
+
 
     }
 

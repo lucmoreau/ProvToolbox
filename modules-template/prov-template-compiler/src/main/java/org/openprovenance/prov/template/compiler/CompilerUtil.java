@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
@@ -33,6 +34,7 @@ import com.squareup.javapoet.TypeSpec.Builder;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
+import static org.openprovenance.prov.template.compiler.common.Constants.RESOURCE_COMPOSITE_BEAN_JSON;
 
 
 public class CompilerUtil {
@@ -277,13 +279,22 @@ public class CompilerUtil {
         return bindingsSchema;
     }
 
+
     public TemplateBindingsSchema getBindingsSchema(String bindings) {
         TemplateBindingsSchema bindingsSchema=null;
         if (bindings != null) {
-            try {
-                bindingsSchema = objectMapper.readValue(new File(bindings),TemplateBindingsSchema.class);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (bindings.equals(Constants.OPENPROVENANCE_COMPOSITE_BEAN_JSON)) {
+                try {
+                    bindingsSchema=objectMapper.readValue(this.getClass().getResourceAsStream(RESOURCE_COMPOSITE_BEAN_JSON), TemplateBindingsSchema.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    bindingsSchema = objectMapper.readValue(new File(bindings), TemplateBindingsSchema.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return bindingsSchema;

@@ -145,7 +145,7 @@ public class ConfigProcessor implements Constants {
 
                             System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
-                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition();
+                            SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name);
                             doGenerateServerForEntry(config, sc2, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
                         }
                     }
@@ -330,7 +330,7 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>());
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -348,7 +348,7 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -363,7 +363,7 @@ public class ConfigProcessor implements Constants {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>());
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -371,7 +371,7 @@ public class ConfigProcessor implements Constants {
     }
 
     public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema,
-                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing) {
+                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -383,6 +383,7 @@ public class ConfigProcessor implements Constants {
             String inputs=compilerUtil.inputsNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
             String integratorBuilder=compilerUtil.integratorBuilderNameClass(templateName);
+            String compositeBeanNameClass=compilerUtil.beanNameClass(templateName);
             String integrator=compilerUtil.integratorNameClass(templateName);
 
             String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
@@ -402,7 +403,8 @@ public class ConfigProcessor implements Constants {
             String destination4=destinationDir2 + processor + ".java";
 
             String destination7=destinationDir2b + integratorBuilder + ".java";
-            String destination7b=destinationDir2b + integrator + ".java";
+            String destination7b=destinationDir2 + compositeBeanNameClass + ".java";  // in same folder as simple beans
+            String destination4b=destinationDir2b + integrator + ".java";
 
 
 
@@ -457,11 +459,11 @@ public class ConfigProcessor implements Constants {
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, BeanKind.COMMON);
+                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, BeanKind.COMMON, null);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
-                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.OUTPUTS);
+                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.OUTPUTS, null);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
-                    JavaFile spec3c = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.INPUTS);
+                    JavaFile spec3c = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.INPUTS, null);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3c, spec3c);
 
                     JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packge + ".client.integrator", bindingsSchema);
@@ -472,7 +474,7 @@ public class ConfigProcessor implements Constants {
                     val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
                     JavaFile spec4b = compilerProcessor.generateProcessor(templateName, packge + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
-                    val4 = val4 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec4b);
+                    val4 = val4 & compilerUtil.saveToFile(destinationDir2b, destination4b, spec4b);
                 }
 
                 if (!inComposition) {
@@ -486,6 +488,16 @@ public class ConfigProcessor implements Constants {
 
                 if (inComposition) {
                     compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema, sharing);
+
+                    if (consistsOf==null) {
+                        throw new NullPointerException("No composed class has been specified for composite " + templateName);
+                    }
+
+                    JavaFile spec7b = compilerIntegrator.generateCompositeBean(templateName, consistsOf,packge + ".client", bindingsSchema, sharing);
+                    if (spec7b!=null) {
+                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec7b);
+                    }
+
                 }
 
                 if (!inComposition) {

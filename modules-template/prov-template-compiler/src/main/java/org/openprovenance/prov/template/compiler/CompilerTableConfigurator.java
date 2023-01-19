@@ -21,7 +21,7 @@ public class CompilerTableConfigurator {
 
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+            //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, templateNameClass);

@@ -26,7 +26,7 @@ public class CompilerLogger {
 
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+           // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, templateNameClass);
@@ -41,7 +41,7 @@ public class CompilerLogger {
         String names = "";
         boolean first = true;
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+            //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             if (first) {
                 first = false;
             } else {
@@ -97,7 +97,7 @@ public class CompilerLogger {
         builder.addStatement("$T aTable=new $T()",mapType,mapType2);
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
+            //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
 
             //        aTable.put(allBuilders.anticipating_impactBuilder  .getName(), configurator.anticipating_impact     (allBuilders.anticipating_impactBuilder));
             String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;

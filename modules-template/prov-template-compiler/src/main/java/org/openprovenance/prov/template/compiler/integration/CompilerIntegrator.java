@@ -59,18 +59,20 @@ public class CompilerIntegrator {
 
         if (sharing != null && !sharing.isEmpty()) {
             String compositeBeanNameClass = compilerUtil.beanNameClass(templateName);
-            //TypeSpec.Builder builder = compilerUtil.generateClassInit(compositeBeanNameClass);
 
+            /*
 
             SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
             config.name = compositeBeanNameClass;
             config.package_ = packge;
             config.bindings = "openprovenance:composite-bean.json";
-            config.template = "src/test/resources/templates/composite-bean.provn";
+            config.template = "openprovenance:composite-bean.provn";
 
             TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
 
-            JavaFile myfile = new CompilerSimpleBean().generateSimpleBean(templateName, packge, bindingsSchema2, BeanKind.COMPOSITE, consistOf);
+             */
+
+            JavaFile myfile = new CompilerSimpleBean().generateSimpleBean(templateName, packge, bindingsSchema, BeanKind.COMPOSITE, consistOf);
 
 
             return myfile;

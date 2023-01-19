@@ -72,4 +72,5 @@ public interface Constants {
     String REALISER = "realiser";
     String OPENPROVENANCE_COMPOSITE_BEAN_JSON = "openprovenance:composite-bean.json";
     String RESOURCE_COMPOSITE_BEAN_JSON = "/composite/composite-bean.json";
+    String __NODES_FIELD = "__nodes";
 }

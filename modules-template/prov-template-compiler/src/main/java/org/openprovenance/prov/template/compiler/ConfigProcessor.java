@@ -136,6 +136,8 @@ public class ConfigProcessor implements Constants {
                     FileUtils.copyFileToDirectory(new File(config.bindings), new File(cli_webjar_bindings_dir));
                 } else {
                     CompositeTemplateCompilerConfig config=(CompositeTemplateCompilerConfig) aconfig;
+
+
                     String simple=config.consistsOf;
                     boolean found=false;
                     System.out.println("==> Found " + config);
@@ -404,6 +406,7 @@ public class ConfigProcessor implements Constants {
 
             String destination7=destinationDir2b + integratorBuilder + ".java";
             String destination7b=destinationDir2 + compositeBeanNameClass + ".java";  // in same folder as simple beans
+            String destination7c=destinationDir2 + bn + ".java";  // in same folder as simple beans
             String destination4b=destinationDir2b + integrator + ".java";
 
 
@@ -426,7 +429,7 @@ public class ConfigProcessor implements Constants {
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", resource, bindings_schema, bindingsSchema, indexed);
+                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", bindings_schema, bindingsSchema, indexed, BeanKind.COMMON);
                 JavaFile spec2 = tmp.getLeft();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
@@ -488,17 +491,33 @@ public class ConfigProcessor implements Constants {
 
                 if (inComposition) {
 
+
+
                     if (consistsOf==null) {
                         throw new NullPointerException("No composed class has been specified for composite " + templateName);
                     }
 
                     compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing);
 
+                    SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
+                    config.name = compositeBeanNameClass;
+                    config.package_ = packge;
+                    config.bindings = "openprovenance:composite-bean.json";
+                    config.template = "openprovenance:composite-bean.provn";
+                    TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
 
-                    JavaFile spec7b = compilerIntegrator.generateCompositeBean(templateName, consistsOf,packge + ".client", bindingsSchema, sharing);
+                    JavaFile spec7b = compilerSimpleBean.generateSimpleBean(templateName, packge+ ".client", bindingsSchema2, BeanKind.COMPOSITE, consistsOf);
                     if (spec7b!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec7b);
                     }
+
+                    System.out.println("////////// " + inComposition + " " + templateName + " " + compositeBeanNameClass + " " + bn);
+
+                    Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", null, bindingsSchema2, indexed, BeanKind.COMPOSITE);
+                    if (tmp.getLeft()!=null) {
+                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7c, tmp.getLeft());
+                    }
+
 
                 }
 

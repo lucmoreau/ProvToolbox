@@ -42,6 +42,7 @@ public interface Constants {
     String SQL_CONFIGURATOR = "SqlConfigurator";
     String SQL_INSERT_CONFIGURATOR = "SqlInsertConfigurator";
     String CSV_CONFIGURATOR = "CsvConfigurator";
+    String BUILDER_CONFIGURATOR = "BuilderConfigurator";
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
@@ -75,4 +76,5 @@ public interface Constants {
     String RESOURCE_COMPOSITE_BEAN_JSON = "/composite/composite-bean.json";
     String __NODES_FIELD = "__nodes";
     String COMPOSITE = "Composite";
+    String INITIALIZE_BEAN_TABLE = "initializeBeanTable";
 }

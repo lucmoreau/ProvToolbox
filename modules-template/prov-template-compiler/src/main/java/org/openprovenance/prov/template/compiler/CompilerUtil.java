@@ -32,9 +32,8 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 //import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.TypeSpec.Builder;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.GENERATED_VAR_PREFIX;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
-import static org.openprovenance.prov.template.compiler.common.Constants.RESOURCE_COMPOSITE_BEAN_JSON;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 
 public class CompilerUtil {
@@ -48,6 +47,8 @@ public class CompilerUtil {
     static final TypeName mapTypeT=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),typeT);
     static final TypeName hashMapTypeT=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),typeT);
     public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    public static final ParameterizedTypeName builderMapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(CLIENT_PACKAGE,"Builder"));
+    public static final TypeName listOfArrays=ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(Object[].class));
 
     public String generateNewNameForVariable(String key) {
         return GENERATED_VAR_PREFIX + key;

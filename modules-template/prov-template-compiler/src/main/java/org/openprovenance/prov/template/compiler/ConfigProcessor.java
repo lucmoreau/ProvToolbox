@@ -272,7 +272,6 @@ public class ConfigProcessor implements Constants {
         JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_CHECKER + ".java", beanChecker);
 
-
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_CONFIGURATOR + ".java", configurationSql);
 
@@ -281,6 +280,9 @@ public class ConfigProcessor implements Constants {
 
         JavaFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + CSV_CONFIGURATOR + ".java", configurationCsv);
+
+        JavaFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + BUILDER_CONFIGURATOR + ".java", configurationBuilder);
 
         JavaFile configurationSqlInsert= compilerConfigurations.generateSqlInsertConfigurator(configs,SQL_INSERT_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_INSERT_CONFIGURATOR + ".java", configurationSqlInsert);

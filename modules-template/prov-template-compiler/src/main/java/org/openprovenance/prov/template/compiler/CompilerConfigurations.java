@@ -141,7 +141,11 @@ public class CompilerConfigurations {
                 "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType,enactorVar);
         mspec.addStatement("return enactor");
     }
+    public JavaFile generateBuilderConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
+        return  generateConfigurator(configs, theConfiguratorName, ClassName.get(CLIENT_PACKAGE,"Builder"), this::generateReturnSelf, "generateBuilderConfigurator", null, false);
+    }
 
-
-
+    public void generateReturnSelf(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+        mspec.addStatement("return $N", builderParameter);
+    }
 }

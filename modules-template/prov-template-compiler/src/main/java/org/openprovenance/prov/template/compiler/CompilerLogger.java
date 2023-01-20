@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
+import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.listTypeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -76,6 +78,15 @@ public class CompilerLogger {
         builder.addMethod(generateInitializeBeanTableMethod(configs));
         builder.addMethod(generateInitializeCompositeBeanTableMethod(configs));
 
+        builder.addField(FieldSpec
+                .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
+                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package,BUILDER_CONFIGURATOR))
+                .build());
+        builder.addField(FieldSpec
+                .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
+                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package,CONVERTER_CONFIGURATOR))
+                .build());
+
 
         TypeSpec theLogger = builder.build();
 
@@ -89,7 +100,7 @@ public class CompilerLogger {
     static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
 
     private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("initializeBeanTable")
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(INITIALIZE_BEAN_TABLE)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
                 .returns(mapType);
@@ -318,7 +329,7 @@ public class CompilerLogger {
         MethodSpec.Builder builder2 = MethodSpec.methodBuilder(PROCESSOR_PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(args.getClass())),"args").build())
-                .returns(listTypeT);
+                .returns(typeT);
         builder.addMethod(builder2.build());
 
         TypeSpec theInterface = builder.build();

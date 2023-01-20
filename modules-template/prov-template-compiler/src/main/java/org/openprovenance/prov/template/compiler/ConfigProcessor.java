@@ -39,6 +39,7 @@ public class ConfigProcessor implements Constants {
     static final TypeName biconsumerType2=ParameterizedTypeName.get(ClassName.get(BiConsumer.class), typeResult, typeT);
     static final TypeName consumerT=ParameterizedTypeName.get(ClassName.get(Consumer.class), typeT);
     static final TypeName biconsumerType=ParameterizedTypeName.get(ClassName.get(BiConsumer.class),ClassName.get(StringBuilder.class), typeT);
+    static final TypeName listTypeT=ParameterizedTypeName.get(ClassName.get(List.class), typeT);
     private final ProvFactory pFactory;
     private final CompilerSQL compilerSQL;
     private final boolean debugComment;
@@ -214,13 +215,17 @@ public class ConfigProcessor implements Constants {
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.logger+ ".java", logger);
 
         JavaFile intface=compilerLogger.generateBuilderInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +BUILDER_INTERFACE+ ".java", intface);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + BUILDER_INTERFACE + ".java", intface);
 
         JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir +LOGGER_INTERFACE+ ".java", intface2);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + LOGGER_INTERFACE + ".java", intface2);
 
         JavaFile intface3=compilerLogger.generateProcessorArgsInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + PROCESSOR_ARGS_INTERFACE+ ".java", intface3);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + PROCESSOR_ARGS_INTERFACE + ".java", intface3);
+
+        JavaFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + RECORDS_PROCESSOR_INTERFACE + ".java", intface3b);
+
 
         exportMiscFiles(configs, cli_dir, cli_lib);
 
@@ -229,8 +234,12 @@ public class ConfigProcessor implements Constants {
         JavaFile templateBuilders=compilerTemplateBuilders.generateTemplateBuilders(configs);
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.templateBuilders+ ".java", templateBuilders);
 
-        JavaFile tableConfigurator=compilerTableConfigurator.generateTableConfigurator(configs);
-        compilerUtil.saveToFile(logger_dir, logger_dir + configs.tableConfigurator+ ".java", tableConfigurator);
+
+        Pair<String, JavaFile> nameAndTableConfigurator=compilerTableConfigurator.generateTableConfigurator(configs);
+        compilerUtil.saveToFile(logger_dir, logger_dir + nameAndTableConfigurator.getLeft()+ ".java", nameAndTableConfigurator.getRight());
+
+        Pair<String, JavaFile> nameAndTableConfigurator2=compilerTableConfigurator.generateCompositeTableConfigurator(configs);
+        compilerUtil.saveToFile(logger_dir, logger_dir + nameAndTableConfigurator2.getLeft()+ ".java", nameAndTableConfigurator2.getRight());
 
         JavaFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs);
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.beanProcessor+ ".java", beanProcessor);

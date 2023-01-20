@@ -15,6 +15,7 @@ public interface Constants {
     String GET_NAME = "getName";
     String LOGGER_INTERFACE = "LoggerInterface";
     String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
+    String RECORDS_PROCESSOR_INTERFACE = "RecordsProcessorInterface";
     String TESTER_FILE = "ExampleTest";
     String GET_BUILDERS_METHOD = "getBuilders";
     String CLIENT_PACKAGE = "org.openprovenance.prov.client";
@@ -73,4 +74,5 @@ public interface Constants {
     String OPENPROVENANCE_COMPOSITE_BEAN_JSON = "openprovenance:composite-bean.json";
     String RESOURCE_COMPOSITE_BEAN_JSON = "/composite/composite-bean.json";
     String __NODES_FIELD = "__nodes";
+    String COMPOSITE = "Composite";
 }

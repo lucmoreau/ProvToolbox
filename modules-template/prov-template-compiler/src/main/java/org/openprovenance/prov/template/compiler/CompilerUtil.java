@@ -122,6 +122,11 @@ public class CompilerUtil {
                 .addTypeVariable(TypeVariableName.get(type))
                 .addModifiers(Modifier.PUBLIC);
     }
+    public Builder generateInterfaceInitParameter(String name, TypeVariableName type) {
+        return TypeSpec.interfaceBuilder(name)
+                .addTypeVariable(type)
+                .addModifiers(Modifier.PUBLIC);
+    }
   
     public Builder generateClassBuilder3(String name) {
         return TypeSpec.classBuilder(name)

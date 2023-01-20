@@ -66,7 +66,8 @@ public class CompilerConfigurations {
 
                 generator.accept(builderParameter, mspec, className, ClassName.get(packge, beanNameClass));
             } else {
-                generateUnsupportedException(mspec);
+                mspec.addStatement("return null");
+               // generateUnsupportedException(mspec);
             }
             builder.addMethod(mspec.build());
 

@@ -29,7 +29,7 @@ public class CompilerLogger {
     JavaFile generateLogger(TemplatesCompilerConfig configs) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
-        builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, "LoggerInterface"));
+        builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, LOGGER_INTERFACE));
 
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {

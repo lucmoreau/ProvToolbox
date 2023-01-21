@@ -39,7 +39,7 @@ public class CompilerCommon {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind) {
+    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -50,12 +50,12 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(allVars,allAtts,name, templateName, packge, bindings_schema, bindingsSchema, indexed, beanKind);
+        return generateCommonLib_aux(allVars,allAtts,name, templateName, packge, bindings_schema, bindingsSchema, indexed, logger, beanKind);
 
     }
 
 
-    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, BeanKind beanKind) {
+    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER);
 
@@ -154,7 +154,7 @@ public class CompilerCommon {
 
         } else {
             builder.addField(generateField4aBeanConverter3(templateName,packge));
-            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite(templateName, packge, bindingsSchema, beanKind));
+            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite(templateName, packge, bindingsSchema, logger, beanKind));
 
         }
 
@@ -1317,7 +1317,7 @@ public class CompilerCommon {
     }
 
 
-    public MethodSpec generateFactoryMethodToBeanWithArrayComposite(String template, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+    public MethodSpec generateFactoryMethodToBeanWithArrayComposite(String template, String packge, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
@@ -1354,12 +1354,9 @@ public class CompilerCommon {
 
         builder.addStatement("bean.$N=new $T<>()", ELEMENTS, LinkedList.class);
         builder.beginControlFlow("for (int i=1;i<records.size(); i++) ")
-                .addComment("HACK: casting to Anticipating_impactBean: instead do casting in a method in the CompositeBean add an element")
-                //      bean.__elements.add(((Anticipating_impactBuilder)Logger.simpleBuilders.get(records.get(i))).aRecord2BeanConverter.process(records.get(i)));
-                .addStatement("bean.$N.add(($T)($T.simpleBeanConverters.get(records.get(i)[0]).process(records.get(i))))",
-                        ELEMENTS,
-                        ClassName.get(packge,"Anticipating_impactBean"),
-                        ClassName.get(packge,"Logger"))
+                .addStatement("bean.$N($T.simpleBeanConverters.get(records.get(i)[0]).process(records.get(i)))",
+                        ADD_ELEMENTS,
+                        ClassName.get(packge,logger))
 
                 .endControlFlow();
 

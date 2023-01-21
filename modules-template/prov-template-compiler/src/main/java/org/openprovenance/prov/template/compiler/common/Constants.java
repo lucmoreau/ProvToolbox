@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler.common;
 public interface Constants {
     String IS_A = "isA";
     String ELEMENTS = "__elements";
+    String ADD_ELEMENTS = "__addElements";
     String PREFIX_LOG_VAR = "___";
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";

@@ -343,7 +343,7 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -361,7 +361,7 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -376,14 +376,14 @@ public class ConfigProcessor implements Constants {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean,configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String jsonschema, String documentation, JsonNode bindings_schema,
+    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String logger, String jsonschema, String documentation, JsonNode bindings_schema,
                             TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
@@ -440,7 +440,7 @@ public class ConfigProcessor implements Constants {
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", bindings_schema, bindingsSchema, indexed, BeanKind.COMMON);
+                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", bindings_schema, bindingsSchema, indexed, logger, BeanKind.COMMON);
                 JavaFile spec2 = tmp.getLeft();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
@@ -524,7 +524,7 @@ public class ConfigProcessor implements Constants {
 
                     System.out.println("////////// " + inComposition + " " + templateName + " " + compositeBeanNameClass + " " + bn);
 
-                    Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", null, bindingsSchema2, indexed, BeanKind.COMPOSITE);
+                    Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", null, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE);
                     if (tmp.getLeft()!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7c, tmp.getLeft());
                     }

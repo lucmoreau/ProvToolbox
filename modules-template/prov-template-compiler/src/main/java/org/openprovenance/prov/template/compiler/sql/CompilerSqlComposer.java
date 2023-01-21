@@ -199,7 +199,7 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
-                                            key ->  (pp) -> QueryBuilder.select("token","(select cast(nextval('activity_id_seq') as INT)) as id").apply(pp)  //FIXME activity_id_seq is hard coded
+                                            key ->  (pp) -> QueryBuilder.select("token","cast(nextval('activity_id_seq') as INT) as id").apply(pp)  //FIXME activity_id_seq is hard coded
                                                     .from((pp1) -> QueryBuilder.select("DISTINCT " + key + " AS " +  "token").apply(pp1).from(Constants.INPUT_TABLE),
                                                             table_tokens(key)),
                                             (x, y) -> y,
@@ -249,8 +249,8 @@ public class CompilerSqlComposer {
                 "$$ language SQL;\n" +
                 "\n" +
                 "\n" +
-                "DROP TYPE IF EXISTS anticipating_impact_composite_type CASCADE;\n" +
-                "CREATE TYPE anticipating_impact_composite_type AS\n" +
+                "DROP TYPE IF EXISTS anticipating_impact_type CASCADE;\n" +
+                "CREATE TYPE anticipating_impact_type AS\n" +
                 "(\n" +
                 "    impact INT,\n" +
                 "    aspect1 INT,\n" +

@@ -171,6 +171,7 @@ public class CompilerSqlComposer {
 
         final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
         final Predicate<String> isInput  = (key) -> descriptorUtils.isInput (key, templateBindingsSchema);
+        final Function<String,String> table  = (key) -> descriptorUtils.getOutputSqlTable (key, templateBindingsSchema).orElse(key);
 
 
         Map<String,?> funParams=new HashMap<>() {{
@@ -199,7 +200,7 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
-                                            key ->  (pp) -> QueryBuilder.select("token","cast(nextval('activity_id_seq') as INT) as id").apply(pp)  //FIXME activity_id_seq is hard coded
+                                            key ->  (pp) -> QueryBuilder.select("token",nextVal(table.apply(key))).apply(pp)
                                                     .from((pp1) -> QueryBuilder.select("DISTINCT " + key + " AS " +  "token").apply(pp1).from(Constants.INPUT_TABLE),
                                                             table_tokens(key)),
                                             (x, y) -> y,
@@ -212,7 +213,7 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_ids,
-                                            key -> (pp) -> QueryBuilder.select("insert_into_activity(id) as id").apply(pp) //FIXME insert_into_activity is hard coded
+                                            key -> (pp) -> QueryBuilder.select(insert_into_table(table.apply(key))).apply(pp) 
                                                     .from(table_tokens(key)),
                                             (x, y) -> y,
                                             LinkedHashMap::new));
@@ -299,6 +300,14 @@ public class CompilerSqlComposer {
 
 
 
+    }
+
+    private String insert_into_table(String table) {
+        return "insert_into_" + table + "(id) as id";
+    }
+
+    private String nextVal(String key) {
+        return "cast(nextval('" + key + "_id_seq') as INT) as id";
     }
 
     static HashMap<String, Object> Default_Values() {

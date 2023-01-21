@@ -78,4 +78,6 @@ public interface Constants {
     String __NODES_FIELD = "__nodes";
     String COMPOSITE = "Composite";
     String INITIALIZE_BEAN_TABLE = "initializeBeanTable";
+    String INSERT_ARRAY_SUFFIX = "_array";
+    String VARIABLE_BEAN = "bean";
 }

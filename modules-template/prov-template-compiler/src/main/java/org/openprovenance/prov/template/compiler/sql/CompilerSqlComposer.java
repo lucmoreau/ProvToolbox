@@ -166,7 +166,7 @@ public class CompilerSqlComposer {
 
         Map<String, List<Descriptor>> var = templateBindingsSchema.getVar();
 
-        final String insertFunctionName= Constants.INSERT_PREFIX+templateName+"_array";
+        final String insertFunctionName= Constants.INSERT_PREFIX+templateName+ INSERT_ARRAY_SUFFIX;
 
 
         final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);

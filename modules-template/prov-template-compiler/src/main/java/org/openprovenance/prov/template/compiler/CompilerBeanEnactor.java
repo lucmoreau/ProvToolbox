@@ -62,14 +62,14 @@ public class CompilerBeanEnactor {
 
         builder.addType(inface.build());
 
-        builder.addField(beanProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(beanProcessorClass,"checker",Modifier.FINAL, Modifier.PROTECTED);
 
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
         final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(configs.configurator_package+"."+ Constants.BEAN_ENACTOR, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
-        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PROTECTED);
 
 
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()

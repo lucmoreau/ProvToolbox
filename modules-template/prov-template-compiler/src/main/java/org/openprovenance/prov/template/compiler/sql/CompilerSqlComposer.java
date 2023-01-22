@@ -213,7 +213,7 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_ids,
-                                            key -> (pp) -> QueryBuilder.select(insert_into_table(table.apply(key))).apply(pp) 
+                                            key -> (pp) -> QueryBuilder.select(insert_into_table(table.apply(key))).apply(pp)
                                                     .from(table_tokens(key)),
                                             (x, y) -> y,
                                             LinkedHashMap::new));
@@ -249,18 +249,6 @@ public class CompilerSqlComposer {
                 "RETURNING activity.id as id\n" +
                 "$$ language SQL;\n" +
                 "\n" +
-                "\n" +
-                "DROP TYPE IF EXISTS anticipating_impact_type CASCADE;\n" +
-                "CREATE TYPE anticipating_impact_type AS\n" +
-                "(\n" +
-                "    impact INT,\n" +
-                "    aspect1 INT,\n" +
-                "    aspect0 INT,\n" +
-                "    aspect INT,\n" +
-                "    organization INT,\n" +
-                "    management INT,\n" +
-                "    anticipating INT,\n" +
-                "    time timestamptz\n" +
                 ");\n\n";
 
 

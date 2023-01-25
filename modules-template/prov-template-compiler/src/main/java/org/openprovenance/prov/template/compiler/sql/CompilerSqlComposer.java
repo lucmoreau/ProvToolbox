@@ -1,23 +1,23 @@
 package org.openprovenance.prov.template.compiler.sql;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
-import java.io.ByteArrayOutputStream;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.convertToSQLType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.arrayOf;
-import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote;
+import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
+    public static final String TOKEN_VAR_NAME = "_token";
     private final CompilerUtil compilerUtil=new CompilerUtil();
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
@@ -31,6 +31,33 @@ public class CompilerSqlComposer {
         this.tableKey=tableKey;
         this.functionDeclarations = functionDeclarations;
         this.arrayFunctionDeclarations = arrayFunctionDeclarations;
+    }
+
+    public static <T> Collector<T, List<T>, List<T>> toListCollector() {
+        return Collector.of(
+                (Supplier<List<T>>) ArrayList::new,
+                (BiConsumer<List<T>, T>) List::add,
+                (BinaryOperator<List<T>>) (left, right) -> { left.addAll(right); return left; }
+        );
+    }
+
+
+    public static <T> Collector<Pair<T,T>, List<T>, List<T>> toListCollector2() {
+        return Collector.of(
+                (Supplier<List<T>>) ArrayList::new,
+                (l, p) -> {l.add(p.getLeft()); l.add(p.getRight()); },
+                (left, right) -> { left.addAll(right); return left; }
+        );
+    }
+
+    List<Object> selectColumns(PrettyPrinter pp, TemplateBindingsSchema templateBindingsSchema, Collection<String> shared, List<String> theArguments) {
+        return descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .filter(key -> shared.contains(key))
+                .map(key -> Pair.of((Object)(shared.contains(key)? key + "_token_id_pairs.id" : key),
+                                (Object)QueryBuilder.functionCall(  "insert_anticipating_impact_composite",theArguments, Constants.ARECORD_VAR).apply(pp)))
+                .collect(toListCollector2());
     }
 
     public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
@@ -160,6 +187,11 @@ public class CompilerSqlComposer {
 
     }
 
+    private String localId(String key) {
+        return "_" + key + "_id";
+    }
+
+
     public void generateSQLInsertArrayFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
         String template_type=((consistOf==null)?templateName:consistOf)+"_type";
@@ -200,8 +232,14 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
-                                            key ->  (pp) -> QueryBuilder.select("token",nextVal(table.apply(key))).apply(pp)
-                                                    .from((pp1) -> QueryBuilder.select("DISTINCT " + key + " AS " +  "token").apply(pp1).from(Constants.INPUT_TABLE),
+                                            key ->  (pp) -> QueryBuilder.select(makeArray(TOKEN_VAR_NAME,
+                                                                                              nextVal(table.apply(key)),
+                                                                                              additionalColumnsWithAlias(templateBindingsSchema, key)))
+                                                                        .apply(pp)
+                                                                        .from((pp1) -> QueryBuilder.select(makeArray("DISTINCT ON (" + key + ") " + key + " AS " + TOKEN_VAR_NAME,
+                                                                                                                        additionalColumnsWithoutAlias(templateBindingsSchema,key)))
+                                                                                        .apply(pp1)
+                                                                                        .from(Constants.INPUT_TABLE),
                                                             table_tokens(key)),
                                             (x, y) -> y,
                                             () -> new LinkedHashMap<String, Function<PrettyPrinter, ?>>() {{
@@ -213,17 +251,18 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_ids,
-                                            key -> (pp) -> QueryBuilder.select(insert_into_table(table.apply(key))).apply(pp)
+                                            key -> (pp) -> QueryBuilder.select(insert_into_table(table.apply(key), additionalColumnsWithoutAlias2(templateBindingsSchema,key))).apply(pp)
                                                     .from(table_tokens(key)),
                                             (x, y) -> y,
                                             LinkedHashMap::new));
         cteValues1.putAll(cteValues2);
 
+        /*
         List<String> insertColumns=descriptorUtils
                 .fieldNames(templateBindingsSchema)
                 .stream()
-                .filter(key -> isOutput.test(key) && !shared.contains(key))
-                .map(key -> "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
+                .filter(key -> isOutput.test(key) &!shared.contains(key))
+                .map(key ->  "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
                 .collect(Collectors.toCollection(() -> new LinkedList<>(){{
                                                             if (withRelationId) {
                                                                 add("(" + Constants.ARECORD_VAR + ")." + tableKey);
@@ -231,6 +270,17 @@ public class CompilerSqlComposer {
 
         insertColumns.add("ID");
 
+         */
+
+        List<String> insertColumns_IN_DEVELOP=descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .filter(isOutput)
+                .map(key ->  shared.contains(key)? localId(key) : "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
+                .collect(Collectors.toCollection(() -> new LinkedList<>(){{
+                    if (withRelationId) {
+                        add("(" + Constants.ARECORD_VAR + ")." + tableKey);
+                    }}}));
 
         List<String> theArguments=descriptorUtils
                 .fieldNames(templateBindingsSchema)
@@ -248,8 +298,16 @@ public class CompilerSqlComposer {
                 "SELECT input_id\n" +
                 "RETURNING activity.id as id\n" +
                 "$$ language SQL;\n" +
-                "\n" +
-                ");\n\n";
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_policy (input_id BIGINT, input_serial INT)\n" +
+                "                    returns table(id INT) \n" +
+                "                as $$\n" +
+                "                INSERT INTO policy (id, serial)\n" +
+                "                SELECT input_id, input_serial\n" +
+                "                RETURNING policy.id as id\n" +
+                "                $$ language SQL;\n" +
+                "\t\t\t\t"+
+                ";\n\n";
 
 
 
@@ -257,29 +315,92 @@ public class CompilerSqlComposer {
 
 
         QueryBuilder fun=
-                new QueryBuilder().comment(PRELUDE_TO_AUTO_GENERATE)
+                new QueryBuilder()
+                        .comment(PRELUDE_TO_AUTO_GENERATE)
                         .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertArrayFunction")
                         .next(QueryBuilder.createFunction(insertFunctionName))
-                                .params(funParams)
-                                .returns("table", functionReturns)
-                                .bodyStart("")
-                                .cte(cteValues1)
-                                .selectExp(insertColumns.toArray(ARRAY_OF_STRING))
-                                .from((pp)-> QueryBuilder.select(table_token_id_pairs("anticipating")+".id",
-                                                QueryBuilder.functionCall(  "insert_anticipating_impact_composite",theArguments, Constants.ARECORD_VAR)).apply(pp)
-                                                .from(Constants.INPUT_TABLE)
-                                                .join((pp1) -> QueryBuilder.select(table_tokens("anticipating") + ".id", table_tokens("anticipating") + ".token").apply(pp1)
-                                                                .from("anticipating_tokens"),
-                                                        table_token_id_pairs("anticipating"))
-                                                .on("anticipating=",table_token_id_pairs("anticipating")+".token"),
-                                        "inserted_rows")
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("")
+                        .cte(cteValues1)
+                        .selectExp(new ArrayList<String>() {{
+                            addAll(insertColumns_IN_DEVELOP);
+                            add("ID");
+                        }}.toArray(ARRAY_OF_STRING))
+                        .from((pp)-> QueryBuilder.select(table_token_id_pairs("anticipating")+".id",
+                                                QueryBuilder.functionCall(  "insert_anticipating_impact_composite",theArguments, Constants.ARECORD_VAR))
+                                        .apply(pp)
+                                        .from(Constants.INPUT_TABLE)
+                                        .join((pp1) -> QueryBuilder.select(table_tokens("anticipating") + ".id", table_tokens("anticipating") + ".token")
+                                                        .apply(pp1)
+                                                        .from("anticipating_tokens"),
+                                                table_token_id_pairs("anticipating"))
+                                        .on("anticipating=",table_token_id_pairs("anticipating")+".token"),
+                                "inserted_rows")
 
-                                .bodyEnd("");
+                        .bodyEnd("");
 
 
+        List<Object> selectColumns_IN_DEVELOPMENT= descriptorUtils
+                    .fieldNames(templateBindingsSchema)
+                    .stream()
+                    .filter(shared::contains)
+                    .map(key -> Pair.of((Object)(key), (Object)QueryBuilder.functionCall(  "insert_" + key + "_composite", theArguments, Constants.ARECORD_VAR)))
+                    .collect(toListCollector2());
+
+
+        QueryBuilder fun_IN_DEVELOPMENT=
+                new QueryBuilder()
+                        .comment(PRELUDE_TO_AUTO_GENERATE)
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLInsertArrayFunction")
+                        .next(QueryBuilder.createFunction(insertFunctionName))
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("")
+                        .cte(cteValues1)
+                        .selectExp(insertColumns_IN_DEVELOP.toArray(ARRAY_OF_STRING))
+                        .from((pp) -> shared
+                                        .stream()
+                                        .reduce(QueryBuilder.select(makeArray(shared.stream().map(theColumn->table_token_id_pairs(theColumn)+".id" + " AS " + localId(theColumn)).collect(Collectors.toList()),
+                                                                              QueryBuilder.functionCall(  "insert_" + templateName, theArguments, Constants.ARECORD_VAR))).apply(pp).from(Constants.INPUT_TABLE),
+                                                (qb, s)  // (BiFunction<QueryBuilder, String, QueryBuilder>)
+                                                        -> qb.join((pp1) -> QueryBuilder.select(getId(table_tokens(s)), getToken(table_tokens(s)))
+                                                                .apply(pp1)
+                                                                .from(table_tokens(s)), table_token_id_pairs(s))
+                                                        .on(s, "=", getToken(table_token_id_pairs(s))),
+                                                (qb1,qb2) -> { //(BinaryOperator<QueryBuilder>)
+                                                    throw new UnsupportedOperationException();
+                                                }),
+                                "inserted_rows")
+                        .bodyEnd("");
+
+/*
+                                QueryBuilder.select(makeArray(shared.stream().map(theColumn->table_token_id_pairs(theColumn)+".id").collect(Collectors.toList()),
+                                        QueryBuilder.functionCall(  "insert_" + templateName, theArguments, Constants.ARECORD_VAR)))
+                                        .apply(pp)
+                                        .from(Constants.INPUT_TABLE)
+                                        .join((pp1) -> QueryBuilder.select(getId(table_tokens(the_column)), getToken(table_tokens(the_column)))
+                                                        .apply(pp1)
+                                                        .from("anticipating_tokens"),
+                                                table_token_id_pairs(the_column))
+                                        .on("anticipating=",table_token_id_pairs("anticipating")+".token")
+                                        .join((pp1) -> QueryBuilder.select(getId(table_tokens(the_column)), getToken(table_tokens(the_column)))
+                                                        .apply(pp1)
+                                                        .from("anticipating_tokens"),
+                                                table_token_id_pairs(the_column))
+                                        .on("anticipating=",table_token_id_pairs("anticipating")+".token")
+
+                                ,
+                                "inserted_rows")
+
+                        .bodyEnd("");
+
+
+ */
         String sql=fun.getSQL();
 
 
+        System.out.println("K$$$$$$$$$$$$$$$$ " + fun_IN_DEVELOPMENT.getSQL());
 
 
         arrayFunctionDeclarations.put(insertFunctionName, sql);
@@ -290,8 +411,64 @@ public class CompilerSqlComposer {
 
     }
 
+    private List<String> additionalColumnsWithAlias(TemplateBindingsSchema templateBindingsSchema, String key) {
+        Map<String, String> newInputs = descriptorUtils.getSqlNewInputs(key, templateBindingsSchema).orElseGet(HashMap::new);
+        return newInputs.keySet().stream().map(k -> newInputs.get(k) + " AS " + k + " -- @sql.new.inputs").collect(Collectors.toList());
+    }
+    private List<String> additionalColumnsWithoutAlias(TemplateBindingsSchema templateBindingsSchema, String key) {
+        Map<String, String> newInputs = descriptorUtils.getSqlNewInputs(key, templateBindingsSchema).orElseGet(HashMap::new);
+        return newInputs.keySet().stream().map(newInputs::get).collect(Collectors.toList());
+    }
+
+    private List<String> additionalColumnsWithoutAlias2(TemplateBindingsSchema templateBindingsSchema, String key) {
+        Map<String, String> newInputs = descriptorUtils.getSqlNewInputs(key, templateBindingsSchema).orElseGet(HashMap::new);
+        return new ArrayList<>(newInputs.keySet());
+    }
+
+
+
+    private Object [] makeArray(List<String> strings, Function<PrettyPrinter, QueryBuilder> funarg) {
+        int size = strings.size();
+        Object [] result=new Object[size + 1];
+        strings.toArray(result);
+        result[size]=funarg;
+        return result;
+    }
+    private Object [] makeArray(String s1, String s2, List<String> strings) {
+        int size = strings.size();
+        Object [] result=new Object[size + 2];
+        int i=2;
+        result[0]=s1;
+        result[1]=s2;
+        for (String s: strings) {
+            result[i]=s;
+            i++;
+        }
+        return result;
+    }
+    private Object [] makeArray(String s1, List<String> strings) {
+        int size = strings.size();
+        Object [] result=new Object[size + 1];
+        int i=1;
+        result[0]=s1;
+        for (String s: strings) {
+            result[i]=s;
+            i++;
+        }
+        return result;
+    }
+
     private String insert_into_table(String table) {
         return "insert_into_" + table + "(id) as id";
+    }
+    private String insert_into_table(String table, List<String> strings) {
+        String suffix= String.join(",", strings);
+        if (suffix.isBlank()) {
+            return "insert_into_" + table + "(id) as id";
+        } else {
+            return "insert_into_" + table + "(id, " + suffix + ") as id";
+
+        }
     }
 
     private String nextVal(String key) {
@@ -309,6 +486,12 @@ public class CompilerSqlComposer {
 
     private String table_tokens(String key) {
         return key + "_tokens";
+    }
+    private String getToken(String table) {
+        return table+"." + TOKEN_VAR_NAME ;
+    }
+    private String getId(String table) {
+        return table+".id";
     }
     private String table_token_id_pairs(String key) {
         return key + "_token_id_pairs";

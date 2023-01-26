@@ -65,9 +65,9 @@ public interface Constants {
     String SHARED_PREFIX = "composite_";
     String NULLABLE_TEXT = "nullableTEXT";
     String TIMESTAMPTZ = "timestamptz";
-    String RECORDS_VAR = "records";
-    String ARECORD_VAR = "arecord";
-    String INPUT_TABLE = "input_table";
+    String RECORDS_VAR = "_records";
+    String ARECORD_VAR = "_arecord";
+    String INPUT_TABLE = "_input_table";
     String JAVADOC_NO_DOCUMENTATION = "-- no @documentation";
     String JAVADOC_NO_DOCUMENTATION_DEFAULT_TYPE = "xsd:string";
     String GENERATED_VAR_PREFIX = "__";

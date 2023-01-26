@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
+import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
 
 public class CompilerSQL {
     public static final String SMALL_INDENTATION = "  ";
@@ -142,7 +143,8 @@ public class CompilerSQL {
         res2.append(" (\n");
         for (String key: descriptorUtils.fieldNames(templateBindingsSchema)) {
             first=sepIfNotFirst(res2,first,",\n");
-            final String sqlType = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
+            final String sqlType=getTheSqlType(compilerUtil,key,templateBindingsSchema,var);
+            final String sqlType2 = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
             res2.append(SMALL_INDENTATION).append(key).append( " ").append(sqlType);
         }
         res2.append("\n );\n");

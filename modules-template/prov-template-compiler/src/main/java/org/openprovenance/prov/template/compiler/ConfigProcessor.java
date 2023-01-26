@@ -103,7 +103,7 @@ public class ConfigProcessor implements Constants {
 
         try {
             configs = objectMapper.readValue(new File(template_builder), TemplatesCompilerConfig.class);
-            System.out.println(configs);
+            //System.out.println(configs);
             final String root_dir = configs.destination + "/" + configs.name;
             new File(root_dir).mkdirs(); 
             final String cli_lib = configs.name + "_cli";
@@ -141,12 +141,12 @@ public class ConfigProcessor implements Constants {
 
                     String simple=config.consistsOf;
                     boolean found=false;
-                    System.out.println("==> Found " + config);
+                    //System.out.println("==> Found " + config);
                     for (TemplateCompilerConfig aconfig2: configs.templates) {
                         if (Objects.equals(aconfig2.name, simple)) {
                             found=true;
 
-                            System.out.println("==> Found " + aconfig2);
+                            //System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
                             SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name);
                             doGenerateServerForEntry(config, sc2, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
@@ -521,8 +521,6 @@ public class ConfigProcessor implements Constants {
                     if (spec7b!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec7b);
                     }
-
-                    System.out.println("////////// " + inComposition + " " + templateName + " " + compositeBeanNameClass + " " + bn);
 
                     Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", null, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE);
                     if (tmp.getLeft()!=null) {

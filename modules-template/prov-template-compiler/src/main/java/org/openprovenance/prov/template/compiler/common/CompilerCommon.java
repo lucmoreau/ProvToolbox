@@ -63,8 +63,8 @@ public class CompilerCommon {
         Map<Integer, List<Integer>> successorTable=null;
 
 
-        System.out.println("/// name " + name);
-        System.out.println("/// templateName " + templateName);
+        //System.out.println("/// name " + name);
+        //System.out.println("/// templateName " + templateName);
 
 
         builder.addMethod(generateNameAccessor(templateName));

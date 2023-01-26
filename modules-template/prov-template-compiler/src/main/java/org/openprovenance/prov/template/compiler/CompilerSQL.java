@@ -406,7 +406,7 @@ public class CompilerSQL {
         new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
 
         if (shared!=null && shared.size()>0) {
-            new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(jsonschema, templateName, consistOf, root_dir, templateBindingsSchema, shared);
+            new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
         }
 
 

@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
@@ -61,7 +62,27 @@ public class CompilerUtil {
     public String templateNameClass(String templateName) {
         return capitalize(templateName) + "Builder";
     }
-    public String beanNameClass(String templateName) {
+
+
+    public String beanNameClass(String templateName, BeanDirection beanDirection) {
+        String name;
+        switch (beanDirection) {
+            case INPUTS:
+                name= inputsNameClass(templateName);
+                break;
+            case OUTPUTS:
+                name= outputsNameClass(templateName);
+                break;
+            case COMMON:
+                name= commonNameClass(templateName);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + beanDirection);
+        }
+        return name;
+    }
+
+    public String commonNameClass(String templateName) {
         return capitalize(templateName) + "Bean";
     }
     public String outputsNameClass(String templateName) {

@@ -7,7 +7,6 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.common.CompilerCommon.generateUnsupportedException;
 import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
 import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR_ARGS_INTERFACE;
 
@@ -54,7 +53,7 @@ public class CompilerConfigurations {
         String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final String beanNameClass = compilerUtil.beanNameClass(config.name);
+            final String beanNameClass = compilerUtil.commonNameClass(config.name);
             packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, templateNameClass);
             String builderParameter = "builder";

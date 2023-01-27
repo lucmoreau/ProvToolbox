@@ -44,7 +44,7 @@ public class CompilerBeanChecker {
         for (TemplateCompilerConfig config : configs.templates) {
 
 
-            final String beanNameClass = compilerUtil.beanNameClass(config.name);
+            final String beanNameClass = compilerUtil.commonNameClass(config.name);
             String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)

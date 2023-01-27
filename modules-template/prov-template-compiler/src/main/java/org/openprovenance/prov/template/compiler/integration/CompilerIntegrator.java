@@ -4,11 +4,11 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.openprovenance.prov.template.compiler.CompilerSimpleBean;
+import org.openprovenance.prov.template.compiler.CompilerBeanGenerator;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -30,18 +30,18 @@ public class CompilerIntegrator {
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
 
 
-        builder.addMethod(compilerCommon.generateProcessorConverter(templateName, packge, bindingsSchema, BeanKind.OUTPUTS));
+        builder.addMethod(compilerCommon.generateProcessorConverter(templateName, packge, bindingsSchema, BeanDirection.OUTPUTS));
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
-        builder.addMethod(generateNewOutputConstructor(templateName, packge, bindingsSchema, BeanKind.OUTPUTS));
+        builder.addMethod(generateNewOutputConstructor(templateName, packge, bindingsSchema, BeanDirection.OUTPUTS));
 
         TypeSpec spec = builder.build();
 
         return compilerUtil.specWithComment(spec, templateName, packge, getClass().getName());
     }
 
-    public MethodSpec generateNewOutputConstructor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind outputs) {
+    public MethodSpec generateNewOutputConstructor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection outputs) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("newOutput")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(packge, compilerUtil.outputsNameClass(templateName)));
@@ -58,7 +58,7 @@ public class CompilerIntegrator {
     public JavaFile generateCompositeBean(String templateName, String consistOf, String packge, TemplateBindingsSchema bindingsSchema, List<String> sharing) {
 
         if (sharing != null && !sharing.isEmpty()) {
-            String compositeBeanNameClass = compilerUtil.beanNameClass(templateName);
+            String compositeBeanNameClass = compilerUtil.commonNameClass(templateName);
 
             /*
 
@@ -72,7 +72,7 @@ public class CompilerIntegrator {
 
              */
 
-            JavaFile myfile = new CompilerSimpleBean().generateSimpleBean(templateName, packge, bindingsSchema, BeanKind.COMPOSITE, consistOf);
+            JavaFile myfile = new CompilerBeanGenerator().generateBean(templateName, packge, bindingsSchema, BeanKind.COMPOSITE, BeanDirection.COMMON, consistOf);
 
 
             return myfile;

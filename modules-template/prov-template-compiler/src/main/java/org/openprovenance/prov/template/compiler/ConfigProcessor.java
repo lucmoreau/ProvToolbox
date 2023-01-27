@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -68,7 +69,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerBuilderInit compilerBuilderInit;
     private final CompilerTypeManagement compilerTypeManagement;
     private final CompilerTypedRecord compilerTypedRecord;
-    private final CompilerSimpleBean compilerSimpleBean;
+    private final CompilerBeanGenerator compilerBeanGenerator;
     private final CompilerProcessor compilerProcessor;
     private final CompilerJsonSchema compilerJsonSchema;
     private final CompilerClientTest compilerClientTest;
@@ -88,7 +89,7 @@ public class ConfigProcessor implements Constants {
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
-        this.compilerSimpleBean =new CompilerSimpleBean();
+        this.compilerBeanGenerator =new CompilerBeanGenerator();
         this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
         this.compilerClientTest =new CompilerClientTest();
@@ -391,12 +392,12 @@ public class ConfigProcessor implements Constants {
             String bnTM= compilerUtil.templateNameClass(templateName)+"TypeManagement";
             String bnTP= compilerUtil.templateNameClass(templateName)+"TypePropagate";
             String bnTR= compilerUtil.templateNameClass(templateName)+"TypedRecord";
-            String bean=compilerUtil.beanNameClass(templateName);
+            String bean=compilerUtil.commonNameClass(templateName);
             String outputs=compilerUtil.outputsNameClass(templateName);
             String inputs=compilerUtil.inputsNameClass(templateName);
             String processor=compilerUtil.processorNameClass(templateName);
             String integratorBuilder=compilerUtil.integratorBuilderNameClass(templateName);
-            String compositeBeanNameClass=compilerUtil.beanNameClass(templateName);
+            String compositeBeanNameClass=compilerUtil.commonNameClass(templateName);
             String integrator=compilerUtil.integratorNameClass(templateName);
 
             String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
@@ -420,6 +421,9 @@ public class ConfigProcessor implements Constants {
             String destination7c=destinationDir2 + bn + ".java";  // in same folder as simple beans
             String destination4b=destinationDir2b + integrator + ".java";
 
+            String destination7g=destinationDir2b + outputs + ".java";
+            String destination7h=destinationDir2b + inputs + ".java";
+
 
 
             IndexedDocument indexed = makeIndexedDocument(doc);
@@ -440,7 +444,7 @@ public class ConfigProcessor implements Constants {
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", bindings_schema, bindingsSchema, indexed, logger, BeanKind.COMMON);
+                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", bindings_schema, bindingsSchema, indexed, logger, BeanKind.SIMPLE);
                 JavaFile spec2 = tmp.getLeft();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
@@ -473,11 +477,11 @@ public class ConfigProcessor implements Constants {
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client", bindingsSchema, BeanKind.COMMON, null);
+                    JavaFile spec3 = compilerBeanGenerator.generateBean(templateName, packge + ".client", bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
-                    JavaFile spec3b = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.OUTPUTS, null);
+                    JavaFile spec3b = compilerBeanGenerator.generateBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
-                    JavaFile spec3c = compilerSimpleBean.generateSimpleBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.INPUTS, null);
+                    JavaFile spec3c = compilerBeanGenerator.generateBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3c, spec3c);
 
                     JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packge + ".client.integrator", bindingsSchema);
@@ -517,9 +521,17 @@ public class ConfigProcessor implements Constants {
                     config.template = "openprovenance:composite-bean.provn";
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
 
-                    JavaFile spec7b = compilerSimpleBean.generateSimpleBean(templateName, packge+ ".client", bindingsSchema2, BeanKind.COMPOSITE, consistsOf);
+                    JavaFile spec7b = compilerBeanGenerator.generateBean(templateName, packge+ ".client", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf);
                     if (spec7b!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec7b);
+                    }
+                    JavaFile spec7c = compilerBeanGenerator.generateBean(templateName, packge+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf);
+                    if (spec7c!=null) {
+                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7g, spec7c);
+                    }
+                    JavaFile spec7d = compilerBeanGenerator.generateBean(templateName, packge+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf);
+                    if (spec7d!=null) {
+                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7h, spec7d);
                     }
 
                     Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", null, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE);

@@ -15,7 +15,6 @@ import java.util.Map;
 
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
-import static org.openprovenance.prov.template.compiler.ConfigProcessor.listTypeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
@@ -256,7 +255,7 @@ public class CompilerLogger {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(config.package_ + ".client",compilerUtil.beanNameClass(config.name)));
+                .returns(ClassName.get(config.package_ + ".client",compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 

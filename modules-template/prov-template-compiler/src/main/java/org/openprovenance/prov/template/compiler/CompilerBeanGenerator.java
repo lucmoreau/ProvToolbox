@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -14,52 +15,41 @@ import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
-import static org.openprovenance.prov.template.compiler.common.Constants.INPUTS;
-import static org.openprovenance.prov.template.compiler.common.Constants.OUTPUTS;
 
-public class CompilerSimpleBean {
+public class CompilerBeanGenerator {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
 
-    public JavaFile generateSimpleBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistOf) {
+    public JavaFile generateBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf) {
 
-        String name;
-        switch (beanKind) {
-            case INPUTS:
-                name= compilerUtil.inputsNameClass(templateName);
-                break;
-            case OUTPUTS:
-                name= compilerUtil.outputsNameClass(templateName);
-                break;
-            case COMMON:
-                name= compilerUtil.beanNameClass(templateName);
-                break;
-            case COMPOSITE:
-                name= compilerUtil.beanNameClass(templateName);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + beanKind);
-        }
+        String name = compilerUtil.beanNameClass(templateName, beanDirection);
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
 
         switch (beanKind) {
-            case INPUTS:
-                builder.addJavadoc("A Bean only containing the input of this template.");
-                break;
-            case OUTPUTS:
-                builder.addJavadoc("A Bean only containing the outputs of this template.");
-                break;
-            case COMMON:
-                builder.addJavadoc("A Bean to capture all variables of this template.");
+            case SIMPLE:
+                builder.addJavadoc("A Simple Bean");
                 break;
             case COMPOSITE:
-                builder.addJavadoc("A Composite Bean to include the beans to be composed");
+                builder.addJavadoc("A composite Bean");
                 break;
+        }
+
+        switch (beanDirection) {
+            case INPUTS:
+                builder.addJavadoc("that only contains the input of this template.");
+                break;
+            case OUTPUTS:
+                builder.addJavadoc("that only contains the outputs of this template.");
+                break;
+            case COMMON:
+                builder.addJavadoc("that captures all variables of this template.");
+                break;
+
             default:
-                throw new IllegalStateException("Unexpected value: " + beanKind);
+                throw new IllegalStateException("Unexpected value: " + beanDirection);
         }
 
 
@@ -72,10 +62,10 @@ public class CompilerSimpleBean {
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            if (beanKind==BeanKind.COMMON
+            if (beanDirection==BeanDirection.COMMON
                     || (beanKind==BeanKind.COMPOSITE)
-                    || (beanKind==BeanKind.OUTPUTS && descriptorUtils.isOutput(key, bindingsSchema))
-                    || (beanKind==BeanKind.INPUTS && descriptorUtils.isInput(key, bindingsSchema))){
+                    || (beanDirection==BeanDirection.OUTPUTS && descriptorUtils.isOutput(key, bindingsSchema))
+                    || (beanDirection==BeanDirection.INPUTS && descriptorUtils.isInput(key, bindingsSchema))){
 
 
                 FieldSpec.Builder b = FieldSpec.builder(compilerUtil.getJavaTypeForDeclaredType(theVar, key), key);
@@ -103,15 +93,15 @@ public class CompilerSimpleBean {
             }
         }
 
-        if (beanKind==BeanKind.COMMON) {
+        if (beanKind==BeanKind.SIMPLE && beanDirection==BeanDirection.COMMON) {
             MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema);
             builder.addMethod(mbuild);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
 
 
-            generateCompositeList(consistOf, packge, builder);
-            generateCompositeListExtender(consistOf, packge, builder);
+            generateCompositeList(consistOf, packge, builder, beanDirection);
+            generateCompositeListExtender(consistOf, packge, builder, beanDirection);
 
 
         }
@@ -122,8 +112,10 @@ public class CompilerSimpleBean {
 
     }
 
-    private void generateCompositeList(String templateName, String packge, TypeSpec.Builder builder) {
-        ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(packge,compilerUtil.beanNameClass(templateName))   );
+
+
+    private void generateCompositeList(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection) {
+        ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(packge,compilerUtil.beanNameClass(templateName,beanDirection))   );
         FieldSpec.Builder b1 = FieldSpec.builder(elementList, ELEMENTS)
                 .addModifiers(Modifier.PUBLIC);
 
@@ -133,14 +125,13 @@ public class CompilerSimpleBean {
 
         builder.addField(b1.build());
     }
-    private void generateCompositeListExtender(String templateName, String packge, TypeSpec.Builder builder) {
-        ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(packge,compilerUtil.beanNameClass(templateName))   );
+    private void generateCompositeListExtender(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection) {
         MethodSpec.Builder mbuilder=
                 MethodSpec.methodBuilder(ADD_ELEMENTS)
                         .addModifiers(Modifier.PUBLIC)
                         .addParameter(ClassName.get(Object.class), "o")
                         .addComment("Generated by method $N", getClass().getName() + ".generateCompositeListExtender()")
-                        .addStatement("$N.add(($T)o)", ELEMENTS,  ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
+                        .addStatement("$N.add(($T)o)", ELEMENTS,  ClassName.get(packge,compilerUtil.beanNameClass(templateName,beanDirection)));
 
 
         builder.addMethod(mbuilder.build());

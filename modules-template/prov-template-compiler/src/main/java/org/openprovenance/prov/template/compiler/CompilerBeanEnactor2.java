@@ -85,7 +85,7 @@ public class CompilerBeanEnactor2 {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-            final String beanNameClass = compilerUtil.beanNameClass(config.name);
+            final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);

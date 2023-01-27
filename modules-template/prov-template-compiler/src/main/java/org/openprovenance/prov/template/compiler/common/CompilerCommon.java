@@ -83,7 +83,7 @@ public class CompilerCommon {
             builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
             builder.addMethod(generateCommonSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateArgsToRecordMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
-            builder.addMethod(generateProcessorConverter(templateName, packge, bindingsSchema, BeanKind.COMMON));
+            builder.addMethod(generateProcessorConverter(templateName, packge, bindingsSchema, BeanDirection.COMMON));
             builder.addMethod(generateProcessorConverter2(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
             builder.addMethod(generateApplyMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
 
@@ -236,7 +236,7 @@ public class CompilerCommon {
 
 
     private FieldSpec generateField4aBeanConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
-        TypeName myType=processorClassType(templateName,packge,ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
+        TypeName myType=processorClassType(templateName,packge,ClassName.get(packge,compilerUtil.commonNameClass(templateName)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_ARGS_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
         JsonNode the_var = bindings_schema.get("var");
@@ -365,7 +365,7 @@ public class CompilerCommon {
 
 
     private FieldSpec generateField4aBeanConverter3(String templateName, String packge) {
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.RECORDS_PROCESSOR_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.RECORDS_PROCESSOR_INTERFACE),ClassName.get(packge,compilerUtil.commonNameClass(templateName)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
@@ -376,7 +376,7 @@ public class CompilerCommon {
 
 
     private FieldSpec generateField4aBeanConverter2(String templateName, String packge) {
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName)));
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.commonNameClass(templateName)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
@@ -541,11 +541,11 @@ public class CompilerCommon {
         return method;
     }
 
-    public MethodSpec generateProcessorConverter(String template, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
+    public MethodSpec generateProcessorConverter(String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection beanDirection) {
 
-        final TypeName returnClassName= beanKind==BeanKind.COMMON ? processorClassType(template, packge, typeT) : integratorClassType(template, packge, typeT);
+        final TypeName returnClassName= beanDirection==BeanDirection.COMMON ? processorClassType(template, packge, typeT) : integratorClassType(template, packge, typeT);
 
-        final TypeName returnClassNameNotParametrised = beanKind==BeanKind.COMMON ? processorClassType(template, packge): integratorClassType (template, packge);
+        final TypeName returnClassNameNotParametrised = beanDirection==BeanDirection.COMMON ? processorClassType(template, packge): integratorClassType (template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
                 .addTypeVariable(TypeVariableName.get("T"))
@@ -577,7 +577,7 @@ public class CompilerCommon {
         for (String key : fieldNames) {
             String newKey = compilerUtil.generateNewNameForVariable(key);
             boolean isOutput=descriptorUtils.isOutput(key,bindingsSchema);
-            if (beanKind==BeanKind.COMMON || !isOutput) {
+            if (beanDirection==BeanDirection.COMMON || !isOutput) {
                 if (first) {
                     first = false;
                 } else {
@@ -596,7 +596,7 @@ public class CompilerCommon {
             } else {
                 args2.append(", ");
             }
-            if (beanKind!=BeanKind.COMMON && isOutput) {
+            if (beanDirection!=BeanDirection.COMMON && isOutput) {
                 args2.append(" null");
             } else {
                 args2.append(" ").append(newKey);
@@ -1288,7 +1288,7 @@ public class CompilerCommon {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)
-                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
+                .returns(ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodWithBean()");
 
@@ -1299,7 +1299,7 @@ public class CompilerCommon {
             builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key), newkey);
         }
 
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
+        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         String args = "";
         for (String key: variables) {
@@ -1320,7 +1320,7 @@ public class CompilerCommon {
     public MethodSpec generateFactoryMethodToBeanWithArrayComposite(String template, String packge, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
+                .returns(ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodToBeanWithArrayComposite()");
 
@@ -1331,7 +1331,7 @@ public class CompilerCommon {
 
         builder.addStatement("$T record=records.get(0)", Object[].class);
 
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
+        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         int count = 1;
         String args = "";
@@ -1372,7 +1372,7 @@ public class CompilerCommon {
     public MethodSpec generateFactoryMethodToBeanWithArray(String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
+                .returns(ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodToBeanWithArray()");
 
@@ -1381,7 +1381,7 @@ public class CompilerCommon {
 
         builder.addParameter(Object[].class, "record");
 
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
+        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         int count = 1;
         String args = "";
@@ -1414,12 +1414,12 @@ public class CompilerCommon {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("newBean")
                 .addModifiers(Modifier.PUBLIC)
                 //.addModifiers(Modifier.STATIC)
-                .returns(ClassName.get(packge, compilerUtil.beanNameClass(template)));
+                .returns(ClassName.get(packge, compilerUtil.commonNameClass(template)));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateNewBean()");
 
 
-        builder.addStatement("$T bean=new $T()", ClassName.get(packge, compilerUtil.beanNameClass(template)), ClassName.get(packge, compilerUtil.beanNameClass(template)));
+        builder.addStatement("$T bean=new $T()", ClassName.get(packge, compilerUtil.commonNameClass(template)), ClassName.get(packge, compilerUtil.commonNameClass(template)));
 
 
         builder.addStatement("return bean");
@@ -1436,7 +1436,7 @@ public class CompilerCommon {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("examplar")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)
-                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template)));
+                .returns(ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateExamplarBean()");
 
@@ -1445,7 +1445,7 @@ public class CompilerCommon {
         JsonNode the_context = bindings_schema.get("context");
 
 
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.beanNameClass(template)),ClassName.get(packge,compilerUtil.beanNameClass(template)));
+        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         for (QualifiedName q : allVars) {
             JsonNode jsonNode1 = the_var.get(q.getLocalPart());

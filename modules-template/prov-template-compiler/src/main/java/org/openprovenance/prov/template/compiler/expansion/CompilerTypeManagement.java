@@ -37,7 +37,7 @@ public class CompilerTypeManagement {
     private Map<String,Collection<String>> knownTypes;
     private Map<String,Collection<String>> unknownTypes;
 
-    public JavaFile generateTypeDeclaration(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public JavaFile generateTypeDeclaration(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
         knownTypes=new HashMap<>();
         unknownTypes=new HashMap<>();
 

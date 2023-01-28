@@ -81,7 +81,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, Map<Integer, List<Integer>> successorTable) {
+    public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -91,7 +91,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderSpecification_aux(doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, bindings_schema, successorTable);
+        return generateBuilderSpecification_aux(doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, bindings_schema, bindingsSchema, successorTable);
 
     }
 
@@ -112,7 +112,7 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-    JavaFile generateBuilderSpecification_aux(Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, Map<Integer, List<Integer>> successorTable) {
+    JavaFile generateBuilderSpecification_aux(Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
@@ -139,7 +139,7 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTypePropagatorN_new());
 
 
-        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
+        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema, bindingsSchema));
 
         if (bindings_schema != null) {
             builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
@@ -840,7 +840,7 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -853,7 +853,7 @@ public class CompilerExpansionBuilder {
                 .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
                 .addStatement("$N me=new $N(pf)", name, name);
 
-        ;
+
         for (QualifiedName q : allVars) {
             builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
         }

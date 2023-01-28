@@ -81,11 +81,11 @@ public class CompilerCommon {
         if (bindings_schema!=null) {
            // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
-            builder.addMethod(generateCommonSQLConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
-            builder.addMethod(generateArgsToRecordMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
+            builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
+            builder.addMethod(generateArgsToRecordMethod(templateName, packge, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packge, bindingsSchema, BeanDirection.COMMON));
-            builder.addMethod(generateProcessorConverter2(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
-            builder.addMethod(generateApplyMethod(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindings_schema));
+            builder.addMethod(generateProcessorConverter2(templateName, packge, bindingsSchema));
+            builder.addMethod(generateApplyMethod(templateName, packge));
 
 
             builder.addMethod(generateCommonMethod2(allVars, allAtts, name, templateName, bindings_schema));
@@ -98,8 +98,8 @@ public class CompilerCommon {
 
             builder.addMethod(generateCommonMethod6static(allVars, allAtts, name, templateName, bindings_schema, indexed));
 
-            builder.addField(generateFieldOutputs(allVars,allAtts,name,templateName,packge, bindingsSchema));
-            builder.addField(generateFieldInputs(allVars,allAtts,name,templateName,packge, bindingsSchema));
+            builder.addField(generateFieldOutputs(allVars, allAtts,name, templateName, packge, bindingsSchema));
+            builder.addField(generateFieldInputs(allVars, allAtts, name, templateName, packge, bindingsSchema));
             builder.addField(generateFieldCompulsoryInputs(allVars,allAtts,name,templateName,packge, bindingsSchema));
 
             builder.addField(generateField4aBeanConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
@@ -314,7 +314,6 @@ public class CompilerCommon {
 
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.INPUTS, Modifier.PUBLIC, Modifier.STATIC);
 
-        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
         String args = "new String[] { ";
@@ -435,7 +434,7 @@ public class CompilerCommon {
 
 
 
-    public MethodSpec generateCommonSQLConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateCommonSQLConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge, ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.BEAN_SQL_CONVERSION_METHOD)
@@ -448,18 +447,16 @@ public class CompilerCommon {
         jdoc.add("@return $T\n" , processorClassNameNotParametrised);
         builder.addJavadoc(jdoc.build());
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-        String var = "";
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+
         builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
 
         String args = "";
         String args2 = "";
 
         boolean first=true;
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
+        for (String key:variables) {
             String newkey = "__" + key;
             if (first) {
                 first=false;
@@ -467,7 +464,7 @@ public class CompilerCommon {
                 args = args + ", ";
                 args2 = args2 + ", ";
             }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName() + " " + newkey;
+            args = args +  compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName() + " " + newkey;
             args2=args2+ " " + newkey;
 
         }
@@ -483,18 +480,14 @@ public class CompilerCommon {
 
 
 
-       builder.addStatement("return (" + args + ") -> { $T sb=new $T(); $N.$N(sb," + args2 + "); return sb.toString(); }", StringBuffer.class, StringBuffer.class, "self","sqlTuple");
+        builder.addStatement("return (" + args + ") -> { $T sb=new $T(); $N.$N(sb," + args2 + "); return sb.toString(); }", StringBuffer.class, StringBuffer.class, "self","sqlTuple");
 
-
-
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
 
 
-    public MethodSpec generateArgsToRecordMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateArgsToRecordMethod(String template, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge, ArrayTypeName.of(Object.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS2RECORD_CONVERTER)
@@ -507,17 +500,15 @@ public class CompilerCommon {
         jdoc.add("@return $T\n" , processorClassNameNotParametrised);
         builder.addJavadoc(jdoc.build());
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-        String var = "";
+        Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
+
 
         String args = "";
         String args2 = "";
 
         boolean first=true;
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
+        for (String key: variables) {
             String newkey = "__" + key;
             if (first) {
                 first=false;
@@ -525,20 +516,14 @@ public class CompilerCommon {
                 args = args + ", ";
                 args2 = args2 + ", ";
             }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName() + " " + newkey;
+            args = args +  compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName() + " " + newkey;
             args2=args2+ " " + newkey;
 
         }
 
-
-
         builder.addStatement("return (" + args + ") -> {  return new Object [] { getName(), " + args2 + "}; }");
 
-
-
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
     public MethodSpec generateProcessorConverter(String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection beanDirection) {
@@ -567,12 +552,12 @@ public class CompilerCommon {
         builder.addJavadoc(jdoc.build());
 
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
         StringBuilder args = new StringBuilder();
         StringBuilder args2 = new StringBuilder();
 
         boolean first = true;
-        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
         for (String key : fieldNames) {
             String newKey = compilerUtil.generateNewNameForVariable(key);
@@ -609,15 +594,14 @@ public class CompilerCommon {
         return builder.build();
     }
 
-    public MethodSpec generateProcessorConverter2(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
-        final TypeName processorClassName = processorClassType(template, packge, TypeVariableName.get("T"));
-        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
-        TypeName returnType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),TypeVariableName.get("T"));
+    public MethodSpec generateProcessorConverter2(String template, String packge, TemplateBindingsSchema bindingsSchema) {
+        final TypeName processorClassName = processorClassType(template, packge, typeT);
+        TypeName returnType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),typeT);
         TypeName returnTypeNotParametrised =ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.PROCESSOR_CONVERTER)
                 .addModifiers(Modifier.PUBLIC)
-                .addTypeVariable(TypeVariableName.get("T"))
+                .addTypeVariable(typeT)
                 .returns(returnType);
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateProcessorConverter2()");
 
@@ -629,21 +613,18 @@ public class CompilerCommon {
         jdoc.add("Returns a converter from Processor taking arguments to Processor taking record\n");
         jdoc.add("@param processor a transformer for this template\n");
         jdoc.add("@param <T> type variable for the result of processor\n");
-        jdoc.add("@return $T&lt;$T&gt;\n" , returnTypeNotParametrised, TypeVariableName.get("T"));
+        jdoc.add("@return $T&lt;$T&gt;\n" , returnTypeNotParametrised, typeT);
         builder.addJavadoc(jdoc.build());
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
-        String var = "";
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
+        Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
 
         String args = "";
         String args2 = "";
         int count=1;
 
         boolean first=true;
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
+        for (String key: fieldNames) {
             String newkey = compilerUtil.generateNewNameForVariable(key);
             if (first) {
                 first=false;
@@ -652,7 +633,7 @@ public class CompilerCommon {
                 args2 = args2 + ", ";
             }
 
-            final Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
+            final Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(theVar, key);
             final String type=declaredJavaType.getName();
             final String converter = compilerUtil.getConverterForDeclaredType(declaredJavaType);
             final String converter2 = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
@@ -674,17 +655,12 @@ public class CompilerCommon {
 
         builder.addStatement("return (Object [] record) -> {  return processor.process(" + args2 + "); }");
 
-
-
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
-    public MethodSpec generateApplyMethod(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateApplyMethod(String template, String packge) {
         final TypeName processorClassName = processorClassType(template, packge, TypeVariableName.get("T"));
 
-        final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder("apply")
                 .addModifiers(Modifier.PUBLIC)
                 .addTypeVariable(TypeVariableName.get("T"))

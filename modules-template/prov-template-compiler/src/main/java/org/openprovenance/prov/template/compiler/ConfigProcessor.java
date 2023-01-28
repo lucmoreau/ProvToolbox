@@ -450,9 +450,9 @@ public class ConfigProcessor implements Constants {
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
                 //ensure type declaration code is executed
-                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema, bindingsSchema);
+                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, bindings_schema, bindingsSchema);
                 // before propagation generation
-                JavaFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema, successorTable);
+                JavaFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, bindings_schema, bindingsSchema, successorTable);
                 val0 = compilerUtil.saveToFile(destinationDir, destination, spec0);
 
 

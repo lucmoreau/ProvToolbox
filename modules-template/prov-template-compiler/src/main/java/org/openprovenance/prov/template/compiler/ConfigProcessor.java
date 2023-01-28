@@ -497,7 +497,7 @@ public class ConfigProcessor implements Constants {
 
                 if (!inComposition) {
 
-                    compilerJsonSchema.generateJSonSchema(jsonschema, templateName, cli_src_dir + "/../resources", bindings_schema);
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema);
                     compilerSQL.generateSQL(jsonschema + "SQL", templateName, cli_src_dir + "/../sql", bindingsSchema);
                     compilerSQL.generateSQLInsertFunction(jsonschema + "SQL", templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
 

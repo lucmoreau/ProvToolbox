@@ -450,13 +450,13 @@ public class ConfigProcessor implements Constants {
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
                 //ensure type declaration code is executed
-                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema);
+                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, resource, bindings_schema, bindingsSchema);
                 // before propagation generation
                 JavaFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, resource, bindings_schema, successorTable);
                 val0 = compilerUtil.saveToFile(destinationDir, destination, spec0);
 
 
-                JavaFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, resource, bindings_schema);
+                JavaFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, bindingsSchema);
                 val1 = compilerUtil.saveToFile(destinationDir, destinationI, spec1);
 
                 JavaFile spec2b = compilerCommon.generateSQLInterface(packge + ".client");
@@ -464,7 +464,7 @@ public class ConfigProcessor implements Constants {
                 val2 = val2 & val2b;
 
 
-                JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema);
+                JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema, bindingsSchema);
                 //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, res"ource, bindings_schema);
 
                 val5 = compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);

@@ -407,19 +407,18 @@ public class CompilerUtil {
         }
     }
 
-    public Class<?> getJavaDocumentTypeForDeclaredType(JsonNode the_var, String key) {
-        if (the_var.get(key).get(0).get("@id") != null) {
+    public Class<?> getJavaDocumentTypeForDeclaredType(Map<String, List<Descriptor>> theVar, String key) {
+        if (theVar.get(key).get(0) instanceof NameDescriptor) {
             return QualifiedName.class;
         } else {
-            if (the_var.get(key).get(0).get(0) == null) {
+            AttributeDescriptor ad=((AttributeDescriptorList) theVar.get(key).get(0)).getItems().get(0);
+            if (ad == null) {
                 System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
+                System.out.println("decl is " + theVar);
                 throw new UnsupportedOperationException();
             }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
+            String keyType=ad.getType();
+            if (keyType != null) {
                 switch (keyType) {
                     case "xsd:int":
                     case "xsd:long":
@@ -434,9 +433,8 @@ public class CompilerUtil {
                 }
             } else {
                 System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
+                System.out.println("decl is " + theVar);
+                throw new UnsupportedOperationException("Null type");
             }
         }
     }
@@ -448,11 +446,9 @@ public class CompilerUtil {
             builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
         }
     }
-    public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
-            builder.addParameter(getJavaDocumentTypeForDeclaredType(the_var, key), key);
+    public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
+        for (String key: variables) {
+            builder.addParameter(getJavaDocumentTypeForDeclaredType(theVar, key), key);
         }
     }
     public boolean isVariableDenotingQualifiedName(String key, JsonNode the_var) {

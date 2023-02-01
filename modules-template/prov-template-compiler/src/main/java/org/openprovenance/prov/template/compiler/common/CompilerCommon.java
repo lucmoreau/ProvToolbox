@@ -41,7 +41,7 @@ public class CompilerCommon {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
+    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packageName, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -52,12 +52,12 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(allVars,allAtts,name, templateName, packge, bindings_schema, bindingsSchema, indexed, logger, beanKind);
+        return generateCommonLib_aux(allVars,allAtts,name, templateName, packageName, bindings_schema, bindingsSchema, indexed, logger, beanKind);
 
     }
 
 
-    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
+    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER);
 
@@ -82,12 +82,12 @@ public class CompilerCommon {
 
         if (bindings_schema!=null) {
            // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
-            builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
-            builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packge, bindingsSchema));
-            builder.addMethod(generateArgsToRecordMethod(templateName, packge, bindingsSchema));
-            builder.addMethod(generateProcessorConverter(templateName, packge, bindingsSchema, BeanDirection.COMMON));
-            builder.addMethod(generateProcessorConverter2(templateName, packge, bindingsSchema));
-            builder.addMethod(generateApplyMethod(templateName, packge));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
+            builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
+            builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
+            builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
+            builder.addMethod(generateProcessorConverter2(templateName, packageName, bindingsSchema));
+            builder.addMethod(generateApplyMethod(templateName, packageName));
 
 
             builder.addMethod(generateCommonMethod2(templateName, bindingsSchema));
@@ -100,16 +100,16 @@ public class CompilerCommon {
 
             builder.addMethod(generateCommonMethod6static(allVars, allAtts, name, templateName, bindings_schema, indexed));
 
-            builder.addField(generateFieldOutputs(allVars, allAtts,name, templateName, packge, bindingsSchema));
-            builder.addField(generateFieldInputs(allVars, allAtts, name, templateName, packge, bindingsSchema));
-            builder.addField(generateFieldCompulsoryInputs(allVars,allAtts,name,templateName,packge, bindingsSchema));
+            builder.addField(generateFieldOutputs(allVars, allAtts,name, templateName, packageName, bindingsSchema));
+            builder.addField(generateFieldInputs(allVars, allAtts, name, templateName, packageName, bindingsSchema));
+            builder.addField(generateFieldCompulsoryInputs(allVars,allAtts,name,templateName,packageName, bindingsSchema));
 
-            builder.addField(generateField4aBeanConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
-            builder.addField(generateField4aBeanConverter2(templateName,packge));
-            builder.addField(generateField4aSQLConverter2(allVars,allAtts,name,templateName,packge, bindings_schema));
-            builder.addField(generateField4aArgs2CsvConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
-            builder.addField(generateField4aRecord2SqlConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
-            builder.addField(generateField4aRecord2CsvConverter(allVars,allAtts,name,templateName,packge, bindings_schema));
+            builder.addField(generateField4aBeanConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
+            builder.addField(generateField4aBeanConverter2(templateName,packageName));
+            builder.addField(generateField4aSQLConverter2(allVars,allAtts,name,templateName,packageName, bindings_schema));
+            builder.addField(generateField4aArgs2CsvConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
+            builder.addField(generateField4aRecord2SqlConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
+            builder.addField(generateField4aRecord2CsvConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
 
             builder.addField(FieldSpec.builder(mapIntArrayType, "__successors")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
@@ -129,16 +129,16 @@ public class CompilerCommon {
             builder.addMethod(generateCompulsoryInputsMethod());
             builder.addMethod(generateInputsMethod());
 
-            builder.addMethod(generateFactoryMethodToBeanWithArray(templateName, packge, bindings_schema, bindingsSchema, beanKind));
+            builder.addMethod(generateFactoryMethodToBeanWithArray(templateName, packageName, bindings_schema, bindingsSchema, beanKind));
 
 
             //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
-            builder.addMethod(generateFactoryMethodWithBean(templateName, packge, bindings_schema, bindingsSchema));
+            builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindings_schema, bindingsSchema));
 
-            builder.addMethod(generateNewBean(allVars, allAtts, name, templateName, packge, bindings_schema));
-            builder.addMethod(generateExamplarBean(allVars, allAtts, name, templateName, packge, bindings_schema));
+            builder.addMethod(generateNewBean(allVars, allAtts, name, templateName, packageName, bindings_schema));
+            builder.addMethod(generateExamplarBean(allVars, allAtts, name, templateName, packageName, bindings_schema));
 
-            ClassName integratorClassName = ClassName.get(packge + ".integrator", compilerUtil.integratorBuilderNameClass(templateName));
+            ClassName integratorClassName = ClassName.get(packageName + ".integrator", compilerUtil.integratorBuilderNameClass(templateName));
             builder.addField(FieldSpec.builder(integratorClassName, "__integrator")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .initializer("new $T()", integratorClassName)
@@ -155,8 +155,8 @@ public class CompilerCommon {
             builder.addMethod(compilerSQL.generateCommonSQLMethod2(allVars, allAtts, name, templateName, bindings_schema, bindingsSchema));
 
         } else {
-            builder.addField(generateField4aBeanConverter3(templateName,packge));
-            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite(templateName, packge, bindingsSchema, logger, beanKind));
+            builder.addField(generateField4aBeanConverter3(templateName,packageName));
+            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite(templateName, packageName, bindingsSchema, logger, beanKind));
 
         }
 
@@ -165,7 +165,7 @@ public class CompilerCommon {
 
         TypeSpec bean=builder.build();
 
-        JavaFile myfile = JavaFile.builder(packge, bean)
+        JavaFile myfile = JavaFile.builder(packageName, bean)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateCommonLib_aux()) for template $N",getClass().getName(), templateName)
                 .build();
 

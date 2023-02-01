@@ -218,7 +218,9 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
-                                            key ->  (pp) -> QueryBuilder.select(makeArray(TOKEN_VAR_NAME,
+                                            key ->  (pp0) -> QueryBuilder.select(TOKEN_VAR_NAME, "id", insert_into_table(table.apply(key), additionalColumnsWithoutAlias2(templateBindingsSchema,key))).apply(pp0)
+                                                    .from(
+                                                                (pp) -> QueryBuilder.select(makeArray(TOKEN_VAR_NAME,
                                                                                               nextVal(table.apply(key)),
                                                                                               additionalColumnsWithAlias(templateBindingsSchema, key)))
                                                                         .apply(pp)
@@ -226,7 +228,7 @@ public class CompilerSqlComposer {
                                                                                                                         additionalColumnsWithoutAlias(templateBindingsSchema,key)))
                                                                                         .apply(pp1)
                                                                                         .from(Constants.INPUT_TABLE),
-                                                            table_tokens(key)),
+                                                            table_tokens0(key)),table_tokens(key)),
                                             (x, y) -> y,
                                             () -> new LinkedHashMap<String, Function<PrettyPrinter, ?>>() {{
                                                 put(Constants.INPUT_TABLE, pp -> QueryBuilder.select("*").apply(pp).from("unnest (" + Constants.RECORDS_VAR + ")"));
@@ -241,7 +243,7 @@ public class CompilerSqlComposer {
                                                     .from(table_tokens(key)),
                                             (x, y) -> y,
                                             LinkedHashMap::new));
-        cteValues1.putAll(cteValues2);
+       // cteValues1.putAll(cteValues2);
 
 
         List<String> insertColumns=descriptorUtils
@@ -281,8 +283,58 @@ public class CompilerSqlComposer {
                 "\t\t\t\t"+
                 "\n\n";
 
+/**
+TODO: fix me:
 
 
+        CREATE OR REPLACE FUNCTION insert_setting_objective_composite_array(_records setting_objective_type [])
+        RETURNS table(ID INT,
+                objective INT,
+                policy1 INT,
+                setting INT)
+        AS $$
+        WITH
+        _input_table AS (SELECT *
+                FROM unnest (_records)),
+        _policy1_tokens AS (select _token, id, insert_into_policy(id, serial) as newid
+        from (SELECT _token,
+                cast(nextval('policy_id_seq') as INT) as id,
+                policy AS serial -- @sql.new.inputs
+        FROM (SELECT DISTINCT ON (policy1) policy1 AS _token, policy
+                FROM _input_table) _policy1_tokens0) _policy1_tokens0),
+        _setting_tokens AS (select _token, id, insert_into_activity(id) as newid
+        from (SELECT _token,
+                cast(nextval('activity_id_seq') as INT) as id
+                FROM (SELECT DISTINCT ON (setting) setting AS _token
+                        FROM _input_table) _setting_tokens0) _setting_tokens)
+
+
+        SELECT (_arecord).ID,
+                (_arecord).objective,
+                _policy1_id,
+                _setting_id
+        FROM (SELECT _policy1_token_id_pairs.id AS _policy1_id,
+                _setting_token_id_pairs.id AS _setting_id,
+                insert_setting_objective_composite(_policy1_token_id_pairs.id,
+                        policy0,
+                        policy,
+                        organization,
+                        management,
+                        _setting_token_id_pairs.id,
+                        time) AS _arecord
+                FROM _input_table
+                JOIN (SELECT _policy1_tokens.id,
+                        _policy1_tokens._token
+                        FROM _policy1_tokens) _policy1_token_id_pairs
+                ON policy1 = _policy1_token_id_pairs._token
+                JOIN (SELECT _setting_tokens.id,
+                        _setting_tokens._token
+                        FROM _setting_tokens) _setting_token_id_pairs
+                ON setting = _setting_token_id_pairs._token) inserted_rows
+        $$ language SQL;
+
+
+ */
 
 
 
@@ -381,9 +433,9 @@ public class CompilerSqlComposer {
     private String insert_into_table(String table, List<String> strings) {
         String suffix= String.join(",", strings);
         if (suffix.isBlank()) {
-            return "insert_into_" + table + "(id) as id";
+            return "insert_into_" + table + "(id) as _newid";
         } else {
-            return "insert_into_" + table + "(id, " + suffix + ") as id";
+            return "insert_into_" + table + "(id, " + suffix + ") as _newid";
 
         }
     }
@@ -403,6 +455,9 @@ public class CompilerSqlComposer {
 
     private String table_tokens(String key) {
         return "_" + key + "_tokens";
+    }
+    private String table_tokens0(String key) {
+        return "_" + key + "_tokens0";
     }
     private String getToken(String table) {
         return table+"." + TOKEN_VAR_NAME ;

@@ -384,7 +384,7 @@ public class ConfigProcessor implements Constants {
         }
     }
 
-    public boolean generate(Document doc, String templateName, String packge, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String logger, String jsonschema, String documentation, JsonNode bindings_schema,
+    public boolean generate(Document doc, String templateName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String logger, String jsonschema, String documentation, JsonNode bindings_schema,
                             TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
@@ -400,9 +400,9 @@ public class ConfigProcessor implements Constants {
             String compositeBeanNameClass=compilerUtil.commonNameClass(templateName);
             String integrator=compilerUtil.integratorNameClass(templateName);
 
-            String destinationDir=l2p_src_dir + "/" + packge.replace('.', '/') + "/";
-            String destinationDir2=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/";
-            String destinationDir2b=cli_src_dir + "/" + packge.replace('.', '/') + "/" + "client" + "/" + "integrator" + "/";
+            String destinationDir=l2p_src_dir + "/" + packageName.replace('.', '/') + "/";
+            String destinationDir2=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/";
+            String destinationDir2b=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/" + "integrator" + "/";
 
             String destination=destinationDir + bn + ".java";
             String destinationI=destinationDir + bnI + ".java";
@@ -444,27 +444,27 @@ public class ConfigProcessor implements Constants {
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", bindings_schema, bindingsSchema, indexed, logger, BeanKind.SIMPLE);
+                Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packageName + ".client", bindings_schema, bindingsSchema, indexed, logger, BeanKind.SIMPLE);
                 JavaFile spec2 = tmp.getLeft();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
                 val2 = compilerUtil.saveToFile(destinationDir2, destination2, spec2);
 
                 //ensure type declaration code is executed
-                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packge, bindings_schema, bindingsSchema);
+                JavaFile spec5 = compilerTypeManagement.generateTypeDeclaration(doc, bn, templateName, packageName, bindings_schema, bindingsSchema);
                 // before propagation generation
-                JavaFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packge, bindings_schema, bindingsSchema, successorTable);
+                JavaFile spec0 = compilerExpansionBuilder.generateBuilderSpecification(doc, bn, templateName, packageName, bindings_schema, bindingsSchema, successorTable);
                 val0 = compilerUtil.saveToFile(destinationDir, destination, spec0);
 
 
-                JavaFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packge, bindingsSchema);
+                JavaFile spec1 = compilerExpansionBuilder.generateBuilderInterfaceSpecification(doc, bn, templateName, packageName, bindingsSchema);
                 val1 = compilerUtil.saveToFile(destinationDir, destinationI, spec1);
 
-                JavaFile spec2b = compilerCommon.generateSQLInterface(packge + ".client");
+                JavaFile spec2b = compilerCommon.generateSQLInterface(packageName + ".client");
                 val2b = compilerUtil.saveToFile(destinationDir2, destinationSQL, spec2b);
                 val2 = val2 & val2b;
 
 
-                JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packge, resource, bindings_schema, bindingsSchema);
+                JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packageName, resource, bindings_schema, bindingsSchema);
                 //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, res"ource, bindings_schema);
 
                 val5 = compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
@@ -477,21 +477,21 @@ public class ConfigProcessor implements Constants {
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerBeanGenerator.generateBean(templateName, packge + ".client", bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null);
+                    JavaFile spec3 = compilerBeanGenerator.generateBean(templateName, packageName + ".client", bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
-                    JavaFile spec3b = compilerBeanGenerator.generateBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null);
+                    JavaFile spec3b = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
-                    JavaFile spec3c = compilerBeanGenerator.generateBean(templateName, packge + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null);
+                    JavaFile spec3c = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination3c, spec3c);
 
-                    JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packge + ".client.integrator", bindingsSchema);
+                    JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packageName + ".client.integrator", bindingsSchema);
                     val3 = compilerUtil.saveToFile(destinationDir2b, destination7, spec7);
 
 
-                    JavaFile spec4 = compilerProcessor.generateProcessor(templateName, packge + ".client", bindingsSchema, !IN_INTEGRATOR);
+                    JavaFile spec4 = compilerProcessor.generateProcessor(templateName, packageName + ".client", bindingsSchema, !IN_INTEGRATOR);
                     val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
-                    JavaFile spec4b = compilerProcessor.generateProcessor(templateName, packge + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
+                    JavaFile spec4b = compilerProcessor.generateProcessor(templateName, packageName + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
                     val4 = val4 & compilerUtil.saveToFile(destinationDir2b, destination4b, spec4b);
                 }
 
@@ -516,25 +516,25 @@ public class ConfigProcessor implements Constants {
 
                     SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                     config.name = compositeBeanNameClass;
-                    config.package_ = packge;
+                    config.package_ = packageName;
                     config.bindings = "openprovenance:composite-bean.json";
                     config.template = "openprovenance:composite-bean.provn";
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
 
-                    JavaFile spec7b = compilerBeanGenerator.generateBean(templateName, packge+ ".client", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf);
+                    JavaFile spec7b = compilerBeanGenerator.generateBean(templateName, packageName+ ".client", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf);
                     if (spec7b!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec7b);
                     }
-                    JavaFile spec7c = compilerBeanGenerator.generateBean(templateName, packge+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf);
+                    JavaFile spec7c = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf);
                     if (spec7c!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7g, spec7c);
                     }
-                    JavaFile spec7d = compilerBeanGenerator.generateBean(templateName, packge+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf);
+                    JavaFile spec7d = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf);
                     if (spec7d!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7h, spec7d);
                     }
 
-                    Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packge + ".client", null, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE);
+                    Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packageName + ".client", null, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE);
                     if (tmp.getLeft()!=null) {
                         val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7c, tmp.getLeft());
                     }

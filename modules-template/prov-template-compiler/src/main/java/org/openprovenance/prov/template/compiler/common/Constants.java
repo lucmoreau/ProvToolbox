@@ -15,6 +15,8 @@ public interface Constants {
     String GET_TYPED_SUCCESSOR_METHOD = "getTypedSuccessors";
     String GET_NAME = "getName";
     String LOGGER_INTERFACE = "LoggerInterface";
+    String INPUT_OUTPUT_PROCESSOR = "InputOutputProcessor";
+    String TEMPLATE_INVOKER = "TemplateInvoker";
     String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
     String RECORDS_PROCESSOR_INTERFACE = "RecordsProcessorInterface";
     String TESTER_FILE = "ExampleTest";
@@ -49,6 +51,7 @@ public interface Constants {
     String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
     String BEAN_COMPLETER = "BeanCompleter";
     String BEAN_COMPLETER2 = "BeanCompleter2";
+    String BEAN_COMPLETER2_COMPOSITE = "BeanCompleter2Composite";
     String TYPE_CONVERTER = "TypeConverter";
     String BEAN_ENACTOR = "BeanEnactor";
     String BEAN_ENACTOR2 = "BeanEnactor2";
@@ -80,4 +83,9 @@ public interface Constants {
     String INITIALIZE_BEAN_TABLE = "initializeBeanTable";
     String INSERT_ARRAY_SUFFIX = "_array";
     String VARIABLE_BEAN = "bean";
+    String GENERIC_POST_AND_RETURN = "generic_post_and_return";
+    String M_VAR = "m";
+    String LL_VAR = "ll";
+
+    String BEAN_VAR = "bean";
 }

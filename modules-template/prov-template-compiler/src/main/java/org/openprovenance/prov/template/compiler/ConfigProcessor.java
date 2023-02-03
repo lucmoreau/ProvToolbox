@@ -53,8 +53,11 @@ public class ConfigProcessor implements Constants {
     private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
+    private final CompilerInputOutputProcessor compilerInputOutputProcessor = new CompilerInputOutputProcessor();
+    private final CompilerTemplateInvoker compilerTemplateInvoker = new CompilerTemplateInvoker();
     private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
     private final CompilerBeanCompleter2 compilerBeanCompleter2 = new CompilerBeanCompleter2();
+    private final CompilerBeanCompleter2Composite compilerBeanCompleter2Composite = new CompilerBeanCompleter2Composite();
     private final CompilerTypeConverter compilerTypeConverter = new CompilerTypeConverter();
     private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
     private final CompilerBeanEnactor2 compilerBeanEnactor2 = new CompilerBeanEnactor2();
@@ -205,9 +208,14 @@ public class ConfigProcessor implements Constants {
 
     public void doGenerateClientAndProject(TemplatesCompilerConfig configs, String cli_lib, String cli_dir, String cli_src_dir) {
         final String configurator_dir= cli_src_dir + "/" + configs.configurator_package.replace('.', '/') + "/";
-        final String configurator_dir2= cli_src_dir + "/" + configs.configurator_package.replace('.', '/') + "2/";
+        String configurator_package2=configs.configurator_package+"2";
+        final String configurator_dir2= cli_src_dir + "/" + configurator_package2.replace('.', '/') + "/";
+
         final String logger_dir= cli_src_dir + "/" + configs.logger_package.replace('.', '/') + "/";
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
+
+        String integrator_package=configs.logger_package+ ".integrator";
+        String integrator_dir=cli_src_dir + "/" + integrator_package.replace('.', '/') + "/" ;
 
         compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
 
@@ -245,6 +253,13 @@ public class ConfigProcessor implements Constants {
         JavaFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs);
         compilerUtil.saveToFile(logger_dir, logger_dir + configs.beanProcessor+ ".java", beanProcessor);
 
+        JavaFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(integrator_package, configs);
+        compilerUtil.saveToFile(integrator_dir, integrator_dir + INPUT_OUTPUT_PROCESSOR + ".java", inputOutputProcessor);
+
+
+        JavaFile templateInvoker=compilerTemplateInvoker.generateTemplateInvoker(integrator_package, configurator_package2, configs);
+        compilerUtil.saveToFile(integrator_dir, integrator_dir + TEMPLATE_INVOKER + ".java", templateInvoker);
+
         new File(configurator_dir).mkdirs();
 
         new File(configurator_dir2).mkdirs();
@@ -255,6 +270,10 @@ public class ConfigProcessor implements Constants {
 
         JavaFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs);
         compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_COMPLETER2 + ".java", beanCompleter2);
+
+
+        JavaFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(integrator_package, configs);
+        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_COMPLETER2_COMPOSITE + ".java", beanCompleter2Composite);
 
         JavaFile typeConverter=compilerTypeConverter.generateTypeConverter(configs);
         compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + TYPE_CONVERTER + ".java", typeConverter);
@@ -402,7 +421,7 @@ public class ConfigProcessor implements Constants {
 
             String destinationDir=l2p_src_dir + "/" + packageName.replace('.', '/') + "/";
             String destinationDir2=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/";
-            String destinationDir2b=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/" + "integrator" + "/";
+            String integrator_dir=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/" + "integrator" + "/";
 
             String destination=destinationDir + bn + ".java";
             String destinationI=destinationDir + bnI + ".java";
@@ -412,17 +431,17 @@ public class ConfigProcessor implements Constants {
             String destination2=destinationDir2 + bn + ".java";
             String destinationSQL=destinationDir2 + "SQL" + ".java";
             String destination3=destinationDir2 + bean + ".java";
-            String destination3b=destinationDir2b + outputs + ".java";
-            String destination3c=destinationDir2b + inputs + ".java";
+            String destination3b=integrator_dir + outputs + ".java";
+            String destination3c=integrator_dir + inputs + ".java";
             String destination4=destinationDir2 + processor + ".java";
 
-            String destination7=destinationDir2b + integratorBuilder + ".java";
+            String destination7=integrator_dir + integratorBuilder + ".java";
             String destination7b=destinationDir2 + compositeBeanNameClass + ".java";  // in same folder as simple beans
             String destination7c=destinationDir2 + bn + ".java";  // in same folder as simple beans
-            String destination4b=destinationDir2b + integrator + ".java";
+            String destination4b=integrator_dir + integrator + ".java";
 
-            String destination7g=destinationDir2b + outputs + ".java";
-            String destination7h=destinationDir2b + inputs + ".java";
+            String destination7g=integrator_dir + outputs + ".java";
+            String destination7h=integrator_dir + inputs + ".java";
 
 
 
@@ -480,19 +499,19 @@ public class ConfigProcessor implements Constants {
                     JavaFile spec3 = compilerBeanGenerator.generateBean(templateName, packageName + ".client", bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
                     JavaFile spec3b = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null);
-                    val3 = compilerUtil.saveToFile(destinationDir2b, destination3b, spec3b);
+                    val3 = compilerUtil.saveToFile(integrator_dir, destination3b, spec3b);
                     JavaFile spec3c = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null);
-                    val3 = compilerUtil.saveToFile(destinationDir2b, destination3c, spec3c);
+                    val3 = compilerUtil.saveToFile(integrator_dir, destination3c, spec3c);
 
                     JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packageName + ".client.integrator", bindingsSchema);
-                    val3 = compilerUtil.saveToFile(destinationDir2b, destination7, spec7);
+                    val3 = compilerUtil.saveToFile(integrator_dir, destination7, spec7);
 
 
                     JavaFile spec4 = compilerProcessor.generateProcessor(templateName, packageName + ".client", bindingsSchema, !IN_INTEGRATOR);
                     val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
 
                     JavaFile spec4b = compilerProcessor.generateProcessor(templateName, packageName + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
-                    val4 = val4 & compilerUtil.saveToFile(destinationDir2b, destination4b, spec4b);
+                    val4 = val4 & compilerUtil.saveToFile(integrator_dir, destination4b, spec4b);
                 }
 
                 if (!inComposition) {
@@ -523,20 +542,20 @@ public class ConfigProcessor implements Constants {
 
                     JavaFile spec7b = compilerBeanGenerator.generateBean(templateName, packageName+ ".client", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf);
                     if (spec7b!=null) {
-                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7b, spec7b);
+                        val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7b, spec7b);
                     }
                     JavaFile spec7c = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf);
                     if (spec7c!=null) {
-                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7g, spec7c);
+                        val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7g, spec7c);
                     }
                     JavaFile spec7d = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf);
                     if (spec7d!=null) {
-                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7h, spec7d);
+                        val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7h, spec7d);
                     }
 
                     Pair<JavaFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(doc, bn, templateName, packageName + ".client", null, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE);
                     if (tmp.getLeft()!=null) {
-                        val3 = val3 & compilerUtil.saveToFile(destinationDir2b, destination7c, tmp.getLeft());
+                        val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7c, tmp.getLeft());
                     }
 
 

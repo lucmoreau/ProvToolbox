@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.CompositeTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -36,25 +37,7 @@ public class CompilerBeanCompleter {
 
         builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
 
-        if (sqlCode) builder.addField(ResultSet.class,"rs", Modifier.PUBLIC);
         builder.addField(CompilerUtil.mapType,"m", Modifier.FINAL);
-
-        MethodSpec.Builder callMe1=MethodSpec.methodBuilder("getResultSet")
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(CompilerUtil.classType, "cl")
-                .addParameter(String.class, "key")
-                .returns(CompilerUtil.typeT)
-                .addTypeVariable(CompilerUtil.typeT)
-                .beginControlFlow("try")
-                .addStatement("return ($T) rs.getObject($N, $N)", CompilerUtil.typeT, "key", "cl")  // Note that the casting to ($T) is not required, since ResultSet::getObject is generic. However, It is not known by JSWEET
-                .nextControlFlow("catch ($T e)", SQLException.class)
-                .addStatement("throw new $T(e)", RuntimeException.class)
-                .endControlFlow();
-        if (sqlCode) {
-            builder.addMethod(callMe1.build());
-        } else {
-
-        }
 
 
         MethodSpec.Builder callMe2=MethodSpec.methodBuilder("getMap")
@@ -79,13 +62,7 @@ public class CompilerBeanCompleter {
 
         builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL);
 
-        MethodSpec.Builder cbuilder1= MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ResultSet.class, "rs")
-                .addStatement("this.$N = $N", "rs", "rs")
-                .addStatement("this.$N = null", "m")
-                .addStatement("this.getter = this::getResultSet");
-        if (sqlCode) builder.addMethod(cbuilder1.build());
+
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(CompilerUtil.mapType, "m")
@@ -103,10 +80,6 @@ public class CompilerBeanCompleter {
                                 .addTypeVariable(CompilerUtil.typeT)
                                 .addStatement("return getMap(cl, col)").build()).build());
 
-        if (sqlCode) {
-            cbuilder2.addStatement("this.$N = null", "rs");
-        }
-
         builder.addMethod(cbuilder2.build());
 
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
@@ -114,9 +87,7 @@ public class CompilerBeanCompleter {
                 .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
                 .addStatement("this.$N = null", "m")
                 .addStatement("this.getter = ($N) getter", Constants.GETTER);
-        if (sqlCode) {
-            cbuilder3.addStatement("this.$N = null", "rs");
-        }
+       
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -126,7 +97,7 @@ public class CompilerBeanCompleter {
             final ClassName className = ClassName.get(packge, beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(className,"bean").build())
+                    .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
                     .returns(className);
             if (config instanceof SimpleTemplateCompilerConfig) {
 
@@ -135,18 +106,36 @@ public class CompilerBeanCompleter {
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isOutput(key, bindingsSchema)) {
                         Class<?> cl = compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                        mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+                        mspec.addStatement("$N.$N= getter.get($N.class,$S)", BEAN_VAR, key, cl.getSimpleName(), key);
                     }
                 }
 
-                mspec.addStatement("return bean");
+                mspec.addStatement("return $N", BEAN_VAR);
 
             } else {
-                mspec.addStatement("throw new $T()", UnsupportedOperationException.class);
+                CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
+                String consistOf=config1.consistsOf;
+                String composeeName=compilerUtil.commonNameClass(consistOf);
+                ClassName composeeClass=ClassName.get(packge,composeeName);
+
+                mspec.addStatement("boolean nextExists=true");
+                mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);
+                mspec.beginControlFlow("if (nextExists) " );
+                mspec.addStatement("$N(composee)", PROCESS_METHOD_NAME);
+                mspec.addStatement("nextExists = next()");
+                mspec.nextControlFlow("else");
+                mspec.addStatement("System.out.println($S)", "Not enough record in the result");
+                mspec.endControlFlow();
+                mspec.endControlFlow();
+
+                mspec.addStatement("return $N", BEAN_VAR);
+
             }
 
             builder.addMethod(mspec.build());
         }
+
+        builder.addMethod(MethodSpec.methodBuilder("next").addModifiers(Modifier.PUBLIC).returns(boolean.class).addStatement("return true").build());
 
 
         TypeSpec theLogger = builder.build();

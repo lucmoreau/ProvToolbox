@@ -96,7 +96,7 @@ public class CompilerBeanCompleter {
             String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC)
+                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
                     .returns(className);
             if (config instanceof SimpleTemplateCompilerConfig) {

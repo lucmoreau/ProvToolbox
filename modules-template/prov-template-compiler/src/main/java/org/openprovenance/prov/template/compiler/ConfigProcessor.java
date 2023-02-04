@@ -63,6 +63,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerBeanEnactor2 compilerBeanEnactor2 = new CompilerBeanEnactor2();
     private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
     private final CompilerBeanChecker compilerBeanChecker = new CompilerBeanChecker();
+    private final CompilerDelegator compilerDelegator = new CompilerDelegator();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerCompositeConfigurations compilerCompositeConfigurations = new CompilerCompositeConfigurations();
     private final CompilerMaven compilerMaven   = new CompilerMaven(this);
@@ -292,6 +293,11 @@ public class ConfigProcessor implements Constants {
 
         JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(configs);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_CHECKER + ".java", beanChecker);
+
+
+        JavaFile beanDelegator= compilerDelegator.generateDelegator(configs);
+        compilerUtil.saveToFile(configurator_dir, configurator_dir + DELEGATOR + ".java", beanDelegator);
+
 
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + SQL_CONFIGURATOR + ".java", configurationSql);

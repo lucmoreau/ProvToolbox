@@ -58,6 +58,7 @@ public interface Constants {
     String BEAN_ENACTOR2 = "BeanEnactor2";
     String QUERY_INVOKER = "QueryInvoker";
     String BEAN_CHECKER = "BeanChecker";
+    String DELEGATOR = "Delegator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     String PROCESS_METHOD_NAME = "process";
     String PROCESSOR_PROCESS_METHOD_NAME = "process";
@@ -89,4 +90,5 @@ public interface Constants {
     String LL_VAR = "ll";
 
     String BEAN_VAR = "bean";
+    String DELEGATOR_VAR = "delegator";
 }

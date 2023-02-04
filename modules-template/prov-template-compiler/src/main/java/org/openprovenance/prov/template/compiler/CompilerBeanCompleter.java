@@ -87,7 +87,7 @@ public class CompilerBeanCompleter {
                 .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
                 .addStatement("this.$N = null", "m")
                 .addStatement("this.getter = ($N) getter", Constants.GETTER);
-       
+
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {

@@ -30,11 +30,10 @@ public class CompilerTableConfigurator {
 
         TypeSpec.Builder builder =  compilerUtil.generateInterfaceInitParameter(tableClassName, CompilerUtil.typeT);
 
-        String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
             if (!compositeOnly || !(config instanceof SimpleTemplateCompilerConfig) ) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
-                packge = config.package_ + ".client";
+                String packge = config.package_ + ".client";
                 final ClassName className = ClassName.get(packge, templateNameClass);
                 MethodSpec mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)

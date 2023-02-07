@@ -82,7 +82,13 @@ public class CompilerUtil {
         }
         return name;
     }
-
+    public String beanNameClass(String templateName, BeanDirection beanDirection, String extension) {
+        String name=beanNameClass(templateName, beanDirection);
+        if (extension!=null) {
+            name=name+extension;
+        }
+        return name;
+    }
     public String commonNameClass(String templateName) {
         return capitalize(templateName) + "Bean";
     }
@@ -91,6 +97,13 @@ public class CompilerUtil {
     }
     public String inputsNameClass(String templateName) {
         return capitalize(templateName) + "Inputs";
+    }
+    public String inputsNameClass(String templateName,String extension) {
+        if (extension!=null) {
+            return inputsNameClass(templateName)+extension;
+        } else {
+            return inputsNameClass(templateName);
+        }
     }
     public String processorNameClass(String templateName) {
         return capitalize(templateName) + "Processor";

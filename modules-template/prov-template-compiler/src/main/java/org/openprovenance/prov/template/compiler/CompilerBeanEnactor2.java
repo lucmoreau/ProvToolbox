@@ -19,7 +19,7 @@ public class CompilerBeanEnactor2 {
     }
 
 
-    JavaFile generateBeanEnactor2(TemplatesCompilerConfig configs) {
+    JavaFile generateBeanEnactor2(String configurator_package2, String integrator_package, TemplatesCompilerConfig configs) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -29,11 +29,12 @@ public class CompilerBeanEnactor2 {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(configs.configurator_package, Constants.QUERY_INVOKER);
-        ClassName beanCompleterClass = ClassName.get(configs.configurator_package+"2", Constants.BEAN_COMPLETER2);
+        ClassName queryInvokerClass = ClassName.get(integrator_package, Constants.QUERY_INVOKER3);
+        ClassName beanCompleterClass = ClassName.get(configurator_package2, Constants.BEAN_COMPLETER2);
 
-        ClassName beanProcessorClass = ClassName.get(configs.logger_package, configs.beanProcessor);
-        builder.addSuperinterface(beanProcessorClass);
+        ClassName ioProcessorClass = ClassName.get(integrator_package, INPUT_OUTPUT_PROCESSOR);
+        ClassName inputProcessorClass = ClassName.get(integrator_package, INPUT_PROCESSOR);
+        builder.addSuperinterface(ioProcessorClass);
 
 
 
@@ -41,12 +42,14 @@ public class CompilerBeanEnactor2 {
         inface.addTypeVariable(typeResult);
         MethodSpec.Builder method1 = MethodSpec.methodBuilder("generic_enact")
                 .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
-                .addParameter(ParameterSpec.builder(typeT,"bean").build())
-                .addParameter(ParameterSpec.builder(consumerT,"checker").build())
-                .addParameter(ParameterSpec.builder(biconsumerType,"queryInvoker").build())
-                .addParameter(ParameterSpec.builder(biconsumerType2,"completeBean").build())
-                .addTypeVariable(typeT)
-                .returns(typeT);
+                .addParameter(ParameterSpec.builder(typeOut,"output").build())
+                .addParameter(ParameterSpec.builder(typeIn,"bean").build())
+                .addParameter(ParameterSpec.builder(consumerIn,"checker").build())
+                .addParameter(ParameterSpec.builder(biconsumerTypeIn,"queryInvoker").build())
+                .addParameter(ParameterSpec.builder(biconsumerTypeOut,"completeBean").build())
+                .addTypeVariable(typeIn)
+                .addTypeVariable(typeOut)
+                .returns(typeOut);
 
         inface.addMethod(method1.build());
 
@@ -60,7 +63,7 @@ public class CompilerBeanEnactor2 {
 
         builder.addType(inface.build());
 
-        builder.addField(beanProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
+        builder.addField(inputProcessorClass,"checker",Modifier.FINAL, Modifier.PRIVATE);
 
 
 
@@ -73,7 +76,7 @@ public class CompilerBeanEnactor2 {
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
-                .addParameter(beanProcessorClass, "checker")
+                .addParameter(inputProcessorClass, "checker")
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker");
 
@@ -82,25 +85,28 @@ public class CompilerBeanEnactor2 {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-            final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
-            String packge = config.package_ + ".client";
-            final ClassName className = ClassName.get(packge, beanNameClass);
-            final ClassName outputClassName = ClassName.get(packge+".integrator", outputNameClass);
+            final String inputNameClass = compilerUtil.inputsNameClass(config.name);
+            final ClassName outputClassName = ClassName.get(integrator_package, outputNameClass);
+            final ClassName inputClassName = ClassName.get(integrator_package, inputNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(className,"bean").build())
-                    .returns(className);
+                    .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
+                    .returns(outputClassName);
 
-            mspec.addStatement("return $N.generic_enact(bean,\n" +
-                    "                b -> checker.process(b),\n" +
-                    "                (sb,b) -> new $T(sb).process(b),\n" +
-                    "                (rs,b) -> $N.beanCompleterFactory(rs).process(new $T()))", Constants.REALISER, queryInvokerClass, Constants.REALISER, outputClassName);
+            if (config instanceof SimpleTemplateCompilerConfig) {
 
+
+                mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
+                        "                b -> checker.process(b),\n" +
+                        "                (sb,b) -> new $T(sb).process(b),\n" +
+                        "                (rs,b) -> $N.beanCompleterFactory(rs).process(new $T()))", Constants.REALISER, outputClassName, queryInvokerClass, Constants.REALISER, outputClassName);
+
+            } else {
+                mspec.addStatement("return null");
+            }
 
             builder.addMethod(mspec.build());
         }
@@ -109,7 +115,7 @@ public class CompilerBeanEnactor2 {
         TypeSpec theLogger = builder.build();
 
         JavaFile myfile = JavaFile.builder(configs.configurator_package + "2", theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanEnactor() for templates config $N", getClass().getName(), configs.name)
+                .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanEnactor2() for templates config $N", getClass().getName(), configs.name)
                 .build();
         return myfile;
     }

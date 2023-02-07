@@ -8,6 +8,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 import javax.lang.model.element.Modifier;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.INPUT_OUTPUT_PROCESSOR;
+import static org.openprovenance.prov.template.compiler.common.Constants.INPUT_PROCESSOR;
 
 public class CompilerInputOutputProcessor {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -16,9 +17,9 @@ public class CompilerInputOutputProcessor {
     }
 
 
-    JavaFile generateInputOutputProcessor(String package_, TemplatesCompilerConfig configs) {
+    JavaFile generateInputOutputProcessor(String package_, TemplatesCompilerConfig configs, boolean ioConverter) {
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(INPUT_OUTPUT_PROCESSOR);
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit((ioConverter)?INPUT_OUTPUT_PROCESSOR:INPUT_PROCESSOR);
 
 
 
@@ -31,7 +32,7 @@ public class CompilerInputOutputProcessor {
             MethodSpec mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
-                    .returns(outputClassName)
+                    .returns((ioConverter)?outputClassName:inputClassName)
                     .build();
 
             builder.addMethod(mspec);

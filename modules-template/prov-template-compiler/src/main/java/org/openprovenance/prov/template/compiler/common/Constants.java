@@ -16,6 +16,7 @@ public interface Constants {
     String GET_NAME = "getName";
     String LOGGER_INTERFACE = "LoggerInterface";
     String INPUT_OUTPUT_PROCESSOR = "InputOutputProcessor";
+    String INPUT_PROCESSOR = "InputProcessor";
     String TEMPLATE_INVOKER = "TemplateInvoker";
     String PROCESSOR_ARGS_INTERFACE = "ProcessorArgsInterface";
     String RECORDS_PROCESSOR_INTERFACE = "RecordsProcessorInterface";
@@ -55,8 +56,9 @@ public interface Constants {
     String BEAN_COMPLETER2_COMPOSITE = "BeanCompleter2Composite";
     String TYPE_CONVERTER = "TypeConverter";
     String BEAN_ENACTOR = "BeanEnactor";
-    String BEAN_ENACTOR2 = "BeanEnactor2";
+    String BEAN_ENACTOR2 = "BeanEnactor3";
     String QUERY_INVOKER = "QueryInvoker";
+    String QUERY_INVOKER3 = "QueryInvoker3";
     String BEAN_CHECKER = "BeanChecker";
     String DELEGATOR = "Delegator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";

@@ -33,12 +33,14 @@ public class CompilerBeanCompleter2Composite {
 
 
         builder.addField(listMapType, LL_VAR, Modifier.FINAL);
+        builder.addField(mapType, M_VAR, Modifier.FINAL);
 
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(CompilerUtil.mapType, M_VAR)
                 .addStatement("this.$N = ($T) $N.get($S)", LL_VAR, listMapType, M_VAR, ELEMENTS)
+                .addStatement("this.$N = $N", M_VAR, M_VAR)
                 ;
 
 
@@ -77,6 +79,8 @@ public class CompilerBeanCompleter2Composite {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(cutputClassName, BEAN_VAR).build())
                 .returns(cutputClassName);
+
+        mspec.addStatement("$N.$N=($T)$N.get($S)", BEAN_VAR, "ID", Integer.class, M_VAR, "ID");
 
         mspec.beginControlFlow("for ($T $N: $N)", mapType, M_VAR, LL_VAR);
         ClassName composee=ClassName.get(integrator_package,compilerUtil.outputsNameClass(consistsOf));

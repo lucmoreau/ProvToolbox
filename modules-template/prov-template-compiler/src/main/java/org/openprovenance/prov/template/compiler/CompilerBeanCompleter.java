@@ -103,6 +103,7 @@ public class CompilerBeanCompleter {
 
                 TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
+
                 for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                     if (descriptorUtils.isOutput(key, bindingsSchema)) {
                         Class<?> cl = compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);

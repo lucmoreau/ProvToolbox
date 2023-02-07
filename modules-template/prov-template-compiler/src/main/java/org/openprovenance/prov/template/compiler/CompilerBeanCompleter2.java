@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.Constants.BEAN_VAR;
 
 public class CompilerBeanCompleter2 {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -116,18 +117,20 @@ public class CompilerBeanCompleter2 {
     private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName cutputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(cutputClassName,"bean").build())
+                .addParameter(ParameterSpec.builder(cutputClassName,BEAN_VAR).build())
                 .returns(cutputClassName);
 
+        if (isOutput)
+        mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (isOutput && descriptorUtils.isOutput(key, bindingsSchema)) {
                 Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+                mspec.addStatement("$N.$N= getter.get($N.class,$S)", BEAN_VAR, key, cl.getSimpleName(), key);
             } else {
                 if (!isOutput && descriptorUtils.isInput(key, bindingsSchema)) {
                     Class<?> cl=compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-                    mspec.addStatement("bean.$N= getter.get($N.class,$S)", key, cl.getSimpleName(), key);
+                    mspec.addStatement("$N.$N= getter.get($N.class,$S)", BEAN_VAR, key, cl.getSimpleName(), key);
                 }
             }
         }

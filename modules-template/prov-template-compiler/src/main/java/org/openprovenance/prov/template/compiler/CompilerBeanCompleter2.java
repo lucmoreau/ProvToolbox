@@ -31,7 +31,6 @@ public class CompilerBeanCompleter2 {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER2);
 
-        //builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
 
         builder.addField(CompilerUtil.mapType,"m", Modifier.FINAL);
 

@@ -60,6 +60,7 @@ public interface Constants {
     String QUERY_INVOKER = "QueryInvoker";
     String QUERY_INVOKER3 = "QueryInvoker3";
     String BEAN_CHECKER = "BeanChecker";
+    String BEAN_CHECKER3 = "BeanChecker3";
     String DELEGATOR = "Delegator";
     String PROPERTY_ORDER_CONFIGURATOR = "PropertyOrderConfigurator";
     String PROCESS_METHOD_NAME = "process";

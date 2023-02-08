@@ -26,7 +26,6 @@ public class CompilerBeanGenerator {
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
-
     public JavaFile generateBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension) {
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
@@ -230,7 +229,6 @@ public class CompilerBeanGenerator {
 
                                 JavaFile file=generateBean(templateName, integrator_package, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension);
                                 compilerUtil.saveToFile(integrator_dir, integrator_dir+compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+".java", file);
-
 
                                 }
                     );

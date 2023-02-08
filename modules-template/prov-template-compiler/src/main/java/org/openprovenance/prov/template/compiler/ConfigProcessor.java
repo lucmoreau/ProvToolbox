@@ -68,7 +68,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
     private final CompilerBeanEnactor2 compilerBeanEnactor2 = new CompilerBeanEnactor2();
     private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
-    private final CompilerBeanChecker compilerBeanChecker = new CompilerBeanChecker();
+    private final CompilerBeanChecker compilerBeanChecker;
     private final CompilerDelegator compilerDelegator = new CompilerDelegator();
     private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
     private final CompilerCompositeConfigurations compilerCompositeConfigurations = new CompilerCompositeConfigurations();
@@ -100,6 +100,7 @@ public class ConfigProcessor implements Constants {
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
+        this.compilerBeanChecker= new CompilerBeanChecker();
         this.compilerBeanGenerator =new CompilerBeanGenerator();
         this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
@@ -170,7 +171,14 @@ public class ConfigProcessor implements Constants {
             String integrator_package=configs.logger_package+ ".integrator";
             String integrator_dir=cli_src_dir + "/" + integrator_package.replace('.', '/') + "/" ;
 
+            String configurator_package2=configs.configurator_package+"2";
+            final String configurator_dir2= cli_src_dir + "/" + configurator_package2.replace('.', '/') + "/";
+
             compilerBeanGenerator.generateSimpleConfigsWithVariants(integrator_package, integrator_dir, configs);
+
+            JavaFile beanChecker3= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER3, configs, configurator_package2, integrator_package, BeanDirection.INPUTS, compilerBeanGenerator.variantTable);
+            compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_CHECKER3 + ".java", beanChecker3);
+
 
             generateJSonSchemaEnd(configs, cli_src_dir);
 
@@ -317,7 +325,7 @@ public class ConfigProcessor implements Constants {
         JavaFile queryComposer3= compilerQueryInvoker.generateQueryInvoker(locations.integrator_package, locations, configs, false);
         compilerUtil.saveToFile(integrator_dir, integrator_dir + QUERY_INVOKER3 + ".java", queryComposer3);
 
-        JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(configs);
+        JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER, configs, configs.configurator_package, configs.logger_package,  BeanDirection.COMMON, null);
         compilerUtil.saveToFile(configurator_dir, configurator_dir + BEAN_CHECKER + ".java", beanChecker);
 
 

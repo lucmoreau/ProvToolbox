@@ -1,14 +1,14 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.CLIENT_PACKAGE;
-import static org.openprovenance.prov.template.compiler.common.Constants.PROCESSOR_ARGS_INTERFACE;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerConfigurations {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -26,10 +26,13 @@ public class CompilerConfigurations {
     public JavaFile generateConfigurator(TemplatesCompilerConfig configs,
                                          String theConfiguratorName,
                                          TypeName typeName,
-                                         QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
+                                         QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
                                          String generatorMethod,
+                                         BeanDirection direction,
                                          TypeName beanProcessor,
-                                         boolean defaultBehaviour) {
+                                         boolean defaultBehaviour,
+                                         String beanPackage,
+                                         BeanDirection outDirection) {
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
 
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package,configs.tableConfigurator), typeName);
@@ -50,11 +53,12 @@ public class CompilerConfigurations {
 
         builder.addSuperinterface(tableConfiguratorType);
 
-        String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            packge = config.package_ + ".client";
+            final String inBeanNameClass = compilerUtil.beanNameClass(config.name, direction);
+            final String outBeanNameClass = compilerUtil.beanNameClass(config.name, outDirection);
+
+            String packge = config.package_ + ".client";
             final ClassName className = ClassName.get(packge, templateNameClass);
             String builderParameter = "builder";
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
@@ -63,7 +67,12 @@ public class CompilerConfigurations {
                     .returns(typeName);
             if (config instanceof SimpleTemplateCompilerConfig || defaultBehaviour) {
 
-                generator.accept(builderParameter, mspec, className, ClassName.get(packge, beanNameClass));
+                generator.accept(builderParameter,
+                                 mspec,
+                                className,
+                                ClassName.get((direction==BeanDirection.COMMON)? packge: beanPackage, inBeanNameClass),
+                                ClassName.get((direction==BeanDirection.COMMON)? packge: beanPackage, outBeanNameClass)
+                        );
             } else {
                 mspec.addStatement("return null");
                // generateUnsupportedException(mspec);
@@ -82,44 +91,44 @@ public class CompilerConfigurations {
     }
 
     public JavaFile generateSqlConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, processorOfString, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", null, false);
+        return  generateConfigurator(configs, theConfiguratorName, processorOfString, this::generateMethodRecord2SqlConverter, "generateSqlConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON);
     }
     public JavaFile generatePropertyOrderConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, stringArray, this::generatePropertyOrder, "generatePropertyOrderConfigurator",null, true);
+        return  generateConfigurator(configs, theConfiguratorName, stringArray, this::generatePropertyOrder, "generatePropertyOrderConfigurator", BeanDirection.COMMON, null, true, null, BeanDirection.COMMON);
     }
     public JavaFile generateCsvConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, processorOfString, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", null, false);
+        return  generateConfigurator(configs, theConfiguratorName, processorOfString, this::generateMethodRecord2CsvConverter, "generateCsvConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON);
     }
     public JavaFile generateSqlInsertConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator", null, false);
+        return  generateConfigurator(configs, theConfiguratorName, ClassName.get(String.class), this::generateSqlInsert, "generateSqlInsertConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON);
     }
     public JavaFile generateConverterConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", null, false);
+        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON);
     }
     public JavaFile generateEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor), false);
+        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, ClassName.get(configs.logger_package,configs.beanProcessor), false, null, BeanDirection.COMMON);
     }
 
-    public JavaFile generateEnactorConfigurator2(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", ClassName.get(configs.logger_package,configs.beanProcessor), false);
+    public JavaFile generateEnactorConfigurator2(TemplatesCompilerConfig configs, String theConfiguratorName, String integrator_package) {
+        return  generateConfigurator(configs, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(integrator_package,INPUT_OUTPUT_PROCESSOR), false, integrator_package,BeanDirection.OUTPUTS);
     }
 
-    public void generateMethodRecord2SqlConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generateMethodRecord2SqlConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.aRecord2SqlConverter", builderParameter);
     }
-    public void generateMethodRecord2CsvConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generateMethodRecord2CsvConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.processorConverter($N.aArgs2CsVConverter)", builderParameter, builderParameter);
     }
-    public void generatePropertyOrder(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generatePropertyOrder(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getPropertyOrder()", builderParameter);
     }
-    public void generateSqlInsert(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generateSqlInsert(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.getSQLInsert()", builderParameter);
     }
-    public void generateMethodRecordConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generateMethodRecordConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.aRecord2BeanConverter", builderParameter);
     }
-    public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);
 
 
@@ -129,22 +138,23 @@ public class CompilerConfigurations {
                 "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType,enactorVar);
         mspec.addStatement("return enactor");
     }
-    public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
-        //mspec.addComment("Novel stuff");
-        //mspec.addStatement("$T novel=builder.getIntegrator().newOutput()", Object.class);
-        //mspec.addComment("Original stuff");
-        mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);
+    public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inputBeanType, TypeName outputBeanType) {
+
+        mspec.addComment("Generated Automatically by ProvToolbox method $N.$N()", getClass().getName(), "generateMethodEnactor2");
+
+
+        mspec.addStatement("$N<$T> beanConverter=$N.getIntegrator().aRecord2InputsConverter", PROCESSOR_ARGS_INTERFACE, inputBeanType, builderParameter);
         mspec.addStatement("$N<$T> enactor=(array) -> {\n" +
                 "                    $T bean=beanConverter.process(array);\n" +
                 "                    return $N.process(bean);\n" +
-                "                }", PROCESSOR_ARGS_INTERFACE, beanType,beanType,enactorVar);
+                "                }", PROCESSOR_ARGS_INTERFACE, outputBeanType,inputBeanType,enactorVar);
         mspec.addStatement("return enactor");
     }
     public JavaFile generateBuilderConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateConfigurator(configs, theConfiguratorName, ClassName.get(CLIENT_PACKAGE,"Builder"), this::generateReturnSelf, "generateBuilderConfigurator", null, false);
+        return  generateConfigurator(configs, theConfiguratorName, ClassName.get(CLIENT_PACKAGE,"Builder"), this::generateReturnSelf, "generateBuilderConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON);
     }
 
-    public void generateReturnSelf(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {
+    public void generateReturnSelf(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N", builderParameter);
     }
 }

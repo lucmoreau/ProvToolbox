@@ -360,8 +360,8 @@ public class ConfigProcessor implements Constants {
 
 
 
-        JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs,ENACTOR_CONFIGURATOR2);
-        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + ENACTOR_CONFIGURATOR2 + ".java", configurationEnactor2);
+        JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR3, integrator_package);
+        compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + ENACTOR_CONFIGURATOR3 + ".java", configurationEnactor2);
 
 
     }

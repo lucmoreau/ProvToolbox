@@ -40,6 +40,7 @@ public interface Constants {
     String A_ARGS_BEAN_CONVERTER        = "aArgs2BeanConverter";
     String A_ARGS_CSV_CONVERTER         = "aArgs2CsVConverter";
     String A_RECORD_BEAN_CONVERTER      = "aRecord2BeanConverter";
+    String A_RECORD_INPUTS_CONVERTER      = "aRecord2InputsConverter";
     String A_RECORD_CSV_CONVERTER       = "aRecord2CsvConverter";
     String A_RECORD_SQL_CONVERTER       = "aRecord2SqlConverter";
     String BUILDER = "Builder";
@@ -50,7 +51,7 @@ public interface Constants {
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
     String COMPOSITE_ENACTOR_CONFIGURATOR = "CompositeEnactorConfigurator";
-    String ENACTOR_CONFIGURATOR2 = "EnactorConfigurator2";
+    String ENACTOR_CONFIGURATOR3 = "EnactorConfigurator3";
     String BEAN_COMPLETER = "BeanCompleter";
     String BEAN_COMPLETER2 = "BeanCompleter2";
     String BEAN_COMPLETER2_COMPOSITE = "BeanCompleter2Composite";

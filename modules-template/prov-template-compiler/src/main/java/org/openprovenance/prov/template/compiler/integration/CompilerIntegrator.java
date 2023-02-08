@@ -4,15 +4,13 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.openprovenance.prov.template.compiler.CompilerBeanGenerator;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-import java.util.List;
 
 
 public class CompilerIntegrator {
@@ -25,20 +23,25 @@ public class CompilerIntegrator {
 
     }
 
-    public JavaFile generateIntegrator(String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
+    public JavaFile generateIntegrator(String templateName, String integrator_package, TemplateBindingsSchema bindingsSchema) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
 
 
-        builder.addMethod(compilerCommon.generateProcessorConverter(templateName, packge, bindingsSchema, BeanDirection.OUTPUTS));
+        builder.addMethod(compilerCommon.generateProcessorConverter(templateName, integrator_package, bindingsSchema, BeanDirection.OUTPUTS));
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
-        builder.addMethod(generateNewOutputConstructor(templateName, packge, bindingsSchema, BeanDirection.OUTPUTS));
+        builder.addField(compilerCommon.generateField4aBeanConverter2("toInputs", templateName, integrator_package, Constants.A_RECORD_INPUTS_CONVERTER, BeanDirection.INPUTS));
+
+        builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray("toInputs", templateName, integrator_package, bindingsSchema, BeanDirection.INPUTS));
+
+
+        builder.addMethod(generateNewOutputConstructor(templateName, integrator_package, bindingsSchema, BeanDirection.OUTPUTS));
 
         TypeSpec spec = builder.build();
 
-        return compilerUtil.specWithComment(spec, templateName, packge, getClass().getName());
+        return compilerUtil.specWithComment(spec, templateName, integrator_package, getClass().getName());
     }
 
     public MethodSpec generateNewOutputConstructor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection outputs) {

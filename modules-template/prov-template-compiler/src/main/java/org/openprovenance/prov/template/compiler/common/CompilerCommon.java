@@ -104,8 +104,8 @@ public class CompilerCommon {
             builder.addField(generateFieldInputs(allVars, allAtts, name, templateName, packageName, bindingsSchema));
             builder.addField(generateFieldCompulsoryInputs(allVars,allAtts,name,templateName,packageName, bindingsSchema));
 
-            builder.addField(generateField4aBeanConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
-            builder.addField(generateField4aBeanConverter2(templateName,packageName));
+            builder.addField(generateField4aBeanConverter(templateName,packageName, bindingsSchema));
+            builder.addField(generateField4aBeanConverter2("toBean", templateName,packageName, Constants.A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
             builder.addField(generateField4aSQLConverter2(allVars,allAtts,name,templateName,packageName, bindings_schema));
             builder.addField(generateField4aArgs2CsvConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
             builder.addField(generateField4aRecord2SqlConverter(allVars,allAtts,name,templateName,packageName, bindings_schema));
@@ -129,11 +129,11 @@ public class CompilerCommon {
             builder.addMethod(generateCompulsoryInputsMethod());
             builder.addMethod(generateInputsMethod());
 
-            builder.addMethod(generateFactoryMethodToBeanWithArray(templateName, packageName, bindings_schema, bindingsSchema, beanKind));
+            builder.addMethod(generateFactoryMethodToBeanWithArray("toBean", templateName, packageName, bindingsSchema, BeanDirection.COMMON));
 
 
             //      builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
-            builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindings_schema, bindingsSchema));
+            builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindingsSchema));
 
             builder.addMethod(generateNewBean(allVars, allAtts, name, templateName, packageName, bindings_schema));
             builder.addMethod(generateExamplarBean(allVars, allAtts, name, templateName, packageName, bindings_schema));
@@ -237,19 +237,17 @@ public class CompilerCommon {
     }
 
 
-    private FieldSpec generateField4aBeanConverter(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema) {
+    private FieldSpec generateField4aBeanConverter(String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
         TypeName myType=processorClassType(templateName,packge,ClassName.get(packge,compilerUtil.commonNameClass(templateName)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_ARGS_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
-        JsonNode the_var = bindings_schema.get("var");
+        Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
 
         String args = "";
         String args2 = "";
 
         boolean first=true;
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
+        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             String newkey = "__" + key;
             if (first) {
                 first=false;
@@ -257,7 +255,7 @@ public class CompilerCommon {
                 args = args + ", ";
                 args2 = args2 + ", ";
             }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName() + " " + newkey;
+            args = args +  compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName() + " " + newkey;
             args2=args2+ " " + newkey;
 
         }
@@ -376,12 +374,12 @@ public class CompilerCommon {
     }
 
 
-    private FieldSpec generateField4aBeanConverter2(String templateName, String packge) {
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.commonNameClass(templateName)));
-        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+    public FieldSpec generateField4aBeanConverter2(String toBean, String templateName, String packge, String fieldName, BeanDirection direction) {
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName, direction)));
+        FieldSpec.Builder fbuilder=FieldSpec.builder(myType, fieldName,Modifier.FINAL, Modifier.PUBLIC);
 
 
-        fbuilder.initializer(" (Object [] record) -> { return $N(record); }", "toBean");
+        fbuilder.initializer(" (Object [] record) -> { return $N(record); }",toBean);
 
         return fbuilder.build();
     }
@@ -1260,7 +1258,7 @@ public class CompilerCommon {
     }
 
 
-    public MethodSpec generateFactoryMethodWithBean(String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateFactoryMethodWithBean(String template, String packge, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)
@@ -1345,10 +1343,10 @@ public class CompilerCommon {
 
         return method;
     }
-    public MethodSpec generateFactoryMethodToBeanWithArray(String template, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, BeanKind beanKind) {
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("toBean")
+    public MethodSpec generateFactoryMethodToBeanWithArray(String toBean, String template, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection direction) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(toBean)
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(packge,compilerUtil.commonNameClass(template)));
+                .returns(ClassName.get(packge,compilerUtil.beanNameClass(template,direction)));
 
         if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodToBeanWithArray()");
 
@@ -1357,24 +1355,27 @@ public class CompilerCommon {
 
         builder.addParameter(Object[].class, "record");
 
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
+        ClassName className = ClassName.get(packge, compilerUtil.beanNameClass(template,direction));
+        builder.addStatement("$T bean=new $T()", className, className);
 
         int count = 1;
-        String args = "";
+        //String args = "";
         for (String key: variables) {
             final Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-            final String converter = compilerUtil.getConverterForDeclaredType(declaredJavaType);
+            //final String converter = compilerUtil.getConverterForDeclaredType(declaredJavaType);
             final String converter2 = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
 
-            if (converter2 == null) {
-                String statement = "bean.$N=($T) record[" + count + "]";
-                builder.addStatement(statement, key, declaredJavaType);
-            } else {
-                String statement = "bean.$N=(record[" + count + "]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
-                builder.addStatement(statement, key, converter2, declaredJavaType);
+            if (direction==BeanDirection.COMMON || descriptorUtils.isInput(key,bindingsSchema)) {
+                if (converter2 == null) {
+                    String statement = "bean.$N=($T) record[" + count + "]";
+                    builder.addStatement(statement, key, declaredJavaType);
+                } else {
+                    String statement = "bean.$N=(record[" + count + "]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
+                    builder.addStatement(statement, key, converter2, declaredJavaType);
+                }
             }
-            if (count > 1) args = args + ", ";
-            args = args + key;
+            //if (count > 1) args = args + ", ";
+            //args = args + key;
             count++;
         }
         builder.addStatement("return bean");

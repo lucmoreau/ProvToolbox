@@ -1297,26 +1297,23 @@ public class CompilerCommon {
         builder.addStatement("$T bean=new $T()",className,className);
 
         int count = 1;
-        //String args = "";
         for (String key: variables) {
             final Class<?> declaredJavaType = compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key);
-            final String converter2 = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
+            final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
 
             if (direction==BeanDirection.COMMON || descriptorUtils.isInput(key,bindingsSchema) || (sharing!=null) && sharing.contains(key)) {
                 String comment="";
                 if ((sharing!=null) && sharing.contains(key)) {
                     comment="/* shared */";
                 }
-                if (converter2 == null) {
+                if (converter == null) {
                     String statement = "bean.$N=($T) record[" + count + "] $L";
                     builder.addStatement(statement, key, declaredJavaType, comment);
                 } else {
                     String statement = "bean.$N=(record[" + count + "]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "])) $L";
-                    builder.addStatement(statement, key, converter2, declaredJavaType, comment);
+                    builder.addStatement(statement, key, converter, declaredJavaType, comment);
                 }
             }
-            //if (count > 1) args = args + ", ";
-            //args = args + key;
             count++;
         }
 

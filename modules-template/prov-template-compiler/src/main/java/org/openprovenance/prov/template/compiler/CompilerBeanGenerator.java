@@ -178,7 +178,8 @@ public class CompilerBeanGenerator {
         ClassName consistsOfClass = ClassName.get(packge, name);
         ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), consistsOfClass);
         FieldSpec.Builder b1 = FieldSpec.builder(elementList, ELEMENTS)
-                .addModifiers(Modifier.PUBLIC);
+                .addModifiers(Modifier.PUBLIC)
+                .initializer("new $T<>()", LinkedList.class);
 
         b1.addJavadoc("List of composed templates generated Automatically by ProvToolbox ($N.$N()) for template $N.", this.getClass().getSimpleName(), "generateCompositeList", templateName);
 

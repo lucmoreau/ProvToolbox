@@ -96,7 +96,7 @@ public class CompilerBeanEnactor2 {
                     .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
                     .returns(outputClassName);
 
-            if (config instanceof SimpleTemplateCompilerConfig) {
+            if (true || config instanceof SimpleTemplateCompilerConfig) {
 
 
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +

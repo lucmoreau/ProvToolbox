@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
@@ -26,7 +27,7 @@ public class CompilerBeanChecker {
     }
 
 
-    public JavaFile generateBeanChecker(String name, TemplatesCompilerConfig configs, String packageName, String packageForBeans, BeanDirection direction, Map<String, Map<String, Pair<String, List<String>>>> variantTable) {
+    public JavaFile generateBeanChecker(String name, TemplatesCompilerConfig configs, String packageName, String packageForBeans, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable) {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
@@ -59,12 +60,13 @@ public class CompilerBeanChecker {
         if (variantTable!=null) {
             variantTable.keySet().forEach(
                     templateName -> {
-                        Map<String, Pair<String, List<String>>> allVariants = variantTable.get(templateName);
+                        Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants = variantTable.get(templateName);
                         allVariants.keySet().forEach(
                                 shared -> {
-                                    Pair<String, List<String>> pair = allVariants.get(shared);
-                                    String extension = pair.getLeft();
-                                    List<String> sharing = pair.getRight();
+                                    Triple<String, List<String>, TemplateBindingsSchema> triple = allVariants.get(shared);
+                                    String extension = triple.getLeft();
+                                    List<String> sharing = triple.getMiddle();
+                                    TemplateBindingsSchema tbs=triple.getRight();
 
                                     TemplateCompilerConfig config = Arrays.stream(configs.templates).filter(c -> Objects.equals(c.name, templateName)).findFirst().get();
                                     SimpleTemplateCompilerConfig sConfig = (SimpleTemplateCompilerConfig) config;

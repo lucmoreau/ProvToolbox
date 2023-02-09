@@ -95,13 +95,13 @@ public class ConfigProcessor implements Constants {
         this.pFactory=pFactory;
         this.compilerSQL=new CompilerSQL(true, "ID");
         this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
-        this.compilerIntegrator=new CompilerIntegrator(compilerCommon);
+        this.compilerBeanGenerator =new CompilerBeanGenerator();
+        this.compilerIntegrator=new CompilerIntegrator(compilerCommon,compilerBeanGenerator);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain, compilerCommon,pFactory,debugComment);
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
         this.compilerBeanChecker= new CompilerBeanChecker();
-        this.compilerBeanGenerator =new CompilerBeanGenerator();
         this.compilerProcessor =new CompilerProcessor(pFactory);
         this.compilerJsonSchema=new CompilerJsonSchema();
         this.compilerClientTest =new CompilerClientTest();
@@ -162,7 +162,7 @@ public class ConfigProcessor implements Constants {
                             //System.out.println("==> Found " + aconfig2);
                             SimpleTemplateCompilerConfig sc=(SimpleTemplateCompilerConfig) aconfig2;
                             SimpleTemplateCompilerConfig sc2=sc.cloneAsInstanceInComposition(config.name);
-                            doGenerateServerForEntry(config, sc2, configs, cli_src_dir, l2p_src_dir, pFactory, cli_webjar_dir);
+                            doGenerateServerForEntry(config, sc2, configs, cli_src_dir, l2p_src_dir, cli_webjar_dir);
                         }
                     }
                     if (!found) throw new UnsupportedOperationException("Composite template configuration referencing unknown template " + simple);
@@ -410,7 +410,7 @@ public class ConfigProcessor implements Constants {
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null, configs);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -421,14 +421,14 @@ public class ConfigProcessor implements Constants {
         }
     }
 
-    public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig,SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, ProvFactory pFactory, String cli_webjar_dir) {
+    public void doGenerateServerForEntry(CompositeTemplateCompilerConfig compositeTemplateCompilerConfig, SimpleTemplateCompilerConfig config, TemplatesCompilerConfig configs, String cli_src_dir, String l2p_src_dir, String cli_webjar_dir) {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
         Document doc;
         try {
             doc = readDocumentFromFile(config);
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
@@ -443,7 +443,7 @@ public class ConfigProcessor implements Constants {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
         try {
-            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null);
+            generate(doc, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null, configs);
         } catch (SecurityException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -451,7 +451,7 @@ public class ConfigProcessor implements Constants {
     }
 
     public boolean generate(Document doc, String templateName, String packageName, String cli_src_dir, String l2p_src_dir, String resource, boolean sbean, String logger, String jsonschema, String documentation, JsonNode bindings_schema,
-                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf) {
+                            TemplateBindingsSchema bindingsSchema, Map<String, Map<String, String>> sqlTables, String cli_webjar_dir, boolean inComposition, List<String> sharing, String consistsOf, TemplatesCompilerConfig configs) {
         try {
             String bn= compilerUtil.templateNameClass(templateName);
             String bnI= compilerUtil.templateNameClass(templateName)+"Interface";
@@ -543,14 +543,14 @@ public class ConfigProcessor implements Constants {
 
             if (sbean) {
                 if (!inComposition) {
-                    JavaFile spec3 = compilerBeanGenerator.generateBean(templateName, packageName + ".client", bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null, null, null);
+                    JavaFile spec3 = compilerBeanGenerator.generateBean(templateName, packageName + ".client", bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null, null, null, configs);
                     val3 = compilerUtil.saveToFile(destinationDir2, destination3, spec3);
-                    JavaFile spec3b = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null, null, null);
+                    JavaFile spec3b = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null, null, null, configs);
                     val3 = compilerUtil.saveToFile(integrator_dir, destination3b, spec3b);
-                    JavaFile spec3c = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null);
+                    JavaFile spec3c = compilerBeanGenerator.generateBean(templateName, packageName + ".client.integrator", bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null, configs);
                     val3 = compilerUtil.saveToFile(integrator_dir, destination3c, spec3c);
 
-                    JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packageName + ".client.integrator", bindingsSchema);
+                    JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packageName + ".client.integrator", packageName, bindingsSchema, logger, BeanKind.SIMPLE, consistsOf);
                     val3 = compilerUtil.saveToFile(integrator_dir, destination7, spec7);
 
 
@@ -587,15 +587,15 @@ public class ConfigProcessor implements Constants {
                     config.template = "openprovenance:composite-bean.provn";
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
 
-                    JavaFile spec7b = compilerBeanGenerator.generateBean(templateName, packageName+ ".client", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf, null, null);
+                    JavaFile spec7b = compilerBeanGenerator.generateBean(templateName, packageName+ ".client", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf, null, null, configs);
                     if (spec7b!=null) {
                         val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7b, spec7b);
                     }
-                    JavaFile spec7c = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf, null, null);
+                    JavaFile spec7c = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf, null, null, configs);
                     if (spec7c!=null) {
                         val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7g, spec7c);
                     }
-                    JavaFile spec7d = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf, sharing, null);
+                    JavaFile spec7d = compilerBeanGenerator.generateBean(templateName, packageName+ ".client.integrator", bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf, sharing, null, configs);
                     if (spec7d!=null) {
 
                         val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7h, spec7d);
@@ -605,6 +605,11 @@ public class ConfigProcessor implements Constants {
                     if (tmp.getLeft()!=null) {
                         val3 = val3 & compilerUtil.saveToFile(integrator_dir, destination7c, tmp.getLeft());
                     }
+
+
+                    JavaFile spec7 = compilerIntegrator.generateIntegrator(templateName, packageName + ".client.integrator", packageName+".client", bindingsSchema2, logger, BeanKind.COMPOSITE, consistsOf);
+                    val3 = compilerUtil.saveToFile(integrator_dir, destination7, spec7);
+
 
 
                 }

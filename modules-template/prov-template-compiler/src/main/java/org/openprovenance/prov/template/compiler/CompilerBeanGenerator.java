@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -26,7 +26,7 @@ public class CompilerBeanGenerator {
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
-    public JavaFile generateBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension) {
+    public JavaFile generateBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, TemplatesCompilerConfig configs) {
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
         if (extension!=null) {
@@ -97,6 +97,8 @@ public class CompilerBeanGenerator {
                             String documentation=nd.getDocumentation()==null? Constants.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
                             String type=nd.getType()==null? JAVADOC_NO_DOCUMENTATION : nd.getType();
                             b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
+                            if (sharing!=null && sharing.contains(key))
+                                b.addJavadoc("This is a shared variable in a template composition.\n");
                             return null;
                         };
                 Function<AttributeDescriptor,Void> af=
@@ -104,6 +106,8 @@ public class CompilerBeanGenerator {
                             String documentation=nd.getDocumentation()==null? Constants.JAVADOC_NO_DOCUMENTATION : nd.getDocumentation();
                             String type=nd.getType()==null? JAVADOC_NO_DOCUMENTATION : nd.getType();
                             b.addJavadoc("$N: $L (expected type: $L)\n", key, documentation, type);
+                            if (sharing!=null && sharing.contains(key))
+                                b.addJavadoc("This is a shared variable in a template composition.\n ");
                             return null;
                         };
                 descriptorUtils.getFromDescriptor(descriptor,af,nf);
@@ -122,7 +126,7 @@ public class CompilerBeanGenerator {
             String variant=null;
 
             if (sharing!=null) {
-                variant = newVariant(consistOf, sharing);
+                variant = newVariant(consistOf, sharing, configs);
             }
 
             generateCompositeList(consistOf, packge, builder, beanDirection, variant, sharing);
@@ -137,19 +141,28 @@ public class CompilerBeanGenerator {
 
     }
 
-    Map<String,Map<String, Pair<String,List<String>>>> variantTable=new HashMap<>();
+    public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 
-    String newVariant(String templateName, List<String> sharing) {
+    String newVariant(String templateName, List<String> sharing, TemplatesCompilerConfig configs) {
         String shared= stringForSharedVariables(sharing);
         variantTable.putIfAbsent(templateName,new HashMap<>());
-        Pair<String, List<String>> pair = variantTable.get(templateName).get(shared);
-        if (pair ==null) {
-            String theExt2 = "_" + (variantTable.get(templateName).keySet().size() + 1);
-            variantTable.get(templateName).put(shared, Pair.of(theExt2,sharing));
-            return theExt2;
+        Triple<String, List<String>, TemplateBindingsSchema> triple = variantTable.get(templateName).get(shared);
+        if (triple ==null) {
+            String extension = "_" + (variantTable.get(templateName).keySet().size() + 1);
+
+
+
+            TemplateCompilerConfig config=Arrays.stream(configs.templates).filter(c -> Objects.equals(c.name, templateName)).findFirst().get();
+            SimpleTemplateCompilerConfig sConfig=(SimpleTemplateCompilerConfig) config;
+            SimpleTemplateCompilerConfig sConfig2=sConfig.cloneAsInstanceInComposition(templateName+extension);
+
+            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(sConfig2);
+
+            variantTable.get(templateName).put(shared, Triple.of(extension,sharing,bindingsSchema));
+            return extension;
 
         } else {
-            return pair.getLeft();
+            return triple.getLeft();
         }
     }
 
@@ -157,11 +170,13 @@ public class CompilerBeanGenerator {
         return sharing.stream().sorted().collect(Collectors.joining("_"));
     }
 
+    static final ParameterizedTypeName classOfUnknown = ParameterizedTypeName.get(ClassName.get(Class.class), TypeVariableName.get("?"));
 
     private void generateCompositeList(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
         String name = compilerUtil.beanNameClass(templateName, beanDirection, variant);
 
-        ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(packge, name)   );
+        ClassName consistsOfClass = ClassName.get(packge, name);
+        ParameterizedTypeName elementList=ParameterizedTypeName.get(ClassName.get(List.class), consistsOfClass);
         FieldSpec.Builder b1 = FieldSpec.builder(elementList, ELEMENTS)
                 .addModifiers(Modifier.PUBLIC);
 
@@ -172,6 +187,13 @@ public class CompilerBeanGenerator {
         }
 
         builder.addField(b1.build());
+
+        FieldSpec.Builder b2 = FieldSpec.builder(classOfUnknown, "consistsOf")
+                .addModifiers(Modifier.PUBLIC)
+                .addJavadoc("Class of elements inside this composite")
+                .initializer("$T.class", consistsOfClass);
+        builder.addField(b2.build());
+
     }
     private void generateCompositeListExtender(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
         String name = compilerUtil.beanNameClass(templateName, beanDirection,variant);
@@ -212,27 +234,51 @@ public class CompilerBeanGenerator {
 
 
     public void generateSimpleConfigsWithVariants(String integrator_package, String integrator_dir, TemplatesCompilerConfig configs) {
+        //Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> allVariantsUpdates=new HashMap<>();
+
         variantTable.keySet().forEach(
                 templateName -> {
-                    Map<String, Pair<String, List<String>>> allVariants=variantTable.get(templateName);
+                    Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants=variantTable.get(templateName);
                     allVariants.keySet().forEach(
                             shared -> {
-                                Pair<String, List<String>> pair=allVariants.get(shared);
+                                Triple<String, List<String>, TemplateBindingsSchema> pair=allVariants.get(shared);
                                 String extension=pair.getLeft();
-                                List<String> sharing=pair.getRight();
+                                List<String> sharing=pair.getMiddle();
+                                TemplateBindingsSchema bindingsSchema = pair.getRight();
 
+
+                                /*
                                 TemplateCompilerConfig config=Arrays.stream(configs.templates).filter(c -> Objects.equals(c.name, templateName)).findFirst().get();
                                 SimpleTemplateCompilerConfig sConfig=(SimpleTemplateCompilerConfig) config;
                                 SimpleTemplateCompilerConfig sConfig2=sConfig.cloneAsInstanceInComposition(templateName+extension);
 
                                 TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(sConfig2);
 
-                                JavaFile file=generateBean(templateName, integrator_package, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension);
+                                allVariantsUpdates.putIfAbsent(templateName,new HashMap<>());
+                                allVariantsUpdates.get(templateName).put(shared,Triple.of(extension, sharing,bindingsSchema));
+
+
+                                 */
+
+                                JavaFile file=generateBean(templateName, integrator_package, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, configs);
                                 compilerUtil.saveToFile(integrator_dir, integrator_dir+compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+".java", file);
 
                                 }
                     );
                 }
         );
+
+        /*
+        System.out.println("variants Updating with bindings schema ");
+
+        allVariantsUpdates.keySet().forEach(
+                templateName -> allVariantsUpdates.get(templateName).keySet().forEach(
+                        shared -> variantTable.get(templateName).put(shared,allVariantsUpdates.get(templateName).get(shared))
+                )
+        );
+
+         */
+
+
     }
 }

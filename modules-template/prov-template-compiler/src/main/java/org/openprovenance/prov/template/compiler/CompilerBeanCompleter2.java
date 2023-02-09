@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.CompositeTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -12,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
-import static org.openprovenance.prov.template.compiler.common.Constants.BEAN_VAR;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerBeanCompleter2 {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -88,22 +89,55 @@ public class CompilerBeanCompleter2 {
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
+            if  (config instanceof SimpleTemplateCompilerConfig) {
+                TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
-            final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
-            final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
-            String packge = config.package_ + ".client.integrator";
+                final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
+                final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
+                String packge = config.package_ + ".client.integrator";
 
-            final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
-            builder.addMethod(mspec.build());
+                final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
+                MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
+                builder.addMethod(mspec.build());
 
 
-            final ClassName inputClassName = ClassName.get(packge, inputBeanNameClass);
-            MethodSpec.Builder mspec2 = createProcessMethod(bindingsSchema, inputClassName, false);
-            builder.addMethod(mspec2.build());
+                final ClassName inputClassName = ClassName.get(packge, inputBeanNameClass);
+                MethodSpec.Builder mspec2 = createProcessMethod(bindingsSchema, inputClassName, false);
+                builder.addMethod(mspec2.build());
+            } else {
+                CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
+                String consistOf=config1.consistsOf;
+                final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
+                final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
+                String packge = config.package_ + ".client.integrator";
+
+                final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
+                String composeeName=compilerUtil.outputsNameClass(consistOf);
+                ClassName composeeClass=ClassName.get(packge,composeeName);
+
+                MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
+                        .returns(outputClassName);
+
+
+                mspec.addStatement("boolean nextExists=true");
+                mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);
+                mspec.beginControlFlow("if (nextExists) " );
+                mspec.addStatement("$N(composee)", PROCESS_METHOD_NAME);
+                mspec.addStatement("nextExists = next()");
+                mspec.nextControlFlow("else");
+                mspec.addStatement("System.out.println($S)", "Not enough record in the result");
+                mspec.endControlFlow();
+                mspec.endControlFlow();
+
+                mspec.addStatement("return $N", BEAN_VAR);
+                builder.addMethod(mspec.build());
+
+            }
         }
+
+        builder.addMethod(MethodSpec.methodBuilder("next").addModifiers(Modifier.PUBLIC).returns(boolean.class).addStatement("return true").build());
 
 
         TypeSpec theLogger = builder.build();
@@ -113,14 +147,13 @@ public class CompilerBeanCompleter2 {
         return myfile;
     }
 
-    private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName cutputClassName, boolean isOutput) {
+    private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(cutputClassName,BEAN_VAR).build())
-                .returns(cutputClassName);
+                .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
+                .returns(outputClassName);
 
-        if (isOutput)
-        mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
+        if (isOutput) mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
 
         for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
             if (isOutput && descriptorUtils.isOutput(key, bindingsSchema)) {

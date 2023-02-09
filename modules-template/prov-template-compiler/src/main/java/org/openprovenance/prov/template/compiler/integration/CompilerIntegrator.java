@@ -4,40 +4,74 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.apache.commons.lang3.tuple.Triple;
+import org.openprovenance.prov.template.compiler.CompilerBeanGenerator;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.openprovenance.prov.template.compiler.common.BeanDirection.INPUTS;
+import static org.openprovenance.prov.template.compiler.common.BeanDirection.OUTPUTS;
+import static org.openprovenance.prov.template.compiler.common.Constants.A_RECORD_INPUTS_CONVERTER;
+import static org.openprovenance.prov.template.compiler.common.Constants.TO_INPUTS;
 
 
 public class CompilerIntegrator {
     private final CompilerCommon compilerCommon;
     private final CompilerUtil compilerUtil = new CompilerUtil();
     private final boolean debugComment = true;
+    private final CompilerBeanGenerator compilerBeanGenerator;
 
-    public CompilerIntegrator(CompilerCommon compilerCommon) {
+    public CompilerIntegrator(CompilerCommon compilerCommon, CompilerBeanGenerator compilerBeanGenerator) {
         this.compilerCommon = compilerCommon;
-
+        this.compilerBeanGenerator=compilerBeanGenerator;
     }
 
-    public JavaFile generateIntegrator(String templateName, String integrator_package, TemplateBindingsSchema bindingsSchema) {
+    public JavaFile generateIntegrator(String templateName, String integrator_package, String loggerPackage, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
 
 
-        builder.addMethod(compilerCommon.generateProcessorConverter(templateName, integrator_package, bindingsSchema, BeanDirection.OUTPUTS));
+        if (beanKind==BeanKind.SIMPLE) {
+            builder.addMethod(compilerCommon.generateProcessorConverter(templateName, integrator_package, bindingsSchema, OUTPUTS));
+            builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(TO_INPUTS, templateName, integrator_package, bindingsSchema, INPUTS, null, null));
+            builder.addField(compilerCommon.generateField4aBeanConverter2(TO_INPUTS, templateName, integrator_package, A_RECORD_INPUTS_CONVERTER, INPUTS));
+
+
+        } else {
+            builder.addField(compilerCommon.generateField4aBeanConverter3(TO_INPUTS, templateName,integrator_package, A_RECORD_INPUTS_CONVERTER, INPUTS));
+
+            Map<String, Triple<String, List<String>, TemplateBindingsSchema>> variants=compilerBeanGenerator.variantTable.get(consistsOf);
+            if (variants!=null) {
+                variants.keySet().forEach(variant -> {
+                    Triple<String, List<String>, TemplateBindingsSchema> triple=variants.get(variant);
+                    String extension=triple.getLeft();
+                    TemplateBindingsSchema tbs=triple.getRight();
+                    List<String> shared=triple.getMiddle();
+                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(TO_INPUTS+extension, consistsOf, integrator_package, tbs, INPUTS, extension, shared));
+
+                    // we assume a single variant for now
+                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, loggerPackage, logger, INPUTS, extension, shared));
+
+                });
+            } else {
+                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, loggerPackage, logger, INPUTS, null, null));
+            }
+
+        }
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
-        builder.addField(compilerCommon.generateField4aBeanConverter2("toInputs", templateName, integrator_package, Constants.A_RECORD_INPUTS_CONVERTER, BeanDirection.INPUTS));
-
-        builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray("toInputs", templateName, integrator_package, bindingsSchema, BeanDirection.INPUTS));
 
 
-        builder.addMethod(generateNewOutputConstructor(templateName, integrator_package, bindingsSchema, BeanDirection.OUTPUTS));
+        builder.addMethod(generateNewOutputConstructor(templateName, integrator_package, bindingsSchema, OUTPUTS));
 
         TypeSpec spec = builder.build();
 

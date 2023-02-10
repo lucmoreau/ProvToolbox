@@ -96,17 +96,11 @@ public class CompilerBeanEnactor2 {
                     .addParameter(ParameterSpec.builder(inputClassName,"bean").build())
                     .returns(outputClassName);
 
-            if (true || config instanceof SimpleTemplateCompilerConfig) {
-
 
                 mspec.addStatement("return $N.generic_enact(new $T(),bean,\n" +
                         "                b -> checker.process(b),\n" +
                         "                (sb,b) -> new $T(sb).process(b),\n" +
                         "                (rs,b) -> $N.beanCompleterFactory(rs).process(b))", Constants.REALISER, outputClassName, queryInvokerClass, Constants.REALISER);
-
-            } else {
-                mspec.addStatement("return null");
-            }
 
             builder.addMethod(mspec.build());
         }

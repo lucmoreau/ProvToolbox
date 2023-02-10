@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -42,10 +41,11 @@ public class CompilerBeanChecker {
                 .addModifiers(Modifier.PRIVATE,Modifier.FINAL, Modifier.STATIC)
                 .addParameter(ParameterSpec.builder(typeT,"object").build())
                 .addParameter(ParameterSpec.builder(String.class,"field").build())
+                .addParameter(ParameterSpec.builder(String.class,"template").build())
                 .addTypeVariable(typeT)
                 .returns(typeT)
                 .beginControlFlow("if (object==null)")
-                .addStatement("throw new NullPointerException(\"The object field \" + field + \" is null\")")
+                .addStatement("throw new $T(\"The object field \" + field + \" is null in template \" + template)", IllegalStateException.class)
                 .nextControlFlow("else")
                 .addStatement("return object")
                 .endControlFlow();
@@ -94,7 +94,7 @@ public class CompilerBeanChecker {
         final String beanNameClass = compilerUtil.beanNameClass(templateName, direction,extension);
 
         final ClassName className = ClassName.get(packageForBeans, beanNameClass);
-        MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
+        MethodSpec.Builder mspec = MethodSpec.methodBuilder(PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addParameter(ParameterSpec.builder(className,"bean").build())
                 .returns(className);
@@ -105,7 +105,7 @@ public class CompilerBeanChecker {
 
             for (String key : descriptorUtils.fieldNames(bindingsSchema)) {
                 if (descriptorUtils.isCompulsoryInput(key, bindingsSchema)) {
-                    mspec.addStatement("$N(bean.$N,$S)", Constants.NOT_NULL_METHOD, key, key);
+                    mspec.addStatement("$N(bean.$N,$S,$S)", NOT_NULL_METHOD, key, key,templateName);
 
                 }
             }
@@ -113,10 +113,12 @@ public class CompilerBeanChecker {
 
             if (sharing != null) {
                 sharing.forEach(shared -> {
-                    mspec.addStatement("$N(bean.$N,$S) /* shared */", Constants.NOT_NULL_METHOD, shared, shared);
+                    mspec.addStatement("$N(bean.$N,$S,$S) /* shared */", NOT_NULL_METHOD, shared, shared, templateName);
 
                 });
             }
+        } else {
+            mspec.addStatement("bean.$N.forEach(el -> $N(el));", ELEMENTS, PROCESS_METHOD_NAME);
         }
         mspec.addStatement("return bean");
 

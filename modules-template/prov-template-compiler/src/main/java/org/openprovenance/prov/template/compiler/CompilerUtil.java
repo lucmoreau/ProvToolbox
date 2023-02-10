@@ -471,6 +471,10 @@ public class CompilerUtil {
         return entry != null && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
     }
 
+    public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
+        return theVar.containsKey(key) && theVar.get(key) instanceof NameDescriptor;
+    }
+
 
 
     public String generateArgumentsListForCall(JsonNode the_var, Map<String,String> translator) {
@@ -714,4 +718,5 @@ public class CompilerUtil {
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", className, templateName)
                 .build();
     }
+
 }

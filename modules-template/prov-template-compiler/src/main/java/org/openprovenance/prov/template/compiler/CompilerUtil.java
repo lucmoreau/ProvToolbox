@@ -472,7 +472,7 @@ public class CompilerUtil {
     }
 
     public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
-        return theVar.containsKey(key) && theVar.get(key) instanceof NameDescriptor;
+        return theVar.containsKey(key) && theVar.get(key)!=null && theVar.get(key).get(0) instanceof NameDescriptor;
     }
 
 

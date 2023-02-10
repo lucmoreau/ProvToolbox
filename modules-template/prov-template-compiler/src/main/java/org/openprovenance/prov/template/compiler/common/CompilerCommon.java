@@ -94,7 +94,6 @@ public class CompilerCommon {
                 .build());
 
         if (bindings_schema!=null) {
-           // builder.addMethod(generateClientMethod(allVars, allAtts, name, templateName, bindings_schema));
             builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
@@ -152,7 +151,7 @@ public class CompilerCommon {
 
 
 
-            builder.addMethod(compilerSQL.generateCommonSQLMethod2(allVars, allAtts, name, templateName, bindings_schema, bindingsSchema));
+            builder.addMethod(compilerSQL.generateCommonSQLMethod2(templateName, bindingsSchema));
 
         } else {
             builder.addField(generateField4aBeanConverter3("toBean", templateName, packageName, A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
@@ -1400,7 +1399,6 @@ public class CompilerCommon {
 
 
         JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
 
 
         builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));

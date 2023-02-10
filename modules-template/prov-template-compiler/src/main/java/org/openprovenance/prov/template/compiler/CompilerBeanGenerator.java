@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
+import org.openprovenance.apache.commons.lang.StringUtils;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -15,6 +16,7 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -195,7 +197,39 @@ public class CompilerBeanGenerator {
                 .initializer("$T.class", consistsOfClass);
         builder.addField(b2.build());
 
+        if (variant!=null) {
+            for (String shared : sharing) {
+                generateMutatorForSharedVariables(templateName, packge, builder, beanDirection, variant, shared, name);
+                generateMutatorForDistinctVariables(templateName, packge, builder, beanDirection, variant, shared, name);
+            }
+        }
+
     }
+
+    private void generateMutatorForDistinctVariables(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, String shared, String name) {
+        MethodSpec.Builder mbuild = MethodSpec.methodBuilder("distinct" + compilerUtil.capitalize(shared))
+                .addParameter(ClassName.get(Integer.class), "v")
+                .addModifiers(Modifier.PUBLIC);
+
+        String countName="__count";
+        mbuild.addStatement("final int [] $N= { $N }", countName,  "v");
+        mbuild.addStatement("$N.forEach(b -> { b.$N=$N[0]--; })", ELEMENTS, shared, countName);
+        builder.addMethod(mbuild.build());
+    }
+
+    private void generateMutatorForSharedVariables(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, String shared, String name) {
+        MethodSpec.Builder mbuild = MethodSpec.methodBuilder("shareAll" + compilerUtil.capitalize(shared))
+                .addParameter(ClassName.get(Integer.class), "v")
+                .addModifiers(Modifier.PUBLIC);
+
+        mbuild.addStatement("$N.forEach(b -> { b.$N=$N; })", ELEMENTS, shared, "v");
+        builder.addMethod(mbuild.build());
+    }
+
+
+
+
+
     private void generateCompositeListExtender(String templateName, String packge, TypeSpec.Builder builder, BeanDirection beanDirection, String variant, List<String> sharing) {
         String name = compilerUtil.beanNameClass(templateName, beanDirection,variant);
         MethodSpec.Builder mbuilder=

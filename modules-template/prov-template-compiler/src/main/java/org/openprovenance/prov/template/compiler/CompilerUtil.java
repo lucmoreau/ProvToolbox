@@ -56,8 +56,8 @@ public class CompilerUtil {
         return GENERATED_VAR_PREFIX + key;
     }
 
-    public String capitalize(String templateName) {
-        return templateName.substring(0, 1).toUpperCase()+templateName.substring(1);
+    public String capitalize(String str) {
+        return str.substring(0, 1).toUpperCase()+str.substring(1);
     }
 
     public String templateNameClass(String templateName) {

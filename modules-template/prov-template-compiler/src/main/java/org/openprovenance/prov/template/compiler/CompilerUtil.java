@@ -632,6 +632,28 @@ public class CompilerUtil {
         }
     }
 
+
+    public String getDeclaredType(Map<String, List<Descriptor>>  theVar, String key) {
+        if (theVar.get(key).get(0) instanceof NameDescriptor) {
+            return "prov:QualifiedName";
+        } else {
+            if (((AttributeDescriptorList)theVar.get(key).get(0)).getItems().get(0) == null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + theVar);
+
+                throw new UnsupportedOperationException();
+            }
+            String keyType=((AttributeDescriptorList)theVar.get(key).get(0)).getItems().get(0).getType();
+            if (keyType==null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + theVar);
+                throw new IllegalStateException();
+            } else {
+                return keyType;
+            }
+        }
+    }
+
     public String varPrefix(String localPart) {
         return "__var_" + localPart;
     }

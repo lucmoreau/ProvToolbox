@@ -531,11 +531,9 @@ public class ConfigProcessor implements Constants {
 
 
                 JavaFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(doc, bn, templateName, packageName, resource, bindings_schema, bindingsSchema);
-                //  JavaFile spec7= compilerTypePropagate.generateTypeDeclaration(doc, bn, templateName, packge, res"ource, bindings_schema);
 
                 val5 = compilerUtil.saveToFile(destinationDir, destinationTypeManagement, spec5);
                 val6 = compilerUtil.saveToFile(destinationDir, destinationTypedRecord, spec6);
-                //  boolean val7=compilerUtil.saveToFile(destinationDir, destinationTypePropagate, spec7);
 
 
             }
@@ -617,7 +615,7 @@ public class ConfigProcessor implements Constants {
                 if (!inComposition) {
                     final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                     new File(cli_webjar_html_dir).mkdirs();
-                    compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindings_schema);
+                    compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema);
                 }
             }
 

@@ -210,7 +210,6 @@ public class CompilerBeanGenerator {
         MethodSpec.Builder mbuild = MethodSpec.methodBuilder("distinct" + compilerUtil.capitalize(shared))
                 .addParameter(ClassName.get(Integer.class), "v")
                 .addModifiers(Modifier.PUBLIC);
-
         String countName="__count";
         mbuild.addStatement("final int [] $N= { $N }", countName,  "v");
         mbuild.addStatement("$N.forEach(b -> { b.$N=$N[0]--; })", ELEMENTS, shared, countName);

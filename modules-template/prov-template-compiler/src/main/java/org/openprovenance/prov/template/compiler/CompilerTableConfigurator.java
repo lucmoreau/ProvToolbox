@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -17,14 +18,14 @@ public class CompilerTableConfigurator {
     public CompilerTableConfigurator() {
     }
 
-    Pair<String, JavaFile> generateTableConfigurator(TemplatesCompilerConfig configs) {
-        return generateTableConfigurator(configs,false);
+    Pair<String, JavaFile> generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
+        return generateTableConfigurator(configs,false, locations);
     }
-    Pair<String, JavaFile> generateCompositeTableConfigurator(TemplatesCompilerConfig configs) {
-        return generateTableConfigurator(configs,true);
+    Pair<String, JavaFile> generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
+        return generateTableConfigurator(configs,true, locations);
     }
 
-    Pair<String, JavaFile> generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly) {
+    Pair<String, JavaFile> generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations) {
         if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
         String tableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
 
@@ -33,8 +34,8 @@ public class CompilerTableConfigurator {
         for (TemplateCompilerConfig config : configs.templates) {
             if (!compositeOnly || !(config instanceof SimpleTemplateCompilerConfig) ) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
-                String packge = config.package_ + ".client";
-                final ClassName className = ClassName.get(packge, templateNameClass);
+                locations.updateWithConfig(config);
+                final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
                 MethodSpec mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .addParameter(ParameterSpec.builder(className, "builder").build())

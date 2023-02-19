@@ -6,6 +6,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -27,7 +28,7 @@ public class CompilerBuilderInit {
     }
 
 
-    JavaFile generateInitializer(TemplatesCompilerConfig configs) {
+    JavaFile generateInitializer(TemplatesCompilerConfig configs, Locations locations) {
 
         int size=configs.templates.length;
 
@@ -46,9 +47,10 @@ public class CompilerBuilderInit {
         block.addStatement("$N = new String[$L]", Constants.TYPEMANAGERS, size);
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
+            locations.updateWithConfig(config);
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name));
-            block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,config.package_+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
+            block.addStatement("$N[$L]=$S", Constants.BUILDERS,count,locations.config_backend+"."+compilerUtil.templateNameClass(config.name));
+            block.addStatement("$N[$L]=$S", Constants.TYPEMANAGERS,count,locations.config_backend+"."+compilerUtil.templateNameClass(config.name)+"TypeManagement");
             count++;
         }
         block.addStatement("pf=$T.getFactory()", org.openprovenance.prov.vanilla.ProvFactory.class);

@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -25,17 +26,16 @@ public class CompilerLogger {
     }
 
 
-    JavaFile generateLogger(TemplatesCompilerConfig configs) {
+    JavaFile generateLogger(TemplatesCompilerConfig configs, Locations locations) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
         builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, LOGGER_INTERFACE));
 
-        String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
            // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            packge = config.package_ + ".client";
-            final ClassName className = ClassName.get(packge, templateNameClass);
+            locations.updateWithConfig(config);
+            final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, Constants.PREFIX_LOG_VAR + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("new $T()", className)
@@ -68,9 +68,10 @@ public class CompilerLogger {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            locations.updateWithConfig(config);
             if (config instanceof SimpleTemplateCompilerConfig) {
-                builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config));
-                builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config));
+                builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
+                builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
             }
         }
 
@@ -221,7 +222,7 @@ public class CompilerLogger {
         return myfile;
     }
 
-    public MethodSpec generateStaticLogMethod(SimpleTemplateCompilerConfig config) {
+    public MethodSpec generateStaticLogMethod(SimpleTemplateCompilerConfig config, Locations locations) {
         final String loggerName = compilerUtil.loggerName(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
@@ -250,12 +251,12 @@ public class CompilerLogger {
         return builder.build();
     }
 
-    public MethodSpec generateStaticBeanMethod(SimpleTemplateCompilerConfig config) {
+    public MethodSpec generateStaticBeanMethod(SimpleTemplateCompilerConfig config, Locations locations) {
         final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(config.package_ + ".client",compilerUtil.commonNameClass(config.name)));
+                .returns(ClassName.get(locations.config_common_package,compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 

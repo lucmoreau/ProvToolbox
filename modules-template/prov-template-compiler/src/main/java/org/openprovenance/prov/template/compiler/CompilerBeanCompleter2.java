@@ -2,15 +2,10 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.CompositeTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -23,7 +18,7 @@ public class CompilerBeanCompleter2 {
     }
 
 
-    JavaFile generateBeanCompleter2(TemplatesCompilerConfig configs) {
+    JavaFile generateBeanCompleter2(TemplatesCompilerConfig configs, Locations locations) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -89,19 +84,19 @@ public class CompilerBeanCompleter2 {
         builder.addMethod(cbuilder3.build());
 
         for (TemplateCompilerConfig config : configs.templates) {
+            locations.updateWithConfig(config);
             if  (config instanceof SimpleTemplateCompilerConfig) {
                 TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
-                String packge = config.package_ + ".client.integrator";
 
-                final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
                 MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
                 builder.addMethod(mspec.build());
 
 
-                final ClassName inputClassName = ClassName.get(packge, inputBeanNameClass);
+                final ClassName inputClassName = ClassName.get(locations.config_integrator_package, inputBeanNameClass);
                 MethodSpec.Builder mspec2 = createProcessMethod(bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
@@ -109,11 +104,10 @@ public class CompilerBeanCompleter2 {
                 String consistOf=config1.consistsOf;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
-                String packge = config.package_ + ".client.integrator";
 
-                final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
                 String composeeName=compilerUtil.outputsNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(packge,composeeName);
+                ClassName composeeClass=ClassName.get(locations.config_integrator_package,composeeName);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)

@@ -2,16 +2,10 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.CompositeTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
@@ -26,7 +20,7 @@ public class CompilerBeanCompleter {
     // so disabling this code for now
     final boolean sqlCode=false;
 
-    JavaFile generateBeanCompleter(TemplatesCompilerConfig configs) {
+    JavaFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -93,8 +87,8 @@ public class CompilerBeanCompleter {
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            String packge = config.package_ + ".client";
-            final ClassName className = ClassName.get(packge, beanNameClass);
+            locations.updateWithConfig(config);
+            final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
@@ -117,7 +111,7 @@ public class CompilerBeanCompleter {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 String consistOf=config1.consistsOf;
                 String composeeName=compilerUtil.commonNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(packge,composeeName);
+                ClassName composeeClass=ClassName.get(locations.config_common_package,composeeName);
 
                 mspec.addStatement("boolean nextExists=true");
                 mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);

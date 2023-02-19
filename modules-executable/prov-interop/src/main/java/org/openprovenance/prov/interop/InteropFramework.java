@@ -29,6 +29,9 @@ import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -1054,7 +1057,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             if (config.bindings != null && config.bindingsVersion>=3) {
                 try {
-                    cp.generate(doc, config.template, config.packge, config.outfile, config.location, config.location, true, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+
+                    TemplatesCompilerConfig configs=new TemplatesCompilerConfig();
+                    //FIXME: configs not initialized!!
+                    Locations locations=new Locations(configs,null);
+
+
+                    cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
                     return CommandLineArguments.STATUS_OK;
 
                 } catch (IOException e) {

@@ -2,10 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.CompositeTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
@@ -22,7 +19,7 @@ public class CompilerBeanCompleter2Composite {
     }
 
 
-    JavaFile generateBeanCompleter2Composite(String integrator_package, TemplatesCompilerConfig configs) {
+    JavaFile generateBeanCompleter2Composite(TemplatesCompilerConfig configs, Locations locations) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -49,6 +46,7 @@ public class CompilerBeanCompleter2Composite {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            locations.updateWithConfig(config);
             if (config instanceof SimpleTemplateCompilerConfig) continue;
             CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig) config;
             String consistsOf=config1.consistsOf;
@@ -57,10 +55,9 @@ public class CompilerBeanCompleter2Composite {
 
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
-            String packge = config.package_ + ".client.integrator";
 
-            final ClassName outputClassName = ClassName.get(packge, outputBeanNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(consistsOf, integrator_package, outputClassName, true);
+            final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
+            MethodSpec.Builder mspec = createProcessMethod(consistsOf, locations.config_integrator_package, outputClassName, true);
             builder.addMethod(mspec.build());
 
 

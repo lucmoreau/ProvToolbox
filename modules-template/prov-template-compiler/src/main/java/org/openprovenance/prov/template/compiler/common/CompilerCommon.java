@@ -39,7 +39,7 @@ public class CompilerCommon {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packageName, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
+    public Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib(Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -50,12 +50,12 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(allVars,allAtts,name, templateName, packageName, bindings_schema, bindingsSchema, indexed, logger, beanKind);
+        return generateCommonLib_aux(allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, logger, beanKind);
 
     }
 
 
-    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
+    Pair<JavaFile, Map<Integer, List<Integer>>> generateCommonLib_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind) {
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER);
 
@@ -86,7 +86,7 @@ public class CompilerCommon {
                 .addStatement("return __integrator")
                 .build());
 
-        if (bindings_schema!=null) {
+        if (beanKind==BeanKind.SIMPLE) {
             builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
@@ -140,7 +140,7 @@ public class CompilerCommon {
             builder.addMethod(generateFactoryMethodWithBean(templateName, packageName, bindingsSchema));
 
             builder.addMethod(generateNewBean(templateName, packageName));
-            builder.addMethod(generateExamplarBean(allVars, allAtts, name, templateName, packageName, bindingsSchema));
+            builder.addMethod(generateExamplarBean(allVars, allAtts, templateName, packageName, bindingsSchema));
 
 
 
@@ -1382,7 +1382,7 @@ public class CompilerCommon {
 
 
 
-    public MethodSpec generateExamplarBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateExamplarBean(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String template, String packge, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("examplar")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)
@@ -1401,12 +1401,7 @@ public class CompilerCommon {
             List<Descriptor> descriptors = theVar.get(q.getLocalPart());
             Descriptor qDescriptor = (descriptors==null)? null: descriptors.get(0);
             String idType=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getType, NameDescriptor::getType);
-            /*
-            JsonNode jsonNode1 = the_var.get(q.getLocalPart());
-            JsonNode jsonNode2=(jsonNode1==null)?null:jsonNode1.get(0);
-            JsonNode jsonNode3=(jsonNode2==null)?null:jsonNode2.get("@type");
-            String idType =  (jsonNode3==null)?null:jsonNode3.textValue();
-                         */
+
             for (String key3: variables) {
                 if (q.getLocalPart().equals(key3)) {
                     if (idType==null) {
@@ -1430,8 +1425,6 @@ public class CompilerCommon {
 
 
         for (QualifiedName q : allAtts) {
-
-
             String declaredType = null;
             Class<?> declaredJavaType = null;
 
@@ -1461,7 +1454,7 @@ public class CompilerCommon {
     }
 
 
-    public JavaFile generateSQLInterface(String packge) {
+    public JavaFile generateSQLInterface() {
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit("SQL");
 

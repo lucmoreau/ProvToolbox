@@ -8,10 +8,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -84,17 +81,22 @@ public class CompilerTest extends TestCase {
         new File(cli_webjar_templates_dir).mkdirs();
 
 
+        Locations locations=new Locations(configs,cli_src_dir);
+
+        locations.updateWithConfig(config);
+
         if (TemplateConfigurationEnum.isSimple(config)) {
+
             SimpleTemplateCompilerConfig aconfig=(SimpleTemplateCompilerConfig)config;
-            cp.doGenerateServerForEntry1(u.readDocument(aconfig.template, pf), aconfig, configs, cli_src_dir, l2p_src_dir, cli_webjar_dir);
+            cp.doGenerateServerForEntry1(u.readDocument(aconfig.template, pf), aconfig, configs, locations, cli_src_dir, l2p_src_dir, cli_webjar_dir);
             FileUtils.copyFileToDirectory(new File(aconfig.template), new File(cli_webjar_templates_dir));
             FileUtils.copyFileToDirectory(new File(aconfig.bindings), new File(cli_webjar_bindings_dir));
         } else {
             throw new UnsupportedOperationException(" Type is " + config);
         }
 
-        cp.doGenerateProject(configs,root_dir,cli_lib,l2p_lib,l2p_dir,l2p_src_dir,l2p_test_src_dir,cli_test_src_dir, cli_webjar_dir);
-        cp.doGenerateClientAndProject(configs,cli_lib,cli_dir,cli_src_dir);
+        cp.doGenerateProject(configs,locations, root_dir,cli_lib,l2p_lib,l2p_dir,l2p_src_dir,l2p_test_src_dir,cli_test_src_dir, cli_webjar_dir);
+        cp.doGenerateClientAndProject(configs,locations, cli_lib,cli_dir,cli_src_dir);
         cp.generateJSonSchemaEnd(configs,cli_src_dir);
         cp.generateSQLEnd(configs,cli_src_dir);
         cp.generateDocumentationEnd(configs,cli_webjar_dir);

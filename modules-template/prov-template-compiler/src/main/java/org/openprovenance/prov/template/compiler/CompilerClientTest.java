@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -19,7 +20,7 @@ public class CompilerClientTest {
 
 
 
-    public JavaFile generateTestFile_cli(TemplatesCompilerConfig configs) {
+    public JavaFile generateTestFile_cli(TemplatesCompilerConfig configs, Locations locations) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
 
@@ -32,10 +33,12 @@ public class CompilerClientTest {
         int count=0;
         String resvar="res";
 
-        for (TemplateCompilerConfig template: configs.templates) {
-            String bn=compilerUtil.templateNameClass(template.name);
-            mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/example_" + template.name + ".json\"))");
-            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(template.package_+ ".client", bn));
+        for (TemplateCompilerConfig config: configs.templates) {
+            locations.updateWithConfig(config);
+
+            String bn=compilerUtil.templateNameClass(config.name);
+            mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/example_" + config.name + ".json\"))");
+            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(locations.config_common_package, bn));
             mbuilder.addStatement("new $T().writeValue(System.out,$N)",  ObjectMapper.class, resvar+count);
             count++;
         }

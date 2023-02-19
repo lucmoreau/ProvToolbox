@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -25,7 +26,7 @@ public class CompilerTypeConverter {
     }
 
 
-    JavaFile generateTypeConverter(TemplatesCompilerConfig configs) {
+    JavaFile generateTypeConverter(TemplatesCompilerConfig configs, Locations locations) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -75,12 +76,10 @@ public class CompilerTypeConverter {
             TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            String packge = config.package_ + ".client";
-
-            final ClassName templateClass = ClassName.get(packge, templateNameClass);
+            locations.updateWithConfig(config);
+            final ClassName templateClass = ClassName.get(locations.config_common_package, templateNameClass);
             MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, templateClass);
             builder.addMethod(mspec.build());
-
         }
 
 

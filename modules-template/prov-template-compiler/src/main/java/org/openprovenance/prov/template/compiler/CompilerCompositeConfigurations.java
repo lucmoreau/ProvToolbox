@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -20,6 +21,7 @@ public class CompilerCompositeConfigurations {
 
 
     public JavaFile generateCompositeConfigurator(TemplatesCompilerConfig configs,
+                                                  Locations locations,
                                                   String theConfiguratorName,
                                                   TypeName typeName,
                                                   QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
@@ -51,17 +53,15 @@ public class CompilerCompositeConfigurations {
             if (!(config instanceof SimpleTemplateCompilerConfig )) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
                 final String beanNameClass = compilerUtil.commonNameClass(config.name);
-                String packge = config.package_ + ".client";
-                final ClassName className = ClassName.get(packge, templateNameClass);
+                locations.updateWithConfig(config);
+                final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
                 String builderParameter = "builder";
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(className, builderParameter).build())
                         .returns(typeName);
-                generator.accept(builderParameter, mspec, className, ClassName.get(packge, beanNameClass));
+                generator.accept(builderParameter, mspec, className, ClassName.get(locations.config_common_package, beanNameClass));
                 builder.addMethod(mspec.build());
-
-
             }
 
         }
@@ -77,8 +77,8 @@ public class CompilerCompositeConfigurations {
 
     static final ParameterizedTypeName recordsProcessorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"RecordsProcessorInterface"), TypeVariableName.get("?"));
 
-    public JavaFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName) {
-        return  generateCompositeConfigurator(configs, theConfiguratorName, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor));
+    public JavaFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations) {
+        return  generateCompositeConfigurator(configs, locations, theConfiguratorName, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor));
     }
 
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {

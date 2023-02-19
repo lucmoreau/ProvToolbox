@@ -2,10 +2,10 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
-import org.openprovenance.apache.commons.lang.StringUtils;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -16,7 +16,6 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class CompilerBeanGenerator {
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
-    public JavaFile generateBean(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, TemplatesCompilerConfig configs) {
+    public JavaFile generateBean(String templateName, Locations locations, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, TemplatesCompilerConfig configs) {
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
         if (extension!=null) {
@@ -46,15 +45,20 @@ public class CompilerBeanGenerator {
                 break;
         }
 
+        String packge;
+
         switch (beanDirection) {
             case INPUTS:
                 builder.addJavadoc(" that only contains the input of this template.");
+                packge=locations.config_integrator_package;
                 break;
             case OUTPUTS:
                 builder.addJavadoc(" that only contains the outputs of this template.");
+                packge=locations.config_integrator_package;
                 break;
             case COMMON:
                 builder.addJavadoc(" that captures all variables of this template.");
+                packge=locations.config_common_package;
                 break;
 
             default:
@@ -267,7 +271,7 @@ public class CompilerBeanGenerator {
     }
 
 
-    public void generateSimpleConfigsWithVariants(String integrator_package, String integrator_dir, TemplatesCompilerConfig configs) {
+    public void generateSimpleConfigsWithVariants(Locations locations, String integrator_package, String integrator_dir, TemplatesCompilerConfig configs) {
         //Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> allVariantsUpdates=new HashMap<>();
 
         variantTable.keySet().forEach(
@@ -294,7 +298,7 @@ public class CompilerBeanGenerator {
 
                                  */
 
-                                JavaFile file=generateBean(templateName, integrator_package, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, configs);
+                                JavaFile file=generateBean(templateName, locations , bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, configs);
                                 compilerUtil.saveToFile(integrator_dir, integrator_dir+compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+".java", file);
 
                                 }

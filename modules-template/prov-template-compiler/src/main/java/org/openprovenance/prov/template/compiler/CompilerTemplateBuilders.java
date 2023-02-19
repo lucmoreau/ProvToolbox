@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -15,18 +16,17 @@ public class CompilerTemplateBuilders {
     }
 
 
-    JavaFile generateTemplateBuilders(TemplatesCompilerConfig configs) {
+    JavaFile generateTemplateBuilders(TemplatesCompilerConfig configs, Locations locations) {
         if (configs.templateBuilders==null) throw new NullPointerException("templateBuilders is null");
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.templateBuilders);
 
-        String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            packge = config.package_ + ".client";
-            final ClassName className = ClassName.get(packge, templateNameClass);
+            locations.updateWithConfig(config);
+            final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, config.name + "Builder")
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .initializer(configs.logger + "." + Constants.PREFIX_LOG_VAR + config.name)

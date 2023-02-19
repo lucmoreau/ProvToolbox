@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -14,17 +15,16 @@ public class CompilerBeanProcessor {
     }
 
 
-    JavaFile generateBeanProcessor(TemplatesCompilerConfig configs) {
+    JavaFile generateBeanProcessor(TemplatesCompilerConfig configs, Locations locations) {
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(configs.beanProcessor);
 
-        String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
             //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
-            packge = config.package_ + ".client";
-            final ClassName className = ClassName.get(packge, beanNameClass);
+            locations.updateWithConfig(config);
+            final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
             MethodSpec mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .addParameter(ParameterSpec.builder(className,"bean").build())

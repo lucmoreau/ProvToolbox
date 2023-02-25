@@ -62,8 +62,6 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.17.1" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-csv:1.7" />
-          <element id="library" level="project" name="Maven: org.jsweet.ext:sourcemap-builder:1.0.0" />
-          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.6" />
           <element id="archive" name="prov-interop-light-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-interop-light" />
           </element>

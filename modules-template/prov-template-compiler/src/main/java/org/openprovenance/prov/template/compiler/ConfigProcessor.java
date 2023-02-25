@@ -223,7 +223,7 @@ public class ConfigProcessor implements Constants {
         compilerUtil.saveToFile(l2p_test_dir, l2p_test_dir +TESTER_FILE+ ".java", testfile);
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
-        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, false, false, false);
+        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, true, false, false);
 
         final String cli_test_dir= cli_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile testfile2= compilerClientTest.generateTestFile_cli(configs, locations);

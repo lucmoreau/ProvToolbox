@@ -22,10 +22,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="templates_cli" />
-    <orderEntry type="module" module-name="templates_l2p" />
-    <orderEntry type="module" module-name="templates_cli" />
-    <orderEntry type="module" module-name="templates_l2p" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.4.20.v20190813" level="project" />
     <orderEntry type="module" module-name="templates_cli" />
     <orderEntry type="module" module-name="prov-model" />
@@ -62,8 +58,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.17.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.jsweet.ext:sourcemap-builder:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.6" level="project" />
     <orderEntry type="module" module-name="prov-interop-light" />
     <orderEntry type="module" module-name="prov-jsonld" />
     <orderEntry type="module" module-name="prov-jsonld-xml" />

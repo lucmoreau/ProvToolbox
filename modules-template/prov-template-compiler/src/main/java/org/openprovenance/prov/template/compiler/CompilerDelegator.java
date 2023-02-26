@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -19,7 +20,7 @@ public class CompilerDelegator {
     }
 
 
-    public JavaFile generateDelegator(TemplatesCompilerConfig configs, Locations locations) {
+    public SpecificationFile generateDelegator(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
@@ -56,7 +57,9 @@ public class CompilerDelegator {
         JavaFile myfile = JavaFile.builder(configs.configurator_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateDelegator() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+
+        return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+
     }
 
 }

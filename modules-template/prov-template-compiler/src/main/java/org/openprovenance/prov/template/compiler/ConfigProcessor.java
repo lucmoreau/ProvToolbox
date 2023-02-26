@@ -316,10 +316,8 @@ public class ConfigProcessor implements Constants {
         JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER, configs, configs.configurator_package, configs.logger_package,  BeanDirection.COMMON, null);
         compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BEAN_CHECKER + DOT_JAVA_EXTENSION, beanChecker);
 
-
-        JavaFile beanDelegator= compilerDelegator.generateDelegator(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + DELEGATOR + DOT_JAVA_EXTENSION, beanDelegator);
-
+        SpecificationFile beanDelegator= compilerDelegator.generateDelegator(configs, locations, locations.configurator_dir,  DELEGATOR + DOT_JAVA_EXTENSION);
+        beanDelegator.save();
 
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR,locations);
         compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + SQL_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationSql);
@@ -342,16 +340,12 @@ public class ConfigProcessor implements Constants {
         JavaFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations);
         compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationEnactor);
 
-
         JavaFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs,COMPOSITE_ENACTOR_CONFIGURATOR, locations);
         compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + COMPOSITE_ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION, compositeConfigurationEnactor);
 
-
-
         JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR3, locations.configs_integrator_package, locations);
         compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + ENACTOR_CONFIGURATOR3 + DOT_JAVA_EXTENSION, configurationEnactor2);
-
-
+        
     }
 
 

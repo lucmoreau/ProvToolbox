@@ -47,23 +47,23 @@
     <orderEntry type="library" name="Maven: org.antlr:stringtemplate:4.0.2" level="project" />
     <orderEntry type="module" module-name="prov-template-compiler" />
     <orderEntry type="module" module-name="prov-template" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.14.2" level="project" />
     <orderEntry type="library" name="Maven: com.squareup:javapoet:1.11.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven:maven-model:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.10.0" level="project" />
     <orderEntry type="library" name="Maven: com.networknt:json-schema-validator:1.0.52" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.14.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.14.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.17.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.10.0" level="project" />
     <orderEntry type="module" module-name="prov-interop-light" />
     <orderEntry type="module" module-name="prov-jsonld" />
     <orderEntry type="module" module-name="prov-jsonld-xml" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:6.5.0" level="project" />
     <orderEntry type="module" module-name="prov-dot" />
     <orderEntry type="module" module-name="prov-generator" />
     <orderEntry type="module" module-name="prov-interop" />
@@ -78,7 +78,7 @@
     <orderEntry type="library" name="Maven: org.jvnet.staxex:stax-ex:1.8" level="project" />
     <orderEntry type="library" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.0" level="project" />
+    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
     <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
   </component>
 </module>

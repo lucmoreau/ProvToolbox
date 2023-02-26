@@ -18,7 +18,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.8.0" level="project" />
     <orderEntry type="module" module-name="prov-xml" />
-    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.0" level="project" />
+    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
     <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="module" module-name="prov-xml" scope="TEST" production-on-test="" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />

@@ -28,7 +28,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jvnet.staxex:stax-ex:1.8" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: xerces:xercesImpl:2.12.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="module" module-name="prov-xml" scope="TEST" production-on-test="" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />

@@ -17,14 +17,14 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.openjdk.jmh:jmh-generator-annprocess:1.23" level="project" />
     <orderEntry type="module" module-name="prov-jsonld" />
     <orderEntry type="module" module-name="prov-model" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.14.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.14.2" level="project" />
     <orderEntry type="module" module-name="prov-jsonld-xml" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:6.5.0" level="project" />
     <orderEntry type="module" module-name="prov-model-scala" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.14.2" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.12.10" level="project" />
     <orderEntry type="library" name="Maven: org.parboiled:parboiled_2.12:2.1.8" level="project" />
     <orderEntry type="library" name="Maven: com.chuusai:shapeless_2.12:2.3.3" level="project" />
@@ -38,7 +38,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.8.0" level="project" />
     <orderEntry type="module" module-name="prov-json" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.9" level="project" />
     <orderEntry type="module" module-name="prov-xml" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.1" level="project" />
@@ -46,7 +46,7 @@
     <orderEntry type="library" name="Maven: org.jvnet.staxex:stax-ex:1.8" level="project" />
     <orderEntry type="library" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.0" level="project" />
+    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
     <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-api:4.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-model:4.1.2" level="project" />

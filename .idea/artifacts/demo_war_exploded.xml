@@ -51,17 +51,17 @@
           <element id="archive" name="prov-template-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-template" />
           </element>
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.14.2" />
           <element id="library" level="project" name="Maven: com.squareup:javapoet:1.11.1" />
           <element id="library" level="project" name="Maven: org.apache.maven:maven-model:3.6.1" />
           <element id="library" level="project" name="Maven: org.codehaus.plexus:plexus-utils:3.2.0" />
-          <element id="library" level="project" name="Maven: org.apache.commons:commons-text:1.9" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-text:1.10.0" />
           <element id="library" level="project" name="Maven: com.networknt:json-schema-validator:1.0.52" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.30" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.14.2" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.14.2" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.17.1" />
-          <element id="library" level="project" name="Maven: org.apache.commons:commons-csv:1.7" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-csv:1.10.0" />
           <element id="archive" name="prov-interop-light-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-interop-light" />
           </element>
@@ -71,9 +71,9 @@
           <element id="archive" name="prov-jsonld-xml-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-jsonld-xml" />
           </element>
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2" />
           <element id="library" level="project" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" />
-          <element id="library" level="project" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.6" />
+          <element id="library" level="project" name="Maven: com.fasterxml.woodstox:woodstox-core:6.5.0" />
           <element id="archive" name="prov-dot-0.9.28-SNAPSHOT.jar">
             <element id="module-output" name="prov-dot" />
           </element>
@@ -96,7 +96,7 @@
           <element id="library" level="project" name="Maven: org.jvnet.staxex:stax-ex:1.8" />
           <element id="library" level="project" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.15" />
           <element id="library" level="project" name="Maven: javax.activation:javax.activation-api:1.2.0" />
-          <element id="library" level="project" name="Maven: xerces:xercesImpl:2.12.0" />
+          <element id="library" level="project" name="Maven: xerces:xercesImpl:2.12.2" />
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
         </element>
       </element>

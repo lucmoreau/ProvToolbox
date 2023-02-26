@@ -6,6 +6,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -20,7 +21,7 @@ public class CompilerClientTest {
 
 
 
-    public JavaFile generateTestFile_cli(TemplatesCompilerConfig configs, Locations locations) {
+    public SpecificationFile generateTestFile_cli(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
 
@@ -52,8 +53,8 @@ public class CompilerClientTest {
         JavaFile myfile = JavaFile.builder(configs.init_package, theInitializer)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N",getClass().getName(), configs.name)
                 .build();
+        return new SpecificationFile(myfile, directory, fileName, configs.init_package);
 
-        return myfile;
     }
 
 }

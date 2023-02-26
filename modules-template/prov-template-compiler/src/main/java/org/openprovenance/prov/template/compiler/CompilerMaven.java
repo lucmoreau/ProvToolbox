@@ -11,6 +11,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -290,7 +291,7 @@ public class CompilerMaven {
 
 
 
-    public JavaFile generateTestFile_l2p(TemplatesCompilerConfig configs) {
+    public SpecificationFile generateTestFile_l2p(TemplatesCompilerConfig configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInitExtends(TESTER_FILE,"junit.framework","TestCase");
 
@@ -316,8 +317,8 @@ public class CompilerMaven {
         JavaFile myfile = JavaFile.builder(configs.init_package, theInitializer)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N",getClass().getName(), configs.name)
                 .build();
+        return new SpecificationFile(myfile, directory, fileName, configs.init_package);
 
-        return myfile;
     }
 
 

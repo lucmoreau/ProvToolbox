@@ -215,19 +215,21 @@ public class ConfigProcessor implements Constants {
 
     public void doGenerateProject(TemplatesCompilerConfig configs, Locations locations, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
         final String init_dir= l2p_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
-        JavaFile init=compilerBuilderInit.generateInitializer(configs, locations);
-        compilerUtil.saveToFile(init_dir, init_dir +INIT + DOT_JAVA_EXTENSION, init);
-
         final String l2p_test_dir= l2p_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
-        JavaFile testfile=compilerMaven.generateTestFile_l2p(configs);
-        compilerUtil.saveToFile(l2p_test_dir, l2p_test_dir +TESTER_FILE+ DOT_JAVA_EXTENSION, testfile);
+        final String cli_test_dir= cli_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
+
+
+        SpecificationFile init=compilerBuilderInit.generateInitializer(configs, locations, init_dir, INIT + DOT_JAVA_EXTENSION);
+        init.save();
+
+        SpecificationFile testfile=compilerMaven.generateTestFile_l2p(configs, l2p_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
+        testfile.save();
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
         compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, true, false, false);
 
-        final String cli_test_dir= cli_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
-        JavaFile testfile2= compilerClientTest.generateTestFile_cli(configs, locations);
-        compilerUtil.saveToFile(cli_test_dir, cli_test_dir +TESTER_FILE+ DOT_JAVA_EXTENSION, testfile2);
+        SpecificationFile testfile2= compilerClientTest.generateTestFile_cli(configs, locations, cli_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
+        testfile2.save();
 
     }
 
@@ -345,7 +347,7 @@ public class ConfigProcessor implements Constants {
 
         JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR3, locations.configs_integrator_package, locations);
         compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + ENACTOR_CONFIGURATOR3 + DOT_JAVA_EXTENSION, configurationEnactor2);
-        
+
     }
 
 

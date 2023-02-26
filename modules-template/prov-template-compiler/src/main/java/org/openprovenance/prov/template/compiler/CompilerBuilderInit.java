@@ -6,10 +6,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.template.log2prov.Runner;
 import org.openprovenance.prov.template.types.ProvenanceKernels;
@@ -28,7 +25,7 @@ public class CompilerBuilderInit {
     }
 
 
-    JavaFile generateInitializer(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateInitializer(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         int size=configs.templates.length;
 
@@ -77,8 +74,7 @@ public class CompilerBuilderInit {
         JavaFile myfile = JavaFile.builder(configs.init_package, theInitializer)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N",getClass().getName(), configs.name)
                 .build();
-
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, configs.init_package);
     }
 
     public MethodSpec generateMain() {

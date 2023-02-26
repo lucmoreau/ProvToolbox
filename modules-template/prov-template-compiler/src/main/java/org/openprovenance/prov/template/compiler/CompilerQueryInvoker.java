@@ -21,7 +21,7 @@ public class CompilerQueryInvoker {
     }
 
 
-    public JavaFile generateQueryInvoker(String destinationPackage, Locations locations, TemplatesCompilerConfig configs, boolean withBean) {
+    public SpecificationFile generateQueryInvoker(TemplatesCompilerConfig configs, Locations locations, String destinationPackage, boolean withBean, String directory, String fileName) {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER3);
@@ -105,7 +105,8 @@ public class CompilerQueryInvoker {
         JavaFile myfile = JavaFile.builder(destinationPackage, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateQueryInvoker() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, destinationPackage);
+
     }
 
     private void simpleQueryInvoker(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {

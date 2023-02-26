@@ -20,7 +20,7 @@ public class CompilerBeanCompleter {
     // so disabling this code for now
     final boolean sqlCode=false;
 
-    JavaFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -135,10 +135,10 @@ public class CompilerBeanCompleter {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.configurator_package, theLogger)
+        JavaFile myfile = JavaFile.builder(locations.configurator_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanCompleter() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package);
     }
 
 

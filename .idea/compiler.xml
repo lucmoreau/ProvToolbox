@@ -14,7 +14,6 @@
         <module name="demo" />
         <module name="prov-storage-api" />
         <module name="prov-jsonld-xml" />
-        <module name="templates_cli" />
         <module name="prov-n" />
         <module name="prov-service-translation" />
         <module name="prov-storage-index-redis" />
@@ -37,7 +36,6 @@
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />
         <module name="prov-jsweet-candy-java" />
-        <module name="templates_l2p" />
         <module name="roundtrip" />
         <module name="prov-model-scala" />
         <module name="toolbox" />

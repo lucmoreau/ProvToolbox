@@ -19,7 +19,7 @@ public class CompilerBeanCompleter2Composite {
     }
 
 
-    JavaFile generateBeanCompleter2Composite(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateBeanCompleter2Composite(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -65,10 +65,11 @@ public class CompilerBeanCompleter2Composite {
 
 
         TypeSpec theLogger = builder.build();
-        JavaFile myfile = JavaFile.builder(configs.configurator_package + "2", theLogger)
+        JavaFile myfile = JavaFile.builder(locations.configurator_package2, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanCompleter2Composite() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+
     }
 
     private MethodSpec.Builder createProcessMethod(String consistsOf, String integrator_package, ClassName cutputClassName, boolean isOutput) {

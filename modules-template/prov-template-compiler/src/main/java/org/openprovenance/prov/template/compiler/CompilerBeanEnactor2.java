@@ -2,10 +2,10 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
-import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
 
@@ -19,7 +19,7 @@ public class CompilerBeanEnactor2 {
     }
 
 
-    JavaFile generateBeanEnactor2(String configurator_package2, String integrator_package, TemplatesCompilerConfig configs) {
+    SpecificationFile generateBeanEnactor2(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -29,11 +29,11 @@ public class CompilerBeanEnactor2 {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(integrator_package, Constants.QUERY_INVOKER3);
-        ClassName beanCompleterClass = ClassName.get(configurator_package2, Constants.BEAN_COMPLETER2);
+        ClassName queryInvokerClass = ClassName.get(locations.configs_integrator_package, Constants.QUERY_INVOKER3);
+        ClassName beanCompleterClass = ClassName.get(locations.configurator_package2, Constants.BEAN_COMPLETER2);
 
-        ClassName ioProcessorClass = ClassName.get(integrator_package, INPUT_OUTPUT_PROCESSOR);
-        ClassName inputProcessorClass = ClassName.get(integrator_package, INPUT_PROCESSOR);
+        ClassName ioProcessorClass = ClassName.get(locations.configs_integrator_package, INPUT_OUTPUT_PROCESSOR);
+        ClassName inputProcessorClass = ClassName.get(locations.configs_integrator_package, INPUT_PROCESSOR);
         builder.addSuperinterface(ioProcessorClass);
 
 
@@ -85,11 +85,12 @@ public class CompilerBeanEnactor2 {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            locations.updateWithConfig(config);
 
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
-            final ClassName outputClassName = ClassName.get(integrator_package, outputNameClass);
-            final ClassName inputClassName = ClassName.get(integrator_package, inputNameClass);
+            final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputNameClass);
+            final ClassName inputClassName = ClassName.get(locations.config_integrator_package, inputNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
@@ -108,10 +109,11 @@ public class CompilerBeanEnactor2 {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.configurator_package + "2", theLogger)
+        JavaFile myfile = JavaFile.builder(locations.configurator_package2, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanEnactor2() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+
     }
 
 

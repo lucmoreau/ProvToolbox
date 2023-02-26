@@ -96,4 +96,5 @@ public interface Constants {
     String BEAN_VAR = "bean";
     String DELEGATOR_VAR = "delegator";
     String TO_INPUTS = "toInputs";
+    String DOT_JAVA_EXTENSION = ".java";
 }

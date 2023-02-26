@@ -18,12 +18,9 @@ public class CompilerBeanCompleter2 {
     }
 
 
-    JavaFile generateBeanCompleter2(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateBeanCompleter2(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
-
-
-
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER2);
 
@@ -103,7 +100,6 @@ public class CompilerBeanCompleter2 {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 String consistOf=config1.consistsOf;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
-                final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
                 final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
                 String composeeName=compilerUtil.outputsNameClass(consistOf);
@@ -135,10 +131,11 @@ public class CompilerBeanCompleter2 {
 
 
         TypeSpec theLogger = builder.build();
-        JavaFile myfile = JavaFile.builder(configs.configurator_package + "2", theLogger)
+        JavaFile myfile = JavaFile.builder(locations.configurator_package2, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanCompleter() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+
     }
 
     private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {

@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -18,7 +19,7 @@ public class CompilerBeanEnactor {
     }
 
 
-    JavaFile generateBeanEnactor(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateBeanEnactor(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -104,10 +105,11 @@ public class CompilerBeanEnactor {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.configurator_package, theLogger)
+        JavaFile myfile = JavaFile.builder(locations.configurator_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanEnactor() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package);
+
     }
 
 

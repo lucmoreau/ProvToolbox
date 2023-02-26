@@ -180,7 +180,7 @@ public class ConfigProcessor implements Constants {
             compilerBeanGenerator.generateSimpleConfigsWithVariants(locations, integrator_package, integrator_dir, configs);
 
             JavaFile beanChecker3= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER3, configs, configurator_package2, integrator_package, BeanDirection.INPUTS, compilerBeanGenerator.variantTable);
-            compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_CHECKER3 + ".java", beanChecker3);
+            compilerUtil.saveToFile(configurator_dir2, configurator_dir2 + BEAN_CHECKER3 + DOT_JAVA_EXTENSION, beanChecker3);
 
 
             generateJSonSchemaEnd(configs, cli_src_dir);
@@ -216,18 +216,18 @@ public class ConfigProcessor implements Constants {
     public void doGenerateProject(TemplatesCompilerConfig configs, Locations locations, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
         final String init_dir= l2p_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile init=compilerBuilderInit.generateInitializer(configs, locations);
-        compilerUtil.saveToFile(init_dir, init_dir +INIT + ".java", init);
+        compilerUtil.saveToFile(init_dir, init_dir +INIT + DOT_JAVA_EXTENSION, init);
 
         final String l2p_test_dir= l2p_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile testfile=compilerMaven.generateTestFile_l2p(configs);
-        compilerUtil.saveToFile(l2p_test_dir, l2p_test_dir +TESTER_FILE+ ".java", testfile);
+        compilerUtil.saveToFile(l2p_test_dir, l2p_test_dir +TESTER_FILE+ DOT_JAVA_EXTENSION, testfile);
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
         compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, true, false, false);
 
         final String cli_test_dir= cli_test_src_dir + "/" + configs.init_package.replace('.', '/') + "/";
         JavaFile testfile2= compilerClientTest.generateTestFile_cli(configs, locations);
-        compilerUtil.saveToFile(cli_test_dir, cli_test_dir +TESTER_FILE+ ".java", testfile2);
+        compilerUtil.saveToFile(cli_test_dir, cli_test_dir +TESTER_FILE+ DOT_JAVA_EXTENSION, testfile2);
 
     }
 
@@ -243,19 +243,19 @@ public class ConfigProcessor implements Constants {
 
 
         JavaFile logger=compilerLogger.generateLogger(configs, locations);
-        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.logger+ ".java", logger);
+        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.logger+ DOT_JAVA_EXTENSION, logger);
 
         JavaFile intface=compilerLogger.generateBuilderInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + BUILDER_INTERFACE + ".java", intface);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + BUILDER_INTERFACE + DOT_JAVA_EXTENSION, intface);
 
         JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + LOGGER_INTERFACE + ".java", intface2);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + LOGGER_INTERFACE + DOT_JAVA_EXTENSION, intface2);
 
         JavaFile intface3=compilerLogger.generateProcessorArgsInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + PROCESSOR_ARGS_INTERFACE + ".java", intface3);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION, intface3);
 
         JavaFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + RECORDS_PROCESSOR_INTERFACE + ".java", intface3b);
+        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + RECORDS_PROCESSOR_INTERFACE + DOT_JAVA_EXTENSION, intface3b);
 
 
         exportMiscFiles(configs, cli_dir, cli_lib);
@@ -263,96 +263,93 @@ public class ConfigProcessor implements Constants {
         compilerScript.generateScript(configs);
 
         JavaFile templateBuilders=compilerTemplateBuilders.generateTemplateBuilders(configs, locations);
-        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.templateBuilders+ ".java", templateBuilders);
+        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.templateBuilders+ DOT_JAVA_EXTENSION, templateBuilders);
 
 
         Pair<String, JavaFile> nameAndTableConfigurator=compilerTableConfigurator.generateTableConfigurator(configs, locations);
-        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + nameAndTableConfigurator.getLeft()+ ".java", nameAndTableConfigurator.getRight());
+        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + nameAndTableConfigurator.getLeft()+ DOT_JAVA_EXTENSION, nameAndTableConfigurator.getRight());
 
         Pair<String, JavaFile> nameAndTableConfigurator2=compilerTableConfigurator.generateCompositeTableConfigurator(configs, locations);
-        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + nameAndTableConfigurator2.getLeft()+ ".java", nameAndTableConfigurator2.getRight());
+        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + nameAndTableConfigurator2.getLeft()+ DOT_JAVA_EXTENSION, nameAndTableConfigurator2.getRight());
 
         JavaFile beanProcessor=compilerBeanProcessor.generateBeanProcessor(configs, locations);
-        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.beanProcessor+ ".java", beanProcessor);
+        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.beanProcessor+ DOT_JAVA_EXTENSION, beanProcessor);
 
         JavaFile inputOutputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(locations.configs_integrator_package, configs, true);
-        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + INPUT_OUTPUT_PROCESSOR + ".java", inputOutputProcessor);
+        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + INPUT_OUTPUT_PROCESSOR + DOT_JAVA_EXTENSION, inputOutputProcessor);
         JavaFile inputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(locations.configs_integrator_package, configs, false);
-        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + INPUT_PROCESSOR + ".java", inputProcessor);
+        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + INPUT_PROCESSOR + DOT_JAVA_EXTENSION, inputProcessor);
 
 
         JavaFile templateInvoker=compilerTemplateInvoker.generateTemplateInvoker(locations.configs_integrator_package, locations.configurator_package2, configs);
-        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + TEMPLATE_INVOKER + ".java", templateInvoker);
+        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + TEMPLATE_INVOKER + DOT_JAVA_EXTENSION, templateInvoker);
 
         new File(locations.configurator_dir).mkdirs();
 
         new File(locations.configurator_dir2).mkdirs();
 
 
-        JavaFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BEAN_COMPLETER + ".java", beanCompleter);
+        SpecificationFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs, locations, locations.configurator_dir,BEAN_COMPLETER + DOT_JAVA_EXTENSION);
+        beanCompleter.save();
 
-        JavaFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + BEAN_COMPLETER2 + ".java", beanCompleter2);
+        SpecificationFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs, locations, locations.configurator_dir2, BEAN_COMPLETER2 + DOT_JAVA_EXTENSION);
+        beanCompleter2.save();
 
+        SpecificationFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, locations.configurator_dir2, BEAN_COMPLETER2_COMPOSITE + DOT_JAVA_EXTENSION);
+        beanCompleter2Composite.save();
 
-        JavaFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + BEAN_COMPLETER2_COMPOSITE + ".java", beanCompleter2Composite);
+        SpecificationFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations, locations.configurator_dir2, TYPE_CONVERTER + DOT_JAVA_EXTENSION);
+        typeConverter.save();
 
-        JavaFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + TYPE_CONVERTER + ".java", typeConverter);
+        SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, locations.configurator_dir, BEAN_ENACTOR + DOT_JAVA_EXTENSION);
+        beanEnactor.save();
 
+        SpecificationFile beanEnactor2=compilerBeanEnactor2.generateBeanEnactor2(configs, locations, locations.configurator_dir2, BEAN_ENACTOR2 + DOT_JAVA_EXTENSION);
+        beanEnactor2.save();
 
-        JavaFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BEAN_ENACTOR + ".java", beanEnactor);
+        SpecificationFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs, locations, locations.configurator_package, true, locations.configurator_dir,  QUERY_INVOKER + DOT_JAVA_EXTENSION);
+        queryComposer.save();
 
-        JavaFile beanEnactor2=compilerBeanEnactor2.generateBeanEnactor2(locations.configurator_package2,locations.configs_integrator_package,configs);
-        compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + BEAN_ENACTOR2 + ".java", beanEnactor2);
-
-
-        JavaFile queryComposer= compilerQueryInvoker.generateQueryInvoker(locations.configurator_package, locations, configs, true);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + QUERY_INVOKER + ".java", queryComposer);
-
-        JavaFile queryComposer3= compilerQueryInvoker.generateQueryInvoker(locations.configs_integrator_package, locations, configs, false);
-        compilerUtil.saveToFile(locations.integrator_dir, locations.integrator_dir + QUERY_INVOKER3 + ".java", queryComposer3);
+        SpecificationFile queryComposer3= compilerQueryInvoker.generateQueryInvoker(configs, locations, locations.configs_integrator_package, false, locations.integrator_dir, QUERY_INVOKER3 + DOT_JAVA_EXTENSION);
+        queryComposer3.save();
 
         JavaFile beanChecker= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER, configs, configs.configurator_package, configs.logger_package,  BeanDirection.COMMON, null);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BEAN_CHECKER + ".java", beanChecker);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BEAN_CHECKER + DOT_JAVA_EXTENSION, beanChecker);
 
 
         JavaFile beanDelegator= compilerDelegator.generateDelegator(configs, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + DELEGATOR + ".java", beanDelegator);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + DELEGATOR + DOT_JAVA_EXTENSION, beanDelegator);
 
 
         JavaFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR,locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + SQL_CONFIGURATOR + ".java", configurationSql);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + SQL_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationSql);
 
         JavaFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + PROPERTY_ORDER_CONFIGURATOR + ".java", configurationPropertyOrder);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationPropertyOrder);
 
         JavaFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + CSV_CONFIGURATOR + ".java", configurationCsv);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + CSV_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationCsv);
 
         JavaFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BUILDER_CONFIGURATOR + ".java", configurationBuilder);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + BUILDER_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationBuilder);
 
         JavaFile configurationSqlInsert= compilerConfigurations.generateSqlInsertConfigurator(configs,SQL_INSERT_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + SQL_INSERT_CONFIGURATOR + ".java", configurationSqlInsert);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + SQL_INSERT_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationSqlInsert);
 
         JavaFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + CONVERTER_CONFIGURATOR + ".java", configurationConverter);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + CONVERTER_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationConverter);
 
         JavaFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + ENACTOR_CONFIGURATOR + ".java", configurationEnactor);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION, configurationEnactor);
 
 
         JavaFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs,COMPOSITE_ENACTOR_CONFIGURATOR, locations);
-        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + COMPOSITE_ENACTOR_CONFIGURATOR + ".java", compositeConfigurationEnactor);
+        compilerUtil.saveToFile(locations.configurator_dir, locations.configurator_dir + COMPOSITE_ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION, compositeConfigurationEnactor);
 
 
 
         JavaFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR3, locations.configs_integrator_package, locations);
-        compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + ENACTOR_CONFIGURATOR3 + ".java", configurationEnactor2);
+        compilerUtil.saveToFile(locations.configurator_dir2, locations.configurator_dir2 + ENACTOR_CONFIGURATOR3 + DOT_JAVA_EXTENSION, configurationEnactor2);
 
 
     }
@@ -463,25 +460,25 @@ public class ConfigProcessor implements Constants {
             String destinationDir2=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/";
             String integrator_dir=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/" + "integrator" + "/";
 
-            String destination=destinationDir + bn + ".java";
-            String destinationI=destinationDir + bnI + ".java";
-            String destinationTypeManagement=destinationDir + bnTM + ".java";
-            String destinationTypePropagate=destinationDir + bnTP + ".java";
-            String destinationTypedRecord=destinationDir + bnTR + ".java";
-            String destination2=destinationDir2 + bn + ".java";
-            String destinationSQL=destinationDir2 + "SQL" + ".java";
-            String destination3=destinationDir2 + bean + ".java";
-            String destination3b=integrator_dir + outputs + ".java";
-            String destination3c=integrator_dir + inputs + ".java";
-            String destination4=destinationDir2 + processor + ".java";
+            String destination=destinationDir + bn + DOT_JAVA_EXTENSION;
+            String destinationI=destinationDir + bnI + DOT_JAVA_EXTENSION;
+            String destinationTypeManagement=destinationDir + bnTM + DOT_JAVA_EXTENSION;
+            String destinationTypePropagate=destinationDir + bnTP + DOT_JAVA_EXTENSION;
+            String destinationTypedRecord=destinationDir + bnTR + DOT_JAVA_EXTENSION;
+            String destination2=destinationDir2 + bn + DOT_JAVA_EXTENSION;
+            String destinationSQL=destinationDir2 + "SQL" + DOT_JAVA_EXTENSION;
+            String destination3=destinationDir2 + bean + DOT_JAVA_EXTENSION;
+            String destination3b=integrator_dir + outputs + DOT_JAVA_EXTENSION;
+            String destination3c=integrator_dir + inputs + DOT_JAVA_EXTENSION;
+            String destination4=destinationDir2 + processor + DOT_JAVA_EXTENSION;
 
-            String destination7=integrator_dir + integratorBuilder + ".java";
-            String destination7b=destinationDir2 + compositeBeanNameClass + ".java";  // in same folder as simple beans
-            String destination7c=destinationDir2 + bn + ".java";  // in same folder as simple beans
-            String destination4b=integrator_dir + integrator + ".java";
+            String destination7=integrator_dir + integratorBuilder + DOT_JAVA_EXTENSION;
+            String destination7b=destinationDir2 + compositeBeanNameClass + DOT_JAVA_EXTENSION;  // in same folder as simple beans
+            String destination7c=destinationDir2 + bn + DOT_JAVA_EXTENSION;  // in same folder as simple beans
+            String destination4b=integrator_dir + integrator + DOT_JAVA_EXTENSION;
 
-            String destination7g=integrator_dir + outputs + ".java";
-            String destination7h=integrator_dir + inputs + ".java";
+            String destination7g=integrator_dir + outputs + DOT_JAVA_EXTENSION;
+            String destination7h=integrator_dir + inputs + DOT_JAVA_EXTENSION;
 
 
 

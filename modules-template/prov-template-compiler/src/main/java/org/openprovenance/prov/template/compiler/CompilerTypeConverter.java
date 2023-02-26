@@ -2,10 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -26,7 +23,7 @@ public class CompilerTypeConverter {
     }
 
 
-    JavaFile generateTypeConverter(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateTypeConverter(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -84,10 +81,11 @@ public class CompilerTypeConverter {
 
 
         TypeSpec theLogger = builder.build();
-        JavaFile myfile = JavaFile.builder(configs.configurator_package + "2", theLogger)
+        JavaFile myfile = JavaFile.builder(locations.configurator_package2, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateTypeConverter() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+
     }
 
     private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName outputClassName) {

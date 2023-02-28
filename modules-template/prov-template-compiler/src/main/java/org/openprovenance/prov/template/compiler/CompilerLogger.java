@@ -3,10 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 import java.util.HashMap;
@@ -26,7 +23,7 @@ public class CompilerLogger {
     }
 
 
-    JavaFile generateLogger(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
         builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, LOGGER_INTERFACE));
@@ -93,7 +90,8 @@ public class CompilerLogger {
         JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateLogger()", configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
+
     }
 
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
@@ -153,7 +151,7 @@ public class CompilerLogger {
 
     }
 
-    JavaFile generateBuilderInterface(TemplatesCompilerConfig configs) {
+    SpecificationFile generateBuilderInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.BUILDER_INTERFACE);
 
@@ -198,10 +196,10 @@ public class CompilerLogger {
         JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(),  configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
-    JavaFile generateLoggerInterface(TemplatesCompilerConfig configs) {
+    SpecificationFile generateLoggerInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
 
@@ -219,7 +217,8 @@ public class CompilerLogger {
         JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateLoggerInterface()) for templates config $S", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+
     }
 
     public MethodSpec generateStaticLogMethod(SimpleTemplateCompilerConfig config, Locations locations) {
@@ -300,7 +299,7 @@ public class CompilerLogger {
 
     }
 
-    public JavaFile generateProcessorArgsInterface(TemplatesCompilerConfig configs) {
+    public SpecificationFile generateProcessorArgsInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(PROCESSOR_ARGS_INTERFACE,  CompilerUtil.typeT);
 
@@ -317,10 +316,11 @@ public class CompilerLogger {
         JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
-    public JavaFile generateRecordsProcessorInterface(TemplatesCompilerConfig configs) {
+    public SpecificationFile generateRecordsProcessorInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(RECORDS_PROCESSOR_INTERFACE, CompilerUtil.typeT);
 
@@ -337,6 +337,6 @@ public class CompilerLogger {
         JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 }

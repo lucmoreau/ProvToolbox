@@ -244,20 +244,20 @@ public class ConfigProcessor implements Constants {
         compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
 
 
-        JavaFile logger=compilerLogger.generateLogger(configs, locations);
-        compilerUtil.saveToFile(locations.logger_dir, locations.logger_dir + configs.logger+ DOT_JAVA_EXTENSION, logger);
+        SpecificationFile logger=compilerLogger.generateLogger(configs, locations, locations.logger_dir,  configs.logger+ DOT_JAVA_EXTENSION);
+        logger.save();
 
-        JavaFile intface=compilerLogger.generateBuilderInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + BUILDER_INTERFACE + DOT_JAVA_EXTENSION, intface);
+        SpecificationFile intface=compilerLogger.generateBuilderInterface(configs, openprovenance_dir, BUILDER_INTERFACE + DOT_JAVA_EXTENSION);
+        intface.save();
 
-        JavaFile intface2=compilerLogger.generateLoggerInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + LOGGER_INTERFACE + DOT_JAVA_EXTENSION, intface2);
+        SpecificationFile intface2=compilerLogger.generateLoggerInterface(configs, openprovenance_dir, LOGGER_INTERFACE + DOT_JAVA_EXTENSION);
+        intface2.save();
 
-        JavaFile intface3=compilerLogger.generateProcessorArgsInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION, intface3);
+        SpecificationFile intface3=compilerLogger.generateProcessorArgsInterface(configs, openprovenance_dir, PROCESSOR_ARGS_INTERFACE + DOT_JAVA_EXTENSION);
+        intface3.save();
 
-        JavaFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs);
-        compilerUtil.saveToFile(openprovenance_dir, openprovenance_dir + RECORDS_PROCESSOR_INTERFACE + DOT_JAVA_EXTENSION, intface3b);
+        SpecificationFile intface3b=compilerLogger.generateRecordsProcessorInterface(configs, openprovenance_dir, RECORDS_PROCESSOR_INTERFACE + DOT_JAVA_EXTENSION);
+        intface3b.save();
 
 
         exportMiscFiles(configs, cli_dir, cli_lib);

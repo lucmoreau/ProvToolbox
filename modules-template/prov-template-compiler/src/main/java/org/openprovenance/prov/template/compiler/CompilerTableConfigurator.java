@@ -3,12 +3,11 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
+
+import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 
@@ -18,14 +17,14 @@ public class CompilerTableConfigurator {
     public CompilerTableConfigurator() {
     }
 
-    Pair<String, JavaFile> generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
-        return generateTableConfigurator(configs,false, locations);
+    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String directory, Function<String,String> fileName) {
+        return generateTableConfigurator(configs,false, locations, directory, fileName);
     }
-    Pair<String, JavaFile> generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
-        return generateTableConfigurator(configs,true, locations);
+    SpecificationFile generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String directory, Function<String,String> fileName) {
+        return generateTableConfigurator(configs,true, locations, directory, fileName);
     }
 
-    Pair<String, JavaFile> generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations) {
+    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations, String directory, Function<String,String> fileName) {
         if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
         String tableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
 
@@ -52,7 +51,7 @@ public class CompilerTableConfigurator {
         JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateTableConfigurator()) for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return Pair.of(tableClassName,myfile);
+        return new SpecificationFile(myfile, directory, fileName.apply(tableClassName), configs.logger_package);
     }
 
 

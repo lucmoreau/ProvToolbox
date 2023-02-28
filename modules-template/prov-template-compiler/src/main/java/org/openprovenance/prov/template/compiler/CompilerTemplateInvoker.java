@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -11,7 +12,6 @@ import javax.lang.model.element.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -25,7 +25,7 @@ public class CompilerTemplateInvoker {
 
     static TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(Object.class));
 
-    JavaFile generateTemplateInvoker(String package_, String configurator_package2, TemplatesCompilerConfig configs) {
+    SpecificationFile generateTemplateInvoker(String package_, String configurator_package2, TemplatesCompilerConfig configs, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(package_,INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
 
@@ -84,7 +84,8 @@ public class CompilerTemplateInvoker {
         JavaFile myfile = JavaFile.builder(package_, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateTemplateInvoker() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, package_);
+
     }
 
 

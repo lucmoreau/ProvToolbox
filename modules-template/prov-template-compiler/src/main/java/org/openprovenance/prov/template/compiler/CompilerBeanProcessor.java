@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -15,7 +16,7 @@ public class CompilerBeanProcessor {
     }
 
 
-    JavaFile generateBeanProcessor(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateBeanProcessor(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(configs.beanProcessor);
@@ -40,7 +41,7 @@ public class CompilerBeanProcessor {
         JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanProcessor() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
     }
 
 

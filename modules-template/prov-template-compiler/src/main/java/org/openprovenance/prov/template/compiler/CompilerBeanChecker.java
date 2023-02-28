@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -26,7 +27,7 @@ public class CompilerBeanChecker {
     }
 
 
-    public JavaFile generateBeanChecker(String name, TemplatesCompilerConfig configs, String packageName, String packageForBeans, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable) {
+    public SpecificationFile generateBeanChecker(String name, TemplatesCompilerConfig configs, String packageName, String packageForBeans, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String directory, String fileName) {
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
@@ -87,7 +88,7 @@ public class CompilerBeanChecker {
         JavaFile myfile = JavaFile.builder(packageName, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanChecker() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, packageName);
     }
 
     public MethodSpec generateCheckerMethod(String templateName, String extension, TemplateCompilerConfig config, BeanDirection direction, String packageForBeans, List<String> sharing) {

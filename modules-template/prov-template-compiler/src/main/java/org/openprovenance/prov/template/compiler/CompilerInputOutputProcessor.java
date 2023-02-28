@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 
@@ -17,7 +18,7 @@ public class CompilerInputOutputProcessor {
     }
 
 
-    JavaFile generateInputOutputProcessor(String package_, TemplatesCompilerConfig configs, boolean ioConverter) {
+    SpecificationFile generateInputOutputProcessor(String package_, TemplatesCompilerConfig configs, boolean ioConverter, String directory, String fileName) {
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit((ioConverter)?INPUT_OUTPUT_PROCESSOR:INPUT_PROCESSOR);
 
@@ -44,7 +45,7 @@ public class CompilerInputOutputProcessor {
         JavaFile myfile = JavaFile.builder(package_, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.generateInputOutputProcessor() for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, package_);
     }
 
 

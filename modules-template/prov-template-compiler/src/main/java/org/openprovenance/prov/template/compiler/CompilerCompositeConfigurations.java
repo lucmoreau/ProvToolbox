@@ -2,10 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
@@ -20,13 +17,13 @@ public class CompilerCompositeConfigurations {
     String enactorVar = "beanEnactor";
 
 
-    public JavaFile generateCompositeConfigurator(TemplatesCompilerConfig configs,
-                                                  Locations locations,
-                                                  String theConfiguratorName,
-                                                  TypeName typeName,
-                                                  QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
-                                                  String generatorMethod,
-                                                  TypeName beanProcessor) {
+    public SpecificationFile generateCompositeConfigurator(TemplatesCompilerConfig configs,
+                                                           Locations locations,
+                                                           String theConfiguratorName,
+                                                           TypeName typeName,
+                                                           QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
+                                                           String generatorMethod,
+                                                           TypeName beanProcessor, String directory, String fileName) {
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
 
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package, Constants.COMPOSITE +configs.tableConfigurator), typeName);
@@ -72,13 +69,14 @@ public class CompilerCompositeConfigurations {
         JavaFile myfile = JavaFile.builder(configs.configurator_package, theConfigurator)
                 .addFileComment("Generated Automatically by ProvToolbox method $N.$N() for templates config $N", getClass().getName(), generatorMethod,configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+
     }
 
     static final ParameterizedTypeName recordsProcessorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"RecordsProcessorInterface"), TypeVariableName.get("?"));
 
-    public JavaFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations) {
-        return  generateCompositeConfigurator(configs, locations, theConfiguratorName, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor));
+    public SpecificationFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        return  generateCompositeConfigurator(configs, locations, theConfiguratorName, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor), directory, fileName);
     }
 
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {

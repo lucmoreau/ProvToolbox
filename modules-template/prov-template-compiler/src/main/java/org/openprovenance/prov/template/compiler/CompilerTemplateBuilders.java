@@ -2,10 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
@@ -16,7 +13,7 @@ public class CompilerTemplateBuilders {
     }
 
 
-    JavaFile generateTemplateBuilders(TemplatesCompilerConfig configs, Locations locations) {
+    SpecificationFile generateTemplateBuilders(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
         if (configs.templateBuilders==null) throw new NullPointerException("templateBuilders is null");
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.templateBuilders);
@@ -41,7 +38,7 @@ public class CompilerTemplateBuilders {
         JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
                 .addFileComment("Generated Automatically by ProvToolbox ($N.generateTemplateBuilders()) for templates config $N", getClass().getName(), configs.name)
                 .build();
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
     }
 
 

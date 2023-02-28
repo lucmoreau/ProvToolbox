@@ -18,8 +18,8 @@ public class SpecificationFile {
         this.class_package = class_package;
     }
 
-    public void save() {
-        compilerUtil.saveToFile(directory, directory + fileName, javaFile);
+    public boolean save() {
+        return compilerUtil.saveToFile(directory, directory + fileName, javaFile);
     }
 
     public JavaFile getJavaFile() {

@@ -19,6 +19,7 @@ public class CompilerInputOutputProcessor {
 
 
     SpecificationFile generateInputOutputProcessor(String package_, TemplatesCompilerConfig configs, boolean ioConverter, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit((ioConverter)?INPUT_OUTPUT_PROCESSOR:INPUT_PROCESSOR);
 
@@ -42,9 +43,8 @@ public class CompilerInputOutputProcessor {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(package_, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateInputOutputProcessor() for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, package_, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, package_);
     }
 

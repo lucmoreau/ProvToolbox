@@ -28,6 +28,7 @@ public class CompilerBeanGenerator {
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
     public JavaFile generateBean(String templateName, Locations locations, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, TemplatesCompilerConfig configs) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
         if (extension!=null) {
@@ -143,7 +144,7 @@ public class CompilerBeanGenerator {
 
         TypeSpec spec = builder.build();
 
-        return compilerUtil.specWithComment(spec, templateName, packge, getClass().getName());
+        return compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
 
     }
 

@@ -34,6 +34,8 @@ public class CompilerConfigurations {
                                                   BeanDirection outDirection,
                                                   String directory,
                                                   String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
 
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package,configs.tableConfigurator), typeName);
@@ -84,9 +86,8 @@ public class CompilerConfigurations {
 
         TypeSpec theConfigurator = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.configurator_package, theConfigurator)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.$N() for templates config $N", getClass().getName(), generatorMethod,configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, configs.configurator_package, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
 
     }

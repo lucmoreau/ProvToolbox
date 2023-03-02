@@ -26,6 +26,7 @@ import org.openprovenance.prov.model.ValueConverter;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
@@ -735,10 +736,31 @@ public class CompilerUtil {
         }
     }
 
+    /*
     public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, String className) {
         return JavaFile.builder(packge, typeSpec)
                 .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", className, templateName)
                 .build();
+    }
+
+     */
+    public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
+        return JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated Automatically by ProvToolbox for template '$L'", templateName)
+                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
+                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
+                .build();
+    }
+    public JavaFile specWithComment(TypeSpec typeSpec, TemplatesCompilerConfig configs, String packge, StackTraceElement stackTraceElement) {
+        return JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated Automatically by ProvToolbox for template configuration '$L'", configs.name)
+                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
+                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
+                .build();
+    }
+    public StackTraceElement thisMethodAndLine() {
+        RuntimeException exception = new RuntimeException();
+        return exception.getStackTrace()[1];
     }
 
 }

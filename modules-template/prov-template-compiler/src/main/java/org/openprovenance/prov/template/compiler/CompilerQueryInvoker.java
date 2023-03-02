@@ -22,6 +22,7 @@ public class CompilerQueryInvoker {
 
 
     public SpecificationFile generateQueryInvoker(TemplatesCompilerConfig configs, Locations locations, String destinationPackage, boolean withBean, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER3);
@@ -102,9 +103,8 @@ public class CompilerQueryInvoker {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(destinationPackage, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateQueryInvoker() for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, destinationPackage, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, destinationPackage);
 
     }

@@ -446,10 +446,8 @@ public class ConfigProcessor implements Constants {
             String bean=compilerUtil.commonNameClass(templateName);
             String outputs=compilerUtil.outputsNameClass(templateName);
             String inputs=compilerUtil.inputsNameClass(templateName);
-            String processor=compilerUtil.processorNameClass(templateName);
             String integratorBuilder=compilerUtil.integratorBuilderNameClass(templateName);
             String compositeBeanNameClass=compilerUtil.commonNameClass(templateName);
-            String integrator=compilerUtil.integratorNameClass(templateName);
 
             String destinationDir=l2p_src_dir + "/" + packageName.replace('.', '/') + "/";
             String destinationDir2=cli_src_dir + "/" + packageName.replace('.', '/') + "/" + "client" + "/";
@@ -465,12 +463,10 @@ public class ConfigProcessor implements Constants {
             String destination3=destinationDir2 + bean + DOT_JAVA_EXTENSION;
             String destination3b=integrator_dir + outputs + DOT_JAVA_EXTENSION;
             String destination3c=integrator_dir + inputs + DOT_JAVA_EXTENSION;
-            String destination4=destinationDir2 + processor + DOT_JAVA_EXTENSION;
 
             String destination7=integrator_dir + integratorBuilder + DOT_JAVA_EXTENSION;
             String destination7b=destinationDir2 + compositeBeanNameClass + DOT_JAVA_EXTENSION;  // in same folder as simple beans
             String destination7c=destinationDir2 + bn + DOT_JAVA_EXTENSION;  // in same folder as simple beans
-            String destination4b=integrator_dir + integrator + DOT_JAVA_EXTENSION;
 
             String destination7g=integrator_dir + outputs + DOT_JAVA_EXTENSION;
             String destination7h=integrator_dir + inputs + DOT_JAVA_EXTENSION;
@@ -537,11 +533,11 @@ public class ConfigProcessor implements Constants {
                     val3 = compilerUtil.saveToFile(integrator_dir, destination7, spec7);
 
 
-                    JavaFile spec4 = compilerProcessor.generateProcessor(templateName, packageName + ".client", bindingsSchema, !IN_INTEGRATOR);
-                    val4 = compilerUtil.saveToFile(destinationDir2, destination4, spec4);
+                    SpecificationFile spec4 = compilerProcessor.generateProcessor(templateName, packageName + ".client", bindingsSchema, !IN_INTEGRATOR, destinationDir2, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION);
+                    val4 = spec4.save();
 
-                    JavaFile spec4b = compilerProcessor.generateProcessor(templateName, packageName + ".client.integrator", bindingsSchema, IN_INTEGRATOR);
-                    val4 = val4 & compilerUtil.saveToFile(integrator_dir, destination4b, spec4b);
+                    SpecificationFile spec4b = compilerProcessor.generateProcessor(templateName, packageName + ".client.integrator", bindingsSchema, IN_INTEGRATOR, integrator_dir, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION);
+                    val4 = val4 & spec4b.save();
                 }
 
                 if (!inComposition) {

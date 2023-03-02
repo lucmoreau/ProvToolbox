@@ -28,6 +28,7 @@ public class CompilerBeanChecker {
 
 
     public SpecificationFile generateBeanChecker(String name, TemplatesCompilerConfig configs, String packageName, String packageForBeans, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
@@ -85,9 +86,8 @@ public class CompilerBeanChecker {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(packageName, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanChecker() for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packageName, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, packageName);
     }
 

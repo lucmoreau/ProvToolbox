@@ -21,6 +21,7 @@ public class CompilerDelegator {
 
 
     public SpecificationFile generateDelegator(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
@@ -54,9 +55,7 @@ public class CompilerDelegator {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.configurator_package, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateDelegator() for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, configs.configurator_package, stackTraceElement);
 
         return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
 

@@ -35,6 +35,7 @@ public class CompilerIntegrator {
     }
 
     public JavaFile generateIntegrator(String templateName, String integrator_package, String loggerPackage, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
 
@@ -75,7 +76,7 @@ public class CompilerIntegrator {
 
         TypeSpec spec = builder.build();
 
-        return compilerUtil.specWithComment(spec, templateName, integrator_package, getClass().getName());
+        return compilerUtil.specWithComment(spec, templateName, integrator_package, stackTraceElement);
     }
 
     public MethodSpec generateNewOutputConstructor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection outputs) {

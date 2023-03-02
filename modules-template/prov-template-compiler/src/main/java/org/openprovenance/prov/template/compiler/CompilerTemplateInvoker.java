@@ -26,7 +26,7 @@ public class CompilerTemplateInvoker {
     static TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(Object.class));
 
     SpecificationFile generateTemplateInvoker(String package_, String configurator_package2, TemplatesCompilerConfig configs, String directory, String fileName) {
-
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
         TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(package_,INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
 
 
@@ -81,10 +81,10 @@ public class CompilerTemplateInvoker {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(package_, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateTemplateInvoker() for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, package_, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, package_);
+
 
     }
 

@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -31,7 +32,8 @@ public class CompilerProcessor {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public JavaFile generateProcessor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator) {
+    public SpecificationFile generateProcessor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
 
@@ -84,11 +86,10 @@ public class CompilerProcessor {
         builder.addMethod(mbuilder.build());
 
         TypeSpec bean=builder.build();
-        JavaFile myfile = JavaFile.builder(packge, bean)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N",getClass().getName(), templateName)
-                .build();
 
-        return myfile;
+        JavaFile myfile = compilerUtil.specWithComment(bean, templateName, packge, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, packge);
 
     }
 

@@ -19,6 +19,7 @@ public class CompilerBeanCompleter2 {
 
 
     SpecificationFile generateBeanCompleter2(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
@@ -131,9 +132,9 @@ public class CompilerBeanCompleter2 {
 
 
         TypeSpec theLogger = builder.build();
-        JavaFile myfile = JavaFile.builder(locations.configurator_package2, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox method $N.generateBeanCompleter() for templates config $N", getClass().getName(), configs.name)
-                .build();
+
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.configurator_package2, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
 
     }

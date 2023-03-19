@@ -72,15 +72,21 @@ public class Locations {
         }
         switch (file) {
             case TEMPLATE_INVOKER:                  return config_integrator_package;
+            case INPUT_OUTPUT_PROCESSOR:            return config_integrator_package;
+            case QUERY_INVOKER3:                    return config_integrator_package;
+            case INPUT_PROCESSOR:                   return config_integrator_package;
+
             case COMPOSITE_ENACTOR_CONFIGURATOR:    return configurator_package;
             case DELEGATOR:                         return configurator_package;
-            case INPUT_OUTPUT_PROCESSOR:            return config_integrator_package;
             case QUERY_INVOKER:                     return configurator_package;
-            case QUERY_INVOKER3:                    return config_integrator_package;
             case BEAN_COMPLETER:                    return configurator_package;
-            case BEAN_CHECKER3:                     return configurator_package2;
             case BEAN_CHECKER:                      return configurator_package;
-            case INPUT_PROCESSOR:                   return config_integrator_package;
+
+            case BEAN_CHECKER3:                     return configurator_package2;
+            case BEAN_COMPLETER2:                   return configurator_package2;
+
+            case BEAN_ENACTOR:                      return config_common_package;
+
             case SQL_INTERFACE:                     return Constants.CLIENT_PACKAGE;
         }
         throw new UnsupportedOperationException("Unknown file " + file);

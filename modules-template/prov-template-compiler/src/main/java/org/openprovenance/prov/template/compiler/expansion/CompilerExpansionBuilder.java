@@ -9,6 +9,7 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -128,7 +129,7 @@ public class CompilerExpansionBuilder {
 
         builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
-        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,packge+".client"));
+        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getFilePackage(BeanDirection.COMMON)));
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));

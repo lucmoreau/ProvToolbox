@@ -289,7 +289,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs, locations, BEAN_COMPLETER);
         beanCompleter.save();
 
-        SpecificationFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs, locations, locations.configurator_dir2, BEAN_COMPLETER2 + DOT_JAVA_EXTENSION);
+        SpecificationFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs, locations, BEAN_COMPLETER2);
         beanCompleter2.save();
 
         SpecificationFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, locations.configurator_dir2, BEAN_COMPLETER2_COMPOSITE + DOT_JAVA_EXTENSION);

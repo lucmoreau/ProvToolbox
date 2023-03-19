@@ -76,7 +76,7 @@ public class CompilerCommon {
         builder.addMethod(generateRecordCsvProcessorMethod(beanKind));
         compilerSQL.generateSQLstatements(builder, templateName, bindingsSchema, beanKind);
 
-        ClassName integratorClassName = ClassName.get(packageName + ".integrator", compilerUtil.integratorBuilderNameClass(templateName));
+        ClassName integratorClassName = ClassName.get(locations.config_integrator_package, compilerUtil.integratorBuilderNameClass(templateName));
         builder.addField(FieldSpec.builder(integratorClassName, "__integrator")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .initializer("new $T()", integratorClassName)

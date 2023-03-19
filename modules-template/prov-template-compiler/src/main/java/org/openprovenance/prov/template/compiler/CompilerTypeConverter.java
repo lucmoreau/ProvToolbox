@@ -28,7 +28,7 @@ public class CompilerTypeConverter {
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
-        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(configs.configurator_package + "2", Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
+        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.configurator_package2, Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
 
 
 

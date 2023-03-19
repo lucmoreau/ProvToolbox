@@ -171,15 +171,10 @@ public class ConfigProcessor implements Constants {
                     if (!found) throw new UnsupportedOperationException("Composite template configuration referencing unknown template " + simple);
                 }
             }
-            String integrator_package=configs.logger_package+ ".integrator";
-            String integrator_dir=cli_src_dir + "/" + integrator_package.replace('.', '/') + "/" ;
 
-            String configurator_package2=configs.configurator_package+"2";
-            final String configurator_dir2= cli_src_dir + "/" + configurator_package2.replace('.', '/') + "/";
+            compilerBeanGenerator.generateSimpleConfigsWithVariants(locations, locations.config_integrator_package, locations.config_integrator_dir, configs);
 
-            compilerBeanGenerator.generateSimpleConfigsWithVariants(locations, integrator_package, integrator_dir, configs);
-
-            SpecificationFile beanChecker3= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER3, configs, configurator_package2, integrator_package, BeanDirection.INPUTS, compilerBeanGenerator.variantTable, configurator_dir2, BEAN_CHECKER3 + DOT_JAVA_EXTENSION);
+            SpecificationFile beanChecker3= compilerBeanChecker.generateBeanChecker(BEAN_CHECKER3, configs, locations.configurator_package2, locations.config_integrator_package, BeanDirection.INPUTS, compilerBeanGenerator.variantTable, locations.configurator_dir2, BEAN_CHECKER3 + DOT_JAVA_EXTENSION);
             beanChecker3.save();
 
 
@@ -509,19 +504,19 @@ public class ConfigProcessor implements Constants {
                     SpecificationFile spec3 = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.COMMON, null, null, null, destinationDir2 , bean + DOT_JAVA_EXTENSION);
                     val3 = spec3.save();
 
-                    SpecificationFile spec3b = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null, null, null, integrator_dir,outputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec3b = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.OUTPUTS, null, null, null, locations.config_integrator_dir,outputs + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec3b.save();
 
-                    SpecificationFile spec3c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null,integrator_dir, inputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec3c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null, locations.config_integrator_dir, inputs + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec3c.save();
 
-                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(templateName, locations.config_integrator_package, packageName, bindingsSchema, logger, BeanKind.SIMPLE, consistsOf, integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(templateName, locations.config_integrator_package, packageName, bindingsSchema, logger, BeanKind.SIMPLE, consistsOf, locations.config_integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
 
                     SpecificationFile spec4 = compilerProcessor.generateProcessor(templateName, packageName + ".client", bindingsSchema, !IN_INTEGRATOR, destinationDir2, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION);
                     val4 = spec4.save();
 
-                    SpecificationFile spec4b = compilerProcessor.generateProcessor(templateName, locations.config_integrator_package, bindingsSchema, IN_INTEGRATOR, integrator_dir, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec4b = compilerProcessor.generateProcessor(templateName, locations.config_integrator_package, bindingsSchema, IN_INTEGRATOR, locations.config_integrator_dir, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION);
                     val4 = val4 & spec4b.save();
                 }
 
@@ -555,22 +550,22 @@ public class ConfigProcessor implements Constants {
                     if (spec7b!=null) {
                         val3 = val3 & spec7b.save();
                     }
-                    SpecificationFile spec7c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf, null, null, integrator_dir, outputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.OUTPUTS, consistsOf, null, null, locations.config_integrator_dir, outputs + DOT_JAVA_EXTENSION);
                     if (spec7c!=null) {
                         val3 = val3 & spec7c.save();
                     }
-                    SpecificationFile spec7d = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf, sharing, null, integrator_dir, inputs + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7d = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.INPUTS, consistsOf, sharing, null, locations.config_integrator_dir, inputs + DOT_JAVA_EXTENSION);
                     if (spec7d!=null) {
                         val3 = val3 & spec7d.save();
                     }
 
-                    Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.config_common_package, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE, integrator_dir, bn + DOT_JAVA_EXTENSION);
+                    Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.config_common_package, bindingsSchema2, indexed, logger, BeanKind.COMPOSITE, locations.config_integrator_dir, bn + DOT_JAVA_EXTENSION);
                     if (tmp.getLeft()!=null) {
                         SpecificationFile spec2 = tmp.getLeft();
                         val3 = val3 & spec2.save();
                     }
 
-                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(templateName, locations.config_integrator_package, locations.config_common_package, bindingsSchema2, logger, BeanKind.COMPOSITE, consistsOf, integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(templateName, locations.config_integrator_package, locations.config_common_package, bindingsSchema2, logger, BeanKind.COMPOSITE, consistsOf, locations.config_integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
 
                 }

@@ -298,7 +298,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations, locations.configurator_dir2, TYPE_CONVERTER + DOT_JAVA_EXTENSION);
         typeConverter.save();
 
-        SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, locations.configurator_dir, BEAN_ENACTOR + DOT_JAVA_EXTENSION);
+        SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, BEAN_ENACTOR + DOT_JAVA_EXTENSION);
         beanEnactor.save();
 
         SpecificationFile beanEnactor2=compilerBeanEnactor2.generateBeanEnactor2(configs, locations, locations.configurator_dir2, BEAN_ENACTOR2 + DOT_JAVA_EXTENSION);

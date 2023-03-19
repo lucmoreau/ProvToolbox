@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -19,7 +20,7 @@ public class CompilerBeanEnactor {
     }
 
 
-    SpecificationFile generateBeanEnactor(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateBeanEnactor(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
@@ -105,9 +106,11 @@ public class CompilerBeanEnactor {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.configurator_package, stackTraceElement);
+        String packge=locations.getFilePackage(BeanDirection.COMMON);
 
-        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packge, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory((packge)), fileName, packge);
 
     }
 

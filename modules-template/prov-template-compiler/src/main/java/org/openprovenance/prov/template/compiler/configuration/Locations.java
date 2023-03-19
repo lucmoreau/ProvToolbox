@@ -9,7 +9,7 @@ public class Locations {
     private final String cli_src_dir;
     private final TemplatesCompilerConfig configs;
 
-    final public String configurator_package;
+    final private String configurator_package;
     final public String configurator_dir;
     final public String configurator_package2;
     final public String configurator_dir2;

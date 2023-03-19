@@ -20,13 +20,13 @@ public class CompilerDelegator {
     }
 
 
-    public SpecificationFile generateDelegator(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    public SpecificationFile generateDelegator(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.DELEGATOR);
 
-        ClassName beanProcessorClass = ClassName.get(configs.logger_package, configs.beanProcessor);
+        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
         builder.addSuperinterface(beanProcessorClass);
 
         builder.addField(beanProcessorClass, DELEGATOR_VAR, Modifier.FINAL, Modifier.PRIVATE);
@@ -55,9 +55,11 @@ public class CompilerDelegator {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, configs.configurator_package, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName, myPackage);
 
     }
 

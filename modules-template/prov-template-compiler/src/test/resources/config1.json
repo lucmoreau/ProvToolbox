@@ -9,7 +9,7 @@
     "templateBuilders": "TemplateBuilders",
     "tableConfigurator": "TableConfigurator",
     "beanProcessor": "BeanProcessor",
-    "logger_package": "org.example.templates.block.client",
+    "logger_package": "org.example.templates.block.logger",
     "configurator_package": "org.example.templates.block.client.configurator",
     "script": "example_run",
     "script_dir": "target/libs/bin",

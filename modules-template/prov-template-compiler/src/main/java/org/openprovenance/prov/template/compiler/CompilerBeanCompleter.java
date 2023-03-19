@@ -20,7 +20,7 @@ public class CompilerBeanCompleter {
     // so disabling this code for now
     final boolean sqlCode=false;
 
-    SpecificationFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateBeanCompleter(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
@@ -30,7 +30,7 @@ public class CompilerBeanCompleter {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER);
 
-        builder.addSuperinterface(ClassName.get(configs.logger_package,configs.beanProcessor));
+        builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor));
 
         builder.addField(CompilerUtil.mapType,"m", Modifier.FINAL);
 
@@ -136,9 +136,11 @@ public class CompilerBeanCompleter {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.configurator_package, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
     }
 
 

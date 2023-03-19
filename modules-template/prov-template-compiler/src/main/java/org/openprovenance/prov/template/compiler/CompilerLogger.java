@@ -23,7 +23,7 @@ public class CompilerLogger {
     }
 
 
-    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
@@ -73,12 +73,12 @@ public class CompilerLogger {
             }
         }
 
-        builder.addMethod(generateInitializeBeanTableMethod(configs));
-        builder.addMethod(generateInitializeCompositeBeanTableMethod(configs));
+        builder.addMethod(generateInitializeBeanTableMethod(configs, locations));
+        builder.addMethod(generateInitializeCompositeBeanTableMethod(configs, locations));
 
         builder.addField(FieldSpec
                 .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package,BUILDER_CONFIGURATOR))
+                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package, BUILDER_CONFIGURATOR))
                 .build());
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
@@ -87,16 +87,17 @@ public class CompilerLogger {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.logger_package, stackTraceElement);
+        String myPackage = locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
     }
 
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
     static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
 
-    private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs) {
+    private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(INITIALIZE_BEAN_TABLE)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
@@ -104,7 +105,7 @@ public class CompilerLogger {
 
         builder.addComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateInitializeBeanTableMethod()", configs.name);
 
-        builder.addParameter( ParameterizedTypeName.get(ClassName.get(configs.logger_package,configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.tableConfigurator), configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
 
         builder.addStatement("$T aTable=new $T()",mapType,mapType2);
 
@@ -123,7 +124,7 @@ public class CompilerLogger {
 
     }
 
-    private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesCompilerConfig configs) {
+    private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("initializeCompositeBeanTable")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
@@ -131,7 +132,8 @@ public class CompilerLogger {
 
         builder.addComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateInitializeCompositeBeanTableMethod()", configs.name);
 
-        builder.addParameter( ParameterizedTypeName.get(ClassName.get(configs.logger_package,Constants.COMPOSITE+configs.tableConfigurator), typeT), "configurator");
+        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT), "configurator");
 
 
         builder.addStatement("$T aTable=new $T()",mapType,mapType2);

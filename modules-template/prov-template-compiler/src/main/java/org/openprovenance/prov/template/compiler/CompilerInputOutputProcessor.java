@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
@@ -18,7 +19,7 @@ public class CompilerInputOutputProcessor {
     }
 
 
-    SpecificationFile generateInputOutputProcessor(String package_, TemplatesCompilerConfig configs, boolean ioConverter, String directory, String fileName) {
+    SpecificationFile generateInputOutputProcessor(TemplatesCompilerConfig configs, Locations locations, String package_, boolean ioConverter, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit((ioConverter)?INPUT_OUTPUT_PROCESSOR:INPUT_PROCESSOR);

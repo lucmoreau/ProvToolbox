@@ -38,7 +38,7 @@ public class CompilerConfigurations {
 
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
 
-        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package,configs.tableConfigurator), typeName);
+        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.tableConfigurator),configs.tableConfigurator), typeName);
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
@@ -108,11 +108,11 @@ public class CompilerConfigurations {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
     public SpecificationFile generateEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, ClassName.get(configs.logger_package,configs.beanProcessor), false, null, BeanDirection.COMMON, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor), false, null, BeanDirection.COMMON, directory, fileName);
     }
 
     public SpecificationFile generateEnactorConfigurator2(TemplatesCompilerConfig configs, String theConfiguratorName, String integrator_package, Locations locations, String directory, String fileName) {
-        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(integrator_package,INPUT_OUTPUT_PROCESSOR), false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
+        return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor2, "generateEnactorConfigurator2", BeanDirection.INPUTS, ClassName.get(locations.getFilePackage(INPUT_OUTPUT_PROCESSOR),INPUT_OUTPUT_PROCESSOR), false, integrator_package,BeanDirection.OUTPUTS, directory, fileName);
     }
 
     public void generateMethodRecord2SqlConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {

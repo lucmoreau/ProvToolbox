@@ -9,6 +9,8 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 
 import javax.lang.model.element.Modifier;
 
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
+
 public class CompilerBeanProcessor {
     private final CompilerUtil compilerUtil=new CompilerUtil();
 
@@ -16,7 +18,7 @@ public class CompilerBeanProcessor {
     }
 
 
-    SpecificationFile generateBeanProcessor(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateBeanProcessor(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
@@ -40,9 +42,11 @@ public class CompilerBeanProcessor {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.logger_package, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
     }
 
 

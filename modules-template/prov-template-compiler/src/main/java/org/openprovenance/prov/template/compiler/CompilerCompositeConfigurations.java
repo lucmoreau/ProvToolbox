@@ -19,11 +19,11 @@ public class CompilerCompositeConfigurations {
 
     public SpecificationFile generateCompositeConfigurator(TemplatesCompilerConfig configs,
                                                            Locations locations,
-                                                           String theConfiguratorName,
                                                            TypeName typeName,
                                                            QuadConsumer<String, MethodSpec.Builder, TypeName, TypeName> generator,
                                                            String generatorMethod,
-                                                           TypeName beanProcessor, String directory, String fileName) {
+                                                           TypeName beanProcessor,
+                                                           String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
@@ -31,7 +31,7 @@ public class CompilerCompositeConfigurations {
         final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package, Constants.COMPOSITE +configs.tableConfigurator), typeName);
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(theConfiguratorName);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
 
         // the following in only used for the enactorConfigurator
         if (beanProcessor!=null) {
@@ -67,16 +67,18 @@ public class CompilerCompositeConfigurations {
 
         TypeSpec theConfigurator = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, locations.configurator_package, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+        JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName, myPackage);
 
     }
 
     static final ParameterizedTypeName recordsProcessorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"RecordsProcessorInterface"), TypeVariableName.get("?"));
 
-    public SpecificationFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
-        return  generateCompositeConfigurator(configs, locations, theConfiguratorName, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(configs.logger_package,configs.beanProcessor), directory, fileName);
+    public SpecificationFile generateCompositeEnactorConfigurator(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+        return  generateCompositeConfigurator(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor, "generateCompositeConfigurator", ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor), fileName);
     }
 
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType) {

@@ -151,7 +151,7 @@ public class CompilerCommon {
 
         } else {
             builder.addField(generateField4aBeanConverter3("toBean", templateName, packageName, A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
-            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite("toBean", templateName, packageName, bindingsSchema, packageName, logger, BeanDirection.COMMON, null, null));
+            builder.addMethod(generateFactoryMethodToBeanWithArrayComposite("toBean", templateName, packageName, bindingsSchema, locations.logger_package, logger, BeanDirection.COMMON, null, null));
 
         }
 

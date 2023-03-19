@@ -4,10 +4,7 @@ import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -27,15 +24,18 @@ public class CompilerBeanChecker {
     }
 
 
-    public SpecificationFile generateBeanChecker(String name, TemplatesCompilerConfig configs, String packageName, String packageForBeans, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String directory, String fileName) {
+    public SpecificationFile generateBeanChecker(TemplatesCompilerConfig configs, Locations locations, BeanDirection direction, Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
 
+        String packageForBeans;
         if (direction==BeanDirection.COMMON) {
-            builder.addSuperinterface(ClassName.get(configs.logger_package, configs.beanProcessor));
+            packageForBeans=locations.getFilePackage(configs.beanProcessor);
+            builder.addSuperinterface(ClassName.get(packageForBeans, configs.beanProcessor));
         } else {
+            packageForBeans=locations.getFilePackage(INPUT_PROCESSOR);
             builder.addSuperinterface(ClassName.get(packageForBeans, INPUT_PROCESSOR));
         }
 
@@ -86,9 +86,11 @@ public class CompilerBeanChecker {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packageName, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, packageName);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
     }
 
     public MethodSpec generateCheckerMethod(String templateName, String extension, TemplateCompilerConfig config, BeanDirection direction, String packageForBeans, List<String> sharing) {

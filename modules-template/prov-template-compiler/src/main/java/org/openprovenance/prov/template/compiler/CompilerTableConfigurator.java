@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
-import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -10,6 +9,7 @@ import javax.lang.model.element.Modifier;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 
 public class CompilerTableConfigurator {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -17,14 +17,14 @@ public class CompilerTableConfigurator {
     public CompilerTableConfigurator() {
     }
 
-    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String directory, Function<String,String> fileName) {
-        return generateTableConfigurator(configs,false, locations, directory, fileName);
+    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
+        return generateTableConfigurator(configs,false, locations);
     }
-    SpecificationFile generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String directory, Function<String,String> fileName) {
-        return generateTableConfigurator(configs,true, locations, directory, fileName);
+    SpecificationFile generateCompositeTableConfigurator(TemplatesCompilerConfig configs, Locations locations) {
+        return generateTableConfigurator(configs,true, locations);
     }
 
-    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations, String directory, Function<String,String> fileName) {
+    SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
@@ -49,9 +49,11 @@ public class CompilerTableConfigurator {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.logger_package, stackTraceElement);
+        String myPackage = locations.getFilePackage(tableClassName);
 
-        return new SpecificationFile(myfile, directory, fileName.apply(tableClassName), configs.logger_package);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), tableClassName+DOT_JAVA_EXTENSION, myPackage);
     }
 
 

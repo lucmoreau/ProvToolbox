@@ -32,10 +32,9 @@ public class CompilerBeanEnactor {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(configs.configurator_package, Constants.QUERY_INVOKER);
-        ClassName beanCompleterClass = ClassName.get(configs.configurator_package, Constants.BEAN_COMPLETER);
-
-        ClassName beanProcessorClass = ClassName.get(configs.logger_package, configs.beanProcessor);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER), Constants.QUERY_INVOKER);
+        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER), BEAN_COMPLETER);
+        ClassName beanProcessorClass = ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor);
         builder.addSuperinterface(beanProcessorClass);
 
 

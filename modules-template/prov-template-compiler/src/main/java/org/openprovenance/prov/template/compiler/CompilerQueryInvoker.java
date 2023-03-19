@@ -21,16 +21,16 @@ public class CompilerQueryInvoker {
     }
 
 
-    public SpecificationFile generateQueryInvoker(TemplatesCompilerConfig configs, Locations locations, String destinationPackage, boolean withBean, String directory, String fileName) {
+    public SpecificationFile generateQueryInvoker(TemplatesCompilerConfig configs, Locations locations, boolean withBean, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER3);
 
         if (withBean) {
-            builder.addSuperinterface(ClassName.get(locations.logger_package, configs.beanProcessor));
+            builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor));
         } else {
-            builder.addSuperinterface(ClassName.get(destinationPackage, INPUT_PROCESSOR));
+            builder.addSuperinterface(ClassName.get(locations.getFilePackage(INPUT_PROCESSOR), INPUT_PROCESSOR));
         }
 
         String sbVar="sb";
@@ -52,7 +52,7 @@ public class CompilerQueryInvoker {
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             locations.updateWithConfig(config);
             final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
-            final ClassName inputClassName = ClassName.get(locations.configs_integrator_package, inputsNameClass);
+            final ClassName inputClassName = ClassName.get(locations.config_integrator_package, inputsNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -103,9 +103,12 @@ public class CompilerQueryInvoker {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, destinationPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, directory, fileName, destinationPackage);
+        String myPackage=locations.getFilePackage(fileName);
+
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
     }
 

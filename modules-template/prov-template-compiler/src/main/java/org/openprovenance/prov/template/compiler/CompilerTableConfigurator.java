@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -36,7 +37,7 @@ public class CompilerTableConfigurator {
             if (!compositeOnly || !(config instanceof SimpleTemplateCompilerConfig) ) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
                 locations.updateWithConfig(config);
-                final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
+                final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
                 MethodSpec mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .addParameter(ParameterSpec.builder(className, "builder").build())

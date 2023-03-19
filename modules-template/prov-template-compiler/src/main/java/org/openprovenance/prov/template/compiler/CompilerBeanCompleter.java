@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -89,7 +90,7 @@ public class CompilerBeanCompleter {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
+            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
@@ -112,7 +113,7 @@ public class CompilerBeanCompleter {
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 String consistOf=config1.consistsOf;
                 String composeeName=compilerUtil.commonNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.config_common_package,composeeName);
+                ClassName composeeClass=ClassName.get(locations.getFilePackage(BeanDirection.COMMON),composeeName);
 
                 mspec.addStatement("boolean nextExists=true");
                 mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);

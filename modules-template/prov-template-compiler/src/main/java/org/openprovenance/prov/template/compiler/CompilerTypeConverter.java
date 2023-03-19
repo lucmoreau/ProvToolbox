@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -75,7 +76,7 @@ public class CompilerTypeConverter {
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             locations.updateWithConfig(config);
-            final ClassName templateClass = ClassName.get(locations.config_common_package, templateNameClass);
+            final ClassName templateClass = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
             MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, templateClass);
             builder.addMethod(mspec.build());
         }

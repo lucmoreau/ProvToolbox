@@ -6,21 +6,26 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class Locations {
-    private final String cli_src_dir;
-    private final TemplatesCompilerConfig configs;
-
+    final private String cli_src_dir;
+    final private TemplatesCompilerConfig configs;
     final private String configurator_package;
+    final private String logger_package;
+    private String config_common_package;
+
+
     final public String configurator_dir;
     final public String configurator_package2;
     final public String configurator_dir2;
 
-    final public String logger_package;
     final public String logger_dir;
     private final String compositeTableConfigurator;
 
-    public String config_common_package;
-    public String config_integrator_package;
-    public String config_backend;
+    public String config_integrator_package; // FIXME: should be made private
+    public String config_backend;// FIXME: should be made private
+
+
+
+
     public String config_integrator_dir;
 
     static String INTEGRATOR="integrator";
@@ -69,6 +74,8 @@ public class Locations {
             return configurator_package;
         } else if (file.equals(configs.beanProcessor)) {
             return config_common_package;
+        } else if (file.equals(configs.templateBuilders)) {
+            return logger_package;
         }
         switch (file) {
             case TEMPLATE_INVOKER:                  return config_integrator_package;

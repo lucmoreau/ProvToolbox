@@ -51,7 +51,7 @@ public class CompilerQueryInvoker {
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
+            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
             final ClassName inputClassName = ClassName.get(locations.config_integrator_package, inputsNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)

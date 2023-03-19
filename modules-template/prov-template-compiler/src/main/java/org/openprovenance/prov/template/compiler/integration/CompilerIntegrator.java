@@ -10,6 +10,7 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -35,7 +36,7 @@ public class CompilerIntegrator {
         this.compilerBeanGenerator=compilerBeanGenerator;
     }
 
-    public SpecificationFile generateIntegrator(String templateName, String integrator_package, String loggerPackage, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {
+    public SpecificationFile generateIntegrator(Locations locations, String templateName, String integrator_package, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
@@ -60,11 +61,11 @@ public class CompilerIntegrator {
                     builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArray(TO_INPUTS+extension, consistsOf, integrator_package, tbs, INPUTS, extension, shared));
 
                     // we assume a single variant for now
-                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, loggerPackage, logger, INPUTS, extension, shared));
+                    builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(logger), logger, INPUTS, extension, shared));
 
                 });
             } else {
-                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, loggerPackage, logger, INPUTS, null, null));
+                builder.addMethod(compilerCommon.generateFactoryMethodToBeanWithArrayComposite(TO_INPUTS, templateName, integrator_package, bindingsSchema, locations.getFilePackage(logger), logger, INPUTS, null, null));
             }
 
         }

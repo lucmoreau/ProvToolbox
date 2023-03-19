@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -33,7 +34,7 @@ public class CompilerLogger {
            // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
+            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, Constants.PREFIX_LOG_VAR + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("new $T()", className)
@@ -255,7 +256,7 @@ public class CompilerLogger {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(locations.config_common_package,compilerUtil.commonNameClass(config.name)));
+                .returns(ClassName.get(locations.getFilePackage(BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 

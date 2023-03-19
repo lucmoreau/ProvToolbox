@@ -61,7 +61,7 @@ public class CompilerConfigurations {
             final String inBeanNameClass = compilerUtil.beanNameClass(config.name, direction);
             final String outBeanNameClass = compilerUtil.beanNameClass(config.name, outDirection);
             locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
+            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
             String builderParameter = "builder";
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -72,8 +72,8 @@ public class CompilerConfigurations {
                 generator.accept(builderParameter,
                                  mspec,
                                 className,
-                                ClassName.get((direction==BeanDirection.COMMON)? locations.config_common_package : beanPackage, inBeanNameClass),
-                                ClassName.get((direction==BeanDirection.COMMON)? locations.config_common_package : beanPackage, outBeanNameClass)
+                                ClassName.get((direction==BeanDirection.COMMON)? locations.getFilePackage(BeanDirection.COMMON) : beanPackage, inBeanNameClass),
+                                ClassName.get((direction==BeanDirection.COMMON)? locations.getFilePackage(BeanDirection.COMMON) : beanPackage, outBeanNameClass)
                         );
             } else {
                 mspec.addStatement("return null");

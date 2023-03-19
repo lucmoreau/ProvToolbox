@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -9,8 +10,7 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 
 import javax.lang.model.element.Modifier;
 
-import static org.openprovenance.prov.template.compiler.common.Constants.BEAN_VAR;
-import static org.openprovenance.prov.template.compiler.common.Constants.DELEGATOR_VAR;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerDelegator {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -43,7 +43,7 @@ public class CompilerDelegator {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
+            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)  // this one is not final!
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
@@ -59,7 +59,7 @@ public class CompilerDelegator {
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName, myPackage);
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
     }
 

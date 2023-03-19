@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
@@ -39,7 +40,7 @@ public class CompilerClientTest {
 
             String bn=compilerUtil.templateNameClass(config.name);
             mbuilder.addStatement("System.setOut(new java.io.PrintStream(\"target/example_" + config.name + ".json\"))");
-            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(locations.config_common_package, bn));
+            mbuilder.addStatement("Object $N=$T.examplar()", resvar+count, ClassName.get(locations.getFilePackage(BeanDirection.COMMON), bn));
             mbuilder.addStatement("new $T().writeValue(System.out,$N)",  ObjectMapper.class, resvar+count);
             count++;
         }

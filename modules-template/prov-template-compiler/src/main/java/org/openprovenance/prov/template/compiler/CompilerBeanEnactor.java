@@ -82,13 +82,14 @@ public class CompilerBeanEnactor {
 
         builder.addMethod(cbuilder3.build());
 
+        String packge=locations.getFilePackage(BeanDirection.COMMON);
 
 
         for (TemplateCompilerConfig config : configs.templates) {
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             locations.updateWithConfig(config);
-            final ClassName className = ClassName.get(locations.config_common_package, beanNameClass);
+            final ClassName className = ClassName.get(packge, beanNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
@@ -106,7 +107,6 @@ public class CompilerBeanEnactor {
 
         TypeSpec theLogger = builder.build();
 
-        String packge=locations.getFilePackage(BeanDirection.COMMON);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packge, stackTraceElement);
 

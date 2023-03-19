@@ -259,7 +259,7 @@ public class ConfigProcessor implements Constants {
 
         compilerScript.generateScript(configs);
 
-        SpecificationFile templateBuilders=compilerTemplateBuilders.generateTemplateBuilders(configs, locations, locations.logger_dir, configs.templateBuilders+ DOT_JAVA_EXTENSION);
+        SpecificationFile templateBuilders=compilerTemplateBuilders.generateTemplateBuilders(configs, locations, configs.templateBuilders);
         templateBuilders.save();
 
 
@@ -508,7 +508,7 @@ public class ConfigProcessor implements Constants {
                     SpecificationFile spec3c = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, null, null, inputs + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec3c.save();
 
-                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(templateName, locations.config_integrator_package, packageName, bindingsSchema, logger, BeanKind.SIMPLE, consistsOf, locations.config_integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(locations, templateName, locations.config_integrator_package, bindingsSchema, logger, BeanKind.SIMPLE, consistsOf, locations.config_integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
 
                     SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION);
@@ -563,7 +563,7 @@ public class ConfigProcessor implements Constants {
                         val3 = val3 & spec2.save();
                     }
 
-                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(templateName, locations.config_integrator_package, locations.config_common_package, bindingsSchema2, logger, BeanKind.COMPOSITE, consistsOf, locations.config_integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec7 = compilerIntegrator.generateIntegrator(locations, templateName, locations.config_integrator_package, bindingsSchema2, logger, BeanKind.COMPOSITE, consistsOf, locations.config_integrator_dir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
 
                 }

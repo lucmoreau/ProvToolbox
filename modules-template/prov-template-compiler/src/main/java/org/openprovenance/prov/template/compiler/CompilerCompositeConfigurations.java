@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -28,7 +29,8 @@ public class CompilerCompositeConfigurations {
 
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
 
-        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(configs.logger_package, Constants.COMPOSITE +configs.tableConfigurator), typeName);
+        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
+        final ParameterizedTypeName tableConfiguratorType = ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeName);
 
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(fileName);
@@ -53,13 +55,13 @@ public class CompilerCompositeConfigurations {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
                 final String beanNameClass = compilerUtil.commonNameClass(config.name);
                 locations.updateWithConfig(config);
-                final ClassName className = ClassName.get(locations.config_common_package, templateNameClass);
+                final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
                 String builderParameter = "builder";
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(config.name)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(className, builderParameter).build())
                         .returns(typeName);
-                generator.accept(builderParameter, mspec, className, ClassName.get(locations.config_common_package, beanNameClass));
+                generator.accept(builderParameter, mspec, className, ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass));
                 builder.addMethod(mspec.build());
             }
 
@@ -71,7 +73,7 @@ public class CompilerCompositeConfigurations {
 
         JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, myPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName, myPackage);
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName + DOT_JAVA_EXTENSION, myPackage);
 
     }
 

@@ -7,6 +7,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.log2prov.interfaces.TriFunction;
@@ -37,7 +40,7 @@ public class CompilerTypeManagement {
     private Map<String,Collection<String>> knownTypes;
     private Map<String,Collection<String>> unknownTypes;
 
-    public JavaFile generateTypeDeclaration(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public SpecificationFile generateTypeDeclaration(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
         knownTypes=new HashMap<>();
         unknownTypes=new HashMap<>();
 
@@ -49,7 +52,7 @@ public class CompilerTypeManagement {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateTypeDeclaration_aux(doc, allVars, allAtts, name, templateName, packge, bindings_schema, bindingsSchema);
+        return generateTypeDeclaration_aux(configs, locations, doc, allVars, allAtts, name, templateName, packge, bindings_schema, bindingsSchema, directory, fileName);
 
     }
 
@@ -98,7 +101,9 @@ public class CompilerTypeManagement {
 
 
 
-    public JavaFile generateTypeDeclaration_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
+    public SpecificationFile generateTypeDeclaration_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
         MethodSpec.Builder mbuilder = MethodSpec.methodBuilder("call")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(typeT);
@@ -154,9 +159,6 @@ public class CompilerTypeManagement {
         }
 
 
-
-
-
         mbuilder.addStatement("return null");
 
 
@@ -203,12 +205,9 @@ public class CompilerTypeManagement {
         TypeSpec bean = builder.build();
 
 
+        JavaFile myfile = compilerUtil.specWithComment(bean, templateName, packge, stackTraceElement);
 
-        JavaFile myfile = JavaFile.builder(packge, bean)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", getClass().getName()+".generateTypeDeclaration_aux()", templateName)
-                .build();
-
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, packge);
     }
 
 

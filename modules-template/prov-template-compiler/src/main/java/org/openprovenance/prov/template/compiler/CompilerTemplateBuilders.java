@@ -14,6 +14,8 @@ public class CompilerTemplateBuilders {
 
 
     SpecificationFile generateTemplateBuilders(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
         if (configs.templateBuilders==null) throw new NullPointerException("templateBuilders is null");
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.templateBuilders);
@@ -32,19 +34,12 @@ public class CompilerTemplateBuilders {
             builder.addField(fspec);
         }
 
-
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox ($N.generateTemplateBuilders()) for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.logger_package, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
     }
 
 
-
-
-
-
-
-  }
+}

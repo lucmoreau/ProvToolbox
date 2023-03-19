@@ -10,6 +10,9 @@ import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandAction;
@@ -51,7 +54,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public JavaFile generateBuilderInterfaceSpecification(Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
+    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -61,11 +64,12 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderInterfaceSpecification_aux(name, templateName, packge, bindingsSchema);
+        return generateBuilderInterfaceSpecification_aux(configs, locations, name, templateName, packge, bindingsSchema, directory, fileName);
 
     }
 
-    JavaFile generateBuilderInterfaceSpecification_aux(String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
+    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesCompilerConfig configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(name+"Interface", "T");
 
@@ -73,15 +77,13 @@ public class CompilerExpansionBuilder {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(packge, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", getClass().getName()+".generateBuilderInterfaceSpecification_aux()", templateName)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, templateName, packge, stackTraceElement);
 
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, packge);
     }
 
 
-    public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
+    public SpecificationFile generateBuilderSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -91,7 +93,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderSpecification_aux(doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, bindings_schema, bindingsSchema, successorTable);
+        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, bindings_schema, bindingsSchema, successorTable, directory, fileName);
 
     }
 
@@ -112,8 +114,8 @@ public class CompilerExpansionBuilder {
         return builder.build();
     }
 
-    JavaFile generateBuilderSpecification_aux(Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable) {
-
+    SpecificationFile generateBuilderSpecification_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
 
@@ -152,11 +154,11 @@ public class CompilerExpansionBuilder {
 
         TypeSpec bean = builder.build();
 
-        JavaFile myfile = JavaFile.builder(packge, bean)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", getClass().getName(), templateName)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(bean, templateName, packge, stackTraceElement);
 
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, packge);
+
+
     }
 
 

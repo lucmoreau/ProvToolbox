@@ -5,10 +5,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -27,7 +24,7 @@ public class CompilerBeanGenerator {
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
-    public JavaFile generateBean(String templateName, Locations locations, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, TemplatesCompilerConfig configs) {
+    public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
@@ -144,7 +141,10 @@ public class CompilerBeanGenerator {
 
         TypeSpec spec = builder.build();
 
-        return compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
+        JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, packge);
+
 
     }
 
@@ -299,8 +299,8 @@ public class CompilerBeanGenerator {
 
                                  */
 
-                                JavaFile file=generateBean(templateName, locations , bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, configs);
-                                compilerUtil.saveToFile(integrator_dir, integrator_dir+compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+".java", file);
+                                SpecificationFile spec=generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, integrator_dir, compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+DOT_JAVA_EXTENSION);
+                                spec.save();
 
                                 }
                     );

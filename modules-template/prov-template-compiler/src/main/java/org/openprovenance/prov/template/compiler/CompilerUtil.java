@@ -746,14 +746,14 @@ public class CompilerUtil {
      */
     public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
         return JavaFile.builder(packge, typeSpec)
-                .addFileComment("Generated Automatically by ProvToolbox for template '$L'", templateName)
+                .addFileComment("Generated automatically by ProvToolbox for template '$L'", templateName)
                 .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
                         stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
                 .build();
     }
     public JavaFile specWithComment(TypeSpec typeSpec, TemplatesCompilerConfig configs, String packge, StackTraceElement stackTraceElement) {
         return JavaFile.builder(packge, typeSpec)
-                .addFileComment("Generated Automatically by ProvToolbox for template configuration '$L'", configs.name)
+                .addFileComment("Generated automatically by ProvToolbox for template configuration '$L'", configs.name)
                 .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
                         stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
                 .build();

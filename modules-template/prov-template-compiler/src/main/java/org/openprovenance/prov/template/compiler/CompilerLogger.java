@@ -24,6 +24,7 @@ public class CompilerLogger {
 
 
     SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
         builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, LOGGER_INTERFACE));
@@ -84,12 +85,10 @@ public class CompilerLogger {
                 .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package,CONVERTER_CONFIGURATOR))
                 .build());
 
-
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateLogger()", configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.logger_package, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, configs.logger_package);
 
     }
@@ -152,6 +151,7 @@ public class CompilerLogger {
     }
 
     SpecificationFile generateBuilderInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.BUILDER_INTERFACE);
 
@@ -193,13 +193,13 @@ public class CompilerLogger {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(),  configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
     SpecificationFile generateLoggerInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
 
@@ -211,12 +211,10 @@ public class CompilerLogger {
                 .returns(builderArrayType);
         builder.addMethod(builder2.build());
 
-
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N.generateLoggerInterface()) for templates config $S", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
 
     }
@@ -300,6 +298,7 @@ public class CompilerLogger {
     }
 
     public SpecificationFile generateProcessorArgsInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(PROCESSOR_ARGS_INTERFACE,  CompilerUtil.typeT);
 
@@ -313,14 +312,13 @@ public class CompilerLogger {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
 
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
     public SpecificationFile generateRecordsProcessorInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(RECORDS_PROCESSOR_INTERFACE, CompilerUtil.typeT);
 
@@ -334,9 +332,8 @@ public class CompilerLogger {
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(Constants.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 }

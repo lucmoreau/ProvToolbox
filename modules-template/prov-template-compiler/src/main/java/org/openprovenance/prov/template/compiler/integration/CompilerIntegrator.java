@@ -10,6 +10,7 @@ import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import javax.lang.model.element.Modifier;
@@ -34,7 +35,7 @@ public class CompilerIntegrator {
         this.compilerBeanGenerator=compilerBeanGenerator;
     }
 
-    public JavaFile generateIntegrator(String templateName, String integrator_package, String loggerPackage, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf) {
+    public SpecificationFile generateIntegrator(String templateName, String integrator_package, String loggerPackage, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(compilerUtil.integratorBuilderNameClass(templateName));
@@ -76,7 +77,10 @@ public class CompilerIntegrator {
 
         TypeSpec spec = builder.build();
 
-        return compilerUtil.specWithComment(spec, templateName, integrator_package, stackTraceElement);
+        JavaFile myfile= compilerUtil.specWithComment(spec, templateName, integrator_package, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, integrator_package);
+
     }
 
     public MethodSpec generateNewOutputConstructor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, BeanDirection outputs) {

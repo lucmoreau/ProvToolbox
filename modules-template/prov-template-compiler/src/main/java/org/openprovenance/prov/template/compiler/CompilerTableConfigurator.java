@@ -25,6 +25,8 @@ public class CompilerTableConfigurator {
     }
 
     SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, boolean compositeOnly, Locations locations, String directory, Function<String,String> fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
         if (configs.tableConfigurator==null) throw new NullPointerException("tableConfigurator is null");
         String tableClassName=(compositeOnly)? Constants.COMPOSITE +configs.tableConfigurator:configs.tableConfigurator;
 
@@ -45,12 +47,10 @@ public class CompilerTableConfigurator {
             }
         }
 
-
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox ($N.generateTableConfigurator()) for templates config $N", getClass().getName(), configs.name)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.logger_package, stackTraceElement);
+
         return new SpecificationFile(myfile, directory, fileName.apply(tableClassName), configs.logger_package);
     }
 

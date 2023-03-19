@@ -26,6 +26,7 @@ public class CompilerBuilderInit {
 
 
     SpecificationFile generateInitializer(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         int size=configs.templates.length;
 
@@ -66,14 +67,10 @@ public class CompilerBuilderInit {
 
         builder.addMethod(generateMain());
 
-
         TypeSpec theInitializer=builder.build();
 
+        JavaFile myfile = compilerUtil.specWithComment(theInitializer, configs, configs.init_package, stackTraceElement);
 
-
-        JavaFile myfile = JavaFile.builder(configs.init_package, theInitializer)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N",getClass().getName(), configs.name)
-                .build();
         return new SpecificationFile(myfile, directory, fileName, configs.init_package);
     }
 

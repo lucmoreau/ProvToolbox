@@ -97,4 +97,5 @@ public interface Constants {
     String DELEGATOR_VAR = "delegator";
     String TO_INPUTS = "toInputs";
     String DOT_JAVA_EXTENSION = ".java";
+    String SQL_INTERFACE = "SQL";
 }

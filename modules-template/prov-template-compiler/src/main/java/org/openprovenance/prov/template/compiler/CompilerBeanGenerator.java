@@ -24,7 +24,7 @@ public class CompilerBeanGenerator {
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil = new CompilerUtil();
 
-    public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String directory, String fileName) {
+    public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         String name = compilerUtil.beanNameClass(templateName, beanDirection);
@@ -43,25 +43,22 @@ public class CompilerBeanGenerator {
                 break;
         }
 
-        String packge;
-
+        String packge=locations.getFilePackage(beanDirection);
         switch (beanDirection) {
             case INPUTS:
                 builder.addJavadoc(" that only contains the input of this template.");
-                packge=locations.config_integrator_package;
                 break;
             case OUTPUTS:
                 builder.addJavadoc(" that only contains the outputs of this template.");
-                packge=locations.config_integrator_package;
                 break;
             case COMMON:
                 builder.addJavadoc(" that captures all variables of this template.");
-                packge=locations.config_common_package;
                 break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + beanDirection);
         }
+        String directory = locations.convertToDirectory(packge);
 
         if (sharing!=null) {
             builder.addJavadoc("\n This includes shared variables $N.", sharing.toString());
@@ -299,7 +296,7 @@ public class CompilerBeanGenerator {
 
                                  */
 
-                                SpecificationFile spec=generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, integrator_dir, compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+DOT_JAVA_EXTENSION);
+                                SpecificationFile spec=generateBean(configs, locations, templateName, bindingsSchema, BeanKind.SIMPLE, BeanDirection.INPUTS, null, sharing, extension, compilerUtil.beanNameClass(templateName,BeanDirection.INPUTS,extension)+DOT_JAVA_EXTENSION);
                                 spec.save();
 
                                 }

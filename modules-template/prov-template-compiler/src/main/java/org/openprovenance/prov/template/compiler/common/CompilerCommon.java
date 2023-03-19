@@ -41,7 +41,7 @@ public class CompilerCommon {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String directory, String fileName) {
+    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -52,12 +52,12 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, logger, beanKind, directory, fileName);
+        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, logger, beanKind, fileName);
 
     }
 
 
-    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesCompilerConfig configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String directory, String fileName) {
+    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesCompilerConfig configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER);
@@ -162,7 +162,7 @@ public class CompilerCommon {
 
 
         JavaFile myfile = compilerUtil.specWithComment(bean, configs, packageName, stackTraceElement);
-        SpecificationFile spec=new SpecificationFile(myfile, directory, fileName, packageName);
+        SpecificationFile spec=new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName);
 
         return Pair.of(spec,successorTable);
     }
@@ -1457,7 +1457,7 @@ public class CompilerCommon {
     }
 
 
-    public SpecificationFile generateSQLInterface(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    public SpecificationFile generateSQLInterface(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInit("SQL");
@@ -1477,9 +1477,10 @@ public class CompilerCommon {
 
         TypeSpec theInterface = builder.build();
 
+        String myPackage=locations.getFilePackage(fileName);
 
-        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
-        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, myPackage, stackTraceElement);
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
     }
 
     //move to expansion subpackage

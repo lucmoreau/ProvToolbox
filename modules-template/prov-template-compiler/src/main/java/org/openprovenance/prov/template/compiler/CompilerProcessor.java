@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
@@ -32,7 +33,7 @@ public class CompilerProcessor {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public SpecificationFile generateProcessor(String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String directory, String fileName) {
+    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
@@ -89,7 +90,7 @@ public class CompilerProcessor {
 
         JavaFile myfile = compilerUtil.specWithComment(bean, templateName, packge, stackTraceElement);
 
-        return new SpecificationFile(myfile, directory, fileName, packge);
+        return new SpecificationFile(myfile, locations.convertToDirectory(packge), fileName, packge);
 
     }
 

@@ -1,13 +1,13 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.Constants;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class Locations {
     private final String cli_src_dir;
     private final TemplatesCompilerConfig configs;
-
-    final public String configs_integrator_package;
-    final public String integrator_dir;
 
     final public String configurator_package;
     final public String configurator_dir;
@@ -24,12 +24,13 @@ public class Locations {
     public String config_integrator_dir;
 
     static String INTEGRATOR="integrator";
-    static String COMMON="client"; // FIXME: need to be able to rename
+    static String CLIENT="client"; // FIXME: need to be able to rename
+    static String COMMON="common"; // FIXME: need to be able to rename
     static final String CONFIG2_EXTENSION = "2";
 
     public void updateWithConfig(TemplateCompilerConfig config) {
-        this.config_common_package     = config.package_+ "." + COMMON;
-        this.config_integrator_package = config.package_+ "." + COMMON + "." + INTEGRATOR;
+        this.config_common_package     = config.package_+ "." + CLIENT + "." + COMMON;
+        this.config_integrator_package = config.package_+ "." + CLIENT + "." + INTEGRATOR;
         this.config_backend            = config.package_;
 
         this.config_integrator_dir=convertToDirectory(cli_src_dir, config_integrator_package);
@@ -41,14 +42,11 @@ public class Locations {
         this.cli_src_dir=cli_src_dir;
         this.compositeTableConfigurator=COMPOSITE + configs.tableConfigurator;
 
-        configs_integrator_package =configs.logger_package+ "." + INTEGRATOR;
-
         configurator_package=configs.configurator_package;
         configurator_package2=configs.configurator_package+ CONFIG2_EXTENSION;
 
         logger_package=configs.logger_package;
 
-        this.integrator_dir    = convertToDirectory(cli_src_dir, configs_integrator_package);
         this.configurator_dir  = convertToDirectory(cli_src_dir, configurator_package);
         this.configurator_dir2 = convertToDirectory(cli_src_dir, configurator_package2);
         this.logger_dir        = convertToDirectory(cli_src_dir, logger_package);
@@ -83,8 +81,18 @@ public class Locations {
             case BEAN_CHECKER3:                     return configurator_package2;
             case BEAN_CHECKER:                      return configurator_package;
             case INPUT_PROCESSOR:                   return config_integrator_package;
+            case SQL_INTERFACE:                     return Constants.CLIENT_PACKAGE;
         }
         throw new UnsupportedOperationException("Unknown file " + file);
+    }
+
+    public String getFilePackage(BeanDirection dir) {
+        switch (dir) {
+            case INPUTS:    return config_integrator_package;
+            case OUTPUTS:   return config_integrator_package;
+            case COMMON:    return config_common_package;
+        }
+        throw new IllegalStateException("never here");
     }
 
 }

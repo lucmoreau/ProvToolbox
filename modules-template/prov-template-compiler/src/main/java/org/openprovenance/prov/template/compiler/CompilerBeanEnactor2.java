@@ -19,7 +19,7 @@ public class CompilerBeanEnactor2 {
     }
 
 
-    SpecificationFile generateBeanEnactor2(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateBeanEnactor2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
@@ -30,8 +30,8 @@ public class CompilerBeanEnactor2 {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.config_integrator_package, Constants.QUERY_INVOKER3);
-        ClassName beanCompleterClass = ClassName.get(locations.configurator_package2, Constants.BEAN_COMPLETER2);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER3), Constants.QUERY_INVOKER3);
+        ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2);
 
         ClassName ioProcessorClass = ClassName.get(locations.config_integrator_package, INPUT_OUTPUT_PROCESSOR);
         ClassName inputProcessorClass = ClassName.get(locations.config_integrator_package, INPUT_PROCESSOR);
@@ -69,7 +69,7 @@ public class CompilerBeanEnactor2 {
 
 
         // Note, this is a inner interface, and the construction of its TypeName is a bit convoluted
-        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.configurator_package2+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
+        final TypeName ENACTOR_IMPLEMENTATION_TYPE=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.BEAN_ENACTOR2)+"."+ Constants.BEAN_ENACTOR2, Constants.ENACTOR_IMPLEMENTATION), typeResult);
 
         builder.addField(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER, Modifier.FINAL, Modifier.PRIVATE);
 
@@ -110,9 +110,11 @@ public class CompilerBeanEnactor2 {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.configurator_package2, stackTraceElement);
+        String myPackage= locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+ DOT_JAVA_EXTENSION, myPackage);
 
     }
 

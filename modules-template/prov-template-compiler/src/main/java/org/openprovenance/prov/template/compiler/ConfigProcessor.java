@@ -278,13 +278,12 @@ public class ConfigProcessor implements Constants {
         SpecificationFile inputProcessor=compilerInputOutputProcessor.generateInputOutputProcessor(configs, locations, locations.config_integrator_package, false, locations.config_integrator_dir, INPUT_PROCESSOR + DOT_JAVA_EXTENSION);
         inputProcessor.save();
 
-        SpecificationFile templateInvoker=compilerTemplateInvoker.generateTemplateInvoker(locations.config_integrator_package, locations.configurator_package2, configs, locations.config_integrator_dir, TEMPLATE_INVOKER + DOT_JAVA_EXTENSION);
+        SpecificationFile templateInvoker=compilerTemplateInvoker.generateTemplateInvoker(configs, locations, TEMPLATE_INVOKER);
         templateInvoker.save();
 
         new File(locations.configurator_dir).mkdirs();
 
         new File(locations.configurator_dir2).mkdirs();
-
 
         SpecificationFile beanCompleter=compilerBeanCompleter.generateBeanCompleter(configs, locations, BEAN_COMPLETER);
         beanCompleter.save();
@@ -292,16 +291,16 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs, locations, BEAN_COMPLETER2);
         beanCompleter2.save();
 
-        SpecificationFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, locations.configurator_dir2, BEAN_COMPLETER2_COMPOSITE + DOT_JAVA_EXTENSION);
+        SpecificationFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, BEAN_COMPLETER2_COMPOSITE);
         beanCompleter2Composite.save();
 
-        SpecificationFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations, locations.configurator_dir2, TYPE_CONVERTER + DOT_JAVA_EXTENSION);
+        SpecificationFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations, TYPE_CONVERTER);
         typeConverter.save();
 
-        SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, BEAN_ENACTOR + DOT_JAVA_EXTENSION);
+        SpecificationFile beanEnactor=compilerBeanEnactor.generateBeanEnactor(configs, locations, BEAN_ENACTOR);
         beanEnactor.save();
 
-        SpecificationFile beanEnactor2=compilerBeanEnactor2.generateBeanEnactor2(configs, locations, locations.configurator_dir2, BEAN_ENACTOR2 + DOT_JAVA_EXTENSION);
+        SpecificationFile beanEnactor2=compilerBeanEnactor2.generateBeanEnactor2(configs, locations, BEAN_ENACTOR2);
         beanEnactor2.save();
 
         SpecificationFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs, locations, true, QUERY_INVOKER );

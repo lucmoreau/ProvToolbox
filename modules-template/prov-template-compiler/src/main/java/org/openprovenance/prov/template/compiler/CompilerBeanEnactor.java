@@ -110,7 +110,7 @@ public class CompilerBeanEnactor {
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, packge, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory((packge)), fileName, packge);
+        return new SpecificationFile(myfile, locations.convertToDirectory(packge), fileName+DOT_JAVA_EXTENSION, packge);
 
     }
 

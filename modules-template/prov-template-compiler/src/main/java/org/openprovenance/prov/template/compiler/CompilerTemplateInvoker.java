@@ -1,11 +1,9 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
-import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
-import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
@@ -25,9 +23,9 @@ public class CompilerTemplateInvoker {
 
     static TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(Object.class));
 
-    SpecificationFile generateTemplateInvoker(String package_, String configurator_package2, TemplatesCompilerConfig configs, String directory, String fileName) {
+    SpecificationFile generateTemplateInvoker(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(package_,INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(TEMPLATE_INVOKER).addSuperinterface(ClassName.get(locations.getFilePackage(BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR)).addModifiers(Modifier.ABSTRACT);
 
 
 
@@ -35,8 +33,8 @@ public class CompilerTemplateInvoker {
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
 
-            final ClassName inputClassName = ClassName.get(package_, inputsNameClass);
-            final ClassName outputClassName = ClassName.get(package_, outputsNameClass);
+            final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputsNameClass);
+            final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputsNameClass);
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(ParameterSpec.builder(inputClassName, BEAN).build())
@@ -46,11 +44,11 @@ public class CompilerTemplateInvoker {
             ClassName completerClass;
 
             if (config instanceof SimpleTemplateCompilerConfig) {
-                completerClass = ClassName.get(configurator_package2, BEAN_COMPLETER2);
+                completerClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER2), BEAN_COMPLETER2);
                 mspec.addStatement("return $N($T.class, $N, (m, o) -> new $T(m).process(o))", GENERIC_POST_AND_RETURN, outputClassName, BEAN, completerClass);
 
             } else {
-                completerClass = ClassName.get(configurator_package2, BEAN_COMPLETER2_COMPOSITE);
+                completerClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER2_COMPOSITE), BEAN_COMPLETER2_COMPOSITE);
                 mspec.addStatement("return $N($T.class, $N, (m, o) -> {o.$N=new $T<>(); return new $T(m).process(o); })", GENERIC_POST_AND_RETURN, outputClassName, BEAN, ELEMENTS, LinkedList.class, completerClass);
 
             }
@@ -81,9 +79,11 @@ public class CompilerTemplateInvoker {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, package_, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, package_);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
 
     }

@@ -19,7 +19,7 @@ public class CompilerBeanCompleter2Composite {
     }
 
 
-    SpecificationFile generateBeanCompleter2Composite(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateBeanCompleter2Composite(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
@@ -67,9 +67,11 @@ public class CompilerBeanCompleter2Composite {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.configurator_package2, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
     }
 

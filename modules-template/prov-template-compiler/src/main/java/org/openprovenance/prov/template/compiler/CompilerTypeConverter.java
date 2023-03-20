@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 
 public class CompilerTypeConverter {
 
@@ -24,12 +25,12 @@ public class CompilerTypeConverter {
     }
 
 
-    SpecificationFile generateTypeConverter(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {
+    SpecificationFile generateTypeConverter(TemplatesCompilerConfig configs, Locations locations, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.beanProcessor==null) throw new NullPointerException("beanProcessor is null");
 
-        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.configurator_package2, Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
+        ParameterizedTypeName getterOfT=ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(Constants.TYPE_CONVERTER), Constants.TYPE_CONVERTER+"."+Constants.GETTER),typeT);
 
 
 
@@ -84,9 +85,11 @@ public class CompilerTypeConverter {
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, locations.configurator_package2, stackTraceElement);
+        String myPackage=locations.getFilePackage(fileName);
 
-        return new SpecificationFile(myfile, directory, fileName, locations.configurator_package2);
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
 
     }
 

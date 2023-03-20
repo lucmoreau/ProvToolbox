@@ -10,18 +10,18 @@ public class Locations {
     final private TemplatesCompilerConfig configs;
     final private String configurator_package;
     final private String logger_package;
+    final private String configurator_package2;
     private String config_common_package;
+    private String config_backend;
 
 
     final public String configurator_dir;
-    final public String configurator_package2;
     final public String configurator_dir2;
 
     final public String logger_dir;
     private final String compositeTableConfigurator;
 
     public String config_integrator_package; // FIXME: should be made private
-    public String config_backend;// FIXME: should be made private
 
 
 
@@ -30,7 +30,7 @@ public class Locations {
 
     static String INTEGRATOR="integrator";
     static String CLIENT="client"; // FIXME: need to be able to rename
-    static String COMMON="common"; // FIXME: need to be able to rename
+    static String COMMON="common";
     static final String CONFIG2_EXTENSION = "2";
 
     public void updateWithConfig(TemplateCompilerConfig config) {
@@ -89,7 +89,10 @@ public class Locations {
             case BEAN_COMPLETER:                    return configurator_package;
             case BEAN_CHECKER:                      return configurator_package;
 
-            case BEAN_CHECKER3:                     return configurator_package2;
+            case BEAN_COMPLETER2_COMPOSITE:
+            case TYPE_CONVERTER:
+            case BEAN_ENACTOR2:
+            case BEAN_CHECKER3:
             case BEAN_COMPLETER2:                   return configurator_package2;
 
             case BEAN_ENACTOR:                      return config_common_package;
@@ -108,4 +111,7 @@ public class Locations {
         throw new IllegalStateException("never here");
     }
 
+    public String getFileBackendPackage(String name) {
+        return config_backend;
+    }
 }

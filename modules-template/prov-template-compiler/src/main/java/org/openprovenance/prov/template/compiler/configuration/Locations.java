@@ -46,7 +46,7 @@ public class Locations {
 
     }
 
-    private String convertToDirectory(String rootDir, String aPackage) {
+    public String convertToDirectory(String rootDir, String aPackage) {
         String theDirectory = rootDir + "/" + aPackage.replace('.', '/') + "/";
         new File(theDirectory).mkdirs();
         return theDirectory;

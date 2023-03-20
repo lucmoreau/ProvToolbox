@@ -51,6 +51,7 @@ public interface Constants {
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
     String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
     String COMPOSITE_ENACTOR_CONFIGURATOR = "CompositeEnactorConfigurator";
+    String COMPOSITE_ENACTOR_CONFIGURATOR3 = "CompositeEnactorConfigurator3";
     String ENACTOR_CONFIGURATOR3 = "EnactorConfigurator3";
     String BEAN_COMPLETER = "BeanCompleter";
     String BEAN_COMPLETER2 = "BeanCompleter2";

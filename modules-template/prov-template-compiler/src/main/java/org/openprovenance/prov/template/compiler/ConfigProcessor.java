@@ -341,6 +341,9 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR3, locations.getFilePackage(BeanDirection.INPUTS), locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR3)), ENACTOR_CONFIGURATOR3+ DOT_JAVA_EXTENSION);
         configurationEnactor2.save();
+
+        SpecificationFile compositeConfigurationEnactor3= compilerCompositeConfigurations.generateCompositeEnactorConfigurator3(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR3);
+        compositeConfigurationEnactor3.save();
     }
 
 

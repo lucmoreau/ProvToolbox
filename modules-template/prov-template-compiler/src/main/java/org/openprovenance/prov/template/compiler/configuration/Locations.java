@@ -82,6 +82,7 @@ public class Locations {
             case CSV_CONFIGURATOR:
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
+            case COMPOSITE_ENACTOR_CONFIGURATOR3:
             case DELEGATOR:
             case QUERY_INVOKER:
             case BEAN_COMPLETER:

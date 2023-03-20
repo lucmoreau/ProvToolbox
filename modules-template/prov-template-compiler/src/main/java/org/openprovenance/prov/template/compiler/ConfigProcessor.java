@@ -174,7 +174,7 @@ public class ConfigProcessor implements Constants {
 
             compilerBeanGenerator.generateSimpleConfigsWithVariants(locations, configs);
 
-            SpecificationFile beanChecker3= compilerBeanChecker.generateBeanChecker(configs, locations, BeanDirection.INPUTS, compilerBeanGenerator.variantTable, BEAN_CHECKER3);
+            SpecificationFile beanChecker3= compilerBeanChecker.generateBeanChecker(configs, locations, BeanDirection.INPUTS, compilerBeanGenerator.variantTable, BEAN_CHECKER2);
             beanChecker3.save();
 
 
@@ -306,7 +306,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile queryComposer= compilerQueryInvoker.generateQueryInvoker(configs, locations, true, QUERY_INVOKER );
         queryComposer.save();
 
-        SpecificationFile queryComposer3= compilerQueryInvoker.generateQueryInvoker(configs, locations, false, QUERY_INVOKER3 );
+        SpecificationFile queryComposer3= compilerQueryInvoker.generateQueryInvoker(configs, locations, false, QUERY_INVOKER2);
         queryComposer3.save();
 
         SpecificationFile beanChecker= compilerBeanChecker.generateBeanChecker(configs, locations, BeanDirection.COMMON, null, BEAN_CHECKER);
@@ -339,11 +339,11 @@ public class ConfigProcessor implements Constants {
         SpecificationFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR);
         compositeConfigurationEnactor.save();
 
-        SpecificationFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR3, locations.getFilePackage(BeanDirection.INPUTS), locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR3)), ENACTOR_CONFIGURATOR3+ DOT_JAVA_EXTENSION);
+        SpecificationFile configurationEnactor2= compilerConfigurations.generateEnactorConfigurator2(configs, ENACTOR_CONFIGURATOR2, locations.getFilePackage(BeanDirection.INPUTS), locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR2)), ENACTOR_CONFIGURATOR2 + DOT_JAVA_EXTENSION);
         configurationEnactor2.save();
 
-        SpecificationFile compositeConfigurationEnactor3= compilerCompositeConfigurations.generateCompositeEnactorConfigurator3(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR3);
-        compositeConfigurationEnactor3.save();
+        SpecificationFile compositeConfigurationEnactor2= compilerCompositeConfigurations.generateCompositeEnactorConfigurator2(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR2);
+        compositeConfigurationEnactor2.save();
     }
 
 

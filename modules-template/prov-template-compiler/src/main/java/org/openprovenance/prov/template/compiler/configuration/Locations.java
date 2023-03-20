@@ -71,7 +71,6 @@ public class Locations {
         switch (file) {
             case TEMPLATE_INVOKER:                  return config_integrator_package;
             case INPUT_OUTPUT_PROCESSOR:            return config_integrator_package;
-            case QUERY_INVOKER3:                    return config_integrator_package;
             case INPUT_PROCESSOR:                   return config_integrator_package;
 
             case CONVERTER_CONFIGURATOR:
@@ -82,17 +81,18 @@ public class Locations {
             case CSV_CONFIGURATOR:
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
-            case COMPOSITE_ENACTOR_CONFIGURATOR3:
             case DELEGATOR:
             case QUERY_INVOKER:
             case BEAN_COMPLETER:
             case BEAN_CHECKER:                      return configurator_package;
 
-            case ENACTOR_CONFIGURATOR3:
+            case COMPOSITE_ENACTOR_CONFIGURATOR2:
+            case ENACTOR_CONFIGURATOR2:
             case BEAN_COMPLETER2_COMPOSITE:
             case TYPE_CONVERTER:
+            case QUERY_INVOKER2:
             case BEAN_ENACTOR2:
-            case BEAN_CHECKER3:
+            case BEAN_CHECKER2:
             case BEAN_COMPLETER2:                   return configurator_package2;
 
             case BEAN_ENACTOR:                      return config_common_package;

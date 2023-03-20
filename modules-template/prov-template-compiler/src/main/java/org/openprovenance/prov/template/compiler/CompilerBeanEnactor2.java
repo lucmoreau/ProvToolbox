@@ -31,7 +31,7 @@ public class CompilerBeanEnactor2 {
         builder.addTypeVariable(typeResult);
 
 
-        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER3), Constants.QUERY_INVOKER3);
+        ClassName queryInvokerClass = ClassName.get(locations.getFilePackage(Constants.QUERY_INVOKER2), Constants.QUERY_INVOKER2);
         ClassName beanCompleterClass = ClassName.get(locations.getFilePackage(Constants.BEAN_COMPLETER2), Constants.BEAN_COMPLETER2);
 
         ClassName ioProcessorClass = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), INPUT_OUTPUT_PROCESSOR);

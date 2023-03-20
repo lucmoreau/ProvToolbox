@@ -25,7 +25,7 @@ public class CompilerQueryInvoker {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER3);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit((withBean)?Constants.QUERY_INVOKER:Constants.QUERY_INVOKER2);
 
         if (withBean) {
             builder.addSuperinterface(ClassName.get(locations.getFilePackage(configs.beanProcessor), configs.beanProcessor));

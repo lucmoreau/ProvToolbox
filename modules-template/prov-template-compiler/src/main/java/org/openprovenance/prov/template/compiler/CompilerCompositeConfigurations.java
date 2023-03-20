@@ -2,7 +2,6 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
-import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
@@ -95,13 +94,13 @@ public class CompilerCompositeConfigurations {
         mspec.addStatement("return enactor");
     }
 
-    public SpecificationFile generateCompositeConfigurator3(TemplatesCompilerConfig configs,
-                                                           Locations locations,
-                                                           TypeName typeName,
-                                                           QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
-                                                           String generatorMethod,
-                                                           TypeName beanProcessor,
-                                                           String fileName) {
+    public SpecificationFile generateCompositeConfigurator2(TemplatesCompilerConfig configs,
+                                                            Locations locations,
+                                                            TypeName typeName,
+                                                            QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
+                                                            String generatorMethod,
+                                                            TypeName beanProcessor,
+                                                            String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
@@ -156,11 +155,11 @@ public class CompilerCompositeConfigurations {
 
     }
 
-    public SpecificationFile generateCompositeEnactorConfigurator3(TemplatesCompilerConfig configs, Locations locations, String fileName) {
-        return  generateCompositeConfigurator3(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor3, "generateCompositeConfigurator", ClassName.get(locations.getFilePackage(BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR), fileName);
+    public SpecificationFile generateCompositeEnactorConfigurator2(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+        return  generateCompositeConfigurator2(configs, locations, recordsProcessorOfUnknown, this::generateMethodEnactor2, "generateCompositeConfigurator", ClassName.get(locations.getFilePackage(BeanDirection.INPUTS),INPUT_OUTPUT_PROCESSOR), fileName);
     }
 
-    public void generateMethodEnactor3(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inBeanType, TypeName outBeanType) {
+    public void generateMethodEnactor2(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName inBeanType, TypeName outBeanType) {
         mspec.addStatement("$N<$T> beanConverter=$N.getIntegrator().aRecord2InputsConverter", RECORDS_PROCESSOR_INTERFACE, inBeanType, builderParameter);
 
 

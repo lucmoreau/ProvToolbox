@@ -18,8 +18,6 @@ public class Locations {
     private String config_integrator_package;
 
 
-    final public String configurator_dir;  //FIXME: make me private
-
     private final String compositeTableConfigurator;
 
 
@@ -44,10 +42,8 @@ public class Locations {
 
         configurator_package=configs.configurator_package;
         configurator_package2=configs.configurator_package+ CONFIG2_EXTENSION;
-
         logger_package=configs.logger_package;
 
-        this.configurator_dir  = convertToDirectory(cli_src_dir, configurator_package);
     }
 
     private String convertToDirectory(String rootDir, String aPackage) {
@@ -78,11 +74,17 @@ public class Locations {
             case QUERY_INVOKER3:                    return config_integrator_package;
             case INPUT_PROCESSOR:                   return config_integrator_package;
 
-            case ENACTOR_CONFIGURATOR:              return configurator_package;
-            case COMPOSITE_ENACTOR_CONFIGURATOR:    return configurator_package;
-            case DELEGATOR:                         return configurator_package;
-            case QUERY_INVOKER:                     return configurator_package;
-            case BEAN_COMPLETER:                    return configurator_package;
+            case CONVERTER_CONFIGURATOR:
+            case BUILDER_CONFIGURATOR:
+            case SQL_INSERT_CONFIGURATOR:
+            case PROPERTY_ORDER_CONFIGURATOR:
+            case SQL_CONFIGURATOR:
+            case CSV_CONFIGURATOR:
+            case ENACTOR_CONFIGURATOR:
+            case COMPOSITE_ENACTOR_CONFIGURATOR:
+            case DELEGATOR:
+            case QUERY_INVOKER:
+            case BEAN_COMPLETER:
             case BEAN_CHECKER:                      return configurator_package;
 
             case ENACTOR_CONFIGURATOR3:

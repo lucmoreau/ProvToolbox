@@ -315,25 +315,25 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanDelegator= compilerDelegator.generateDelegator(configs, locations, DELEGATOR );
         beanDelegator.save();
 
-        SpecificationFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR, locations, locations.configurator_dir, SQL_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationSql= compilerConfigurations.generateSqlConfigurator(configs,SQL_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(SQL_CONFIGURATOR)), SQL_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationSql.save();
 
-        SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.configurator_dir, PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(PROPERTY_ORDER_CONFIGURATOR)), PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationPropertyOrder.save();
 
-        SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.configurator_dir, CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();
 
-        SpecificationFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR, locations, locations.configurator_dir, BUILDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationBuilder= compilerConfigurations.generateBuilderConfigurator(configs,BUILDER_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(BUILDER_CONFIGURATOR)), BUILDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationBuilder.save();
 
-        SpecificationFile configurationSqlInsert = compilerConfigurations.generateSqlInsertConfigurator(configs,SQL_INSERT_CONFIGURATOR, locations, locations.configurator_dir, SQL_INSERT_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationSqlInsert = compilerConfigurations.generateSqlInsertConfigurator(configs,SQL_INSERT_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(SQL_INSERT_CONFIGURATOR)), SQL_INSERT_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationSqlInsert.save();
 
-        SpecificationFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR, locations, locations.configurator_dir, CONVERTER_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(CONVERTER_CONFIGURATOR)), CONVERTER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationConverter.save();
 
-        SpecificationFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations, locations.configurator_dir, ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        SpecificationFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR)), ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationEnactor.save();
 
         SpecificationFile compositeConfigurationEnactor= compilerCompositeConfigurations.generateCompositeEnactorConfigurator(configs, locations, COMPOSITE_ENACTOR_CONFIGURATOR);

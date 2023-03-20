@@ -3,6 +3,8 @@ package org.openprovenance.prov.template.compiler.configuration;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 
+import java.io.File;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class Locations {
@@ -13,20 +15,16 @@ public class Locations {
     final private String configurator_package2;
     private String config_common_package;
     private String config_backend;
+    private String config_integrator_package;
 
 
-    final public String configurator_dir;
-    final public String configurator_dir2;
+    final public String configurator_dir;  //FIXME: make me private
 
-    final public String logger_dir;
     private final String compositeTableConfigurator;
 
-    public String config_integrator_package; // FIXME: should be made private
 
 
 
-
-    public String config_integrator_dir;
 
     static String INTEGRATOR="integrator";
     static String CLIENT="client"; // FIXME: need to be able to rename
@@ -37,9 +35,6 @@ public class Locations {
         this.config_common_package     = config.package_+ "." + CLIENT + "." + COMMON;
         this.config_integrator_package = config.package_+ "." + CLIENT + "." + INTEGRATOR;
         this.config_backend            = config.package_;
-
-        this.config_integrator_dir=convertToDirectory(cli_src_dir, config_integrator_package);
-
     }
 
     public Locations(TemplatesCompilerConfig configs, String cli_src_dir) {
@@ -53,12 +48,12 @@ public class Locations {
         logger_package=configs.logger_package;
 
         this.configurator_dir  = convertToDirectory(cli_src_dir, configurator_package);
-        this.configurator_dir2 = convertToDirectory(cli_src_dir, configurator_package2);
-        this.logger_dir        = convertToDirectory(cli_src_dir, logger_package);
     }
 
     private String convertToDirectory(String rootDir, String aPackage) {
-        return rootDir + "/" + aPackage.replace('.', '/') + "/";
+        String theDirectory = rootDir + "/" + aPackage.replace('.', '/') + "/";
+        new File(theDirectory).mkdirs();
+        return theDirectory;
     }
     public String convertToDirectory(String aPackage) {
         return cli_src_dir + "/" + aPackage.replace('.', '/') + "/";
@@ -83,12 +78,14 @@ public class Locations {
             case QUERY_INVOKER3:                    return config_integrator_package;
             case INPUT_PROCESSOR:                   return config_integrator_package;
 
+            case ENACTOR_CONFIGURATOR:              return configurator_package;
             case COMPOSITE_ENACTOR_CONFIGURATOR:    return configurator_package;
             case DELEGATOR:                         return configurator_package;
             case QUERY_INVOKER:                     return configurator_package;
             case BEAN_COMPLETER:                    return configurator_package;
             case BEAN_CHECKER:                      return configurator_package;
 
+            case ENACTOR_CONFIGURATOR3:
             case BEAN_COMPLETER2_COMPOSITE:
             case TYPE_CONVERTER:
             case BEAN_ENACTOR2:
@@ -101,6 +98,7 @@ public class Locations {
         }
         throw new UnsupportedOperationException("Unknown file " + file);
     }
+
 
     public String getFilePackage(BeanDirection dir) {
         switch (dir) {

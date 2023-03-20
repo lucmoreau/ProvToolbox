@@ -269,7 +269,7 @@ public class CompilerBeanGenerator {
     }
 
 
-    public void generateSimpleConfigsWithVariants(Locations locations, String integrator_package, String integrator_dir, TemplatesCompilerConfig configs) {
+    public void generateSimpleConfigsWithVariants(Locations locations, TemplatesCompilerConfig configs) {
         //Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> allVariantsUpdates=new HashMap<>();
 
         variantTable.keySet().forEach(

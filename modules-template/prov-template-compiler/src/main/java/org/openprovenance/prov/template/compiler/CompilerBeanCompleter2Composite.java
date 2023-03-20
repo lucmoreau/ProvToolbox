@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -57,8 +58,8 @@ public class CompilerBeanCompleter2Composite {
             final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-            final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
-            MethodSpec.Builder mspec = createProcessMethod(consistsOf, locations.config_integrator_package, outputClassName, true);
+            final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
+            MethodSpec.Builder mspec = createProcessMethod(consistsOf, locations.getFilePackage(BeanDirection.OUTPUTS), outputClassName, true);
             builder.addMethod(mspec.build());
 
 

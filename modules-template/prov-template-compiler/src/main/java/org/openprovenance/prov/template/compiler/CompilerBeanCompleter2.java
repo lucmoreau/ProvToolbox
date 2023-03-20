@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
@@ -89,12 +90,12 @@ public class CompilerBeanCompleter2 {
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
                 final String inputBeanNameClass = compilerUtil.inputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
                 MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
                 builder.addMethod(mspec.build());
 
 
-                final ClassName inputClassName = ClassName.get(locations.config_integrator_package, inputBeanNameClass);
+                final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputBeanNameClass);
                 MethodSpec.Builder mspec2 = createProcessMethod(bindingsSchema, inputClassName, false);
                 builder.addMethod(mspec2.build());
             } else {
@@ -102,9 +103,9 @@ public class CompilerBeanCompleter2 {
                 String consistOf=config1.consistsOf;
                 final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);
 
-                final ClassName outputClassName = ClassName.get(locations.config_integrator_package, outputBeanNameClass);
+                final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
                 String composeeName=compilerUtil.outputsNameClass(consistOf);
-                ClassName composeeClass=ClassName.get(locations.config_integrator_package,composeeName);
+                ClassName composeeClass=ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS),composeeName);
 
                 MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                         .addModifiers(Modifier.PUBLIC)

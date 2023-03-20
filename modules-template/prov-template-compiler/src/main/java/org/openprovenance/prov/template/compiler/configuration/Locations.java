@@ -69,8 +69,10 @@ public class Locations {
             return logger_package;
         }
         switch (file) {
-            case TEMPLATE_INVOKER:                  return config_integrator_package;
-            case INPUT_OUTPUT_PROCESSOR:            return config_integrator_package;
+            case BEAN_ENACTOR2:
+            case TEMPLATE_INVOKER:
+            case INPUT_OUTPUT_PROCESSOR:
+            case QUERY_INVOKER2:
             case INPUT_PROCESSOR:                   return config_integrator_package;
 
             case CONVERTER_CONFIGURATOR:
@@ -82,7 +84,6 @@ public class Locations {
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
             case DELEGATOR:
-            case QUERY_INVOKER:
             case BEAN_COMPLETER:
             case BEAN_CHECKER:                      return configurator_package;
 
@@ -90,11 +91,10 @@ public class Locations {
             case ENACTOR_CONFIGURATOR2:
             case BEAN_COMPLETER2_COMPOSITE:
             case TYPE_CONVERTER:
-            case QUERY_INVOKER2:
-            case BEAN_ENACTOR2:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:                   return configurator_package2;
 
+            case QUERY_INVOKER:
             case BEAN_ENACTOR:                      return config_common_package;
 
             case SQL_INTERFACE:                     return Constants.CLIENT_PACKAGE;

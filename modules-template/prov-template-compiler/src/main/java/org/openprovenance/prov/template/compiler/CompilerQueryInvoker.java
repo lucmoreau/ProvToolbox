@@ -63,7 +63,7 @@ public class CompilerQueryInvoker {
                 simpleQueryInvoker(configs, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN);
                 mspec.addStatement("return $N", VARIABLE_BEAN);
             } else {
-                compositeQueryInvoker(configs, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN, withBean);
+                compositeQueryInvoker(configs, locations, config, foundSpecialTypes, sbVar, mspec, VARIABLE_BEAN, withBean);
                 mspec.addStatement("return $N", VARIABLE_BEAN);
             }
 
@@ -189,7 +189,7 @@ public class CompilerQueryInvoker {
 
     }
 
-    public void compositeQueryInvoker(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
+    public void compositeQueryInvoker(TemplatesCompilerConfig configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
         CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
         mspec.addComment("Generated Automatically by ProvToolbox ($N.$N()) for template $N",getClass().getName(), "compositeQueryInvoker", compositeConfig.name);
 
@@ -209,7 +209,12 @@ public class CompilerQueryInvoker {
                 composee=(SimpleTemplateCompilerConfig) c;
             }
         }
-        mspec.beginControlFlow("for ($N $N: $N.$N)", (withBean)?compilerUtil.commonNameClass(compositeConfig.consistsOf):compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1"), variableBean1, variableBean, ELEMENTS);
+        mspec.beginControlFlow("for ($T $N: $N.$N)",
+                                  (withBean)?ClassName.get(locations.getFilePackage(BeanDirection.COMMON), compilerUtil.commonNameClass(compositeConfig.consistsOf))
+                                            :ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), compilerUtil.beanNameClass(compositeConfig.consistsOf, BeanDirection.INPUTS, "_1")),
+                                  variableBean1,
+                                  variableBean,
+                                  ELEMENTS);
 
         mspec.beginControlFlow("if (first)")
                 .addStatement("first=false")

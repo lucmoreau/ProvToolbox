@@ -291,7 +291,7 @@ public class ConfigProcessor implements Constants {
         SpecificationFile beanCompleter2=compilerBeanCompleter2.generateBeanCompleter2(configs, locations, BEAN_COMPLETER2);
         beanCompleter2.save();
 
-        SpecificationFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, BEAN_COMPLETER2_COMPOSITE);
+        SpecificationFile beanCompleter2Composite=compilerBeanCompleter2Composite.generateBeanCompleter2Composite(configs, locations, COMPOSITE_BEAN_COMPLETER2);
         beanCompleter2Composite.save();
 
         SpecificationFile typeConverter=compilerTypeConverter.generateTypeConverter(configs, locations, TYPE_CONVERTER);

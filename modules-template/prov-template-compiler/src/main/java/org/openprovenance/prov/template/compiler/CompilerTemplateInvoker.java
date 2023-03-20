@@ -48,7 +48,7 @@ public class CompilerTemplateInvoker {
                 mspec.addStatement("return $N($T.class, $N, (m, o) -> new $T(m).process(o))", GENERIC_POST_AND_RETURN, outputClassName, BEAN, completerClass);
 
             } else {
-                completerClass = ClassName.get(locations.getFilePackage(BEAN_COMPLETER2_COMPOSITE), BEAN_COMPLETER2_COMPOSITE);
+                completerClass = ClassName.get(locations.getFilePackage(COMPOSITE_BEAN_COMPLETER2), COMPOSITE_BEAN_COMPLETER2);
                 mspec.addStatement("return $N($T.class, $N, (m, o) -> {o.$N=new $T<>(); return new $T(m).process(o); })", GENERIC_POST_AND_RETURN, outputClassName, BEAN, ELEMENTS, LinkedList.class, completerClass);
 
             }

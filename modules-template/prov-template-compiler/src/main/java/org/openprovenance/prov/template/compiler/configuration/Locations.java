@@ -89,7 +89,7 @@ public class Locations {
 
             case COMPOSITE_ENACTOR_CONFIGURATOR2:
             case ENACTOR_CONFIGURATOR2:
-            case BEAN_COMPLETER2_COMPOSITE:
+            case COMPOSITE_BEAN_COMPLETER2:
             case TYPE_CONVERTER:
             case BEAN_CHECKER2:
             case BEAN_COMPLETER2:                   return configurator_package2;

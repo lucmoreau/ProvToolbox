@@ -28,7 +28,7 @@ public class CompilerBeanCompleter2Composite {
 
 
 
-        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.BEAN_COMPLETER2_COMPOSITE);
+        TypeSpec.Builder builder = compilerUtil.generateClassInit(Constants.COMPOSITE_BEAN_COMPLETER2);
 
 
         builder.addField(listMapType, LL_VAR, Modifier.FINAL);

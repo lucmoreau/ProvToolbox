@@ -13,6 +13,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerBeanCompleter2 {
     private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final boolean debugComment=true;
 
 
     public CompilerBeanCompleter2() {
@@ -31,8 +32,9 @@ public class CompilerBeanCompleter2 {
 
 
 
-        MethodSpec.Builder callMe2=MethodSpec.methodBuilder("getMap")
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec.Builder callMe2=MethodSpec.methodBuilder("getMap");
+        compilerUtil.specWithComment(callMe2);
+        callMe2 .addModifiers(Modifier.PUBLIC)
                 .addParameter(CompilerUtil.classType, "cl")
                 .addParameter(String.class, "key")
                 .returns(CompilerUtil.typeT)
@@ -54,7 +56,9 @@ public class CompilerBeanCompleter2 {
         builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL);
 
 
-        MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder()
+        MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();
+        compilerUtil.specWithComment(cbuilder2);
+        cbuilder2
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(CompilerUtil.mapType, "m")
                 .addStatement("this.$N = $N", "m", "m")
@@ -74,7 +78,9 @@ public class CompilerBeanCompleter2 {
 
         builder.addMethod(cbuilder2.build());
 
-        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
+        MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder();
+        compilerUtil.specWithComment(cbuilder3);
+        cbuilder3
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
                 .addStatement("this.$N = null", "m")
@@ -92,6 +98,7 @@ public class CompilerBeanCompleter2 {
 
                 final ClassName outputClassName = ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputBeanNameClass);
                 MethodSpec.Builder mspec = createProcessMethod(bindingsSchema, outputClassName, true);
+
                 builder.addMethod(mspec.build());
 
 
@@ -112,6 +119,7 @@ public class CompilerBeanCompleter2 {
                         .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
                         .returns(outputClassName);
 
+                compilerUtil.specWithComment(mspec);
 
                 mspec.addStatement("boolean nextExists=true");
                 mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);
@@ -142,11 +150,14 @@ public class CompilerBeanCompleter2 {
 
     }
 
+
     private MethodSpec.Builder createProcessMethod(TemplateBindingsSchema bindingsSchema, ClassName outputClassName, boolean isOutput) {
         MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,BEAN_VAR).build())
                 .returns(outputClassName);
+        compilerUtil.specWithComment(mspec);
+
 
         if (isOutput) mspec.addStatement("$N.ID= getter.get(Integer.class,$S)", BEAN_VAR, "ID");
 

@@ -208,16 +208,6 @@ public class QueryBuilder {
 
     /**
      * Appends a "from" clause to a query.
-     *
-     * @ param queryBuilder
-     * A "select" subquery.
-     *
-     * @param alias
-     * The subquery's alias.
-     *
-     * @return
-     * The {@link QueryBuilder} instance.
-     */
     /*
     public QueryBuilder from(QueryBuilder queryBuilder, String alias) {
         if (queryBuilder == null || alias == null) {

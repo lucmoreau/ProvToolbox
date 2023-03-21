@@ -124,12 +124,16 @@ public class DescriptorAtom implements Descriptor {
             for (String k: allIdataKeys) {
                 Collection<String> thisData=this.idata.get(k);
                 Collection<String> thatData=this.idata.get(k);
+                if (thisData==null && thatData==null) {
+                    // normally never here, since the keys belong to this and that
+                    break;
+                }
                 if (thisData==null) {
-                    theComparison.set(1);
+                    theComparison.set(-1);
                     break;
                 }
                 if (thatData==null) {
-                    theComparison.set(-1);
+                    theComparison.set(1);
                     break;
                 }
                 List<String> thisL=thisData.stream().sorted(String::compareTo).collect(Collectors.toList());

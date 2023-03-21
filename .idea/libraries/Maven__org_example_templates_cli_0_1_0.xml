@@ -4,9 +4,11 @@
       <root url="jar://$MAVEN_REPOSITORY$/org/example/templates_cli/0.1.0/templates_cli-0.1.0.jar!/" />
     </CLASSES>
     <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/templates_cli-0.1.0-javadoc.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/example/templates_cli/0.1.0/templates_cli-0.1.0-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
+      <root url="jar://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/templates_cli-0.1.0-sources.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/example/templates_cli/0.1.0/templates_cli-0.1.0-sources.jar!/" />
     </SOURCES>
   </library>

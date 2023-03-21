@@ -1,5 +1,8 @@
 package org.openprovenance.prov.template.compiler;
 
+import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -31,7 +34,7 @@ public class CompilerScript {
                 line = line.replace("${VERSION}", configs.version);
                 line = line.replace("${NAME}", configs.name);
                 line = line.replace("${GROUP}", configs.group.replace(".", "/"));
-                line = line.replace("${INIT}", configs.init_package + "." + ConfigProcessor.INIT);
+                line = line.replace("${INIT}", configs.init_package + "." + Constants.INIT);
 
                 os.println(line);
                 line = reader.readLine();

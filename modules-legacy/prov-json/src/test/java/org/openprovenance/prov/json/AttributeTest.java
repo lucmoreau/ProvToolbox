@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
-import com.github.fge.jsonschema.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.github.fge.jsonschema.report.ProcessingReport;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.xml.UncheckedTestException;
@@ -17,7 +17,7 @@ public class AttributeTest extends org.openprovenance.prov.xml.AttributeTest {
         final Converter convert=new Converter(pFactory);
         final JsonSchema schema;
 
-	public AttributeTest(String testName) throws ProcessingException, IOException {
+	public AttributeTest(String testName) throws IOException, ProcessingException {
 		super(testName);
 		final JsonNode schemaJSON = JsonLoader.fromPath("schema/prov-json-schema-v4.js");
 	        final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();

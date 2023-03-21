@@ -3,11 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ProvToolbox.iml" filepath="$PROJECT_DIR$/ProvToolbox.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial1/ProvToolbox-Tutorial1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial2/ProvToolbox-Tutorial2.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial3/ProvToolbox-Tutorial3.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial4/ProvToolbox-Tutorial4.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" filepath="$PROJECT_DIR$/modules-tutorial/tutorial5/ProvToolbox-Tutorial5.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/benchmarks/benchmarks.iml" filepath="$PROJECT_DIR$/modules-legacy/benchmarks/benchmarks.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" filepath="$PROJECT_DIR$/modules-services/docker-service-translator/docker-service-translator.iml" />
@@ -46,8 +43,12 @@
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" filepath="$PROJECT_DIR$/modules-template/prov-template/prov-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/prov-template-compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" filepath="$PROJECT_DIR$/modules-legacy/prov-xml/prov-xml.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/provconvert.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" filepath="$PROJECT_DIR$/modules-legacy/roundtrip/roundtrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" filepath="$PROJECT_DIR$/modules-services/service-translator/service-translator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/templates_cli.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/templates_cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_l2p/templates_l2p.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_l2p/templates_l2p.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" />
     </modules>
   </component>

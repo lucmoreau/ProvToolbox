@@ -186,27 +186,27 @@ abstract public class FileBuilder {
     }
 
     public Integer toInt(Object v) {
-        if (v==null) return 0;
+        if (v==null) return null; //0
         if (v instanceof Integer) return (Integer)v;
         return Integer.valueOf(v.toString());
     }
     public Long toLong(Object v) {
-        if (v==null) return 0L;
+        if (v==null) return null; //0L
         if (v instanceof Long) return (Long)v;
         return Long.valueOf(v.toString());
     }
     public Float toFloat(Object v) {
-        if (v==null) return 0.0f;
+        if (v==null) return null; // 0.0f;
         if (v instanceof Float) return (Float) v;
         return Float.valueOf(v.toString());
     }
     public Double toDouble(Object v) {
-        if (v==null) return 0.0;
+        if (v==null) return null; //0.0;
         if (v instanceof Double) return (Double) v;
         return Double.valueOf(v.toString());
     }
     public Boolean toBoolean(Object v) {
-        if (v==null) return false;
+        if (v==null) return null; //false;
         if (v instanceof Boolean) return (Boolean) v;
         return Boolean.valueOf(v.toString());
     }

@@ -9,6 +9,13 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.template.compiler.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.CompilerCommon;
+import org.openprovenance.prov.template.compiler.configuration.Locations;
+import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.expander.MissingAttributeValue;
@@ -18,7 +25,9 @@ import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.template.compiler.CompilerUtil.typeT;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
@@ -26,14 +35,19 @@ public class CompilerExpansionBuilder {
     private final CompilerUtil compilerUtil=new CompilerUtil();
     private final ProvFactory pFactory;
     private final boolean withMain;
-    private final CompilerClient compilerClient;
+    private final CompilerCommon compilerCommon;
     private final boolean debugComment;
     private final CompilerTypeManagement compilerTypeManagement;
 
-    public CompilerExpansionBuilder(boolean withMain, CompilerClient compilerClient, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
+    private TypeName processorInterfaceType(String template, String packge) {
+        return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.templateNameClass(template)+"Interface"),TypeVariableName.get("T"));
+    }
+
+
+    public CompilerExpansionBuilder(boolean withMain, CompilerCommon compilerCommon, ProvFactory pFactory, boolean debugComment, CompilerTypeManagement compilerTypeManagement) {
         this.pFactory=pFactory;
         this.withMain=withMain;
-        this.compilerClient=compilerClient;
+        this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
         this.compilerTypeManagement=compilerTypeManagement;
     }
@@ -41,7 +55,7 @@ public class CompilerExpansionBuilder {
 
 
 
-    public JavaFile generateBuilderInterfaceSpecification(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    public SpecificationFile generateBuilderInterfaceSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -51,27 +65,26 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderInterfaceSpecification_aux(doc, allVars, allAtts, name, templateName, packge, resource, bindings_schema);
+        return generateBuilderInterfaceSpecification_aux(configs, locations, name, templateName, packge, bindingsSchema, directory, fileName);
 
     }
 
-    JavaFile generateBuilderInterfaceSpecification_aux(Document doc, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema) {
+    SpecificationFile generateBuilderInterfaceSpecification_aux(TemplatesCompilerConfig configs, Locations locations, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(name+"Interface", "T");
 
-        builder.addMethod(generateTemplateGeneratorInterface(allVars, allAtts, doc, bindings_schema));
+        builder.addMethod(generateTemplateGeneratorInterface(bindingsSchema));
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(packge, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", getClass().getName()+".generateBuilderInterfaceSpecification_aux()", templateName)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, templateName, packge, stackTraceElement);
 
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, packge);
     }
 
 
-    public JavaFile generateBuilderSpecification(Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, Map<Integer, List<Integer>> successorTable) {
+    public SpecificationFile generateBuilderSpecification(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
 
 
         Bundle bun = u.getBundle(doc).get(0);
@@ -81,34 +94,29 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
-        return generateBuilderSpecification_aux(doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, resource, bindings_schema,successorTable);
+        return generateBuilderSpecification_aux(configs, locations, doc, new ArrayList<>(allVars), new ArrayList<>(allAtts), name, templateName, packge, bindings_schema, bindingsSchema, successorTable, directory, fileName);
 
     }
 
 
-    public MethodSpec generateTemplateGeneratorInterface(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, Document doc, JsonNode bindings_schema) {
+    public MethodSpec generateTemplateGeneratorInterface(TemplateBindingsSchema bindingsSchema) {
 
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("call")
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.ABSTRACT)
-                .returns(TypeVariableName.get("T"));
-
-        //if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateTemplateGeneratorInterface()");
+                .returns(typeT);
 
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
+        Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
+        compilerUtil.generateDocumentSpecializedParameters(builder, theVar, variables);
 
-        compilerUtil.generateDocumentSpecializedParameters(builder, the_var);
-
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
-    JavaFile generateBuilderSpecification_aux(Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, String resource, JsonNode bindings_schema, Map<Integer, List<Integer>> successorTable) {
-
+    SpecificationFile generateBuilderSpecification_aux(TemplatesCompilerConfig configs, Locations locations, Document doc, Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, String templateName, String packge, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, Map<Integer, List<Integer>> successorTable, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassBuilder2(name);
 
@@ -119,13 +127,13 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTemplateGenerator(allVars, allAtts, doc, vmap, bindings_schema));
 
 
-        builder.addMethod(compilerClient.nameAccessorGenerator(templateName));
+        builder.addMethod(compilerCommon.generateNameAccessor(templateName));
 
-        builder.addMethod(compilerClient.clientAccessorGenerator(templateName,packge+".client"));
+        builder.addMethod(compilerCommon.commonAccessorGenerator(templateName,locations.getFilePackage(BeanDirection.COMMON)));
 
         builder.addMethod(typeManagerGenerator(templateName,packge));
        // builder.addMethod(compilerClient.typePropagateGenerator(templateName,packge));
-        builder.addMethod(compilerClient.typedRecordGenerator(templateName,packge));
+        builder.addMethod(compilerCommon.typedRecordGenerator(templateName,packge));
 
 
         builder.addMethod(generateTypePropagator(allVars, allAtts, doc, vmap, packge+".client", bindings_schema,successorTable));
@@ -134,24 +142,24 @@ public class CompilerExpansionBuilder {
         builder.addMethod(generateTypePropagatorN_new());
 
 
-        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema));
+        if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema, bindingsSchema));
 
         if (bindings_schema != null) {
             builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
             builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
-            builder.addMethod(generateFactoryMethodWithArrayAndContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
+            builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema));
         }
 
 
 
         TypeSpec bean = builder.build();
 
-        JavaFile myfile = JavaFile.builder(packge, bean)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", getClass().getName(), templateName)
-                .build();
+        JavaFile myfile = compilerUtil.specWithComment(bean, templateName, packge, stackTraceElement);
 
-        return myfile;
+        return new SpecificationFile(myfile, directory, fileName, packge);
+
+
     }
 
 
@@ -162,7 +170,8 @@ public class CompilerExpansionBuilder {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateTemplateGenerator()");
+        compilerUtil.specWithComment(builder);
+
 
 
         builder
@@ -225,8 +234,8 @@ public class CompilerExpansionBuilder {
         builder.addParameter(ParameterSpec.builder(levelNMapType,"mapLevel0").build());
         builder.addParameter(ParameterSpec.builder(levelNMapType,"uniqId").build());
 
-        if (debugComment)
-            builder.addComment("Generated by method $N", getClass().getName() + ".generateTypePropagator()");
+        compilerUtil.specWithComment(builder);
+
 
         builder.addComment(successorTable.toString());
 
@@ -237,11 +246,11 @@ public class CompilerExpansionBuilder {
         JsonNode the_context = bindings_schema.get("context");
         Iterator<String> iter = the_var.fieldNames();
 
-        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1=compilerClient.getSuccessors1();
-        Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2=compilerClient.getSuccessors2();
-        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3=compilerClient.getSuccessors3();
-        Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b=compilerClient.getSuccessors3b();
-        Map<String, Set<Pair<QualifiedName, SpecializationOf>>>successors4=compilerClient.getSuccessors4();
+        Map<String, Set<Pair<QualifiedName, WasDerivedFrom>>>  successors1= compilerCommon.getSuccessors1();
+        Map<String, Set<Pair<QualifiedName, WasAttributedTo>>> successors2= compilerCommon.getSuccessors2();
+        Map<String, Set<Pair<QualifiedName, HadMember>>>       successors3= compilerCommon.getSuccessors3();
+        Map<String, Set<Pair<QualifiedName, QualifiedHadMember>>> successors3b= compilerCommon.getSuccessors3b();
+        Map<String, Set<Pair<QualifiedName, SpecializationOf>>>successors4= compilerCommon.getSuccessors4();
 
 
         Map<String, Collection<String>> knownTypes   = compilerTypeManagement.getKnownTypes();
@@ -467,6 +476,7 @@ public class CompilerExpansionBuilder {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("propagateTypes_n")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
+        compilerUtil.specWithComment(builder);
         final String var_successor = "successor";
         final String var_genericRelation = "genericRelation";
         final String var_record = "record";
@@ -483,9 +493,6 @@ public class CompilerExpansionBuilder {
         builder.addParameter(ParameterSpec.builder(int.class, var_genericRelation).build());
         builder.addParameter(ParameterSpec.builder(int.class, var_specificRelation).build());
         builder.addParameter(ParameterSpec.builder(levelNMapType, "uniqId").build());
-
-        if (debugComment)
-            builder.addComment("Generated by method $N", getClass().getName() + ".generateTypePropagatorN_new()");
 
 
         builder.beginControlFlow("if ($N[$N]!=null)", var_record, var_count);
@@ -585,7 +592,7 @@ public class CompilerExpansionBuilder {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethod()");
+        compilerUtil.specWithComment(builder);
 
         builder
                 .addStatement("$T __C_document = null", Document.class)
@@ -674,9 +681,7 @@ public class CompilerExpansionBuilder {
                 .returns(TypeVariableName.get("T"))
                 .addTypeVariable(TypeVariableName.get("T"));
 
-
-
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodWithContinuation()");
+        compilerUtil.specWithComment(builder);
 
         builder
                 .addStatement("$T __C_result = null", TypeVariableName.get("T"))
@@ -688,7 +693,7 @@ public class CompilerExpansionBuilder {
 
         compilerUtil.generateSpecializedParameters(builder, the_var);
 
-        builder.addParameter(CompilerSimpleBean.processorInterfaceType(compilerUtil, template, packge), "processor");
+        builder.addParameter(processorInterfaceType(template, packge), "processor");
 
         Iterator<String> iter2 = the_context.fieldNames();
         while (iter2.hasNext()) {
@@ -759,7 +764,7 @@ public class CompilerExpansionBuilder {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodWithArray()");
+        compilerUtil.specWithComment(builder);
 
 
         JsonNode the_var = bindings_schema.get("var");
@@ -793,21 +798,21 @@ public class CompilerExpansionBuilder {
         return method;
     }
 
-    public MethodSpec generateFactoryMethodWithArrayAndContinuation(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name,  String template, String packge, JsonNode bindings_schema) {
+    public MethodSpec generateFactoryMethodWithArrayAndContinuation(String name, String template, String packge, JsonNode bindings_schema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get("T"))
                 .addTypeVariable(TypeVariableName.get("T"));
 
+        compilerUtil.specWithComment(builder);
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateFactoryMethodWithArrayAndContinuation()");
+
 
 
         JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
 
         builder.addParameter(Object[].class, "record");
-        builder.addParameter(CompilerSimpleBean.processorInterfaceType(compilerUtil, template, packge), "_processor");
+        builder.addParameter(processorInterfaceType(template, packge), "_processor");
 
         int count = 1;
         Iterator<String> iter = the_var.fieldNames();
@@ -836,20 +841,20 @@ public class CompilerExpansionBuilder {
     }
 
 
-    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+    public MethodSpec generateMain(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "args");
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".generateMain()");
+        compilerUtil.specWithComment(builder);
 
         builder
                 .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
                 .addStatement("$N me=new $N(pf)", name, name);
 
-        ;
+
         for (QualifiedName q : allVars) {
             builder.addStatement("$T $N=pf.newQualifiedName($S,$S,$S)", QualifiedName.class, compilerUtil.varPrefix(q.getLocalPart()), "http://example.org/", q.getLocalPart(), "ex");
         }
@@ -943,7 +948,7 @@ public class CompilerExpansionBuilder {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"));
 
-        if (debugComment) builder.addComment("Generated by method $N", getClass().getName()+".typeManagerGenerator()");
+        compilerUtil.specWithComment(builder);
 
         builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"knownTypeMap").build());
         builder.addParameter(ParameterSpec.builder(Map_QN_S_of_String,"unknownTypeMap").build());

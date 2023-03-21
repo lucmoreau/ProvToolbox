@@ -7,11 +7,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
+import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
+import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.NameDescriptor;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerJsonSchema {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -47,15 +53,12 @@ public class CompilerJsonSchema {
         return res;
     }
 
-    public void generateJSonSchema(String jsonschema, String templateName, String root_dir, JsonNode bindings_schema) {
+    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema) {
 
 
-        JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
+        Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
+        Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
 
-
-        Iterator<String> iter = the_var.fieldNames();
-        boolean first = true;
 
         Map<String, Object> aSchema = new HashMap<String, Object>();
         aSchema.put(get$id(), "#/definitions/" + templateName);
@@ -68,29 +71,24 @@ public class CompilerJsonSchema {
         requiredProperties.add("isA");
 
 
-        while (iter.hasNext()) {
-            String key = iter.next();
+        for (String key: variables) {
+
             requiredProperties.add(key);
             Map<String, Object> atype = new HashMap<String, Object>();
             atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
             atype.put("title", title(key));
-            final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName());
+            final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
             atype.put("type", jsonType);
             final Object defaultValue=defaultValue(jsonType);
             if (defaultValue!=null) atype.put("default", defaultValue);
             //atype.put("required", true);
 
-            final JsonNode entry = the_var.path(key);
-            if (entry != null && !(entry instanceof MissingNode)) {
-                JsonNode firstNode = entry.get(0);
-                if (firstNode instanceof ArrayNode) {
-                    firstNode = ((ArrayNode) firstNode).get(0);
-                }
-                final JsonNode jsonNode = firstNode.get("@documentation");
-                String documentation = compilerUtil.noNode(jsonNode) ? "" : jsonNode.textValue();
-                final JsonNode jsonNode2 = firstNode.get("@type");
-                atype.put("description", documentation + " (" + jsonType + ")" );
-            }
+            Descriptor descriptor=theVar.get(key).get(0);
+            String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+            //String type=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType);
+            if (documentation==null) documentation="";
+            atype.put("description", documentation + " (" + jsonType + ")" );
+
 
 
             properties.put(key, atype);

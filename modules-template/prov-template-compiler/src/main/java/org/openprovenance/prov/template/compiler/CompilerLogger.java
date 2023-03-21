@@ -2,9 +2,20 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
+import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerLogger {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -13,17 +24,18 @@ public class CompilerLogger {
     }
 
 
-    JavaFile generateLogger(TemplatesCompilerConfig configs) {
+    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
-        builder.addSuperinterface(ClassName.get(ConfigProcessor.CLIENT_PACKAGE, "LoggerInterface"));
+        builder.addSuperinterface(ClassName.get(Constants.CLIENT_PACKAGE, LOGGER_INTERFACE));
 
-        String packge = null;
         for (TemplateCompilerConfig config : configs.templates) {
+           // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
-            packge = config.package_ + ".client";
-            final ClassName className = ClassName.get(packge, templateNameClass);
-            FieldSpec fspec = FieldSpec.builder(className, ConfigProcessor.PREFIX_LOG_VAR + config.name)
+            locations.updateWithConfig(config);
+            final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
+            FieldSpec fspec = FieldSpec.builder(className, Constants.PREFIX_LOG_VAR + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("new $T()", className)
                     .build();
@@ -34,14 +46,15 @@ public class CompilerLogger {
         String names = "";
         boolean first = true;
         for (TemplateCompilerConfig config : configs.templates) {
+            //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             if (first) {
                 first = false;
             } else {
                 names = names + ", ";
             }
-            names = names + ConfigProcessor.PREFIX_LOG_VAR + config.name;
+            names = names + Constants.PREFIX_LOG_VAR + config.name;
         }
-        ClassName cln = ClassName.get(ConfigProcessor.CLIENT_PACKAGE, "Builder");
+        ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
         FieldSpec fspec = FieldSpec.builder(builderArrayType, "__builders")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
@@ -54,90 +67,167 @@ public class CompilerLogger {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            builder.addMethod(generateStaticLogMethod(config));
-            builder.addMethod(generateStaticBeanMethod(config));
+            locations.updateWithConfig(config);
+            if (config instanceof SimpleTemplateCompilerConfig) {
+                builder.addMethod(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
+                builder.addMethod(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
+            }
         }
 
+        builder.addMethod(generateInitializeBeanTableMethod(configs, locations));
+        builder.addMethod(generateInitializeCompositeBeanTableMethod(configs, locations));
+
+        builder.addField(FieldSpec
+                .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
+                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package, BUILDER_CONFIGURATOR))
+                .build());
+        builder.addField(FieldSpec
+                .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
+                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package,CONVERTER_CONFIGURATOR))
+                .build());
 
         TypeSpec theLogger = builder.build();
 
-        JavaFile myfile = JavaFile.builder(configs.logger_package, theLogger)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $N", getClass().getName(), configs.name)
-                .build();
-        return myfile;
+        String myPackage = locations.getFilePackage(fileName);
+
+        JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
+
+        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
     }
 
-    JavaFile generateBuilderInterface(TemplatesCompilerConfig configs) {
+    static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
+    static final ParameterizedTypeName mapType2 = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(String.class), TypeVariableName.get("T"));
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(ConfigProcessor.BUILDER_INTERFACE);
+    private MethodSpec generateInitializeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(INITIALIZE_BEAN_TABLE)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addTypeVariable(typeT)
+                .returns(mapType);
+        compilerUtil.specWithComment(builder);
 
 
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(ConfigProcessor.GET_NODES_METHOD)
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.tableConfigurator), configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
+
+        builder.addStatement("$T aTable=new $T()",mapType,mapType2);
+
+        for (TemplateCompilerConfig config : configs.templates) {
+
+            String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
+            builder.addStatement("aTable.put($N.getName(),configurator.$N($N))", thisBuilderName, config.name, thisBuilderName);
+
+
+        }
+
+
+        builder.addStatement("return aTable");
+
+        return builder.build();
+
+    }
+
+    private MethodSpec generateInitializeCompositeBeanTableMethod(TemplatesCompilerConfig configs, Locations locations) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("initializeCompositeBeanTable")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addTypeVariable(typeT)
+                .returns(mapType);
+        compilerUtil.specWithComment(builder);
+
+        String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
+        builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT), "configurator");
+
+
+        builder.addStatement("$T aTable=new $T()",mapType,mapType2);
+
+        for (TemplateCompilerConfig config : configs.templates) {
+            if (!(config instanceof SimpleTemplateCompilerConfig)) {
+                String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
+                builder.addStatement("aTable.put($N.getName(),configurator.$N($N))", thisBuilderName, config.name, thisBuilderName);
+            }
+        }
+
+
+        builder.addStatement("return aTable");
+
+        return builder.build();
+
+    }
+
+    SpecificationFile generateBuilderInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.BUILDER_INTERFACE);
+
+
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_NODES_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(int[].class);
         builder.addMethod(builder2.build());
 
 
-        MethodSpec.Builder builder3 = MethodSpec.methodBuilder(ConfigProcessor.GET_SUCCESSOR_METHOD)
+        MethodSpec.Builder builder3 = MethodSpec.methodBuilder(Constants.GET_SUCCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.mapType);
+                .returns(CompilerUtil.mapIntArrayType);
         builder.addMethod(builder3.build());
 
 
-        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(ConfigProcessor.GET_TYPED_SUCCESSOR_METHOD)
+        MethodSpec.Builder builder3b = MethodSpec.methodBuilder(Constants.GET_TYPED_SUCCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(CompilerUtil.mapType);
+                .returns(CompilerUtil.mapIntArrayType);
         builder.addMethod(builder3b.build());
 
-        MethodSpec.Builder builder4 = MethodSpec.methodBuilder(ConfigProcessor.GET_NAME)
+        MethodSpec.Builder builder4 = MethodSpec.methodBuilder(Constants.GET_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(String.class);
         builder.addMethod(builder4.build());
 
-        TypeName myType=ParameterizedTypeName.get(ClassName.get(ConfigProcessor.CLIENT_PACKAGE,ConfigProcessor.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
+        TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
 
-        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(ConfigProcessor.RECORD_CSV_PROCESSOR_METHOD)
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.RECORD_CSV_PROCESSOR_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(ArrayTypeName.of(Object.class),"record").build())
                 .returns(myType);
         builder.addMethod(builder5.build());
 
+        MethodSpec.Builder builder6 = MethodSpec.methodBuilder(Constants.PROPERTY_ORDER_METHOD)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .returns(String[].class);
+        builder.addMethod(builder6.build());
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N.generateBuilderInterface()) for templates config $S", getClass().getName(), configs.name)
-                .build();
-        return myfile;
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 
-    JavaFile generateLoggerInterface(TemplatesCompilerConfig configs) {
+    SpecificationFile generateLoggerInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(ConfigProcessor.LOGGER_INTERFACE);
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInit(Constants.LOGGER_INTERFACE);
 
-        ClassName cln = ClassName.get(ConfigProcessor.CLIENT_PACKAGE, "Builder");
+        ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
 
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(ConfigProcessor.GET_BUILDERS_METHOD)
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(Constants.GET_BUILDERS_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(builderArrayType);
         builder.addMethod(builder2.build());
 
-
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S", getClass().getName(), configs.name)
-                .build();
-        return myfile;
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+
     }
 
-    public MethodSpec generateStaticLogMethod(TemplateCompilerConfig config) {
+    public MethodSpec generateStaticLogMethod(SimpleTemplateCompilerConfig config, Locations locations) {
         final String loggerName = compilerUtil.loggerName(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
                 .returns(String.class);
+        compilerUtil.specWithComment(builder);
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
@@ -157,16 +247,16 @@ public class CompilerLogger {
             args = args + key;
             count++;
         }
-        builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name,ConfigProcessor.ARGS_CSV_CONVERSION_METHOD);
+        builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", Constants.PREFIX_LOG_VAR + config.name, Constants.ARGS_CSV_CONVERSION_METHOD);
         return builder.build();
     }
 
-    public MethodSpec generateStaticBeanMethod(TemplateCompilerConfig config) {
+    public MethodSpec generateStaticBeanMethod(SimpleTemplateCompilerConfig config, Locations locations) {
         final String beanCreatorName = "bean"+compilerUtil.capitalize(config.name);
 
         MethodSpec.Builder builder = MethodSpec.methodBuilder(beanCreatorName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
-                .returns(ClassName.get(config.package_ + ".client",compilerUtil.beanNameClass(config.name)));
+                .returns(ClassName.get(locations.getFilePackage(BeanDirection.COMMON),compilerUtil.commonNameClass(config.name)));
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
@@ -188,7 +278,7 @@ public class CompilerLogger {
             count++;
         }
         //builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
-        builder.addStatement("return $N.$N." + "process" +  "(" + args + ")", ConfigProcessor.PREFIX_LOG_VAR + config.name, ConfigProcessor.A_ARGS_BEAN_CONVERTER);
+        builder.addStatement("return $N.$N." + "process" +  "(" + args + ")", Constants.PREFIX_LOG_VAR + config.name, Constants.A_ARGS_BEAN_CONVERTER);
 
         return builder.build();
 
@@ -201,6 +291,7 @@ public class CompilerLogger {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getBuilders")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(builderArrayType);
+        compilerUtil.specWithComment(builder);
 
 
         builder.addStatement("return __builders");
@@ -210,23 +301,43 @@ public class CompilerLogger {
 
     }
 
-    public JavaFile generateProcessorArgsInterface(TemplatesCompilerConfig configs) {
+    public SpecificationFile generateProcessorArgsInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
-        TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter("ProcessorArgsInterface", "T");
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(PROCESSOR_ARGS_INTERFACE,  CompilerUtil.typeT);
 
         Object [] args=new Object[0];
 
-        MethodSpec.Builder builder2 = MethodSpec.methodBuilder("process")
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(PROCESSOR_PROCESS_METHOD_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(ArrayTypeName.get(args.getClass()),"args").build())
-                .returns(TypeVariableName.get("T"));
+                .returns(typeT);
         builder.addMethod(builder2.build());
 
         TypeSpec theInterface = builder.build();
 
-        JavaFile myfile = JavaFile.builder(ConfigProcessor.CLIENT_PACKAGE, theInterface)
-                .addFileComment("Generated Automatically by ProvToolbox ($N) for templates config $S by method generateProcessorArgsInterface()", getClass().getName(), configs.name)
-                .build();
-        return myfile;
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
+    }
+
+    public SpecificationFile generateRecordsProcessorInterface(TemplatesCompilerConfig configs, String directory, String fileName) {
+        StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
+
+        TypeSpec.Builder builder = compilerUtil.generateInterfaceInitParameter(RECORDS_PROCESSOR_INTERFACE, CompilerUtil.typeT);
+
+        Object [] args=new Object[0];
+
+        MethodSpec.Builder builder2 = MethodSpec.methodBuilder(PROCESSOR_PROCESS_METHOD_NAME)
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(args.getClass())),"args").build())
+                .returns(typeT);
+        builder.addMethod(builder2.build());
+
+        TypeSpec theInterface = builder.build();
+
+        JavaFile myfile = compilerUtil.specWithComment(theInterface, configs, Constants.CLIENT_PACKAGE, stackTraceElement);
+
+        return new SpecificationFile(myfile, directory, fileName, Constants.CLIENT_PACKAGE);
     }
 }

@@ -1,9 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,6 +23,11 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.descriptors.*;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 
@@ -33,25 +35,89 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 import com.squareup.javapoet.TypeSpec.Builder;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 
 public class CompilerUtil {
-    
 
-    public String capitalize(String templateName) {
-        return templateName.substring(0, 1).toUpperCase()+templateName.substring(1);
+    boolean debugComment=true;
+
+
+    public static final TypeVariableName typeT = TypeVariableName.get("T");
+    static final TypeName classType=ParameterizedTypeName.get(ClassName.get(Class.class), typeT);
+    static final TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(Object.class));
+    static final TypeName listMapType=ParameterizedTypeName.get(ClassName.get(List.class),mapType);
+    static final TypeName hashMapType=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),ClassName.get(Object.class));
+
+    static final TypeName mapTypeT=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),typeT);
+    static final TypeName hashMapTypeT=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),typeT);
+    public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    public static final ParameterizedTypeName builderMapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(CLIENT_PACKAGE,"Builder"));
+    public static final TypeName listOfArrays=ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(Object[].class));
+
+    public String generateNewNameForVariable(String key) {
+        return GENERATED_VAR_PREFIX + key;
+    }
+
+    public String capitalize(String str) {
+        return str.substring(0, 1).toUpperCase()+str.substring(1);
     }
 
     public String templateNameClass(String templateName) {
         return capitalize(templateName) + "Builder";
     }
-    public String beanNameClass(String templateName) {
+
+
+    public String beanNameClass(String templateName, BeanDirection beanDirection) {
+        String name;
+        switch (beanDirection) {
+            case INPUTS:
+                name= inputsNameClass(templateName);
+                break;
+            case OUTPUTS:
+                name= outputsNameClass(templateName);
+                break;
+            case COMMON:
+                name= commonNameClass(templateName);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + beanDirection);
+        }
+        return name;
+    }
+    public String beanNameClass(String templateName, BeanDirection beanDirection, String extension) {
+        String name=beanNameClass(templateName, beanDirection);
+        if (extension!=null) {
+            name=name+extension;
+        }
+        return name;
+    }
+    public String commonNameClass(String templateName) {
         return capitalize(templateName) + "Bean";
+    }
+    public String outputsNameClass(String templateName) {
+        return capitalize(templateName) + "Outputs";
+    }
+    public String inputsNameClass(String templateName) {
+        return capitalize(templateName) + "Inputs";
+    }
+    public String inputsNameClass(String templateName,String extension) {
+        if (extension!=null) {
+            return inputsNameClass(templateName)+extension;
+        } else {
+            return inputsNameClass(templateName);
+        }
     }
     public String processorNameClass(String templateName) {
         return capitalize(templateName) + "Processor";
     }
 
+    public String integratorBuilderNameClass(String templateName) {
+        return capitalize(templateName) + "IntegratorBuilder";
+    }
+    public String integratorNameClass(String templateName) {
+        return capitalize(templateName) + "Integrator";
+    }
     public String loggerName(String template) {
         return "log" + capitalize(template);
 
@@ -93,6 +159,11 @@ public class CompilerUtil {
     public Builder generateInterfaceInitParameter(String name, String type) {
         return TypeSpec.interfaceBuilder(name)
                 .addTypeVariable(TypeVariableName.get(type))
+                .addModifiers(Modifier.PUBLIC);
+    }
+    public Builder generateInterfaceInitParameter(String name, TypeVariableName type) {
+        return TypeSpec.interfaceBuilder(name)
+                .addTypeVariable(type)
                 .addModifiers(Modifier.PUBLIC);
     }
   
@@ -235,7 +306,7 @@ public class CompilerUtil {
     }
 
 
-    public JsonNode get_bindings_schema(TemplateCompilerConfig config) {
+    public JsonNode get_bindings_schema(SimpleTemplateCompilerConfig config) {
         JsonNode bindings_schema=null;
         if (config.bindings != null) {
             try {
@@ -247,39 +318,82 @@ public class CompilerUtil {
         return bindings_schema;
     }
 
-    static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+    public TemplateBindingsSchema getBindingsSchema(SimpleTemplateCompilerConfig config) {
+        TemplateBindingsSchema bindingsSchema = getBindingsSchema(config.bindings);
+        return bindingsSchema;
+    }
+
+
+    public TemplateBindingsSchema getBindingsSchema(String bindings) {
+        TemplateBindingsSchema bindingsSchema=null;
+        if (bindings != null) {
+            if (bindings.equals(Constants.OPENPROVENANCE_COMPOSITE_BEAN_JSON)) {
+                try {
+                    bindingsSchema=objectMapper.readValue(this.getClass().getResourceAsStream(RESOURCE_COMPOSITE_BEAN_JSON), TemplateBindingsSchema.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    bindingsSchema = objectMapper.readValue(new File(bindings), TemplateBindingsSchema.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return bindingsSchema;
+    }
+
+    static final public ParameterizedTypeName mapIntArrayType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(Integer.class), TypeName.get(int[].class));
+
+    public Class<?> getJavaTypeForDeclaredType(Map<String, List<Descriptor>> varMap, String key) {
+        Descriptor descriptor=varMap.get(key).get(0);
+        switch (descriptor.getDescriptorType()) {
+            case ATTRIBUTE:
+                AttributeDescriptor ad=((AttributeDescriptorList) descriptor).getItems().get(0);
+                String hasType = ad.getType();
+                if (hasType != null) {
+                    return getClassForType(hasType);
+                } else {
+                    System.out.println("key is " + key);
+                    System.out.println("decl is " + varMap);
+
+                    throw new UnsupportedOperationException();
+                }
+
+            case NAME:
+                NameDescriptor nd=(NameDescriptor) descriptor;
+                String idType=nd.getType();
+                if (idType==null) {
+                    return String.class;
+                } else {
+                    return getClassForType(idType);
+                }
+        }
+        throw new UnsupportedOperationException("This exception is never reached");
+    }
 
     public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
-        if (the_var.get(key).get(0).get("@id") != null) {
-            return String.class;
+        JsonNode the_key = the_var.get(key);
+        if (the_key.get(0).get("@id") != null) {
+            JsonNode jsonNode = the_key.get(0).get("@type");
+            String idType =  (jsonNode==null)?null:jsonNode.textValue();
+            if (idType==null) {
+                return String.class;
+            } else {
+                return getClassForType(idType);
+            }
         } else {
-            if (the_var.get(key).get(0).get(0) == null) {
+            if (the_key.get(0).get(0) == null) {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
 
                 throw new UnsupportedOperationException();
             }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
+            JsonNode hasType = the_key.get(0).get(0).get("@type");
             if (hasType != null) {
                 String keyType = hasType.textValue();
-                switch (keyType) {
-                    case "xsd:int":
-                        return Integer.class;
-                    case "xsd:long":
-                        return Long.class;
-                    case "xsd:string":
-                        return String.class;
-                    case "xsd:boolean":
-                        return Boolean.class;
-                    case "xsd:float":
-                        return Float.class;
-                    case "xsd:double":
-                        return Double.class;
-                    case "xsd:dateTime":
-                        return String.class;
-                    default:
-                        throw new UnsupportedOperationException();
-                }
+                return getClassForType(keyType);
             } else {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
@@ -289,19 +403,39 @@ public class CompilerUtil {
         }
     }
 
-    public Class<?> getJavaDocumentTypeForDeclaredType(JsonNode the_var, String key) {
-        if (the_var.get(key).get(0).get("@id") != null) {
+    private Class<? extends Serializable> getClassForType(String keyType) {
+        switch (keyType) {
+            case "xsd:int":
+                return Integer.class;
+            case "xsd:long":
+                return Long.class;
+            case "xsd:string":
+                return String.class;
+            case "xsd:boolean":
+                return Boolean.class;
+            case "xsd:float":
+                return Float.class;
+            case "xsd:double":
+                return Double.class;
+            case "xsd:dateTime":
+                return String.class;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    public Class<?> getJavaDocumentTypeForDeclaredType(Map<String, List<Descriptor>> theVar, String key) {
+        if (theVar.get(key).get(0) instanceof NameDescriptor) {
             return QualifiedName.class;
         } else {
-            if (the_var.get(key).get(0).get(0) == null) {
+            AttributeDescriptor ad=((AttributeDescriptorList) theVar.get(key).get(0)).getItems().get(0);
+            if (ad == null) {
                 System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
+                System.out.println("decl is " + theVar);
                 throw new UnsupportedOperationException();
             }
-            JsonNode hasType = the_var.get(key).get(0).get(0).get("@type");
-            if (hasType != null) {
-                String keyType = hasType.textValue();
+            String keyType=ad.getType();
+            if (keyType != null) {
                 switch (keyType) {
                     case "xsd:int":
                     case "xsd:long":
@@ -316,9 +450,8 @@ public class CompilerUtil {
                 }
             } else {
                 System.out.println("key is " + key);
-                System.out.println("decl is " + the_var);
-
-                throw new UnsupportedOperationException();
+                System.out.println("decl is " + theVar);
+                throw new UnsupportedOperationException("Null type");
             }
         }
     }
@@ -330,17 +463,19 @@ public class CompilerUtil {
             builder.addParameter(getJavaTypeForDeclaredType(the_var, key), key);
         }
     }
-    public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, JsonNode the_var) {
-        Iterator<String> iter = the_var.fieldNames();
-        while (iter.hasNext()) {
-            String key = iter.next();
-            builder.addParameter(getJavaDocumentTypeForDeclaredType(the_var, key), key);
+    public void generateDocumentSpecializedParameters(MethodSpec.Builder builder, Map<String, List<Descriptor>> theVar, Collection<String> variables) {
+        for (String key: variables) {
+            builder.addParameter(getJavaDocumentTypeForDeclaredType(theVar, key), key);
         }
     }
     public boolean isVariableDenotingQualifiedName(String key, JsonNode the_var) {
         final JsonNode entry = the_var.path(key);
 
         return entry != null && !(entry instanceof MissingNode) && ( entry.get(0).get("@id") != null);
+    }
+
+    public boolean isVariableDenotingQualifiedName(String key, Map<String, List<Descriptor>> theVar) {
+        return theVar.containsKey(key) && theVar.get(key)!=null && theVar.get(key).get(0) instanceof NameDescriptor;
     }
 
 
@@ -425,7 +560,21 @@ public class CompilerUtil {
         if (the_var.get(key).get(0).get("@examplar") != null) {
             return the_var.get(key).get(0).get("@examplar").toString();
         } else if (the_var.get(key).get(0).get("@id") != null) {
-            return "\"v" + num + "\"";
+            JsonNode jsonNode1 = the_var.get(key);
+            JsonNode jsonNode2=(jsonNode1==null)?null:jsonNode1.get(0);
+            JsonNode jsonNode3=(jsonNode2==null)?null:jsonNode2.get("@type");
+            String idType =  (jsonNode3==null)?null:jsonNode3.textValue();
+            String example = generateExampleForType(idType,key, pFactory);
+            Class<?> declaredJavaType=getJavaTypeForDeclaredType(the_var, key);
+            final String converter = getConverterForDeclaredType2(declaredJavaType);
+
+            if (converter == null) {
+                return "\"v" + num + "\"";
+            } else {
+                return converter + "(" + example + ")";
+            }
+
+
         } else {
             if (the_var.get(key).get(0).get(0) == null) {
                 System.out.println("key is " + key);
@@ -486,6 +635,28 @@ public class CompilerUtil {
         }
     }
 
+
+    public String getDeclaredType(Map<String, List<Descriptor>>  theVar, String key) {
+        if (theVar.get(key).get(0) instanceof NameDescriptor) {
+            return "prov:QualifiedName";
+        } else {
+            if (((AttributeDescriptorList)theVar.get(key).get(0)).getItems().get(0) == null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + theVar);
+
+                throw new UnsupportedOperationException();
+            }
+            String keyType=((AttributeDescriptorList)theVar.get(key).get(0)).getItems().get(0).getType();
+            if (keyType==null) {
+                System.out.println("key is " + key);
+                System.out.println("decl is " + theVar);
+                throw new IllegalStateException();
+            } else {
+                return keyType;
+            }
+        }
+    }
+
     public String varPrefix(String localPart) {
         return "__var_" + localPart;
     }
@@ -541,6 +712,71 @@ public class CompilerUtil {
         } else {
             return null;
         }
+    }
+
+    public String getResultSetMethodForClass(Class<?> cl) {
+        if (cl != null) {
+            String keyType = cl.getName();
+            switch (keyType) {
+                case "java.lang.Integer":
+                    return "getInt";
+                case "java.lang.Long":
+                    return "getLong";
+                case "java.lang.String":
+                    return "getString";
+                case "java.lang.Boolean":
+                    return "getBoolean";
+                case "java.lang.Float":
+                    return "getFloat";
+                case "java.lang.Double":
+                    return "getDouble";
+                default:
+                    throw new UnsupportedOperationException("Unknown class " + keyType);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /*
+    public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, String className) {
+        return JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated Automatically by ProvToolbox ($N) for template $N", className, templateName)
+                .build();
+    }
+
+     */
+    public JavaFile specWithComment(TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
+        return JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated automatically by ProvToolbox for template '$L'", templateName)
+                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
+                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
+                .build();
+    }
+    public JavaFile specWithComment(TypeSpec typeSpec, TemplatesCompilerConfig configs, String packge, StackTraceElement stackTraceElement) {
+        return JavaFile.builder(packge, typeSpec)
+                .addFileComment("Generated automatically by ProvToolbox for template configuration '$L'", configs.name)
+                .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
+                        stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
+                .build();
+    }
+
+    public void specWithComment(MethodSpec.Builder mspec) {
+        if (debugComment) {
+            StackTraceElement stackTraceElement = previousMethodAndLine();
+            mspec.addComment("Generated by class $L, method $L",
+                    stackTraceElement.getClassName(), stackTraceElement.getMethodName());
+            mspec.addComment("in file $L, at line $L",
+                    stackTraceElement.getFileName(), stackTraceElement.getLineNumber());
+        }
+    }
+    public StackTraceElement thisMethodAndLine() {
+        RuntimeException exception = new RuntimeException();
+        return exception.getStackTrace()[1];
+    }
+    public StackTraceElement previousMethodAndLine() {
+        RuntimeException exception = new RuntimeException();
+        return exception.getStackTrace()[2];
     }
 
 }

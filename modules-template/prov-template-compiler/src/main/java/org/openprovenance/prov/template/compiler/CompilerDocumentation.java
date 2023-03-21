@@ -6,9 +6,16 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
+import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
+import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.NameDescriptor;
+import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.io.*;
 import java.util.*;
+
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerDocumentation {
     private final CompilerUtil compilerUtil=new CompilerUtil();
@@ -20,7 +27,7 @@ public class CompilerDocumentation {
 
 
     public Map<String, Object> initializeSchemaMap() {
-        final HashMap<String, Object> res = new HashMap<String, Object>();
+        final HashMap<String, Object> res = new HashMap<>();
         res.put("definitions", new HashMap<String, Object>());
         res.put("allOf", new LinkedList<HashMap<String,Object>>());
         res.put("type", "object");
@@ -35,7 +42,7 @@ public class CompilerDocumentation {
 
 
 
-    public void generateDocumentation(String documentationFile, String templateName, String root_dir, JsonNode bindings_schema) {
+    public void generateDocumentation(String documentationFile, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema) {
 
         if (os==null) {
             new File(root_dir).mkdirs();
@@ -57,20 +64,23 @@ public class CompilerDocumentation {
 
             }
 
-            JsonNode the_var = bindings_schema.get("var");
-            JsonNode the_context = bindings_schema.get("context");
-            JsonNode the_documentation = bindings_schema.get("@documentation");
+            Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
+
+
+            String docString=bindingsSchema.getDocumentation();
+            if (docString==null) {
+                docString="No @documentation.";
+            }
 
 
 
-            Iterator<String> iter = the_var.fieldNames();
-            boolean first = true;
+
+
 
             os.println("<div class='csv_template' id='" + "template_" + templateName + "'>" );
 
             os.println("<h2>"+templateName+"</h2>");
             os.println("<div class='csv_intro'>");
-            String docString = compilerUtil.noNode(the_documentation) ? "No @documentation." : the_documentation.textValue();
             os.println(docString);
             os.println("</div>");
 
@@ -95,36 +105,26 @@ public class CompilerDocumentation {
             os.println("</li>");
 
 
-            while (iter.hasNext()) {
-                String key = iter.next();
+            for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+
                 required.add(key);
 
                 os.println("<li>");
-
                 os.println(makeSpan(String.valueOf(column), "csv_column"));
                 os.println(makeSpan(key, "csv_field"));
 
 
-                final String jsonType = convertToJsonType(this.compilerUtil.getJavaTypeForDeclaredType(the_var, key).getName());
-                final String declaredType = this.compilerUtil.getDeclaredType(the_var, key);
+                final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
 
                 os.println(makeSpan(jsonType, "csv_type")+":");
 
-                //os.println("<span class='json_type'>"+jsonType+"</span>");
 
-
-
-                final JsonNode entry = the_var.path(key);
-                if (entry != null && !(entry instanceof MissingNode)) {
-                    JsonNode firstNode = entry.get(0);
-                    if (firstNode instanceof ArrayNode) {
-                        firstNode = ((ArrayNode) firstNode).get(0);
-                    }
-                    final JsonNode jsonNode = firstNode.get("@documentation");
-                    String documentation = this.compilerUtil.noNode(jsonNode) ? "" : jsonNode.textValue();
-                    final JsonNode jsonNode2 = firstNode.get("@type");
-                    os.println(makeSpan(documentation,"csv_doc"));
+                Descriptor descriptor=theVar.get(key).get(0);
+                String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+                if (documentation==null) {
+                    documentation="";
                 }
+                os.println(makeSpan(documentation,"csv_doc"));
 
                 os.println("</li>");
 
@@ -191,10 +191,12 @@ public class CompilerDocumentation {
     }
 
     public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
-        os.println("</body>");
-        os.println("</html>");
+        if (os!=null) { // insure this had been initialised
+            os.println("</body>");
+            os.println("</html>");
 
-        getOutputStream().close();
+            getOutputStream().close();
+        }
 
     }
 

@@ -8,12 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat.values.s" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/820a477f-bd9d-4d45-ab36-64f49317b635/entities/entities.dat_i" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/types/TMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/Locations.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/Locations.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,14 +39,12 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="FavoritesManager">
-    <favorites_list name="ProvToolbox" />
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Package Object" />
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -87,8 +81,18 @@
     <bower-package value="" />
     <bower.json value="" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="ProjectId" id="1Sn3wNZbfFqwhTxNiyaVJ58yqRM" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -98,59 +102,57 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="DatabaseDriversLRU" value="postgresql" />
-    <property name="RunConfigurationTargetLRU" value="820a477f-bd9d-4d45-ab36-64f49317b635" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="extract.method.default.visibility" value="public" />
-    <property name="extractMethod.generateAnnotations" value="false" />
-    <property name="last_directory_selection" value="$PROJECT_DIR$/legacy/roundtrip/src/test/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Global Libraries" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
-    <property name="scala_project_settings_configurable.last_selected_tab_index" value="0" />
-    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
-    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;public&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;12&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/resources/templates&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.template.compiler.configuration" />
+      <recent name="org.openprovenance.prov.template.compiler" />
+      <recent name="org.openprovenance.prov.template.compiler.common" />
       <recent name="org.openprovenance.prov.template.compiler.expansion" />
       <recent name="org.openprovenance.prov.template.log2prov" />
-      <recent name="org.openprovenance.prov.core.jsonld11.serialization.serial" />
-      <recent name="org.openprovenance.prov.service.core" />
-      <recent name="org.openprovenance.prov.service.translation" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template" />
       <recent name="$PROJECT_DIR$/modules-tutorial/consent" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/src/main/webapp" />
       <recent name="$PROJECT_DIR$/modules-template/jsweet-candy-quickstart-master/src/main/java" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy/src/main/java/org/openprovenance/apache/commons/lang" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/composite" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-js2/prov-js-core/src/main/java/org/openprovenance/apache/commons" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/schema" />
-      <recent name="$PROJECT_DIR$/modules-js" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
+      <recent name="org.openprovenance.prov.template.compiler.ConfigProcessor" />
+      <recent name="org.openprovenance.prov.template.compiler.CompilerUtil" />
       <recent name="org.openprovenance.prov.interop.Configuration" />
       <recent name="org.openprovenance.prov.core.serialization.Constants" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
-      <recent name="org.openprovenance.prov.template.types.TMap" />
+      <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
+      <recent name="org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite" />
       <recent name="org.openprovenance.prov.template.compiler.ConfigProcessor" />
-      <recent name="org.openprovenance.prov.template.compiler.expansion.CompilerTypePropagate" />
-      <recent name="org.openprovenance.prov.template.log2prov.RecordSQLProcessor" />
-      <recent name="org.openprovenance.prov.storage.mongodb.MongoCSVResourceStorage" />
+      <recent name="org.openprovenance.prov.template.compiler.CompilerSimpleBean" />
+      <recent name="org.openprovenance.prov.template.descriptors.NameDescriptor" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.storage.mongodb" />
@@ -158,18 +160,18 @@
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler.common" />
       <recent name="org.openprovenance.prov.template" />
       <recent name="org.openprovenance.prov.storage.redis" />
       <recent name="org.openprovenance.prov.storage.filesystem" />
       <recent name="org.openprovenance.prov.storage.api" />
-      <recent name="org.openprovenance.prov.service.core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler" />
+      <recent name="org.openprovenance.prov.template.compiler.common" />
+      <recent name="org.openprovenance.prov.template.descriptors" />
       <recent name="org.openprovenance.prov.model.exception" />
       <recent name="org.openprovenance.prov.template.types" />
-      <recent name="org.openprovenance.prov.template.compiler" />
-      <recent name="org.openprovenance.prov.template.compiler.expansion" />
-      <recent name="org.openprovenance.prov.template.log2prov.interfaces" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONLegacyTest">
@@ -551,6 +553,35 @@
       <workItem from="1652719215639" duration="323000" />
       <workItem from="1652719572643" duration="51000" />
       <workItem from="1653652105736" duration="3344000" />
+      <workItem from="1653829477284" duration="5514000" />
+      <workItem from="1654349681176" duration="1270000" />
+      <workItem from="1654717089375" duration="1411000" />
+      <workItem from="1655447835837" duration="17374000" />
+      <workItem from="1657615234357" duration="3470000" />
+      <workItem from="1657868703226" duration="587000" />
+      <workItem from="1659077970605" duration="588000" />
+      <workItem from="1660639579135" duration="14024000" />
+      <workItem from="1661185950769" duration="8499000" />
+      <workItem from="1661370722405" duration="10146000" />
+      <workItem from="1661459370185" duration="4380000" />
+      <workItem from="1662128037249" duration="1144000" />
+      <workItem from="1662644303078" duration="3157000" />
+      <workItem from="1663428715154" duration="841000" />
+      <workItem from="1663494531348" duration="805000" />
+      <workItem from="1664639231385" duration="4944000" />
+      <workItem from="1671617609037" duration="151468000" />
+      <workItem from="1672958974862" duration="1894000" />
+      <workItem from="1672961155387" duration="1151000" />
+      <workItem from="1672988834298" duration="29956000" />
+      <workItem from="1673199638189" duration="15634000" />
+      <workItem from="1673463050386" duration="34217000" />
+      <workItem from="1673876660842" duration="147899000" />
+      <workItem from="1675704896970" duration="94620000" />
+      <workItem from="1677334382907" duration="31949000" />
+      <workItem from="1678621401400" duration="598000" />
+      <workItem from="1678814818868" duration="597000" />
+      <workItem from="1678822443491" duration="23449000" />
+      <workItem from="1679248302212" duration="26685000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -821,7 +852,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

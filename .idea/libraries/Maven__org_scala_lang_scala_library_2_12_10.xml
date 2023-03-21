@@ -5,6 +5,7 @@
         <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.12.10/scala-compiler-2.12.10.jar" />
         <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.12.10/scala-library-2.12.10.jar" />
         <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/scala-reflect/2.12.10/scala-reflect-2.12.10.jar" />
+        <root url="file://$MAVEN_REPOSITORY$/org/scala-lang/modules/scala-xml_2.12/1.0.6/scala-xml_2.12-1.0.6.jar" />
       </compiler-classpath>
     </properties>
     <CLASSES>

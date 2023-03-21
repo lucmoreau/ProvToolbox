@@ -17,11 +17,7 @@ package org.openprovenance.prov.template.compiler.sql;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -105,15 +101,15 @@ public class QueryBuilder {
 
             return (pp) -> {
 
-                var sqlBuilder = new StringBuilder();
+                StringBuilder sqlBuilder = new StringBuilder();
 
 
                 pp.write("SELECT ");
                 pp.begin(0);
 
-                var queryBuilder = new QueryBuilder(sqlBuilder, pp);
+                QueryBuilder queryBuilder = new QueryBuilder(sqlBuilder, pp);
 
-                for (var i = 0; i < columns.length; i++) {
+                for (int i = 0; i < columns.length; i++) {
                     if (i > 0) {
                         pp.comma();
                     }
@@ -142,14 +138,14 @@ public class QueryBuilder {
 
         return (prettyPrinter) -> {
 
-            var sqlBuilder = new StringBuilder();
+            StringBuilder sqlBuilder = new StringBuilder();
 
 
             sqlBuilder.append(function);
             prettyPrinter.write(function);
 
 
-            var queryBuilder = new QueryBuilder(sqlBuilder, prettyPrinter);
+            QueryBuilder queryBuilder = new QueryBuilder(sqlBuilder, prettyPrinter);
             queryBuilder.args(values);
             prettyPrinter.write(" ");
             queryBuilder.alias(alias);
@@ -167,7 +163,7 @@ public class QueryBuilder {
         prettyPrinter.begin(0);
 
 
-        for (var i = 0; i < columns.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             if (i > 0) {
                 prettyPrinter.comma();
             }
@@ -390,7 +386,7 @@ public class QueryBuilder {
         prettyPrinter.write(clause);
         prettyPrinter.write(" ");
 
-        for (var i = 0; i < predicates.length; i++) {
+        for (int i = 0; i < predicates.length; i++) {
             if (i > 0) {
                 prettyPrinter.write(" ");
             }
@@ -441,7 +437,7 @@ public class QueryBuilder {
             prettyPrinter.open();
         }
 
-        for (var i = 0; i < predicates.length; i++) {
+        for (int i = 0; i < predicates.length; i++) {
             if (i > 0) {
                 prettyPrinter.write(" ");
             }
@@ -495,11 +491,11 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        var stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("(");
 
-        for (var i = 0; i < predicates.length; i++) {
+        for (int i = 0; i < predicates.length; i++) {
             if (i > 0) {
                 stringBuilder.append(" ");
                 stringBuilder.append(operator);
@@ -829,9 +825,9 @@ public class QueryBuilder {
 
         List<String> columns = new ArrayList<>(values.keySet());
 
-        var n = columns.size();
+        int n = columns.size();
 
-        for (var i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             if (i > 0) {
                 prettyPrinter.comma();
             }
@@ -845,7 +841,7 @@ public class QueryBuilder {
         prettyPrinter.write("VALUES ");
         prettyPrinter.open();
 
-        for (var i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             if (i > 0) {
                 prettyPrinter.comma();
             }
@@ -880,9 +876,9 @@ public class QueryBuilder {
         prettyPrinter.open();
 
 
-        var n = values.size();
+        int n = values.size();
 
-        for (var i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             if (i > 0) {
                 prettyPrinter.comma();
             }
@@ -915,9 +911,9 @@ public class QueryBuilder {
 
         List<String> columns = new ArrayList<>(values.keySet());
 
-        var n = columns.size();
+        int n = columns.size();
 
-        for (var i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             if (i > 0) {
                 prettyPrinter.comma();
             }
@@ -947,7 +943,7 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        var sqlBuilder = new StringBuilder();
+        StringBuilder sqlBuilder = new StringBuilder();
         PrettyPrinter prettyPrinter = newPrettyPrinter(null);
 
         sqlBuilder.append("update ");
@@ -975,7 +971,7 @@ public class QueryBuilder {
 
         sqlBuilder.append(" set ");
 
-        var i = 0;
+        int i = 0;
 
         for (Map.Entry<String, ?> entry : values.entrySet()) {
             if (i > 0) {
@@ -1085,7 +1081,7 @@ public class QueryBuilder {
         prettyPrinter.write(relation);
         prettyPrinter.open();
 
-        var i = 0;
+        int i = 0;
 
         for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (i > 0) {
@@ -1120,7 +1116,7 @@ public class QueryBuilder {
 
         prettyPrinter.open();
 
-        var i = 0;
+        int i = 0;
 
         for (Map.Entry<String, ?> entry : params.entrySet()) {
             if (i > 0) {
@@ -1178,7 +1174,7 @@ public class QueryBuilder {
                throw new IllegalArgumentException();
            }
 
-           var sqlBuilder = new StringBuilder();
+           StringBuilder sqlBuilder = new StringBuilder();
 
            pp.begin(1);
            pp.write("CREATE OR REPLACE FUNCTION ");
@@ -1202,7 +1198,7 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        var sqlBuilder = new StringBuilder();
+        StringBuilder sqlBuilder = new StringBuilder();
         PrettyPrinter prettyPrinter = newPrettyPrinter(null);
 
         sqlBuilder.append("delete from ");
@@ -1247,25 +1243,25 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        try (var statement = prepare(connection)) {
+        try (PreparedStatement statement = prepare(connection)) {
             apply(statement, arguments);
 
             if (statement.execute()) {
-                try (var resultSetAdapter = new ResultSetAdapter(statement.getResultSet())) {
+                try (ResultSetAdapter resultSetAdapter = new ResultSetAdapter(statement.getResultSet())) {
                     results = resultSetAdapter.stream().collect(Collectors.toList());
                 }
             } else {
                 updateCount = statement.getUpdateCount();
 
-                try (var generatedKeys = statement.getGeneratedKeys()) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        var generatedKeysMetaData = generatedKeys.getMetaData();
+                        ResultSetMetaData generatedKeysMetaData = generatedKeys.getMetaData();
 
-                        var n = generatedKeysMetaData.getColumnCount();
+                        int n = generatedKeysMetaData.getColumnCount();
 
                         this.generatedKeys = new ArrayList<>(n);
 
-                        for (var i = 0; i < n; i++) {
+                        for (int i = 0; i < n; i++) {
                             this.generatedKeys.add(generatedKeys.getObject(i + 1));
                         }
                     } else {
@@ -1410,9 +1406,9 @@ public class QueryBuilder {
     }
 
     private void apply(PreparedStatement statement, Map<String, ?> arguments) throws SQLException {
-        var i = 1;
+        int i = 1;
 
-        for (var parameter : parameters) {
+        for (String parameter : parameters) {
             if (parameter == null) {
                 continue;
             }
@@ -1443,16 +1439,16 @@ public class QueryBuilder {
     }
 
     private void append(String sql) {
-        var quoted = false;
+        boolean quoted = false;
 
-        var n = sql.length();
-        var i = 0;
+        int n = sql.length();
+        int i = 0;
 
         while (i < n) {
-            var c = sql.charAt(i++);
+            char c = sql.charAt(i++);
 
             if (c == ':' && !quoted) {
-                var parameterBuilder = new StringBuilder();
+                StringBuilder parameterBuilder = new StringBuilder();
 
                 while (i < n) {
                     c = sql.charAt(i);
@@ -1513,7 +1509,7 @@ public class QueryBuilder {
 
     private void encode(Object value) {
         if (value instanceof String) {
-            var string = (String)value;
+            String string = (String)value;
 
             if (string.startsWith(":") || string.equals("?")) {
                 append(string);
@@ -1521,7 +1517,7 @@ public class QueryBuilder {
                 prettyPrinter.write("'");
 
                 for (int i = 0, n = string.length(); i < n; i++) {
-                    var c = string.charAt(i);
+                    char c = string.charAt(i);
 
                     if (c == '\'') {
                         prettyPrinter.write(String.valueOf(c));
@@ -1535,7 +1531,7 @@ public class QueryBuilder {
 
             }
         } else if (value instanceof  Function) {
-            var queryBuilderMaker = (Function<PrettyPrinter, QueryBuilder>)value;
+            Function<PrettyPrinter, QueryBuilder> queryBuilderMaker = (Function<PrettyPrinter, QueryBuilder>)value;
 
             //sqlBuilder.append("(");
            // sqlBuilder.append(queryBuilder.getSQL());
@@ -1563,15 +1559,15 @@ public class QueryBuilder {
      */
     @Override
     public String toString() {
-        var stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        var parameterIterator = parameters.iterator();
+        Iterator<String> parameterIterator = parameters.iterator();
 
         for (int i = 0, n = sqlBuilder.length(); i < n; i++) {
-            var c = sqlBuilder.charAt(i);
+            char c = sqlBuilder.charAt(i);
 
             if (c == '?') {
-                var parameter = parameterIterator.next();
+                String parameter = parameterIterator.next();
 
                 if (parameter == null) {
                     stringBuilder.append(c);

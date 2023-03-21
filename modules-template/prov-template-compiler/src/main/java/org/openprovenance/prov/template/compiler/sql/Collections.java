@@ -14,12 +14,7 @@ package org.openprovenance.prov.template.compiler.sql;
  * limitations under the License.
  */
 
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -73,7 +68,7 @@ public class Collections {
 
         Map<K, V> map = new LinkedHashMap<>();
 
-        for (var entry : entries) {
+        for (Map.Entry<K, V> entry : entries) {
             map.put(entry.getKey(), entry.getValue());
         }
 
@@ -168,9 +163,9 @@ public class Collections {
      * found.
      */
     public static <E> int firstIndexWhere(List<E> list, Predicate<E> predicate) {
-        var iterator = list.iterator();
+        Iterator<E> iterator = list.iterator();
 
-        var i = 0;
+        int i = 0;
 
         while (iterator.hasNext()) {
             if (predicate.test(iterator.next())) {
@@ -201,9 +196,9 @@ public class Collections {
      * found.
      */
     public static <E> int lastIndexWhere(List<E> list, Predicate<E> predicate) {
-        var i = list.size();
+        int i = list.size();
 
-        var iterator = list.listIterator(i);
+        ListIterator<E> iterator = list.listIterator(i);
 
         while (iterator.hasPrevious()) {
             i--;
@@ -239,7 +234,7 @@ public class Collections {
         } else if (path.isEmpty()) {
             return root;
         } else {
-            var component = path.remove(0);
+            Object component = path.remove(0);
 
             Object value;
             if (root instanceof List<?> && component instanceof Number) {

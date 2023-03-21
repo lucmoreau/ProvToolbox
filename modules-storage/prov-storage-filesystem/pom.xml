@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-storage</artifactId>
-        <version>0.9.28-SNAPSHOT</version>
+        <version>0.9.28</version>
     </parent>
     <artifactId>prov-storage-filesystem</artifactId>
     <name> |---- PROV-STORAGE-FILESYSTEM</name>
@@ -15,17 +15,17 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.28-SNAPSHOT</version>
+            <version>0.9.28</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-api</artifactId>
-            <version>0.9.28-SNAPSHOT</version>
+            <version>0.9.28</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>0.9.28-SNAPSHOT</version>
+            <version>0.9.28</version>
             <scope>provided</scope>
         </dependency>
 

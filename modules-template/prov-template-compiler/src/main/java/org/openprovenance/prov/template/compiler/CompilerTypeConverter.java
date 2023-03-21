@@ -98,6 +98,7 @@ public class CompilerTypeConverter {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(outputClassName,"builder").build())
                 .returns(mapTypeT);
+        compilerUtil.specWithComment(mspec);
 
         mspec.addStatement("$T m=new $T()",mapTypeT,hashMapTypeT);
 

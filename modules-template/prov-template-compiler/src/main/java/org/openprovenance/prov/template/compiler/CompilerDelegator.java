@@ -31,12 +31,14 @@ public class CompilerDelegator {
 
         builder.addField(beanProcessorClass, DELEGATOR_VAR, Modifier.FINAL, Modifier.PRIVATE);
 
-        builder.addMethod(MethodSpec
+        MethodSpec.Builder mspec2 = MethodSpec
                 .constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(beanProcessorClass, DELEGATOR_VAR)
-                .addStatement("this.$N=$N", DELEGATOR_VAR, DELEGATOR_VAR)
-                .build());
+                .addParameter(beanProcessorClass, DELEGATOR_VAR);
+        compilerUtil.specWithComment(mspec2);
+        mspec2.addStatement("this.$N=$N", DELEGATOR_VAR, DELEGATOR_VAR);
+
+        builder.addMethod(mspec2.build());
 
 
         for (TemplateCompilerConfig config : configs.templates) {
@@ -48,7 +50,7 @@ public class CompilerDelegator {
                     .addModifiers(Modifier.PUBLIC)  // this one is not final!
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
                     .returns(className);
-
+            compilerUtil.specWithComment(mspec);
             mspec.addStatement("return $N.process($N)", DELEGATOR_VAR, BEAN_VAR);
             builder.addMethod(mspec.build());
         }

@@ -39,8 +39,9 @@ public class CompilerCompositeConfigurations {
             builder.addField(beanProcessor, enactorVar, Modifier.FINAL, Modifier.PRIVATE);
             MethodSpec.Builder cspec= MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build())
-                    .addStatement("this.$N=$N", enactorVar, enactorVar);
+                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build());
+            compilerUtil.specWithComment(cspec);
+            cspec.addStatement("this.$N=$N", enactorVar, enactorVar);
             builder.addMethod(cspec.build());
         }
 
@@ -60,6 +61,7 @@ public class CompilerCompositeConfigurations {
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(className, builderParameter).build())
                         .returns(typeName);
+                compilerUtil.specWithComment(mspec);
                 generator.accept(builderParameter, mspec, className, ClassName.get(locations.getFilePackage(BeanDirection.COMMON), beanNameClass));
                 builder.addMethod(mspec.build());
             }
@@ -116,8 +118,9 @@ public class CompilerCompositeConfigurations {
             builder.addField(beanProcessor, enactorVar, Modifier.FINAL, Modifier.PRIVATE);
             MethodSpec.Builder cspec= MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build())
-                    .addStatement("this.$N=$N", enactorVar, enactorVar);
+                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build());
+            compilerUtil.specWithComment(cspec);
+            cspec.addStatement("this.$N=$N", enactorVar, enactorVar);
             builder.addMethod(cspec.build());
         }
 
@@ -139,6 +142,7 @@ public class CompilerCompositeConfigurations {
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(ParameterSpec.builder(commonClassName, builderParameter).build())
                         .returns(typeName);
+                compilerUtil.specWithComment(mspec);
                 generator.accept(builderParameter, mspec, commonClassName, ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputNameClass), ClassName.get(locations.getFilePackage(BeanDirection.OUTPUTS), outputNameClass));
                 builder.addMethod(mspec.build());
             }

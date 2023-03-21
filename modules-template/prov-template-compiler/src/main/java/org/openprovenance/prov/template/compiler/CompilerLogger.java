@@ -103,8 +103,8 @@ public class CompilerLogger {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
                 .returns(mapType);
+        compilerUtil.specWithComment(builder);
 
-        builder.addComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateInitializeBeanTableMethod()", configs.name);
 
         builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.tableConfigurator), configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
 
@@ -130,8 +130,7 @@ public class CompilerLogger {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addTypeVariable(typeT)
                 .returns(mapType);
-
-        builder.addComment("Generated Automatically by ProvToolbox ($N) method $N for templates config $N", getClass().getName(), "generateInitializeCompositeBeanTableMethod()", configs.name);
+        compilerUtil.specWithComment(builder);
 
         String compositeTableConfigurator = COMPOSITE + configs.tableConfigurator;
         builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT), "configurator");
@@ -228,6 +227,7 @@ public class CompilerLogger {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(loggerName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.STATIC)
                 .returns(String.class);
+        compilerUtil.specWithComment(builder);
 
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
@@ -291,6 +291,7 @@ public class CompilerLogger {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("getBuilders")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(builderArrayType);
+        compilerUtil.specWithComment(builder);
 
 
         builder.addStatement("return __builders");

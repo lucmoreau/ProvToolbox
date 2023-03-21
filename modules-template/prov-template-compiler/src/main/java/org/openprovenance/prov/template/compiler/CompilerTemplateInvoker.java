@@ -39,6 +39,8 @@ public class CompilerTemplateInvoker {
                     .addModifiers(Modifier.PUBLIC)
                     .addParameter(ParameterSpec.builder(inputClassName, BEAN).build())
                     .returns(outputClassName);
+            compilerUtil.specWithComment(mspec);
+
 
             //return generic_post_and_return(Defining_environmentOutputs.class, inputs0, (m, o) -> new BeanCompleter2(m).process(o));
             ClassName completerClass;

@@ -37,10 +37,12 @@ public class CompilerBeanCompleter2Composite {
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(CompilerUtil.mapType, M_VAR)
+                .addParameter(CompilerUtil.mapType, M_VAR);
+        compilerUtil.specWithComment(cbuilder2);
+
+        cbuilder2
                 .addStatement("this.$N = ($T) $N.get($S)", LL_VAR, listMapType, M_VAR, ELEMENTS)
-                .addStatement("this.$N = $N", M_VAR, M_VAR)
-                ;
+                .addStatement("this.$N = $N", M_VAR, M_VAR);
 
 
         builder.addMethod(cbuilder2.build());
@@ -81,6 +83,7 @@ public class CompilerBeanCompleter2Composite {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(cutputClassName, BEAN_VAR).build())
                 .returns(cutputClassName);
+        compilerUtil.specWithComment(mspec);
 
         mspec.addStatement("$N.$N=($T)$N.get($S)", BEAN_VAR, "ID", Integer.class, M_VAR, "ID");
 

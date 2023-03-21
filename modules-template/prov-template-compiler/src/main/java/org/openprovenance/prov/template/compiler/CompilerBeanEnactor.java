@@ -51,6 +51,7 @@ public class CompilerBeanEnactor {
                 .addTypeVariable(typeT)
                 .returns(typeT);
 
+
         inface.addMethod(method1.build());
 
         MethodSpec.Builder method2 = MethodSpec.methodBuilder("beanCompleterFactory")
@@ -76,7 +77,9 @@ public class CompilerBeanEnactor {
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ENACTOR_IMPLEMENTATION_TYPE, Constants.REALISER)
-                .addParameter(beanProcessorClass, "checker")
+                .addParameter(beanProcessorClass, "checker");
+        compilerUtil.specWithComment(cbuilder3);
+        cbuilder3
                 .addStatement("this.$N = $N", Constants.REALISER, Constants.REALISER)
                 .addStatement("this.$N = $N", "checker", "checker");
 
@@ -94,6 +97,7 @@ public class CompilerBeanEnactor {
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className,"bean").build())
                     .returns(className);
+            compilerUtil.specWithComment(mspec);
 
             mspec.addStatement("return $N.generic_enact(bean,\n" +
                     "                b -> checker.process(b),\n" +

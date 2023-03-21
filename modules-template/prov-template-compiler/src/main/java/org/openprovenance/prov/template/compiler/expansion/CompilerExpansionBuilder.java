@@ -682,7 +682,7 @@ public class CompilerExpansionBuilder {
                 .addTypeVariable(TypeVariableName.get("T"));
 
         compilerUtil.specWithComment(builder);
-        
+
         builder
                 .addStatement("$T __C_result = null", TypeVariableName.get("T"))
                 .addStatement("$T __C_ns = new Namespace()", Namespace.class)

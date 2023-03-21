@@ -45,7 +45,9 @@ public class CompilerBeanChecker {
                 .addParameter(ParameterSpec.builder(String.class,"field").build())
                 .addParameter(ParameterSpec.builder(String.class,"template").build())
                 .addTypeVariable(typeT)
-                .returns(typeT)
+                .returns(typeT);
+        compilerUtil.specWithComment(mspec0);
+        mspec0
                 .beginControlFlow("if (object==null)")
                 .addStatement("throw new $T(\"The object field \" + field + \" is null in template \" + template)", IllegalStateException.class)
                 .nextControlFlow("else")
@@ -101,6 +103,7 @@ public class CompilerBeanChecker {
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addParameter(ParameterSpec.builder(className,"bean").build())
                 .returns(className);
+        compilerUtil.specWithComment(mspec);
 
 
         if (config instanceof SimpleTemplateCompilerConfig) {

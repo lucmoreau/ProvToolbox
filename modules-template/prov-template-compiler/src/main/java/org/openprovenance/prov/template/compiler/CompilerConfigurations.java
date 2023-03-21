@@ -48,8 +48,10 @@ public class CompilerConfigurations {
             builder.addField(beanProcessor, enactorVar, Modifier.FINAL, Modifier.PRIVATE);
             MethodSpec.Builder cspec= MethodSpec.constructorBuilder()
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build())
-                    .addStatement("this.$N=$N", enactorVar, enactorVar);
+                    .addParameter(ParameterSpec.builder(beanProcessor, enactorVar).build());
+            compilerUtil.specWithComment(cspec);
+
+            cspec.addStatement("this.$N=$N", enactorVar, enactorVar);
             builder.addMethod(cspec.build());
         }
 
@@ -67,6 +69,8 @@ public class CompilerConfigurations {
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addParameter(ParameterSpec.builder(className, builderParameter).build())
                     .returns(typeName);
+            compilerUtil.specWithComment(mspec);
+
             if (config instanceof SimpleTemplateCompilerConfig || defaultBehaviour) {
 
                 generator.accept(builderParameter,

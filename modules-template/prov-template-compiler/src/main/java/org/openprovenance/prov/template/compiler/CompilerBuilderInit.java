@@ -58,12 +58,15 @@ public class CompilerBuilderInit {
         builder.addStaticBlock(block.build());
 
 
-        builder.addMethod(MethodSpec.methodBuilder("init")
-                .addStatement("return $T.registerBuilders($N,$N)", FileBuilder.class, Constants.BUILDERS, Constants.PF)
+        MethodSpec.Builder mspec = MethodSpec.methodBuilder("init")
                 .returns(boolean.class)
                 .addModifiers(Modifier.STATIC)
-                .addModifiers(Modifier.PUBLIC)
-                .build());
+                .addModifiers(Modifier.PUBLIC);
+        compilerUtil.specWithComment(mspec);
+        mspec.addStatement("return $T.registerBuilders($N,$N)", FileBuilder.class, Constants.BUILDERS, Constants.PF);
+
+
+        builder.addMethod(mspec.build());
 
         builder.addMethod(generateMain());
 
@@ -80,7 +83,9 @@ public class CompilerBuilderInit {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "args")
-                .addException(Exception.class)
+                .addException(Exception.class);
+        compilerUtil.specWithComment(builder);
+        builder
                 .addStatement("init()")
                 .beginControlFlow("if ($S.equals(args[0]))","kernel")
                 .addStatement("System.out.println(\"arguments \" + $T.of(args))", List.class)

@@ -41,8 +41,9 @@ public class CompilerBeanCompleter {
                 .addParameter(CompilerUtil.classType, "cl")
                 .addParameter(String.class, "key")
                 .returns(CompilerUtil.typeT)
-                .addTypeVariable(CompilerUtil.typeT)
-                .addStatement("return ($T) m.get($N)", CompilerUtil.typeT, "key");
+                .addTypeVariable(CompilerUtil.typeT);
+        compilerUtil.specWithComment(callMe2);
+        callMe2.addStatement("return ($T) m.get($N)", CompilerUtil.typeT, "key");
         builder.addMethod(callMe2.build());
 
         TypeSpec.Builder inface=compilerUtil.generateInterfaceInit(Constants.GETTER);
@@ -61,7 +62,10 @@ public class CompilerBeanCompleter {
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(CompilerUtil.mapType, "m")
+                .addParameter(CompilerUtil.mapType, "m");
+        compilerUtil.specWithComment(cbuilder2);
+
+        cbuilder2
                 .addStatement("this.$N = $N", "m", "m")
                 .addComment("The following code implements this assignment, in a way that jsweet can compile")
                 .addComment("this.getter = this::getMap");
@@ -80,7 +84,9 @@ public class CompilerBeanCompleter {
 
         MethodSpec.Builder cbuilder3= MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(TypeVariableName.get(Constants.GETTER), "getter")
+                .addParameter(TypeVariableName.get(Constants.GETTER), "getter");
+        compilerUtil.specWithComment(cbuilder3);
+        cbuilder3
                 .addStatement("this.$N = null", "m")
                 .addStatement("this.getter = ($N) getter", Constants.GETTER);
 
@@ -96,6 +102,7 @@ public class CompilerBeanCompleter {
                     .addParameter(ParameterSpec.builder(className,BEAN_VAR).build())
                     .returns(className);
             if (config instanceof SimpleTemplateCompilerConfig) {
+                compilerUtil.specWithComment(mspec);
 
                 TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
 
@@ -110,6 +117,8 @@ public class CompilerBeanCompleter {
                 mspec.addStatement("return $N", BEAN_VAR);
 
             } else {
+                compilerUtil.specWithComment(mspec);
+
                 CompositeTemplateCompilerConfig config1=(CompositeTemplateCompilerConfig)config;
                 String consistOf=config1.consistsOf;
                 String composeeName=compilerUtil.commonNameClass(consistOf);

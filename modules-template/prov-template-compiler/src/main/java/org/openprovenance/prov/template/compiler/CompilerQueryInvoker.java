@@ -55,7 +55,9 @@ public class CompilerQueryInvoker {
             final ClassName inputClassName = ClassName.get(locations.getFilePackage(BeanDirection.INPUTS), inputsNameClass);
 
             MethodSpec.Builder mspec = MethodSpec.methodBuilder(Constants.PROCESS_METHOD_NAME)
-                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                    .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+            compilerUtil.specWithComment(mspec);
+            mspec
                     .addParameter(ParameterSpec.builder((withBean)?className:inputClassName, VARIABLE_BEAN).build())
                     .returns((withBean)?className:inputClassName);
 
@@ -72,7 +74,9 @@ public class CompilerQueryInvoker {
 
         if (foundSpecialTypes.contains(Constants.TIMESTAMPTZ)) {
             final String timeVariable = "time";
-            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz")
+            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToTimestamptz");
+            compilerUtil.specWithComment(mbuilder2);
+            mbuilder2
                     .addModifiers(Modifier.FINAL)
                     .addParameter(String.class, timeVariable)
                     .returns(String.class)
@@ -86,7 +90,9 @@ public class CompilerQueryInvoker {
         }
         if (foundSpecialTypes.contains(Constants.NULLABLE_TEXT)) {
             final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT")
+            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT");
+            compilerUtil.specWithComment(mbuilder3);
+            mbuilder3
                     .addModifiers(Modifier.FINAL)
                     .addParameter(String.class, strVariable)
                     .returns(String.class)
@@ -115,6 +121,7 @@ public class CompilerQueryInvoker {
     private void simpleQueryInvoker(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
+        compilerUtil.specWithComment(mspec);
 
         mspec.addStatement("$N.append($S)", sbVar, "select * from ");
         mspec.addStatement("$N.append($S)", sbVar, startCallString);
@@ -147,8 +154,8 @@ public class CompilerQueryInvoker {
     private void simpleQueryInvokerEmbedded(TemplatesCompilerConfig configs, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, List<String> sharing) {
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);
         String startCallString= Constants.INSERT_PREFIX + config.name + " (";
+        compilerUtil.specWithComment(mspec);
 
-        mspec.addComment("Generated Automatically by ProvToolbox ($N.$N()) for template $N",getClass().getName(), "simpleQueryInvokerEmbedded", config.name);
 
 
         mspec.addStatement("$N.append($S)", sbVar, "( ");
@@ -191,7 +198,7 @@ public class CompilerQueryInvoker {
 
     public void compositeQueryInvoker(TemplatesCompilerConfig configs, Locations locations, TemplateCompilerConfig config, Set<String> foundSpecialTypes, String sbVar, MethodSpec.Builder mspec, String variableBean, boolean withBean) {
         CompositeTemplateCompilerConfig compositeConfig=(CompositeTemplateCompilerConfig ) config;
-        mspec.addComment("Generated Automatically by ProvToolbox ($N.$N()) for template $N",getClass().getName(), "compositeQueryInvoker", compositeConfig.name);
+        compilerUtil.specWithComment(mspec);
 
         mspec.addStatement("$N.append($S)", sbVar, "---- query invoker for  " + compositeConfig.name + "\n\n");
 

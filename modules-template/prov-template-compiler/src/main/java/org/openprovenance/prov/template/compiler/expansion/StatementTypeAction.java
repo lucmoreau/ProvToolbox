@@ -283,7 +283,7 @@ public class StatementTypeAction implements StatementAction {
         if (s.getId()==null) {
             s.setId(gensym());
         }
-
+        compilerUtil.specWithComment(mbuilder);
         mbuilder.addComment("wdf $N", s.getId().getUri());
 
         registerAType(s.getId(),WASDERIVEDFROM_URI);
@@ -595,6 +595,7 @@ public class StatementTypeAction implements StatementAction {
         if (s.getId()==null) {
             s.setId(gensym());
         }
+        compilerUtil.specWithComment(mbuilder);
         mbuilder.addComment("qualified mem $N", s.getId().getUri());
 
         registerTypes(s.getId(),s.getType());

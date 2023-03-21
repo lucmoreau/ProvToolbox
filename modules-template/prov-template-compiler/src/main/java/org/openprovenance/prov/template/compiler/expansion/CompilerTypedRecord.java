@@ -56,6 +56,7 @@ public class CompilerTypedRecord {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get(Object[].class));
 
+        compilerUtil.specWithComment(mbuilder);
 
 
         JsonNode the_var = bindings_schema.get("var");

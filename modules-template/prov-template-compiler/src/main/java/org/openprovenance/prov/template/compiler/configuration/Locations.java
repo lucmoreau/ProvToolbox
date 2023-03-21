@@ -73,7 +73,12 @@ public class Locations {
             case TEMPLATE_INVOKER:
             case INPUT_OUTPUT_PROCESSOR:
             case QUERY_INVOKER2:
-            case INPUT_PROCESSOR:                   return config_integrator_package;
+            case INPUT_PROCESSOR:
+            case COMPOSITE_BEAN_COMPLETER2:
+            case TYPE_CONVERTER:
+            case BEAN_CHECKER2:
+            case BEAN_COMPLETER2:
+                return config_integrator_package;
 
             case CONVERTER_CONFIGURATOR:
             case BUILDER_CONFIGURATOR:
@@ -83,21 +88,22 @@ public class Locations {
             case CSV_CONFIGURATOR:
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
-            case DELEGATOR:
-            case BEAN_COMPLETER:
-            case BEAN_CHECKER:                      return configurator_package;
+                return configurator_package;
 
             case COMPOSITE_ENACTOR_CONFIGURATOR2:
             case ENACTOR_CONFIGURATOR2:
-            case COMPOSITE_BEAN_COMPLETER2:
-            case TYPE_CONVERTER:
-            case BEAN_CHECKER2:
-            case BEAN_COMPLETER2:                   return configurator_package2;
 
+                return configurator_package2;
+
+            case DELEGATOR:
+            case BEAN_COMPLETER:
+            case BEAN_CHECKER:
             case QUERY_INVOKER:
-            case BEAN_ENACTOR:                      return config_common_package;
+            case BEAN_ENACTOR:
+                return config_common_package;
 
-            case SQL_INTERFACE:                     return Constants.CLIENT_PACKAGE;
+            case SQL_INTERFACE:
+                return Constants.CLIENT_PACKAGE;
         }
         throw new UnsupportedOperationException("Unknown file " + file);
     }

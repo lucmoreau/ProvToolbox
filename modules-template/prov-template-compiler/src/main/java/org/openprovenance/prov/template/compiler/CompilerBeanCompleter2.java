@@ -120,16 +120,29 @@ public class CompilerBeanCompleter2 {
                         .returns(outputClassName);
 
                 compilerUtil.specWithComment(mspec);
+                boolean old=false;
 
-                mspec.addStatement("boolean nextExists=true");
-                mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);
-                mspec.beginControlFlow("if (nextExists) " );
-                mspec.addStatement("$N(composee)", PROCESS_METHOD_NAME);
-                mspec.addStatement("nextExists = next()");
-                mspec.nextControlFlow("else");
-                mspec.addStatement("System.out.println($S)", "Not enough record in the result");
-                mspec.endControlFlow();
-                mspec.endControlFlow();
+                if (old) {
+
+                    mspec.addStatement("boolean nextExists=true");
+                    mspec.beginControlFlow("for ($T composee: $N.$N)", composeeClass, BEAN_VAR, ELEMENTS);
+                    mspec.beginControlFlow("if (nextExists) ");
+                    mspec.addStatement("$N(composee)", PROCESS_METHOD_NAME);
+                    mspec.addStatement("nextExists = next()");
+                    mspec.nextControlFlow("else");
+                    mspec.addStatement("System.out.println($S)", "Not enough record in the result");
+                    mspec.endControlFlow();
+                    mspec.endControlFlow();
+                } else {
+                    mspec.beginControlFlow("do ");
+                    mspec.addStatement("$T composee=new $T()", composeeClass,composeeClass);
+                    mspec.addStatement("$N.$N(composee)", BEAN_VAR,ADD_ELEMENTS);
+                    mspec.addStatement("$N(composee)", PROCESS_METHOD_NAME);
+                    mspec.endControlFlow("while (next()) ");
+
+
+
+                }
 
                 mspec.addStatement("return $N", BEAN_VAR);
                 builder.addMethod(mspec.build());

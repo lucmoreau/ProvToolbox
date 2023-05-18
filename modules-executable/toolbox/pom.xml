@@ -916,6 +916,101 @@
                         </executions>
                     </plugin>
 
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>2.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-rpm</id>
+                                <goals>
+                                    <goal>attached-rpm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <license>MIT License</license>
+                            <distribution>provconvert</distribution>
+                            <group>Application/Provenance</group>
+                            <!-- <icon>src/main/resources/icon.gif</icon> -->
+                            <packager>Luc Moreau</packager>
+                            <prefix>/usr/local</prefix>
+                            <changelogFile>src/changelog</changelogFile>
+                            <defineStatements>
+                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                            </defineStatements>
+                            <mappings>
+                                <mapping>
+                                    <directory>/usr/local/lib/provconvert</directory>
+                                    <filemode>555</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>target/appassembler/</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>/usr/share/doc/provconvert</directory>
+                                    <documentation>true</documentation>
+                                    <filemode>555</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>target/classes/README.txt</location>
+                                        </source>
+                                        <source>
+                                            <location>target/provconvert.txt</location>
+                                        </source>
+                                        <source>
+                                            <location>../../license.txt</location>
+                                        </source>
+                                        <source>
+                                            <location>target/generated-sources/license/THIRD-PARTY.txt</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>/usr/local/man/man1</directory>
+                                    <documentation>true</documentation>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>target/provconvert.1</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+
+                                <mapping>
+                                    <directory>/usr/local/bin</directory>
+                                    <filemode>750</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <softlinkSource>
+                                            <location>/usr/local/lib/provconvert/bin/provconvert</location>
+                                            <destination>provconvert</destination>
+                                        </softlinkSource>
+                                    </sources>
+                                </mapping>
+                            </mappings>
+                            <preinstallScriptlet>
+                                <script>echo "installing now"</script>
+                            </preinstallScriptlet>
+                            <postinstallScriptlet>
+                                <scriptFile>src/main/scripts/postinstall</scriptFile>
+                                <fileEncoding>utf-8</fileEncoding>
+                            </postinstallScriptlet>
+                            <preremoveScriptlet>
+                                <scriptFile>src/main/scripts/preremove</scriptFile>
+                                <fileEncoding>utf-8</fileEncoding>
+                            </preremoveScriptlet>
+                        </configuration>
+                    </plugin>
 
                 </plugins>
             </build>

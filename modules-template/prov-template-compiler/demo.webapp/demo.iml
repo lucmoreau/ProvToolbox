@@ -22,10 +22,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="templates_cli" />
-    <orderEntry type="module" module-name="templates_l2p" />
-    <orderEntry type="module" module-name="templates_cli" />
-    <orderEntry type="module" module-name="templates_l2p" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.4.20.v20190813" level="project" />
     <orderEntry type="module" module-name="templates_cli" />
     <orderEntry type="module" module-name="prov-model" />
@@ -70,12 +66,12 @@
     <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:6.5.0" level="project" />
     <orderEntry type="module" module-name="prov-dot" />
     <orderEntry type="module" module-name="prov-generator" />
-    <orderEntry type="module" module-name="prov-interop" />
+    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-interop:0.9.28-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.17.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.17.1" level="project" />
-    <orderEntry type="module" module-name="prov-xml" />
+    <orderEntry type="library" name="Maven: org.openprovenance.prov:prov-xml:0.9.28-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jaxb:txw2:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />

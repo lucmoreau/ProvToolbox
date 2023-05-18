@@ -18,7 +18,7 @@
           <element id="archive" name="templates_cli-0.1.0.jar">
             <element id="module-output" name="templates_cli" />
           </element>
-          <element id="archive" name="prov-model-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-model-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-model" />
           </element>
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.9" />
@@ -26,7 +26,7 @@
           <element id="library" level="project" name="Maven: jakarta.activation:jakarta.activation-api:2.0.0" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-collections4:4.4" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.8.0" />
-          <element id="archive" name="prov-jsweet-candy-java-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-jsweet-candy-java-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-jsweet-candy-java" />
           </element>
           <element id="library" level="project" name="Maven: org.jsweet:jsweet-core:6.3.1" />
@@ -39,16 +39,16 @@
           <element id="archive" name="templates_l2p-0.1.0.jar">
             <element id="module-output" name="templates_l2p" />
           </element>
-          <element id="archive" name="prov-n-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-n-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-n" />
           </element>
           <element id="library" level="project" name="Maven: org.antlr:antlr-runtime:3.4" />
           <element id="library" level="project" name="Maven: antlr:antlr:2.7.7" />
           <element id="library" level="project" name="Maven: org.antlr:stringtemplate:4.0.2" />
-          <element id="archive" name="prov-template-compiler-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-template-compiler-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-template-compiler" />
           </element>
-          <element id="archive" name="prov-template-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-template-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-template" />
           </element>
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.14.2" />
@@ -62,34 +62,30 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.14.2" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.17.1" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-csv:1.10.0" />
-          <element id="archive" name="prov-interop-light-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-interop-light-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-interop-light" />
           </element>
-          <element id="archive" name="prov-jsonld-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-jsonld-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-jsonld" />
           </element>
-          <element id="archive" name="prov-jsonld-xml-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-jsonld-xml-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-jsonld-xml" />
           </element>
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2" />
           <element id="library" level="project" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" />
           <element id="library" level="project" name="Maven: com.fasterxml.woodstox:woodstox-core:6.5.0" />
-          <element id="archive" name="prov-dot-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-dot-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-dot" />
           </element>
-          <element id="archive" name="prov-generator-0.9.28-SNAPSHOT.jar">
+          <element id="archive" name="prov-generator-0.9.29-SNAPSHOT.jar">
             <element id="module-output" name="prov-generator" />
           </element>
-          <element id="archive" name="prov-interop-0.9.28-SNAPSHOT.jar">
-            <element id="module-output" name="prov-interop" />
-          </element>
+          <element id="library" level="project" name="Maven: org.openprovenance.prov:prov-interop:0.9.28-SNAPSHOT" />
           <element id="library" level="project" name="Maven: commons-cli:commons-cli:1.4" />
           <element id="library" level="project" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:2.0.0.Final" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.17.1" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.17.1" />
-          <element id="archive" name="prov-xml-0.9.28-SNAPSHOT.jar">
-            <element id="module-output" name="prov-xml" />
-          </element>
+          <element id="library" level="project" name="Maven: org.openprovenance.prov:prov-xml:0.9.28-SNAPSHOT" />
           <element id="library" level="project" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" />
           <element id="library" level="project" name="Maven: org.glassfish.jaxb:txw2:2.3.1" />
           <element id="library" level="project" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" />

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.openprovenance.prov:prov-interop:0.9.28-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/modules-executable/prov-interop/pom.xml!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/modules-executable/prov-interop/prov-interop-0.9.28-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/modules-executable/prov-interop/prov-interop-0.9.28-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

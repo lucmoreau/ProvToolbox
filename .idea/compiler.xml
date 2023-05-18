@@ -10,7 +10,6 @@
         <module name="prov-service-core" />
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-storage-filesystem" />
-        <module name="jsweet-quickstart" />
         <module name="demo" />
         <module name="prov-storage-api" />
         <module name="prov-jsonld-xml" />
@@ -97,8 +96,8 @@
       <module name="roundtrip" target="11" />
       <module name="service-translator" target="11" />
       <module name="templates" target="1.5" />
-      <module name="templates_cli" target="1.8" />
-      <module name="templates_l2p" target="1.8" />
+      <module name="templates_cli" target="1.5" />
+      <module name="templates_l2p" target="1.5" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -78,24 +78,6 @@ public class ProvToDot {
 
     public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
 
-    /*
-    public static void main(String [] args) throws Exception {
-        if ((args==null) || (args.length==0) || (args.length>4)) {
-            System.out.println(USAGE);
-            return;
-        }
-
-        String opmFile=args[0];
-        String outDot=args[1];
-        String outPdf=args[2];
-        String configFile=((args.length==4) ? args[3] : null);
-
-        ProvToDot converter=((configFile==null) ? new ProvToDot() : new ProvToDot(configFile));
-
-        converter.convert(opmFile,outDot,outPdf,null);
-    }
-
-     */
 
     private Integer maxStringLength=null;
 
@@ -247,13 +229,7 @@ public class ProvToDot {
 
     }
 
-    /*
-    public void convert(String opmFile, String dotFile, String pdfFile, String title)
-            throws java.io.FileNotFoundException, java.io.IOException, JAXBException {
-        convert (ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(opmFile)),dotFile,pdfFile,title);
-    }
 
-     */
     public void convert(Document graph, String dotFile, String pdfFile, String title)
             throws java.io.FileNotFoundException, java.io.IOException {
         convert(graph,new File(dotFile), title);
@@ -1248,7 +1224,7 @@ public class ProvToDot {
     }
 
     void prelude(Document doc, PrintStream out) {
-        out.println("digraph \"" + name + "\" { size=\"16,12\"; rankdir=\"BT\"; ");
+        out.println("digraph \"" + name + "\" { rankdir=\"BT\"; ");  //size="16,12"; 
         if (layout!=null) {
             out.println("layout=\"" + layout + "\"; ");
         }

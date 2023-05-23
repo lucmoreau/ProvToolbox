@@ -8,27 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_interop_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_json_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_tests_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_xml_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_xml_tests_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_model_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_model_scala_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_model_tests_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_n_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_xml_0_9_28_SNAPSHOT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_9.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_9.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/demo.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/DescriptorUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/DescriptorUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/NameDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/NameDescriptor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,10 +102,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.template.compiler.configuration" />
@@ -597,6 +590,8 @@
       <workItem from="1684179655375" duration="587000" />
       <workItem from="1684299992258" duration="3304000" />
       <workItem from="1684434540022" duration="916000" />
+      <workItem from="1684783804359" duration="39000" />
+      <workItem from="1684847176157" duration="6035000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

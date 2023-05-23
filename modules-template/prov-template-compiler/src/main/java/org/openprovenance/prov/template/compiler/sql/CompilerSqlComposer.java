@@ -120,9 +120,26 @@ public class CompilerSqlComposer {
                                                                                         LinkedHashMap::new));
                         return m;
                     } else {
-                        return Default_Values(); // DEFAULT VALUES
-                    }
-                };
+                        Optional<Map<String, String>> sqlAlsoOutputs = descriptorUtils.getSqlAlsoOutputs(key, templateBindingsSchema);
+                        if (sqlAlsoOutputs.isPresent()) {
+                            Map<String, String> theOutputs = sqlAlsoOutputs.get();
+                            descriptorUtils.checkSqlOutputs(theOutputs, templateBindingsSchema);
+                            List<String> newOuts = new ArrayList<>(theOutputs.keySet());
+                            Map<String, Object> m = newOuts.stream().collect(Collectors.toMap(i -> i,
+                                   // i -> unquote(newTableWithId(theOutputs.get(i))),
+                                    i -> unquote("input_policy"),
+                                    (x, y) -> y,
+                                    LinkedHashMap::new));
+                            return m;
+
+                        } else {
+
+                            return Default_Values(); // DEFAULT VALUES
+                        }
+                    }};
+
+
+
 
 
         Map<String,Function<PrettyPrinter, ?>> cteValues2=

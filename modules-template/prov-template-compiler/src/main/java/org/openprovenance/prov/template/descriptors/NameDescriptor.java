@@ -40,6 +40,8 @@ public class NameDescriptor implements Descriptor {
     private String table;
     @JsonProperty("@sql.new.inputs")
     private Map<String,String> newInputs;
+    @JsonProperty("@sql.also.outputs")
+    private Map<String,String> alsoOutputs;
 
     @JsonProperty("@id")
     public String getId() {
@@ -110,10 +112,19 @@ public class NameDescriptor implements Descriptor {
     public Map<String, String> getNewInputs() {
         return newInputs;
     }
+    @JsonProperty("@sql.also.outputs")
+    public Map<String, String> getAlsoOutputs() {
+        return alsoOutputs;
+    }
 
     @JsonProperty("@sql.new.inputs")
     public void setNewInputs(Map<String, String> newInputs) {
         this.newInputs = newInputs;
+    }
+
+    @JsonProperty("@sql.also.outputs")
+    public void setAlsoOutputs(Map<String, String> alsoOutputs) {
+        this.alsoOutputs = alsoOutputs;
     }
 
     @Override

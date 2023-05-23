@@ -83,6 +83,20 @@ public class DescriptorUtils {
         return getFromDescriptor(descriptor, af, nf);
     }
 
+    public Optional<Map<String,String>> getSqlAlsoOutputs(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null)
+            throw new NullPointerException("getSqlAlsoOutputs could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor = var.get(0);
+        Function<AttributeDescriptor, Optional<Map<String,String>>> af = (ad) -> Optional.empty();
+        Function<NameDescriptor, Optional<Map<String,String>>> nf = (nd) -> {
+            Map<String, String> newInputs = nd.getAlsoOutputs();
+            return Optional.ofNullable((newInputs==null)?null:(newInputs.isEmpty())? null: newInputs);
+        };
+        return getFromDescriptor(descriptor, af, nf);
+    }
+
+
     public boolean isInput(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
         if (var==null) throw new NullPointerException("isInput could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
@@ -127,5 +141,14 @@ public class DescriptorUtils {
             }
         }
         return theInputs;
+    }
+
+    public Map<String, String> checkSqlOutputs(Map<String, String> theOutputs, TemplateBindingsSchema templateBindingsSchema) {
+        for (String value: theOutputs.values()) {
+            if (!isOutput(value, templateBindingsSchema)) {
+                throw new UnsupportedOperationException("Output value " + value + " is not known in template descriptor form " + templateBindingsSchema.getTemplate());
+            }
+        }
+        return theOutputs;
     }
 }

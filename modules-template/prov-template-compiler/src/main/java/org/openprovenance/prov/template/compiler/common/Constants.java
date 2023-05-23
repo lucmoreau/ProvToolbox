@@ -74,6 +74,7 @@ public interface Constants {
     String INPUT_PREFIX = "input_";
     String SHARED_PREFIX = "composite_";
     String NULLABLE_TEXT = "nullableTEXT";
+    String JSON_TEXT = "json";
     String TIMESTAMPTZ = "timestamptz";
     String RECORDS_VAR = "_records";
     String ARECORD_VAR = "_arecord";

@@ -104,6 +104,22 @@ public class CompilerQueryInvoker {
 
             builder.addMethod(mbuilder3.build());
         }
+        if (foundSpecialTypes.contains(Constants.JSON_TEXT)) {
+            final String strVariable = "str";
+            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToJsonTEXT");
+            compilerUtil.specWithComment(mbuilder3);
+            mbuilder3
+                    .addModifiers(Modifier.FINAL)
+                    .addParameter(String.class, strVariable)
+                    .returns(String.class)
+                    .beginControlFlow("if ($N==null)", strVariable)
+                    .addStatement("return $S",  "''::json")
+                    .nextControlFlow("else")
+                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::json")
+                    .endControlFlow();
+
+            builder.addMethod(mbuilder3.build());
+        }
 
 
 
@@ -139,9 +155,13 @@ public class CompilerQueryInvoker {
                 }
                 final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
                 if (sqlType !=null) {
-                    String fun= converterForSpecialType(sqlType, mspec, sbVar, key);
-                    mspec.addStatement("$N.append($N($N.$N))", sbVar, fun, variableBean, key);
-                    foundSpecialTypes.add(sqlType);
+                    String fun= converterForSpecialType(sqlType);
+                    if (fun!=null) {
+                        mspec.addStatement("$N.append($N($N.$N))", sbVar, fun, variableBean, key);
+                        foundSpecialTypes.add(sqlType);
+                    } else {
+                        mspec.addStatement("$N.append($N.$N)", sbVar, variableBean, key);
+                    }
                 } else {
                     mspec.addStatement("$N.append($N.$N)", sbVar, variableBean, key);
                 }
@@ -180,9 +200,13 @@ public class CompilerQueryInvoker {
                     }
                     final String sqlType = descriptorUtils.getSqlType(key, bindingsSchema);
                     if (sqlType != null) {
-                        String fun = converterForSpecialType(sqlType, mspec, sbVar, key);
-                        mspec.addStatement("$N.append($N($N.$N)) $L", sbVar, fun, variableBean, key, comment);
-                        foundSpecialTypes.add(sqlType);
+                        String fun = converterForSpecialType(sqlType);
+                        if (fun!=null) {
+                            mspec.addStatement("$N.append($N($N.$N)) $L", sbVar, fun, variableBean, key, comment);
+                            foundSpecialTypes.add(sqlType);
+                        } else {
+                            mspec.addStatement("$N.append($N.$N) $L", sbVar, variableBean, key, comment);
+                        }
                     } else {
                         mspec.addStatement("$N.append($N.$N) $L", sbVar, variableBean, key, comment);
                     }
@@ -264,12 +288,14 @@ select * from insert_anticipating_impact_composite_array (ARRAY[
 
     }
 
-    public String converterForSpecialType(String specialType, MethodSpec.Builder mspec, String sbVar, String key) {
+    public String converterForSpecialType(String specialType) {
         switch (specialType) {
             case Constants.TIMESTAMPTZ:
                 return "convertToTimestamptz";
             case Constants.NULLABLE_TEXT:
                 return "convertToNullableTEXT";
+            case Constants.JSON_TEXT:
+                return "convertToJsonTEXT";
             default:
                 throw new IllegalStateException("Unexpected value: " + specialType);
         }

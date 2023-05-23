@@ -419,6 +419,8 @@ public class CompilerUtil {
                 return Double.class;
             case "xsd:dateTime":
                 return String.class;
+            case "json":
+                return String.class;
             default:
                 throw new UnsupportedOperationException();
         }

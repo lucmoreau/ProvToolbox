@@ -8,6 +8,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
+import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.descriptors.*;
 
@@ -115,9 +116,8 @@ public class CompilerSQL {
             String sqlTypeFromJava = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
 
             final String sqlType = descriptorUtils.getSqlType(key, templateBindingsSchema);
-            if (sqlType !=null) {
+            if (sqlType !=null && !sqlType.equals(Constants.NULLABLE_TEXT)) {
                 sqlTypeFromJava=sqlType;
-
             }
 
 

@@ -112,13 +112,21 @@ public class CompilerSQL {
                 res=res+ ",\n";
             }
 
-            final String sqlType = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
-            Descriptor entry=var.get(key).get(0);
+            String sqlTypeFromJava = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
+
+            final String sqlType = descriptorUtils.getSqlType(key, templateBindingsSchema);
+            if (sqlType !=null) {
+                sqlTypeFromJava=sqlType;
+
+            }
+
+
+                Descriptor entry=var.get(key).get(0);
             documentation = retrieveDocumentation(entry);
 
 
             if (documentation!=null)  res = res + SMALL_INDENTATION + SMALL_INDENTATION + "--  " + documentation + "\n";
-            res=res + SMALL_INDENTATION + sqlify(key) + " " + sqlType;
+            res=res + SMALL_INDENTATION + sqlify(key) + " " + sqlTypeFromJava;
 
         }
 

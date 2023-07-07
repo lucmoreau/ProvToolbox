@@ -121,6 +121,7 @@ public class CompilerTypeConverter {
         put("string", "getString");
         put("int", "getObject");
         put("integer", "getObject");
+        put("double precision", "getObject");
         put("timestamptz", "getTimestamp");
     }};
 

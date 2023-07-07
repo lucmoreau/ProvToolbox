@@ -145,7 +145,7 @@ public class CompilerJsonSchema {
         return "$id";
     }
 
-    String convertToJsonType(String name) {
+    static String convertToJsonType(String name) {
         switch (name) {
             case "java.lang.String":
                 return "string";
@@ -153,41 +153,14 @@ public class CompilerJsonSchema {
                 return "integer";
             case "java.lang.Float":
                 return "float";
+            case "java.lang.Double":
+                return "double";
             case "java.lang.Boolean":
                 return "boolean";
         }
         throw new UnsupportedOperationException("conversion to json type " + name);
     }
 
-    /*
-    public JsonSchema setupJsonSchemaCheck() throws ProcessingException, IOException {
-        return setupJsonSchemaCheck("src/main/resources/schema/json-schema-v4.json");
-    }
-
-
-
-    public JsonSchema setupJsonSchemaCheck(String file) throws
-            IOException, ProcessingException {
-        final JsonNode schemaJSON = JsonLoader.fromPath(file);
-        final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonSchema schema = factory.getJsonSchema(schemaJSON);
-        return schema;
-    }
-
-    public boolean checkSchema(JsonSchema schema, String file) throws IOException, ProcessingException {
-        System.out.println("Loading " + file);
-        final JsonNode fileJSON = JsonLoader.fromPath(file);
-        ProcessingReport report = schema.validate(fileJSON);
-        if (!report.isSuccess()) {
-            System.err.println("Cannot validate " + file + " against the PROV-JSON schema.");
-            System.err.println(report);
-        } else {
-            System.out.println(report);
-        }
-        return (report.isSuccess());
-    }
-
-     */
 
     static class Tester extends  JsonSchemaTesting {
         @Override

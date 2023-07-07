@@ -292,6 +292,8 @@ public class CompilerSQL {
                 return "INT";
             case "java.lang.Float":
                 return "FLOAT";
+            case "java.lang.Double":
+                return "double precision";
             case "java.lang.Boolean":
                 return "BOOLEAN";
         }

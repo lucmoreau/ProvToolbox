@@ -375,7 +375,7 @@ public class CompilerUtil {
 
     public Class<?> getJavaTypeForDeclaredType(JsonNode the_var, String key) {
         JsonNode the_key = the_var.get(key);
-        if (the_key.get(0).get("@id") != null) {
+        if (the_key!=null && the_key.get(0).get("@id") != null) {
             JsonNode jsonNode = the_key.get(0).get("@type");
             String idType =  (jsonNode==null)?null:jsonNode.textValue();
             if (idType==null) {
@@ -384,7 +384,7 @@ public class CompilerUtil {
                 return getClassForType(idType);
             }
         } else {
-            if (the_key.get(0).get(0) == null) {
+            if (the_key==null || the_key.get(0).get(0) == null) {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
 

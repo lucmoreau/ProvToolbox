@@ -15,6 +15,7 @@ import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import java.io.*;
 import java.util.*;
 
+import static org.openprovenance.prov.template.compiler.CompilerJsonSchema.convertToJsonType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerDocumentation {
@@ -176,19 +177,6 @@ public class CompilerDocumentation {
         return "$id";
     }
 
-    String convertToJsonType(String name) {
-        switch (name) {
-            case "java.lang.String":
-                return "string";
-            case "java.lang.Integer":
-                return "integer";
-            case "java.lang.Float":
-                return "float";
-            case "java.lang.Boolean":
-                return "boolean";
-        }
-        throw new UnsupportedOperationException("conversion to json type " + name);
-    }
 
     public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
         if (os!=null) { // insure this had been initialised

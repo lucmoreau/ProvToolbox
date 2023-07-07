@@ -297,7 +297,8 @@ select * from insert_anticipating_impact_composite_array (ARRAY[
             case Constants.JSON_TEXT:
                 return "convertToJsonTEXT";
             default:
-                throw new IllegalStateException("Unexpected value: " + specialType);
+                return null;
+                //throw new IllegalStateException("Unexpected value: " + specialType);
         }
     }
 

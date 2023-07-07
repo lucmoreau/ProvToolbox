@@ -948,13 +948,15 @@ public class CompilerCommon {
                 String initializer = "";
                 boolean first = true;
                 for (QualifiedName successor : successors) {
-                    int i = index.get(successor);
-                    if (first) {
-                        first = false;
-                    } else {
-                        initializer = initializer + ", ";
+                    Integer i = index.get(successor);
+                    if (i!=null) {
+                        if (first) {
+                            first = false;
+                        } else {
+                            initializer = initializer + ", ";
+                        }
+                        initializer = initializer + i;
                     }
-                    initializer = initializer + i;
                 }
 
                 builder.addStatement("table.put($L,new int[] { " + initializer + "})", count);
@@ -1101,7 +1103,7 @@ public class CompilerCommon {
                 List<Integer> rowValues=new LinkedList<>();
                 boolean first = true;
                 for (Pair<QualifiedName, WasDerivedFrom> successor : successors1) {
-                    int i = index.get(successor.getLeft());
+                    Integer i = index.get(successor.getLeft());
                     if (first) {
                         first = false;
                     } else {

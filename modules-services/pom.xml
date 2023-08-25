@@ -17,7 +17,7 @@
         <module>prov-service-core</module>
         <module>prov-service-translation</module>
         <module>service-translator</module>
-        <module>docker-service-translator</module>
+        <!--<module>docker-service-translator</module> disabled for release -->
     </modules>
 
 

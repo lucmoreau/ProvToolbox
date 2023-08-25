@@ -101,4 +101,5 @@ public interface Constants {
     String TO_INPUTS = "toInputs";
     String DOT_JAVA_EXTENSION = ".java";
     String SQL_INTERFACE = "SQL";
+    String WITH_MAP = "WithMap";
 }

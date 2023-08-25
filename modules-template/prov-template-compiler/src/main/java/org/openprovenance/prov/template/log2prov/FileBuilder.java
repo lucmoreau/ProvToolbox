@@ -214,12 +214,12 @@ abstract public class FileBuilder {
         m.put(getName(),this);
     }
 
-    private HashMap<String,String> variableMap=new HashMap<>();
+    private Map<String,String> variableMap=new HashMap<>();
 
-    public void setVariableMap(HashMap<String,String> m) {
+    public void setVariableMap(Map<String,String> m) {
         this.variableMap=m;
     }
-    public HashMap<String,String> getVariableMap() {
+    public Map<String,String> getVariableMap() {
         return variableMap;
     }
 

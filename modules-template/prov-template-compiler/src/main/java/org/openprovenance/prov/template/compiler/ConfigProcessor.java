@@ -58,6 +58,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerLogger compilerLogger = new CompilerLogger();
     private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
     private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
+    private final CompilerTableConfiguratorWithMap compilerTableConfiguratorWithMap = new CompilerTableConfiguratorWithMap();
     private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
     private final CompilerInputOutputProcessor compilerInputOutputProcessor = new CompilerInputOutputProcessor();
     private final CompilerTemplateInvoker compilerTemplateInvoker = new CompilerTemplateInvoker();
@@ -265,6 +266,7 @@ public class ConfigProcessor implements Constants {
 
         SpecificationFile tableConfigurator=compilerTableConfigurator.generateTableConfigurator(configs, locations);
         tableConfigurator.save();
+
 
         SpecificationFile tableConfigurator2=compilerTableConfigurator.generateCompositeTableConfigurator(configs, locations);
         tableConfigurator2.save();
@@ -488,6 +490,10 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile spec6 = compilerTypedRecord.generatedTypedRecordConstructor(configs, locations, doc, bn, templateName, packageName, resource, bindings_schema, bindingsSchema, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnTR)), bnTR + DOT_JAVA_EXTENSION);
                 val5 = spec5.save();
                 val6 = spec6.save();
+
+
+                SpecificationFile tableConfiguratorWithMap=compilerTableConfiguratorWithMap.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnI)));
+                tableConfiguratorWithMap.save();
 
 
             }

@@ -61,6 +61,8 @@ public class Locations {
             return logger_package;
         } else if (file.equals(configs.tableConfigurator)) {
             return configurator_package;
+        } else if (file.equals(configs.tableConfigurator + WITH_MAP)) {
+            return configurator_package;
         } else if (file.equals(compositeTableConfigurator)) {
             return configurator_package;
         } else if (file.equals(configs.beanProcessor)) {

@@ -30,6 +30,7 @@
     <file url="file://$PROJECT_DIR$/modules-js/prov-js-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/benchmarks/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-legacy/benchmarks/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-json" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-json/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-json/src/main/resources" charset="UTF-8" />

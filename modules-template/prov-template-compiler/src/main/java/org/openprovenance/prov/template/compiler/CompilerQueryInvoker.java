@@ -88,6 +88,22 @@ public class CompilerQueryInvoker {
 
             builder.addMethod(mbuilder2.build());
         }
+        if (foundSpecialTypes.contains(Constants.SQL_DATE)) {
+            final String dateVariable = "date";
+            MethodSpec.Builder mbuilder2= MethodSpec.methodBuilder("convertToDate");
+            compilerUtil.specWithComment(mbuilder2);
+            mbuilder2
+                    .addModifiers(Modifier.FINAL)
+                    .addParameter(String.class, dateVariable)
+                    .returns(String.class)
+                    .beginControlFlow("if ($N==null)", dateVariable)
+                    .addStatement("return $S",  "NULL")
+                    .nextControlFlow("else")
+                    .addStatement("return $S+$N+$S", "'", dateVariable, "'::date")
+                    .endControlFlow();
+
+            builder.addMethod(mbuilder2.build());
+        }
         if (foundSpecialTypes.contains(Constants.NULLABLE_TEXT)) {
             final String strVariable = "str";
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT");
@@ -290,6 +306,8 @@ select * from insert_anticipating_impact_composite_array (ARRAY[
 
     public String converterForSpecialType(String specialType) {
         switch (specialType) {
+            case Constants.SQL_DATE:
+                return "convertToDate";
             case Constants.TIMESTAMPTZ:
                 return "convertToTimestamptz";
             case Constants.NULLABLE_TEXT:

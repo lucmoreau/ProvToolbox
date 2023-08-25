@@ -76,6 +76,7 @@ public interface Constants {
     String NULLABLE_TEXT = "nullableTEXT";
     String JSON_TEXT = "json";
     String TIMESTAMPTZ = "timestamptz";
+    String SQL_DATE = "date";
     String RECORDS_VAR = "_records";
     String ARECORD_VAR = "_arecord";
     String INPUT_TABLE = "_input_table";

@@ -419,6 +419,8 @@ public class CompilerUtil {
                 return Double.class;
             case "xsd:dateTime":
                 return String.class;
+            case "xsd:date":
+                return String.class;
             case "json":
                 return String.class;
             default:
@@ -446,6 +448,7 @@ public class CompilerUtil {
                     case "xsd:float":
                     case "xsd:double":
                     case "xsd:dateTime":
+                    case "xsd:date":
                         return Object.class;
                     default:
                         throw new UnsupportedOperationException();
@@ -546,8 +549,10 @@ public class CompilerUtil {
             return "test_" + localPart;
         } else {
             switch (declaredType) {
+                case "xsd:date":
                 case "xsd:dateTime":
                     return pFactory.newTimeNow().toXMLFormat();
+
                 case "xsd:float":
                     return "123.00f";
                 case "xsd:int":
@@ -599,6 +604,7 @@ public class CompilerUtil {
                         return "" + num + ".01f";
                     case "xsd:double":
                         return "" + num + ".01d";
+                    case "xsd:date":
                     case "xsd:dateTime":
                         return "\"" + pFactory.newTimeNow().toXMLFormat() + "\"";
                     default:

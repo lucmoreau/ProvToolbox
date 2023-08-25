@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-core</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.30</version>
+        <version>0.9.31-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,13 +20,13 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>0.9.30</version>
+            <version>0.9.31-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>0.9.30</version>
+            <version>0.9.31-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -85,7 +85,7 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
             <scope>test</scope>
-            <version>0.9.30</version>
+            <version>0.9.31-SNAPSHOT</version>
             <classifier>tests</classifier>
         </dependency>
 

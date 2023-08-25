@@ -49,6 +49,7 @@ public interface Constants {
     String CSV_CONFIGURATOR = "CsvConfigurator";
     String BUILDER_CONFIGURATOR = "BuilderConfigurator";
     String CONVERTER_CONFIGURATOR = "ConverterConfigurator";
+    String RECORD_2_RECORD_CONFIGURATOR = "CsvRecord2ObjectRecordConfigurator";
     String ENACTOR_CONFIGURATOR = "EnactorConfigurator";
     String COMPOSITE_ENACTOR_CONFIGURATOR = "CompositeEnactorConfigurator";
     String COMPOSITE_ENACTOR_CONFIGURATOR2 = "CompositeEnactorConfigurator2";

@@ -335,6 +335,9 @@ public class ConfigProcessor implements Constants {
         SpecificationFile configurationConverter= compilerConfigurations.generateConverterConfigurator(configs,CONVERTER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(CONVERTER_CONFIGURATOR)), CONVERTER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationConverter.save();
 
+        SpecificationFile record2recordConverter= compilerConfigurations.generateRecord2RecordConfiguration(configs,RECORD_2_RECORD_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(RECORD_2_RECORD_CONFIGURATOR)), RECORD_2_RECORD_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        record2recordConverter.save();
+
         SpecificationFile configurationEnactor= compilerConfigurations.generateEnactorConfigurator(configs,ENACTOR_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(ENACTOR_CONFIGURATOR)), ENACTOR_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationEnactor.save();
 

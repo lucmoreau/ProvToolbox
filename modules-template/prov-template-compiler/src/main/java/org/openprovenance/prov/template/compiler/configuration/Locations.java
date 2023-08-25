@@ -90,6 +90,7 @@ public class Locations {
             case CSV_CONFIGURATOR:
             case ENACTOR_CONFIGURATOR:
             case COMPOSITE_ENACTOR_CONFIGURATOR:
+            case RECORD_2_RECORD_CONFIGURATOR:
                 return configurator_package;
 
             case COMPOSITE_ENACTOR_CONFIGURATOR2:

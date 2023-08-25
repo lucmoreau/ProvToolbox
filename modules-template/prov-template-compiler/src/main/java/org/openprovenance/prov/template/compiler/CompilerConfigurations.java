@@ -6,9 +6,13 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 
+import java.util.function.Consumer;
+
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerConfigurations {
+    public static final String RECORD_2_RECORD = "Record2Record";
+    public static final String PROCESS = "process";
     private final CompilerUtil compilerUtil=new CompilerUtil();
 
     public CompilerConfigurations() {
@@ -17,6 +21,8 @@ public class CompilerConfigurations {
     static final ParameterizedTypeName processorOfString = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeName.get(String.class));
     static final ParameterizedTypeName processorOfUnknown = ParameterizedTypeName.get(ClassName.get(CLIENT_PACKAGE,"ProcessorArgsInterface"), TypeVariableName.get("?"));
     static final TypeName stringArray = ArrayTypeName.get(String[].class);
+
+
 
     String enactorVar = "beanEnactor";
 
@@ -34,6 +40,23 @@ public class CompilerConfigurations {
                                                   BeanDirection outDirection,
                                                   String directory,
                                                   String fileName) {
+        return generateConfigurator(configs, locations, theConfiguratorName, typeName, generator, generatorMethod, direction, beanProcessor, defaultBehaviour, beanPackage, outDirection, directory, fileName, null);
+    }
+
+    public SpecificationFile generateConfigurator(TemplatesCompilerConfig configs,
+                                                  Locations locations,
+                                                  String theConfiguratorName,
+                                                  TypeName typeName,
+                                                  QuintetConsumer<String, MethodSpec.Builder, TypeName, TypeName, TypeName> generator,
+                                                  String generatorMethod,
+                                                  BeanDirection direction,
+                                                  TypeName beanProcessor,
+                                                  boolean defaultBehaviour,
+                                                  String beanPackage,
+                                                  BeanDirection outDirection,
+                                                  String directory,
+                                                  String fileName,
+                                                  Consumer<TypeSpec.Builder> optionalCode) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         if (configs.configurator_package==null) throw new NullPointerException("configurator_package is null");
@@ -87,6 +110,10 @@ public class CompilerConfigurations {
 
         }
 
+        if (optionalCode!=null) {
+            optionalCode.accept(builder);
+        }
+
 
         TypeSpec theConfigurator = builder.build();
 
@@ -111,6 +138,20 @@ public class CompilerConfigurations {
     public SpecificationFile generateConverterConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodRecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName);
     }
+    public SpecificationFile generateRecord2RecordConfiguration(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
+        Consumer<TypeSpec.Builder> optionalCode=
+                builder -> // add static interface declaration
+                        builder.addType(TypeSpec.interfaceBuilder(RECORD_2_RECORD)
+                                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                                .addMethod(MethodSpec.methodBuilder(PROCESS)
+                                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                        .addParameter(TypeName.get(Object[].class), "args")
+                                        .returns(TypeName.get(Object[].class))
+                                        .build())
+                                .build());
+        TypeName record2recordType=ClassName.get(configs.configurator_package, RECORD_2_RECORD_CONFIGURATOR, RECORD_2_RECORD);
+        return  generateConfigurator(configs, locations, theConfiguratorName, record2recordType, this::generateMethodRecord2RecordConverter, "generateConverterConfigurator", BeanDirection.COMMON, null, false, null, BeanDirection.COMMON, directory, fileName, optionalCode);
+    }
     public SpecificationFile generateEnactorConfigurator(TemplatesCompilerConfig configs, String theConfiguratorName, Locations locations, String directory, String fileName) {
         return  generateConfigurator(configs, locations, theConfiguratorName, processorOfUnknown, this::generateMethodEnactor, "generateEnactorConfigurator", BeanDirection.COMMON, ClassName.get(locations.getFilePackage(configs.beanProcessor),configs.beanProcessor), false, null, BeanDirection.COMMON, directory, fileName);
     }
@@ -133,6 +174,9 @@ public class CompilerConfigurations {
     }
     public void generateMethodRecordConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("return $N.aRecord2BeanConverter", builderParameter);
+    }
+    public void generateMethodRecord2RecordConverter(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
+        mspec.addStatement("return x -> builder.aRecord2BeanConverter.process(x).process(builder.aArgs2RecordConverter())");
     }
     public void generateMethodEnactor(String builderParameter, MethodSpec.Builder mspec, TypeName className, TypeName beanType, TypeName _out) {
         mspec.addStatement("$N<$T> beanConverter=$N.aRecord2BeanConverter", PROCESSOR_ARGS_INTERFACE, beanType, builderParameter);

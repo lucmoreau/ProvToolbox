@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openprovenance.prov</groupId>
     <artifactId>modules-services</artifactId>
-    <version>0.9.31-SNAPSHOT</version>
+    <version>0.9.31</version>
   </parent>
 
   <artifactId>prov-log</artifactId>

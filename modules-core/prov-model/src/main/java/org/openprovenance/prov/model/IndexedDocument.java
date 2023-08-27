@@ -13,6 +13,8 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 
 /** This class provides a set of indexes over information contained in
  * an Document, facilitating its navigation.  Its constructor takes an
@@ -234,7 +236,7 @@ public class IndexedDocument implements StatementAction {
 
 
 
-    void mergeAttributes(Element existing, Element newElement) {
+    <T extends Element> void  mergeAttributes(T existing, T newElement) {
         Set<LangString> set=new HashSet<>(newElement.getLabel());
         set.removeAll(existing.getLabel());
         existing.getLabel().addAll(set);
@@ -250,6 +252,37 @@ public class IndexedDocument implements StatementAction {
         Set<Other> set4=new HashSet<>(newElement.getOther());
         set4.removeAll(existing.getOther());
         existing.getOther().addAll(set4);
+
+        if (existing instanceof Activity) {
+            Activity existing2=(Activity) existing;
+            Activity newElement2=(Activity) newElement;
+            if (existing2.getStartTime()==null) {
+                XMLGregorianCalendar startTime = newElement2.getStartTime();
+                if (startTime !=null) {
+                    existing2.setStartTime(startTime);
+                }
+            }
+            // if existing2 has a start time, we do not override it
+            if (existing2.getEndTime()==null) {
+                XMLGregorianCalendar endTime = newElement2.getEndTime();
+                if (endTime !=null) {
+                    existing2.setEndTime(endTime);
+                }
+            }
+            // if existing2 has an end time, we do not override it
+        }
+
+        if (existing instanceof Entity) {
+            Entity existing2=(Entity) existing;
+            Entity newElement2=(Entity) newElement;
+            if (existing2.getValue()==null) {
+                Value value = newElement2.getValue();
+                if (value !=null) {
+                    existing2.setValue(value);
+                }
+            }
+            // if existing2 has a value, we do not override it
+        }
     }
 
     void mergeAttributes(Influence existing, Influence newElement) {

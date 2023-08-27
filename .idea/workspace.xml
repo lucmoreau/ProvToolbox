@@ -8,10 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/attributes/test-activity1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/attributes/test-activity2.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/benchmarks/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-xml/src/test/java/org/openprovenance/prov/xml/IndexedDocumentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-xml/src/test/java/org/openprovenance/prov/xml/IndexedDocumentTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,11 +126,11 @@
       <recent name="$PROJECT_DIR$/modules-template/jsweet-candy-quickstart-master/src/main/java" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/composite" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-js2/prov-js-core/src/main/java/org/openprovenance/apache/commons" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/schema" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />

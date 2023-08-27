@@ -134,3 +134,7 @@ merge:
 
 comp1:
 	target/appassembler/bin/provconvert -infile ../prov-template/src/test/resources/template10.provn -compare ../prov-template/src/test/resources/template10.provn -outcompare target/compare1.txt
+
+test.attributes:
+	ls src/test/resources/attributes/test-activity*.provn | target/appassembler/bin/provconvert -merge - -outfile target/merged-activity.provn
+	cat target/merged-activity.provn

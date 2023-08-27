@@ -1,0 +1,4 @@
+document
+  prefix act <http://example.org/act/>
+  activity(act:executing/1, 2022-06-21T14:42:12.898+01:00, -)
+endDocument

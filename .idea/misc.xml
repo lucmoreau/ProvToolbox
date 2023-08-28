@@ -31,13 +31,13 @@
         <option value="$PROJECT_DIR$/modules-js/prov-js-core/pom.xml" />
         <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" />
         <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" />
       </set>
     </option>
   </component>

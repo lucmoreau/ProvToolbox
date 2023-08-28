@@ -28,6 +28,7 @@
         <module name="service-translator" />
         <module name="prov-json" />
         <module name="prov-model" />
+        <module name="ProvToolbox-Tutorial5" />
         <module name="prov-sql" />
         <module name="prov-interop" />
         <module name="prov-interop-light" />

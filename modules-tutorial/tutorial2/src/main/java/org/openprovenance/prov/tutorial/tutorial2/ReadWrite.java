@@ -16,11 +16,10 @@ import org.openprovenance.prov.model.WasDerivedFrom;
 
 /**
  * A little provenance goes a long way. 
- * ProvToolbox Tutorial 1: creating a provenance document in Java and serializing it
- * to SVG (in a file) and to PROVN (on the console).
+ * ProvToolbox Tutorial 1: Reading, Converting and Saving PROV Documents.
  * 
  * @author lucmoreau
- * @see <a href="http://blog.provbook.org/2013/10/11/a-little-provenance-goes-a-long-way/">a-little-provenance-goes-a-long-way blog post</a>
+ * @see <a href="https://lucmoreau.wordpress.com/2015/07/05/provtoolbox-tutorial-2-reading-converting-and-saving-prov-documents/">tutorial-2-reading-converting-and-saving-prov-documents blog post</a>
  */
 public class ReadWrite {
 

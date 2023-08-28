@@ -209,7 +209,7 @@
 
 
 
-          <!--
+
           <execution>
             <id>post-try-build</id>
             <phase>post-integration-test</phase>
@@ -220,12 +220,12 @@
               <executable>mvn</executable>
               <workingDirectory>${project.build.directory}/tmp/${project.build.finalName}</workingDirectory>
               <arguments>
+                <argument>-Dprovconvert.executable=${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert</argument>
                 <argument>clean</argument>
                 <argument>install</argument>
               </arguments>
             </configuration>
           </execution>
-          -->
         </executions>
       </plugin>
 
@@ -252,6 +252,7 @@
         </executions>
       </plugin>
     </plugins>
+
 
 
     <resources>

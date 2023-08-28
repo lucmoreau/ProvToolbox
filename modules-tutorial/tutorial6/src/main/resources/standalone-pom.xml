@@ -54,6 +54,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <provconvert.executable>provconvert</provconvert.executable>
   </properties>
 
   <build>
@@ -75,19 +76,19 @@
 
                 <!-- customized templates -->
 
-                <exec dir="." executable="provconvert" failonerror="true">
+                <exec dir="." executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/resources/templates/template_align.provn" />
                 </exec>
-                <exec dir="." executable="provconvert" failonerror="true">
+                <exec dir="." executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-reslice.json -bindver 3 -outfile target/resources/templates/template_reslice.provn" />
                 </exec>
-                <exec dir="." executable="provconvert" failonerror="true">
+                <exec dir="." executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-softmean.json -bindver 3 -outfile target/resources/templates/template_softmean.provn" />
                 </exec>
-                <exec dir="." executable="provconvert" failonerror="true">
+                <exec dir="." executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-slicer.json -bindver 3 -outfile target/resources/templates/template_slicer.provn" />
                 </exec>
-                <exec dir="." executable="provconvert" failonerror="true">
+                <exec dir="." executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-convert.json -bindver 3 -outfile target/resources/templates/template_convert.provn" />
                 </exec>
 
@@ -98,19 +99,19 @@
 
                 <!-- customized templates -->
 
-                <exec dir="target/" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile resources/templates/template_align.provn -template Align -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_align.provn" />
                 </exec>
-                <exec dir="target/" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile resources/templates/template_reslice.provn -template Reslice -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_reslice.provn" />
                 </exec>
-                <exec dir="target/" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile resources/templates/template_softmean.provn -template Softmean -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_softmean.provn" />
                 </exec>
-                <exec dir="target/" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile resources/templates/template_slicer.provn -template Slicer -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_slicer.provn" />
                 </exec>
-                <exec dir="target/" executable="provconvert" failonerror="true">
+                <exec dir="target/" executable="${provconvert.executable}" failonerror="true">
                   <arg line="-infile resources/templates/template_convert.provn -template Convert -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_convert.provn" />
                 </exec>
 
@@ -178,6 +179,18 @@
       </resource>
     </resources>
 
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${mvn.compiler.plugin}</version>
+          <configuration>
+            <source>1.9</source>
+            <target>1.9</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
 
   </build>
 </project>

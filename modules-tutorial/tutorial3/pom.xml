@@ -125,7 +125,6 @@
               <executable>make</executable>
               <workingDirectory>${project.build.directory}/tmp/${project.build.finalName}</workingDirectory>
               <arguments>
-                <!--<argument>PROVCONVERT=${project.build.directory}/../../../modules-executable/toolbox/target/appassembler/bin/provconvert</argument>-->
                 <argument>PROVCONVERT=${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert</argument>
               </arguments>
             </configuration>

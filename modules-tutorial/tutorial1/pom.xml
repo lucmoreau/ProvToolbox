@@ -73,6 +73,38 @@
                             </arguments>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>post-try-unzip</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>unzip</executable>
+                            <workingDirectory>${project.build.directory}/tmp</workingDirectory>
+                            <arguments>
+                                <argument>${project.build.directory}/${project.build.finalName}-src.zip</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+
+                    <execution>
+                        <id>post-try-build</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <workingDirectory>${project.build.directory}/tmp/${project.build.finalName}</workingDirectory>
+                            <arguments>
+                                <argument>clean</argument>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

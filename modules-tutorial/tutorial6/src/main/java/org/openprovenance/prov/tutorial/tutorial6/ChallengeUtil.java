@@ -1,8 +1,8 @@
 package org.openprovenance.prov.tutorial.tutorial6;
 
 
+import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.InteropFramework.ProvFormat;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
@@ -90,7 +90,7 @@ public class ChallengeUtil implements ChallengeConstants {
     public void doConversions(Document document, String file) {
         InteropFramework intF = new InteropFramework();
         intF.writeDocument(file, document);
-        intF.writeDocument(System.out, ProvFormat.PROVN, document);
+        intF.writeDocument(System.out, Formats.ProvFormat.PROVN, document);
     }
     
     

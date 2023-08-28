@@ -3,8 +3,7 @@
   <parent>
     <artifactId>modules-tutorial</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>0.8.1-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
+    <version>0.9.32-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -46,13 +45,8 @@
   <dependencies>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-model</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-interop</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <artifactId>prov-interop-light</artifactId>
+      <version>0.9.32-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -110,19 +104,19 @@
 
                 <!-- customized templates -->
 
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="${project.basedir}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-align.json -bindver 3 -outfile target/resources/templates/template_align.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="${project.basedir}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-reslice.json -bindver 3 -outfile target/resources/templates/template_reslice.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="${project.basedir}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-softmean.json -bindver 3 -outfile target/resources/templates/template_softmean.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="${project.basedir}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-slicer.json -bindver 3 -outfile target/resources/templates/template_slicer.provn" />
                 </exec>
-                <exec dir="${project.basedir}" executable="provconvert" failonerror="true">
+                <exec dir="${project.basedir}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile src/main/resources/template_block.provn -bindings src/main/resources/bind-convert.json -bindver 3 -outfile target/resources/templates/template_convert.provn" />
                 </exec>
 
@@ -133,19 +127,19 @@
 
                 <!-- customized templates -->
 
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="${project.build.directory}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_align.provn -template Align -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_align.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="${project.build.directory}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_reslice.provn -template Reslice -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_reslice.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="${project.build.directory}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_softmean.provn -template Softmean -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_softmean.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="${project.build.directory}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_slicer.provn -template Slicer -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_slicer.provn" />
                 </exec>
-                <exec dir="${project.build.directory}" executable="provconvert" failonerror="true">
+                <exec dir="${project.build.directory}" executable="${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert" failonerror="true">
                   <arg line="-infile resources/templates/template_convert.provn -template Convert -package org.openprovenance.prov.tutorial.tutorial6 -outfile generated-sources/provconvert -location templates/template_convert.provn" />
                 </exec>
 
@@ -196,6 +190,42 @@
               </arguments>
             </configuration>
           </execution>
+
+
+          <execution>
+            <id>post-try-unzip</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>unzip</executable>
+              <workingDirectory>${project.build.directory}/tmp</workingDirectory>
+              <arguments>
+                <argument>${project.build.directory}/${project.build.finalName}-src.zip</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+
+
+          <!--
+          <execution>
+            <id>post-try-build</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>mvn</executable>
+              <workingDirectory>${project.build.directory}/tmp/${project.build.finalName}</workingDirectory>
+              <arguments>
+                <argument>clean</argument>
+                <argument>install</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          -->
         </executions>
       </plugin>
 

@@ -80,15 +80,15 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bean.addConsumed3(pc(imgreffile1));
         bean.addConsumed4(pc(hdrreffile1));
 
-        bean.addConsumedLabel1(imglabel);
-        bean.addConsumedLabel2(hdrlabel);
-        bean.addConsumedLabel3(imgreflabel);
-        bean.addConsumedLabel4(hdrreflabel);
+        bean.addConsumed_label1(imglabel);
+        bean.addConsumed_label2(hdrlabel);
+        bean.addConsumed_label3(imgreflabel);
+        bean.addConsumed_label4(hdrreflabel);
 
-        bean.addBlockInstance(pc(activity));
+        bean.addBlock_instance(pc(activity));
 
         bean.addProduced(pc(warpfile));
-        bean.addProducedLabel(warplabel);
+        bean.addProduced_label(warplabel);
 
         bean.addParent(pc(workflow));
         bean.addAgent(pc(agent));
@@ -106,12 +106,12 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
 
         bean.addConsumed(pc(warp));
 
-        bean.addBlockInstance(pc(activity));
+        bean.addBlock_instance(pc(activity));
 
         bean.addProduced1(pc(imgfile));
         bean.addProduced2(pc(hdrfile));
-        bean.addProducedLabel1(imglabel);
-        bean.addProducedLabel2(hdrlabel);
+        bean.addProduced_label1(imglabel);
+        bean.addProduced_label2(hdrlabel);
         bean.addParent(pc(workflow));
         BindingsBean bb=bean;
         return Collections.singleton(bb);
@@ -137,12 +137,12 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bean.addConsumed7(pc(imgfile4));
         bean.addConsumed8(pc(hdrfile4));
         
-        bean.addBlockInstance(pc(activity));
+        bean.addBlock_instance(pc(activity));
         
         bean.addProduced1(pc(imgatlas));
         bean.addProduced2(pc(hdratlas));
-        bean.addProducedLabel1(imglabel);
-        bean.addProducedLabel2(hdrlabel);
+        bean.addProduced_label1(imglabel);
+        bean.addProduced_label2(hdrlabel);
         bean.addParent(pc(workflow));
         
         BindingsBean bb=bean;
@@ -164,13 +164,13 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         bean.addConsumed2(pc(hdratlas));
         bean.addConsumed3(pc(params));
         
-        bean.addConsumedLabel3(paramslabel);
-        bean.addConsumedValue3(paramsvalue);
+        bean.addConsumed_label3(paramslabel);
+        bean.addConsumed_value3(paramsvalue);
 
-        bean.addBlockInstance(pc(activity));
+        bean.addBlock_instance(pc(activity));
         
         bean.addProduced(pc(pgmfile));
-        bean.addProducedLabel(pgmlabel);
+        bean.addProduced_label(pgmlabel);
  
         bean.addParent(pc(workflow));
         
@@ -187,10 +187,10 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         
         bean.addConsumed(pc(pgmfile));
 
-        bean.addBlockInstance(pc(activity));
+        bean.addBlock_instance(pc(activity));
         
         bean.addProduced(pc(giffile));
-        bean.addProducedLabel(giflabel);
+        bean.addProduced_label(giflabel);
  
         bean.addParent(pc(workflow));
         
@@ -273,7 +273,7 @@ public class ProvenanceChallenge1Template  extends ChallengeCommon<Collection<Bi
         String file2 = args[1];
         String bind = args[2];
 
-        ProvenanceChallenge1Template pc1 = new ProvenanceChallenge1Template(InteropFramework.newXMLProvFactory());
+        ProvenanceChallenge1Template pc1 = new ProvenanceChallenge1Template(InteropFramework.getDefaultFactory());
         pc1.openingBanner();
         Document document = pc1.makeDocument(bind);
         pc1.doConversions(document, file1);

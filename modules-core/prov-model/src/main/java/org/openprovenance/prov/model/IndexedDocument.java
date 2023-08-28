@@ -36,113 +36,113 @@ public class IndexedDocument implements StatementAction {
     final ProvFactory pFactory;
 
 
-    private HashMap<QualifiedName,Entity>   entityMap=new HashMap<QualifiedName, Entity>();
-    private HashMap<QualifiedName,Activity> activityMap=new HashMap<QualifiedName, Activity>();
-    private HashMap<QualifiedName,Agent>    agentMap=new HashMap<QualifiedName, Agent>();
+    private final HashMap<QualifiedName,Entity>   entityMap= new HashMap<>();
+    private final HashMap<QualifiedName,Activity> activityMap= new HashMap<>();
+    private final HashMap<QualifiedName,Agent>    agentMap= new HashMap<>();
 
     /* Collection of Used edges that have a given process as an
      * effect. */
-    private HashMap<QualifiedName,Collection<Used>> activityUsedMap=new HashMap<QualifiedName, Collection<Used>>();
+    private final HashMap<QualifiedName,Collection<Used>> activityUsedMap=new HashMap<>();
 
     /* Collection of Used edges that have a given entity as a
      * cause. */
-    private HashMap<QualifiedName,Collection<Used>> entityUsedMap=new HashMap<QualifiedName, Collection<Used>>();
-    private Collection<Used> anonUsed=new LinkedList<Used>();
-    private HashMap<QualifiedName,Collection<Used>> namedUsedMap=new HashMap<QualifiedName, Collection<Used>>();
+    private final HashMap<QualifiedName,Collection<Used>> entityUsedMap= new HashMap<>();
+    private final Collection<Used> anonUsed= new LinkedList<>();
+    private final HashMap<QualifiedName,Collection<Used>> namedUsedMap= new HashMap<>();
 
 
     /* Collection of WasGeneratedBy edges that have a given activity as a
      * cause. */
-    private HashMap<QualifiedName,Collection<WasGeneratedBy>> activityWasGeneratedByMap=new HashMap<QualifiedName, Collection<WasGeneratedBy>>();
+    private final HashMap<QualifiedName,Collection<WasGeneratedBy>> activityWasGeneratedByMap= new HashMap<>();
 
     /* Collection of WasGeneratedBy edges that have a given entity as an
      * effect. */
-    private HashMap<QualifiedName,Collection<WasGeneratedBy>> entityWasGeneratedByMap=new HashMap<QualifiedName, Collection<WasGeneratedBy>>();
-    private Collection<WasGeneratedBy> anonWasGeneratedBy=new LinkedList<WasGeneratedBy>();
-    private HashMap<QualifiedName,Collection<WasGeneratedBy>> namedWasGeneratedByMap=new HashMap<QualifiedName, Collection<WasGeneratedBy>>();
+    private final HashMap<QualifiedName,Collection<WasGeneratedBy>> entityWasGeneratedByMap= new HashMap<>();
+    private final Collection<WasGeneratedBy> anonWasGeneratedBy=new LinkedList<WasGeneratedBy>();
+    private final HashMap<QualifiedName,Collection<WasGeneratedBy>> namedWasGeneratedByMap= new HashMap<>();
 
 
     /* Collection of WasDerivedFrom edges that have a given entity as a cause. */
-    private HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap= new HashMap<>();
+    private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityCauseWasDerivedFromMap= new HashMap<>();
 
     /* Collection of WasDerivedFrom edges that have a given entity as an
      * effect. */
-    private HashMap<QualifiedName,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
-    private Collection<WasDerivedFrom> anonWasDerivedFrom=new LinkedList<WasDerivedFrom>();
-    private HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap=new HashMap<QualifiedName, Collection<WasDerivedFrom>>();
+    private final HashMap<QualifiedName,Collection<WasDerivedFrom>> entityEffectWasDerivedFromMap= new HashMap<>();
+    private final Collection<WasDerivedFrom> anonWasDerivedFrom=new LinkedList<WasDerivedFrom>();
+    private final HashMap<QualifiedName,Collection<WasDerivedFrom>> namedWasDerivedFromMap= new HashMap<>();
 
 
     /* Collection of WasAssociatedWith edges that have a given activity as an
      * effect. */
-    private HashMap<QualifiedName,Collection<WasAssociatedWith>> activityWasAssociatedWithMap=new HashMap<QualifiedName, Collection<WasAssociatedWith>>();
+    private final HashMap<QualifiedName,Collection<WasAssociatedWith>> activityWasAssociatedWithMap= new HashMap<>();
 
     /* Collection of WasAssociatedWith edges that have a given agent as a
      * cause. */
-    private HashMap<QualifiedName,Collection<WasAssociatedWith>> agentWasAssociatedWithMap=new HashMap<QualifiedName, Collection<WasAssociatedWith>>();
-    private Collection<WasAssociatedWith> anonWasAssociatedWith=new LinkedList<WasAssociatedWith>();
-    private HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap=new HashMap<QualifiedName, Collection<WasAssociatedWith>>();
+    private final HashMap<QualifiedName,Collection<WasAssociatedWith>> agentWasAssociatedWithMap= new HashMap<>();
+    private final Collection<WasAssociatedWith> anonWasAssociatedWith= new LinkedList<>();
+    private final HashMap<QualifiedName,Collection<WasAssociatedWith>> namedWasAssociatedWithMap= new HashMap<>();
 
 
     /* Collection of WasAttributedTo edges that have a given entiy as an
      * effect. */
-    private HashMap<QualifiedName,Collection<WasAttributedTo>> entityWasAttributedToMap=new HashMap<QualifiedName, Collection<WasAttributedTo>>();
+    private final HashMap<QualifiedName,Collection<WasAttributedTo>> entityWasAttributedToMap= new HashMap<>();
 
     /* Collection of WasAttributedTo edges that have a given agent as a
      * cause. */
-    private HashMap<QualifiedName,Collection<WasAttributedTo>> agentWasAttributedToMap=new HashMap<QualifiedName, Collection<WasAttributedTo>>();
-    private Collection<WasAttributedTo> anonWasAttributedTo=new LinkedList<WasAttributedTo>();
-    private HashMap<QualifiedName,Collection<WasAttributedTo>> namedWasAttributedToMap=new HashMap<QualifiedName, Collection<WasAttributedTo>>();
+    private final HashMap<QualifiedName,Collection<WasAttributedTo>> agentWasAttributedToMap= new HashMap<>();
+    private final Collection<WasAttributedTo> anonWasAttributedTo=new LinkedList<WasAttributedTo>();
+    private final HashMap<QualifiedName,Collection<WasAttributedTo>> namedWasAttributedToMap= new HashMap<>();
 
 
     /* Collection of WasInformedBy edges that have a given activity as a cause. */
-    private HashMap<QualifiedName,Collection<WasInformedBy>> activityCauseWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
+    private final HashMap<QualifiedName,Collection<WasInformedBy>> activityCauseWasInformedByMap= new HashMap<>();
 
     /* Collection of WasInformedBy edges that have a given activity as an
      * effect. */
-    private HashMap<QualifiedName,Collection<WasInformedBy>> activityEffectWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
-    private Collection<WasInformedBy> anonWasInformedBy=new LinkedList<WasInformedBy>();
-    private HashMap<QualifiedName,Collection<WasInformedBy>> namedWasInformedByMap=new HashMap<QualifiedName, Collection<WasInformedBy>>();
+    private final HashMap<QualifiedName,Collection<WasInformedBy>> activityEffectWasInformedByMap= new HashMap<>();
+    private final Collection<WasInformedBy> anonWasInformedBy=new LinkedList<WasInformedBy>();
+    private final HashMap<QualifiedName,Collection<WasInformedBy>> namedWasInformedByMap= new HashMap<>();
 
     private Namespace nss;
-    private boolean flatten;
+    private final boolean flatten;
 
-    private Collection<ActedOnBehalfOf> anonActedOnBehalfOf=new LinkedList<ActedOnBehalfOf>();
-    private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> namedActedOnBehalfOfMap=new HashMap<QualifiedName, Collection<ActedOnBehalfOf>>();
-    private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> responsibleActedOnBehalfOfMap=new HashMap<QualifiedName, Collection<ActedOnBehalfOf>>();
-    private HashMap<QualifiedName, Collection<ActedOnBehalfOf>> delegateActedOnBehalfOfMap=new HashMap<QualifiedName, Collection<ActedOnBehalfOf>>();
+    private final Collection<ActedOnBehalfOf> anonActedOnBehalfOf= new LinkedList<>();
+    private final HashMap<QualifiedName, Collection<ActedOnBehalfOf>> namedActedOnBehalfOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<ActedOnBehalfOf>> responsibleActedOnBehalfOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<ActedOnBehalfOf>> delegateActedOnBehalfOfMap= new HashMap<>();
 
 
-    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
-    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
-    private Collection<WasInvalidatedBy> anonWasInvalidatedBy=new LinkedList<WasInvalidatedBy>();
-    private HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap=new HashMap<QualifiedName, Collection<WasInvalidatedBy>>();
+    private final HashMap<QualifiedName, Collection<WasInvalidatedBy>> namedWasInvalidatedByMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasInvalidatedBy>> entityWasInvalidatedByMap= new HashMap<>();
+    private final Collection<WasInvalidatedBy> anonWasInvalidatedBy=new LinkedList<WasInvalidatedBy>();
+    private final HashMap<QualifiedName, Collection<WasInvalidatedBy>> activityWasInvalidatedByMap= new HashMap<>();
 
-    private HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
-    private HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
-    private Collection<SpecializationOf> anonSpecializationOf=new LinkedList<SpecializationOf>();
-    private HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap=new HashMap<QualifiedName, Collection<SpecializationOf>>();
+    private final HashMap<QualifiedName, Collection<SpecializationOf>> namedSpecializationOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<SpecializationOf>> specificEntitySpecializationOfMap= new HashMap<>();
+    private final Collection<SpecializationOf> anonSpecializationOf=new LinkedList<SpecializationOf>();
+    private final HashMap<QualifiedName, Collection<SpecializationOf>> genericEntitySpecializationOfMap= new HashMap<>();
 
-    private Collection<AlternateOf> anonAlternateOf=new LinkedList<AlternateOf>();
-    private HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
-    private HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
-    private HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap=new HashMap<QualifiedName, Collection<AlternateOf>>();
+    private final Collection<AlternateOf> anonAlternateOf=new LinkedList<AlternateOf>();
+    private final HashMap<QualifiedName, Collection<AlternateOf>> namedAlternateOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<AlternateOf>> entityCauseAlternateOfMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<AlternateOf>> entityEffectAlternateOfMap= new HashMap<>();
 
-    private HashMap<QualifiedName, Collection<WasInfluencedBy>> influenceeWasInfluencedByMap=new HashMap<QualifiedName, Collection<WasInfluencedBy>>();
-    private HashMap<QualifiedName, Collection<WasInfluencedBy>> influencerWasInfluencedByMap=new HashMap<QualifiedName, Collection<WasInfluencedBy>>();
-    private Collection<WasInfluencedBy> anonWasInfluencedBy=new LinkedList<WasInfluencedBy>();
-    private HashMap<QualifiedName, Collection<WasInfluencedBy>> namedWasInfluencedByMap=new HashMap<QualifiedName, Collection<WasInfluencedBy>>();
-    private HashMap<QualifiedName, Collection<WasStartedBy>> activityWasStartedByMap=new HashMap<QualifiedName, Collection<WasStartedBy>>();
-    private HashMap<QualifiedName, Collection<WasStartedBy>> entityWasStartedByMap=new HashMap<QualifiedName, Collection<WasStartedBy>>();
-    private Collection<WasStartedBy> anonWasStartedBy=new LinkedList<WasStartedBy>();
-    private HashMap<QualifiedName, Collection<WasStartedBy>> namedWasStartedByMap=new HashMap<QualifiedName, Collection<WasStartedBy>>();
-    private Collection<WasEndedBy> anonWasEndedBy=new LinkedList<WasEndedBy>();
-    private HashMap<QualifiedName, Collection<WasEndedBy>> activityWasEndedByMap=new HashMap<QualifiedName, Collection<WasEndedBy>>();
-    private HashMap<QualifiedName, Collection<WasEndedBy>> namedWasEndedByMap=new HashMap<QualifiedName, Collection<WasEndedBy>>();
-    private HashMap<QualifiedName, Collection<WasEndedBy>> entityWasEndedByMap=new HashMap<QualifiedName, Collection<WasEndedBy>>();
-    private Collection<HadMember> anonHadMember=new LinkedList<HadMember>();
-    private HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap= new HashMap<>();
-    private HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap= new HashMap<>();
-    private HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasInfluencedBy>> influenceeWasInfluencedByMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasInfluencedBy>> influencerWasInfluencedByMap= new HashMap<>();
+    private final Collection<WasInfluencedBy> anonWasInfluencedBy=new LinkedList<WasInfluencedBy>();
+    private final HashMap<QualifiedName, Collection<WasInfluencedBy>> namedWasInfluencedByMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasStartedBy>> activityWasStartedByMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasStartedBy>> entityWasStartedByMap= new HashMap<>();
+    private final Collection<WasStartedBy> anonWasStartedBy=new LinkedList<WasStartedBy>();
+    private final HashMap<QualifiedName, Collection<WasStartedBy>> namedWasStartedByMap= new HashMap<>();
+    private final Collection<WasEndedBy> anonWasEndedBy=new LinkedList<WasEndedBy>();
+    private final HashMap<QualifiedName, Collection<WasEndedBy>> activityWasEndedByMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasEndedBy>> namedWasEndedByMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<WasEndedBy>> entityWasEndedByMap= new HashMap<>();
+    private final Collection<HadMember> anonHadMember=new LinkedList<HadMember>();
+    private final HashMap<QualifiedName, Collection<HadMember>> collHadMemberMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<HadMember>> namedHadMemberMap= new HashMap<>();
+    private final HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
 
 
     /** Return all used edges for this graph. */
@@ -372,13 +372,13 @@ public class IndexedDocument implements StatementAction {
         }
     }
 
-    public Activity getActivity(String name) {
+    public Activity getActivity(QualifiedName name) {
         return activityMap.get(name);
     }
-    public Entity getEntity(String name) {
+    public Entity getEntity(QualifiedName name) {
         return entityMap.get(name);
     }
-    public Agent getAgent(String name) {
+    public Agent getAgent(QualifiedName name) {
         return agentMap.get(name);
     }
     public IndexedDocument(ProvFactory pFactory, Document doc) {

@@ -34,22 +34,6 @@
     </developer>
   </developers>
 
-  <repositories>
-    <!--
-        <repository>
-          <id>mvn.prov.toolbox</id>
-          <name>maven repository for PROV toolbox</name>
-          <url>http://openprovenance.org/java/maven-releases/</url>
-        </repository>
-    -->
-
-    <repository>
-      <id>mvn.prov.toolbox.snapshots</id>
-      <name>maven snapshot repository for PROV toolbox</name>
-      <url>http://openprovenance.org/java/maven-snapshots/</url>
-    </repository>
-  </repositories>
-
   <licenses>
     <license>
       <name>MIT License</name>
@@ -100,14 +84,54 @@
       </plugin>
 
 
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.1.1</version>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+          <source>1.9</source>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+
+          <execution>
+            <id>post-try-unzip</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
             <configuration>
-                <source>1.9</source>
+              <executable>unzip</executable>
+              <workingDirectory>${project.build.directory}/tmp</workingDirectory>
+              <arguments>
+                <argument>${project.build.directory}/${project.build.finalName}-src.zip</argument>
+              </arguments>
             </configuration>
-        </plugin>
+          </execution>
+
+
+          <execution>
+            <id>post-try-build</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>make</executable>
+              <workingDirectory>${project.build.directory}/tmp/${project.build.finalName}</workingDirectory>
+              <arguments>
+                <!--<argument>PROVCONVERT=${project.build.directory}/../../../modules-executable/toolbox/target/appassembler/bin/provconvert</argument>-->
+                <argument>PROVCONVERT=${project.basedir}/../../modules-executable/toolbox/target/appassembler/bin/provconvert</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
 

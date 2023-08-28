@@ -151,7 +151,7 @@
                         </program>
 
                     </programs>
-                    <repositoryLayout>default</repositoryLayout>
+                    <repositoryLayout>${repository.layout}</repositoryLayout>
                     <repositoryName>repo</repositoryName>
                     <platforms>
                         <platform>windows</platform>
@@ -461,6 +461,8 @@
         <izpack.version>5.1.2</izpack.version>
 
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <repository.layout>default</repository.layout>
+
     </properties>
 
 
@@ -1016,6 +1018,13 @@
 
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>flat-layout</id>
+            <properties>
+                <repository.layout>flat</repository.layout>
+            </properties>
         </profile>
 
     </profiles>

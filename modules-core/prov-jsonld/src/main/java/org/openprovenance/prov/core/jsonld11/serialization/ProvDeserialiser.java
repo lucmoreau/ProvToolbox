@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-//import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeMapDeserializer;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
+
 
 public class ProvDeserialiser extends org.openprovenance.prov.core.json.serialization.ProvDeserialiser {
     final ObjectMapper mapper ;
@@ -42,6 +44,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
+        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {
@@ -51,6 +54,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (BufferedReader in)  {
+        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {
@@ -77,9 +81,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
         module.addDeserializer(Namespace.class, newCustomNamespaceDeserializer(arrayType));
         module.addDeserializer(Bundle.class, new CustomBundleDeserializer());
-
-
-        module.addDeserializer(Attribute.class,new CustomAttributeDeserializer());
+        module.addDeserializer(Attribute.class, new CustomAttributeDeserializer());
 
         provMixin().addProvMixin(mapper);
 

@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
+
 public class MongoDocumentResourceStorage implements ResourceStorage, Constants {
     private static Logger logger = LogManager.getLogger(MongoDocumentResourceStorage.class);
 
@@ -50,17 +53,14 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
         DBCollection collection=db.getCollection(COLLECTION_DOCUMENTS);
 
-
-        ProvSerialiser serialiser=new ProvSerialiser(false);
         this.mapper=new ObjectMapper();
-        this.serialiser =serialiser;
-        ProvDeserialiser deserialiser=new ProvDeserialiser();
-        this.deserialiser=deserialiser;
+        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
 
-        deserialiser.customize(mapper);
+        this.serialiser=new ProvSerialiser(mapper, false);
         serialiser.customize(mapper);
 
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.INSTANCE);
+        this.deserialiser=new ProvDeserialiser(mapper);
+
 
         JacksonDBCollection<DocumentWrapper, String> documentCollection = JacksonDBCollection.wrap(collection, DocumentWrapper.class, String.class, mapper);
         this.documentCollection=documentCollection;
@@ -99,6 +99,8 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public Document readDocument(String id, boolean known) throws IOException {
+        // HACK
+        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
         DocumentWrapper wrapper=documentCollection.findOneById(id);
         if (wrapper==null) {
             return null;
@@ -108,6 +110,8 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
 
     @Override
     public Document readDocument(String id) throws IOException {
+        // HACK, global variable, prevents concurrren tuse
+        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
         DocumentWrapper wrapper=documentCollection.findOneById(id);
         return wrapper.document;
     }

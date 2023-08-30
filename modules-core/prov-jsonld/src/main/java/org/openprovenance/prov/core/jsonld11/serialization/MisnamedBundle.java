@@ -1,5 +1,6 @@
 package org.openprovenance.prov.core.jsonld11.serialization;
 
+import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -12,14 +13,16 @@ public class MisnamedBundle extends org.openprovenance.prov.vanilla.Bundle {
         //System.out.println("MisnamedBundle.toBundle " + oldId);
         Namespace namespace = getNamespace();
         String prefix = oldId.getPrefix();
+
         Map<String, String> prefixes = namespace.getPrefixes();
-        if (prefixes.containsKey(prefix)) {
-            //System.out.println("MisnamedBundle.toBundle " + oldId + " has a prefix " + prefix + " in local namespace" + prefixes);
-            QualifiedName newId = pf.newQualifiedName(prefixes.get(prefix), oldId.getLocalPart(), prefix);
-            //System.out.println("MisnamedBundle.toBundle " + oldId + " is a prefix, newId=" + newId);
-            return pf.newNamedBundle(newId, namespace, getStatement());
-        } else {
-            return pf.newNamedBundle(oldId, namespace, getStatement());
-        }
+        QualifiedName newId = pf.newQualifiedName(prefixes.get(prefix), oldId.getLocalPart(), prefix);
+
+        Bundle bundle = pf.newNamedBundle(newId, namespace, getStatement());
+
+       // System.out.println("MisnamedBundle.toBundle " + oldId + " -> " + newId);
+
+        return bundle;
+
+
     }
 }

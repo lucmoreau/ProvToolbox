@@ -12,7 +12,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import java.io.IOException;
 
 public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
-    ProvFactory pf = org.openprovenance.prov.vanilla.ProvFactory.getFactory();
+    static final ProvFactory pf = org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     @Override
     public Bundle deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {

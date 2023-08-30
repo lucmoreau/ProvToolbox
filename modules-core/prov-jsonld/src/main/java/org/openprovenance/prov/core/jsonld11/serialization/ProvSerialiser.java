@@ -33,16 +33,17 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     protected final boolean embedContext;
     // create two independent mappers, with formatting or not
-    final ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper;
     final ObjectMapper mapperWithFormat = new ObjectMapper();
     final ObjectWriter writer;
 
     public ProvSerialiser () {
-        this(true);
+        this(new ObjectMapper(), true);
     }
 
-    public ProvSerialiser (boolean embedContext) {
+    public ProvSerialiser (ObjectMapper mapper, boolean embedContext) {
         this.embedContext=embedContext;
+        this.mapper=mapper;
         customize(mapper);
         customize(mapperWithFormat);
         mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);

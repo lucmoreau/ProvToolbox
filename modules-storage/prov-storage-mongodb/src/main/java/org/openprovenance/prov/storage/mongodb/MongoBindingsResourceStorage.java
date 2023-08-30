@@ -16,11 +16,11 @@ public class MongoBindingsResourceStorage extends MongoGenericResourceStorage<Bi
 
     public MongoBindingsResourceStorage(String dbname, ObjectMapper mapper) {
 
-        super(dbname,COLLECTION_BINDINGS, mapper, BindingsBean.class, () -> new BindingsWrapper());
+        super(dbname,COLLECTION_BINDINGS, mapper, BindingsBean.class, BindingsWrapper::new);
     }
     public MongoBindingsResourceStorage(String host, String dbname, ObjectMapper mapper) {
 
-        super(host, dbname,COLLECTION_BINDINGS, mapper, BindingsBean.class, () -> new BindingsWrapper());
+        super(host, dbname,COLLECTION_BINDINGS, mapper, BindingsBean.class, BindingsWrapper::new);
     }
 
 }

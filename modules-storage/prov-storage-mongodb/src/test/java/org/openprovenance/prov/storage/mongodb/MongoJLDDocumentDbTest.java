@@ -1,19 +1,15 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import junit.framework.TestCase;
-import org.openprovenance.prov.core.jsonld11.JLD_LangString;
-import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.vanilla.LangString;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
 
-public class mongoJLDDocumentDbTest extends TestCase {
+public class MongoJLDDocumentDbTest extends TestCase {
 
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";
@@ -68,6 +64,7 @@ public class mongoJLDDocumentDbTest extends TestCase {
         ns1.getPrefixes().put(EX_PREFIX, EX_NS);
         doc1.setNamespace(ns);
 
+
         String id1=ds.newStore(Formats.ProvFormat.JSONLD);
         ds.writeDocument(id1, Formats.ProvFormat.JSONLD, doc1);
 
@@ -83,7 +80,6 @@ public class mongoJLDDocumentDbTest extends TestCase {
        // Template_blockBuilder maker=new Template_blockBuilder(org.openprovenance.prov.xml.ProvFactory.getFactory());
         Template_blockBuilder maker=new Template_blockBuilder(pf);
         Document graph1=maker.make("op", "Adder", "john", "co1", "10", "co2", 20, "prod", "T", 30);
-
 
 
         String id5=ds.newStore(Formats.ProvFormat.JSONLD);

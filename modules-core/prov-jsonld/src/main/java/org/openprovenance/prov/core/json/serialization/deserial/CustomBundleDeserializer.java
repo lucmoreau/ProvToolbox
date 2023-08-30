@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.openprovenance.prov.core.json.serialization.SortedBundle;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 
@@ -14,7 +16,8 @@ public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
     static final ProvFactory pf = org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     @Override
-    public Bundle deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Bundle deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+
         SortedBundle sbun= jsonParser.readValueAs(SortedBundle.class);
         return (Bundle) sbun.toBundle(pf);
     }

@@ -120,13 +120,16 @@ public class RoundTripFromJavaJSONLD11LegacyTest extends RoundTripFromJavaJSONLD
         System.out.println(" ========== TEST missing testBundle1 ()");
     }
     public void testBundle2() {
-        System.out.println(" ========== TEST missing testBundle1 ()");
+        System.out.println(" ========== TEST missing testBundle2 ()");
     }
     public void testBundle3() {
-        System.out.println(" ========== TEST missing testBundle1 ()");
+        System.out.println(" ========== TEST missing testBundle3 ()");
     }
     public void testBundle4() {
-        System.out.println(" ========== TEST missing testBundle1 ()");
+        System.out.println(" ========== TEST missing testBundle4 ()");
+    }
+    public void testBundle5() {
+        System.out.println(" ========== TEST missing testBundle5 ()");
     }
 
 

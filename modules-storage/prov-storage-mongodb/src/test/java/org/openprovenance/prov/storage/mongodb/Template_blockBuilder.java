@@ -51,23 +51,28 @@ public class Template_blockBuilder extends FileBuilder implements ProxyClientAcc
     QualifiedName nullqn = null;
     Collection<Attribute> attrs=null;
     Document __C_document = pf.newDocument();
-    if (b==null) b=ExpandAction.getUUIDQualifiedName2(pf);
-    Bundle b_ = pf.newNamedBundle(b,pf.newNamespace(),null);
+    Namespace namespace = pf.newNamespace();
+
+    if (b==null) {
+      b=ExpandAction.getUUIDQualifiedName2(pf);
+      namespace.register(b.getPrefix(),b.getNamespaceURI());
+    }
+    Bundle b_ = pf.newNamedBundle(b, namespace,null);
     __C_document.getStatementOrBundle().add(b_);
-    attrs=new LinkedList<Attribute>();
+    attrs= new LinkedList<>();
     if (operation_type!=null) attrs.add(pf.newAttribute(_Q_prov_type,operation_type,vc.getXsdType(operation_type)));
     if (operation!=null) b_.getStatement().add(pf.newActivity(operation,null,null, attrs));
     if (agent!=null) b_.getStatement().add(pf.newAgent(agent));
     b_.getStatement().add(pf.newWasAssociatedWith(nullqn,operation,agent,nullqn));
-    attrs=new LinkedList<Attribute>();
+    attrs= new LinkedList<>();
     if (consumed_value1!=null) attrs.add(pf.newAttribute(_Q_prov_value,consumed_value1,vc.getXsdType(consumed_value1)));
     if (consumed1!=null) b_.getStatement().add(pf.newEntity(consumed1, attrs));
-    attrs=new LinkedList<Attribute>();
+    attrs= new LinkedList<>();
     if (consumed_value2!=null) attrs.add(pf.newAttribute(_Q_prov_value,consumed_value2,vc.getXsdType(consumed_value2)));
     if (consumed2!=null) b_.getStatement().add(pf.newEntity(consumed2, attrs));
     if ((operation!=null) &&  (consumed1!=null)) b_.getStatement().add(pf.newUsed(nullqn,operation,consumed1,null));
     if ((operation!=null) &&  (consumed2!=null)) b_.getStatement().add(pf.newUsed(nullqn,operation,consumed2,null));
-    attrs=new LinkedList<Attribute>();
+    attrs= new LinkedList<>();
     if (produced_type!=null) attrs.add(pf.newAttribute(_Q_prov_type,produced_type,vc.getXsdType(produced_type)));
     if (produced_value!=null) attrs.add(pf.newAttribute(_Q_prov_value,produced_value,vc.getXsdType(produced_value)));
     if (produced!=null) b_.getStatement().add(pf.newEntity(produced, attrs));
@@ -75,6 +80,7 @@ public class Template_blockBuilder extends FileBuilder implements ProxyClientAcc
     if ((produced!=null) &&  (consumed1!=null)) b_.getStatement().add(pf.newWasDerivedFrom(nullqn,produced,consumed1));
     if ((produced!=null) &&  (consumed2!=null)) b_.getStatement().add(pf.newWasDerivedFrom(nullqn,produced,consumed2));
     new ProvUtilities().updateNamespaces(__C_document);
+    System.out.println("names " + __C_document.getNamespace());
     return __C_document;
   }
 

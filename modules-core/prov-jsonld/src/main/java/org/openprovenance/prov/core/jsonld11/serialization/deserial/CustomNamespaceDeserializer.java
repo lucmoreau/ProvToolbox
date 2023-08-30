@@ -1,21 +1,20 @@
 package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
+
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 
 public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
-    public static final Object CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
     private final JavaType tr;
 
 
@@ -24,13 +23,25 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         this.tr=tr;
     }
 
-    @Override
-    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    // define thread local myAttributes
 
-        Namespace previous=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
+
+
+
+    @Override
+    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
+
+
+        //Namespace previous=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
+        Namespace previous=getAttributes().get().get(CONTEXT_KEY_NAMESPACE);
+
+
+
 
         Namespace ns=new Namespace();
         if (previous!=null) ns.setParent(previous);  //FIXME: needs a mechanism to restore to previous namespace context when leaving bundle.
+
+       // System.out.println("--> CustomNamespaceDeserializer deserialize: thread " + Thread.currentThread().getId() );
 
 
         if (jp.isExpectedStartArrayToken()) {
@@ -38,12 +49,18 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
             for (Object o: objects) {
                 processContextObject(ns, o);
             }
+        } else {
         }
 
 
-        deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
+        //deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
+
+        getAttributes().get().put(CONTEXT_KEY_NAMESPACE,ns);
+
+
 
         Namespace.withThreadNamespace(ns);
+
 
         return ns;
     }

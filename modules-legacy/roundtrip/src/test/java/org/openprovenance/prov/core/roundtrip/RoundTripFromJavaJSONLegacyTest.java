@@ -55,6 +55,10 @@ public class RoundTripFromJavaJSONLegacyTest extends RoundTripFromJavaJSONTest {
 
     @Override
     public void testBundle4 () {}
+    public void testBundle2 () {}
+    public void testBundle1 () {}
+    public void testBundle3 () {}
+    public void testBundle5 () {}
 
 
 }

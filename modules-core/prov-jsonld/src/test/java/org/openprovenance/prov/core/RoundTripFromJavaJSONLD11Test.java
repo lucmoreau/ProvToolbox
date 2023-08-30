@@ -1,5 +1,6 @@
 package org.openprovenance.prov.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
@@ -27,6 +28,8 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
 
     }
 
+    final ObjectMapper mapper=new ObjectMapper();
+
 
 
     public void writeDocumentToFile(Document doc, String file)
@@ -36,7 +39,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
         System.out.println("writing to " + file);
 
 
-        ProvSerialiser serial=new ProvSerialiser(false);
+        ProvSerialiser serial=new ProvSerialiser(mapper, false);
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
     }
 

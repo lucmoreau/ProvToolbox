@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
-import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QualifiedNameUtils;
@@ -12,15 +11,17 @@ import org.openprovenance.prov.model.QualifiedNameUtils;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class DeserializerUtil {
+    public static final String CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
+
     private final static ProvFactory pf= ProvDeserialiser.pf;
     private final static QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public static Namespace getNamespace(DeserializationContext deserializationContext) {
-        Namespace ns = (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        Namespace ns = (Namespace) deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
         if (ns == null) {
             ns = new Namespace();
             ns.addKnownNamespaces();
-            deserializationContext.setAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE, ns);
+            deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE, ns);
         }
         return ns;
     }

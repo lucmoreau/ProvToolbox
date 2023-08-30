@@ -9,13 +9,14 @@ import org.openprovenance.prov.vanilla.LangString;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
-import org.openprovenance.prov.core.xml.serialization.deserial.attic.CustomNamespaceDeserializer;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.CONTEXT_KEY_NAMESPACE;
 
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
@@ -80,7 +81,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
 
     public Attribute deserialize(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        Namespace ns= (Namespace) deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
 
         QualifiedName unescaped=DeserializerUtil.unescapeQualifiedName(elementName);
         Object valueObject=body;

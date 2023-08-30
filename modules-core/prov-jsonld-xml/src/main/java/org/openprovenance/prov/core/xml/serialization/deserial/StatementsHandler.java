@@ -121,7 +121,7 @@ public class StatementsHandler extends SimpleModule{
             } else {
                 Class<? extends Statement> cl2;
                 if ((beanOrClass instanceof Bundle) && ((cl2 = statementMap.get(propertyName)) != null)) {
-                    System.out.println("########################" + propertyName);
+                    //System.out.println("########################" + propertyName);
                     Statement s = jp.readValueAs(cl2);
                     Bundle bun = (Bundle) beanOrClass;
                     bun.getStatement().add(s);

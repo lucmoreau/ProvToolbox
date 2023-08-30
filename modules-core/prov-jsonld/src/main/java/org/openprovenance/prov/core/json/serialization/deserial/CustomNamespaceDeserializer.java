@@ -32,7 +32,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
 
 
-        Hashtable<String, String> map=new Hashtable<String,String>();
+        Hashtable<String, String> map= new Hashtable<>();
         for (Iterator<String> it = prefixes.fieldNames(); it.hasNext(); ) {
             String prefix = it.next();
             String namespace=prefixes.get(prefix).textValue();

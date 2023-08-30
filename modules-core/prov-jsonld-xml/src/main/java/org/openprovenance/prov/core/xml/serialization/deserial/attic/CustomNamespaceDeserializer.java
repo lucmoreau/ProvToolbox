@@ -15,7 +15,6 @@ import java.util.Iterator;
 
 abstract public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
-    public static final Object CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
 
     public CustomNamespaceDeserializer(JavaType tr) {
         super(tr);

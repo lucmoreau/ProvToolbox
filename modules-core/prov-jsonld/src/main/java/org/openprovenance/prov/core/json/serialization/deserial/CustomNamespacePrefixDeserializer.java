@@ -33,6 +33,7 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
 
         JsonNode prefixes=jp.readValueAsTree();
 
+
         Namespace ns=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
         if (ns==null) {
             ns=new Namespace();
@@ -40,7 +41,7 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
         }
 
 
-        Hashtable<String, String> map=new Hashtable<String,String>();
+        Hashtable<String, String> map= new Hashtable<>();
         for (Iterator<String> it = prefixes.fieldNames(); it.hasNext(); ) {
             String prefix = it.next();
             String namespace=prefixes.get(prefix).textValue();

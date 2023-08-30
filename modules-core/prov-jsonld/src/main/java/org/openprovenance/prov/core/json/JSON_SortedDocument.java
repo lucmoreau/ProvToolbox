@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializer;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializerNoAction;
 import org.openprovenance.prov.core.json.serialization.serial.CustomQualifiedNameSerializerAsField;
 import org.openprovenance.prov.vanilla.*;
 
@@ -102,7 +103,7 @@ public interface JSON_SortedDocument {
 
 
     @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Bundle.class)
-    @JsonDeserialize(keyUsing = CustomKeyDeserializer.class, contentAs = Bundle.class )
+    @JsonDeserialize(keyUsing = CustomKeyDeserializerNoAction.class, contentAs = Bundle.class )
     public Map<org.openprovenance.prov.model.QualifiedName, Bundle> getBundle();
 
 

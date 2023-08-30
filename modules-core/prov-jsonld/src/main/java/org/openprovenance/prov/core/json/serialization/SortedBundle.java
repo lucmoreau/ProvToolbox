@@ -60,11 +60,14 @@ public class SortedBundle {
 
     private QualifiedName id;
 
-    protected SortedBundle() {}
+    protected SortedBundle() {deferredId=true;}
+
+    final boolean deferredId;
 
     public SortedBundle(Bundle bun)  {
         this.namespace=bun.getNamespace();
         this.id=bun.getId();
+        this.deferredId=false;
         for (Statement s: bun.getStatement()) {
             switch (s.getKind()) {
                 case PROV_ENTITY:
@@ -265,6 +268,7 @@ public class SortedBundle {
 
 
 
+
     public Bundle toBundle(ProvFactory provFactory) {
         List<Statement> ss=new LinkedList<>();
         ss.addAll(reassignId(getEntity()).values());
@@ -287,6 +291,20 @@ public class SortedBundle {
         ss.addAll(reassignId(getQualifiedSpecializationOf()).values());
         ss.addAll(reassignId(getQualifiedAlternateOf()).values());
         ss.addAll(reassignId(getQualifiedHadMember()).values());
-        return provFactory.newNamedBundle(id,namespace,ss);
+
+
+        if (deferredId) {
+            Map<String, String> prefixes = namespace.getPrefixes();
+            String prefix = id.getPrefix();
+            QualifiedName newId = provFactory.newQualifiedName(prefixes.get(prefix), id.getLocalPart(), prefix);
+
+            Bundle bundle = provFactory.newNamedBundle(newId, namespace, ss);
+            //System.out.println("SortedBundle.toBundle --> " + bundle);
+            return bundle;
+        } else {
+            return provFactory.newNamedBundle(id, namespace, ss);
+        }
+
+
     }
 }

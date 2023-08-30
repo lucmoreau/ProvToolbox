@@ -20,7 +20,7 @@ import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 public class NamespaceGatherer implements StatementAction {
 	static ProvUtilities pu=new ProvUtilities();
 
-	private Namespace ns=new Namespace();
+	private final Namespace ns=new Namespace();
 
 	public NamespaceGatherer() {
 		ns.addKnownNamespaces();

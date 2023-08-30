@@ -3,6 +3,7 @@ package org.openprovenance.prov.core.json;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomDeferredQualifiedNameDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespacePrefixDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomQualifiedNameDeserializer;
@@ -104,9 +105,8 @@ public interface JSON_SortedBundle {
     public List<QualifiedHadMember> getQualifiedHadMember();
 
 
-    @JsonIgnore
     @JsonProperty("@id")
-    @JsonDeserialize(using = CustomQualifiedNameDeserializer.class)
+    @JsonDeserialize(using = CustomDeferredQualifiedNameDeserializer.class)
     public QualifiedName getId();
 
     @JsonProperty("prefix")

@@ -103,21 +103,21 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     public void makeDocAndTest(Statement[] stment, Bundle[] bundles,
                                String file, Statement[] opt, boolean check) {
         Document doc = pFactory.newDocument();
-        for (int i = 0; i < stment.length; i++) {
-            doc.getStatementOrBundle().add(stment[i]);
+        for (Statement statement : stment) {
+            doc.getStatementOrBundle().add(statement);
         }
         if (bundles != null) {
-            for (int j = 0; j < bundles.length; j++) {
-                doc.getStatementOrBundle().add(bundles[j]);
+            for (Bundle bundle : bundles) {
+                doc.getStatementOrBundle().add(bundle);
             }
         }
         updateNamespaces(doc);
         
         if (bundles!=null) {
-            for (int j = 0; j < bundles.length; j++) {
-             //   System.out.println(bundles[j]);
-             //   System.out.println(bundles[j].getNamespace());
-                bundles[j].getNamespace().setParent(doc.getNamespace());
+            for (Bundle bundle : bundles) {
+                //   System.out.println(bundles[j]);
+                //   System.out.println(bundles[j].getNamespace());
+                bundle.getNamespace().setParent(doc.getNamespace());
             }
         }
 
@@ -2169,20 +2169,20 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         st1.add(a1);
 
 
-        Bundle b1 = pFactory.newNamedBundle(qInner("bundle1"), st1);
-        Namespace ns1 = Namespace.gatherNamespaces(b1, pFactory);
-        b1.setNamespace(ns1);
+        Bundle b5 = pFactory.newNamedBundle(qInner("bundle5"), st1);
+        Namespace ns5 = Namespace.gatherNamespaces(b5, pFactory);
+        b5.setNamespace(ns5);
 
 
         Entity e1 = pFactory.newEntity(qOuter("e1"));
 
-        //System.out.println("bundle 1 ns " + b1);
+        //System.out.println("bundle 1 ns " + b5);
         Statement[] statements = new Statement[]{e1};
-        Bundle[] bundles = new Bundle[]{b1};
+        Bundle[] bundles = new Bundle[]{b5};
 
 
 
-        makeDocAndTest(statements, bundles, "target/bundle5", null, true);
+        makeDocAndTest(statements, bundles, "target/bundle5", new Statement[0], true);
     }
 
 

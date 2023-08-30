@@ -1,5 +1,6 @@
 package org.openprovenance.prov.core;
 
+import org.junit.Test;
 import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
@@ -19,38 +20,22 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
         super(testName);
     }
 
-    public Document readDocumentFromFile(String file)
-            throws IOException {
-
+    public Document readDocumentFromFile(String file) throws IOException {
         System.out.println("reading from " + file);
 
         ProvDeserialiser deserial=new ProvDeserialiser();
         return deserial.deserialiseDocument(new File(file));
-
     }
 
-
-
-    public void writeDocumentToFile(Document doc, String file)
-            throws IOException {
-
-
+    public void writeDocumentToFile(Document doc, String file) throws IOException {
         System.out.println("writing to " + file);
-
 
         ProvSerialiser serial=new ProvSerialiser();
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
-
-
-
     }
 
     public String extension() {
         return ".json";
     }
-
-    @Override
-    public void testBundle4 () {}
-    public void testBundle5 () {}
 
 }

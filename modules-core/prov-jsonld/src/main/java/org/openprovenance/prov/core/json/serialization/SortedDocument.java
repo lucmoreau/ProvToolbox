@@ -135,8 +135,9 @@ public class SortedDocument extends SortedBundle {
         ss.addAll(reassignId(getQualifiedHadMember()).values());
 
 
-        //System.out.println(" ===> toDocument " + getEntity());
 
-        return provFactory.newDocument(namespace,ss, reassignId(theBundles).values());
+        // return provFactory.newDocument(namespace,ss, reassignId(theBundles).values());
+        // NO reassignement here, as it was done in the SortedBundle
+        return provFactory.newDocument(namespace,ss,theBundles.values());
     }
 }

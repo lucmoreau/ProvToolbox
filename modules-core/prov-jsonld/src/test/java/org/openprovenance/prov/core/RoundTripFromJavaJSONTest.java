@@ -51,6 +51,6 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
 
     @Override
     public void testBundle4 () {}
-
+    public void testBundle5 () {}
 
 }

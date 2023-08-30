@@ -20,6 +20,7 @@ import java.util.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Variant;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.configuration.Configuration;
@@ -30,7 +31,6 @@ import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
-import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.expander.Bindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
@@ -1301,7 +1301,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
                         XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
                         TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
-                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser::new,
+                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
                         RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
                         TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
@@ -1326,7 +1326,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
                         XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
                         TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
-                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser::new,
+                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
                         RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
                         TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));

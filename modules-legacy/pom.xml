@@ -11,11 +11,11 @@
     <name>|&gt;-  MODULES: LEGACY</name>
     <artifactId>modules-legacy</artifactId>
     <modules>
-        <module>prov-xml</module>
+         <module>prov-xml</module>
         <module>prov-n</module>
-        <module>prov-json</module>
-        <module>prov-rdf</module>
+        <!-- <module>prov-json</module> -->
+        <!-- <module>prov-rdf</module> -->
         <module>roundtrip</module>
-        <module>prov-sql</module>	
+        <!-- <module>prov-sql</module>	-->
     </modules>
 </project>

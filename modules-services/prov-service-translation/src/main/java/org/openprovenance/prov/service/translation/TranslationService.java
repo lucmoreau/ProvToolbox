@@ -63,7 +63,6 @@ public class TranslationService implements Constants, InteropMediaType {
                                               @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
                                               @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
                                               @Content(mediaType=MEDIA_APPLICATION_TRIG),	
-                                              @Content(mediaType=MEDIA_APPLICATION_RDF_XML),
                                              @Content(mediaType=MEDIA_APPLICATION_JSON),
                                              @Content(mediaType=MEDIA_APPLICATION_JSONLD),
                                               @Content(mediaType=MEDIA_IMAGE_SVG_XML),
@@ -77,7 +76,7 @@ public class TranslationService implements Constants, InteropMediaType {
                        @ApiResponse( responseCode = "406", description = "Not Acceptable")})
     @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
         MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-        MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,
+        MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,
         MEDIA_IMAGE_SVG_XML, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG, MEDIA_APPLICATION_PDF })
 
     public Response actionTranslate(@Context HttpServletResponse response,
@@ -101,7 +100,7 @@ public class TranslationService implements Constants, InteropMediaType {
                                           @Context HttpServletRequest request,
                                           @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
                                           @Parameter(name = "type", description = "serialization type", example = "provn", 
-                                                     schema=@Schema(allowableValues={"json","ttl","provn","provx","rdf","trig","svg","png","pdf","jpg","jpeg", "jsonld"}), required = true) @PathParam("type") String type)
+                                                     schema=@Schema(allowableValues={"json","ttl","provn","provx","trig","svg","png","pdf","jpg","jpeg", "jsonld"}), required = true) @PathParam("type") String type)
                                                   throws IOException {
         logger.debug("translate to " + type);
 

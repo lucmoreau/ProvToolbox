@@ -13,7 +13,7 @@
 
     <modules>
         <module>prov-interop</module>
-        <module>prov-interop-light</module>
+        <!--<module>prov-interop-light</module>-->
         <module>toolbox</module>
     </modules>
 

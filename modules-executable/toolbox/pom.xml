@@ -27,24 +27,12 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-rdf</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-json</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
@@ -70,12 +58,10 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
-
-        <!-- required by sesame openrdf, to avoid slf4j warning -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
-            <version>1.7.26</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
@@ -313,7 +299,7 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <includeGroupIds>org.codehaus.izpack</includeGroupIds>
-                            <includeArtifacIds>izpack-wrapper</includeArtifacIds>
+                            <!-- <includeArtifacIds>izpack-wrapper</includeArtifacIds>-->
                             <excludeTransitive>true</excludeTransitive>
                             <outputDirectory>target/staging</outputDirectory>
                         </configuration>
@@ -326,7 +312,7 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <includeGroupIds>org.codehaus.izpack</includeGroupIds>
-                            <includeArtifacIds>izpack-wrapper</includeArtifacIds>
+                            <!-- includeArtifacIds>izpack-wrapper</includeArtifacIds>-->
                             <classifier>izpack2exe</classifier>
                             <type>zip</type>
                             <excludeTransitive>true</excludeTransitive>
@@ -337,8 +323,9 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>

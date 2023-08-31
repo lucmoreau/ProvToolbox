@@ -20,17 +20,12 @@
         <module name="prov-jsweet-candy-js" />
         <module name="docker-service-translator" />
         <module name="prov-jsonld" />
-        <module name="ProvToolbox-Tutorial4" />
-        <module name="prov-rdf" />
         <module name="ProvToolbox-Tutorial3" />
         <module name="benchmarks" />
         <module name="provconvert" />
         <module name="service-translator" />
-        <module name="prov-json" />
-        <module name="ProvToolbox-Tutorial6" />
         <module name="prov-model" />
         <module name="ProvToolbox-Tutorial5" />
-        <module name="prov-sql" />
         <module name="prov-interop" />
         <module name="prov-interop-light" />
         <module name="prov-log" />
@@ -42,8 +37,8 @@
         <module name="roundtrip" />
         <module name="prov-model-scala" />
         <module name="toolbox" />
-        <module name="prov-xml" />
         <module name="prov-generator" />
+        <module name="prov-xml" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
@@ -54,8 +49,13 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="jsweet-quickstart" target="11" />
+      <module name="prov-json" target="9" />
       <module name="prov-jsonld-xml (1)" target="11" />
+      <module name="prov-rdf" target="11" />
       <module name="prov-scala" target="9" />
+      <module name="prov-sql" target="9" />
+      <module name="ProvToolbox-Tutorial4" target="11" />
+      <module name="ProvToolbox-Tutorial6" target="11" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

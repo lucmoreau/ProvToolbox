@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.translator.roundtrip;
+package org.openprovenance.prov.service.translator.light;
 
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
@@ -126,18 +126,18 @@ public class IT extends RoundTripFromJavaTest {
     public List<Pair> readDocuments(String file) {
 
         String location=fileToUri.get(file);
-       // Document doc2 = readDocument(location,MEDIA_APPLICATION_JSON,           ".json");
+        Document doc2 = readDocument(location,MEDIA_APPLICATION_JSON,           ".json");
         Document doc3 = readDocument(location,MEDIA_TEXT_PROVENANCE_NOTATION,   ".provn");
         Document doc1 = readDocument(location,MEDIA_APPLICATION_PROVENANCE_XML, ".provx");
-        Document doc4 = readDocument(location,MEDIA_APPLICATION_TRIG,           ".trig");
-        //Document doc5 = readDocument(location,MEDIA_APPLICATION_JSONLD,         ".jsonld");
+        //Document doc4 = readDocument(location,MEDIA_APPLICATION_TRIG,           ".trig");
+        Document doc5 = readDocument(location,MEDIA_APPLICATION_JSONLD,         ".jsonld");
         Object o1=readObject(location, MEDIA_IMAGE_SVG_XML);
-        List<Pair> ll=new LinkedList<Pair>();
+        List<Pair> ll= new LinkedList<>();
         ll.add(new Pair(doc1, ProvFormat.XML));
-       // ll.add(new Pair(doc2, ProvFormat.JSON));
+        ll.add(new Pair(doc2, ProvFormat.JSON));
         ll.add(new Pair(doc3, ProvFormat.PROVN));
-        ll.add(new Pair(doc4, ProvFormat.TRIG));
-        //ll.add(new Pair(doc5, ProvFormat.JSONLD));
+        //ll.add(new Pair(doc4, ProvFormat.TRIG));
+        ll.add(new Pair(doc5, ProvFormat.JSONLD));
         return ll;
     }
 
@@ -150,13 +150,11 @@ public class IT extends RoundTripFromJavaTest {
 
 
     public String readAsString(String location, String media) {
-        //System.out.println("++++ readAsString " + location + " " + media);
         Client client=ClientBuilder.newBuilder().build();
         client.register(StringMessageBodyReader.class);
         WebTarget target=client.target(location);
         Response response2=target.request(media).get();
         String o=response2.readEntity(String.class);
-        //System.out.println("++++ found " + o);
         client.close();
         return o;
     }

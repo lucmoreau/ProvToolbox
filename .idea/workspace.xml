@@ -8,21 +8,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.0.0-SNAPSHOT/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/2.0.0-SNAPSHOT/bundle.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/2.0.0-SNAPSHOT/bundle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-legacy/prov-rdf/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/prov-rdf/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-legacy/roundtrip/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaJSONLD11LegacyTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-legacy/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaJSONLegacyTest.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/expander.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/expander.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/translator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/translator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-index-redis/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/roundtrip/IT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/light/IT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/IT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/IT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/service/translator/roundtrip/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/service/translator/light/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-tutorial/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,22 +120,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development1__0&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.44367817&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "development2__0",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.44367817",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.template.compiler.configuration" />
@@ -934,7 +942,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java</url>
-          <line>134</line>
+          <line>133</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

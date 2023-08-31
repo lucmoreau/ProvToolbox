@@ -23,14 +23,12 @@
 		<module>modules-misc</module>
 		<module>modules-template</module>
 		<module>modules-executable</module>
-
+		<module>modules-storage</module>
 
 		<module>modules-tutorial</module>
-		<module>modules-storage</module>
+
 		<module>modules-services</module>
 
-
-		<!-- <module>tutorial/tutorial6</module> -->
 	</modules>
 
 
@@ -346,9 +344,12 @@
 		<javadoc.plugin.version>3.1.1</javadoc.plugin.version>
 		<exec.plugin.version>3.0.0</exec.plugin.version>
 
-		<!-- java -->
+		<!-- java, scala, jsweet-->
 
 		<java.version>1.8</java.version>
+
+		<scala.library.version>2.12.18</scala.library.version>
+		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
 
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>

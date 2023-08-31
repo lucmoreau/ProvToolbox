@@ -53,7 +53,7 @@ public class IT extends TestCase {
     }
 
 
-    static String port= Configuration.getPropertiesFromClasspath(org.openprovenance.prov.service.translator.roundtrip.IT.class,"config.properties").getProperty("service.port");
+    static String port= Configuration.getPropertiesFromClasspath(org.openprovenance.prov.service.translator.light.IT.class,"config.properties").getProperty("service.port");
     
     String expansionURL="http://localhost:" + port + "/provapi/documents/";
     

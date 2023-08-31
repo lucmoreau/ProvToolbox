@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -367,14 +366,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                    PROVN);
                 provTypeMap.put(PROVN, ProvFormatType.INPUTOUTPUT);
                 break;
-            case RDFXML:
-                extensionMap.put(ProvFormat.RDFXML, EXTENSION_RDF);
-                extensionRevMap.put(EXTENSION_RDF, ProvFormat.RDFXML);
-                mimeTypeMap.put(ProvFormat.RDFXML, MEDIA_APPLICATION_RDF_XML);
-                mimeTypeRevMap
-                        .put(MEDIA_APPLICATION_RDF_XML, ProvFormat.RDFXML);
-                provTypeMap.put(ProvFormat.RDFXML, ProvFormatType.INPUTOUTPUT);
-                break;
             case SVG:
                 extensionMap.put(ProvFormat.SVG, EXTENSION_SVG);
                 extensionRevMap.put(EXTENSION_SVG, ProvFormat.SVG);
@@ -473,22 +464,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             // OK, we failed, let's try next format.
         }
 
-        try {
-            Document o = new org.openprovenance.prov.json.Converter(pFactory)
-                    .readDocument(filename);
-            if (o != null) {
-                return o;
-            }
-        } catch (IOException e) {
-            // OK, we failed, let's try next format.
-
-        }
-        org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(
-                pFactory);
-        Document doc = rdfU.parseRDF(filename);
-        if (doc != null) {
-            return doc;
-        }
 
         System.out.println("Unparseable format " + filename);
         throw new UnsupportedOperationException();
@@ -530,56 +505,33 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                  ProvFormat format,
                                  ProvFactory pFactory,
                                  String baseuri) {
-        try {
 
-            switch (format) {
-            case DOT:
-            case JPEG:
-            case PNG:
-            case SVG:
-                throw new UnsupportedOperationException(); // we don't load PROV
-                // from these
-                // formats
-            case JSON: {
-                return new org.openprovenance.prov.json.Converter(pFactory)
-                        .readDocument(is);
-            }
-            case PROVN: {
-                Utility u = new Utility();
-                Object o = u.convertTreeToJavaBean(u.convertASNToTree(is), pFactory);
-                // Namespace ns=Namespace.gatherNamespaces(doc);
-                // doc.setNamespace(ns);
-                return (Document) o;
-            }
-            case RDFXML: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
-                return rdfU.parseRDF(is, RDFXML, baseuri);
-            }
-            case TRIG: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
-                return rdfU.parseRDF(is, TRIG,baseuri);
-            }
-            case TURTLE: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
-                return rdfU.parseRDF(is, TURTLE,baseuri);
-            }
-            case JSONLD: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
-                return rdfU.parseRDF(is, JSONLD,baseuri);
-            }
-            case XML: {
-                org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
-                        .getThreadProvDeserialiser();
-                Document doc = deserial.deserialiseDocument(is);
-                return doc;
-            }
-            default: {
-                System.out.println("Unknown format " + format);
-                throw new UnsupportedOperationException();
-            }
-            }
-        } catch (IOException e) {
-            throw new InteropException(e);
+        switch (format) {
+        case DOT:
+        case JPEG:
+        case PNG:
+        case SVG:
+            throw new UnsupportedOperationException(); // we don't load PROV
+            // from these
+            // formats
+        case PROVN: {
+            Utility u = new Utility();
+            Object o = u.convertTreeToJavaBean(u.convertASNToTree(is), pFactory);
+            // Namespace ns=Namespace.gatherNamespaces(doc);
+            // doc.setNamespace(ns);
+            return (Document) o;
+        }
+
+        case XML: {
+            org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
+                    .getThreadProvDeserialiser();
+            Document doc = deserial.deserialiseDocument(is);
+            return doc;
+        }
+        default: {
+            System.out.println("Unknown format " + format);
+            throw new UnsupportedOperationException();
+        }
         }
 
     }
@@ -668,10 +620,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 throw new UnsupportedOperationException(); // we don't load PROV
                                                            // from these
                                                            // formats
-            case JSON: {
-                return new org.openprovenance.prov.json.Converter(pFactory)
-                        .readDocument(filename);
-            }
 
             case PROVN: {
                 Utility u = new Utility();
@@ -683,11 +631,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case RDFXML:
             case TRIG:
             case JSONLD:
-            case TURTLE: {
-                org.openprovenance.prov.rdf.Utility rdfU = new org.openprovenance.prov.rdf.Utility(pFactory);
-                Document doc = rdfU.parseRDF(filename);
-                return doc;
-            }
+
             case XML: {
                 File in = new File(filename);
                 org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
@@ -700,8 +644,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 throw new UnsupportedOperationException();
             }
             }
-        } catch (IOException e) {
-            throw new InteropException(e);
         } catch (RuntimeException e) {
             throw new InteropException(e);
         }
@@ -1185,26 +1127,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 break;
             }
 
-            case RDFXML: {
-                new org.openprovenance.prov.rdf.Utility(pFactory)
-                        .dumpRDF(document, RDFXML, os);
-                break;
-            }
-            case TRIG: {
-                new org.openprovenance.prov.rdf.Utility(pFactory)
-                        .dumpRDF(document, TRIG, os);
-                break;
-            }
-            case TURTLE: {
-                    new org.openprovenance.prov.rdf.Utility(pFactory)
-                            .dumpRDF(document, TURTLE, os);
-                    break;
-            }
-            case JSON: {
-                new org.openprovenance.prov.json.Converter(pFactory)
-                        .writeDocument(document, new OutputStreamWriter(os));
-                break;
-            }
+
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory,configFile);
@@ -1268,55 +1191,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    final public Map<ProvFormat, SerializerFunction> createLegacySerializerMap() {
-
-        //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
-        serializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
-                        XML,     () -> org.openprovenance.prov.xml.ProvSerialiser.getThreadProvSerialiser(),
-                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
-                        JSONLD,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, JSONLD),
-                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
-                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
-                        JSON,    () -> new org.openprovenance.prov.json.ProvSerialiser(pFactory)));
-
-        serializer.putAll(
-                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG), maxStringLength),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG), maxStringLength),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF), maxStringLength),
-                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG), maxStringLength),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT), maxStringLength)
-
-                                ) );
-
-        return serializer;
-    }
-
-    final public Map<ProvFormat, SerializerFunction> createLightAndLegacySerializerMap() {
-
-        //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
-        serializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
-                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
-                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
-                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
-                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
-                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
-                        JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
-
-        serializer.putAll(
-                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG), maxStringLength),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG), maxStringLength),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF), maxStringLength),
-                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG), maxStringLength),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT), maxStringLength)
-
-                ) );
-
-        return serializer;
-    }
 
     final public Map<ProvFormat, SerializerFunction> createLightSerializerMap() {
 
@@ -1325,10 +1199,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
                         XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
-                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
+                        TURTLE,  () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");}, //new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
-                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, RDFXML),
-                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
+                         TRIG,   () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");},  //() -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
 
         serializer.putAll(
@@ -1343,44 +1216,25 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return serializer;
     }
 
-    final public Map<ProvFormat, DeserializerFunction> createLightAndLegacyDeserializerMap() {
+    final public Map<ProvFormat, DeserializerFunction> createLightDeserializerMap() {
 
         //NOTE: Syntax restricted to 10 entries
         Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
                         XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
-                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TURTLE),
                         JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
-                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, RDFXML),
-                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TRIG),
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvDeserialiser::new));
 
         return serializer;
     }
 
-    final public Map<ProvFormat, DeserializerFunction> createLegacyDeserializerMap() {
-
-        //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
-        serializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
-                        XML,     org.openprovenance.prov.xml.ProvDeserialiser::getThreadProvDeserialiser,
-                        TURTLE,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TURTLE),
-                 //       JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
-                        RDFXML,  () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, RDFXML),
-                        TRIG,    () -> new org.openprovenance.prov.rdf.ProvDeserialiser(pFactory, TRIG),
-                        JSON,    () -> new org.openprovenance.prov.json.ProvDeserialiser(pFactory)));
-
-        return serializer;
-    }
 
 
 
     public Map<ProvFormat, SerializerFunction> createSerializerMap() {
         switch (configuration) {
-            case "legacy":       return createLegacySerializerMap();
-            case "light+legacy": return createLightAndLegacySerializerMap();
+
             case "light":        return createLightSerializerMap();
             default:
                 throw new IllegalStateException("Unexpected configuration value: " + configuration);
@@ -1390,9 +1244,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
         switch (configuration) {
-            case "legacy":       return createLegacyDeserializerMap();
-            case "light+legacy": return createLightAndLegacyDeserializerMap();
-            case "light":        return createLightAndLegacyDeserializerMap();
+
+            case "light":        return createLightDeserializerMap();
             default:
                 throw new IllegalStateException("Unexpected configuration value: " + configuration);
         }
@@ -1432,30 +1285,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 serial.serialiseDocument(new File(filename), document, true);
                 break;
             }
-            case TURTLE: {
-                new org.openprovenance.prov.rdf.Utility(pFactory)
-                        .dumpRDF(document, TURTLE, filename);
-                break;
-            }
-            case JSONLD: {
-                new org.openprovenance.prov.rdf.Utility(pFactory).dumpRDF(document, JSONLD, filename);
-                break;
-            }
-            case RDFXML: {
-                new org.openprovenance.prov.rdf.Utility(pFactory)
-                        .dumpRDF(document, RDFXML, filename);
-                break;
-            }
-            case TRIG: {
-                new org.openprovenance.prov.rdf.Utility(pFactory)
-                        .dumpRDF(document, TRIG, filename);
-                break;
-            }
-            case JSON: {
-                new org.openprovenance.prov.json.Converter(pFactory)
-                        .writeDocument(document, filename);
-                break;
-            }
+
+
             case DOT: {
                 String configFile = null; // TODO: get it as option
                 ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory, configFile);

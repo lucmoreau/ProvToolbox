@@ -123,14 +123,16 @@
                 </exclusion>
             </exclusions>
 
-            <!-- required to exclude to run in tomcat7
+             <!-- required to exclude to run in tomcat7
             <exclusions>
               <exclusion>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
               </exclusion>
             </exclusions>
-    -->
+            -->
+
+
         </dependency>
 
         <dependency>
@@ -225,6 +227,10 @@
                 <exclusion>  <!-- using the jboss version instead -->
                     <artifactId>jaxb-api</artifactId>
                     <groupId>javax.xml.bind</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.validation</groupId>
+                    <artifactId>validation-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -473,6 +479,11 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-util</artifactId>
                     <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.microprofile.config</groupId>
+                    <artifactId>microprofile-config-api</artifactId>
+                    <version>${microprofile.version}</version>
                 </dependency>
             </dependencies>
             <build>

@@ -62,14 +62,14 @@ import java.util.Set;
 						description = "dev",
 						url = "http://localhost:{port}/",
 						variables = {
-								@ServerVariable(name = "port", description = "service port", defaultValue = "7070", allowableValues = {"7070", "8080"})
+								@ServerVariable(name = "port", description = "service port", defaultValue = "7071", allowableValues = {"7070", "7071", "8080"})
 						})
 		}
 )
 
 @ApplicationPath("/provapi")
 public class ProvapiApplication extends Application {
-	private Set<Object> singletons = new HashSet<Object>();
+	private final Set<Object> singletons = new HashSet<>();
 
 
 	StorageConfiguration sc=new StorageConfiguration();

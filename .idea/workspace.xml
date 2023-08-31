@@ -10,6 +10,12 @@
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/expander.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/expander.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/translator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp/translator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -636,7 +642,7 @@
       <workItem from="1692632973216" duration="13324000" />
       <workItem from="1693401616419" duration="16428000" />
       <workItem from="1693424638597" duration="2611000" />
-      <workItem from="1693462851948" duration="5535000" />
+      <workItem from="1693462851948" duration="6867000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

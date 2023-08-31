@@ -343,8 +343,9 @@
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 
-		<resteasy.version>4.3.0.Final</resteasy.version>
+		<resteasy.version>4.7.9.Final</resteasy.version>  <!-- 4.3.0.Final -->
 		<jetty.version>9.4.20.v20190813</jetty.version>
+		<microprofile.version>3.0.3</microprofile.version>
 		<servletapi.version>4.0.0</servletapi.version>
 		<swagger.version>2.0.8</swagger.version>
 		<woodstox.version>5.1.0</woodstox.version>

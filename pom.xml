@@ -332,8 +332,13 @@
 	</build>
 
 	<properties>
-		<junit.version>4.13.2</junit.version>
-		<quartz.version>2.3.2</quartz.version>
+		<!-- maven config -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+
+		<!-- maven plugins -->
 
 		<mvn.compiler.plugin>3.8.1</mvn.compiler.plugin>
 		<jar.plugin.version>3.3.0</jar.plugin.version>
@@ -341,25 +346,35 @@
 		<javadoc.plugin.version>3.1.1</javadoc.plugin.version>
 		<exec.plugin.version>3.0.0</exec.plugin.version>
 
-		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
-
-		<resteasy.version>4.7.9.Final</resteasy.version>  <!-- 4.3.0.Final -->
-		<jetty.version>9.4.20.v20190813</jetty.version>
-		<microprofile.version>3.0.3</microprofile.version>
-		<servletapi.version>4.0.0</servletapi.version>
-		<swagger.version>2.0.8</swagger.version>
-		<woodstox.version>5.1.0</woodstox.version>
-
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<timestamp>${maven.build.timestamp}</timestamp>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-
-
-		<swagger.ui.version>3.24.3</swagger.ui.version>
-
+		<!-- java -->
 
 		<java.version>1.8</java.version>
+
+
+		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
+
+
+		<!-- web services -->
+
+		<jetty.version>10.0.15</jetty.version> <!-- 10.0.15, 9.4.52.v20230823, 9.4.20.v20190813 --> <!-- not work 11.0.7 requires upgrade to servlet 5 -->
+
+		<resteasy.version>4.7.9.Final</resteasy.version>  <!-- 4.7.9.Final, 4.3.0.Final -->  <!-- not working 5.0.8.Final -->
+		<microprofile.version>3.0.3</microprofile.version>
+		<servletapi.version>4.0.0</servletapi.version>
+
+		<swagger.version>2.0.8</swagger.version>
+		<swagger.ui.version>3.24.3</swagger.ui.version>
+		<woodstox.version>5.1.0</woodstox.version>
+
+		<!-- key packages -->
+
+		<junit.version>4.13.2</junit.version>
+		<quartz.version>2.3.2</quartz.version>
+
+
+
+
+
 
 		<jackson.version>2.14.2</jackson.version><!--2.11.2, 2.9.9 -->
 		<sesame.version>4.1.2</sesame.version>

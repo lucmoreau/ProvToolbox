@@ -25,6 +25,10 @@
                     <artifactId>jaxb-api</artifactId>
                     <groupId>javax.xml.bind</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>activation</artifactId>
+                    <groupId>javax.activation</groupId>
+                </exclusion>
             </exclusions>
 
         </dependency>
@@ -171,6 +175,9 @@
             </exclusions>
         </dependency>
 
+
+
+
         <!--
             <dependency>
               <groupId>org.apache.httpcomponents</groupId>
@@ -207,16 +214,12 @@
         </dependency>
 
 
-
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servletapi.version}</version>
             <scope>provided</scope>
         </dependency>
-
-
 
 
         <dependency>

@@ -21,7 +21,7 @@ import scala.collection.immutable.HashMap
 
 
 trait HasLocation {
-    def getLocation(): java.util.List[org.openprovenance.prov.model.Location] = location.toSeq 
+    def getLocation(): java.util.List[org.openprovenance.prov.model.Location] = location.toSeq
     val location: Set[Location]
 }
 

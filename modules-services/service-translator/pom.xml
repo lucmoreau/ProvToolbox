@@ -26,8 +26,8 @@
                     <groupId>javax.xml.bind</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>activation</artifactId>
                     <groupId>javax.activation</groupId>
+                    <artifactId>javax.activation-api</artifactId>
                 </exclusion>
             </exclusions>
 
@@ -89,21 +89,12 @@
         </dependency>
 
 
-
-        <dependency> <!-- overriding -->
+        <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
             <version>1.1.2</version>
         </dependency>
 
-        <!--
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.12</version>
-        </dependency>
-
--->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
@@ -126,17 +117,6 @@
                     <groupId>javax.activation</groupId>
                 </exclusion>
             </exclusions>
-
-             <!-- required to exclude to run in tomcat7
-            <exclusions>
-              <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-              </exclusion>
-            </exclusions>
-            -->
-
-
         </dependency>
 
         <dependency>
@@ -175,23 +155,6 @@
             </exclusions>
         </dependency>
 
-
-
-
-        <!--
-            <dependency>
-              <groupId>org.apache.httpcomponents</groupId>
-              <artifactId>httpcore</artifactId>
-              <version>4.4.11</version>
-              <scope>test</scope>
-          </dependency>
-            <dependency>
-              <groupId>org.apache.httpcomponents</groupId>
-              <artifactId>httpclient</artifactId>
-              <version>4.5.9</version>
-              <scope>test</scope>
-          </dependency>
-          -->
 
         <!-- optional, good for handling I/O task -->
         <dependency>
@@ -235,6 +198,7 @@
                     <groupId>javax.validation</groupId>
                     <artifactId>validation-api</artifactId>
                 </exclusion>
+
             </exclusions>
         </dependency>
 
@@ -242,41 +206,38 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>swagger-ui</artifactId>
-            <version>${swagger.ui.version}</version>
+            <version>${webjars.swagger-ui.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
-            <version>3.3.1</version> <!-- need to change version in jsp files too -->
+            <version>${webjars.jquery.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap-table</artifactId>
-            <version>1.9.1</version>
+            <version>${webjars.bootstrap.tables.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>3.3.7</version>
+            <version>${webjars.bootstrap.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>4.7.0</version>
+            <version>${webjars.fontawesome.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.webjars.bowergithub.ajaxorg</groupId>
             <artifactId>ace-builds</artifactId>
-            <version>1.4.5</version>
+            <version>${webjars.ace.version}</version>
         </dependency>
-
-
-
 
     </dependencies>
 
@@ -512,7 +473,7 @@
                                     <goal>start</goal>
                                 </goals>
                                 <configuration>
-                                    <scanIntervalSeconds>0</scanIntervalSeconds>
+                                    <!-- <scanIntervalSeconds>0</scanIntervalSeconds> -->
                                    <!-- <daemon>true</daemon>-->
                                 </configuration>
                             </execution>

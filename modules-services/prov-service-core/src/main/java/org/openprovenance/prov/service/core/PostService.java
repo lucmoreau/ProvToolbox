@@ -90,7 +90,7 @@ public class PostService implements Constants, InteropMediaType {
     @Tag(name = "documents")
 
     @Operation(summary = "Post a document. Payload is a form that may contain a file, prov statements or a url",
-               description = "Post a document in a form; indicate if validation or translation required; and redirects to the appropriate page. This method  is also designed for browser interaction, allowing the user to select a file, a url or statements for provenance.  The user may specify validate or translate directly.",
+            description = "Post a document in a form; indicate if validation or translation required; and redirects to the appropriate page. This method  is also designed for browser interaction, allowing the user to select a file, a url or statements for provenance.  The user may specify validate or translate directly.",
             responses = {@ApiResponse(responseCode = "303",
                     headers = @Header(name = "location", description = "Location of posted document"),
                     description = "See other url for serialization of posted resource as requested by accept header."),
@@ -99,13 +99,12 @@ public class PostService implements Constants, InteropMediaType {
     public Response submit(@Parameter(name = "form",
             description = "form to be posted",
             required = true,
-
             schema = @Schema(implementation = UploadForm.class))
-                                   MultipartFormDataInput input,
+                           MultipartFormDataInput input,
                            @Context HttpHeaders headers,
                            @Context HttpServletRequest requestContext) {
         MediaType mediaType = headers.getMediaType();
-       //logger.debug("post media type is" + mediaType);
+        //logger.debug("post media type is" + mediaType);
 
         if (mediaType.toString().startsWith("multipart/form-data")) {
 

@@ -23,6 +23,6 @@ public interface HasAttributes extends org.openprovenance.prov.vanilla.HasAttrib
 
     @JsonAnyGetter
     @JsonSerialize(keyUsing= CustomKeySerializer.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     Map<QualifiedName, Set<Attribute>> getIndexedAttributes();
 }

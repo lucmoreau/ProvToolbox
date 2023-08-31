@@ -2182,7 +2182,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
 
 
-        makeDocAndTest(statements, bundles, "target/bundle5", new Statement[0], true);
+        makeDocAndTest(statements, bundles, "target/bundle5", null, true);
     }
 
 

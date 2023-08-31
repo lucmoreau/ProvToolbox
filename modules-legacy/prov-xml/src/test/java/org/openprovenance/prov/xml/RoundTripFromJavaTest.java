@@ -2079,6 +2079,34 @@ public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(statements, bundles, "target/bundle4", null, true);
 
     }
+    public org.openprovenance.prov.model.QualifiedName qInner(String n) {
+        return pFactory.newQualifiedName(EX_NS+"inner/", n, EX_PREFIX);
+    }   public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
+        return pFactory.newQualifiedName(EX_NS+"outer/", n, EX_PREFIX);
+    }
+
+    public void testBundle5() {
+        Activity a1 = pFactory.newActivity(qInner("a1"));
+        List<Statement> st1 = new LinkedList<>();
+        st1.add(a1);
+
+
+        Bundle b5 = pFactory.newNamedBundle(qInner("bundle5"), st1);
+        Namespace ns5 = Namespace.gatherNamespaces(b5, pFactory);
+        b5.setNamespace(ns5);
+
+
+        Entity e1 = pFactory.newEntity(qOuter("e1"));
+
+        //System.out.println("bundle 1 ns " + b5);
+        Statement[] statements = new Statement[]{e1};
+        Bundle[] bundles = new Bundle[]{b5};
+
+
+
+        makeDocAndTest(statements, bundles, "target/bundle5", null, true);
+    }
+
 
     public void testDictionaryInsertion1() {
         DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,

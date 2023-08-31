@@ -34,11 +34,11 @@ public class ProvUtilities extends org.openprovenance.prov.model.ProvUtilities {
         split(attributes,labels,types,values,locations,roles,others);
 
         Map<QualifiedName, Set<Attribute>> result=new HashMap<>();
-        result.put(QualifiedName_PROV_LABEL,new HashSet<>(labels));
-        result.put(QualifiedName_PROV_TYPE,new HashSet<>(types));
-        result.put(QualifiedName_PROV_VALUE,new HashSet<>(values));
-        result.put(QualifiedName_PROV_LOCATION,new HashSet<>(locations));
-        result.put(QualifiedName_PROV_ROLE,new HashSet<>(roles));
+        if (!labels.isEmpty()) result.put(QualifiedName_PROV_LABEL,new HashSet<>(labels));
+        if (!types.isEmpty()) result.put(QualifiedName_PROV_TYPE,new HashSet<>(types));
+        if (!values.isEmpty()) result.put(QualifiedName_PROV_VALUE,new HashSet<>(values));
+        if (!locations.isEmpty()) result.put(QualifiedName_PROV_LOCATION,new HashSet<>(locations));
+        if (!roles.isEmpty()) result.put(QualifiedName_PROV_ROLE,new HashSet<>(roles));
         for (Map.Entry<QualifiedName, Collection<Other>> entry: others.entrySet()) {
             result.put(entry.getKey(),new HashSet<>(entry.getValue()));
         }

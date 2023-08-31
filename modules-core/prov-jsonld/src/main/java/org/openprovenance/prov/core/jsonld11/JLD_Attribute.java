@@ -15,6 +15,7 @@ import org.openprovenance.prov.vanilla.Type;
 @JsonPropertyOrder({ "elementName", "type", "value" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
+
 public interface JLD_Attribute extends Constants {
 
     @JsonProperty(access= JsonProperty.Access.WRITE_ONLY)

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-tutorial</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>0.9.32-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop-light</artifactId>
-            <version>0.9.32-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
     </dependencies>

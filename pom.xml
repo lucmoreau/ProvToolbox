@@ -333,6 +333,7 @@
 
 	<properties>
 		<junit.version>4.13.2</junit.version>
+		<quartz.version>2.3.2</quartz.version>
 
 		<mvn.compiler.plugin>3.8.1</mvn.compiler.plugin>
 		<jar.plugin.version>3.3.0</jar.plugin.version>

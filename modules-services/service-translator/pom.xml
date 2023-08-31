@@ -19,6 +19,14 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop-light</artifactId>
             <version>0.9.32-SNAPSHOT</version>
+
+            <exclusions>
+                <exclusion>
+                    <artifactId>jaxb-api</artifactId>
+                    <groupId>javax.xml.bind</groupId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
 
         <dependency>
@@ -186,7 +194,7 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>2.3.2</version>
+            <version>${quartz.version}</version>
         </dependency>
 
 
@@ -403,7 +411,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
-                        <version>3.2.3</version>
+                        <version>${war.plugin.version}</version>
                         <configuration>
                             <failOnMissingWebXml>false</failOnMissingWebXml>
                             <classifier>docker</classifier>
@@ -439,7 +447,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
-                        <version>3.2.3</version>
+                        <version>${war.plugin.version}</version>
                         <configuration>
                             <failOnMissingWebXml>false</failOnMissingWebXml>
                             <classifier>mac</classifier>

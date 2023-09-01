@@ -334,14 +334,13 @@ public class BeanTraversal implements StatementActionValue {
     }
 
     public WasGeneratedBy doAction(WasGeneratedBy gen) {
-        List<Attribute> attrs=new LinkedList<Attribute>();
+        List<Attribute> attrs= new LinkedList<>();
         convertTypeAttributes(gen,attrs);
         convertLabelAttributes(gen,attrs);
         convertLocationAttributes(gen,attrs);
         convertRoleAttributes(gen,attrs);
         convertAttributes(gen,attrs);
         List<Attribute> attrs2 = copyAttributes(attrs);
-
         return c.newWasGeneratedBy(copyQ(gen.getId()), copyQ(gen.getEntity()), copyQ(gen.getActivity()), gen.getTime(), attrs2);
     }
 
@@ -389,11 +388,9 @@ public class BeanTraversal implements StatementActionValue {
         return c.newWasStartedBy(copyQ(start.getId()), copyQ(start.getActivity()), copyQ(start.getTrigger()), copyQ(start.getStarter()), start.getTime(), attrs2);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Attribute> convertAttributes(HasOther e, List<Attribute> acc) {
-        @SuppressWarnings("rawtypes")
-        List ll=e.getOther();
-        acc.addAll((List<Attribute>)ll);
+     public List<Attribute> convertAttributes(HasOther e, List<Attribute> acc) {
+        List<Other> ll=e.getOther();
+        acc.addAll(ll);
         return acc;
     }
 

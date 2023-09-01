@@ -40,7 +40,7 @@ public  class Utility {
         logger.warn(e.getMessage());
     }
 
-    class ParserWithErrorHandling extends PROV_NParser {
+    static class ParserWithErrorHandling extends PROV_NParser {
         public void reportError(RecognitionException re) {
             super.reportError(re);
             errors.add(re);
@@ -87,18 +87,18 @@ public  class Utility {
         }
     };
 
-    public CommonTree convertASNToTree(String file)  {
+    public CommonTree convertSyntaxTreeToTree(String file)  {
         PROV_NParser parser=getParserForFile(file);
-        return convertASNToTree(parser);
+        return convertSyntaxTreeToTree(parser);
     }
 
 
-    public CommonTree convertASNToTree(InputStream is){
+    public CommonTree convertSyntaxTreeToTree(InputStream is){
         PROV_NParser parser=getParserForStream(is);
-        return convertASNToTree(parser);
+        return convertSyntaxTreeToTree(parser);
     }
 
-    private CommonTree convertASNToTree(PROV_NParser parser){
+    private CommonTree convertSyntaxTreeToTree(PROV_NParser parser){
         parser.setTreeAdaptor(adaptor);
         PROV_NParser.document_return ret = null;
         try {
@@ -130,8 +130,8 @@ public  class Utility {
         return s;
     }
 
-    public Object convertASNToJavaBean(String file, ProvFactory pFactory) {
-        CommonTree tree=convertASNToTree(file);
+    public Object convertSyntaxTreeToJavaBean(String file, ProvFactory pFactory) {
+        CommonTree tree= convertSyntaxTreeToTree(file);
         Object o=convertTreeToJavaBean(tree,pFactory);
         return o;
     }
@@ -145,7 +145,7 @@ public  class Utility {
 
 
 
-    public String convertBeanToASN(final Document doc, ProvFactory pFactory) {
+    public String convertBeanToSyntaxTree(final Document doc, ProvFactory pFactory) {
         StringWriter writer=new StringWriter();
         NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
@@ -159,7 +159,7 @@ public  class Utility {
 
 
 
-    public void convertBeanToASN(final Document doc, Writer writer, ProvFactory pFactory) {
+    public void convertBeanToSyntaxTree(final Document doc, Writer writer, ProvFactory pFactory) {
         NotationConstructor nc=new NotationConstructor(writer);
         BeanTraversal bt=new BeanTraversal(nc, pFactory);
         bt.doAction(doc);
@@ -209,25 +209,25 @@ public  class Utility {
     }
 
     public void writeDocument(Document doc, String filename, ProvFactory pFactory){
-        String s=convertBeanToASN(doc, pFactory);
+        String s= convertBeanToSyntaxTree(doc, pFactory);
         writeTextToFile(s,filename);
     }
 
 
     public void writeDocument(Document doc, OutputStream os, ProvFactory pFactory){
         Writer writer=new OutputStreamWriter(os);
-        convertBeanToASN(doc, writer, pFactory);
+        convertBeanToSyntaxTree(doc, writer, pFactory);
 
     }
 
     public Document readDocument(String filename, ProvFactory pFactory)  {
-        CommonTree tree = convertASNToTree(filename);
+        CommonTree tree = convertSyntaxTreeToTree(filename);
         Object doc=convertTreeToJavaBean(tree,pFactory);
         return (Document)doc;
     }
 
     public Document readDocument(InputStream is, ProvFactory pFactory)  {
-        CommonTree tree = convertASNToTree(is);
+        CommonTree tree = convertSyntaxTreeToTree(is);
         Object doc=convertTreeToJavaBean(tree,pFactory);
         return (Document)doc;
     }

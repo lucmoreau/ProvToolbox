@@ -11,7 +11,7 @@ public class GeneratorTest extends TestCase {
 
     static final String EX_NS = "http://example.org/";
     
-    ProvFactory pf=org.openprovenance.prov.xml.ProvFactory.getFactory();
+    ProvFactory pf=org.openprovenance.prov.vanilla.ProvFactory.getFactory();
 
     public GeneratorTest(String testName) {
     	super(testName);	

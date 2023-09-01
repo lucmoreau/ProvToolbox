@@ -83,7 +83,7 @@ public class InteropTest
 
         InteropFramework interop=new InteropFramework();
 
-        interop.provn2turtle("../prov-n/src/test/resources/prov/w3c-publication1.prov-asn",
+        interop.provn2turtle("../prov-n/src/test/resources/prov/w3c-publication1.provn",
                            "target/w3c-publication1.ttl");
         
     }

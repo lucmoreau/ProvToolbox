@@ -95,17 +95,6 @@
       <artifactId>prov-interop</artifactId>
       <version>0.9.28-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.openprovenance.prov</groupId>
-      <artifactId>prov-xml</artifactId>
-      <version>0.9.28-SNAPSHOT</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
 
   <build>

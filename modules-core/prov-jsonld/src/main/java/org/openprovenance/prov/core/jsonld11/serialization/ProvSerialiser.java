@@ -38,7 +38,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     final ObjectWriter writer;
 
     public ProvSerialiser () {
-        this(new ObjectMapper(), true);
+        this(new ObjectMapper(), false);
     }
 
     public ProvSerialiser (ObjectMapper mapper, boolean embedContext) {

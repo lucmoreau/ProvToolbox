@@ -1,18 +1,19 @@
 package org.openprovenance.prov.notation;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.DocumentEquality;
-import org.openprovenance.prov.xml.ProvDeserialiser;
-import org.openprovenance.prov.xml.ProvFactory;
-import org.openprovenance.prov.xml.ProvSerialiser;
+import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.ProvDeserialiser;
+
 
 public class RoundTripFromProvnTest extends TestCase {
 	final Utility u = new Utility();
-	static ProvFactory pFactory=ProvFactory.getFactory();
+	static org.openprovenance.prov.model.ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 
 	public RoundTripFromProvnTest(String name) {
 		super(name);
@@ -44,28 +45,28 @@ public class RoundTripFromProvnTest extends TestCase {
 		}
 		System.out.println("result is " + result);
 
-		ProvSerialiser.getThreadProvSerialiser()
-				.serialiseDocument(new File("target/" + file + ".xml"),
+		new org.openprovenance.prov.notation.ProvSerialiser(pFactory)
+				.serialiseDocument(Files.newOutputStream(new File("target/" + file + ".jsonld").toPath()),
 						doc2, true);
 		u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
 
 	}
 
-	public void loadFromProvnSaveToXmlAndReload(String file, Boolean compare) throws Throwable {
+	public void loadFromProvnSaveToJsonldAndReload(String file, Boolean compare) throws Throwable {
 		System.out.println("-------------- File: " + file);
 		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
 		DocumentEquality de = new DocumentEquality(true,null);
 
 		Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
 		file = file.replace('/', '_');
-		ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+		ProvSerialiser serial=new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser();
 
 		System.out.println("1. xxx");
 
-		serial.serialiseDocument(new File("target/xml_" + file + ".xml"), doc1, true);
-		ProvDeserialiser deserial=ProvDeserialiser.getThreadProvDeserialiser();
+		serial.serialiseDocument(Files.newOutputStream(new File("target/ld_" + file + ".jsonld").toPath()), doc1, true);
+		ProvDeserialiser deserial=new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser();
 
-		Document doc2 = deserial.deserialiseDocument(new File("target/xml_" + file + ".xml"));
+		Document doc2 = deserial.deserialiseDocument(Files.newInputStream(new File("target/ld_" + file + ".jsonld").toPath()));
 
 		System.out.println("2. xxx");
 
@@ -82,10 +83,6 @@ public class RoundTripFromProvnTest extends TestCase {
 		System.out.println("result is " + result);
 		System.out.println("3. xxx");
 
-		ProvSerialiser.getThreadProvSerialiser()
-				.serialiseDocument(new File("target/" + file + ".xml"),
-						doc2, true);
-		System.out.println("4. xxx");
 
 		u2.writeDocument(doc2, "target/" + file + ".provn",pFactory);
 
@@ -96,7 +93,7 @@ public class RoundTripFromProvnTest extends TestCase {
 	}
 
 	private void testCrossIssue(String issueName) throws Throwable {
-		loadFromProvnSaveToXmlAndReload("issues/" + issueName + ".provn", true);
+		loadFromProvnSaveToJsonldAndReload("issues/" + issueName + ".provn", true);
 	}
 
 	public void testMembership() throws Throwable {

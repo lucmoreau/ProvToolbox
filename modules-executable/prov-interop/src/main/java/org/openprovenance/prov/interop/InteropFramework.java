@@ -1,19 +1,12 @@
 package org.openprovenance.prov.interop;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.*;
 
 import javax.ws.rs.core.MediaType;
@@ -26,6 +19,7 @@ import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
@@ -445,7 +439,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         try {
             Utility u = new Utility();
-            Object o = u.convertTreeToJavaBean(u.convertASNToTree(filename), pFactory);
+            Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
             if (o != null) {
                 return o;
             }
@@ -454,14 +448,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
         try {
             File in = new File(filename);
-            org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
-                    .getThreadProvDeserialiser();
+            org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
             Document c = deserial.deserialiseDocument(in);
             if (c != null) {
                 return c;
             }
-        } catch (RuntimeException t2) {
+
             // OK, we failed, let's try next format.
+        } catch (IOException ignored) {
+
         }
 
 
@@ -516,16 +511,20 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             // formats
         case PROVN: {
             Utility u = new Utility();
-            Object o = u.convertTreeToJavaBean(u.convertASNToTree(is), pFactory);
+            Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
             // Namespace ns=Namespace.gatherNamespaces(doc);
             // doc.setNamespace(ns);
             return (Document) o;
         }
 
         case XML: {
-            org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
-                    .getThreadProvDeserialiser();
-            Document doc = deserial.deserialiseDocument(is);
+            org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
+            Document doc = null;
+            try {
+                doc = deserial.deserialiseDocument(is);
+            } catch (IOException e) {
+                throw new InteropException(e);
+            }
             return doc;
         }
         default: {
@@ -623,7 +622,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             case PROVN: {
                 Utility u = new Utility();
-                Object o = u.convertTreeToJavaBean(u.convertASNToTree(filename), pFactory);
+                Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
                 return (Document) o;
@@ -634,8 +633,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             case XML: {
                 File in = new File(filename);
-                org.openprovenance.prov.xml.ProvDeserialiser deserial = org.openprovenance.prov.xml.ProvDeserialiser
-                        .getThreadProvDeserialiser();
+                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
                 Document doc = deserial.deserialiseDocument(in);
                 return doc;
             }
@@ -644,7 +642,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 throw new UnsupportedOperationException();
             }
             }
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | IOException e) {
             throw new InteropException(e);
         }
 
@@ -901,39 +899,39 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         List<String> ll = new LinkedList<>(init);
                         Map<String, String> env=System.getenv();
                         String tmp;
-                        if ((tmp=env.get("LEVEL_OFFSET"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("LEVEL_OFFSET"))!=null && !tmp.isEmpty()) {
                             ll.add("-levelOffset");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("LEVEL_NUMBER"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("LEVEL_NUMBER"))!=null && !tmp.isEmpty()) {
                             ll.add("-levelNumber");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("SET_OFFSET"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("SET_OFFSET"))!=null && !tmp.isEmpty()) {
                             ll.add("-setOffset");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("RELATION_OFFSET"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("RELATION_OFFSET"))!=null && !tmp.isEmpty()) {
                             ll.add("-relationOffset");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("KNOWN_TYPES"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("KNOWN_TYPES"))!=null && !tmp.isEmpty()) {
                             ll.add("-knownTypes");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("KNOWN_RELATIONS"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("KNOWN_RELATIONS"))!=null && !tmp.isEmpty()) {
                             ll.add("-knownRelations");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("TRANSLATION"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("TRANSLATION"))!=null && !tmp.isEmpty()) {
                             ll.add("-translation");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("ADDLEVEL0"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("ADDLEVEL0"))!=null && !tmp.isEmpty()) {
                             ll.add("-addlevel0");
                             ll.add(tmp);
                         }
-                        if ((tmp=env.get("PROPERTY_CONVERTERS"))!=null && !tmp.equals("")) {
+                        if ((tmp=env.get("PROPERTY_CONVERTERS"))!=null && !tmp.isEmpty()) {
                             ll.add("-propertyConverters");
                             ll.add(tmp);
                         }
@@ -969,8 +967,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 term = "e1";
 
             GeneratorDetails gd = new GeneratorDetails(
-                                                       Integer.valueOf(noOfNodes),
-                                                       Integer.valueOf(noOfEdges),
+                                                       Integer.parseInt(noOfNodes),
+                                                       Integer.parseInt(noOfEdges),
                                                        firstNode,
                                                        namespace,
                                                        (seed == null) ? null
@@ -1016,9 +1014,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
 
         if (config.index != null) {
-            Document indexedDoc = new IndexedDocument(pFactory, doc,
-                                                      (config.flatten != null)).toDocument();
-            doc = indexedDoc;
+            doc = new IndexedDocument(pFactory, doc, (config.flatten != null)).toDocument();
         }
         if (config.bindings != null) {
             Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
@@ -1279,10 +1275,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 break;
             }
             case XML: {
-                org.openprovenance.prov.xml.ProvSerialiser serial = org.openprovenance.prov.xml.ProvSerialiser
-                        .getThreadProvSerialiser();
+                org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser();
                 logger.debug("namespaces " + document.getNamespace());
-                serial.serialiseDocument(new File(filename), document, true);
+                serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
                 break;
             }
 

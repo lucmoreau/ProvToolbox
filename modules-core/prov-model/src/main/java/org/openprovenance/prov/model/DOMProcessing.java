@@ -84,7 +84,7 @@ final public class DOMProcessing {
      *            or attribute value)
      * @return a qualified name {@link QualifiedName}
      */
-    final public QualifiedName stringToQualifiedName(String str, org.w3c.dom.Element el) {
+    public QualifiedName stringToQualifiedName(String str, org.w3c.dom.Element el) {
         if (str == null)
             return null;
         int index = str.indexOf(':');
@@ -125,7 +125,7 @@ final public class DOMProcessing {
      * @return a new {@link Element}
      */
 
-    final static public Element newElement(QualifiedName elementName, QualifiedName value) {
+    static public Element newElement(QualifiedName elementName, QualifiedName value) {
         org.w3c.dom.Document doc = builder.newDocument();
         Element el = doc.createElementNS(elementName.getNamespaceURI(),
                 qualifiedNameToString(elementName.toQName()));

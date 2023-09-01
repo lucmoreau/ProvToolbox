@@ -23,7 +23,13 @@ import javax.xml.transform.TransformerException;
      private static final QualifiedName QualifiedName_PROV_LANG_STRING   = ProvFactory.getFactory().getName().PROV_LANG_STRING;
 
      public static Object castToStringOrLangStringOrQualifiedName(Object value, QualifiedName type) {
-         return (value instanceof org.openprovenance.prov.model.LangString)? value : ((value instanceof org.openprovenance.prov.model.QualifiedName)? value : ((QualifiedName_XSD_STRING.equals(type))? new org.openprovenance.prov.vanilla.LangString(value.toString(),null): value.toString()));
+         return (value instanceof org.openprovenance.prov.model.LangString)?
+                 value :
+                 ((value instanceof org.openprovenance.prov.model.QualifiedName)?
+                         value :
+                         ((QualifiedName_XSD_STRING.equals(type))?
+                                 new org.openprovenance.prov.vanilla.LangString(value.toString(),null):
+                                 value.toString()));
      }
 
 

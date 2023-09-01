@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 
 import java.io.File;
+import java.io.IOException;
 
 public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest {
     /**
@@ -19,14 +20,14 @@ public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest 
     }
 
     ProvFactory pf=new ProvFactory();
-    public Document readDocumentFromFile(String file) {
+    public Document readDocumentFromFile(String file) throws IOException {
 
         System.out.println("reading (xml) from " + file);
 
 
 
         Document doc= null;
-        doc = org.openprovenance.prov.xml.ProvDeserialiser.getThreadProvDeserialiser().deserialiseDocument(new File(file));
+        doc = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser().deserialiseDocument(new File(file));
 
         BeanTraversal bc=new BeanTraversal(RoundTripFromJavaTest.pFactory, RoundTripFromJavaTest.pFactory);
         org.openprovenance.prov.model.Document doc2=bc.doAction(doc);

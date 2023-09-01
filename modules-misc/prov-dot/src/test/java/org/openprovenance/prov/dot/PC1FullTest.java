@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.vanilla.ProvFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
  */
 
 
-public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
+public class PC1FullTest extends org.openprovenance.prov.model.PC1FullTest {
 
     public PC1FullTest( String testName ) {
          super(testName);
@@ -32,21 +32,11 @@ public class PC1FullTest extends org.openprovenance.prov.xml.PC1FullTest {
 	/** Produces a dot representation
 	 * of created graph. */
 
-        ProvToDot toDot=new ProvToDot(ProvFactory.getFactory(),true); // with roles
+        ProvToDot toDot=new ProvToDot(new ProvFactory(),true); // with roles
 
 	if (graph1==null) System.out.println("doToDot with null ");
         
         toDot.convert(graph1,"target/pc1-full.dot", "target/pc1-full.pdf", "PC1 Full");
-    }
-
-    @Override
-    public void subtestSchemaValidateXML() {
-        // no need to do it here
-    }
-
-    @Override
-    public void subtestSchemaFailValidateXML() {
-        // no need to do it here
     }
 
 }

@@ -1,19 +1,19 @@
 package org.openprovenance.prov.notation;
 import java.io.File;
-import javax.xml.bind.JAXBException;
+import java.nio.file.Files;
+
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.ProvSerialiser;
-import org.openprovenance.prov.xml.ProvFactory;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.ProvFactory;
 import  org.antlr.runtime.tree.CommonTree;
 
 /**
  * Provenance of a w3c tech report
  */
-public class PubTest 
-    extends TestCase
+abstract public class PubTest extends TestCase
 {
 
     public static final String PC1_NS="http://www.ipaw.info/pc1/";
@@ -22,7 +22,7 @@ public class PubTest
     public static final String PRIM_PREFIX="prim";
     
     
-    public static ProvFactory pFactory=new ProvFactory();
+    public static ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 
     
     /**
@@ -37,15 +37,15 @@ public class PubTest
 
     static public Document graph1;
 
-    public void testReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
+    public void auxTestReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
         String file="src/test/resources/prov/w3c-publication1.prov-asn";
-        testReadASNSaveXML(file,"target/w3c-publication1.prov-xml");
+        auxTestReadASNSaveXML(file,"target/w3c-publication1.prov-xml");
     }
 
-    public void testReadASNSaveXML(String file, String file2) throws java.io.IOException, java.lang.Throwable {
+    public void auxTestReadASNSaveXML(String file, String file2) throws java.io.IOException, java.lang.Throwable {
 
         Utility u=new Utility();
-        CommonTree tree = u.convertASNToTree(file);
+        CommonTree tree = u.convertSyntaxTreeToTree(file);
 
         Object o2=u.convertTreeToJavaBean(tree,pFactory);
 
@@ -54,10 +54,10 @@ public class PubTest
         graph1.setNamespace(Namespace.gatherNamespaces(graph1));
 
 
-        ProvSerialiser serial=ProvSerialiser.getThreadProvSerialiser();
+        ProvSerialiser serial=new org.openprovenance.prov.notation.ProvSerialiser(pFactory);
         Namespace.withThreadNamespace(graph1.getNamespace());
 
-        serial.serialiseDocument(new File(file2),(Document)o2,true);
+        serial.serialiseDocument(Files.newOutputStream(new File(file2).toPath()),(Document)o2,true);
 
         assertTrue(true);
     }

@@ -1,9 +1,11 @@
 package org.openprovenance.prov.dot;
 import junit.framework.TestCase;
-import org.openprovenance.prov.xml.Document;
-import org.openprovenance.prov.xml.ProvFactory;
+
 
 import javax.xml.bind.JAXBException;
+
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.Utility;
 
 public class ASNTest extends TestCase {
@@ -12,9 +14,9 @@ public class ASNTest extends TestCase {
         throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
         Utility u=new Utility();
 
-        ProvFactory pFactory=ProvFactory.getFactory();
+        ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 
-        Document o= (Document) u.convertASNToJavaBean(asnFile, pFactory);
+        Document o= (Document) u.convertSyntaxTreeToJavaBean(asnFile, pFactory);
 
         //serial.serialiseDocument(new File(xmlFile),o,true);
 
@@ -24,7 +26,7 @@ public class ASNTest extends TestCase {
     }
 
     public void testAsnToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
-        asnToDot("src/test/resources/prov/file-example2.asn",
+        asnToDot("src/test/resources/prov/file-example2.provn",
                  "target/file-example2.prov-xml",
                  "target/file-example2.dot",
                  "target/file-example2.pdf",

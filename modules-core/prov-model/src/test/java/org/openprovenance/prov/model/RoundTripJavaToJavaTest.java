@@ -4,6 +4,8 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.model.BeanTraversal;
 import org.openprovenance.prov.model.Document;
 
+import static org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest.deepCopy;
+
 /**
  * Unit test for PROV roundtrip conversion between Java represenations
  */
@@ -15,12 +17,9 @@ public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
     }
 
 
-    ProvFactory pFactory=new ProvFactory();
-
     @Override
     public void compareDocAndFile(Document doc, String file, boolean check) {
-        BeanTraversal bc=new BeanTraversal(pFactory, pFactory);
-        org.openprovenance.prov.model.Document doc2=bc.doAction(doc);
+        Document doc2=deepCopy(doc);
         compareDocuments(doc, doc2, check && checkTest(file));
     }
 

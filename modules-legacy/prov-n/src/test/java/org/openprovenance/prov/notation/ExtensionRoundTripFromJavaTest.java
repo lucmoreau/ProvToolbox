@@ -1,16 +1,13 @@
 package org.openprovenance.prov.notation;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.xml.UncheckedTestException;
+import org.openprovenance.prov.model.UncheckedTestException;
 
-public class ExtensionRoundTripFromJavaTest extends
-		org.openprovenance.prov.xml.ExtensionRoundTripFromJavaTest {
+abstract public class ExtensionRoundTripFromJavaTest extends org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest {
 	final Utility u = new Utility();
 
 	public ExtensionRoundTripFromJavaTest(String name) {
@@ -40,7 +37,7 @@ public class ExtensionRoundTripFromJavaTest extends
 	@Override
 	public void writeDocument(Document doc, String file) {
 		Namespace.withThreadNamespace(doc.getNamespace());
-		String s = u.convertBeanToASN(doc,pFactory);
+		String s = u.convertBeanToSyntaxTree(doc,pFactory);
 		u.writeTextToFile(s, file);
 	}
 
@@ -49,12 +46,12 @@ public class ExtensionRoundTripFromJavaTest extends
 		return false;
 	}
 
-	public void NOmakeDocAndTest(Statement[] statements, String file,
+	public void makeDocAndTest(Statement[] statements, String file,
 								 Statement[] opt, boolean check) {
 		Document doc = pFactory.newDocument();
-		for (int i = 0; i < statements.length; i++) {
-			doc.getStatementOrBundle().add(statements[i]);
-		}
+        for (Statement statement : statements) {
+            doc.getStatementOrBundle().add(statement);
+        }
 		updateNamespaces(doc);
 
 		check = check && checkTest(file);
@@ -62,12 +59,12 @@ public class ExtensionRoundTripFromJavaTest extends
 		String file1 = (opt == null) ? file : file + "-S";
 		file1 = file1 + extension();
 
-		String s = u.convertBeanToASN(doc,pFactory);
+		String s = u.convertBeanToSyntaxTree(doc,pFactory);
 		u.writeTextToFile(s, file1);
 
 		Document doc2;
 		try {
-			doc2 = (Document) u.convertASNToJavaBean(file1,pFactory);
+			doc2 = (Document) u.convertSyntaxTreeToJavaBean(file1,pFactory);
 			compareDocuments(doc, doc2, check && checkTest(file1));
 
 			if (opt != null) {
@@ -75,10 +72,10 @@ public class ExtensionRoundTripFromJavaTest extends
 				String file2 = file + "-M";
 				file2 = file2 + extension();
 
-				String s2 = u.convertBeanToASN(doc,pFactory);
+				String s2 = u.convertBeanToSyntaxTree(doc,pFactory);
 				u.writeTextToFile(s2, file2);
 
-				Document doc3 = (Document) u.convertASNToJavaBean(file2,pFactory);
+				Document doc3 = (Document) u.convertSyntaxTreeToJavaBean(file2,pFactory);
 				compareDocuments(doc, doc3, check && checkTest(file2));
 			}
 

@@ -158,7 +158,7 @@ public class ValueConverter {
 
     public org.w3c.dom.Element convertXMLLiteral(String value) {
             DOMProcessing dp=new DOMProcessing((ProvFactory)pFactory);
-            DocumentBuilder db=dp.builder;
+            DocumentBuilder db= DOMProcessing.builder;
             InputStream in;
             org.w3c.dom.Document doc=null;
             

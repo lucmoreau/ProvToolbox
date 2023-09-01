@@ -1,12 +1,11 @@
 package org.openprovenance.prov.notation;
 
-import java.io.IOException;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.xml.UncheckedTestException;
+import org.openprovenance.prov.model.UncheckedTestException;
 
 public class InternationalizationTest extends
-        org.openprovenance.prov.xml.InternationalizationTest {
+        org.openprovenance.prov.model.InternationalizationTest {
     final Utility u = new Utility();
 
     public InternationalizationTest(String name) {
@@ -24,7 +23,7 @@ public class InternationalizationTest extends
     @Override
     public Document readDocument(String file1) {
         try {
-            return (Document) u.convertASNToJavaBean(file1,pFactory);
+            return (Document) u.convertSyntaxTreeToJavaBean(file1,pFactory);
         } catch (Throwable e) {
             throw new UncheckedTestException(e);
         }
@@ -33,7 +32,7 @@ public class InternationalizationTest extends
     @Override
     public void writeDocument(Document doc, String file) {
         Namespace.withThreadNamespace(doc.getNamespace());
-        String s = u.convertBeanToASN(doc,pFactory);
+        String s = u.convertBeanToSyntaxTree(doc,pFactory);
         u.writeTextToFile(s, file);
     }
 

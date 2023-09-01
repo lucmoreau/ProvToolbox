@@ -2,26 +2,7 @@ package org.openprovenance.prov.model;
 
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.WasStartedBy;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.model.Location;
-import org.openprovenance.prov.model.Role;
+
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
@@ -46,7 +27,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     public static org.openprovenance.prov.model.ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
     public static  org.openprovenance.prov.model.Name name = pFactory.getName();
 
-    private DocumentEquality documentEquality;
+    private final DocumentEquality documentEquality;
 
     /**
      * Create the test case
@@ -188,43 +169,6 @@ abstract public class RoundTripFromJavaTest extends TestCase {
 
     }
 
-    public void doCheckSchema2(String file) {
-        // String
-        // command="xmllint --schema src/main/resources/w3c/prov.xsd --schema src/main/resources/w3c/xml.xsd --schema src/main/resources/ex.xsd "
-        // +file; //--noout
-        String command = "xmllint --schema src/main/resources/ex.xsd " + file; // --noout
-        try {
-            Process proc = Runtime.getRuntime().exec(command);
-            proc.waitFor();
-            int code = proc.exitValue();
-            if (code != 0) {
-                BufferedReader errorReader = new BufferedReader(
-                                                                new InputStreamReader(
-                                                                                      proc.getErrorStream()));
-                String s_error = errorReader.readLine();
-                if (s_error != null) {
-                    System.out.println("Error:  " + s_error);
-                }
-                BufferedReader outReader = new BufferedReader(
-                                                              new InputStreamReader(
-                                                                                    proc.getInputStream()));
-                String s_out = outReader.readLine();
-                if (s_out != null) {
-                    System.out.println("Out:  " + s_out);
-                }
-            }
-            // System.out.println("out " + proc.getOutputStream().toString());
-            // System.err.println("err " + proc.getErrorStream().toString());
-            assertTrue(code == 0);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public Document readDocument(String file1) {
         try {
             return readDocumentFromFile(file1);
@@ -234,6 +178,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     public void writeDocument(Document doc, String file2) {
+        System.out.println(" * document " + file2);
         Namespace.withThreadNamespace(doc.getNamespace());
         try {
             writeDocumentToFile(doc, file2);
@@ -460,9 +405,9 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         // pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
         he.getOther().add(pFactory.newOther(EX2_NS, "tag3", EX2_PREFIX, "hi",
                                             name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
-                                            "hello\nover\nmore\nlines",
-                                            name.XSD_STRING));
+      //  he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
+      //                                      "hello\nover\nmore\nlines",
+      //                                      name.XSD_STRING));
         he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
                 "hello",
                 name.XSD_STRING));

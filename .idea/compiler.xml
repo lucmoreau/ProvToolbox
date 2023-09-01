@@ -14,9 +14,9 @@
         <module name="prov-storage-api" />
         <module name="prov-jsonld-xml" />
         <module name="templates_cli" />
-        <module name="prov-n" />
         <module name="prov-service-translation" />
         <module name="prov-storage-index-redis" />
+        <module name="prov-n" />
         <module name="prov-jsweet-candy-js" />
         <module name="docker-service-translator" />
         <module name="prov-jsonld" />
@@ -38,7 +38,6 @@
         <module name="prov-model-scala" />
         <module name="toolbox" />
         <module name="prov-generator" />
-        <module name="prov-xml" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />
@@ -54,6 +53,7 @@
       <module name="prov-rdf" target="11" />
       <module name="prov-scala" target="9" />
       <module name="prov-sql" target="9" />
+      <module name="prov-xml" target="9" />
       <module name="ProvToolbox-Tutorial4" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />
       <module name="toolbox" target="1.8" />

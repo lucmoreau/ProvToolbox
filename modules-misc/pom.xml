@@ -15,7 +15,7 @@
         <module>prov-dot</module>
         <module>prov-generator</module>
         <module>roundtrip</module>
-        <module>benchmark</module>	
+        <module>benchmarks</module>
     </modules>
 
     <build>

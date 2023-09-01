@@ -14,6 +14,9 @@
     <file url="file://$PROJECT_DIR$/modules-core/prov-model-scala/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-core/prov-model/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-core/prov-model/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-core/prov-n" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-core/prov-n/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-core/prov-n/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-executable" charset="UTF-8" />
@@ -29,14 +32,9 @@
     <file url="file://$PROJECT_DIR$/modules-executable/toolbox/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-js/prov-js-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/benchmarks/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/benchmarks/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-json" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-json/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-json/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/prov-n" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/prov-n/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/prov-n/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-rdf" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-rdf/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-rdf/src/main/resources" charset="UTF-8" />
@@ -46,18 +44,20 @@
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-xml" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-xml/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/prov-xml/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/roundtrip" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/roundtrip/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-legacy/roundtrip/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-legacy/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/benchmarks/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/benchmarks/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-dot" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-dot/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-generator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-generator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-generator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/roundtrip" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/roundtrip/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/roundtrip/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services" charset="UTF-8" />

@@ -36,6 +36,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
       </set>

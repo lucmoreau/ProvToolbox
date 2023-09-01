@@ -21,13 +21,10 @@
         <module name="docker-service-translator" />
         <module name="prov-jsonld" />
         <module name="ProvToolbox-Tutorial3" />
-        <module name="benchmarks" />
         <module name="provconvert" />
         <module name="service-translator" />
         <module name="prov-model" />
-        <module name="ProvToolbox-Tutorial5" />
         <module name="prov-interop" />
-        <module name="prov-interop-light" />
         <module name="prov-log" />
         <module name="prov-template" />
         <module name="prov-dot" />
@@ -47,7 +44,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="benchmarks" target="12" />
       <module name="jsweet-quickstart" target="11" />
+      <module name="modules-legacy" target="1.5" />
+      <module name="prov-interop-light" target="11" />
       <module name="prov-json" target="9" />
       <module name="prov-jsonld-xml (1)" target="11" />
       <module name="prov-rdf" target="11" />
@@ -55,6 +55,7 @@
       <module name="prov-sql" target="9" />
       <module name="prov-xml" target="9" />
       <module name="ProvToolbox-Tutorial4" target="11" />
+      <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>

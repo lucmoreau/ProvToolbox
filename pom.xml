@@ -19,7 +19,6 @@
 
 	<modules>
 		<module>modules-core</module>
-		<module>modules-legacy</module>
 		<module>modules-misc</module>
 
 		<module>modules-template</module>

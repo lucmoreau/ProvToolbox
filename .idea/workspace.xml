@@ -9,23 +9,9 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ObjectFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvPrinterConfigDeserialiser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/bindings.xjb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/configFamily.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/defaultConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/defaultConfigMulti.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/defaultConfigWithRole.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/defaultConfigWithRoleNoLabel.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/prov_printer_config.xsd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PubTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PubTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/Map.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/MapEntry.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/org/openprovenance/prov/dot/defaultConfigWithRoleNoLabel.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

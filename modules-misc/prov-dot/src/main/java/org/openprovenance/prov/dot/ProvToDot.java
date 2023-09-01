@@ -5,8 +5,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.openprovenance.prov.model.Element;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.Activity;
@@ -52,11 +50,7 @@ import static java.lang.Math.min;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot {
-    public final static String DEFAULT_CONFIGURATION_FILE="defaultConfig.xml";
-    public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE="defaultConfigWithRole.xml";
-    public final static String DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL="defaultConfigWithRoleNoLabel.xml";
 
-    public final static String USAGE="prov2dot provFile.xml out.dot out.pdf [configuration.xml]";
     public int MAX_TOOLTIP_LENGTH = 2000;
 
     ProvUtilities u=new ProvUtilities();
@@ -72,11 +66,8 @@ public class ProvToDot {
     }
 
     public String localnameToString(QualifiedName qName) {
-        //return qName.getLocalPart();
         return nonEmptyLocalName(qName);
     }
-
-    public enum Config { DEFAULT, ROLE, ROLE_NO_LABEL };
 
 
     private Integer maxStringLength=null;
@@ -85,153 +76,15 @@ public class ProvToDot {
         this.maxStringLength = maxStringLength;
     }
 
+
     public ProvToDot(ProvFactory pf) {
         this.pf=pf;
         SUM_SIZE=makeSumSize();
-        InputStream is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
-        init(is);
-    }
-    public ProvToDot(ProvFactory pf,boolean withRoleFlag) {
-        this.pf=pf;
-        SUM_SIZE=makeSumSize();
-        InputStream is;
-        if (withRoleFlag) {
-            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
-        } else {
-            is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
-        }
-        init(is);
-    }
-    public ProvToDot(ProvFactory pf,Config config) {
-        this.pf=pf;
-        SUM_SIZE=makeSumSize();
-        InputStream is=null;
-        switch (config) {
-            case DEFAULT:
-                System.out.println("ProvToDot DEFAULT");
-                is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE);
-                break;
-            case ROLE:
-                System.out.println("ProvToDot role");
-                is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE);
-                break;
-
-            case ROLE_NO_LABEL:
-                //System.out.println("ProvToDot role no label");
-            default:
-                //System.out.println("ProvToDot role no label (by default)");
-                is=this.getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIGURATION_FILE_WITH_ROLE_NO_LABEL);
-                break;
-        }
-        init(is);
-    }
-
-    public ProvToDot(ProvFactory pf,String configurationFile) {
-        this(pf);
-        init(configurationFile);
-    }
-
-    public ProvToDot(ProvFactory pf,String configurationFile, String other) {
-        this.pf=pf;
-        SUM_SIZE=makeSumSize();
-        InputStream is=this.getClass().getClassLoader().getResourceAsStream(configurationFile);
-        init(is);
-    }
-
-    public ProvPrinterConfigDeserialiser getDeserialiser() {
-        return ProvPrinterConfigDeserialiser.getThreadProvPrinterConfigDeserialiser();
-    }
-
-    public void init(String configurationFile) {
-        ProvPrinterConfigDeserialiser printerDeserial=getDeserialiser();
-        try {
-            ProvPrinterConfiguration opc=printerDeserial.deserialiseProvPrinterConfiguration(new File(configurationFile));
-            init(opc);
-        } catch (JAXBException je) {
-            je.printStackTrace();
-        }
-    }
-
-    public void init(InputStream is) {
-        ProvPrinterConfigDeserialiser printerDeserial=getDeserialiser();
-        try {
-            ProvPrinterConfiguration opc=printerDeserial.deserialiseProvPrinterConfiguration(is);
-            init(opc);
-        } catch (JAXBException je) {
-            je.printStackTrace();
-        }
-    }
-
-    public void init(ProvPrinterConfiguration configuration) {
-        if (configuration==null) return;
-
-        if (configuration.getRelations()!=null) {
-            if (configuration.getRelations().getDefault()!=null) {
-                defaultRelationStyle=configuration.getRelations().getDefault();
-            }
-
-            for (RelationStyleMapEntry edge: configuration.getRelations().getRelation()) {
-                edgeStyleMap.put(edge.getType(),edge);
-            }
-        }
-
-        if (configuration.getActivities()!=null) {
-            if (configuration.getActivities().isDisplayValue()!=null) {
-                this.displayActivityValue=configuration.getActivities().isDisplayValue();
-            }
-            if (configuration.getActivities().isColoredAsAccount()!=null) {
-                this.displayActivityColor=configuration.getActivities().isColoredAsAccount();
-            }
-            for (ActivityMapEntry process: configuration.getActivities().getActivity()) {
-                processNameMap.put(process.getValue(),process.getDisplay());
-            }
-        }
-
-        if (configuration.getEntities()!=null) {
-            if (configuration.getEntities().isDisplayValue()!=null) {
-                this.displayEntityValue=configuration.getEntities().isDisplayValue();
-            }
-            if (configuration.getEntities().isColoredAsAccount()!=null) {
-                this.displayEntityColor=configuration.getEntities().isColoredAsAccount();
-            }
-            for (EntityMapEntry artifact: configuration.getEntities().getEntity()) {
-                artifactNameMap.put(artifact.getValue(),artifact.getDisplay());
-            }
-        }
-
-        if (configuration.getAgents()!=null) {
-            if (configuration.getAgents().isDisplayValue()!=null) {
-                this.displayAgentValue=configuration.getAgents().isDisplayValue();
-            }
-            if (configuration.getAgents().isColoredAsAccount()!=null) {
-                this.displayAgentColor=configuration.getAgents().isColoredAsAccount();
-            }
-            for (AgentMapEntry agent: configuration.getAgents().getAgent()) {
-                agentNameMap.put(agent.getValue(),agent.getDisplay());
-            }
-        }
-
-        if (configuration.getAccounts()!=null) {
-            if (configuration.getAccounts().getDefaultAccount()!=null) {
-                this.defaultAccountLabel=configuration.getAccounts().getDefaultAccount();
-            }
-            if (configuration.getAccounts().getDefaultColor()!=null) {
-                this.defaultAccountColor=configuration.getAccounts().getDefaultColor();
-            }
-            for (AccountColorMapEntry account: configuration.getAccounts().getAccount()) {
-                accountColourMap.put(account.getName(),account.getColor());
-            }
-        }
-
-        if (configuration.getGraphName()!=null) {
-            this.name=configuration.getGraphName();
-        }
-
     }
 
 
     public void convert(Document graph, String dotFile, String pdfFile, String title)
-            throws java.io.FileNotFoundException, java.io.IOException {
+            throws java.io.IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
         @SuppressWarnings("unused")
@@ -239,7 +92,7 @@ public class ProvToDot {
     }
 
     public void convert(Document graph, String dotFile, OutputStream pdfStream, String title)
-            throws java.io.FileNotFoundException, java.io.IOException {
+            throws java.io.IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
         java.lang.Process proc = runtime.exec("dot  -Tpdf " + dotFile);
@@ -247,12 +100,12 @@ public class ProvToDot {
         org.apache.commons.io.IOUtils.copy(is, pdfStream);
     }
     public void convert(Document graph, String dotFile, String title)
-            throws java.io.FileNotFoundException, java.io.IOException {
+            throws java.io.IOException {
         convert(graph,new File(dotFile),title);
     }
 
     public void convert(Document graph, String dotFile, String aFile, String type, String title)
-            throws java.io.FileNotFoundException, java.io.IOException {
+            throws java.io.IOException {
         convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
         java.lang.Process proc = runtime.exec("dot -o " + aFile + " -T" + type + " " + dotFile);
@@ -263,8 +116,7 @@ public class ProvToDot {
                 System.out.println("Error:  " + s_error);
             }
             proc.waitFor();
-            //System.err.println("exit value " + proc.exitValue());
-        } catch (InterruptedException e){};
+        } catch (InterruptedException e){}
     }
 
     public void convert(Document graph, OutputStream os, String type, String title) {
@@ -288,7 +140,7 @@ public class ProvToDot {
     }
 
     public void convert(Document graph, String dotFile, OutputStream os, String type, String title)
-            throws java.io.FileNotFoundException, java.io.IOException {
+            throws java.io.IOException {
         convert(graph,new File(dotFile),title);
         Runtime runtime = Runtime.getRuntime();
 
@@ -458,7 +310,7 @@ public class ProvToDot {
     @SuppressWarnings("unused")
     public QualifiedName annotationId(QualifiedName id,String node) {
 
-        if (true || id==null) {
+        if (true) {
             return pf.newQualifiedName("-","attrs" + node + (annotationCount++),null);
         } else {
             return id;
@@ -498,14 +350,9 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addActivityColor(Activity p, HashMap<String,String> properties) {
-        if (displayActivityColor) {
-            properties.put("color",processColor(p));
-            properties.put("fontcolor",processColor(p));
-        } else {
-            properties.put("fillcolor","#9FB1FC"); //blue
-            properties.put("color","#0000FF"); //blue
-            properties.put("style", "filled");
-        }
+        properties.put("fillcolor", "#9FB1FC"); //blue
+        properties.put("color","#0000FF"); //blue
+        properties.put("style", "filled");
         addColors(p,properties);
         return properties;
     }
@@ -576,14 +423,9 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addEntityColor(Entity a, HashMap<String,String> properties) {
-        if (displayEntityColor) {
-            properties.put("color",entityColor(a));
-            properties.put("fontcolor",entityColor(a));
-        } else {
-            properties.put("fillcolor","#FFFC87");//yellow
-            properties.put("color","#808080"); //gray
-            properties.put("style", "filled");
-        }
+        properties.put("fillcolor", "#FFFC87");//yellow
+        properties.put("color","#808080"); //gray
+        properties.put("style", "filled");
         addColors(a,properties);
         return properties;
     }
@@ -604,7 +446,6 @@ public class ProvToDot {
 
     public HashMap<String,String> addAgentShape(Agent p, HashMap<String,String> properties) {
         properties.put("shape","house");
-        //properties.put("sides","8");
         return properties;
     }
 
@@ -614,13 +455,8 @@ public class ProvToDot {
     }
 
     public HashMap<String,String> addAgentColor(Agent a, HashMap<String,String> properties) {
-        if (displayAgentColor) {
-            properties.put("color",agentColor(a));
-            properties.put("fontcolor",agentColor(a));
-        } else {
-            properties.put("fillcolor","#FDB266"); //orange
-            properties.put("style", "filled");
-        }
+        properties.put("fillcolor", "#FDB266"); //orange
+        properties.put("style", "filled");
         addColors(a,properties);
         return properties;
     }
@@ -670,26 +506,11 @@ public class ProvToDot {
                 // no need to display this attribute
                 continue;
             }
-		
-		/*
-		if ("fillcolor".equals(prop.getElementName().getLocalPart())) {
-		    // no need to display this attribute
-		    continue;
-		}
-		
-		if ("size".equals(prop.getElementName().getLocalPart())) {
-		    // no need to display this attribute
-		    continue;
-		}
-		if ("tooltip".equals(prop.getElementName().getLocalPart())) {
-		    // no need to display this attribute
-		    continue;
-		}
-		*/
+
 
             label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + convertProperty((Attribute)prop) + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl((Attribute)prop) + "</TD>\n";
+            label=label+"	    <TD align=\"left\">" + convertProperty(prop) + ":</TD>\n";
+            label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(prop) + "</TD>\n";
             label=label+"	</TR>\n";
         }
         label=label+"    </TABLE>>\n";
@@ -709,20 +530,7 @@ public class ProvToDot {
         return count;
     }
 
-    /*
 
-    public String convertValue(Attribute v) {
-        if (v.getValue() instanceof QualifiedName) {
-            QualifiedName name=(QualifiedName) v.getValue();
-            return htmlify(nonEmptyLocalName(name));
-        }
-        String label=getPropertyValueFromAny(v);
-        int i=label.lastIndexOf("#");
-        int j=label.lastIndexOf("/");
-        return htmlify(label.substring(Math.max(i,j)+1, label.length()));
-    }
-
-     */
 
     public String nonEmptyLocalName(QualifiedName name) {
         final String localPart = name.getLocalPart();
@@ -732,7 +540,7 @@ public class ProvToDot {
             String label=uri.substring(0, uri.length()-1);
             int i=label.lastIndexOf("#");
             int j=label.lastIndexOf("/");
-            return uri.substring(Math.max(i,j)+1, uri.length());
+            return uri.substring(Math.max(i,j)+1);
 
         } else {
             return localPart;
@@ -744,30 +552,19 @@ public class ProvToDot {
         String label=getPropertyFromAny(oLabel);
         int i=label.lastIndexOf("#");
         int j=label.lastIndexOf("/");
-        return label.substring(Math.max(i,j)+1, label.length());
+        return label.substring(Math.max(i,j)+1);
     }
 
     public String getPropertyFromAny (Attribute o) {
         return o.getElementName().getUri();
     }
 
-    public String getPropertyValueFromAny (Type t) {
-        Object val=t.getValue();
-        if (val instanceof QualifiedName) {
-            QualifiedName q=(QualifiedName)val;
-            return q.getNamespaceURI() + q.getLocalPart();
-        } else {
-            return "" +  val;
-        }
-    }
 
     public String getPropertyValueWithUrl (Attribute t) {
         Object val=t.getValue();
         if (val instanceof QualifiedName) {
             QualifiedName q=(QualifiedName)val;
             return htmlify(q.getPrefix() +  ":" + q.getLocalPart(), true);
-            //return "<a xlink:href='" + q.getNamespaceURI() + q.getLocalPart() + "'>" + q.getLocalPart() + "</a>";
-            //return "&lt;a href=\"" + q.getPrefix() + ":" + q.getLocalPart() + "\"&gt;" + q.getLocalPart() + "&lt;/a&gt;";
         } if (val instanceof LangString) {
             LangString ls=(LangString)val;
             if (ls.getLang()==null) {
@@ -780,53 +577,25 @@ public class ProvToDot {
             return htmlify(""+val, true);
         }
     }
-    public String getPropertyValueFromAny (Attribute o) {
-        Object val=o.getValue();
-        if (val instanceof QualifiedName) {
-            QualifiedName q=(QualifiedName)val;
-            return q.getNamespaceURI() + q.getLocalPart();
-        } else {
-            return "" +  val;
-        }
-    }
+
 
 
     public HashMap<String,String> addAnnotationColor(HasOther ann, HashMap<String,String> properties) {
         if (displayAnnotationColor) {
             properties.put("color",annotationColor(ann));
             properties.put("fontcolor","black");
-            //properties.put("style","filled");
         }
         return properties;
     }
 
 
-    boolean displayActivityValue=false;
-    boolean displayActivityColor=false;
-    boolean displayEntityValue=false;
-    boolean displayEntityColor=false;
-    boolean displayAgentColor=false;
-    boolean displayAgentValue=false;
+
     boolean displayAnnotationColor=true;
 
     public String activityLabel(Activity p) {
-        if (displayActivityValue) {
-            return convertActivityName(""+pf.getLabel(p));
-        } else {
-            return localnameToString(p.getId());
-        }
+        return localnameToString(p.getId());
     }
-    public String processColor(Activity p) {
-        // Note, I should compute effective account membership
-        List<String> colors=new LinkedList<String>();
-        // for (AccountRef acc: p.getAccount()) {
-        //     String accountLabel=((Account)acc.getRef()).getId();
-        //     String colour=convertAccount(accountLabel);
-        //     colors.add(colour);
-        // }
 
-        return selectColor(colors);
-    }
 
     // returns the first non transparent color
     public String selectColor(List<String> colors) {
@@ -838,31 +607,12 @@ public class ProvToDot {
     }
 
     public String entityLabel(Entity p) {
-        if (displayEntityValue) {
-            return convertEntityName(""+pf.getLabel(p));
-        } else {
-            return localnameToString(p.getId());
-        }
+        return localnameToString(p.getId());
     }
 
-    public String entityColor(Entity p) {
-        // Note, I should compute effective account membership
-        List<String> colors=new LinkedList<String>();
-        // for (AccountRef acc: p.getAccount()) {
-        //     String accountLabel=((Account)acc.getRef()).getId();
-        //     String colour=convertAccount(accountLabel);
-        //     colors.add(colour);
-        // }
-        return selectColor(colors);
-    }
+
     public String agentColor(Agent p) {
-        // Note, I should compute effective account membership
-        List<String> colors=new LinkedList<String>();
-        // for (AccountRef acc: p.getAccount()) {
-        //     String accountLabel=((Account)acc.getRef()).getId();
-        //     String colour=convertAccount(accountLabel);
-        //     colors.add(colour);
-        // }
+        List<String> colors= new LinkedList<>();
         return selectColor(colors);
     }
 
@@ -874,31 +624,9 @@ public class ProvToDot {
     }
 
     public String agentLabel(Agent p) {
-        if (displayAgentValue) {
-            return convertAgentName(""+pf.getLabel(p));
-        } else {
-            return localnameToString(p.getId());
-        }
+        return localnameToString(p.getId());
     }
 
-    HashMap<String,String> processNameMap=new HashMap<String,String>();
-    public String convertActivityName(String process) {
-        String name=processNameMap.get(process);
-        if (name!=null) return name;
-        return process;
-    }
-    HashMap<String,String> artifactNameMap=new HashMap<String,String>();
-    public String convertEntityName(String artifact) {
-        String name=artifactNameMap.get(artifact);
-        if (name!=null) return name;
-        return artifact;
-    }
-    HashMap<String,String> agentNameMap=new HashMap<String,String>();
-    public String convertAgentName(String agent) {
-        String name=agentNameMap.get(agent);
-        if (name!=null) return name;
-        return agent;
-    }
 
 
     int bncounter=0;
@@ -1018,22 +746,6 @@ public class ProvToDot {
     }
 
 
-    String getLabelForRelation(Relation e) {
-        if (e instanceof Used)              return "used";
-        if (e instanceof WasGeneratedBy)    return "wasGeneratedBy";
-        if (e instanceof WasDerivedFrom)    return "wasDerivedFrom";
-        if (e instanceof WasStartedBy)      return "wasStartedBy";
-        if (e instanceof WasEndedBy)        return "wasEndedBy";
-        if (e instanceof WasInvalidatedBy)  return "wasInvalidatedBy";
-        if (e instanceof WasInformedBy)     return "wasInformedBy";
-        if (e instanceof WasAssociatedWith) return "wasAssociatedWith";
-        if (e instanceof WasAttributedTo)   return "wasAttributedTo";
-        if (e instanceof WasInfluencedBy)   return "wasInfluencedBy";
-        if (e instanceof ActedOnBehalfOf)   return "actedOnBehalfOf";
-        if (e instanceof SpecializationOf)  return "specializationOf";
-        if (e instanceof AlternateOf)       return "alternateOf";
-        return null;
-    }
     String getShortLabelForRelation(Relation e) {
         if (e instanceof Used)              return "use";
         if (e instanceof WasGeneratedBy)    return "gen";
@@ -1052,81 +764,6 @@ public class ProvToDot {
     }
 
 
-
-    public HashMap<String,String> addRelationAttributes(String accountLabel,
-                                                        Relation e,
-                                                        HashMap<String,String> properties) {
-        String colour=convertAccount(accountLabel);
-        properties.put("color",colour);
-        properties.put("fontcolor",colour);
-        properties.put("style",getRelationStyle(e));
-        addRelationLabel(e,properties);
-        return properties;
-    }
-
-
-    /* Displays type if any, role otherwise. */
-    public void addRelationLabel(Relation e0, HashMap<String,String> properties) {
-        String label=null;
-        if (!(e0 instanceof QualifiedRelation)) return;
-        QualifiedRelation e=(QualifiedRelation)e0;
-        List<Type> type=pf.getType(e);
-        if ((type!=null) && (!type.isEmpty())) {
-            label=type.get(0).getValue().toString();
-        } else if (getRelationPrintRole(e)) {
-            String role=pf.getRole(e);
-            if (role!=null) {
-                label=displayRole(role);
-                properties.put("fontsize","8");
-            }
-        }
-        if (label!=null) {
-            properties.put("label",convertRelationLabel(label));
-            if (properties.get("fontsize")==null) {
-                properties.put("fontsize","10");
-            }
-        }
-    }
-
-    public String displayRole(String role) {
-        return "(" + role + ")";
-    }
-
-    public String convertRelationLabel(String label) {
-        return label.substring(label.indexOf("#")+1, label.length());
-    }
-
-
-    HashMap<String,String> accountColourMap=new HashMap<String,String>();
-    public String convertAccount(String account) {
-        String colour=accountColourMap.get(account);
-        if (colour!=null) return colour;
-        return defaultAccountColor;
-    }
-
-    String defaultRelationStyle;
-    HashMap<String,RelationStyleMapEntry> edgeStyleMap=new HashMap<String,RelationStyleMapEntry>();
-
-    public String getRelationStyle(Relation edge) {
-        String name=edge.getClass().getName();
-        RelationStyleMapEntry style=edgeStyleMap.get(name);
-        if (style!=null) return style.getStyle();
-        return defaultRelationStyle;
-    }
-
-    public boolean getRelationPrintRole(Relation edge) {
-        String name=edge.getClass().getName();
-        RelationStyleMapEntry style=edgeStyleMap.get(name);
-        if (style!=null) {
-            Boolean flag=style.isPrintRole();
-            if (flag==null) return false;
-            return flag;
-        } else {
-            return false;
-        }
-    }
-
-
     //////////////////////////////////////////////////////////////////////
     ///
     ///                              DOT FORMAT GENERATION
@@ -1135,15 +772,10 @@ public class ProvToDot {
 
 
     String name;
-    String defaultAccountLabel;
-    String defaultAccountColor;
     private String layout;
 
     /* make name compatible with dot notation*/
 
-    public String OLDdotify(String name) {
-        return "n" + name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace('&','_').replace('=','_').replace('?','_');
-    }
     public String dotify(String name) {
         //return name.replace('-','_').replace('.','_').replace('/','_').replace(':','_').replace('#','_').replace('~','_').replace("&","&amp;").replace('=','_').replace('?','_');
         //return htmlify(name);
@@ -1171,9 +803,9 @@ public class ProvToDot {
 
     public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
-        sb.append(""+dotify(qualifiedNameToString(name)));
+        sb.append(dotify(qualifiedNameToString(name)));
         emitProperties(sb,properties);
-        out.println(sb.toString());
+        out.println(sb);
     }
 
 
@@ -1181,7 +813,7 @@ public class ProvToDot {
         StringBuffer sb=new StringBuffer();
         sb.append(bnid);
         emitProperties(sb,properties);
-        out.println(sb.toString());
+        out.println(sb);
     }
 
 
@@ -1195,7 +827,7 @@ public class ProvToDot {
         }
         sb.append(dotify(dest));
         emitProperties(sb,properties);
-        out.println(sb.toString());
+        out.println(sb);
     }
 
     public void emitProperties(StringBuffer sb,HashMap<String,String> properties) {

@@ -32,7 +32,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
 
-        ProvToDot provToDot = new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL);
+        ProvToDot provToDot = new ProvToDot(pFactory);
         provToDot.setMaxStringLength(maxStringLength);
         provToDot.convert(document, out, extension, "title");
 

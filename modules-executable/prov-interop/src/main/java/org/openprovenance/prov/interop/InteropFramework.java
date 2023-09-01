@@ -19,7 +19,6 @@ import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
-import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
@@ -1125,8 +1124,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
             case DOT: {
-                String configFile = null; // TODO: get it as option
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory,configFile);
+                ProvToDot toDot = new ProvToDot(pFactory);
                 toDot.setMaxStringLength(maxStringLength);
                 toDot.convert(document, os, config.title);
                 break;
@@ -1135,18 +1133,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case JPEG:
             case PNG:
             case SVG: {
-                String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
 
                 String dotFileOut = tmp.getAbsolutePath(); // give it as option,
                                                            // if not available
                                                            // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(pFactory,configFile);
-                } else {
-                    toDot = new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL);
-                }
+                ProvToDot toDot= new ProvToDot(pFactory);
                 toDot.setMaxStringLength(maxStringLength);
                 toDot.convert(document, dotFileOut, os, extensionMap.get(format), config.title);
                 tmp.delete();
@@ -1283,8 +1275,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
             case DOT: {
-                String configFile = null; // TODO: get it as option
-                ProvToDot toDot = (configFile == null) ? new ProvToDot(pFactory, ProvToDot.Config.ROLE_NO_LABEL) : new ProvToDot(pFactory, configFile);
+                ProvToDot toDot = new ProvToDot(pFactory);
                 toDot.setMaxStringLength(maxStringLength);
                 toDot.setLayout(config.layout);
                 toDot.convert(document, filename, config.title);
@@ -1294,18 +1285,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case JPEG:
             case PNG:
             case SVG: {
-                String configFile = null; // give it as option
                 File tmp = File.createTempFile("viz-", ".dot");
 
                 String dotFileOut = tmp.getAbsolutePath(); // give it as option,
                                                            // if not available
                                                            // create tmp file
-                ProvToDot toDot;
-                if (configFile != null) {
-                    toDot = new ProvToDot(pFactory,configFile);
-                } else {
-                    toDot = new ProvToDot(pFactory,ProvToDot.Config.ROLE_NO_LABEL);
-                }
+                ProvToDot toDot= new ProvToDot(pFactory);
                 toDot.setMaxStringLength(maxStringLength);
                 toDot.setLayout(config.layout);
                 toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);

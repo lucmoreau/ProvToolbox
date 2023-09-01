@@ -22,6 +22,7 @@
         <module name="prov-jsonld" />
         <module name="ProvToolbox-Tutorial3" />
         <module name="provconvert" />
+        <module name="benchmarks" />
         <module name="service-translator" />
         <module name="prov-model" />
         <module name="prov-interop" />
@@ -44,7 +45,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="benchmarks" target="12" />
       <module name="jsweet-quickstart" target="11" />
       <module name="modules-legacy" target="1.5" />
       <module name="prov-interop-light" target="11" />

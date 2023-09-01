@@ -2,7 +2,8 @@
 #FROM tomcat:8.5-jre8-alpine
 #FROM tomcat:9-jdk13-openjdk-oracle
 #FROM tomcat:9-jdk11-openjdk-slim
-FROM tomcat:9-jdk12-adoptopenjdk-openj9
+#FROM tomcat:9-jdk12-adoptopenjdk-openj9
+FROM tomcat:9-jdk11-temurin-jammy
 
 
 MAINTAINER Luc Moreau "luc.moreau@kcl.ac.uk"

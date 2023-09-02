@@ -18,11 +18,7 @@ public class RoundTripFromProvnTest extends TestCase {
 	public RoundTripFromProvnTest(String name) {
 		super(name);
 	}
-
-	public String extension() {
-		return ".provn";
-	}
-
+	
 	public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
 		System.out.println("-------------- File: " + file);
 		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();

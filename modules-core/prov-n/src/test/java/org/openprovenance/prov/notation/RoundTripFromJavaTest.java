@@ -1,7 +1,5 @@
 package org.openprovenance.prov.notation;
 
-import java.util.Arrays;
-
 import org.openprovenance.prov.model.*;
 
 public class RoundTripFromJavaTest extends org.openprovenance.prov.model.RoundTripFromJavaTest {

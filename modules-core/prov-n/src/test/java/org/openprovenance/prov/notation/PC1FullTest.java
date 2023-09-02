@@ -1,5 +1,6 @@
 package org.openprovenance.prov.notation;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import org.openprovenance.prov.model.Document;

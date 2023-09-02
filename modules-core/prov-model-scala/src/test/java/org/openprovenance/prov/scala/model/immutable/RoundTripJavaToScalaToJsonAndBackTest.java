@@ -14,8 +14,7 @@ import java.io.*;
  */
 public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest {
 
-    public RoundTripJavaToScalaToJsonAndBackTest(String testName) {
-        super(testName);
+    public RoundTripJavaToScalaToJsonAndBackTest() {
         test=false;
         pFactory=new ProvFactory();
     }
@@ -39,7 +38,7 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
         Document doc3 = readDocument(file);
 
 
-        compareDocuments(doc2, doc3, check && checkTest(file));
+        documentComparator.compareDocuments(doc2, doc3, check && checkTest(file));
     }
 
 

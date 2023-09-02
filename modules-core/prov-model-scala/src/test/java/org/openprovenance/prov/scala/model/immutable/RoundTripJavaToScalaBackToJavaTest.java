@@ -14,8 +14,7 @@ public class RoundTripJavaToScalaBackToJavaTest extends RoundTripFromJavaTest {
     public static org.openprovenance.prov.vanilla.ProvFactory pFactory=new org.openprovenance.prov.scala.immutable.ProvFactory();
 
 
-    public RoundTripJavaToScalaBackToJavaTest(String testName) {
-        super(testName);
+    public RoundTripJavaToScalaBackToJavaTest() {
         test=false;
         pFactory=new ProvFactory();
     }
@@ -33,7 +32,7 @@ public class RoundTripJavaToScalaBackToJavaTest extends RoundTripFromJavaTest {
         Document doc3=bc2.doAction(doc2);
 
 
-        compareDocuments(doc, doc3, check && checkTest(file));
+        documentComparator.compareDocuments(doc, doc3, check && checkTest(file));
     }
 
     public boolean checkSchema(String name) {

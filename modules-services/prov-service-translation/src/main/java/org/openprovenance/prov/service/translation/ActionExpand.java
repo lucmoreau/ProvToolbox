@@ -15,6 +15,7 @@ import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
 import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
 import org.quartz.JobKey;
@@ -106,7 +107,7 @@ public class ActionExpand implements ActionPerformer {
         InputStream stream = new ByteArrayInputStream(bindings.getBytes(StandardCharsets.UTF_8));
 
 
-        final BindingsJson.BindingsBean bean = BindingsJson.importBean(stream);
+        final BindingsBean bean = BindingsJson.importBean(stream);
         Bindings bb= BindingsJson.fromBean(bean,pFactory);
 
         Document expanded = myExpand.expander(templateDocument, bb);
@@ -118,9 +119,9 @@ public class ActionExpand implements ActionPerformer {
         return expanded;
     }
 
-    private void storeBindings(TemplateResource tr, BindingsJson.BindingsBean bean) throws IOException {
+    private void storeBindings(TemplateResource tr, BindingsBean bean) throws IOException {
 
-        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
+        final NonDocumentGenericResourceStorage<BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
         String bindingsStoreId= bindingsStorage.newStore("json", "application/json");
 
         bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);

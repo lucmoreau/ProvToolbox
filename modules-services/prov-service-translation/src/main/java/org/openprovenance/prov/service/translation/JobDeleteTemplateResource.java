@@ -7,6 +7,7 @@ import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.ResourceStorage;
 import org.openprovenance.prov.storage.api.TemplateResource;
+import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -35,7 +36,7 @@ public class JobDeleteTemplateResource implements Job {
             e.printStackTrace();
         }
         ResourceIndex<TemplateResource> resourceIndex=(ResourceIndex<TemplateResource>) utils.getExtensionMap().get(TemplateResource.getResourceKind());
-        final NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsJson.BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
+        final NonDocumentGenericResourceStorage<BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
 
         String visibleId = context.getJobDetail().getKey().getName();
         if (visibleId == null) {

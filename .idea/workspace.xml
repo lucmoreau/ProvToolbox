@@ -8,34 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/config/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_json_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_tests_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_xml_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_jsonld_xml_tests_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_model_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_model_scala_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_model_tests_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_n_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_template_0_9_11_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openprovenance_prov_prov_xml_0_9_3_SNAPSHOT.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/appbundler_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/j4ts_json_master.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/main12.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaBackToJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaBackToJavaTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripScalaToJavaBackToScalaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripScalaToJavaBackToScalaTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ValueConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ValueConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/AttributeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/AttributeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/AttributeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/AttributeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromProvnTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromProvnTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

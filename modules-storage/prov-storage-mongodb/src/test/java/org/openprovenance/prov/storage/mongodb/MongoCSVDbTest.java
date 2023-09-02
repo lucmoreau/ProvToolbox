@@ -5,8 +5,7 @@ import junit.framework.TestCase;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.openprovenance.prov.template.expander.BindingsJson;
-import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static org.openprovenance.prov.storage.mongodb.MongoCSVResourceStorage.toList;
 
-public class mongoCSVDbTest extends TestCase {
+public class MongoCSVDbTest extends TestCase {
 
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";

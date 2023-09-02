@@ -25,7 +25,6 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
 
 public class Bindings {
     
@@ -44,9 +43,7 @@ public class Bindings {
     static ProvUtilities u= new ProvUtilities();
 
     public Bindings(ProvFactory pf) {
-        this(new Hashtable<QualifiedName, List<QualifiedName>>(), 
-             new Hashtable<QualifiedName, List<List<TypedValue>>>(),
-             pf);
+        this(new Hashtable<>(), new Hashtable<>(), pf);
     }
 
     public Bindings(Hashtable<QualifiedName, List<QualifiedName>> variables,

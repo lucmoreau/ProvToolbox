@@ -5,14 +5,14 @@ import java.lang.String;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.expander.Bindings;
-import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.BindingsBeanInterface;
 
-public class TestBindingsBean implements BindingsBean {
+public class TestBindingsBeanInterface implements BindingsBeanInterface {
   private final Bindings bindings;
 
   private final ProvFactory pf;
 
-  public TestBindingsBean(ProvFactory pf) {
+  public TestBindingsBeanInterface(ProvFactory pf) {
     this.pf = pf;
     this.bindings = new Bindings(pf);
   }

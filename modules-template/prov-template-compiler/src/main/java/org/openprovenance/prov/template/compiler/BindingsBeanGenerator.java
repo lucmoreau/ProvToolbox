@@ -14,7 +14,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.expander.Bindings;
-import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.BindingsBeanInterface;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -123,7 +123,7 @@ public class BindingsBeanGenerator {
     public Builder generateClassBuilder(String name) {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(BindingsBean.class)
+                .addSuperinterface(BindingsBeanInterface.class)
                 .addField(Bindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
     }

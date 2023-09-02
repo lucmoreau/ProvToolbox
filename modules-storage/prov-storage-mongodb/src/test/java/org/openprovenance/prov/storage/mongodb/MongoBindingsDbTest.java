@@ -2,18 +2,14 @@ package org.openprovenance.prov.storage.mongodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
-import org.openprovenance.prov.interop.Formats;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.Namespace;
+
 import org.openprovenance.prov.template.expander.BindingsJson;
-import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
-import org.openprovenance.prov.vanilla.ProvFactory;
+import org.openprovenance.prov.template.expander.BindingsBean;
 
 import java.io.File;
 import java.io.IOException;
 
-public class mongoBindingsDbTest extends TestCase {
+public class MongoBindingsDbTest extends TestCase {
 
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";

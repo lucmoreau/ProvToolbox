@@ -15,9 +15,9 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Groupings;
-import org.openprovenance.prov.template.expander.BindingsJson.BindingsBean;
 
 import junit.framework.TestCase;
 
@@ -25,10 +25,6 @@ public class BindingTest extends TestCase {
 
     static final String EX_NS = "http://example.org/";
 
-    public BindingTest(String testName) {
-	super(testName);
-    }
-    
     ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
     QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");
     QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");

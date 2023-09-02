@@ -24,12 +24,6 @@ public class BindingsJson {
 	
 	// public static ProvFactory pf=new org.openprovenance.prov.scala.immutable.ProvFactory();
 
-	public static class BindingsBean {
-		public Hashtable<String, List<Object>> var;
-		public Hashtable<String, List<Object>> vargen;
-		public Hashtable<String, String> context;
-	    public String template;
-	}
 
 	public static Object convertValueToBean(Object o, QualifiedName type, Hashtable<String, String> context) {
 		if (o instanceof Integer) return o;

@@ -12,7 +12,7 @@ public class ProvFrameworkTest extends TestCase {
     static final org.openprovenance.prov.vanilla.ProvUtilities util = new org.openprovenance.prov.vanilla.ProvUtilities();
     public static ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name = pFactory.getName();
-    protected final DocumentEquality documentEquality;
+    protected DocumentEquality documentEquality;
     protected final DocumentComparator documentComparator;
 
     public ProvFrameworkTest() {
@@ -177,50 +177,33 @@ public class ProvFrameworkTest extends TestCase {
     }
 
     public void addLocations(HasLocation hl) {
-        hl.getLocation().add(pFactory.newLocation("London",
-                name.XSD_STRING));
+        hl.getLocation().add(pFactory.newLocation("London", name.XSD_STRING));
         hl.getLocation().add(pFactory.newLocation(1, name.XSD_INT));
         hl.getLocation().add(pFactory.newLocation(1.0, name.XSD_FLOAT));
-        hl.getLocation()
-                .add(pFactory.newLocation(true, name.XSD_BOOLEAN));
-        hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london",
-                        EX_PREFIX),
-                name.PROV_QUALIFIED_NAME));
-        hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
-                name.XSD_DATETIME));
-        hl.getLocation().add(pFactory.newLocation(EX_NS + "london",
-                name.XSD_ANY_URI));
-        hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),
-                name.XSD_GYEAR));
+        hl.getLocation().add(pFactory.newLocation(true, name.XSD_BOOLEAN));
+        hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london", EX_PREFIX), name.PROV_QUALIFIED_NAME));
+        hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(), name.XSD_DATETIME));
+        hl.getLocation().add(pFactory.newLocation(EX_NS + "london", name.XSD_ANY_URI));
+        hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002), name.XSD_GYEAR));
     }
 
     public void addValue(HasValue hl) {
-        hl.setValue(pFactory.newValue(pFactory.newQualifiedName(EX_NS, "avalue", EX_PREFIX),
-                name.PROV_QUALIFIED_NAME));
+        hl.setValue(pFactory.newValue(pFactory.newQualifiedName(EX_NS, "avalue", EX_PREFIX), name.PROV_QUALIFIED_NAME));
     }
 
     public void addFurtherAttributes(HasOther he) {
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello",
-                name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "bonjour",
-                name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, pFactory.newGYear(2002),
-                name.XSD_GYEAR));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye",
-                name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "bonjour", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, pFactory.newGYear(2002), name.XSD_GYEAR));
+        he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye", name.XSD_STRING));
         // he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX,
         // pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
-        he.getOther().add(pFactory.newOther(RoundTripFromJavaTest.EX2_NS, "tag3", RoundTripFromJavaTest.EX2_PREFIX, "hi",
-                name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(RoundTripFromJavaTest.EX2_NS, "tag3", RoundTripFromJavaTest.EX2_PREFIX, "hi", name.XSD_STRING));
         //  he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
         //                                      "hello\nover\nmore\nlines",
         //                                      name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
-                "hello",
-                name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
-                "hello2",
-                name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX, "hello", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX, "hello2", name.XSD_STRING));
 
 
     }
@@ -275,12 +258,10 @@ public class ProvFrameworkTest extends TestCase {
 
     public void addFurtherAttributesWithQNames(HasOther he) {
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                pFactory.newQualifiedName(RoundTripFromJavaTest.EX2_NS, "newyork",
-                        RoundTripFromJavaTest.EX2_PREFIX),
+                pFactory.newQualifiedName(RoundTripFromJavaTest.EX2_NS, "newyork", RoundTripFromJavaTest.EX2_PREFIX),
                 name.PROV_QUALIFIED_NAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                pFactory.newQualifiedName(EX_NS, "london",
-                        EX_PREFIX),
+                pFactory.newQualifiedName(EX_NS, "london", EX_PREFIX),
                 name.PROV_QUALIFIED_NAME));
         he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
                 pFactory.newQualifiedName(RoundTripFromJavaTest.EX3_NS, "london", null),

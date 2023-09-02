@@ -7,11 +7,6 @@ import org.openprovenance.prov.model.UncheckedTestException;
 public class AttributeTest extends org.openprovenance.prov.model.AttributeTest {
 	final Utility u = new Utility();
 
-	public AttributeTest(String testName) {
-		super(testName);
-	}
-	
-
 	@Override
 	public String extension() {
 		return ".provn";
@@ -19,6 +14,8 @@ public class AttributeTest extends org.openprovenance.prov.model.AttributeTest {
 		
 	@Override
 	public Document readDocument(String file1) {
+		System.out.println(" reading " + file1);
+
 		try {
 			return (Document) u.convertSyntaxTreeToJavaBean(file1,pFactory);
 		} catch (Throwable e) {
@@ -28,6 +25,7 @@ public class AttributeTest extends org.openprovenance.prov.model.AttributeTest {
 
 	@Override
 	public void writeDocument(Document doc, String file) {
+		System.out.println("writing of " + file);
 		Namespace.withThreadNamespace(doc.getNamespace());
 		String s = u.convertBeanToSyntaxTree(doc,pFactory);
 		u.writeTextToFile(s, file);

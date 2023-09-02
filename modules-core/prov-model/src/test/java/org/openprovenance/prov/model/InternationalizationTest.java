@@ -3,135 +3,31 @@ package org.openprovenance.prov.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import junit.framework.TestCase;
 
 import static org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest.deepCopy;
 
 /**
  * Unit test for PROV roundtrip conversion, specially testing Internationalization.
  */
-public class InternationalizationTest extends TestCase {
+public class InternationalizationTest extends ProvFrameworkTest {
 
     public static final String EX_NS = "http://example.org/";
-    public static final String EX2_NS = "http://example2.org/";
     public static final String EX_PREFIX = "ex";
-    public static final String EX2_PREFIX = "ex2";
-    public static final String EX3_NS = "http://example3.org/";
 
-    static final ProvUtilities util = new ProvUtilities();
 
     public static ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name = pFactory.getName();
 
-    private DocumentEquality documentEquality;
-
-    /**
-     * Create the test case
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public InternationalizationTest(String testName) {
-        super(testName);
+    public InternationalizationTest() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
     }
 
-    public boolean urlFlag = true;
 
-    /**
-     * @return the suite of tests being tested
-     */
 
-    public void updateNamespaces(Document doc) {
-        Namespace ns = Namespace.gatherNamespaces(doc);
-        doc.setNamespace(ns);
-    }
 
-    public String extension() {
-        return ".xml";
-    }
-
-    public void makeDocAndTest(Statement stment, String file) {
-        makeDocAndTest(stment, file, null, true);
-    }
-
-    public void makeDocAndTest(Statement stment, String file, boolean check) {
-        makeDocAndTest(stment, file, null, check);
-    }
-
-    public void makeDocAndTest(Statement stment, Statement[] opt, String file) {
-        makeDocAndTest(stment, file, opt, true);
-    }
-
-    public void makeDocAndTest(Statement[] stment, Statement[] opt, String file) {
-        makeDocAndTest(stment, file, opt, true);
-    }
-
-    public void makeDocAndTest(Statement stment, String file, Statement[] opt,
-                               boolean check) {
-        makeDocAndTest(new Statement[] { stment }, file, opt, check);
-    }
-
-    public void makeDocAndTest(Statement[] stment, String file,
-                               Statement[] opt, boolean check) {
-        makeDocAndTest(stment, null, file, opt, check);
-    }
-
-    public void makeDocAndTest(Statement[] stment, Bundle[] bundles,
-                               String file, Statement[] opt, boolean check) {
-        Document doc = pFactory.newDocument();
-        for (int i = 0; i < stment.length; i++) {
-            doc.getStatementOrBundle().add(stment[i]);
-        }
-        if (bundles != null) {
-            for (int j = 0; j < bundles.length; j++) {
-                doc.getStatementOrBundle().add(bundles[j]);
-            }
-        }
-        updateNamespaces(doc);
-        
-        if (bundles!=null) {
-            for (int j = 0; j < bundles.length; j++) {
-                bundles[j].getNamespace().setParent(doc.getNamespace());
-            }
-        }
-
-        String file1 = (opt == null) ? file : file + "-S";
-        compareDocAndFile(doc, file1, check);
-
-        if ((opt != null) && doOptional(opt)) {
-            String file2 = file + "-M";
-            doc.getStatementOrBundle().addAll(Arrays.asList(opt));
-            compareDocAndFile(doc, file2, check);
-        }
-    }
-
-    public boolean doOptional(Statement[] opt) {
-	return true;
-    }
-
-    public void compareDocAndFile(Document doc, String file, boolean check) {
-        file = file + extension();
-        writeDocument(doc, file);
-        if (check) conditionalCheckSchema(file);
-        Document doc3 = readDocument(file);
-        compareDocuments(doc, doc3, check && checkTest(file));
-    }
-
-    public void conditionalCheckSchema(String file) {
-        if (checkSchema(file))
-            doCheckSchema1(file);
-    }
-
-    public boolean checkSchema(String name) {
-        return true;
-    }
-
-    public void doCheckSchema1(String file) {
-
-    }
 
     public void doCheckSchema2(String file) {
         // String
@@ -176,23 +72,8 @@ public class InternationalizationTest extends TestCase {
 
     Map<String,Document> table=new HashMap<>();
     public void writeDocument(Document doc, String file2) {
-        System.out.println(" * document " + file2);
+        System.out.println("deep copy of  " + file2);
         table.put(file2, deepCopy(doc));
-    }
-
-    public void compareDocuments(Document doc, Document doc2, boolean check) {
-        assertTrue("self doc equality", doc.equals(doc));
-        assertTrue("self doc2 equality", doc2.equals(doc2));
-        if (check) {
-            boolean result = this.documentEquality.check(doc, doc2);
-            if (!result) {
-                System.out.println("Pre-write graph: " + doc);
-                System.out.println("Read graph: " + doc2);
-            }
-            assertTrue("doc equals doc2", result);
-        } else {
-            assertFalse("doc distinct from doc2", doc.equals(doc2));
-        }
     }
 
     public boolean checkTest(String name) {
@@ -200,17 +81,8 @@ public class InternationalizationTest extends TestCase {
         return true;
     }
 
-    public boolean mergeDuplicateProperties() {
-        return false;
-    }
-
-
 
     // /////////////////////////////////////////////////////////////////////
-
-    public QualifiedName q(String n) {
-        return pFactory.newQualifiedName(EX_NS, n, EX_PREFIX);
-    }
 
      
     public void testInternationalEscape1() {

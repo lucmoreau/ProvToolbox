@@ -7,25 +7,19 @@ import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import junit.framework.TestCase;
-
 import static org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest.deepCopy;
 
 /**
  * Unit test for PROV roundtrip conversion between Java and XML
  */
-public class AttributeTest extends TestCase {
+public class AttributeTest extends ProvFrameworkTest {
 
 
 	public static final String EX_NS = "http://example.org/";
 	public static final String EX2_NS = "http://example2.org/";
 	public static final String EX_PREFIX = "ex";
 	public static final String EX2_PREFIX = "ex2";
-	public static final String EX3_NS = "http://example3.org/";
-
-
-	static final ProvUtilities util=new ProvUtilities();
-
+	public static final String EX4_PREFIX = "ex4";
 
 
 	public static ProvFactory pFactory;
@@ -36,16 +30,9 @@ public class AttributeTest extends TestCase {
 		pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
 		name=pFactory.getName();
 	}
-	private DocumentEquality documentEquality;
 
-	/**
-	 * Create the test case
-	 *
-	 * @param testName
-	 *            name of the test case
-	 */
-	public AttributeTest(String testName) {
-		super(testName);
+
+	public AttributeTest() {
 		this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
 	}
 
@@ -62,60 +49,14 @@ public class AttributeTest extends TestCase {
 		doc.setNamespace(ns);
 	}
 
-	public String extension() {
-		return ".xml";
-	}
 
-
-	public void makeDocAndTest(Statement stment, String file) {
-		makeDocAndTest(stment, file, null, true);
-	}
-	public void makeDocAndTest(Statement stment, String file, boolean check) {
-		makeDocAndTest(stment, file, null, check);
-	}
-	public void makeDocAndTest(Statement stment, Statement[] opt, String file) {
-		makeDocAndTest(stment, file, opt, true);
-	}
-	public void makeDocAndTest(Statement [] stment, Statement[] opt, String file) {
-		makeDocAndTest(stment, file, opt, true);
-	}
-
-	public void makeDocAndTest(Statement stment, String file, Statement[] opt, boolean check) {
-		makeDocAndTest(new Statement[] {stment}, file, opt, check);
-	}
-	public void makeDocAndTest(Statement []stment, String file, Statement[] opt, boolean check) {
-		makeDocAndTest(stment, null, file, opt, check);
-	}
-
-	public void makeDocAndTest(Statement []stment, Bundle[] bundles, String file, Statement[] opt, boolean check) {
-		Document doc = pFactory.newDocument();
-		for (int i=0; i< stment.length; i++) {
-			doc.getStatementOrBundle().add(stment[i]);
-		}
-		if (bundles!=null) {
-			for (int j=0; j<bundles.length; j++) {
-				doc.getStatementOrBundle().add(bundles[j]);
-			}
-		}
-		updateNamespaces(doc);
-
-		String file1=(opt==null) ? file : file+"-S";
-		compareDocAndFile(doc, file1, check);
-
-		if (opt!=null) {
-			String file2=file+"-M";
-			doc.getStatementOrBundle().addAll(Arrays.asList(opt));
-			compareDocAndFile(doc, file2, check);
-		}
-	}
-
-	public void compareDocAndFile(Document doc, String file, boolean check) {
+    public void compareDocAndFile(Document doc, String file, boolean check) {
 		file=file+extension();
 		writeDocument(doc, file);
 		if (check) conditionalCheckSchema(file);
 
 		Document doc3=readDocument(file);
-		compareDocuments(doc, doc3, check && checkTest(file));
+		documentComparator.compareDocuments(doc, doc3, check && checkTest(file));
 		updateNamespaces(doc3);
 		writeDocument(doc3, file + "-2");
 	}
@@ -155,13 +96,7 @@ public class AttributeTest extends TestCase {
 	}
 
 
-	public void doCheckSchema1(String file) {
-
-
-	}
-
-
-	public void doCheckSchema2(String file) {
+    public void doCheckSchema2(String file) {
 		//String command="xmllint --schema src/main/resources/w3c/prov.xsd --schema src/main/resources/w3c/xml.xsd --schema src/main/resources/ex.xsd " +file; //--noout
 		String command="xmllint --schema src/main/resources/ex.xsd " +file; //--noout
 		try {
@@ -199,7 +134,7 @@ public class AttributeTest extends TestCase {
 
 	Map<String,Document> table=new Hashtable<>();
 	public void writeDocument(Document doc, String file2) {
-		System.out.println(" * document " + file2);
+		System.out.println("deep copy of " + file2);
 		Namespace.withThreadNamespace(doc.getNamespace());
 		Document doc2 = deepCopy(doc);
 		table.put(file2, doc2);
@@ -207,42 +142,9 @@ public class AttributeTest extends TestCase {
 
 
 
-	public void compareDocuments(Document doc, Document doc2, boolean check) {
-		assertTrue("self doc equality", doc.equals(doc));
-		assertTrue("self doc2 equality", doc2.equals(doc2));
-		if (check) {
-			boolean result=this.documentEquality.check(doc,  doc2);
-			if (!result) {
-				System.out.println("Pre-write graph: "+doc);
-				System.out.println("Read graph: "+doc2);
-			}
-			assertTrue("doc equals doc2", result);
-		} else {
-			assertFalse("doc distinct from doc2", doc.equals(doc2));
-		}
-	}
 
-	public boolean checkTest(String name) {
-		return !name.contains("Dictionary");
-	}
+    ///////////////////////////////////////////////////////////////////////
 
-	public boolean mergeDuplicateProperties() {
-		return false;
-	}
-
-
-	///////////////////////////////////////////////////////////////////////
-
-
-	public void addLabel(HasLabel hl) {
-		hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-	}
-
-	public void addLabels(HasLabel hl) {
-		hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-		hl.getLabel().add(pFactory.newInternationalizedString("bye","en"));
-		hl.getLabel().add(pFactory.newInternationalizedString("bonjour","fr"));
-	}
 
 
 
@@ -250,8 +152,6 @@ public class AttributeTest extends TestCase {
 
 
 	public boolean test=true;
-
-	DOMProcessing dom=new DOMProcessing(pFactory);
 
 	org.w3c.dom.Element createXMLLiteral() {
 		DocumentBuilder builder=DOMProcessing.builder;
@@ -273,7 +173,7 @@ public class AttributeTest extends TestCase {
 			};
 
 
-	public Object[][] attributeValues_long =
+	public Object[][] attributeValues =
 			{
 					{"un lieu",name.XSD_STRING},
 
@@ -379,8 +279,6 @@ public class AttributeTest extends TestCase {
 
 
 
-	public Object[][] attributeValues =attributeValues_long;
-
 	public void addLocations(HasLocation hl){
 		for (Object [] pair: attributeValues) {
 			Object value=pair[0];
@@ -411,25 +309,22 @@ public class AttributeTest extends TestCase {
 			QualifiedName type=(QualifiedName) pair[1];
 			if (value instanceof QualifiedName) {
 				QualifiedName qq=(QualifiedName)value;
-				if ((qq.getPrefix()!=null)
-						&&
-						((qq.getPrefix().equals(elementName.getPrefix())))
-						&&
-						(!(qq.getNamespaceURI().equals(elementName.getNamespaceURI())))) {
-					// ignore this case
-				} else {
-					ho.getOther().add(pFactory.newOther(elementName, value, type));
-				}
+                if ((qq.getPrefix() == null)
+                        ||
+                        ((!qq.getPrefix().equals(elementName.getPrefix())))
+                        ||
+                        (qq.getNamespaceURI().equals(elementName.getNamespaceURI()))) {
+                            ho.getOther().add(pFactory.newOther(elementName, value, type));
+                        }
+
 			} else {
 				ho.getOther().add(pFactory.newOther(elementName, value, type));
 			}
 		}
 	}
 
-	public void testEntityWithOneTypeAttribute(int i)  {
+	public void doEntityWithOneTypeAttribute(int i)  {
 		Entity a = pFactory.newEntity(q("et" + i));
-
-
 		Object [] pair= attributeValues[i];
 		Object value=pair[0];
 		QualifiedName type=(QualifiedName) pair[1];
@@ -438,7 +333,7 @@ public class AttributeTest extends TestCase {
 	}
 
 
-	public void testEntityWithOneValueAttribute(int i)  {
+	public void doTestEntityWithOneValueAttribute(int i)  {
 		Entity a = pFactory.newEntity(q("en_v" + i));
 
 
@@ -449,7 +344,7 @@ public class AttributeTest extends TestCase {
 		makeDocAndTest(a,"target/attr_entity_one_value_attr"+i);
 	}
 
-	public void testAssociationWithOneRoleAttribute(int i)  {
+	public void doTestAssociationWithOneRoleAttribute(int i)  {
 		WasAssociatedWith a = pFactory.newWasAssociatedWith(q("ass_r" + i),
 				q("a1"),
 				q("ag1"));
@@ -461,10 +356,8 @@ public class AttributeTest extends TestCase {
 		makeDocAndTest(a,"target/attr_association_one_role_attr"+i);
 	}
 
-	public void testEntityWithOneLocationAttribute(int i)  {
+	public void doTestEntityWithOneLocationAttribute(int i)  {
 		Entity a = pFactory.newEntity(q("en_l" + i));
-
-
 		Object [] pair= attributeValues[i];
 		Object value=pair[0];
 		QualifiedName type=(QualifiedName) pair[1];
@@ -472,7 +365,7 @@ public class AttributeTest extends TestCase {
 		makeDocAndTest(a,"target/attr_entity_one_location_attr"+i);
 	}
 
-	public void testEntityWithOneOtherAttribute(int i)  {
+	public void doTestEntityWithOneOtherAttribute(int i)  {
 		Entity a = pFactory.newEntity(q("en_o" + i));
 
 
@@ -485,689 +378,662 @@ public class AttributeTest extends TestCase {
 
 	// VALUE
 	public void testEntityWithOneValueAttribute0 ()  {
-		testEntityWithOneValueAttribute(0);
+		doTestEntityWithOneValueAttribute(0);
 	}
 	public void testEntityWithOneValueAttribute1 ()  {
-		testEntityWithOneValueAttribute(1);
+		doTestEntityWithOneValueAttribute(1);
 	}
 	public void testEntityWithOneValueAttribute2 ()  {
-		testEntityWithOneValueAttribute(2);
+		doTestEntityWithOneValueAttribute(2);
 	}
 	public void testEntityWithOneValueAttribute3 ()  {
-		testEntityWithOneValueAttribute(3);
+		doTestEntityWithOneValueAttribute(3);
 	}
 	public void testEntityWithOneValueAttribute4 ()  {
-		testEntityWithOneValueAttribute(4);
+		doTestEntityWithOneValueAttribute(4);
 	}
 	public void testEntityWithOneValueAttribute5 ()  {
-		testEntityWithOneValueAttribute(5);
+		doTestEntityWithOneValueAttribute(5);
 	}
 	public void testEntityWithOneValueAttribute6 ()  {
-		testEntityWithOneValueAttribute(6);
+		doTestEntityWithOneValueAttribute(6);
 	}
 	public void testEntityWithOneValueAttribute7 ()  {
-		testEntityWithOneValueAttribute(7);
+		doTestEntityWithOneValueAttribute(7);
 	}
 	public void testEntityWithOneValueAttribute8 ()  {
-		testEntityWithOneValueAttribute(8);
+		doTestEntityWithOneValueAttribute(8);
 	}
 	public void testEntityWithOneValueAttribute9 ()  {
-		testEntityWithOneValueAttribute(9);
+		doTestEntityWithOneValueAttribute(9);
 	}
 	public void testEntityWithOneValueAttribute10 ()  {
-		testEntityWithOneValueAttribute(10);
+		doTestEntityWithOneValueAttribute(10);
 	}
 	public void testEntityWithOneValueAttribute11 ()  {
-		testEntityWithOneValueAttribute(11);
+		doTestEntityWithOneValueAttribute(11);
 	}
 	public void testEntityWithOneValueAttribute12 ()  {
-		testEntityWithOneValueAttribute(12);
+		doTestEntityWithOneValueAttribute(12);
 	}
 	public void testEntityWithOneValueAttribute13 ()  {
-		testEntityWithOneValueAttribute(13);
+		doTestEntityWithOneValueAttribute(13);
 	}
 	public void testEntityWithOneValueAttribute14 ()  {
-		testEntityWithOneValueAttribute(14);
+		doTestEntityWithOneValueAttribute(14);
 	}
 	public void testEntityWithOneValueAttribut15 ()  {
-		testEntityWithOneValueAttribute(15);
+		doTestEntityWithOneValueAttribute(15);
 	}
 	public void testEntityWithOneValueAttribute16 ()  {
-		testEntityWithOneValueAttribute(16);
+		doTestEntityWithOneValueAttribute(16);
 	}
 	public void testEntityWithOneValueAttribute17 ()  {
-		testEntityWithOneValueAttribute(17);
+		doTestEntityWithOneValueAttribute(17);
 	}
 	public void testEntityWithOneValueAttribute18 ()  {
-		testEntityWithOneValueAttribute(18);
+		doTestEntityWithOneValueAttribute(18);
 	}
 	public void testEntityWithOneValueAttribute19 ()  {
-		testEntityWithOneValueAttribute(19);
+		doTestEntityWithOneValueAttribute(19);
 	}
 	public void testEntityWithOneValueAttribute20 ()  {
-		testEntityWithOneValueAttribute(20);
+		doTestEntityWithOneValueAttribute(20);
 	}
 	public void testEntityWithOneValueAttribute21 ()  {
-		testEntityWithOneValueAttribute(21);
+		doTestEntityWithOneValueAttribute(21);
 	}
 	public void testEntityWithOneValueAttribute22 ()  {
-		testEntityWithOneValueAttribute(22);
+		doTestEntityWithOneValueAttribute(22);
 	}
 	public void testEntityWithOneValueAttribute23 ()  {
-		testEntityWithOneValueAttribute(23);
+		doTestEntityWithOneValueAttribute(23);
 	}
 	public void testEntityWithOneValueAttribute24 ()  {
-		testEntityWithOneValueAttribute(24);
+		doTestEntityWithOneValueAttribute(24);
 	}
 	public void testEntityWithOneValueAttribute25 ()  {
-		testEntityWithOneValueAttribute(25);
+		doTestEntityWithOneValueAttribute(25);
 	}
 	public void testEntityWithOneValueAttribute26 ()  {
-		testEntityWithOneValueAttribute(26);
+		doTestEntityWithOneValueAttribute(26);
 	}
 	public void testEntityWithOneValueAttribute27 ()  {
-		testEntityWithOneValueAttribute(27);
+		doTestEntityWithOneValueAttribute(27);
 	}
 	public void testEntityWithOneValueAttribute28 ()  {
-		testEntityWithOneValueAttribute(28);
+		doTestEntityWithOneValueAttribute(28);
 	}
 	public void testEntityWithOneValueAttribute29 ()  {
-		testEntityWithOneValueAttribute(29);
+		doTestEntityWithOneValueAttribute(29);
 	}
 	public void testEntityWithOneValueAttribute30 ()  {
-		testEntityWithOneValueAttribute(30);
+		doTestEntityWithOneValueAttribute(30);
 	}
 	public void testEntityWithOneValueAttribute31 ()  {
-		testEntityWithOneValueAttribute(31);
+		doTestEntityWithOneValueAttribute(31);
 	}
 	public void testEntityWithOneValueAttribute32 ()  {
-		testEntityWithOneValueAttribute(32);
+		doTestEntityWithOneValueAttribute(32);
 	}
 	public void testEntityWithOneValueAttribute33 ()  {
-		testEntityWithOneValueAttribute(33);
+		doTestEntityWithOneValueAttribute(33);
 	}
 	public void testEntityWithOneValueAttribute34 ()  {
-		testEntityWithOneValueAttribute(34);
+		doTestEntityWithOneValueAttribute(34);
 	}
 	public void testEntityWithOneValueAttribute35 ()  {
-		testEntityWithOneValueAttribute(35);
+		doTestEntityWithOneValueAttribute(35);
 	}
 	public void testEntityWithOneValueAttribute36 ()  {
-		testEntityWithOneValueAttribute(36);
+		doTestEntityWithOneValueAttribute(36);
 	}
 	public void testEntityWithOneValueAttribute37 ()  {
-		testEntityWithOneValueAttribute(37);
+		doTestEntityWithOneValueAttribute(37);
 	}
 	public void testEntityWithOneValueAttribute38 ()  {
-		testEntityWithOneValueAttribute(38);
+		doTestEntityWithOneValueAttribute(38);
 	}
 	public void testEntityWithOneValueAttribute39 ()  {
-		testEntityWithOneValueAttribute(39);
+		doTestEntityWithOneValueAttribute(39);
 	}
 	public void testEntityWithOneValueAttribute40 ()  {
-		testEntityWithOneValueAttribute(40);
+		doTestEntityWithOneValueAttribute(40);
 	}
 	public void testEntityWithOneValueAttribute41 ()  {
-		testEntityWithOneValueAttribute(41);
+		doTestEntityWithOneValueAttribute(41);
 	}
 	public void testEntityWithOneValueAttribute42 ()  {
-		testEntityWithOneValueAttribute(42);
+		doTestEntityWithOneValueAttribute(42);
 	}
-//    public void testEntityWithOneValueAttribute43 ()  {
-//	testEntityWithOneValueAttribute(43);
-	//   }
-	// public void testEntityWithOneValueAttribute44 ()  {
-//	testEntityWithOneValueAttribute(44);
-	//  }
+
 
 	// LOCATION
 	public void testEntityWithOneLocationAttribute0 ()  {
-		testEntityWithOneLocationAttribute(0);
+		doTestEntityWithOneLocationAttribute(0);
 	}
 	public void testEntityWithOneLocationAttribute1 ()  {
-		testEntityWithOneLocationAttribute(1);
+		doTestEntityWithOneLocationAttribute(1);
 	}
 	public void testEntityWithOneLocationAttribute2 ()  {
-		testEntityWithOneLocationAttribute(2);
+		doTestEntityWithOneLocationAttribute(2);
 	}
 	public void testEntityWithOneLocationAttribute3 ()  {
-		testEntityWithOneLocationAttribute(3);
+		doTestEntityWithOneLocationAttribute(3);
 	}
 	public void testEntityWithOneLocationAttribute4 ()  {
-		testEntityWithOneLocationAttribute(4);
+		doTestEntityWithOneLocationAttribute(4);
 	}
 	public void testEntityWithOneLocationAttribute5 ()  {
-		testEntityWithOneLocationAttribute(5);
+		doTestEntityWithOneLocationAttribute(5);
 	}
 	public void testEntityWithOneLocationAttribute6 ()  {
-		testEntityWithOneLocationAttribute(6);
+		doTestEntityWithOneLocationAttribute(6);
 	}
 	public void testEntityWithOneLocationAttribute7 ()  {
-		testEntityWithOneLocationAttribute(7);
+		doTestEntityWithOneLocationAttribute(7);
 	}
 	public void testEntityWithOneLocationAttribute8 ()  {
-		testEntityWithOneLocationAttribute(8);
+		doTestEntityWithOneLocationAttribute(8);
 	}
 	public void testEntityWithOneLocationAttribute9 ()  {
-		testEntityWithOneLocationAttribute(9);
+		doTestEntityWithOneLocationAttribute(9);
 	}
 	public void testEntityWithOneLocationAttribute10 ()  {
-		testEntityWithOneLocationAttribute(10);
+		doTestEntityWithOneLocationAttribute(10);
 	}
 	public void testEntityWithOneLocationAttribute11 ()  {
-		testEntityWithOneLocationAttribute(11);
+		doTestEntityWithOneLocationAttribute(11);
 	}
 	public void testEntityWithOneLocationAttribute12 ()  {
-		testEntityWithOneLocationAttribute(12);
+		doTestEntityWithOneLocationAttribute(12);
 	}
 	public void testEntityWithOneLocationAttribute13 ()  {
-		testEntityWithOneLocationAttribute(13);
+		doTestEntityWithOneLocationAttribute(13);
 	}
 	public void testEntityWithOneLocationAttribute14 ()  {
-		testEntityWithOneLocationAttribute(14);
+		doTestEntityWithOneLocationAttribute(14);
 	}
 	public void testEntityWithOneLocationAttribut15 ()  {
-		testEntityWithOneLocationAttribute(15);
+		doTestEntityWithOneLocationAttribute(15);
 	}
 	public void testEntityWithOneLocationAttribute16 ()  {
-		testEntityWithOneLocationAttribute(16);
+		doTestEntityWithOneLocationAttribute(16);
 	}
 	public void testEntityWithOneLocationAttribute17 ()  {
-		testEntityWithOneLocationAttribute(17);
+		doTestEntityWithOneLocationAttribute(17);
 	}
 	public void testEntityWithOneLocationAttribute18 ()  {
-		testEntityWithOneLocationAttribute(18);
+		doTestEntityWithOneLocationAttribute(18);
 	}
 	public void testEntityWithOneLocationAttribute19 ()  {
-		testEntityWithOneLocationAttribute(19);
+		doTestEntityWithOneLocationAttribute(19);
 	}
 	public void testEntityWithOneLocationAttribute20 ()  {
-		testEntityWithOneLocationAttribute(20);
+		doTestEntityWithOneLocationAttribute(20);
 	}
 	public void testEntityWithOneLocationAttribute21 ()  {
-		testEntityWithOneLocationAttribute(21);
+		doTestEntityWithOneLocationAttribute(21);
 	}
 	public void testEntityWithOneLocationAttribute22 ()  {
-		testEntityWithOneLocationAttribute(22);
+		doTestEntityWithOneLocationAttribute(22);
 	}
 	public void testEntityWithOneLocationAttribute23 ()  {
-		testEntityWithOneLocationAttribute(23);
+		doTestEntityWithOneLocationAttribute(23);
 	}
 	public void testEntityWithOneLocationAttribute24 ()  {
-		testEntityWithOneLocationAttribute(24);
+		doTestEntityWithOneLocationAttribute(24);
 	}
 	public void testEntityWithOneLocationAttribute25 ()  {
-		testEntityWithOneLocationAttribute(25);
+		doTestEntityWithOneLocationAttribute(25);
 	}
 	public void testEntityWithOneLocationAttribute26 ()  {
-		testEntityWithOneLocationAttribute(26);
+		doTestEntityWithOneLocationAttribute(26);
 	}
 	public void testEntityWithOneLocationAttribute27 ()  {
-		testEntityWithOneLocationAttribute(27);
+		doTestEntityWithOneLocationAttribute(27);
 	}
 	public void testEntityWithOneLocationAttribute28 ()  {
-		testEntityWithOneLocationAttribute(28);
+		doTestEntityWithOneLocationAttribute(28);
 	}
 	public void testEntityWithOneLocationAttribute29 ()  {
-		testEntityWithOneLocationAttribute(29);
+		doTestEntityWithOneLocationAttribute(29);
 	}
 	public void testEntityWithOneLocationAttribute30 ()  {
-		testEntityWithOneLocationAttribute(30);
+		doTestEntityWithOneLocationAttribute(30);
 	}
 	public void testEntityWithOneLocationAttribute31 ()  {
-		testEntityWithOneLocationAttribute(31);
+		doTestEntityWithOneLocationAttribute(31);
 	}
 	public void testEntityWithOneLocationAttribute32 ()  {
-		testEntityWithOneLocationAttribute(32);
+		doTestEntityWithOneLocationAttribute(32);
 	}
 	public void testEntityWithOneLocationAttribute33 ()  {
-		testEntityWithOneLocationAttribute(33);
+		doTestEntityWithOneLocationAttribute(33);
 	}
 	public void testEntityWithOneLocationAttribute34 ()  {
-		testEntityWithOneLocationAttribute(34);
+		doTestEntityWithOneLocationAttribute(34);
 	}
 	public void testEntityWithOneLocationAttribute35 ()  {
-		testEntityWithOneLocationAttribute(35);
+		doTestEntityWithOneLocationAttribute(35);
 	}
 	public void testEntityWithOneLocationAttribute36 ()  {
-		testEntityWithOneLocationAttribute(36);
+		doTestEntityWithOneLocationAttribute(36);
 	}
 	public void testEntityWithOneLocationAttribute37 ()  {
-		testEntityWithOneLocationAttribute(37);
+		doTestEntityWithOneLocationAttribute(37);
 	}
 	public void testEntityWithOneLocationAttribute38 ()  {
-		testEntityWithOneLocationAttribute(38);
+		doTestEntityWithOneLocationAttribute(38);
 	}
 	public void testEntityWithOneLocationAttribute39 ()  {
-		testEntityWithOneLocationAttribute(39);
+		doTestEntityWithOneLocationAttribute(39);
 	}
 	public void testEntityWithOneLocationAttribute40 ()  {
-		testEntityWithOneLocationAttribute(40);
+		doTestEntityWithOneLocationAttribute(40);
 	}
 	public void testEntityWithOneLocationAttribute41 ()  {
-		testEntityWithOneLocationAttribute(41);
+		doTestEntityWithOneLocationAttribute(41);
 	}
 	public void testEntityWithOneLocationAttribute42 ()  {
-		testEntityWithOneLocationAttribute(42);
+		doTestEntityWithOneLocationAttribute(42);
 	}
-	//   public void testEntityWithOneLocationAttribute43 ()  {
-//	testEntityWithOneLocationAttribute(43);
-	//   }
-	//  public void testEntityWithOneLocationAttribute44 ()  {
-//	testEntityWithOneLocationAttribute(44);
-	//   }
+
 
 	// OTHER
 	public void testEntityWithOneOtherAttribute0 ()  {
-		testEntityWithOneOtherAttribute(0);
+		doTestEntityWithOneOtherAttribute(0);
 	}
 	public void testEntityWithOneOtherAttribute1 ()  {
-		testEntityWithOneOtherAttribute(1);
+		doTestEntityWithOneOtherAttribute(1);
 	}
 	public void testEntityWithOneOtherAttribute2 ()  {
-		testEntityWithOneOtherAttribute(2);
+		doTestEntityWithOneOtherAttribute(2);
 	}
 	public void testEntityWithOneOtherAttribute3 ()  {
-		testEntityWithOneOtherAttribute(3);
+		doTestEntityWithOneOtherAttribute(3);
 	}
 	public void testEntityWithOneOtherAttribute4 ()  {
-		testEntityWithOneOtherAttribute(4);
+		doTestEntityWithOneOtherAttribute(4);
 	}
 	public void testEntityWithOneOtherAttribute5 ()  {
-		testEntityWithOneOtherAttribute(5);
+		doTestEntityWithOneOtherAttribute(5);
 	}
 	public void testEntityWithOneOtherAttribute6 ()  {
-		testEntityWithOneOtherAttribute(6);
+		doTestEntityWithOneOtherAttribute(6);
 	}
 	public void testEntityWithOneOtherAttribute7 ()  {
-		testEntityWithOneOtherAttribute(7);
+		doTestEntityWithOneOtherAttribute(7);
 	}
 	public void testEntityWithOneOtherAttribute8 ()  {
-		testEntityWithOneOtherAttribute(8);
+		doTestEntityWithOneOtherAttribute(8);
 	}
 	public void testEntityWithOneOtherAttribute9 ()  {
-		testEntityWithOneOtherAttribute(9);
+		doTestEntityWithOneOtherAttribute(9);
 	}
 	public void testEntityWithOneOtherAttribute10 ()  {
-		testEntityWithOneOtherAttribute(10);
+		doTestEntityWithOneOtherAttribute(10);
 	}
 	public void testEntityWithOneOtherAttribute11 ()  {
-		testEntityWithOneOtherAttribute(11);
+		doTestEntityWithOneOtherAttribute(11);
 	}
 	public void testEntityWithOneOtherAttribute12 ()  {
-		testEntityWithOneOtherAttribute(12);
+		doTestEntityWithOneOtherAttribute(12);
 	}
 	public void testEntityWithOneOtherAttribute13 ()  {
-		testEntityWithOneOtherAttribute(13);
+		doTestEntityWithOneOtherAttribute(13);
 	}
 	public void testEntityWithOneOtherAttribute14 ()  {
-		testEntityWithOneOtherAttribute(14);
+		doTestEntityWithOneOtherAttribute(14);
 	}
 	public void testEntityWithOneOtherAttribut15 ()  {
-		testEntityWithOneOtherAttribute(15);
+		doTestEntityWithOneOtherAttribute(15);
 	}
 	public void testEntityWithOneOtherAttribute16 ()  {
-		testEntityWithOneOtherAttribute(16);
+		doTestEntityWithOneOtherAttribute(16);
 	}
 	public void testEntityWithOneOtherAttribute17 ()  {
-		testEntityWithOneOtherAttribute(17);
+		doTestEntityWithOneOtherAttribute(17);
 	}
 	public void testEntityWithOneOtherAttribute18 ()  {
-		testEntityWithOneOtherAttribute(18);
+		doTestEntityWithOneOtherAttribute(18);
 	}
 	public void testEntityWithOneOtherAttribute19 ()  {
-		testEntityWithOneOtherAttribute(19);
+		doTestEntityWithOneOtherAttribute(19);
 	}
 	public void testEntityWithOneOtherAttribute20 ()  {
-		testEntityWithOneOtherAttribute(20);
+		doTestEntityWithOneOtherAttribute(20);
 	}
 	public void testEntityWithOneOtherAttribute21 ()  {
-		testEntityWithOneOtherAttribute(21);
+		doTestEntityWithOneOtherAttribute(21);
 	}
 	public void testEntityWithOneOtherAttribute22 ()  {
-		testEntityWithOneOtherAttribute(22);
+		doTestEntityWithOneOtherAttribute(22);
 	}
 	public void testEntityWithOneOtherAttribute23 ()  {
-		testEntityWithOneOtherAttribute(23);
+		doTestEntityWithOneOtherAttribute(23);
 	}
 	public void testEntityWithOneOtherAttribute24 ()  {
-		testEntityWithOneOtherAttribute(24);
+		doTestEntityWithOneOtherAttribute(24);
 	}
 	public void testEntityWithOneOtherAttribute25 ()  {
-		testEntityWithOneOtherAttribute(25);
+		doTestEntityWithOneOtherAttribute(25);
 	}
 	public void testEntityWithOneOtherAttribute26 ()  {
-		testEntityWithOneOtherAttribute(26);
+		doTestEntityWithOneOtherAttribute(26);
 	}
 	public void testEntityWithOneOtherAttribute27 ()  {
-		testEntityWithOneOtherAttribute(27);
+		doTestEntityWithOneOtherAttribute(27);
 	}
 	public void testEntityWithOneOtherAttribute28 ()  {
-		testEntityWithOneOtherAttribute(28);
+		doTestEntityWithOneOtherAttribute(28);
 	}
 	public void testEntityWithOneOtherAttribute29 ()  {
-		testEntityWithOneOtherAttribute(29);
+		doTestEntityWithOneOtherAttribute(29);
 	}
 	public void testEntityWithOneOtherAttribute30 ()  {
-		testEntityWithOneOtherAttribute(30);
+		doTestEntityWithOneOtherAttribute(30);
 	}
 	public void testEntityWithOneOtherAttribute31 ()  {
-		testEntityWithOneOtherAttribute(31);
+		doTestEntityWithOneOtherAttribute(31);
 	}
 	public void testEntityWithOneOtherAttribute32 ()  {
-		testEntityWithOneOtherAttribute(32);
+		doTestEntityWithOneOtherAttribute(32);
 	}
 	public void testEntityWithOneOtherAttribute33 ()  {
-		testEntityWithOneOtherAttribute(33);
+		doTestEntityWithOneOtherAttribute(33);
 	}
 	public void testEntityWithOneOtherAttribute34 ()  {
-		testEntityWithOneOtherAttribute(34);
+		doTestEntityWithOneOtherAttribute(34);
 	}
 	public void testEntityWithOneOtherAttribute35 ()  {
-		testEntityWithOneOtherAttribute(35);
+		doTestEntityWithOneOtherAttribute(35);
 	}
 	public void testEntityWithOneOtherAttribute36 ()  {
-		testEntityWithOneOtherAttribute(36);
+		doTestEntityWithOneOtherAttribute(36);
 	}
 	public void testEntityWithOneOtherAttribute37 ()  {
-		testEntityWithOneOtherAttribute(37);
+		doTestEntityWithOneOtherAttribute(37);
 	}
 	public void testEntityWithOneOtherAttribute38 ()  {
-		testEntityWithOneOtherAttribute(38);
+		doTestEntityWithOneOtherAttribute(38);
 	}
 	public void testEntityWithOneOtherAttribute39 ()  {
-		testEntityWithOneOtherAttribute(39);
+		doTestEntityWithOneOtherAttribute(39);
 	}
 	public void testEntityWithOneOtherAttribute40 ()  {
-		testEntityWithOneOtherAttribute(40);
+		doTestEntityWithOneOtherAttribute(40);
 	}
 	public void testEntityWithOneOtherAttribute41 ()  {
-		testEntityWithOneOtherAttribute(41);
+		doTestEntityWithOneOtherAttribute(41);
 	}
 	public void testEntityWithOneOtherAttribute42 ()  {
-		testEntityWithOneOtherAttribute(42);
+		doTestEntityWithOneOtherAttribute(42);
 	}
-	//  public void testEntityWithOneOtherAttribute43 ()  {
-//	testEntityWithOneOtherAttribute(43);
-	//   }
-	//  public void testEntityWithOneOtherAttribute44 ()  {
-//	testEntityWithOneOtherAttribute(44);
-	// }
-
 
 	// TYPE
 
 	public void testEntityWithOneAttribute0 ()  {
-		testEntityWithOneTypeAttribute(0);
+		doEntityWithOneTypeAttribute(0);
 	}
 	public void testEntityWithOneAttribute1 ()  {
-		testEntityWithOneTypeAttribute(1);
+		doEntityWithOneTypeAttribute(1);
 	}
 	public void testEntityWithOneAttribute2 ()  {
-		testEntityWithOneTypeAttribute(2);
+		doEntityWithOneTypeAttribute(2);
 	}
 	public void testEntityWithOneAttribute3 ()  {
-		testEntityWithOneTypeAttribute(3);
+		doEntityWithOneTypeAttribute(3);
 	}
 	public void testEntityWithOneAttribute4 ()  {
-		testEntityWithOneTypeAttribute(4);
+		doEntityWithOneTypeAttribute(4);
 	}
 	public void testEntityWithOneAttribute5 ()  {
-		testEntityWithOneTypeAttribute(5);
+		doEntityWithOneTypeAttribute(5);
 	}
 	public void testEntityWithOneAttribute6 ()  {
-		testEntityWithOneTypeAttribute(6);
+		doEntityWithOneTypeAttribute(6);
 	}
 	public void testEntityWithOneAttribute7 ()  {
-		testEntityWithOneTypeAttribute(7);
+		doEntityWithOneTypeAttribute(7);
 	}
 	public void testEntityWithOneAttribute8 ()  {
-		testEntityWithOneTypeAttribute(8);
+		doEntityWithOneTypeAttribute(8);
 	}
 	public void testEntityWithOneAttribute9 ()  {
-		testEntityWithOneTypeAttribute(0);
+		doEntityWithOneTypeAttribute(0);
 	}
 	public void testEntityWithOneAttribute10 ()  {
-		testEntityWithOneTypeAttribute(10);
+		doEntityWithOneTypeAttribute(10);
 	}
 	public void testEntityWithOneAttribute11 ()  {
-		testEntityWithOneTypeAttribute(11);
+		doEntityWithOneTypeAttribute(11);
 	}
 	public void testEntityWithOneAttribute12 ()  {
-		testEntityWithOneTypeAttribute(12);
+		doEntityWithOneTypeAttribute(12);
 	}
 	public void testEntityWithOneAttribute13 ()  {
-		testEntityWithOneTypeAttribute(13);
+		doEntityWithOneTypeAttribute(13);
 	}
 	public void testEntityWithOneAttribute14 ()  {
-		testEntityWithOneTypeAttribute(14);
+		doEntityWithOneTypeAttribute(14);
 	}
 	public void testEntityWithOneAttribute15 ()  {
-		testEntityWithOneTypeAttribute(15);
+		doEntityWithOneTypeAttribute(15);
 	}
 	public void testEntityWithOneAttribute16 ()  {
-		testEntityWithOneTypeAttribute(16);
+		doEntityWithOneTypeAttribute(16);
 	}
 	public void testEntityWithOneAttribute17 ()  {
-		testEntityWithOneTypeAttribute(17);
+		doEntityWithOneTypeAttribute(17);
 	}
 	public void testEntityWithOneAttribute18 ()  {
-		testEntityWithOneTypeAttribute(18);
+		doEntityWithOneTypeAttribute(18);
 	}
 	public void testEntityWithOneAttribute19 ()  {
-		testEntityWithOneTypeAttribute(19);
+		doEntityWithOneTypeAttribute(19);
 	}
 	public void testEntityWithOneAttribute20 ()  {
-		testEntityWithOneTypeAttribute(20);
+		doEntityWithOneTypeAttribute(20);
 	}
 	public void testEntityWithOneAttribute21 ()  {
-		testEntityWithOneTypeAttribute(21);
+		doEntityWithOneTypeAttribute(21);
 	}
 	public void testEntityWithOneAttribute22 ()  {
-		testEntityWithOneTypeAttribute(22);
+		doEntityWithOneTypeAttribute(22);
 	}
 	public void testEntityWithOneAttribute23 ()  {
-		testEntityWithOneTypeAttribute(23);
+		doEntityWithOneTypeAttribute(23);
 	}
 	public void testEntityWithOneAttribute24 ()  {
-		testEntityWithOneTypeAttribute(24);
+		doEntityWithOneTypeAttribute(24);
 	}
 	public void testEntityWithOneAttribute25 ()  {
-		testEntityWithOneTypeAttribute(25);
+		doEntityWithOneTypeAttribute(25);
 	}
 	public void testEntityWithOneAttribute26 ()  {
-		testEntityWithOneTypeAttribute(26);
+		doEntityWithOneTypeAttribute(26);
 	}
 	public void testEntityWithOneAttribute27 ()  {
-		testEntityWithOneTypeAttribute(27);
+		doEntityWithOneTypeAttribute(27);
 	}
 	public void testEntityWithOneAttribute28 ()  {
-		testEntityWithOneTypeAttribute(28);
+		doEntityWithOneTypeAttribute(28);
 	}
 	public void testEntityWithOneAttribute29 ()  {
-		testEntityWithOneTypeAttribute(29);
+		doEntityWithOneTypeAttribute(29);
 	}
 	public void testEntityWithOneAttribute30 ()  {
-		testEntityWithOneTypeAttribute(30);
+		doEntityWithOneTypeAttribute(30);
 	}
 	public void testEntityWithOneAttribute31 ()  {
-		testEntityWithOneTypeAttribute(31);
+		doEntityWithOneTypeAttribute(31);
 	}
 	public void testEntityWithOneAttribute32 ()  {
-		testEntityWithOneTypeAttribute(32);
+		doEntityWithOneTypeAttribute(32);
 	}
 	public void testEntityWithOneAttribute33()  {
-		testEntityWithOneTypeAttribute(33);
+		doEntityWithOneTypeAttribute(33);
 	}
 	public void testEntityWithOneAttribute34 ()  {
-		testEntityWithOneTypeAttribute(34);
+		doEntityWithOneTypeAttribute(34);
 	}
 	public void testEntityWithOneAttribute35 ()  {
-		testEntityWithOneTypeAttribute(35);
+		doEntityWithOneTypeAttribute(35);
 	}
 	public void testEntityWithOneAttribute36 ()  {
-		testEntityWithOneTypeAttribute(36);
+		doEntityWithOneTypeAttribute(36);
 	}
 	public void testEntityWithOneAttribute37 ()  {
-		testEntityWithOneTypeAttribute(37);
+		doEntityWithOneTypeAttribute(37);
 	}
 	public void testEntityWithOneAttribute38 ()  {
-		testEntityWithOneTypeAttribute(38);
+		doEntityWithOneTypeAttribute(38);
 	}
 	public void testEntityWithOneAttribute39 ()  {
-		testEntityWithOneTypeAttribute(39);
+		doEntityWithOneTypeAttribute(39);
 	}
 	public void testEntityWithOneAttribute40 ()  {
-		testEntityWithOneTypeAttribute(40);
+		doEntityWithOneTypeAttribute(40);
 	}
 	public void testEntityWithOneAttribute41 ()  {
-		testEntityWithOneTypeAttribute(41);
+		doEntityWithOneTypeAttribute(41);
 	}
 	public void testEntityWithOneAttribute42 ()  {
-		testEntityWithOneTypeAttribute(42);
+		doEntityWithOneTypeAttribute(42);
 	}
-	//  public void testEntityWithOneAttribute43 ()  {
-//	testEntityWithOneTypeAttribute(43);
-	//   }
-	//  public void testEntityWithOneAttribute44 ()  {
-//	testEntityWithOneTypeAttribute(44);
-	//   }
+
 
 	public void testAssociationWithOneRoleAttribute0 ()  {
-		testAssociationWithOneRoleAttribute(0);
+		doTestAssociationWithOneRoleAttribute(0);
 	}
 	public void testAssociationWithOneRoleAttribute1 ()  {
-		testAssociationWithOneRoleAttribute(1);
+		doTestAssociationWithOneRoleAttribute(1);
 	}
 	public void testAssociationWithOneRoleAttribute2 ()  {
-		testAssociationWithOneRoleAttribute(2);
+		doTestAssociationWithOneRoleAttribute(2);
 	}
 	public void testAssociationWithOneRoleAttribute3 ()  {
-		testAssociationWithOneRoleAttribute(3);
+		doTestAssociationWithOneRoleAttribute(3);
 	}
 	public void testAssociationWithOneRoleAttribute4 ()  {
-		testAssociationWithOneRoleAttribute(4);
+		doTestAssociationWithOneRoleAttribute(4);
 	}
 	public void testAssociationWithOneRoleAttribute5 ()  {
-		testAssociationWithOneRoleAttribute(5);
+		doTestAssociationWithOneRoleAttribute(5);
 	}
 	public void testAssociationWithOneRoleAttribute6 ()  {
-		testAssociationWithOneRoleAttribute(6);
+		doTestAssociationWithOneRoleAttribute(6);
 	}
 	public void testAssociationWithOneRoleAttribute7 ()  {
-		testAssociationWithOneRoleAttribute(7);
+		doTestAssociationWithOneRoleAttribute(7);
 	}
 	public void testAssociationWithOneRoleAttribute8 ()  {
-		testAssociationWithOneRoleAttribute(8);
+		doTestAssociationWithOneRoleAttribute(8);
 	}
 	public void testAssociationWithOneRoleAttribute9 ()  {
-		testAssociationWithOneRoleAttribute(9);
+		doTestAssociationWithOneRoleAttribute(9);
 	}
 	public void testAssociationWithOneRoleAttribute10 ()  {
-		testAssociationWithOneRoleAttribute(10);
+		doTestAssociationWithOneRoleAttribute(10);
 	}
 	public void testAssociationWithOneRoleAttribute11 ()  {
-		testAssociationWithOneRoleAttribute(11);
+		doTestAssociationWithOneRoleAttribute(11);
 	}
 	public void testAssociationWithOneRoleAttribute12 ()  {
-		testAssociationWithOneRoleAttribute(12);
+		doTestAssociationWithOneRoleAttribute(12);
 	}
 	public void testAssociationWithOneRoleAttribute13 ()  {
-		testAssociationWithOneRoleAttribute(13);
+		doTestAssociationWithOneRoleAttribute(13);
 	}
 	public void testAssociationWithOneRoleAttribute14 ()  {
-		testAssociationWithOneRoleAttribute(14);
+		doTestAssociationWithOneRoleAttribute(14);
 	}
 	public void testAssociationWithOneRoleAttribute15 ()  {
-		testAssociationWithOneRoleAttribute(15);
+		doTestAssociationWithOneRoleAttribute(15);
 	}
 	public void testAssociationWithOneRoleAttribute16 ()  {
-		testAssociationWithOneRoleAttribute(16);
+		doTestAssociationWithOneRoleAttribute(16);
 	}
 	public void testAssociationWithOneRoleAttribute17 ()  {
-		testAssociationWithOneRoleAttribute(17);
+		doTestAssociationWithOneRoleAttribute(17);
 	}
 	public void testAssociationWithOneRoleAttribute18 ()  {
-		testAssociationWithOneRoleAttribute(18);
+		doTestAssociationWithOneRoleAttribute(18);
 	}
 	public void testAssociationWithOneRoleAttribute19 ()  {
-		testAssociationWithOneRoleAttribute(19);
+		doTestAssociationWithOneRoleAttribute(19);
 	}
 	public void testAssociationWithOneRoleAttribute20 ()  {
-		testAssociationWithOneRoleAttribute(20);
+		doTestAssociationWithOneRoleAttribute(20);
 	}
 	public void testAssociationWithOneRoleAttribute21 ()  {
-		testAssociationWithOneRoleAttribute(21);
+		doTestAssociationWithOneRoleAttribute(21);
 	}
 	public void testAssociationWithOneRoleAttribute22 ()  {
-		testAssociationWithOneRoleAttribute(22);
+		doTestAssociationWithOneRoleAttribute(22);
 	}
 	public void testAssociationWithOneRoleAttribute23 ()  {
-		testAssociationWithOneRoleAttribute(23);
+		doTestAssociationWithOneRoleAttribute(23);
 	}
 	public void testAssociationWithOneRoleAttribute24 ()  {
-		testAssociationWithOneRoleAttribute(24);
+		doTestAssociationWithOneRoleAttribute(24);
 	}
 	public void testAssociationWithOneRoleAttribute25 ()  {
-		testAssociationWithOneRoleAttribute(25);
+		doTestAssociationWithOneRoleAttribute(25);
 	}
 	public void testAssociationWithOneRoleAttribute26 ()  {
-		testAssociationWithOneRoleAttribute(26);
+		doTestAssociationWithOneRoleAttribute(26);
 	}
 	public void testAssociationWithOneRoleAttribute27 ()  {
-		testAssociationWithOneRoleAttribute(27);
+		doTestAssociationWithOneRoleAttribute(27);
 	}
 	public void testAssociationWithOneRoleAttribute28 ()  {
-		testAssociationWithOneRoleAttribute(28);
+		doTestAssociationWithOneRoleAttribute(28);
 	}
 	public void testAssociationWithOneRoleAttribute29 ()  {
-		testAssociationWithOneRoleAttribute(29);
+		doTestAssociationWithOneRoleAttribute(29);
 	}
 	public void testAssociationWithOneRoleAttribute30 ()  {
-		testAssociationWithOneRoleAttribute(30);
+		doTestAssociationWithOneRoleAttribute(30);
 	}
 	public void testAssociationWithOneRoleAttribute31 ()  {
-		testAssociationWithOneRoleAttribute(31);
+		doTestAssociationWithOneRoleAttribute(31);
 	}
 	public void testAssociationWithOneRoleAttribute32 ()  {
-		testAssociationWithOneRoleAttribute(32);
+		doTestAssociationWithOneRoleAttribute(32);
 	}
 	public void testAssociationWithOneRoleAttribute33 ()  {
-		testAssociationWithOneRoleAttribute(33);
+		doTestAssociationWithOneRoleAttribute(33);
 	}
 	public void testAssociationWithOneRoleAttribute34 ()  {
-		testAssociationWithOneRoleAttribute(34);
+		doTestAssociationWithOneRoleAttribute(34);
 	}
 	public void testAssociationWithOneRoleAttribute35 ()  {
-		testAssociationWithOneRoleAttribute(35);
+		doTestAssociationWithOneRoleAttribute(35);
 	}
 	public void testAssociationWithOneRoleAttribute36 ()  {
-		testAssociationWithOneRoleAttribute(36);
+		doTestAssociationWithOneRoleAttribute(36);
 	}
 	public void testAssociationWithOneRoleAttribute37 ()  {
-		testAssociationWithOneRoleAttribute(37);
+		doTestAssociationWithOneRoleAttribute(37);
 	}
 	public void testAssociationWithOneRoleAttribute38 ()  {
-		testAssociationWithOneRoleAttribute(38);
+		doTestAssociationWithOneRoleAttribute(38);
 	}
 	public void testAssociationWithOneRoleAttribute39 ()  {
-		testAssociationWithOneRoleAttribute(39);
+		doTestAssociationWithOneRoleAttribute(39);
 	}
 	public void testAssociationWithOneRoleAttribute40 ()  {
-		testAssociationWithOneRoleAttribute(40);
+		doTestAssociationWithOneRoleAttribute(40);
 	}
 	public void testAssociationWithOneRoleAttribute41 ()  {
-		testAssociationWithOneRoleAttribute(41);
+		doTestAssociationWithOneRoleAttribute(41);
 	}
 	public void testAssociationWithOneRoleAttribute42 ()  {
-		testAssociationWithOneRoleAttribute(42);
+		doTestAssociationWithOneRoleAttribute(42);
 	}
-	//  public void testAssociationWithOneRoleAttribute43 ()  {
-//	testAssociationWithOneRoleAttribute(43);
-	//   }
-	// public void testAssociationWithOneRoleAttribute44 ()  {
-//	testAssociationWithOneRoleAttribute(44);
-	//  }
+
 
 
 	public void testEntity0()  {
@@ -1175,7 +1041,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1191,12 +1057,16 @@ public class AttributeTest extends TestCase {
 
 
 
-	public void LUCtestActivity0()  {
+	public void testActivity0()  {
+		if (true) {
+			System.out.println("==== testActivity0 skipped until we fix the bug  *****");
+			return;
+		}
 		Activity a = pFactory.newActivity(q("a0"));
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1213,7 +1083,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1228,7 +1098,11 @@ public class AttributeTest extends TestCase {
 		return new org.openprovenance.prov.vanilla.QualifiedName(EX_NS, n, EX_PREFIX);
 	}
 
-	public void LUCtestGeneration0()  {
+	public void testGeneration0()  {
+		if (true) {
+			System.out.println("==== testGeneration0 skipped until we fix the bug   *****");
+			return;
+		}
 		WasGeneratedBy a = pFactory.newWasGeneratedBy((QualifiedName)null,
 				q("e1"),
 				null,
@@ -1236,7 +1110,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1255,7 +1129,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1276,7 +1150,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1297,7 +1171,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1318,7 +1192,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1337,7 +1211,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1355,7 +1229,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1375,7 +1249,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1396,7 +1270,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1416,7 +1290,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1437,7 +1311,7 @@ public class AttributeTest extends TestCase {
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
-		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", "ex4"));
+		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
 
 		addLabels(a);
@@ -1449,7 +1323,8 @@ public class AttributeTest extends TestCase {
 
 
 
-	public void testDictionaryInsertionWithOneKey(int i)  {
+	public void doTestDictionaryInsertionWithOneKey(int i)  {
+		// Dictionary not supported in vanilla PROV model
 		if (false) {
 			Object[] pair = attributeValues[i];
 			Object value = pair[0];
@@ -1471,139 +1346,133 @@ public class AttributeTest extends TestCase {
 	}
 
 	public void testDictionaryInsertionWithOneKey0() {
-		testDictionaryInsertionWithOneKey(0);
+		doTestDictionaryInsertionWithOneKey(0);
 	}
 	public void testDictionaryInsertionWithOneKey1() {
-		testDictionaryInsertionWithOneKey(1);
+		doTestDictionaryInsertionWithOneKey(1);
 	}
 	public void testDictionaryInsertionWithOneKey2() {
-		testDictionaryInsertionWithOneKey(2);
+		doTestDictionaryInsertionWithOneKey(2);
 	}
 	public void testDictionaryInsertionWithOneKey3() {
-		testDictionaryInsertionWithOneKey(3);
+		doTestDictionaryInsertionWithOneKey(3);
 	}
 	public void testDictionaryInsertionWithOneKey4() {
-		testDictionaryInsertionWithOneKey(4);
+		doTestDictionaryInsertionWithOneKey(4);
 	}
 	public void testDictionaryInsertionWithOneKey5() {
-		testDictionaryInsertionWithOneKey(5);
+		doTestDictionaryInsertionWithOneKey(5);
 	}
 	public void testDictionaryInsertionWithOneKey6() {
-		testDictionaryInsertionWithOneKey(6);
+		doTestDictionaryInsertionWithOneKey(6);
 	}
 	public void testDictionaryInsertionWithOneKey7() {
-		testDictionaryInsertionWithOneKey(7);
+		doTestDictionaryInsertionWithOneKey(7);
 	}
 	public void testDictionaryInsertionWithOneKey8() {
-		testDictionaryInsertionWithOneKey(8);
+		doTestDictionaryInsertionWithOneKey(8);
 	}
 	public void testDictionaryInsertionWithOneKey9() {
-		testDictionaryInsertionWithOneKey(9);
+		doTestDictionaryInsertionWithOneKey(9);
 	}
 	public void testDictionaryInsertionWithOneKey10() {
-		testDictionaryInsertionWithOneKey(10);
+		doTestDictionaryInsertionWithOneKey(10);
 	}
 	public void testDictionaryInsertionWithOneKey11() {
-		testDictionaryInsertionWithOneKey(11);
+		doTestDictionaryInsertionWithOneKey(11);
 	}
 	public void testDictionaryInsertionWithOneKey12() {
-		testDictionaryInsertionWithOneKey(12);
+		doTestDictionaryInsertionWithOneKey(12);
 	}
 	public void testDictionaryInsertionWithOneKey13() {
-		testDictionaryInsertionWithOneKey(13);
+		doTestDictionaryInsertionWithOneKey(13);
 	}
 	public void testDictionaryInsertionWithOneKey14() {
-		testDictionaryInsertionWithOneKey(14);
+		doTestDictionaryInsertionWithOneKey(14);
 	}
 	public void testDictionaryInsertionWithOneKey15() {
-		testDictionaryInsertionWithOneKey(15);
+		doTestDictionaryInsertionWithOneKey(15);
 	}
 	public void testDictionaryInsertionWithOneKey16() {
-		testDictionaryInsertionWithOneKey(16);
+		doTestDictionaryInsertionWithOneKey(16);
 	}
 	public void testDictionaryInsertionWithOneKey17() {
-		testDictionaryInsertionWithOneKey(17);
+		doTestDictionaryInsertionWithOneKey(17);
 	}
 	public void testDictionaryInsertionWithOneKey18() {
-		testDictionaryInsertionWithOneKey(18);
+		doTestDictionaryInsertionWithOneKey(18);
 	}
 	public void testDictionaryInsertionWithOneKey19() {
-		testDictionaryInsertionWithOneKey(19);
+		doTestDictionaryInsertionWithOneKey(19);
 	}
 	public void testDictionaryInsertionWithOneKey20() {
-		testDictionaryInsertionWithOneKey(20);
+		doTestDictionaryInsertionWithOneKey(20);
 	}
 	public void testDictionaryInsertionWithOneKey21() {
-		testDictionaryInsertionWithOneKey(21);
+		doTestDictionaryInsertionWithOneKey(21);
 	}
 	public void testDictionaryInsertionWithOneKey22() {
-		testDictionaryInsertionWithOneKey(22);
+		doTestDictionaryInsertionWithOneKey(22);
 	}
 	public void testDictionaryInsertionWithOneKey23() {
-		testDictionaryInsertionWithOneKey(23);
+		doTestDictionaryInsertionWithOneKey(23);
 	}
 	public void testDictionaryInsertionWithOneKey24() {
-		testDictionaryInsertionWithOneKey(24);
+		doTestDictionaryInsertionWithOneKey(24);
 	}
 	public void testDictionaryInsertionWithOneKey25() {
-		testDictionaryInsertionWithOneKey(25);
+		doTestDictionaryInsertionWithOneKey(25);
 	}
 	public void testDictionaryInsertionWithOneKey26() {
-		testDictionaryInsertionWithOneKey(26);
+		doTestDictionaryInsertionWithOneKey(26);
 	}
 	public void testDictionaryInsertionWithOneKey27() {
-		testDictionaryInsertionWithOneKey(27);
+		doTestDictionaryInsertionWithOneKey(27);
 	}
 	public void testDictionaryInsertionWithOneKey28() {
-		testDictionaryInsertionWithOneKey(28);
+		doTestDictionaryInsertionWithOneKey(28);
 	}
 	public void testDictionaryInsertionWithOneKey29() {
-		testDictionaryInsertionWithOneKey(29);
+		doTestDictionaryInsertionWithOneKey(29);
 	}
 	public void testDictionaryInsertionWithOneKey30() {
-		testDictionaryInsertionWithOneKey(30);
+		doTestDictionaryInsertionWithOneKey(30);
 	}
 	public void testDictionaryInsertionWithOneKey31() {
-		testDictionaryInsertionWithOneKey(31);
+		doTestDictionaryInsertionWithOneKey(31);
 	}
 	public void testDictionaryInsertionWithOneKey32() {
-		testDictionaryInsertionWithOneKey(32);
+		doTestDictionaryInsertionWithOneKey(32);
 	}
 	public void testDictionaryInsertionWithOneKey33() {
-		testDictionaryInsertionWithOneKey(33);
+		doTestDictionaryInsertionWithOneKey(33);
 	}
 	public void testDictionaryInsertionWithOneKey34() {
-		testDictionaryInsertionWithOneKey(34);
+		doTestDictionaryInsertionWithOneKey(34);
 	}
 	public void testDictionaryInsertionWithOneKey35() {
-		testDictionaryInsertionWithOneKey(35);
+		doTestDictionaryInsertionWithOneKey(35);
 	}
 	public void testDictionaryInsertionWithOneKey36() {
-		testDictionaryInsertionWithOneKey(36);
+		doTestDictionaryInsertionWithOneKey(36);
 	}
 	public void testDictionaryInsertionWithOneKey37() {
-		testDictionaryInsertionWithOneKey(37);
+		doTestDictionaryInsertionWithOneKey(37);
 	}
 	public void testDictionaryInsertionWithOneKey38() {
-		testDictionaryInsertionWithOneKey(38);
+		doTestDictionaryInsertionWithOneKey(38);
 	}
 	public void testDictionaryInsertionWithOneKey39() {
-		testDictionaryInsertionWithOneKey(39);
+		doTestDictionaryInsertionWithOneKey(39);
 	}
 	public void testDictionaryInsertionWithOneKey40() {
-		testDictionaryInsertionWithOneKey(40);
+		doTestDictionaryInsertionWithOneKey(40);
 	}
 	public void testDictionaryInsertionWithOneKey41() {
-		testDictionaryInsertionWithOneKey(41);
+		doTestDictionaryInsertionWithOneKey(41);
 	}
 	public void testDictionaryInsertionWithOneKey42() {
-		testDictionaryInsertionWithOneKey(42);
+		doTestDictionaryInsertionWithOneKey(42);
 	}
-	// public void testDictionaryInsertionWithOneKey43() {
-	//     testDictionaryInsertionWithOneKey(43);
-	// }
-//  public void testDictionaryInsertionWithOneKey44() {
-//      testDictionaryInsertionWithOneKey(44);
-//  }
 
 }

@@ -9,9 +9,15 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/Map.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/MapEntry.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/resources/org/openprovenance/prov/dot/defaultConfigWithRoleNoLabel.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/main4.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/main1.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/test4.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/test16.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +118,7 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "SDKs",
+    "project.structure.last.edited": "Problems",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.44367817",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
@@ -176,7 +182,23 @@
       <recent name="org.openprovenance.prov.model.exception" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONTest">
+  <component name="RunManager" selected="JUnit.PC1FullTest.testPC1">
+    <configuration name="PC1FullTest.testPC1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.PC1FullTest" />
+      <option name="METHOD_NAME" value="testPC1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RoundTripFromJavaJSONLD11LegacyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="roundtrip" />
       <extension name="coverage">
@@ -253,12 +275,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Makefile" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-tutorial/consent/Makefile" target="" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="all" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-tutorial/consent/Makefile" target="all" workingDirectory="" arguments="">
         <envs />
@@ -283,15 +299,16 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.PC1FullTest.testPC1" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONLegacyTest" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONLD11LegacyTest" />
       <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
-      <item itemvalue="Makefile Target.Makefile" />
       <item itemvalue="Makefile Target.all" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.PC1FullTest.testPC1" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONLegacyTest" />
         <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONLD11LegacyTest" />

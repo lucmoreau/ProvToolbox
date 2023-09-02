@@ -15,16 +15,12 @@ import org.xml.sax.SAXException;
 
 public class PC1FullTest extends org.openprovenance.prov.model.PC1FullTest {
 
-    public PC1FullTest( String testName ) {
-         super(testName);
-    }
-
     @Override
     public void subtestCopyPC1Full() throws java.io.FileNotFoundException,  java.io.IOException   {
     }
 
     @Override
-    public void testPC1() throws JAXBException, java.io.FileNotFoundException,  java.io.IOException, SAXException   {
+    public void testPC1() throws  java.io.IOException   {
         super.testPC1();
         subtestDoToDot();
     }

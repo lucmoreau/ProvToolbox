@@ -1,11 +1,9 @@
 package org.openprovenance.prov.configuration;
 
-import org.openprovenance.prov.model.ProvFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+
 import java.util.Properties;
 
 public class Configuration {

@@ -1,13 +1,6 @@
 package org.openprovenance.prov.model;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.net.URI;
-import javax.xml.bind.JAXBException;
-
-import org.xml.sax.SAXException;
-
 import junit.framework.TestCase;
 
 import static org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest.deepCopy;
@@ -15,14 +8,12 @@ import static org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest.deepC
 /**
  * Unit test for simple Provenance Challenge 1 like workflow.
  */
-public class PC1FullTest extends TestCase {
 
+public class PC1FullTest extends TestCase {
 	public static final String PC1_NS = "http://www.ipaw.info/pc1/";
 	public static final String PC1_PREFIX = "pc1";
 	public static final String PRIM_NS = "http://openprovenance.org/primitives#";
 	public static final String PRIM_PREFIX = "prim";
-
-	static final ProvUtilities util=new ProvUtilities();
 
 
 	public static ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
@@ -30,89 +21,46 @@ public class PC1FullTest extends TestCase {
 
 
 	public QualifiedName q(String n) {
-		//return new org.openprovenance.prov.xml.QualifiedName(PC1_NS, n, PC1_PREFIX);
 		return pFactory.newQualifiedName(PC1_NS, n, PC1_PREFIX);
 	}
 
-
-
-
-	/**
-	 * Create the test case
-	 *
-	 * @param testName
-	 *            name of the test case
-	 */
-	public PC1FullTest(String testName) {
-		super(testName);
-	}
-
 	public boolean urlFlag = true;
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-
 	public static Document graph1;
 	public static Document graph2;
 
-	public void testPC1() throws JAXBException, FileNotFoundException,
-			IOException, SAXException {
+	public void testPC1() throws  IOException {
 		subtestPC1Full();
 		subtestCopyPC1Full();
-		//subtestSchemaValidateXML(); //now failing, since no curie version
-		//subtestSchemaFailValidateXML();
 	}
 
 	public void subtestPC1Full() throws IOException {
 		Document graph = makePC1FullGraph(pFactory);
-
-		//ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
 		Namespace.withThreadNamespace(graph.getNamespace());
-
-		//serial.serialiseDocument(new File("target/pc1-full.xml"), graph, true);
-
 		graph1 = graph;
-		//System.out.println("PC1Full Test asserting True");
 		assertTrue(true);
-
 	}
 
-	static String PATH_PROPERTY = "http://openprovenance.org/primitives#path";
-	static String URL_PROPERTY = "http://openprovenance.org/primitives#url";
-	static String PRIMITIVE_PROPERTY = "http://openprovenance.org/primitives#primitive";
 	static String FILE_LOCATION = "/shomewhere/pc1/";
 	static String URL_LOCATION = "http://www.ipaw.info/challenge/";
 
-	private static QualifiedName PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "align_warp", PRIM_PREFIX);
-	static URI PRIMITIVE_RESLICE = URI
-			.create("http://openprovenance.org/primitives#reslice");
-	static URI PRIMITIVE_SOFTMEAN = URI
-			.create("http://openprovenance.org/primitives#softmean");
-	static URI PRIMITIVE_CONVERT = URI
-			.create("http://openprovenance.org/primitives#convert");
-	static URI PRIMITIVE_SLICER = URI
-			.create("http://openprovenance.org/primitives#slicer");
+	final public static QualifiedName PRIMITIVE_ALIGN_WARP = pFactory.newQualifiedName(PRIM_NS, "align_warp", PRIM_PREFIX);
+	final public static QualifiedName PRIMITIVE_RESLICE = pFactory.newQualifiedName(PRIM_NS, "reslice", PRIM_PREFIX);
+	final public static QualifiedName PRIMITIVE_SOFTMEAN = pFactory.newQualifiedName(PRIM_NS, "softmean", PRIM_PREFIX);
+	final public static QualifiedName PRIMITIVE_CONVERT = pFactory.newQualifiedName(PRIM_NS, "convert", PRIM_PREFIX);
+	final public static QualifiedName PRIMITIVE_SLICER = pFactory.newQualifiedName(PRIM_NS, "slicert", PRIM_PREFIX);
 
-	public Entity newFile(ProvFactory pFactory, String id, String label,
-						  String file, String location) {
 
+	public Entity newFile(ProvFactory pFactory, String id, String label, String file, String location) {
 		Entity a = pFactory.newEntity(q(id), label);
 		pFactory.addType(a, pFactory.newQualifiedName(PRIM_NS, "FILE", PRIM_PREFIX));
-
 		addUrl(a, location + file);
-
 		return a;
 	}
 
-	public Entity newParameter(ProvFactory pFactory, String id, String label,
-							   String value) {
-
+	public Entity newParameter(ProvFactory pFactory, String id, String label, String value) {
 		Entity a = pFactory.newEntity(q(id), label);
-		pFactory.addType(a,pFactory.newQualifiedName(PRIM_NS, "Sring", PRIM_PREFIX));
-
+		pFactory.addType(a,pFactory.newQualifiedName(PRIM_NS, "String", PRIM_PREFIX));
 		addValue(a, value);
-
 		return a;
 	}
 
@@ -125,13 +73,11 @@ public class PC1FullTest extends TestCase {
 	}
 
 	public void addValue(HasOther p1, String val) {
-		p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val,
-				name.XSD_STRING));
+		p1.getOther().add(pFactory.newOther(PC1_NS, "value", PC1_PREFIX, val, name.XSD_STRING));
 	}
 
 	public void addUrl(HasOther p1, String val) {
-		p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val,
-				name.XSD_STRING));
+		p1.getOther().add(pFactory.newOther(PC1_NS, "url", PC1_PREFIX, val, name.XSD_STRING));
 	}
 
 	public Used newUsed(Activity activity, String role, Entity entity){
@@ -150,151 +96,96 @@ public class PC1FullTest extends TestCase {
 	}
 
 
-	public Document makePC1FullGraph(ProvFactory pFactory, String inputLocation,
-									 String outputLocation) {
+	public Document makePC1FullGraph(ProvFactory pFactory, String inputLocation, String outputLocation) {
 
-		//Activity p0 = pFactory.newActivity("a0", "PC1Full Workflow");
 
-		Activity p1 = pFactory.newActivity(q("00000p1"), "align_warp 1");
-		List<Type> o = p1.getType();
-
-		o.add(pFactory.newType(PRIMITIVE_ALIGN_WARP,name.PROV_QUALIFIED_NAME));
-
-		pFactory.addType(p1, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
-
-		p1.getLabel().add(pFactory.newInternationalizedString("bonjour", "fr"));
-		p1.getLabel().add(pFactory.newInternationalizedString("hello", "en"));
+		Activity p1 = pFactory.newActivity(q("a1"), "align_warp 1");
+		pFactory.addType(p1, PRIMITIVE_ALIGN_WARP);
 
 		Activity p2 = pFactory.newActivity(q("a2"), "align_warp 2");
-		pFactory.addType(p2, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
+		pFactory.addType(p2, PRIMITIVE_ALIGN_WARP);
 
 		Activity p3 = pFactory.newActivity(q("a3"), "align_warp 3");
-		pFactory.addType(p3, PRIMITIVE_ALIGN_WARP, name.PROV_QUALIFIED_NAME);
+		pFactory.addType(p3, PRIMITIVE_ALIGN_WARP);
 
 		Activity p4 = pFactory.newActivity(q("a4"), "align_warp 4");
-
-		pFactory.addType(p4, PRIMITIVE_ALIGN_WARP, name.XSD_ANY_URI);
+		pFactory.addType(p4, PRIMITIVE_ALIGN_WARP);
 
 		Activity p5 = pFactory.newActivity(q("a5"), "Reslice 1");
-		pFactory.addType(p5, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+		pFactory.addType(p5, PRIMITIVE_RESLICE);
 
 		Activity p6 = pFactory.newActivity(q("a6"), "Reslice 2");
-		pFactory.addType(p6, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+		pFactory.addType(p6, PRIMITIVE_RESLICE);
 
 		Activity p7 = pFactory.newActivity(q("a7"), "Reslice 3");
-		pFactory.addType(p7, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+		pFactory.addType(p7, PRIMITIVE_RESLICE);
 
 		Activity p8 = pFactory.newActivity(q("a8"), "Reslice 4");
-		pFactory.addType(p8, PRIMITIVE_RESLICE, name.XSD_ANY_URI);
+		pFactory.addType(p8, PRIMITIVE_RESLICE);
 
 		Activity p9 = pFactory.newActivity(q("a9"), "Softmean");
-		pFactory.addType(p9, PRIMITIVE_SOFTMEAN, name.XSD_ANY_URI);
+		pFactory.addType(p9, PRIMITIVE_SOFTMEAN);
 
 		Activity p10 = pFactory.newActivity(q("a10"), "Slicer 1");
-
-		pFactory.addType(p10, PRIMITIVE_SLICER, name.XSD_ANY_URI);
+		pFactory.addType(p10, PRIMITIVE_SLICER);
 
 		Activity p11 = pFactory.newActivity(q("a11"), "Slicer 2");
-		pFactory.addType(p11, PRIMITIVE_SLICER, name.XSD_ANY_URI);
+		pFactory.addType(p11, PRIMITIVE_SLICER);
 
 		Activity p12 = pFactory.newActivity(q("a12"), "Slicer 3");
-		pFactory.addType(p12, PRIMITIVE_SLICER, name.XSD_ANY_URI);
+		pFactory.addType(p12, PRIMITIVE_SLICER);
 
 		Activity p13 = pFactory.newActivity(q("a13"), "Convert 1");
-
-		pFactory.addType(p13, PRIMITIVE_CONVERT, name.XSD_ANY_URI);
+		pFactory.addType(p13, PRIMITIVE_CONVERT);
 
 		Activity p14 = pFactory.newActivity(q("a14"), "Convert 2");
-
-		pFactory.addType(p14, PRIMITIVE_CONVERT, name.XSD_ANY_URI);
+		pFactory.addType(p14, PRIMITIVE_CONVERT);
 
 		Activity p15 = pFactory.newActivity(q("a15"), "Convert 3");
-
-		pFactory.addType(p15, PRIMITIVE_CONVERT, name.XSD_ANY_URI);
+		pFactory.addType(p15, PRIMITIVE_CONVERT);
 
 		Agent ag1 = pFactory.newAgent(q("ag1"), "John Doe");
 
-		Entity a1 = newFile(pFactory, "e1", "Reference Image", "reference.img",
-				inputLocation);
+		Entity a1 = newFile(pFactory, "e1", "Reference Image", "reference.img", inputLocation);
+		Entity a2 = newFile(pFactory, "e2", "Reference Header", "reference.hdr", inputLocation);
 
-		Entity a2 = newFile(pFactory, "e2", "Reference Header",
-				"reference.hdr", inputLocation);
+		Entity a3 = newFile(pFactory, "e3", "Anatomy I1", "anatomy1.img", inputLocation);
+		Entity a4 = newFile(pFactory, "e4", "Anatomy H1", "anatomy1.hdr", inputLocation);
+		Entity a5 = newFile(pFactory, "e5", "Anatomy I2", "anatomy2.img", inputLocation);
+		Entity a6 = newFile(pFactory, "e6", "Anatomy H2", "anatomy2.hdr", inputLocation);
+		Entity a7 = newFile(pFactory, "e7", "Anatomy I3", "anatomy3.img", inputLocation);
+		Entity a8 = newFile(pFactory, "e8", "Anatomy H3", "anatomy3.hdr", inputLocation);
+		Entity a9 = newFile(pFactory, "e9", "Anatomy I4", "anatomy4.img", inputLocation);
+		Entity a10 = newFile(pFactory, "e10", "Anatomy H4", "anatomy4.hdr", inputLocation);
 
-		Entity a3 = newFile(pFactory, "e3", "Anatomy I1", "anatomy1.img",
-				inputLocation);
+		Entity a11 = newFile(pFactory, "e11", "Warp Params1", "warp1.warp", outputLocation);
+		Entity a12 = newFile(pFactory, "e12", "Warp Params2", "warp2.warp", outputLocation);
+		Entity a13 = newFile(pFactory, "e13", "Warp Params3", "warp3.warp", outputLocation);
+		Entity a14 = newFile(pFactory, "e14", "Warp Params4", "warp4.warp", outputLocation);
 
-		Entity a4 = newFile(pFactory, "e4", "Anatomy H1", "anatomy1.hdr",
-				inputLocation);
+		Entity a15 = newFile(pFactory, "e15", "Resliced I1", "resliced1.img", outputLocation);
+		Entity a16 = newFile(pFactory, "e16", "Resliced H1", "resliced1.hdr", outputLocation);
+		Entity a17 = newFile(pFactory, "e17", "Resliced I2", "resliced2.img", outputLocation);
+		Entity a18 = newFile(pFactory, "e18", "Resliced H2", "resliced2.hdr", outputLocation);
+		Entity a19 = newFile(pFactory, "e19", "Resliced I3", "resliced3.img", outputLocation);
+		Entity a20 = newFile(pFactory, "e20", "Resliced H3", "resliced3.hdr", outputLocation);
+		Entity a21 = newFile(pFactory, "e21", "Resliced I4", "resliced4.img", outputLocation);
+		Entity a22 = newFile(pFactory, "e22", "Resliced H4", "resliced4.hdr", outputLocation);
 
-		Entity a5 = newFile(pFactory, "e5", "Anatomy I2", "anatomy2.img",
-				inputLocation);
+		Entity a23 = newFile(pFactory, "e23", "Atlas Image", "atlas.img", outputLocation);
+		Entity a24 = newFile(pFactory, "e24", "Atlas Header", "atlas.hdr", outputLocation);
+		Entity a25 = newFile(pFactory, "e25", "Atlas X Slice", "atlas-x.pgm", outputLocation);
 
-		Entity a6 = newFile(pFactory, "e6", "Anatomy H2", "anatomy2.hdr",
-				inputLocation);
-
-		Entity a7 = newFile(pFactory, "e7", "Anatomy I3", "anatomy3.img",
-				inputLocation);
-
-		Entity a8 = newFile(pFactory, "e8", "Anatomy H3", "anatomy3.hdr",
-				inputLocation);
-
-		Entity a9 = newFile(pFactory, "e9", "Anatomy I4", "anatomy4.img",
-				inputLocation);
-
-		Entity a10 = newFile(pFactory, "e10", "Anatomy H4", "anatomy4.hdr",
-				inputLocation);
-
-		Entity a11 = newFile(pFactory, "e11", "Warp Params1", "warp1.warp",
-				outputLocation);
-
-		Entity a12 = newFile(pFactory, "e12", "Warp Params2", "warp2.warp",
-				outputLocation);
-
-		Entity a13 = newFile(pFactory, "e13", "Warp Params3", "warp3.warp",
-				outputLocation);
-
-		Entity a14 = newFile(pFactory, "e14", "Warp Params4", "warp4.warp",
-				outputLocation);
-
-		Entity a15 = newFile(pFactory, "e15", "Resliced I1", "resliced1.img",
-				outputLocation);
-
-		Entity a16 = newFile(pFactory, "e16", "Resliced H1", "resliced1.hdr",
-				outputLocation);
-		Entity a17 = newFile(pFactory, "e17", "Resliced I2", "resliced2.img",
-				outputLocation);
-		Entity a18 = newFile(pFactory, "e18", "Resliced H2", "resliced2.hdr",
-				outputLocation);
-		Entity a19 = newFile(pFactory, "e19", "Resliced I3", "resliced3.img",
-				outputLocation);
-		Entity a20 = newFile(pFactory, "e20", "Resliced H3", "resliced3.hdr",
-				outputLocation);
-		Entity a21 = newFile(pFactory, "e21", "Resliced I4", "resliced4.img",
-				outputLocation);
-		Entity a22 = newFile(pFactory, "e22", "Resliced H4", "resliced4.hdr",
-				outputLocation);
-
-		Entity a23 = newFile(pFactory, "e23", "Atlas Image", "atlas.img",
-				outputLocation);
-		Entity a24 = newFile(pFactory, "e24", "Atlas Header", "atlas.hdr",
-				outputLocation);
-
-		Entity a25 = newFile(pFactory, "e25", "Atlas X Slice", "atlas-x.pgm",
-				outputLocation);
 		Entity a25p = newParameter(pFactory, "e25p", "slicer param 1", "-x .5");
-
-		Entity a26 = newFile(pFactory, "e26", "Atlas Y Slice", "atlas-y.pgm",
-				outputLocation);
 		Entity a26p = newParameter(pFactory, "e26p", "slicer param 2", "-y .5");
-		Entity a27 = newFile(pFactory, "e27", "Atlas Z Slice", "atlas-z.pgm",
-				outputLocation);
 		Entity a27p = newParameter(pFactory, "e27p", "slicer param 3", "-z .5");
-		Entity a28 = newFile(pFactory, "e28", "Atlas X Graphic", "atlas-x.gif",
-				outputLocation);
-		Entity a29 = newFile(pFactory, "e29", "Atlas Y Graphic", "atlas-y.gif",
-				outputLocation);
-		Entity a30 = newFile(pFactory, "e30", "Atlas Z Graphic", "atlas-z.gif",
-				outputLocation);
+
+		Entity a26 = newFile(pFactory, "e26", "Atlas Y Slice", "atlas-y.pgm", outputLocation);
+		Entity a27 = newFile(pFactory, "e27", "Atlas Z Slice", "atlas-z.pgm", outputLocation);
+		Entity a28 = newFile(pFactory, "e28", "Atlas X Graphic", "atlas-x.gif", outputLocation);
+
+		Entity a29 = newFile(pFactory, "e29", "Atlas Y Graphic", "atlas-y.gif", outputLocation);
+		Entity a30 = newFile(pFactory, "e30", "Atlas Z Graphic", "atlas-z.gif", outputLocation);
 
 		Used u1 = newUsed(p1, "img", a3);
 		Used u2 = newUsed(p1, "hdr", a4);
@@ -432,7 +323,7 @@ public class PC1FullTest extends TestCase {
 
 		Document graph = pFactory
 				.newDocument(new Activity[] {
-						p1, p2, p3, p4, p5, p6, p7, p8, p9,
+								p1, p2, p3, p4, p5, p6, p7, p8, p9,
 								p10, p11, p12, p13, p14, p15 },
 						new Entity[] {
 								a1, a2, a5, a6, a3, a4, a7, a8, a9,
@@ -465,89 +356,17 @@ public class PC1FullTest extends TestCase {
 		return graph;
 	}
 
-	public void subtestCopyPC1Full() throws FileNotFoundException,
-			IOException {
-		ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
+	public void subtestCopyPC1Full() throws IOException {
 
 		Document c = deepCopy(graph1);
+		graph2=c;
 
-		assertTrue("self graph1 differ", graph1.equals(graph1));
+		assertEquals("self graph1 differ", graph1, graph1);; //trivially true
 
-		assertTrue("self c differ", c.equals(c));
+		assertEquals("self graph2 differ", graph2, graph2); //trivially true
 
-		assertTrue("graph1 c differ", graph1.equals(c));
-
-	}
-
-/*
-
-	public void subtestReadXMLGraph() throws JAXBException {
-
-		ProvDeserialiser deserial = ProvDeserialiser
-				.getThreadProvDeserialiser();
-		Document c = deserial.deserialiseDocument(new File("target/pc1-full.xml"));
-		graph2 = c;
-
-		graph2.setNamespace(graph1.getNamespace());
-		ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser();
-		Namespace.withThreadNamespace(graph2.getNamespace());
-
-		serial.serialiseDocument(new File("target/pc1-full2.xml"), graph2, true);
-
-		// System.out.println("a0" + graph1.getRecords().getActivity().get(0));
-		// System.out.println("a0" + graph2.getRecords().getActivity().get(0));
-
-		assertTrue("graph1 a* and graph2 a* differ", util.getActivity(graph1).equals(util.getActivity(graph2)));
-
-		// failing because of comparison of Elements <pc1:url>...</pc1:url>
-		assertFalse("graph1 e* and graph2 e* differ", util.getEntity(graph1).equals(util.getEntity(graph2)));
-
-		assertFalse("graph1 and graph2 differ", graph1.equals(graph2));
-
-		Document c2 = deserial.deserialiseDocument(new File("target/pc1-full.xml"));
-		c2.setNamespace(graph1.getNamespace());
-
-		assertFalse("c e* and c2 e* differ",
-				util.getEntity(c)
-						.equals(util.getEntity(c2)));
-		assertFalse("c and c2 differ", c.equals(c2));
+		assertEquals("graph1 and graph2 differ", graph1, graph2);
 
 	}
-
-	public void subtestSchemaValidateXML() throws JAXBException,
-			SAXException, IOException {
-
-		ProvDeserialiser deserial = ProvDeserialiser
-				.getThreadProvDeserialiser();
-
-		String[] schemaFiles = new String[2];
-		schemaFiles[0] = "src/test/resources/pc1.xsd";
-		schemaFiles[1] = "src/test/resources/prim.xsd";
-		deserial.validateDocument(schemaFiles, new File("target/pc1-full.xml"));
-
-	}
-
-	public void subtestSchemaFailValidateXML() {
-
-		ProvDeserialiser deserial = ProvDeserialiser
-				.getThreadProvDeserialiser();
-
-		String[] schemaFiles = new String[1];
-		schemaFiles[0] = "src/test/resources/pc1.xsd";
-
-		try {
-			deserial.validateDocument(schemaFiles,
-					new File("target/pc1-full.xml"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(e instanceof javax.xml.bind.UnmarshalException);
-			return;
-		}
-		assertTrue(false);
-
-	}
-
-
- */
 
 }

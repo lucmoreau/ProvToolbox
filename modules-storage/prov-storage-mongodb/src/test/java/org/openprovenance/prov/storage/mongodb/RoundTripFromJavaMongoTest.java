@@ -9,23 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public RoundTripFromJavaMongoTest(String testName) {
-        super(testName);
-    }
+
 
     Map<String, String> m=new HashMap<>();
 
     static MongoDocumentResourceStorage docS=new MongoDocumentResourceStorage("provtest");
 
     @Override
+    public String extension() {
+        return "";
+    }
+
+    @Override
     public void writeDocumentToFile(Document doc, String file) throws IOException {
 
-       // System.out.println("storing " + file);
+       System.out.println("storing (mongo) " + file);
 
 
         String loc=docS.newStore(Formats.ProvFormat.JSONLD);
@@ -36,6 +34,7 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
 
     @Override
     public Document readDocumentFromFile(String file) throws IOException {
+        System.out.println(" retrieving from " + file);
 
         String loc=m.get(file);
 

@@ -303,14 +303,18 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newUsed(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
-    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity,
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
+                                                      org.openprovenance.prov.model.QualifiedName activity,
+                                                      org.openprovenance.prov.model.QualifiedName entity,
                                                       XMLGregorianCalendar time,
                                                       Collection<Attribute> attributes) {
         org.openprovenance.prov.model.Used res = mc.newUsed(id, activity, entity,time,  attributes);
         return res;
     }
 
-    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity,
+    public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
+                                                      org.openprovenance.prov.model.QualifiedName activity,
+                                                      org.openprovenance.prov.model.QualifiedName entity,
                                                       XMLGregorianCalendar time) {
         Used res = newUsed(id, activity, entity, time, Collections.EMPTY_LIST);
         return res;

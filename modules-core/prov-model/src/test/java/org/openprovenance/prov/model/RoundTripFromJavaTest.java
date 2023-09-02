@@ -1,133 +1,28 @@
 package org.openprovenance.prov.model;
 
-import junit.framework.TestCase;
-
 
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
-import org.openprovenance.prov.vanilla.HasAttributes;
 
-import java.io.*;
 import java.util.*;
+
 
 /**
  * Unit test for PROV roundtrip conversion starting from Java
  */
-abstract public class RoundTripFromJavaTest extends TestCase {
+public class RoundTripFromJavaTest extends ProvFrameworkTest {
 
-    public static final String EX_NS = "http://example.org/";
     public static final String EX2_NS = "http://example2.org/";
-    public static final String EX_PREFIX = "ex";
     public static final String EX2_PREFIX = "ex2";
     public static final String EX3_NS = "http://example3.org/";
 
-    static final org.openprovenance.prov.vanilla.ProvUtilities util = new org.openprovenance.prov.vanilla.ProvUtilities();
 
-    public static org.openprovenance.prov.model.ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
-    public static  org.openprovenance.prov.model.Name name = pFactory.getName();
-
-    private final DocumentEquality documentEquality;
-
-    /**
-     * Create the test case
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public RoundTripFromJavaTest(String testName) {
-        super(testName);
-        this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),System.out);
+    public org.openprovenance.prov.model.QualifiedName qInner(String n) {
+        return pFactory.newQualifiedName(EX_NS+"inner/", n, EX_PREFIX);
     }
-
-    public boolean urlFlag = true;
-
-    /**
-     * @return the suite of tests being tested
-     */
-
-    public void updateNamespaces(Document doc) {
-        Namespace ns = Namespace.gatherNamespaces(doc);
-        doc.setNamespace(ns);
-    }
-
-    public String extension() {
-        return ".jsonld";
-    }
-
-    public void makeDocAndTest(Statement stment, String file) {
-        makeDocAndTest(stment, file, null, true);
-    }
-
-    public void makeDocAndTest(Statement stment, String file, boolean check) {
-        makeDocAndTest(stment, file, null, check);
-    }
-
-    public void makeDocAndTest(Statement stment, Statement[] opt, String file) {
-        makeDocAndTest(stment, file, opt, true);
-    }
-
-    public void makeDocAndTest(Statement[] stment, Statement[] opt, String file) {
-        makeDocAndTest(stment, file, opt, true);
-    }
-
-    public void makeDocAndTest(Statement stment, String file, Statement[] opt,
-                               boolean check) {
-        makeDocAndTest(new Statement[] { stment }, file, opt, check);
-    }
-
-    public void makeDocAndTest(Statement[] stment, String file,
-                               Statement[] opt, boolean check) {
-        makeDocAndTest(stment, null, file, opt, check);
-    }
-
-    public void makeDocAndTest(Statement[] stment, Bundle[] bundles,
-                               String file, Statement[] opt, boolean check) {
-        Document doc = pFactory.newDocument();
-        for (Statement statement : stment) {
-            doc.getStatementOrBundle().add(statement);
-        }
-        if (bundles != null) {
-            for (Bundle bundle : bundles) {
-                doc.getStatementOrBundle().add(bundle);
-            }
-        }
-        updateNamespaces(doc);
-        
-        if (bundles!=null) {
-            for (Bundle bundle : bundles) {
-                //   System.out.println(bundles[j]);
-                //   System.out.println(bundles[j].getNamespace());
-                bundle.getNamespace().setParent(doc.getNamespace());
-            }
-        }
-
-        String file1 = (opt == null) ? file : file + "-S";
-        compareDocAndFile(doc, file1, check);
-
-        if ((opt != null) && doOptional(opt)) {
-            String file2 = file + "-M";
-            doc.getStatementOrBundle().addAll(Arrays.asList(opt));
-            compareDocAndFile(doc, file2, check);
-        }
-    }
-
-    public boolean doOptional(Statement[] opt) {
-	return true;
-    }
-
-    public void compareDocAndFile(Document doc, String file, boolean check) {
-        file = file + extension();
-        writeDocument(doc, file);
-        if (check)
-            conditionalCheckSchema(file);
-        Document doc3 = readDocument(file);
-        compareDocuments(doc, doc3, check && checkTest(file));
-    }
-
-    public void conditionalCheckSchema(String file) {
-        if (checkSchema(file))
-            doCheckSchema1(file);
+    public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
+        return pFactory.newQualifiedName(EX_NS+"outer/", n, EX_PREFIX);
     }
 
     public boolean checkSchema(String name) {
@@ -164,353 +59,17 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         return true;
     }
 
-    public void doCheckSchema1(String file) {
-
-
-    }
-
-    public Document readDocument(String file1) {
-        try {
-            return readDocumentFromFile(file1);
-        } catch (IOException e) {
-            throw new UncheckedTestException(e);
-        }
-    }
-
-    public void writeDocument(Document doc, String file2) {
-        System.out.println(" * document " + file2);
-        Namespace.withThreadNamespace(doc.getNamespace());
-        try {
-            writeDocumentToFile(doc, file2);
-        } catch (IOException e) {
-            throw new UncheckedTestException(e);
-        }
-    }
-
-    public void compareDocuments(Document doc, Document doc2, boolean check) {
-  //     assertTrue("self doc equality", doc.equals(doc));
-  //      assertTrue("self doc2 equality", doc2.equals(doc2));
-
-        if (check) {
-            boolean result = this.documentEquality.check(doc, doc2);
-            if (!result) {
-                System.out.println("Pre-write graph: " + doc);
-                System.out.println("Read graph: " + doc2);
-
-                System.out.println("test0: " + doc.getStatementOrBundle().get(0));
-                System.out.println("test0: " + doc2.getStatementOrBundle().get(0));
-                System.out.println("test1: " + doc.getStatementOrBundle().get(0).getClass());
-                System.out.println("test1: " + doc2.getStatementOrBundle().get(0).getClass());
-
-                System.out.println("test: " + (doc.getStatementOrBundle().get(0)).equals((doc2.getStatementOrBundle().get(0))));
-
-                if ((doc.getStatementOrBundle().get(0) instanceof HasAttributes)
-                &&
-                        (doc2.getStatementOrBundle().get(0) instanceof HasAttributes)) {
-
-                    System.out.println("test2  (attr): " + compareSet(((HasAttributes) doc.getStatementOrBundle().get(0)).getAttributes(), ((HasAttributes) doc2.getStatementOrBundle().get(0)).getAttributes()));
-
-                }
-
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.Identifiable)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.Identifiable)){
-
-
-                    System.out.println("test3  (I): " + compare(((org.openprovenance.prov.model.Identifiable) doc.getStatementOrBundle().get(0)).getId(), ((((org.openprovenance.prov.model.Identifiable) doc2.getStatementOrBundle().get(0)).getId()))));
-
-                }
-
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLabel)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLabel) ){
-
-
-                    System.out.println("test4  (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel().equals((((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel())));
-                    System.out.println("test4  (L): " + compareSet(((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel(), ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel()));
-                    System.out.println("test4a (L): " + ((org.openprovenance.prov.model.HasLabel) doc.getStatementOrBundle().get(0)).getLabel());
-                    System.out.println("test4b (L): " + ((org.openprovenance.prov.model.HasLabel) doc2.getStatementOrBundle().get(0)).getLabel());
-                }
-
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasType)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasType)){
-
-                    System.out.println("test5  (T): " + ((org.openprovenance.prov.model.HasType) doc.getStatementOrBundle().get(0)).getType().equals((((org.openprovenance.prov.model.HasType) doc2.getStatementOrBundle().get(0)).getType())));
-                }
-
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasOther)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasOther)){
-
-                    System.out.println("test6  (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther().equals(((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther()));
-                    System.out.println("test6b (O): " + ((org.openprovenance.prov.model.HasOther) doc.getStatementOrBundle().get(0)).getOther());
-                    System.out.println("test6c (O): " + ((org.openprovenance.prov.model.HasOther) doc2.getStatementOrBundle().get(0)).getOther());
-                }
-
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasRole)){
-                    System.out.println("test7  (R): " + compareSet(((org.openprovenance.prov.model.HasRole) doc.getStatementOrBundle().get(0)).getRole(), ((((org.openprovenance.prov.model.HasRole) doc2.getStatementOrBundle().get(0)).getRole()))));
-                }
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLocation)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasLocation)){
-                    System.out.println("test8  (Loc): " + compareSet(((org.openprovenance.prov.model.HasLocation) doc.getStatementOrBundle().get(0)).getLocation(), ((org.openprovenance.prov.model.HasLocation) doc2.getStatementOrBundle().get(0)).getLocation()));
-                    System.out.println("test8a (Loc): " + ((org.openprovenance.prov.model.HasLocation) doc.getStatementOrBundle().get(0)).getLocation());
-                    System.out.println("test8b (Loc): " + ((org.openprovenance.prov.model.HasLocation) doc2.getStatementOrBundle().get(0)).getLocation());
-                }
-                if ((doc.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasValue)
-                && (doc2.getStatementOrBundle().get(0) instanceof org.openprovenance.prov.model.HasValue)){
-                    System.out.println("test9  (V): " + compare(((org.openprovenance.prov.model.HasValue) doc.getStatementOrBundle().get(0)).getValue(), ((org.openprovenance.prov.model.HasValue) doc2.getStatementOrBundle().get(0)).getValue()));
-                    System.out.println("test9a (V): " + ((org.openprovenance.prov.model.HasValue) doc.getStatementOrBundle().get(0)).getValue());
-                    System.out.println("test9b (V): " + ((org.openprovenance.prov.model.HasValue) doc2.getStatementOrBundle().get(0)).getValue());
-                }
-
-
-
-
-            }
-            assertTrue("doc equals doc2", result);
-        } else {
-            assertFalse("doc distinct from doc2", doc.equals(doc2));
-        }
-
-
-    }
-
-    private <E>boolean compare(E value1, E value2) {
-        if (value1==null) return (value2==null);
-        if (value2==null) return false;
-        return value1.equals(value2);
-    }
-
-
-    public <E> boolean  compareSet(List<E> a1, List<E> a2) {
-        Set<E> set1 = new HashSet<>(a1);
-        Set<E> set2 = new HashSet(a2);
-        return set1.equals(set2);
-    }
-
-    public <E> boolean  compareSet(Collection<E> a1, Collection<E> a2) {
-        Set<E> set1 = new HashSet<>(a1);
-        Set<E> set2 = new HashSet(a2);
-        return set1.equals(set2);
-    }
-
-    public boolean checkTest(String name) {
-        // all tests successful in this file
-        return true;
-    }
-
-    public boolean mergeDuplicateProperties() {
-        return false;
-    }
-
-    public Document readDocumentFromFile(String file)
-            throws IOException {
-
-        System.out.println("reading from " + file);
-
-      //  ProvDeserialiser deserial=new ProvDeserialiser();
-      //  return deserial.deserialiseDocument(new File(file));
-
-        return null;
-
-    }
-
-
-
-    public void writeDocumentToFile(Document doc, String file)
-            throws IOException {
-
-
-        System.out.println("writing to " + file);
-
-
-      //  ProvSerialiser serial=new ProvSerialiser();
-       // serial.serialiseDocument(new FileOutputStream(file), doc, true);
-
-
-    }
-
-    public org.openprovenance.prov.model.QualifiedName q(String n) {
-        return pFactory.newQualifiedName(EX_NS, n, EX_PREFIX);
-    }
-
-    public org.openprovenance.prov.model.QualifiedName qInner(String n) {
-        return pFactory.newQualifiedName(EX_NS+"inner/", n, EX_PREFIX);
-    }   public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
-        return pFactory.newQualifiedName(EX_NS+"outer/", n, EX_PREFIX);
-    }
-
-
+    // /////////////////////////////////////////////////////////////////////
 
     // /////////////////////////////////////////////////////////////////////
 
-    public void addLabel(HasLabel hl) {
-        hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-    }
-
-    public void addLabels(HasLabel hl) {
-        hl.getLabel().add(pFactory.newInternationalizedString("hello"));
-        hl.getLabel().add(pFactory.newInternationalizedString("bye", "en"));
-        hl.getLabel().add(pFactory.newInternationalizedString("bonjour", "fr"));
-    }
-
-    public void addTypes(HasType ht) {
-        ht.getType().add(pFactory.newType("a", name.XSD_STRING));
-        ht.getType().add(pFactory.newType(1, name.XSD_INT));
-        ht.getType().add(pFactory.newType(1.0, name.XSD_FLOAT));
-        ht.getType().add(pFactory.newType(true, name.XSD_BOOLEAN));
-
-        ht.getType().add(pFactory.newType(pFactory.newQualifiedName(EX_NS, "abc", EX_PREFIX),
-                                          name.PROV_QUALIFIED_NAME));
-        ht.getType().add(pFactory.newType(pFactory.newTimeNow(),
-                                          name.XSD_DATETIME));
-
-
-
-        ht.getType().add(pFactory.newType(EX_NS + "hello",
-                                          name.XSD_ANY_URI));
-    }
-
-    public void addLocations(HasLocation hl) {
-        hl.getLocation().add(pFactory.newLocation("London",
-                name.XSD_STRING));
-        hl.getLocation().add(pFactory.newLocation(1, name.XSD_INT));
-        hl.getLocation().add(pFactory.newLocation(1.0, name.XSD_FLOAT));
-        hl.getLocation()
-                .add(pFactory.newLocation(true, name.XSD_BOOLEAN));
-        hl.getLocation().add(pFactory.newLocation(pFactory.newQualifiedName(EX_NS, "london",
-                EX_PREFIX),
-                name.PROV_QUALIFIED_NAME));
-        hl.getLocation().add(pFactory.newLocation(pFactory.newTimeNow(),
-                name.XSD_DATETIME));
-        hl.getLocation().add(pFactory.newLocation(EX_NS + "london",
-                name.XSD_ANY_URI));
-        hl.getLocation().add(pFactory.newLocation(pFactory.newGYear(2002),
-                name.XSD_GYEAR));
-    }
-
-    public void addValue(HasValue hl) {
-        hl.setValue(pFactory.newValue(pFactory.newQualifiedName(EX_NS, "avalue", EX_PREFIX),
-                                      name.PROV_QUALIFIED_NAME));
-    }
-
-    public void addFurtherAttributes(HasOther he) {
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello",
-                name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "bonjour",
-                name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, pFactory.newGYear(2002),
-                name.XSD_GYEAR));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye",
-                                            name.XSD_STRING));
-        // he.getOthers().add(pFactory.newOther(EX_NS,"tag2",EX_PREFIX,
-        // pFactory.newInternationalizedString("bonjour","fr"), "xsd:string"));
-        he.getOther().add(pFactory.newOther(EX2_NS, "tag3", EX2_PREFIX, "hi",
-                                            name.XSD_STRING));
-      //  he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX,
-      //                                      "hello\nover\nmore\nlines",
-      //                                      name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
-                "hello",
-                name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, get0tagWithDigit(), EX_PREFIX,
-                "hello2",
-                name.XSD_STRING));
-
-
-    }
-
-    public String get0tagWithDigit() {
-        return "0tagWithDigit";
-    }
-
-    public void addFurtherAttributes0(HasOther he) {
-        he.getOther().add(pFactory.newOther(EX_NS, "tag1", EX_PREFIX, "hello",
-                                            name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX, "bye",
-                                            name.XSD_STRING));
-        he.getOther()
-          .add(pFactory.newOther(EX_NS, "tag2", EX_PREFIX,
-                                 pFactory.newInternationalizedString("bonjour",
-                                                                     "fr"),
-                                 name.XSD_STRING));
-        he.getOther().add(pFactory.newOther(EX2_NS, "tag3", EX2_PREFIX, "hi",
-                                            name.XSD_STRING));
-
-        he.getOther()
-          .add(pFactory.newOther(EX_NS, "tag", EX_PREFIX, new Integer(1),
-                                 name.XSD_INT));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Long(1), name.XSD_LONG));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Short((short) 1),
-                                            name.XSD_SHORT));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Double(1.0),
-                                            name.XSD_DOUBLE));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Float(1.0),
-                                            name.XSD_FLOAT));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new java.math.BigDecimal(1.0),
-                                            name.XSD_INTEGER));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Boolean(true),
-                                            name.XSD_BOOLEAN));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            new Byte((byte) 123),
-                                            name.XSD_BYTE));
-
-        addFurtherAttributesWithQNames(he);
-
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX, EX_NS + "london",
-                                            name.XSD_ANY_URI));
-
-    }
-
-    // /////////////////////////////////////////////////////////////////////
-
-    public void addFurtherAttributesWithQNames(HasOther he) {
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            pFactory.newQualifiedName(EX2_NS, "newyork",
-                                                      EX2_PREFIX),
-                                            name.PROV_QUALIFIED_NAME));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            pFactory.newQualifiedName(EX_NS, "london",
-                                                      EX_PREFIX),
-                                            name.PROV_QUALIFIED_NAME));
-        he.getOther().add(pFactory.newOther(EX_NS, "tag", EX_PREFIX,
-                                            pFactory.newQualifiedName(EX3_NS, "london",null),
-                                            name.PROV_QUALIFIED_NAME));
-
-    }
-
-    public void NOtestRoles() {
+    public void testRoles() {
         Role r1 = pFactory.newRole("otherRole", name.XSD_STRING);
         Role r2 = pFactory.newRole("otherRole", name.XSD_STRING);
-        org.openprovenance.prov.model.Location l1 = pFactory.newLocation("otherLocation",
-                                           name.XSD_STRING);
-        Location l2 = pFactory.newLocation("otherLocation",
-                                           name.XSD_STRING);
-        System.out.println("---------------------------------------------------------------------- ");
-        System.out.println("Role 1 " + r1);
-        System.out.println("Role 2 " + r2);
-        System.out.println("Location 1 " + l1);
-        System.out.println("Location 2 " + l2);
-        System.out.println("---------------------------------------------------------------------- ");
-        System.out.println(r1);
-        System.out.println(r2);
-        System.out.println(r1.equals(r1));
-        System.out.println(r1.equals(r2));
-        System.out.println(r2.equals(r1));
-        System.out.println(r2.equals(r2));
-
-        System.out.println(l1.equals(l1));
-        System.out.println(l1.equals(l2));
-        System.out.println(l2.equals(l1));
-        System.out.println(l2.equals(l2));
-        System.out.println("---------------------------------------------------------------------- ");
-
-        // assertTrue(r1.equals(r1));
-        // assertTrue(l1.equals(l2));
+        Location l1 = pFactory.newLocation("otherLocation", name.XSD_STRING);
+        Location l2 = pFactory.newLocation("otherLocation", name.XSD_STRING);
+        assertEquals(r1, r2);
+        assertEquals(l1, l2);
     }
 
     public boolean test = true;
@@ -520,30 +79,20 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         org.openprovenance.prov.model.Entity a = pFactory.newEntity(q("e0"));
         a.getOther()
          .add(pFactory.newOther(pFactory.newQualifiedName(EX_NS, "tag2", EX_PREFIX),
-                                pFactory.newInternationalizedString("bonjour",
-                                                                    "fr"),
+                                pFactory.newInternationalizedString("bonjour","fr"),
                                 name.PROV_LANG_STRING));
 
         if (test) {
 
-            a.getLocation().add(pFactory.newLocation("un llieu",
-                                                     name.XSD_STRING));
+            a.getLocation().add(pFactory.newLocation("un llieu", name.XSD_STRING));
             a.getLocation().add(pFactory.newLocation(1, name.XSD_INT));
-            a.getLocation()
-             .add(pFactory.newLocation(2.0, name.XSD_DOUBLE));
-
-            // name.QNAME_XSD_INT, Note this is problematic for conversion
-            // to/from rdf
-
-            // THis fails
+            a.getLocation().add(pFactory.newLocation(2.0, name.XSD_DOUBLE));
 
 
             // w.setValue(URI.create(EX_NS+"london"));
-            a.getLocation().add(pFactory.newLocation(EX_NS + "london",
-                                                     name.XSD_ANY_URI));
+            a.getLocation().add(pFactory.newLocation(EX_NS + "london", name.XSD_ANY_URI));
 
-            Location loc = pFactory.newLocation(new Long(2),
-                                                name.XSD_LONG);
+            Location loc = pFactory.newLocation(new Long(2),   name.XSD_LONG);
             // FIXME: Location containing a QName does not work
             // loc.getAttributes().put(name.QNAME_XSD_LONG,"1");
             a.getLocation().add(loc);
@@ -661,7 +210,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
 
-    public void NOtestEntity101() {
+    public void testEntity101() {
         Entity e = pFactory.newEntity(q("101-generalEntity"), "entity101");
         e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
                                            pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
@@ -1632,6 +1181,7 @@ abstract public class RoundTripFromJavaTest extends TestCase {
     }
 
     /*
+
     public void testMention1() {
         MentionOf men = pFactory.newMentionOf(q("e2"), q("e1"), null);
         makeDocAndTest(men, "target/mention1");
@@ -1642,7 +1192,8 @@ abstract public class RoundTripFromJavaTest extends TestCase {
         makeDocAndTest(men, "target/mention2");
     }
 
-    */
+     */
+
 
     public void testMembership1() {
         HadMember mem = pFactory.newHadMember(q("c"), q("e1"));

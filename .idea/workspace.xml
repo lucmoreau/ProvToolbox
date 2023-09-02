@@ -8,16 +8,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/json/PC1FullTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/PC1FullTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/DocumentComparator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/ProvFrameworkTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/main4.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/configuration/Configuration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/main1.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/PC1FullTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/test4.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PC1FullTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/test16.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/foo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/foo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/PC1FullTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONLD11Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaJSONTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/json/RoundTripFromJavaJSONTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripFromJavaTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripJavaToJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripJavaToJavaTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromJavaTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/test/java/org/openprovenance/prov/storage/mongodb/RoundTripFromJavaMongoTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,26 +169,27 @@
       <recent name="org.openprovenance.prov.template.compiler.CompilerSimpleBean" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.storage.mongodb" />
       <recent name="org.openprovenance.prov.core.json" />
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.json" />
+      <recent name="org.openprovenance.prov.core.jsonld11" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.template.compiler.common" />
       <recent name="org.openprovenance.prov.template" />
-      <recent name="org.openprovenance.prov.storage.redis" />
-      <recent name="org.openprovenance.prov.storage.filesystem" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.json" />
       <recent name="org.openprovenance.prov.core.json.serialization.deserial" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.template.compiler.common" />
       <recent name="org.openprovenance.prov.template.descriptors" />
-      <recent name="org.openprovenance.prov.model.exception" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.PC1FullTest.testPC1">
+  <component name="RunManager" selected="JUnit.ProvFrameworkTest.testAlwaysSuccessful">
     <configuration name="PC1FullTest.testPC1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-model" />
       <extension name="coverage">
@@ -199,17 +206,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONLD11LegacyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="roundtrip" />
+    <configuration name="ProvFrameworkTest.alwaysSucceedTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.roundtrip.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.roundtrip" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.roundtrip.RoundTripFromJavaJSONLD11LegacyTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.ProvFrameworkTest" />
+      <option name="METHOD_NAME" value="alwaysSucceedTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProvFrameworkTest.testAlwaysSuccessful" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.ProvFrameworkTest" />
+      <option name="METHOD_NAME" value="testAlwaysSuccessful" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -252,8 +276,8 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.RoundTripFromJavaJSONTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
@@ -264,7 +288,7 @@
       <module name="prov-jsonld-xml" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -274,12 +298,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration name="all" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-tutorial/consent/Makefile" target="all" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
@@ -300,18 +318,19 @@
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.PC1FullTest.testPC1" />
+      <item itemvalue="JUnit.ProvFrameworkTest.alwaysSucceedTest" />
+      <item itemvalue="JUnit.ProvFrameworkTest.testAlwaysSuccessful" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONLegacyTest" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONLD11LegacyTest" />
       <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
-      <item itemvalue="Makefile Target.all" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ProvFrameworkTest.testAlwaysSuccessful" />
+        <item itemvalue="JUnit.ProvFrameworkTest.alwaysSucceedTest" />
         <item itemvalue="JUnit.PC1FullTest.testPC1" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONLegacyTest" />
         <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
-        <item itemvalue="JUnit.RoundTripFromJavaJSONLD11LegacyTest" />
       </list>
     </recent_temporary>
   </component>
@@ -948,7 +967,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java</url>
-          <line>774</line>
+          <line>778</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">

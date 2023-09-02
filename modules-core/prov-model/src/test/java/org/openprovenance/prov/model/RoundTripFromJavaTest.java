@@ -213,20 +213,16 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     public void testEntity101() {
         Entity e = pFactory.newEntity(q("101-generalEntity"), "entity101");
         e.getOther().add(pFactory.newOther(EX_NS, "a01b\\[c", EX_PREFIX,
-                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
-                                                     EX2_PREFIX),
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.", EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));
         e.getOther().add(pFactory.newOther(EX_NS, "a01bc", EX_PREFIX,
-                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.",
-                                                     EX2_PREFIX),
+                                           pFactory.newQualifiedName(EX2_NS, "\\=\\'\\(\\)\\,-\\:\\;\\[\\]\\.", EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));
         e.getOther().add(pFactory.newOther(EX_NS, "unicode", EX_PREFIX,
-                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ", //validator disabled for this
-                                                     EX2_PREFIX),
+                                           pFactory.newQualifiedName(EX2_NS, "À-ÖØ-öø-˿Ͱͽ", EX2_PREFIX), //validator disabled for this
                                            name.PROV_QUALIFIED_NAME));
         e.getOther().add(pFactory.newOther(EX_NS, "À-ÖØ-öø-", EX_PREFIX, //˿Ͱͽ not supported by jaxb marshaller
-                                           pFactory.newQualifiedName(EX2_NS,"unicode",
-                                                     EX2_PREFIX),
+                                           pFactory.newQualifiedName(EX2_NS,"unicode", EX2_PREFIX),
                                            name.PROV_QUALIFIED_NAME));
         e.getOther().add(pFactory.newOther(EX_NS, problematic, EX_PREFIX,
                                            1,

@@ -10,25 +10,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public RoundTripFromJavaXMLViaLegacyTest(String testName) {
-        super(testName);
-    }
 
-    ProvFactory pf=new ProvFactory();
     public Document readDocumentFromFile(String file) throws IOException {
-
-        System.out.println("reading (xml) from " + file);
-
-
-
-        Document doc= null;
-        doc = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser().deserialiseDocument(new File(file));
-
+        System.out.println(" reading (xml) from " + file);
+        Document doc= new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser().deserialiseDocument(new File(file));
         BeanTraversal bc=new BeanTraversal(RoundTripFromJavaTest.pFactory, RoundTripFromJavaTest.pFactory);
         org.openprovenance.prov.model.Document doc2=bc.doAction(doc);
         return doc2;
@@ -36,18 +21,6 @@ public class RoundTripFromJavaXMLViaLegacyTest extends RoundTripFromJavaXMLTest 
 
     public String extension() {
         return "_b.xml";
-    }
-
-
-
-    public String get0tagWithDigit() {
-        return "0tagWithDigit";
-    }
-
-
-    @Override
-    public boolean wrapper_erase() {
-        return true;
     }
 
 

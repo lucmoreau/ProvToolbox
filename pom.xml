@@ -6,7 +6,7 @@
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
 	<version>2.0.0-SNAPSHOT</version>
-	<url>http://lucmoreau.github.io/ProvToolbox/</url>
+	<url>https://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
 

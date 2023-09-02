@@ -1,5 +1,8 @@
 package org.openprovenance.prov.model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +17,8 @@ import static org.openprovenance.prov.model.ExtensionRoundTripFromJavaTest.deepC
  */
 public class AttributeTest extends ProvFrameworkTest {
 
+	Logger logger = LogManager.getLogger(AttributeTest.class);
+
 
 	public static final String EX_NS = "http://example.org/";
 	public static final String EX2_NS = "http://example2.org/";
@@ -24,16 +29,24 @@ public class AttributeTest extends ProvFrameworkTest {
 
 	public static ProvFactory pFactory;
 	public static Name name;
-
+	public static boolean warned=false;
 
 	static {
 		pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
 		name=pFactory.getName();
+
 	}
 
 
 	public AttributeTest() {
 		this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
+		if (!warned) {
+			warned = true;
+
+			logger.warn("AttributeTest not supporting RDF_LITERAL type for attributes");
+			logger.warn("AttributeTest not supporting dictionaries");
+			logger.warn("AttributeTest not supporting MentionOf");
+		}
 	}
 
 	public boolean urlFlag = true;
@@ -134,7 +147,7 @@ public class AttributeTest extends ProvFrameworkTest {
 
 	Map<String,Document> table=new Hashtable<>();
 	public void writeDocument(Document doc, String file2) {
-		System.out.println("deep copy of " + file2);
+		logger.info("deep copy of " + file2);
 		Namespace.withThreadNamespace(doc.getNamespace());
 		Document doc2 = deepCopy(doc);
 		table.put(file2, doc2);
@@ -248,7 +261,7 @@ public class AttributeTest extends ProvFrameworkTest {
 
 					{pFactory.newYear(2013),name.XSD_GYEAR},
 
-					// {pFactory.newGMonth(01),name.XSD_GMONTH}, //FIXME: an old-standing bug in the spec results in incorrect serialization.
+					{pFactory.newGMonth(01),name.XSD_GMONTH}, //FIXME: an old-standing bug in the spec results in incorrect serialization.
 
 					{pFactory.newGDay(30),name.XSD_GDAY},
 
@@ -258,9 +271,9 @@ public class AttributeTest extends ProvFrameworkTest {
 					{pFactory.newDuration(12225),name.XSD_DURATION},
 					{pFactory.newDuration(1222),name.XSD_DURATION},
 
-					//{pFactory.newDuration("P2Y6M"),name.XSD_YEAR_MONTH_DURATION}, //FIXME: not in xml 1.0
+					{pFactory.newDuration("P2Y6M"),name.XSD_YEAR_MONTH_DURATION}, //FIXME: not in xml 1.0
 
-					//{pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),name.XSD_DAY_TIME_DURATION},
+					{pFactory.newDuration("P2147483647DT2147483647H2147483647M123456789012345.123456789012345S"),name.XSD_DAY_TIME_DURATION},
 
 					{ new byte[] {0,1,2,34,5,6}, name.XSD_HEX_BINARY},
 					{ new byte[] {0,1,2,34,5,6}, name.XSD_BASE64_BINARY},
@@ -271,9 +284,9 @@ public class AttributeTest extends ProvFrameworkTest {
 					{"TOK",name.XSD_TOKEN},
 					{"NMTOK",name.XSD_NMTOKEN},
 					{"name",name.XSD_NAME},
-					{"NCName",name.XSD_NCNAME},
+					{"NCName",name.XSD_NCNAME}
 
-					{createXMLLiteral(),name.RDF_LITERAL}
+				//	{createXMLLiteral(),name.RDF_LITERAL}
 
 			};
 
@@ -1058,16 +1071,14 @@ public class AttributeTest extends ProvFrameworkTest {
 
 
 	public void testActivity0()  {
-		if (true) {
-			System.out.println("==== testActivity0 skipped until we fix the bug  *****");
-			return;
-		}
 		Activity a = pFactory.newActivity(q("a0"));
 
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag2", EX_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX_NS,  "tag3", EX2_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag4", EX4_PREFIX));
 		addOthers(a, pFactory.newQualifiedName(EX2_NS, "tag5", EX_PREFIX));
+
+
 
 		addLabels(a);
 		addTypes(a);
@@ -1099,10 +1110,6 @@ public class AttributeTest extends ProvFrameworkTest {
 	}
 
 	public void testGeneration0()  {
-		if (true) {
-			System.out.println("==== testGeneration0 skipped until we fix the bug   *****");
-			return;
-		}
 		WasGeneratedBy a = pFactory.newWasGeneratedBy((QualifiedName)null,
 				q("e1"),
 				null,

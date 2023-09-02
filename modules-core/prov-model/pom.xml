@@ -40,12 +40,22 @@
         </dependency>
 
     </dependencies>
+    <properties>
+        <log.level>info</log.level>
+    </properties>
 
     <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/test/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
             </resource>
         </resources>
         <plugins>

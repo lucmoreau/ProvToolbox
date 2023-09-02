@@ -32,9 +32,8 @@ public class AttributeTest extends org.openprovenance.prov.model.AttributeTest {
 	}
 
 	@Override
-        public boolean checkSchema(String name) {
+	public boolean checkSchema(String name) {
                 return false;
         }
-
 
 }

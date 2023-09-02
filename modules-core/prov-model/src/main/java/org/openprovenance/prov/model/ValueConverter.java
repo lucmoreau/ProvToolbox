@@ -150,6 +150,7 @@ public class ValueConverter {
         }
 
         if (datatype.equals(name.RDF_LITERAL)) {
+            System.out.println("WARNING: conversion from rdf:Literal to java object is not supported" + value);
             return convertXMLLiteral(value);
         }
 

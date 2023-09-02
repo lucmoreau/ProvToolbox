@@ -1608,6 +1608,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 			ValueConverter vconv=new ValueConverter(this);
 			if (getName().RDF_LITERAL.equals(attr.getType())&& (aValue instanceof String)) {
+				System.out.println("Converting " + aValue);
 				aValue=vconv.convertToJava(attr.getType(),(String)aValue);
 			}
 

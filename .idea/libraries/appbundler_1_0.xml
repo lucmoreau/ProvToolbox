@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="appbundler-1.0">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/modules-executable/toolbox/lib/appbundler-1.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

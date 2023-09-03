@@ -1,5 +1,35 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+==2.0.0==
+* made the vanilla beans (in org.openprovenance.prov.vanilla) the default implementation of the prov data model (org.openprovenance.prov.model) instead of the xml-oriented beans
+* dropped prov-xml, as it relied on jaxb, which is not supported in Java 11
+* dropped prov-sql, as it relied on jaxb, and was never properly tested. Is also totally supersed by the sql support through the prov-template-compiler
+* dropped prov-json which was based on the Gson library
+* dropped prov-rdf which was based on the Sesame library, which introduced many dependencies.
+* use of jackson to serialize vanilla beans to prov-json, prov-jsonld, prov-xml. 
+* core modules consists of:
+  * prov-model: vanilla beans, interfaces, and core factory functionality
+  * prov-jsonld with support for serialisations to prov-jsonld, prov-json
+  * prov-jsonld-xml with support for serialisations to prov-xml (using jackson, and some custom code)
+  * prov-n with support for serialisations to prov-n
+  * prov-model-scala consisting of an alternate implementation of the prov data model in scala, and serialization of prov-jsonld
+* prov-template
+  * using the json representation of bindings as the sole representation for user
+  * dropping the prov representation of bindings
+  * refactored testing
+* tutorials upgraded to support the above
+  * tutorial4: uses json representation for bindings
+
+==1.0.0==
+* Bumped up versions for many dependencies
+* Final distribution of ProvToolbox with all its modules
+* No intention to keep on maintaining all these modules as some are outdated and not properly tested.
+* Future development will be on 2.0.0 ....
+
+==0.9.25 to 0.9.31==
+* prov-template-compiler: mostly bug fixes and minor improvement
+* fix a few issues in tracker
+
 ==0.9.25==
 * prov-template-compiler: allow for instance data to be gathered with provenance types (idata field in structured representation)
 

@@ -8,58 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/exception/DocumentedUnsupportedCaseException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingsBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/b21.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/b21_v3_1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings20.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings21.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings22.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings23.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings25a.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings25b.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/bindings1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/bindings2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/bindings3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/bindings4.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Namespace.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Namespace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/ExpandTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Bindings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Bindings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/ExpandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/ExpandTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/GroupingsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/GroupingsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/a_template.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/a_template.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template10.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template10.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template2.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template2.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template20.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template20.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template21.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template21.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template22.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template22.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template23.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template23.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template24.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template24.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template25.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template25.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/template3.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates/template3.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/binding1.ttl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/binding2.ttl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/binding3.ttl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial4/src/main/resources/binding4.ttl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,6 +111,7 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.44367817",

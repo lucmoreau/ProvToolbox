@@ -1,0 +1,39 @@
+{
+  "var" : {
+    "a" : [ {
+      "@id" : "ex:av1"
+    }, {
+      "@id" : "ex:av2"
+    }, {
+      "@id" : "ex:av3"
+    } ],
+    "b" : [ {
+      "@id" : "ex:bv1"
+    }, {
+      "@id" : "ex:bv2"
+    }, {
+      "@id" : "ex:bv3"
+    } ],
+    "d" : [ {
+      "@value" : "me1@example"
+    }, {
+      "@value" : "me2@example"
+    }, {
+      "@value" : "me3@example"
+    } ],
+    "e" : [ {
+      "@value" : "Luc1@example"
+    }, {
+      "@value" : "Luc2@example"
+    }, [ {
+      "@value" : "Luc6@example"
+    }, {
+      "@value" : "Luc7@example"
+    } ] ]
+  },
+  "vargen" : { },
+  "context" : {
+    "ex" : "http://example.org/"
+  },
+  "template" : null
+}

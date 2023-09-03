@@ -1,0 +1,38 @@
+{
+    "var": {
+        "author": [
+            {
+                "@id": "orcid:0000-0002-3494-120X"
+            },
+            {
+                "@id": "orcid:0000-0003-0183-6910"
+            }
+        ],
+        "name": [
+            {
+                "@value": "Luc Moreau"
+            },
+            {
+                "@value": "Paul Groth"
+            }
+        ],
+        "quote": [
+            {
+                "@id": "ex:quote1"
+            }
+        ],
+        "value": [
+            {
+                "@value": "A Little Provenance Goes a Long Way"
+            }
+        ]
+    },
+    "vargen": {},
+    "context": {
+        "ex": "http://example.org/",
+        "tmpl": "http://example.org/tmpl#",
+        "prov": "http://www.w3.org/ns/prov#",
+        "orcid": "http://orcid.org/"
+    },
+    "template": null
+}

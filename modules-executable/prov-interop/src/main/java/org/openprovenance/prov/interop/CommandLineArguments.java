@@ -498,7 +498,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.template=null;
         this.packge=null;
         this.location=null;
-        this.bindingsVersion=1;
+        this.bindingsVersion=3;
         this.addOrderp=false;
         this.allExpanded=false;
         this.builder=false;

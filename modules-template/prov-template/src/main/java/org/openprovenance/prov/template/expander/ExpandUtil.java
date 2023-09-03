@@ -26,7 +26,6 @@ public class ExpandUtil {
     public static final String TMPL_NS = "http://openprovenance.org/tmpl#";
     public static final String TMPL_PREFIX = "tmpl";
     public static final String VAR_PREFIX = "var";
-    public static final String VARGEN_PREFIX = "vargen";
 
     public static final String LINKED = "linked";
     public static final String LINKED_URI = TMPL_NS + LINKED;
@@ -45,9 +44,6 @@ public class ExpandUtil {
     public static final String ACTIVITY_TYPE_URI = TMPL_NS + ACTIVITY_TYPE;
     public static final String ACTIVITY = "activity";
     public static final String TMPL_ACTIVITY_URI = TMPL_NS + ACTIVITY;
-
-
-    //private final ProvFactory pf;
 
     static ProvUtilities u = new ProvUtilities();
 
@@ -177,21 +173,13 @@ public class ExpandUtil {
     }
 
     static public boolean isVariable(QualifiedName id) {
-        if (id == null)
-            return false;
+        if (id == null) return false;
         final String namespaceURI = id.getNamespaceURI();
         return (VAR_NS.equals(namespaceURI) || VARGEN_NS.equals(namespaceURI));
     }
-    static public boolean isVGensymariable(QualifiedName id) {
-        if (id == null)
-            return false;
-        final String namespaceURI = id.getNamespaceURI();
-        return VARGEN_NS.equals(namespaceURI);
-    }
-    
+
     static public boolean isGensymVariable(QualifiedName id) {
-        if (id == null)
-            return false;
+        if (id == null) return false;
         final String namespaceURI = id.getNamespaceURI();
         return VARGEN_NS.equals(namespaceURI);
     }

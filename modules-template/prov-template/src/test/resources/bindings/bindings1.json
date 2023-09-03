@@ -1,0 +1,21 @@
+{
+  "var" : {
+    "a" : [ {
+      "@id" : "ex:av1"
+    }, {
+      "@id" : "ex:av2"
+    }, {
+      "@id" : "ex:av3"
+    } ],
+    "b" : [ {
+      "@id" : "ex:bv1"
+    }, {
+      "@id" : "ex:bv2"
+    } ]
+  },
+  "vargen" : { },
+  "context" : {
+    "ex" : "http://example.org/"
+  },
+  "template" : null
+}

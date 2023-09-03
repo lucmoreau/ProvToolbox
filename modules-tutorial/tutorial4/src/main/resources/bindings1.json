@@ -1,0 +1,32 @@
+{
+    "var": {
+        "author": [
+            {
+                "@id": "orcid:0000-0002-3494-120X"
+            }
+        ],
+        "name": [
+            {
+                "@value": "Luc Moreau"
+            }
+        ],
+        "quote": [
+            {
+                "@id": "ex:quote1"
+            }
+        ],
+        "value": [
+            {
+                "@value": "A Little Provenance Goes a Long Way"
+            }
+        ]
+    },
+    "vargen": {},
+    "context": {
+        "ex": "http://example.org/",
+        "tmpl": "http://example.org/tmpl#",
+        "prov": "http://www.w3.org/ns/prov#",
+        "orcid": "http://orcid.org/"
+    },
+    "template": null
+}

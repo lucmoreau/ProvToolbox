@@ -3,11 +3,7 @@ package org.openprovenance.prov.template.expander;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.openprovenance.prov.model.ActedOnBehalfOf;
 import org.openprovenance.prov.model.Activity;
@@ -52,13 +48,13 @@ public class ExpandAction implements StatementAction {
     public static final String URN_UUID_NS = "urn:uuid:";
     final private ProvFactory pf;
     final private Expand expand;
-    final private Hashtable<QualifiedName, QualifiedName> env;
+    final private Map<QualifiedName, QualifiedName> env;
     final private ProvUtilities u;
     final private List<StatementOrBundle> ll = new LinkedList<StatementOrBundle>();
     final private List<Integer> index;
     final private Bindings bindings;
     final private Groupings grp1;
-    final private Hashtable<QualifiedName, List<TypedValue>> env2;
+    final private Map<QualifiedName, List<TypedValue>> env2;
     final private boolean addOrderp;
     final private String qualifiedNameURI;
     final private boolean allUpdatedRequired;
@@ -72,8 +68,8 @@ public class ExpandAction implements StatementAction {
     public ExpandAction(ProvFactory pf,
                         ProvUtilities u,
                         Expand expand,
-                        Hashtable<QualifiedName, QualifiedName> env,
-                        Hashtable<QualifiedName, List<TypedValue>> env2,
+                        Map<QualifiedName, QualifiedName> env,
+                        Map<QualifiedName, List<TypedValue>> env2,
                         List<Integer> index,
                         Bindings bindings1,
                         Groupings grp1,
@@ -730,7 +726,7 @@ public class ExpandAction implements StatementAction {
 
     public void updateEnvironmentForBundleId(Bundle bun,
                                              Bindings bindings1,
-                                             Hashtable<QualifiedName, QualifiedName> env0) {
+                                             Map<QualifiedName, QualifiedName> env0) {
         final QualifiedName id = bun.getId();
         if (ExpandUtil.isVariable(id)) {
             List<QualifiedName> vals = bindings1.getVariables().get(id);

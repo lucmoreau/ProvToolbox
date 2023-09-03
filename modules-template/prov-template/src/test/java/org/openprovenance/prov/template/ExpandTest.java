@@ -1,55 +1,35 @@
 package org.openprovenance.prov.template;
 
-import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
-import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
-
+import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.expander.Bindings;
-import org.openprovenance.prov.template.expander.Expand;
-import org.openprovenance.prov.template.expander.Groupings;
+import org.openprovenance.prov.template.expander.*;
 
 import junit.framework.TestCase;
+import org.openprovenance.prov.vanilla.ProvFactory;
 
 public class ExpandTest extends TestCase {
+    ProvFactory pf= new org.openprovenance.prov.vanilla.ProvFactory();
 
-    static final String EX_NS = "http://example.org/";
+    final BindingsBuilder bindingsBuilder = new BindingsBuilder(pf);
+    boolean addOrderp=true;
 
-    public ExpandTest(String testName) {
-        super(testName);
-    }
+    ObjectMapper mapper=new ObjectMapper();
 
-    ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
-    QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");
-    QualifiedName var_b=pf.newQualifiedName(VAR_NS, "b", "var");
-    QualifiedName var_c=pf.newQualifiedName(VAR_NS, "c", "var");
-    QualifiedName var_d=pf.newQualifiedName(VAR_NS, "d", "var");
-    QualifiedName var_e=pf.newQualifiedName(VAR_NS, "e", "var");
-    QualifiedName var_ag=pf.newQualifiedName(VAR_NS, "ag", "var");
-    QualifiedName var_pl=pf.newQualifiedName(VAR_NS, "pl", "var");
-    QualifiedName var_label=pf.newQualifiedName(VAR_NS, "label", "var");
-    QualifiedName var_start=pf.newQualifiedName(VAR_NS, "start", "var");
-    QualifiedName var_end=pf.newQualifiedName(VAR_NS, "end", "var");
-
-    public  void expander(String in, String inBindings, String out) throws IOException, Throwable {
-        System.err.println("expander ==========================================> " + in);
+    public  void expandAndCheck(String in, String inBindings, String out)  {
 
         Document doc= new Utility().readDocument(in, pf);
-        Document docBindings= new Utility().readDocument(inBindings,pf);
-        
-        Bindings bindings1=Bindings.fromDocument(docBindings,pf);
+        Document docBindings= new Utility().readDocument(inBindings, pf);
+
+        Bindings bindings1=Bindings.fromDocument_v1(docBindings, pf);
 
 
-       
+
 
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
 
@@ -58,7 +38,7 @@ public class ExpandTest extends TestCase {
         System.err.println("Found groupings " + grp1);
 
         Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, bindings1, grp1).get(0);
-        Document doc1=pf.newDocument();
+        Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
 
@@ -74,24 +54,24 @@ public class ExpandTest extends TestCase {
         System.err.println("expander ==========================================> ");
     }
 
-    boolean addOrderp=true;
 
-    public void expander (String in,
-                          String out,
-                          Bindings bindings1,
-                          String outBindings) throws IOException, Throwable {
-        System.err.println("expander ==========================================> " + in);
+    public void expandAndCheck(String inFilename,
+                               String outFileName,
+                               Bindings bindings1,
+                               String outBindings,
+                               String inFileBindings) throws IOException {
+        System.err.println("expander ==========================================> " + inFilename);
 
-        Document doc= new Utility().readDocument(in, pf);
-
+        Document doc= new Utility().readDocument(inFilename, pf);
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
 
         Groupings grp1=Groupings.fromDocument(doc);
-
         System.err.println("Found groupings " + grp1);
 
+
+
         Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, bindings1, grp1).get(0);
-        Document doc1=pf.newDocument();
+        Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
 
@@ -104,473 +84,171 @@ public class ExpandTest extends TestCase {
 
 
         Namespace.withThreadNamespace(doc1.getNamespace());
-        new Utility().writeDocument(doc1, out, pf);	
-        Document doc2=bindings1.toDocument();
-        Namespace.withThreadNamespace(doc2.getNamespace());
-        new Utility().writeDocument(doc2,outBindings,pf);
+        new Utility().writeDocument(doc1, outFileName, pf);
 
-        System.err.println("expander ==========================================> ");
+        BindingsBean bindingsBean1=BindingsJson.toBean(bindings1);
+        BindingsJson.exportBean(outBindings+".json",bindingsBean1,true);
 
-    }
+        if (inFileBindings!=null) {
+            BindingsBean bindingsBean2=mapper.readValue(new File(inFileBindings),BindingsBean.class);
+            bindingsBean2.vargen=bindingsBean1.vargen;
 
-
-
-    public void testExpand1() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av3", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-
-        expander("src/test/resources/template1.provn",
-                 "target/expanded1.provn",
-                 bindings1,
-                "target/bindings1.provn");
-
-
-    }
-
-    public void testExpand2() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-
-        expander("src/test/resources/template2.provn",
-                 "target/expanded2.provn",
-                 bindings1,
-                "target/bindings2.provn");
-
-
-    }
-
-    public void testExpand3() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av3", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-        bindings1.addVariable(var_c,
-                              pf.newQualifiedName(EX_NS, "cv1", "ex"));
-        bindings1.addVariable(var_c,
-                              pf.newQualifiedName(EX_NS, "cv2", "ex"));
-
-
-        expander("src/test/resources/template3.provn",
-                 "target/expanded3.provn",
-                 bindings1,
-                "target/bindings3.provn");
-
-
-    }
-
-
-
-
-    public void testExpand20() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av3", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-        bindings1.addVariable(var_c,
-                              pf.newQualifiedName(EX_NS, "cv1", "ex"));
-        bindings1.addVariable(var_c,
-                              pf.newQualifiedName(EX_NS, "cv2", "ex"));
-
-        List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc3@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc4@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc5@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-
-
-        expander("src/test/resources/template20.provn",
-                 "target/expanded20.provn",
-                 bindings1,
-                "target/bindings20.provn");
-
-
-    }
-
-
-
-
-    public void testExpand21() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av3", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv3", "ex"));
-
-
-        List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-
-
-        expander("src/test/resources/template21.provn",
-                 "target/expanded21.provn",
-                 bindings1,
-                "target/bindings21.provn");
-
-
-    }
-
-
-
-
-
-    public void testExpand22() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av3", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv3", "ex"));
-
-
-        List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-
-
-        expander("src/test/resources/template22.provn",
-                 "target/expanded22.provn",
-                 bindings1,
-                "target/bindings22.provn");
-
-
-    }
-
-
-
-
-
-    public void testExpand23() throws IOException, Throwable {
-
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av3", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv2", "ex"));
-
-        bindings1.addVariable(var_b,
-                              pf.newQualifiedName(EX_NS, "bv3", "ex"));
-
-
-        List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
-
-
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
-
-
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label1", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_label, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label2", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_label, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label3", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "label3b", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_label, ll);
-
-
-
-
-        expander("src/test/resources/template23.provn",
-                 "target/expanded23.provn",
-                 bindings1,
-                "target/bindings23.provn");
-
-
-    }
-
-
-    public void testExpand25() throws IOException, Throwable {
-        Bindings bindings1=new Bindings(pf);
-
-        bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "apple", "ex"));
-        bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "orange", "ex"));
-        bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "pear", "ex"));
-
-        List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "apples", pf.getName().XSD_STRING));
-
-        bindings1.addAttribute(var_b, ll);
-
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "oranges", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_b, ll);
-
-        boolean threw = false;
-        try {
-            expander("src/test/resources/template25.provn",
-                     "target/expanded25.provn",
-                     bindings1,
-                    "target/bindings25.provn");
-        } catch (org.openprovenance.prov.template.expander.MissingAttributeValue e) {
-            threw = true;
+            assertEquals("hand bindings and loaded bindings differ ("+inFileBindings+"): ", bindingsBean1, bindingsBean2);
         }
-        if (!threw) { fail("Exception not raised."); }
 
-        ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "pears", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_b, ll);
-
-        expander("src/test/resources/template25.provn",
-                 "target/expanded25.provn",
-                 bindings1,
-                "target/bindings25.provn");
-
-        threw = false;
-        try {
-            expander("src/test/resources/template25.provn",
-                     "src/test/resources/bindings25.provn",
-                    "target/expanded25.provn");
-        } catch (org.openprovenance.prov.template.expander.MissingAttributeValue e) {
-            threw = true;
-        }
-        if (!threw) { fail("Exception not raised."); }
     }
 
 
-    public void testExpand10() throws IOException, Throwable {
 
-        Bindings bindings1=new Bindings(pf);
+    public void testExpand1() throws IOException {
 
-        bindings1.addVariable(var_a,
-                              pf.newQualifiedName(EX_NS, "av1", "ex"));
+        Bindings bindings1 = bindingsBuilder.makeBindings1();
 
 
-        bindings1.addVariable(var_e,
-                              pf.newQualifiedName(EX_NS, "ev1", "ex"));
-
-        bindings1.addVariable(var_ag,
-                              pf.newQualifiedName(EX_NS, "agv1", "ex"));
-        bindings1.addVariable(var_pl,
-                              pf.newQualifiedName(EX_NS, "pl1", "ex"));
+        expandAndCheck("src/test/resources/templates/template1.provn",
+                "target/expanded1.provn",
+                bindings1,
+                "target/bindings1.provn",
+                "src/test/resources/bindings/bindings1.json");
 
 
-        List<TypedValue> ll=new LinkedList<TypedValue>();
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
+    }
+
+    public void testExpand2() throws IOException {
+
+        Bindings bindings2 = bindingsBuilder.makeBindings2();
+
+
+        expandAndCheck("src/test/resources/templates/template2.provn",
+                "target/expanded2.provn",
+                bindings2,
+                "target/bindings2.provn",
+                "src/test/resources/bindings/bindings2.json");
+
+
+    }
+
+    public void testExpand3() throws IOException {
+
+        Bindings bindings3 = bindingsBuilder.makeBindings3();
+
+
+        expandAndCheck("src/test/resources/templates/template3.provn",
+                "target/expanded3.provn",
+                bindings3,
+                "target/bindings3.provn",
+                "src/test/resources/bindings/bindings3.json");
+
+
+    }
 
 
 
+    public void testExpand20() throws IOException {
 
-        List<TypedValue> ll2=new LinkedList<TypedValue>();
-        ll2.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
-        bindings1.addAttribute(var_start, ll2);
-
-        List<TypedValue> ll3=new LinkedList<TypedValue>();
-        ll3.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
-        bindings1.addAttribute(var_end, ll3);
+        Bindings bindings20 = bindingsBuilder.makeBindings20();
 
 
+        expandAndCheck("src/test/resources/templates/template20.provn",
+                "target/expanded20.provn",
+                bindings20,
+                "target/bindings20.provn",
+                "src/test/resources/bindings/bindings20.json");
+
+
+    }
 
 
 
-        expander("src/test/resources/template10.provn",
-                 "src/test/resources/bindings10.provn",
+    public void testExpand21() throws IOException {
+
+        Bindings bindings21 = bindingsBuilder.makeBindings21();
+
+
+        expandAndCheck("src/test/resources/templates/template21.provn",
+                "target/expanded21.provn",
+                bindings21,
+                "target/bindings21.provn",
+                "src/test/resources/bindings/bindings21.json");
+
+
+    }
+
+
+
+    public void testExpand22() throws IOException {
+
+        Bindings bindings22 = bindingsBuilder.makeBindings22();
+
+
+        expandAndCheck("src/test/resources/templates/template22.provn",
+                "target/expanded22.provn",
+                bindings22,
+                "target/bindings22.provn",
+                "src/test/resources/bindings/bindings22.json");
+
+
+    }
+
+
+
+    public void testExpand23() throws IOException {
+
+        Bindings bindings23 = bindingsBuilder.makebindinsg23();
+
+
+        expandAndCheck("src/test/resources/templates/template23.provn",
+                "target/expanded23.provn",
+                bindings23,
+                "target/bindings23.provn",
+                "src/test/resources/bindings/bindings23.json");
+
+
+    }
+
+
+
+    public void testExpand25() throws IOException {
+        Bindings bindings25a = bindingsBuilder.makeBindings25a();
+
+            expandAndCheck("src/test/resources/templates/template25.provn",
+                    "target/expanded25a.provn",
+                    bindings25a,
+                    "target/bindings25a.provn",
+                    "src/test/resources/bindings/bindings25a.json");
+
+
+        Bindings bindings25b = bindingsBuilder.makeBindings25b();
+
+        expandAndCheck("src/test/resources/templates/template25.provn",
+                "target/expanded25b.provn",
+                bindings25b,
+                "target/bindings25b.provn",
+                "src/test/resources/bindings/bindings25b.json");
+
+
+    }
+
+
+    public void testExpand10() throws IOException {
+
+        Bindings bindings10=bindingsBuilder.makeBindings10();
+
+
+        expandAndCheck("src/test/resources/templates/template10.provn",
+                "src/test/resources/bindings10.provn",
                 "target/expanded10.provn");
 
 
     }
 
 
-    public void testExpandQualifiedName() throws IOException, Throwable {
+
+    public void testExpandQualifiedName() throws IOException {
 
 
-        expander("src/test/resources/a_template.provn",
-                 "src/test/resources/a_binding.provn",
+        expandAndCheck("src/test/resources/templates/a_template.provn",
+                "src/test/resources/a_binding.provn",
                 "target/a_expanded_template.provn");
 
 
@@ -579,7 +257,7 @@ public class ExpandTest extends TestCase {
 
 
 
-    
-    
+
+
 
 }

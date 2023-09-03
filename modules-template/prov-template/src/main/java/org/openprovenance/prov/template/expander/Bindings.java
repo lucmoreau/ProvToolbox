@@ -1,19 +1,13 @@
 package org.openprovenance.prov.template.expander;
 
-import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.*;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_PREFIX;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
 import org.openprovenance.prov.model.Name;
@@ -23,7 +17,6 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.TypedValue;
 
 public class Bindings {
@@ -35,19 +28,19 @@ public class Bindings {
     public static final String APP_VALUE_v2 = TMPL_NS+VALUE_v2;
     public static final String APP_VALUE2 = TMPL_NS+VALUE2;
     
-    final private Hashtable<QualifiedName, List<QualifiedName>> variables;
-    final private Hashtable<QualifiedName, List<List<TypedValue>>> attributes;
+    final private Map<QualifiedName, List<QualifiedName>> variables;
+    final private Map<QualifiedName, List<List<TypedValue>>> attributes;
 
     final private ProvFactory pf;
     final private Name name;
     static ProvUtilities u= new ProvUtilities();
 
     public Bindings(ProvFactory pf) {
-        this(new Hashtable<>(), new Hashtable<>(), pf);
+        this(new HashMap<>(), new HashMap<>(), pf);
     }
 
-    public Bindings(Hashtable<QualifiedName, List<QualifiedName>> variables,
-                    Hashtable<QualifiedName, List<List<TypedValue>>> attributes,
+    public Bindings(HashMap<QualifiedName, List<QualifiedName>> variables,
+                    HashMap<QualifiedName, List<List<TypedValue>>> attributes,
                     ProvFactory pf) {
         this.variables=variables;
         this.attributes=attributes;
@@ -65,22 +58,19 @@ public class Bindings {
     }
 
 
-    public Hashtable<QualifiedName, List<QualifiedName>> getVariables() {
+    public Map<QualifiedName, List<QualifiedName>> getVariables() {
         return variables;
     }
 
 
 
-    public Hashtable<QualifiedName, List<List<TypedValue>>> getAttributes() {
+    public Map<QualifiedName, List<List<TypedValue>>> getAttributes() {
         return attributes;
     }
 
 
     public void addVariable(QualifiedName name, QualifiedName val) {
-        List<QualifiedName> v=variables.get(name);
-        if (v==null) {
-            variables.put(name, new LinkedList<QualifiedName>());
-        }
+        variables.computeIfAbsent(name, k -> new LinkedList<>());
         variables.get(name).add(val);
     }
     
@@ -90,10 +80,7 @@ public class Bindings {
 
 
     public void addAttribute(QualifiedName name, List<TypedValue> values) {
-        List<List<TypedValue>> v=attributes.get(name);
-        if (v==null) {
-            attributes.put(name, new LinkedList<List<TypedValue>>());
-        }
+        attributes.computeIfAbsent(name, k -> new LinkedList<>());
         attributes.get(name).add(values);
     }    
     public void addAttribute(String name, QualifiedName value) {
@@ -131,56 +118,27 @@ public class Bindings {
 
 
 
-    public Document toDocument () {
-        
-        List<Statement> ll=new LinkedList<Statement>();
-        
-        add1DValues(ll,variables);  
-        add2Dvalues(ll,attributes);
-        
-        Document dummy=pf.newDocument(null,ll,new LinkedList<Bundle>());
-        Document result=pf.newDocument(pf.newNamespace(Namespace.gatherNamespaces(dummy)),ll,new LinkedList<Bundle>());
-                
-        
-        return result;
+    @Deprecated
+    public Document toDocument_v1() {
+        List<Statement> ll= new LinkedList<>();
+        add1DValues_v1(ll,variables);
+        add2Dvalues_v1(ll,attributes);
+        Document dummy=pf.newDocument(null,ll, new LinkedList<>());
+        return pf.newDocument(pf.newNamespace(Namespace.gatherNamespaces(dummy)),ll, new LinkedList<>());
     }
     
     public Document toDocument_v2 () {
-        
-        List<Statement> ll=new LinkedList<Statement>();
-        
+        List<Statement> ll= new LinkedList<>();
         add1DValues_v2(ll,variables);  
         add2Dvalues_v2(ll,attributes);
-        
-        Document dummy=pf.newDocument(null,ll,new LinkedList<Bundle>());
-        Document result=pf.newDocument(pf.newNamespace(Namespace.gatherNamespaces(dummy)),ll,new LinkedList<Bundle>());
-                
-        
-        return result;
+        Document dummy=pf.newDocument(null,ll, new LinkedList<>());
+        return pf.newDocument(pf.newNamespace(Namespace.gatherNamespaces(dummy)),ll, new LinkedList<>());
     }
 
-
-    public void add2DvaluesOLD(List<StatementOrBundle> ll, Hashtable<QualifiedName, List<List<TypedValue>>> attributes) {
-        for (Entry<QualifiedName, List<List<TypedValue>>> entry: attributes.entrySet()) {
-            Entity e=pf.newEntity(entry.getKey());
-            int count1=0;
-            List<Other> attrs=new LinkedList<Other>();
-            for (List<TypedValue> vals: entry.getValue()) {
-                int count2=0;
-                for (TypedValue val: vals) {
-                    attrs.add(pf.newOther(TMPL_NS, VALUE2+count1+"_"+count2, TMPL_PREFIX, val.getValue(), val.getType()));
-                    count2++;
-                }
-                count1++;
-            }
-            e.getOther().addAll(attrs);
-            ll.add(e);       
-        }
-    }
-    public void add2Dvalues(List<Statement> ll, Hashtable<QualifiedName, List<List<TypedValue>>> attributes) {
+    public void add2Dvalues_v1(List<Statement> ll, Map<QualifiedName, List<List<TypedValue>>> attributes) {
         for (Entry<QualifiedName, List<List<TypedValue>>> entry: attributes.entrySet()) {
             int count1=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
+            List<Attribute> attrs= new LinkedList<>();
             for (List<TypedValue> vals: entry.getValue()) {
                 int count2=0;
                 for (TypedValue val: vals) {
@@ -190,16 +148,14 @@ public class Bindings {
                 count1++;
             }
             Entity e=pf.newEntity(entry.getKey(),attrs);
-
             ll.add(e);       
         }
     }
-
     
-    public void add2Dvalues_v2(List<Statement> ll, Hashtable<QualifiedName, List<List<TypedValue>>> attributes) {
+    public void add2Dvalues_v2(List<Statement> ll, Map<QualifiedName, List<List<TypedValue>>> attributes) {
         for (Entry<QualifiedName, List<List<TypedValue>>> entry: attributes.entrySet()) {
             int count1=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
+            List<Attribute> attrs= new LinkedList<>();
             for (List<TypedValue> vals: entry.getValue()) {
                 //int count2=0;
                 for (TypedValue val: vals) {
@@ -209,59 +165,39 @@ public class Bindings {
                 count1++;
             }
             Entity e=pf.newEntity(entry.getKey(),attrs);
-
             ll.add(e);       
         }
     }
 
 
-    public void add1DValuesOLD(List<StatementOrBundle> ll, Hashtable<QualifiedName, List<QualifiedName>> variables) {
-        for (Entry<QualifiedName, List<QualifiedName>> entry: variables.entrySet()) {
-            Entity e=pf.newEntity(entry.getKey());
-            int count=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
-            for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(TMPL_NS, VALUE+count, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
-                count++;
-            }
-            pf.setAttributes(e, attrs);
-            ll.add(e);       
-        }
+    public void add1DValues_v1(List<Statement> ll, Map<QualifiedName, List<QualifiedName>> variables) {
+        add1DValues(ll, variables, VALUE);
     }
-    public void add1DValues(List<Statement> ll, Hashtable<QualifiedName, List<QualifiedName>> variables) {
+    public void add1DValues_v2(List<Statement> ll, Map<QualifiedName, List<QualifiedName>> variables) {
+        add1DValues(ll, variables, VALUE_v2);
+    }
+
+    private void add1DValues(List<Statement> ll, Map<QualifiedName, List<QualifiedName>> variables, String valuev2) {
         for (Entry<QualifiedName, List<QualifiedName>> entry: variables.entrySet()) {
             int count=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
+            List<Attribute> attrs= new LinkedList<>();
             for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(TMPL_NS, VALUE+count, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
+                attrs.add(pf.newAttribute(TMPL_NS, valuev2 +count, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
                 count++;
             }
             Entity e=pf.newEntity(entry.getKey(),attrs);
-            ll.add(e);       
+            ll.add(e);
         }
     }
-    public void add1DValues_v2(List<Statement> ll, Hashtable<QualifiedName, List<QualifiedName>> variables) {
-        for (Entry<QualifiedName, List<QualifiedName>> entry: variables.entrySet()) {
-            int count=0;
-            List<Attribute> attrs=new LinkedList<Attribute>();
-            for (QualifiedName qn: entry.getValue()) {
-                attrs.add(pf.newAttribute(TMPL_NS, VALUE_v2+count, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
-                count++;
-            }
-            Entity e=pf.newEntity(entry.getKey(),attrs);
-            ll.add(e);       
-        }
-    }
-    
 
-    
-    public static Bindings fromDocument(Document doc,ProvFactory pf) {
+
+    public static Bindings fromDocument_v1(Document doc, ProvFactory pf) {
         Bindings result=new Bindings(pf);
         
         List<Entity> entities=u.getEntity(doc);
         for (Entity entity: entities) {
-            Hashtable<Integer,QualifiedName> map=new Hashtable<Integer, QualifiedName>();
-            Hashtable<Integer, Hashtable<Integer,TypedValue>> map2=new Hashtable<Integer, Hashtable<Integer,TypedValue>>();
+            Map<Integer,QualifiedName> map= new HashMap<>();
+            Map<Integer, Map<Integer,TypedValue>> map2= new HashMap<>();
             for (Other attr: entity.getOther()) {
                 String uri = attr.getElementName().getUri();
                 if (uri.startsWith(APP_VALUE)) {
@@ -275,14 +211,12 @@ public class Bindings {
                         String [] nums=index.split("_");
                         Integer i=Integer.valueOf(nums[0]);
                         Integer j=Integer.valueOf(nums[1]);
-                        
-                        Hashtable<Integer, TypedValue> row=map2.get(i);
-                        if (row==null) map2.put(i, new Hashtable<Integer, TypedValue>());
+                        map2.computeIfAbsent(i, k -> new HashMap<>());
                         map2.get(i).put(j,attr);
                     }
                 }
             }
-            ArrayList<QualifiedName> ll=new ArrayList<QualifiedName>(); 
+            List<QualifiedName> ll= new ArrayList<>();
             int size=map.entrySet().size();
             if (size>0) {
                 for (Entry<Integer, QualifiedName> entry: map.entrySet()) {
@@ -293,49 +227,38 @@ public class Bindings {
             
             int size2=map2.entrySet().size();
             if (size2>0) {
-                List<List<TypedValue>> allvalues= new LinkedList<List<TypedValue>>();
-
-                for (Entry<Integer, Hashtable<Integer, TypedValue>> entry1: map2.entrySet()) {
-                    List<TypedValue> values= new LinkedList<TypedValue>();
+                List<List<TypedValue>> allvalues= new LinkedList<>();
+                for (Entry<Integer, Map<Integer, TypedValue>> entry1: map2.entrySet()) {
+                    List<TypedValue> values= new LinkedList<>();
                     for (Entry<Integer, TypedValue> entry2: entry1.getValue().entrySet()) {
                         set(entry2.getKey(),values,entry2.getValue());
                     }
                     set(entry1.getKey(),allvalues,values);
                 }
                 result.getAttributes().put(entity.getId(),allvalues);
-
-            } 
-            
-            
+            }
         }
-        
         return result;
     }
     
 
     public static Bindings fromDocument_v2(Document doc,ProvFactory pf) {
         Bindings result=new Bindings(pf);
-        
         List<Entity> entities=u.getEntity(doc);
         for (Entity entity: entities) {
-            Hashtable<Integer,QualifiedName> map=new Hashtable<Integer, QualifiedName>();
-            //Hashtable<Integer, Hashtable<Integer,TypedValue>> map2=new Hashtable<Integer, Hashtable<Integer,TypedValue>>();
-            Hashtable<Integer, Set<TypedValue>> map_v2=new Hashtable<Integer, Set<TypedValue>>();
+            Map<Integer,QualifiedName> map= new HashMap<>();
+            Map<Integer, Set<TypedValue>> map_v2= new HashMap<>();
             for (Other attr: entity.getOther()) {
                 String uri = attr.getElementName().getUri();
                 if (uri.startsWith(APP_VALUE_v2)) {
                     String index=uri.substring(APP_VALUE_v2.length());
                     Integer i=Integer.valueOf(index);
-                    
-                    Set<TypedValue> row=map_v2.get(i);
-                    if (row==null) map_v2.put(i, new HashSet<TypedValue>());
+                    map_v2.computeIfAbsent(i, k -> new HashSet<>());
                     map_v2.get(i).add(attr);
                 } else {
                     if (uri.startsWith(APP_VALUE)) {
                         Integer i=Integer.valueOf(uri.substring(APP_VALUE.length()));
-                        
-                        Set<TypedValue> row=map_v2.get(i);
-                        if (row==null) map_v2.put(i, new HashSet<TypedValue>());
+                        map_v2.computeIfAbsent(i, k -> new HashSet<>());
                         map_v2.get(i).add(attr);                    
                     }
                 }            
@@ -359,7 +282,7 @@ public class Bindings {
                 }
             }
             
-            ArrayList<QualifiedName> ll=new ArrayList<QualifiedName>(); 
+            List<QualifiedName> ll= new ArrayList<>();
             int size=map.entrySet().size();
             if (size>0) {
                 for (Entry<Integer, QualifiedName> entry: map.entrySet()) {
@@ -370,10 +293,10 @@ public class Bindings {
             
             int size2=map_v2.entrySet().size();
             if (size2>0) {
-                List<List<TypedValue>> allvalues= new LinkedList<List<TypedValue>>();
+                List<List<TypedValue>> allvalues= new LinkedList<>();
 
                 for (Entry<Integer, Set<TypedValue>> entry1: map_v2.entrySet()) {
-                    List<TypedValue> values= new LinkedList<TypedValue>();
+                    List<TypedValue> values= new LinkedList<>();
                     //convert to 2dvalue
                     int count=0;
                     for (TypedValue tv: entry1.getValue()) {
@@ -391,10 +314,7 @@ public class Bindings {
                     set(entry1.getKey(),allvalues,values);
                 }
                 result.getAttributes().put(entity.getId(),allvalues);
-
-            } 
-            
-            
+            }
         }
         
         return result;
@@ -402,11 +322,11 @@ public class Bindings {
 
     
     public void addVariableBindingsAsAttributeBindings() {
-    	Hashtable<QualifiedName, List<QualifiedName>> vb=getVariables();
+    	Map<QualifiedName, List<QualifiedName>> vb=getVariables();
     	for(Entry<QualifiedName,List<QualifiedName>> entry: vb.entrySet()) {
     		int count=0;
     		for (QualifiedName qn: entry.getValue()) {
-    			List<TypedValue> ll=new LinkedList<TypedValue>();
+    			List<TypedValue> ll= new LinkedList<>();
     			ll.add(pf.newAttribute(TMPL_NS, VALUE2+count+"_"+0, TMPL_PREFIX, qn, pf.getName().PROV_QUALIFIED_NAME));
     			count++;
     			addAttribute(entry.getKey(),ll);

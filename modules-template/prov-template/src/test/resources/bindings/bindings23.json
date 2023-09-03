@@ -1,0 +1,59 @@
+{
+  "var" : {
+    "a" : [ {
+      "@id" : "ex:av1"
+    }, {
+      "@id" : "ex:av2"
+    }, {
+      "@id" : "ex:av3"
+    } ],
+    "b" : [ {
+      "@id" : "ex:bv1"
+    }, {
+      "@id" : "ex:bv2"
+    }, {
+      "@id" : "ex:bv3"
+    } ],
+    "d" : [ {
+      "@value" : "me1@example"
+    }, {
+      "@value" : "me2@example"
+    }, {
+      "@value" : "me3@example"
+    } ],
+    "e" : [ {
+      "@value" : "Luc1@example"
+    }, {
+      "@value" : "Luc2@example"
+    }, [ {
+      "@value" : "Luc6@example"
+    }, {
+      "@value" : "Luc7@example"
+    } ] ],
+    "label" : [ {
+      "@value" : "label1"
+    }, {
+      "@value" : "label2"
+    }, [ {
+      "@value" : "label3"
+    }, {
+      "@value" : "label3b"
+    } ] ]
+  },
+  "vargen" : {
+    "123" : [ {
+      "@id" : "uuid:faab3b80-8387-4ed9-9cda-ea36deebbf43"
+    } ],
+    "e" : [ {
+      "@id" : "uuid:8718825a-4a3c-41e5-982b-73e33d474473"
+    } ],
+    "f" : [ {
+      "@id" : "uuid:ba0f21cd-5a58-420a-b8a8-a4b955912029"
+    } ]
+  },
+  "context" : {
+    "ex" : "http://example.org/",
+    "uuid" : "urn:uuid:"
+  },
+  "template" : null
+}

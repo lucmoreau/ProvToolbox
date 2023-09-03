@@ -19,7 +19,6 @@ import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
 import org.openprovenance.prov.template.expander.Bindings;
-import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.model.ProvUtilities;
 
@@ -36,6 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.openprovenance.prov.template.expander.BindingsJson.getBindingsFromSchema;
+
 @Path("")
 public class TemplateService  implements Constants, InteropMediaType {
 
@@ -48,7 +49,7 @@ public class TemplateService  implements Constants, InteropMediaType {
     private final ServiceUtils utils;
     private final ResourceIndex<TemplateResource> resourceIndex;
 
-    final ProvFactory f;
+    final ProvFactory provFactory;
 
 
     public TemplateService (PostService postService) {
@@ -57,7 +58,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     public TemplateService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils=postService.getServiceUtils();
-        this.f=utils.getProvFactory();
+        this.provFactory =utils.getProvFactory();
         postService.addToPerformers(PostService.addToList(new ActionExpand(utils),performers));
         postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
         actionExpand=new ActionExpand(utils);
@@ -222,7 +223,7 @@ public class TemplateService  implements Constants, InteropMediaType {
     @Path("/documents/bindings/{name}")
     @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-            MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
+             MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
     public Response getDocumentsFromBindingsSchema(@Context HttpServletResponse response,
                                                    @Context Request request,
                                                    @PathParam("name") String name,
@@ -241,22 +242,21 @@ public class TemplateService  implements Constants, InteropMediaType {
         boolean allExpanded=false;
         boolean addOrderp=false;
 
-        Expand myExpand=new Expand(f, addOrderp,allExpanded);
-        Document expanded;
-        Document document;
+        Expand myExpand=new Expand(provFactory, addOrderp,allExpanded);
 
         InteropFramework interop = new InteropFramework();
 
-        document= (Document) interop.readDocument(the_template);
+        Document document= interop.readDocument(the_template);
 
-        Bindings bb= BindingsJson.fromBean(BindingsJson.importBean(bindings_schema),f);
+        Bindings bb= getBindingsFromSchema(bindings_schema, provFactory);
 
-        expanded = myExpand.expander(document,
-                bb);
+        Document expanded = myExpand.expander(document, bb);
 
         return utils.composeResponseOK(expanded).build();
 
     }
+
+
 
 
     @GET

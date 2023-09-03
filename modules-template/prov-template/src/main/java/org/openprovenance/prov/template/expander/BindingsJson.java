@@ -3,10 +3,7 @@ package org.openprovenance.prov.template.expander;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Hashtable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.openprovenance.prov.model.Namespace;
@@ -21,24 +18,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BindingsJson {
-	
-	// public static ProvFactory pf=new org.openprovenance.prov.scala.immutable.ProvFactory();
+    static final ObjectMapper mapper = new ObjectMapper();
 
 
-	public static Object convertValueToBean(Object o, QualifiedName type, Hashtable<String, String> context) {
+	public static Object convertValueToBean(Object o, QualifiedName type, Map<String, String> context) {
 		if (o instanceof Integer) return o;
 		if (o instanceof Float) return o;
 		if (o instanceof Boolean) return o;
 		if (o instanceof QualifiedName) {
 			QualifiedName qn=(QualifiedName)o;
-			Hashtable<String,String> table=new Hashtable<String,String>();
+			Map<String,String> table= new HashMap<>();
 			table.put("@id",qn.getPrefix() + ":" + qn.getLocalPart());
 			context.put(qn.getPrefix(),qn.getNamespaceURI());
 			return table;
 		}		
 		if (o instanceof LangString) {
 			LangString qn=(LangString)o;
-			Hashtable<String,String> table=new Hashtable<String,String>();
+            Map<String,String> table= new HashMap<>();
 			if (qn.getLang()!=null)	table.put("@language",qn.getLang());
 			table.put("@value",qn.getValue());
 			return table;
@@ -47,7 +43,7 @@ public class BindingsJson {
 			if ((type==null) || (type.getUri().equals(NamespacePrefixMapper.XSD_NS+"string"))) {
 				return o;
 			} else {
-				Hashtable<String,String> table=new Hashtable<String,String>();
+                Map<String,String> table= new HashMap<>();
 				table.put("@type",type.toString());
 				table.put("@value",o.toString());
 				return table;
@@ -56,7 +52,7 @@ public class BindingsJson {
 		throw new UnsupportedOperationException("type is " + o);
 	}
 	
-	public static Object[] convertBeanToValue(Object v, Hashtable<String, String> context, Namespace ns, ProvFactory pf) {
+	public static Object[] convertBeanToValue(Object v, Map<String, String> context, Namespace ns, ProvFactory pf) {
 	   
         if (v instanceof Integer) return new Object[] {v , pf.getName().XSD_INT};
         if (v instanceof Float)   return new Object[] {v , pf.getName().XSD_FLOAT};
@@ -76,8 +72,8 @@ public class BindingsJson {
             }
             
         }
-        if (v instanceof HashMap) {
-            HashMap<String,String> table=(HashMap<String,String>)v;
+        if (v instanceof Map) {
+            Map<String,String> table=(Map<String,String>)v;
             String lang =table.get("@language");
             String value=table.get("@value"); 
             String type =table.get("@type");
@@ -111,18 +107,31 @@ public class BindingsJson {
 	
 	public static BindingsBean toBean(Bindings bindings) {
 		BindingsBean bean=new BindingsBean();
-		bean.var=new Hashtable<String,List<Object>>();
-		bean.vargen=new Hashtable<String,List<Object>>();
-		bean.context=new Hashtable<String,String>();
+		bean.var= new HashMap<>();
+		bean.vargen= new HashMap<>();
+		bean.context= new HashMap<>();
+
+
+        for (Entry<QualifiedName, List<QualifiedName>> entry:bindings.getVariables() .entrySet()) {
+            List<Object> l1= new LinkedList<>();
+            for (QualifiedName qn: entry.getValue()) {
+                l1.add(convertValueToBean(qn, null, bean.context));
+                if (entry.getKey().getNamespaceURI().startsWith(ExpandUtil.VARGEN_NS)) {
+                    bean.vargen.put(entry.getKey().getLocalPart(), l1);
+                } else {
+                    bean.var.put(entry.getKey().getLocalPart(), l1);
+                }
+            }
+        }
 		
 		for (Entry<QualifiedName,List<List<TypedValue>>> entry: bindings.getAttributes().entrySet()) {
-			List<Object> l1=new LinkedList<Object>();
+			List<Object> l1= new LinkedList<>();
 			
 			for	 (List<TypedValue> ll: entry.getValue()) {
 				if (ll.size()==1) {
 					l1.add(convertValueToBean(ll.get(0).getValue(), ll.get(0).getType(), bean.context));
 				} else {
-					List<Object> l2=new LinkedList<Object>();
+					List<Object> l2= new LinkedList<>();
 					for (TypedValue tv:ll) {
 						l2.add(convertValueToBean(tv.getValue(), tv.getType(), bean.context));
 					}
@@ -146,7 +155,7 @@ public class BindingsJson {
         for (Entry<String,List<Object>> bindings: bean.var.entrySet()) {
             String var=bindings.getKey();
             int i=0;
-            List<List<TypedValue>> allvalues= new LinkedList<List<TypedValue>>();
+            List<List<TypedValue>> allvalues= new LinkedList<>();
           
             boolean single_value=true;
 
@@ -154,7 +163,7 @@ public class BindingsJson {
 
                 List<Object> wrapped;
                 if (!(value instanceof List)) {
-                    wrapped=new LinkedList<Object>();
+                    wrapped= new LinkedList<>();
                     wrapped.add(value);
                 } else {
                     wrapped=(List<Object>) value;
@@ -164,7 +173,7 @@ public class BindingsJson {
                 int count=0;
                 
  
-                List<TypedValue> values= new LinkedList<TypedValue>();
+                List<TypedValue> values= new LinkedList<>();
 
                 for (Object o: wrapped) {
                     Object[] conversion=convertBeanToValue(o,bean.context, ns, pf);
@@ -187,12 +196,10 @@ public class BindingsJson {
 
             
             if (single_value) {
-                List<QualifiedName> ll=new LinkedList<QualifiedName>();
+                List<QualifiedName> ll= new LinkedList<>();
                 for (Object o: bindings.getValue()) {
                     Object[] conversion=convertBeanToValue(o,bean.context, ns, pf);
                     Object theValue=conversion[0];
-                    Object type=conversion[1];
-                    //System.out.println("Found " + theValue + " " + type);
                     ll.add((QualifiedName) theValue);
                 }
                 result.getVariables().put(myvar,ll);
@@ -211,7 +218,6 @@ public class BindingsJson {
 			                      BindingsBean bean,
 			                      boolean pretty) {
 
-		ObjectMapper mapper = new ObjectMapper();
 		try {
 			if (pretty) {
 				mapper.writerWithDefaultPrettyPrinter().writeValue(new File(output_file1), bean);
@@ -227,10 +233,8 @@ public class BindingsJson {
 
     public static BindingsBean importBean(File input_file1) {
 
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            BindingsBean bean=mapper.readValue(input_file1,BindingsBean.class);
-            return bean;
+            return mapper.readValue(input_file1,BindingsBean.class);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -240,30 +244,29 @@ public class BindingsJson {
     
     public static BindingsBean importBean(InputStream input_file1) {
 
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            BindingsBean bean=mapper.readValue(input_file1,BindingsBean.class);
-            return bean;
+            return mapper.readValue(input_file1,BindingsBean.class);
             
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
         }
     }
-    
-    public static BindingsBean importBean(JsonNode json) {
 
-        ObjectMapper mapper = new ObjectMapper();
+    private static BindingsBean importBean(JsonNode json) {
+
         try {
-            BindingsBean bean=mapper.treeToValue(json,BindingsBean.class);
-            return bean;
+            return mapper.treeToValue(json,BindingsBean.class);
             
         } catch (IOException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON conversion to bean failed", e);
         }
     }
-    
+
+    public static Bindings getBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {
+        return BindingsJson.fromBean(BindingsJson.importBean(bindings_schema), provFactory);
+    }
 
 
 

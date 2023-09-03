@@ -1,0 +1,28 @@
+{
+  "var" : {
+    "a" : [ {
+      "@id" : "ex:apple"
+    }, {
+      "@id" : "ex:orange"
+    }, {
+      "@id" : "ex:pear"
+    } ],
+    "b" : [ {
+      "@value" : "apple_val"
+    }, {
+      "@value" : "orange_val"
+    }, {
+      "@value" : "pear_val"
+    } ]
+  },
+  "vargen" : {
+    "a_bundle" : [ {
+      "@id" : "uuid:3f43654d-ba81-4a3e-a2aa-c7273ff00219"
+    } ]
+  },
+  "context" : {
+    "ex" : "http://example.org/",
+    "uuid" : "urn:uuid:"
+  },
+  "template" : null
+}

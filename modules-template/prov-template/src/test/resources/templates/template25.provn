@@ -2,7 +2,7 @@ document
   prefix var <http://openprovenance.org/var#>
   prefix vargen <http://openprovenance.org/vargen#>
   prefix tmpl <http://openprovenance.org/tmpl#>
-  prefix ex <http://www.example.com/>
+  prefix ex <http://example.org/>
 
   bundle vargen:a_bundle
     entity(var:a, [ex:foo='var:b'])

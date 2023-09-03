@@ -1,17 +1,9 @@
 package org.openprovenance.prov.template.expander;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
@@ -48,7 +40,7 @@ public class Expand {
         
     public Document expander(Document docIn, Document docBindings) {        
 
-        Bindings bindings1 = Bindings.fromDocument(docBindings, pf);
+        Bindings bindings1 = Bindings.fromDocument_v1(docBindings, pf);
         
 
         return expander(docIn,bindings1);
@@ -115,8 +107,8 @@ public class Expand {
     }
 
     public List<StatementOrBundle> expand(Bundle bun, Bindings bindings1, Groupings grp1) {
-        Hashtable<QualifiedName, QualifiedName> env0 = new Hashtable<QualifiedName, QualifiedName>();
-        Hashtable<QualifiedName, List<TypedValue>> env1 = new Hashtable<QualifiedName, List<TypedValue>>();
+        Map<QualifiedName, QualifiedName> env0 = new HashMap<>();
+        Map<QualifiedName, List<TypedValue>> env1 = new HashMap<>();
 
         ExpandAction action = new ExpandAction(pf,
                                                u,
@@ -137,7 +129,7 @@ public class Expand {
                                           Bindings bindings1,
                                           Groupings grp1,
                                           Using us1) {
-        List<StatementOrBundle> results = new LinkedList<StatementOrBundle>();
+        List<StatementOrBundle> results = new LinkedList<>();
         Iterator<List<Integer>> iter = us1.iterator();
         /*
          * System.out.println(" --------------------- " );
@@ -149,8 +141,8 @@ public class Expand {
             List<Integer> index = iter.next();
             // System.out.println(" Index " + index);
 
-            Hashtable<QualifiedName, QualifiedName> env = us1.get(bindings1, grp1, index);
-            Hashtable<QualifiedName, List<TypedValue>> env2;
+            Map<QualifiedName, QualifiedName> env = us1.get(bindings1, grp1, index);
+            Map<QualifiedName, List<TypedValue>> env2;
 
             env2 = us1.getAttr(ExpandUtil.freeAttributeVariables(statement, pf),
                                bindings1,

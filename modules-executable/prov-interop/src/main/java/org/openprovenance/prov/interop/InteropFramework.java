@@ -19,6 +19,8 @@ import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
+import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
+import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
@@ -994,19 +996,23 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (config.template!=null  && config.builder) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
 
-            if (config.bindings != null && config.bindingsVersion>=3) {
-                try {
+            if (config.bindings != null) {
+                if (config.bindingsVersion>=3) {
+                    try {
 
-                    TemplatesCompilerConfig configs=new TemplatesCompilerConfig();
-                    //FIXME: configs not initialized!!
-                    Locations locations=new Locations(configs,null);
+                        TemplatesCompilerConfig configs = new TemplatesCompilerConfig();
+                        //FIXME: configs not initialized!!
+                        Locations locations = new Locations(configs, null);
 
 
-                    cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
-                    return CommandLineArguments.STATUS_OK;
+                        cp.generate(doc, locations, config.template, config.packge, config.outfile, config.location, config.location, true, config.location, "schema.json", "documentation.html", cp.readTree(new File(config.bindings)), cp.getBindingsSchema(config.bindings), null, config.location + "/src/main/resources/project/version/", false, new LinkedList<>(), null, null);
+                        return CommandLineArguments.STATUS_OK;
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    throw new DocumentedUnsupportedCaseException("bindings version number < 3");
                 }
             }
 
@@ -1023,11 +1029,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 expanded = myExpand.expander(doc, bb);
 
             } else {
-                Document docBindings = (Document) doReadDocument(config.bindings,
-                                                                 config.bindingformat);
-                expanded = myExpand.expander(doc,
-                                             config.outfile,
-                                             docBindings);
+                throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
             }
             boolean flag=myExpand.getAllExpanded();
             doWriteDocument(config.outfile, config.outformat, expanded);

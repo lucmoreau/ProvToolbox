@@ -1,5 +1,6 @@
 package org.openprovenance.prov.model;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class Namespace  {
 
     public Namespace() {}
 
-    public Namespace(Hashtable<String,String> pref) {
+    public Namespace(Map<String,String> pref) {
         for (java.util.Map.Entry<String,String> entry: pref.entrySet()) {
             prefixes.put(entry.getKey(),entry.getValue());
             namespaces.put(entry.getValue(),entry.getKey());
@@ -92,9 +93,9 @@ public class Namespace  {
 
     public Namespace(Namespace other) {
         this.defaultNamespace=other.defaultNamespace;
-        this.prefixes=new Hashtable<String, String>();
+        this.prefixes= new HashMap<>();
         prefixes.putAll(other.prefixes);
-        this.namespaces=new Hashtable<String,String>();
+        this.namespaces= new HashMap<>();
         namespaces.putAll(other.namespaces);
     }
     public String getDefaultNamespace () {

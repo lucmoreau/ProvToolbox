@@ -1,0 +1,33 @@
+{
+  "var" : {
+    "a" : [ {
+      "@id" : "ex:av1"
+    }, {
+      "@id" : "ex:av2"
+    }, {
+      "@id" : "ex:av3"
+    } ],
+    "b" : [ {
+      "@id" : "ex:bv1"
+    }, {
+      "@id" : "ex:bv2"
+    } ],
+    "c" : [ {
+      "@id" : "ex:cv1"
+    }, {
+      "@id" : "ex:cv2"
+    } ],
+    "d" : [ {
+      "@value" : "Luc@example"
+    }, [ {
+      "@value" : "lm@soton"
+    }, {
+      "@value" : "jon@soton"
+    } ] ]
+  },
+  "vargen" : { },
+  "context" : {
+    "ex" : "http://example.org/"
+  },
+  "template" : null
+}

@@ -8,9 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvShorthandNames.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/DotProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/DotProperties.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,11 +152,11 @@
       <recent name="org.openprovenance.prov.core.serialization.Constants" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.dot.ProvToDot" />
+      <recent name="org.openprovenance.prov.dot.DotProperties" />
       <recent name="org.openprovenance.prov.template.compiler.CompilerConfigurations" />
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
       <recent name="org.openprovenance.prov.template.compiler.CompilerBeanCompleter2Composite" />
-      <recent name="org.openprovenance.prov.template.compiler.ConfigProcessor" />
-      <recent name="org.openprovenance.prov.template.compiler.CompilerSimpleBean" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.dot" />
@@ -667,7 +668,7 @@
       <workItem from="1693401616419" duration="16428000" />
       <workItem from="1693424638597" duration="2611000" />
       <workItem from="1693462851948" duration="14887000" />
-      <workItem from="1693821094936" duration="3058000" />
+      <workItem from="1693821094936" duration="4505000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

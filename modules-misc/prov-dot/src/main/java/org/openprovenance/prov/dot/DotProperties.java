@@ -23,4 +23,6 @@ public interface DotProperties  {
     String DOT_URL = "url";
     String DOT_PENWIDTH = "penwidth";
     String DOT_WIDTH = "width";
+    String DOT_DIRECTED_EDGE = " -> ";
+    String DOT_UNDIRECTED_EDGE = " -- ";
 }

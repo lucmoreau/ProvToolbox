@@ -3,13 +3,14 @@ import java.io.*;
 import java.util.*;
 
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 import static java.lang.Math.min;
 
 
 /** Serialisation of  Prov representation to DOT format. */
-public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties {
+public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties, ProvShorthandNames {
 
     public int MAX_TOOLTIP_LENGTH = 2000;
 
@@ -294,7 +295,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     public Map<String, String> addURL(QualifiedName id,
-                                          Map<String, String> properties) {
+                                      Map<String, String> properties) {
         if (id!=null) properties.put("URL", htmlify(id.getNamespaceURI()+id.getLocalPart()));
         return properties;
     }
@@ -610,7 +611,6 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
         Map<String,String> properties= new HashMap<>();
         emitSpace(null,out);
-        //emitComment((e instanceof Identifiable)?((Identifiable)e).getId():null,e.getKind(), out);
 
         List<QualifiedName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
@@ -724,19 +724,48 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
 
     String getShortLabelForRelation(Relation e) {
-        if (e instanceof Used)              return "use";
-        if (e instanceof WasGeneratedBy)    return "gen";
-        if (e instanceof WasDerivedFrom)    return "der";
-        if (e instanceof WasStartedBy)      return "start";
-        if (e instanceof WasEndedBy)        return "end";
-        if (e instanceof WasInvalidatedBy)  return "inv";
-        if (e instanceof WasInformedBy)     return "inf";
-        if (e instanceof WasAssociatedWith) return "assoc";
-        if (e instanceof WasAttributedTo)   return "att";
-        if (e instanceof WasInfluencedBy)   return "inf";
-        if (e instanceof ActedOnBehalfOf)   return "del";
-        if (e instanceof SpecializationOf)  return "spe";
-        if (e instanceof AlternateOf)       return "alt";
+        switch (e.getKind()) {
+            case PROV_ENTITY:
+            case PROV_ACTIVITY:
+            case PROV_AGENT:
+                throw new IllegalStateException("should not happen: a relation is not an element");
+            case PROV_USAGE:
+                return PROV_SHORTHAND_USAGE;
+            case PROV_GENERATION:
+                return PROV_SHORTHAND_GENERATION;
+            case PROV_INVALIDATION:
+                return PROV_SHORTHAND_INVALIDATION;
+            case PROV_START:
+                return PROV_SHORTHAND_START;
+            case PROV_END:
+                return PROV_SHORTHAND_END;
+            case PROV_COMMUNICATION:
+                return PROV_SHORTHAND_COMMUNICATION;
+            case PROV_DERIVATION:
+                return PROV_SHORTHAND_DERIVATION;
+            case PROV_ASSOCIATION:
+                return PROV_SHORTHAND_ASSOCIATION;
+            case PROV_ATTRIBUTION:
+                return PROV_SHORTHAND_ATTRIBUTION;
+            case PROV_DELEGATION:
+                return PROV_SHORTHAND_DELEGATION;
+            case PROV_INFLUENCE:
+                return PROV_SHORTHAND_INFLUENCE;
+            case PROV_ALTERNATE:
+                return PROV_SHORTHAND_ALTERNATE;
+            case PROV_SPECIALIZATION:
+                return PROV_SHORTHAND_SPECIALIZATION;
+            case PROV_MENTION:
+                return PROV_SHORTHAND_MENTION;
+            case PROV_MEMBERSHIP:
+                return PROV_SHORTHAND_MEMBERSHIP;
+            case PROV_BUNDLE:
+                return null;
+            case PROV_DICTIONARY_INSERTION:
+            case PROV_DICTIONARY_REMOVAL:
+            case PROV_DICTIONARY_MEMBERSHIP:
+                throw new DocumentedUnsupportedCaseException("dictionaries not supported");
+        }
         return null;
     }
 
@@ -782,7 +811,6 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         StringBuffer sb=new StringBuffer();
         sb.append(dotify(qualifiedNameToString(name)));
         if (kind!=null) emitComment(name,kind, sb);
-
         emitProperties(sb,properties);
         out.println(sb);
     }
@@ -800,9 +828,9 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         StringBuffer sb=new StringBuffer();
         sb.append(dotify(src));
         if (directional) {
-            sb.append(" -> ");
+            sb.append(DOT_DIRECTED_EDGE);
         } else {
-            sb.append(" -- ");
+            sb.append(DOT_UNDIRECTED_EDGE);
         }
         sb.append(dotify(dest));
         emitComment(null,kind, sb);
@@ -857,12 +885,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     public void setLayout(String layout) {
         this.layout=layout;
-
     }
-
-
-
-
 
 
 }

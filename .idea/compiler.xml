@@ -55,9 +55,6 @@
       <module name="prov-xml" target="9" />
       <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />
-      <module name="templates" target="1.5" />
-      <module name="templates_cli" target="1.8" />
-      <module name="templates_l2p" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

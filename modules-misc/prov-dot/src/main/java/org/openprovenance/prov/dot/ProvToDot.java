@@ -93,6 +93,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
             InputStream is=proc.getInputStream();
             org.apache.commons.io.IOUtils.copy(is, os);
+            @SuppressWarnings("unused")
             boolean resultCode=dotFile.delete();
 
         } catch (IOException e) {
@@ -127,9 +128,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     public void convert(Document doc, PrintStream out, String title) {
         if (title!=null) name=title;
-        List<Relation> edges=u.getRelations(doc);
 
         prelude(doc, out);
+
+        List<Relation> edges=u.getRelations(doc);
 
         if (u.getActivity(doc)!=null) {
             for (Activity p: u.getActivity(doc)) {
@@ -149,14 +151,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
         }
 
+        for (Relation e: edges) {
+            emitDependency(e,out);
+        }
+
         if (u.getBundle(doc)!=null) {
             for (Bundle bun: u.getBundle(doc)) {
                 convert(bun,out);
             }
-        }
-
-        for (Relation e: edges) {
-            emitDependency(e,out);
         }
 
 
@@ -165,9 +167,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
     public void convert(Bundle bun, PrintStream out) {
-        List<Relation> edges=u.getRelations(bun);
 
         prelude(bun, out);
+
+        List<Relation> edges=u.getRelations(bun);
 
         if (u.getActivity(bun)!=null) {
             for (Activity p: u.getActivity(bun)) {
@@ -617,7 +620,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
             emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
 
-            HashMap<String,String> properties2=new HashMap<String, String>();
+            Map<String,String> properties2= new HashMap<>();
             properties2.put(DOT_ARROWHEAD,"none");
 
             String arrowTail=getArrowShapeForRelation(e);
@@ -628,7 +631,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             if (e instanceof HasOther) {
                 addColors((HasOther)e,properties2);
             }
-            HashMap<String,String> properties3=new HashMap<String, String>();
+            Map<String,String> properties3= new HashMap<>();
 
             QualifiedName effect=u.getEffect(e);
             if (effect!=null) {

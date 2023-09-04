@@ -2,45 +2,8 @@ package org.openprovenance.prov.dot;
 import java.io.*;
 import java.util.*;
 
-import org.openprovenance.prov.model.Element;
-import org.openprovenance.prov.model.NamespacePrefixMapper;
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HasOther;
-import org.openprovenance.prov.model.HasRole;
-import org.openprovenance.prov.model.HasType;
-import org.openprovenance.prov.model.HasLabel;
-import org.openprovenance.prov.model.HasValue;
-import org.openprovenance.prov.model.LangString;
-import org.openprovenance.prov.model.Identifiable;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.Other;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.QualifiedRelation;
-import org.openprovenance.prov.model.Relation;
-import org.openprovenance.prov.model.Role;
-import org.openprovenance.prov.model.Type;
-import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.Value;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.WasStartedBy;
 
 import static java.lang.Math.min;
 
@@ -238,9 +201,12 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     //////////////////////////////////////////////////////////////////////
 
     public void emitActivity(Activity p, PrintStream out) {
-        HashMap<String,String> properties=new HashMap<String, String>();
+        Map<String,String> properties= new HashMap<>();
+
+        emitSpace(p.getId(),out);
 
         emitElement(p.getId(),
+                p.getKind(),
                 addURL(p.getId(), addActivityShape(p,addActivityLabel(p, addActivityColor(p,properties)))),
                 out);
 
@@ -248,26 +214,48 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
 
-    public void emitEntity(Entity a, PrintStream out) {
+
+    public void emitEntity(Entity e, PrintStream out) {
+        emitSpace(e.getId(),out);
+
         Map<String,String> properties= new HashMap<>();
 
-        emitElement(a.getId(),
-                addURL(a.getId(), addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties)))),
+        emitElement(e.getId(),
+                e.getKind(),
+                addURL(e.getId(), addEntityShape(e,addEntityLabel(e, addEntityColor(e,properties)))),
                 out);
 
-        emitAnnotations("", a,out);
+        emitAnnotations("", e,out);
     }
 
     public void emitAgent(Agent ag, PrintStream out) {
+        emitSpace(ag.getId(),out);
+
         Map<String,String> properties= new HashMap<>();
 
         emitElement(ag.getId(),
+                ag.getKind(),
                 addURL(ag.getId(), addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties)))),
                 out);
 
         emitAnnotations("", ag,out);
 
     }
+
+    private void emitSpace(QualifiedName id, PrintStream out) {
+        out.println();
+    }
+    private void emitComment(QualifiedName id, StatementOrBundle.Kind kind, PrintStream out) {
+        String prefix = (id==null)? "_" : id.getPrefix();
+        String localPart =  (id==null)? "_" : id.getLocalPart();
+        out.println("comment=\"" + kind + " " + prefix + ":" + localPart + "\"");
+    }
+    private void emitComment(QualifiedName id, StatementOrBundle.Kind kind, StringBuffer out) {
+        String prefix = (id==null)? "_" : id.getPrefix();
+        String localPart =  (id==null)? "_" : id.getLocalPart();
+        out.append(" [comment=\"" + kind + " " + prefix + ":" + localPart + "\"]");
+    }
+
 
     public void emitAnnotations(String id, HasOther statement, PrintStream out) {
 
@@ -284,13 +272,15 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 (((HasLabel)statement).getLabel().isEmpty())
         ) return;
 
-        HashMap<String,String> properties=new HashMap<String, String>();
+        Map<String,String> properties= new HashMap<>();
         QualifiedName newId=annotationId(((Identifiable)statement).getId(),id);
         emitElement(newId,
+                null,
                 addAnnotationShape(statement,addAnnotationColor(statement,addAnnotationLabel(statement,properties))),
                 out);
-        HashMap<String,String> linkProperties=new HashMap<String, String>();
-        emitRelation(qualifiedNameToString(newId),
+        Map<String,String> linkProperties= new HashMap<>();
+        emitRelation(null,
+                qualifiedNameToString(newId),
                 qualifiedNameToString(((Identifiable)statement).getId()),
                 addAnnotationLinkProperties(statement,linkProperties),out,true);
     }
@@ -310,32 +300,32 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
 
-    public HashMap<String,String> addAnnotationLinkProperties(HasOther ann, HashMap<String,String> properties) {
+    public Map<String,String> addAnnotationLinkProperties(HasOther ignoredAnn, Map<String,String> properties) {
         properties.put(DOT_ARROWHEAD,"none");
         properties.put(DOT_STYLE,"dashed");
         properties.put(DOT_COLOUR,"gray");
         return properties;
     }
 
-    public HashMap<String,String> addActivityShape(Activity p, HashMap<String,String> properties) {
+    public Map<String,String> addActivityShape(Activity ignoredActivity, Map<String,String> properties) {
         properties.put(DOT_SHAPE, ACTIVITY_SHAPE);
         properties.put(DOT_SIDES, ACTIVITY_SIDES);
         return properties;
     }
 
 
-    public HashMap<String,String> addBlankNodeShape(HashMap<String,String> properties) {
+    public Map<String,String> addBlankNodeShape(Map<String,String> properties) {
         properties.put(DOT_SHAPE,"point");
         properties.put(DOT_LABEL,"");
         return properties;
     }
 
-    public HashMap<String,String> addActivityLabel(Activity p, HashMap<String,String> properties) {
+    public Map<String,String> addActivityLabel(Activity p, Map<String,String> properties) {
         properties.put(DOT_LABEL,activityLabel(p) + displaySize(p));
         return properties;
     }
 
-    public HashMap<String,String> addActivityColor(Activity p, HashMap<String,String> properties) {
+    public Map<String,String> addActivityColor(Activity p, Map<String,String> properties) {
         properties.put(DOT_FILLCOLOUR, ACTIVITY_FILL_COLOUR);
         properties.put(DOT_COLOUR, ACTIVITY_COLOUR);
         properties.put(DOT_STYLE, ACTIVITY_STYLE);
@@ -617,7 +607,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     public void emitDependency(Relation e, PrintStream out) {
 
-        HashMap<String,String> properties=new HashMap<String, String>();
+
+        Map<String,String> properties= new HashMap<>();
+        emitSpace(null,out);
+        //emitComment((e instanceof Identifiable)?((Identifiable)e).getId():null,e.getKind(), out);
 
         List<QualifiedName> others=u.getOtherCauses(e);
         if (others !=null) { // n-ary case
@@ -641,7 +634,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
             QualifiedName effect=u.getEffect(e);
             if (effect!=null) {
-                emitRelation( qualifiedNameToString(effect),
+                emitRelation( e.getKind(),
+                        qualifiedNameToString(effect),
                         bnid,
                         properties2,
                         out,
@@ -658,29 +652,32 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             }
 
             if (u.getCause(e)!=null) {
-                emitRelation( bnid,
+                emitRelation(  e.getKind(),
+                        bnid,
                         qualifiedNameToString(u.getCause(e)),
                         properties3,
                         out,
                         true);
             }
 
-            HashMap<String,String> properties4=new HashMap<String, String>();
+            HashMap<String,String> properties4= new HashMap<>();
             if (e instanceof HasOther) {
                 addColors((HasOther)e,properties4);
             }
             for (QualifiedName other: others) {
                 if (other!=null) {
-                    emitRelation( bnid,
+                    emitRelation(  e.getKind(),
+                            bnid,
                             qualifiedNameToString(other),
                             properties4,
                             out,
                             true);
                 }
             }
+            emitSpace(null,out);
 
         } else { // binary case
-            if (u.getCause(e)!=null) { // make sure there is a cuase
+            if (u.getCause(e)!=null) { // make sure there is a cause
                 relationName(e, properties);
                 if (e instanceof QualifiedRelation) {
                     addColors((QualifiedRelation)e,properties);
@@ -695,17 +692,19 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 QualifiedName effect=u.getEffect(e);
                 QualifiedName cause=u.getCause(e);
                 if (effect!=null && cause!=null) {
-                    emitRelation( qualifiedNameToString(effect),
+                    emitRelation(  e.getKind(),
+                            qualifiedNameToString(effect),
                             qualifiedNameToString(cause),
                             properties,
                             out,
-                            true);
+                            true
+                    );
                 }
             }
         }
     }
 
-    void relationName(Relation e, HashMap<String,String> properties) {
+    void relationName(Relation e, Map<String,String> properties) {
         String l=getShortLabelForRelation(e);
         if (l!=null) {
             properties.put(DOT_TAILLABEL,l);
@@ -779,9 +778,11 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 .replace(">","&gt;");
     }
 
-    public void emitElement(QualifiedName name, Map<String,String> properties, PrintStream out) {
+    public void emitElement(QualifiedName name, StatementOrBundle.Kind kind, Map<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
         sb.append(dotify(qualifiedNameToString(name)));
+        if (kind!=null) emitComment(name,kind, sb);
+
         emitProperties(sb,properties);
         out.println(sb);
     }
@@ -795,7 +796,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
 
-    public void emitRelation(String src, String dest, HashMap<String,String> properties, PrintStream out, boolean directional) {
+    public void emitRelation(StatementOrBundle.Kind kind, String src, String dest, Map<String,String> properties, PrintStream out, boolean directional) {
         StringBuffer sb=new StringBuffer();
         sb.append(dotify(src));
         if (directional) {
@@ -804,6 +805,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             sb.append(" -- ");
         }
         sb.append(dotify(dest));
+        emitComment(null,kind, sb);
         emitProperties(sb,properties);
         out.println(sb);
     }
@@ -827,8 +829,6 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 sb.append(value);
                 sb.append("\"");
             }
-
-
         }
         sb.append("]");
     }

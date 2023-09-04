@@ -29,6 +29,8 @@ public class PC1FullTest extends org.openprovenance.prov.model.PC1FullTest {
         if (graph1==null) System.out.println("doToDot with null ");
         System.out.println("writing target/pc1-full.pdf");
         toDot.convert(graph1,"target/pc1-full.dot", "target/pc1-full.pdf", "PC1 Full");
+        System.out.println("writing target/pc1-full_2.svg");
+        toDot.convert(graph1,"target/pc1-full_2.dot", "target/pc1-full_2.svg", "svg", "PC1 Full");
     }
 
 }

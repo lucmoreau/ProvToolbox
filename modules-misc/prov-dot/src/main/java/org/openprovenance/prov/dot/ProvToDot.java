@@ -6,11 +6,13 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
-import static java.lang.Math.min;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /** Serialisation of  Prov representation to DOT format. */
 public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties, ProvShorthandNames {
+
+    Logger logger=LogManager.getLogger(ProvToDot.class);
 
     public int MAX_TOOLTIP_LENGTH = 2000;
 
@@ -91,10 +93,10 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
             java.lang.Process proc = runtime.exec("dot  -T" + type + " " + dotFile);
             InputStream is=proc.getInputStream();
             org.apache.commons.io.IOUtils.copy(is, os);
-            dotFile.delete();
+            boolean resultCode=dotFile.delete();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.throwing(e);
             throw new UncheckedException(e);
         }
 
@@ -243,18 +245,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
 
     }
 
-    private void emitSpace(QualifiedName id, PrintStream out) {
+    private void emitSpace(QualifiedName ignoredId, PrintStream out) {
         out.println();
     }
-    private void emitComment(QualifiedName id, StatementOrBundle.Kind kind, PrintStream out) {
-        String prefix = (id==null)? "_" : id.getPrefix();
-        String localPart =  (id==null)? "_" : id.getLocalPart();
-        out.println("comment=\"" + kind + " " + prefix + ":" + localPart + "\"");
-    }
+
     private void emitComment(QualifiedName id, StatementOrBundle.Kind kind, StringBuffer out) {
         String prefix = (id==null)? "_" : id.getPrefix();
         String localPart =  (id==null)? "_" : id.getLocalPart();
-        out.append(" [comment=\"" + kind + " " + prefix + ":" + localPart + "\"]");
+        out.append(" [comment=\"").append(kind).append(" ").append(prefix).append(":").append(localPart).append("\"]");
     }
 
 
@@ -374,7 +372,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         if (o!=null && !o.isEmpty()) {
             String val=getStringValue(o.get(0));
             if (val.length()>MAX_TOOLTIP_LENGTH) {
-                val=val.substring(0, min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
+                val=val.substring(0, MAX_TOOLTIP_LENGTH)+" ...";
             }
             properties.put(DOT_TOOLTIP, val);
         }

@@ -13,6 +13,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   * prov-jsonld-xml with support for serialisations to prov-xml (using jackson, and some custom code)
   * prov-n with support for serialisations to prov-n
   * prov-model-scala consisting of an alternate implementation of the prov data model in scala, and serialization of prov-jsonld
+* prov-dot
+  * refactoring, and dropped lots of (unused) configuration options dating back from the OPM time (13 years old)
 * prov-template
   * using the json representation of bindings as the sole representation for user
   * dropping the prov representation of bindings

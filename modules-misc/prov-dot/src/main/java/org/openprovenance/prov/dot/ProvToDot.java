@@ -1,9 +1,6 @@
 package org.openprovenance.prov.dot;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.openprovenance.prov.model.Element;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
@@ -49,7 +46,7 @@ import static java.lang.Math.min;
 
 
 /** Serialisation of  Prov representation to DOT format. */
-public class ProvToDot {
+public class ProvToDot implements DotProperties,  RecommendedProvVisualProperties {
 
     public int MAX_TOOLTIP_LENGTH = 2000;
 
@@ -116,7 +113,9 @@ public class ProvToDot {
                 System.out.println("Error:  " + s_error);
             }
             proc.waitFor();
-        } catch (InterruptedException e){}
+        } catch (InterruptedException ie){
+            throw new UncheckedException("convert exception", ie);
+        }
     }
 
     public void convert(Document graph, OutputStream os, String type, String title) {
@@ -231,14 +230,6 @@ public class ProvToDot {
 
     }
 
-    boolean collapseAnnotations=true;
-
-    static int embeddedAnnotationCounter=0;
-    public void emitAnnotations(HasOther node, PrintStream out) {
-
-    }
-
-
 
     //////////////////////////////////////////////////////////////////////
     ///
@@ -258,7 +249,7 @@ public class ProvToDot {
 
 
     public void emitEntity(Entity a, PrintStream out) {
-        HashMap<String,String> properties=new HashMap<String, String>();
+        Map<String,String> properties= new HashMap<>();
 
         emitElement(a.getId(),
                 addURL(a.getId(), addEntityShape(a,addEntityLabel(a, addEntityColor(a,properties)))),
@@ -268,7 +259,7 @@ public class ProvToDot {
     }
 
     public void emitAgent(Agent ag, PrintStream out) {
-        HashMap<String,String> properties=new HashMap<String, String>();
+        Map<String,String> properties= new HashMap<>();
 
         emitElement(ag.getId(),
                 addURL(ag.getId(), addAgentShape(ag,addAgentLabel(ag, addAgentColor(ag,properties)))),
@@ -307,52 +298,47 @@ public class ProvToDot {
 
 
     int annotationCount=0;
-    @SuppressWarnings("unused")
-    public QualifiedName annotationId(QualifiedName id,String node) {
 
-        if (true) {
-            return pf.newQualifiedName("-","attrs" + node + (annotationCount++),null);
-        } else {
-            return id;
-        }
+    public QualifiedName annotationId(QualifiedName ignoredId, String node) {
+        return pf.newQualifiedName("-", "attrs" + node + (annotationCount++), null);
     }
 
-    public HashMap<String, String> addURL(QualifiedName id,
-                                          HashMap<String, String> properties) {
+    public Map<String, String> addURL(QualifiedName id,
+                                          Map<String, String> properties) {
         if (id!=null) properties.put("URL", htmlify(id.getNamespaceURI()+id.getLocalPart()));
         return properties;
     }
 
 
     public HashMap<String,String> addAnnotationLinkProperties(HasOther ann, HashMap<String,String> properties) {
-        properties.put("arrowhead","none");
-        properties.put("style","dashed");
-        properties.put("color","gray");
+        properties.put(DOT_ARROWHEAD,"none");
+        properties.put(DOT_STYLE,"dashed");
+        properties.put(DOT_COLOUR,"gray");
         return properties;
     }
 
     public HashMap<String,String> addActivityShape(Activity p, HashMap<String,String> properties) {
-        properties.put("shape","polygon");
-        properties.put("sides","4");
+        properties.put(DOT_SHAPE, ACTIVITY_SHAPE);
+        properties.put(DOT_SIDES, ACTIVITY_SIDES);
         return properties;
     }
 
 
     public HashMap<String,String> addBlankNodeShape(HashMap<String,String> properties) {
-        properties.put("shape","point");
-        properties.put("label","");
+        properties.put(DOT_SHAPE,"point");
+        properties.put(DOT_LABEL,"");
         return properties;
     }
 
     public HashMap<String,String> addActivityLabel(Activity p, HashMap<String,String> properties) {
-        properties.put("label",activityLabel(p) + displaySize(p));
+        properties.put(DOT_LABEL,activityLabel(p) + displaySize(p));
         return properties;
     }
 
     public HashMap<String,String> addActivityColor(Activity p, HashMap<String,String> properties) {
-        properties.put("fillcolor", "#9FB1FC"); //blue
-        properties.put("color","#0000FF"); //blue
-        properties.put("style", "filled");
+        properties.put(DOT_FILLCOLOUR, ACTIVITY_FILL_COLOUR);
+        properties.put(DOT_COLOUR, ACTIVITY_COLOUR);
+        properties.put(DOT_STYLE, ACTIVITY_STYLE);
         addColors(p,properties);
         return properties;
     }
@@ -366,19 +352,19 @@ public class ProvToDot {
         }
     }
 
-    public  HashMap<String,String> addColors(HasOther object, HashMap<String,String> properties) {
+    public void addColors(HasOther object, Map<String,String> properties) {
         Hashtable<String,List<Other>> table=u.attributesWithNamespace(object,NamespacePrefixMapper.DOT_NS);
 
-        List<Other> o=table.get("fillcolor");
+        List<Other> o=table.get(DOT_FILLCOLOUR);
         if (o!=null && !o.isEmpty()) {
-            properties.put("fillcolor", getStringValue(o.get(0)));
-            properties.put("style", "filled");
+            properties.put(DOT_FILLCOLOUR, getStringValue(o.get(0)));
+            properties.put(DOT_STYLE, ACTIVITY_STYLE);
         }
-        o=table.get("color");
+        o=table.get(DOT_COLOUR);
         if (o!=null && !o.isEmpty()) {
-            properties.put("color", getStringValue(o.get(0)));
+            properties.put(DOT_COLOUR, getStringValue(o.get(0)));
         }
-        o=table.get("url");
+        o=table.get(DOT_URL);
         if (o!=null && !o.isEmpty()) {
             properties.put("URL", htmlify(getStringValue(o.get(0))));
         }
@@ -386,27 +372,26 @@ public class ProvToDot {
         if (o!=null && !o.isEmpty()) {
             if ((object instanceof QualifiedRelation)) {
                 String val=o.get(0).getValue().toString();
-                properties.put("penwidth", val);
+                properties.put(DOT_PENWIDTH, val);
             } else {
                 if (object instanceof Element) {
-                    properties.put("width", "" + Double.valueOf(getStringValue(o.get(0))) * 0.75);
+                    properties.put(DOT_WIDTH, "" + Double.parseDouble(getStringValue(o.get(0))) * 0.75);
                 }
             }
         }
-        o=table.get("tooltip");
+        o=table.get(DOT_TOOLTIP);
         if (o!=null && !o.isEmpty()) {
             String val=getStringValue(o.get(0));
             if (val.length()>MAX_TOOLTIP_LENGTH) {
                 val=val.substring(0, min(val.length(), MAX_TOOLTIP_LENGTH))+" ...";
             }
-            properties.put("tooltip", val);
+            properties.put(DOT_TOOLTIP, val);
         }
-        return properties;
     }
 
 
 
-    public HashMap<String,String> addEntityShape(Entity p, HashMap<String,String> properties) {
+    public Map<String,String> addEntityShape(Entity p, Map<String,String> properties) {
         // default is good for entity
         List<Type> types=p.getType();
         for (Type type: types) {
@@ -415,23 +400,23 @@ public class ProvToDot {
                 if (("Dictionary".equals(name.getLocalPart()))
                         ||
                         ("EmptyDictionary".equals(name.getLocalPart()))) {
-                    properties.put("shape","folder");
+                    properties.put(DOT_SHAPE,"folder");
                 }
             }
         }
         return properties;
     }
 
-    public HashMap<String,String> addEntityColor(Entity a, HashMap<String,String> properties) {
-        properties.put("fillcolor", "#FFFC87");//yellow
-        properties.put("color","#808080"); //gray
-        properties.put("style", "filled");
+    public Map<String,String> addEntityColor(Entity a, Map<String,String> properties) {
+        properties.put(DOT_FILLCOLOUR, ENTITY_FILLCOLOUR);
+        properties.put(DOT_COLOUR, ENTITY_COLOUR);
+        properties.put(DOT_STYLE, ENTITY_STYLE);
         addColors(a,properties);
         return properties;
     }
 
-    public HashMap<String,String> addEntityLabel(Entity p, HashMap<String,String> properties) {
-        properties.put("label",entityLabel(p) + displaySize(p));
+    public Map<String,String> addEntityLabel(Entity p, Map<String,String> properties) {
+        properties.put(DOT_LABEL,entityLabel(p) + displaySize(p));
         return properties;
     }
 
@@ -444,60 +429,60 @@ public class ProvToDot {
         return "";
     }
 
-    public HashMap<String,String> addAgentShape(Agent p, HashMap<String,String> properties) {
-        properties.put("shape","house");
+    public Map<String,String> addAgentShape(Agent ignoredAgent, Map<String,String> properties) {
+        properties.put(DOT_SHAPE, AGENT_SHAPE);
         return properties;
     }
 
-    public HashMap<String,String> addAgentLabel(Agent p, HashMap<String,String> properties) {
-        properties.put("label",agentLabel(p) + displaySize(p));
+    public Map<String,String> addAgentLabel(Agent agent, Map<String,String> properties) {
+        properties.put(DOT_LABEL,agentLabel(agent) + displaySize(agent));
         return properties;
     }
 
-    public HashMap<String,String> addAgentColor(Agent a, HashMap<String,String> properties) {
-        properties.put("fillcolor", "#FDB266"); //orange
-        properties.put("style", "filled");
-        addColors(a,properties);
+    public Map<String,String> addAgentColor(Agent agent, Map<String,String> properties) {
+        properties.put(DOT_FILLCOLOUR, AGENT_FILLCOLOUR);
+        properties.put(DOT_STYLE, AGENT_STYLE);
+        addColors(agent,properties);
         return properties;
     }
 
-    public HashMap<String,String> addAnnotationShape(HasOther ann, HashMap<String,String> properties) {
-        properties.put("shape","note");
+    public Map<String,String> addAnnotationShape(HasOther ignoredAnn, Map<String,String> properties) {
+        properties.put(DOT_SHAPE, ANNOTATION_SHAPE);
         return properties;
     }
 
-    public HashMap<String,String> addAnnotationLabel(HasOther ann, HashMap<String,String> properties) {
+    public Map<String,String> addAnnotationLabel(HasOther ann, Map<String,String> properties) {
 
-        String label="";
-        label=label+"<<TABLE cellpadding=\"0\" border=\"0\">\n";
+        StringBuilder label= new StringBuilder();
+        label.append("<<TABLE cellpadding=\"0\" border=\"0\">\n");
         for (Type type: ((HasType)ann).getType()) {
-            label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + "type" + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(type) + "</TD>\n";  //FIXME: could we have URL in <a></a>?
-            label=label+"	</TR>\n";
+            label.append("	<TR>\n");
+            label.append("	    <TD align=\"left\">").append("type").append(":</TD>\n");
+            label.append("	    <TD align=\"left\">").append(getPropertyValueWithUrl(type)).append("</TD>\n");  //FIXME: could we have URL in <a></a>?
+            label.append("	</TR>\n");
         }
         for (LangString lab: ((HasLabel)ann).getLabel()) {
-            label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + "label" + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + htmlify(lab.getValue(), true) + "</TD>\n";
-            label=label+"	</TR>\n";
+            label.append("	<TR>\n");
+            label.append("	    <TD align=\"left\">").append(DOT_LABEL).append(":</TD>\n");
+            label.append("	    <TD align=\"left\">").append(htmlify(lab.getValue(), true)).append("</TD>\n");
+            label.append("	</TR>\n");
         }
         if (ann instanceof HasValue) {
             Value val=((HasValue)ann).getValue();
             if (val!=null) {
-                label=label+"	<TR>\n";
-                label=label+"	    <TD align=\"left\">" + "value" + ":</TD>\n";
-                label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(val) + "</TD>\n";
-                label=label+"	</TR>\n";
+                label.append("	<TR>\n");
+                label.append("	    <TD align=\"left\">").append("value").append(":</TD>\n");
+                label.append("	    <TD align=\"left\">").append(getPropertyValueWithUrl(val)).append("</TD>\n");
+                label.append("	</TR>\n");
             }
 
         }
         if (ann instanceof HasRole) {
             for (Role role: ((HasRole)ann).getRole()) {
-                label=label+"	<TR>\n";
-                label=label+"	    <TD align=\"left\">" + "role" + ":</TD>\n";
-                label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(role) + "</TD>\n";
-                label=label+"	</TR>\n";
+                label.append("	<TR>\n");
+                label.append("	    <TD align=\"left\">").append("role").append(":</TD>\n");
+                label.append("	    <TD align=\"left\">").append(getPropertyValueWithUrl(role)).append("</TD>\n");
+                label.append("	</TR>\n");
             }
         }
         for (Other prop: ann.getOther()) {
@@ -508,14 +493,14 @@ public class ProvToDot {
             }
 
 
-            label=label+"	<TR>\n";
-            label=label+"	    <TD align=\"left\">" + convertProperty(prop) + ":</TD>\n";
-            label=label+"	    <TD align=\"left\">" + getPropertyValueWithUrl(prop) + "</TD>\n";
-            label=label+"	</TR>\n";
+            label.append("	<TR>\n");
+            label.append("	    <TD align=\"left\">").append(convertProperty(prop)).append(":</TD>\n");
+            label.append("	    <TD align=\"left\">").append(getPropertyValueWithUrl(prop)).append("</TD>\n");
+            label.append("	</TR>\n");
         }
-        label=label+"    </TABLE>>\n";
-        properties.put("label",label);
-        properties.put("fontsize","10");
+        label.append("    </TABLE>>\n");
+        properties.put(DOT_LABEL, label.toString());
+        properties.put(DOT_FONTSIZE,"10");
 
         return properties;
     }
@@ -580,10 +565,10 @@ public class ProvToDot {
 
 
 
-    public HashMap<String,String> addAnnotationColor(HasOther ann, HashMap<String,String> properties) {
+    public Map<String,String> addAnnotationColor(HasOther ann, Map<String,String> properties) {
         if (displayAnnotationColor) {
-            properties.put("color",annotationColor(ann));
-            properties.put("fontcolor","black");
+            properties.put(DOT_COLOUR,annotationColor(ann));
+            properties.put(DOT_FONTCOLOUR,"black");
         }
         return properties;
     }
@@ -597,7 +582,6 @@ public class ProvToDot {
     }
 
 
-    // returns the first non transparent color
     public String selectColor(List<String> colors) {
         String tr="transparent";
         for (String c: colors) {
@@ -611,14 +595,8 @@ public class ProvToDot {
     }
 
 
-    public String agentColor(Agent p) {
+    public String annotationColor(HasOther ignoredAnn) {
         List<String> colors= new LinkedList<>();
-        return selectColor(colors);
-    }
-
-
-    public String annotationColor(HasOther ann) {
-        List<String> colors=new LinkedList<String>();
         colors.add("gray");
         return selectColor(colors);
     }
@@ -649,12 +627,12 @@ public class ProvToDot {
             emitBlankNode(dotify(bnid), addBlankNodeShape(properties), out);
 
             HashMap<String,String> properties2=new HashMap<String, String>();
-            properties2.put("arrowhead","none");
+            properties2.put(DOT_ARROWHEAD,"none");
 
             String arrowTail=getArrowShapeForRelation(e);
             if (arrowTail!=null) {
-                properties2.put("arrowtail",arrowTail);
-                properties2.put("dir","back");
+                properties2.put(DOT_ARROWTAIL,arrowTail);
+                properties2.put(DOT_DIR,"back");
             }
             if (e instanceof HasOther) {
                 addColors((HasOther)e,properties2);
@@ -676,7 +654,7 @@ public class ProvToDot {
             }
 
             if (e instanceof DerivedByInsertionFrom) {
-                properties3.put("arrowhead","onormal");
+                properties3.put(DOT_ARROWHEAD,"onormal");
             }
 
             if (u.getCause(e)!=null) {
@@ -710,8 +688,8 @@ public class ProvToDot {
 
                 String arrowTail=getArrowShapeForRelation(e);
                 if (arrowTail!=null) {
-                    properties.put("arrowtail",arrowTail);
-                    properties.put("dir","both");
+                    properties.put(DOT_ARROWTAIL,arrowTail);
+                    properties.put(DOT_DIR,"both");
                 }
 
                 QualifiedName effect=u.getEffect(e);
@@ -730,18 +708,18 @@ public class ProvToDot {
     void relationName(Relation e, HashMap<String,String> properties) {
         String l=getShortLabelForRelation(e);
         if (l!=null) {
-            properties.put("taillabel",l);
-            properties.put("labelangle", "60.0");
-            properties.put("labeldistance", "1.5");
-            properties.put("rotation", "20");
-            properties.put("labelfontsize", "8");
+            properties.put(DOT_TAILLABEL,l);
+            properties.put(DOT_LABELANGLE, "60.0");
+            properties.put(DOT_LABELDISTANCE, "1.5");
+            properties.put(DOT_ROTATION, "20");
+            properties.put(DOT_LABELFONTSIZE, "8");
         }
     }
 
     String getArrowShapeForRelation(Relation e) {
-        if (e instanceof WasStartedBy)      return "oinv";
-        if (e instanceof WasEndedBy)        return "odiamond";
-        if (e instanceof WasInvalidatedBy)  return "odiamond";
+        if (e instanceof WasStartedBy)      return DOT_ARROWSHAPE_OINV;
+        if (e instanceof WasEndedBy)        return DOT_ARROWSHAPE_ODIAMOND;
+        if (e instanceof WasInvalidatedBy)  return DOT_ARROWSHAPE_ODIAMOND;
         return null;
     }
 
@@ -801,7 +779,7 @@ public class ProvToDot {
                 .replace(">","&gt;");
     }
 
-    public void emitElement(QualifiedName name, HashMap<String,String> properties, PrintStream out) {
+    public void emitElement(QualifiedName name, Map<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
         sb.append(dotify(qualifiedNameToString(name)));
         emitProperties(sb,properties);
@@ -809,7 +787,7 @@ public class ProvToDot {
     }
 
 
-    public void emitBlankNode(String bnid, HashMap<String,String> properties, PrintStream out) {
+    public void emitBlankNode(String bnid, Map<String,String> properties, PrintStream out) {
         StringBuffer sb=new StringBuffer();
         sb.append(bnid);
         emitProperties(sb,properties);
@@ -830,7 +808,7 @@ public class ProvToDot {
         out.println(sb);
     }
 
-    public void emitProperties(StringBuffer sb,HashMap<String,String> properties) {
+    public void emitProperties(StringBuffer sb, Map<String,String> properties) {
         sb.append(" [");
         boolean first=true;
         for (String key: properties.keySet()) {
@@ -855,14 +833,14 @@ public class ProvToDot {
         sb.append("]");
     }
 
-    void prelude(Document doc, PrintStream out) {
+    void prelude(Document ignoredDoc, PrintStream out) {
         out.println("digraph \"" + name + "\" { rankdir=\"BT\"; ");  //size="16,12"; 
         if (layout!=null) {
             out.println("layout=\"" + layout + "\"; ");
         }
     }
 
-    void postlude(Document doc, PrintStream out) {
+    void postlude(Document ignoredDoc, PrintStream out) {
         out.println("}");
         out.close();
     }
@@ -873,7 +851,7 @@ public class ProvToDot {
         out.println("  URL=\"" + qualifiedNameToString(doc.getId()) + "\";");
     }
 
-    void postlude(Bundle doc, PrintStream out) {
+    void postlude(Bundle ignoredDoc, PrintStream out) {
         out.println("}");
     }
 

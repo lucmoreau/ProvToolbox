@@ -1,0 +1,15 @@
+{
+  "var" : {
+    "a" :  [
+      {
+        "@id" : "ex:av1"
+      }
+    ]
+
+  },
+  "vargen" : { },
+  "context" : {
+    "ex" : "http://example.org/"
+  },
+  "template" : null
+}

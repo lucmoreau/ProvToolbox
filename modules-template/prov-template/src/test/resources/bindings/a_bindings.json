@@ -1,0 +1,34 @@
+{
+    "var" : {
+        "a" : [ {
+            "@id" : "ex:a"
+        } ],
+        "b" : [ {
+            "@id" : "ex:b"
+        } ],
+        "atime" : [ {
+            "@value" : "2014-01-01T09:21:00+02:00",
+            "@type" : "xsd:dateTime"
+        } ],
+        "atype" : [ {
+            "@id" : "ex:footype_a"
+        } ],
+        "btype" : [ {
+            "@id" : "ex:footype_b"
+        } ]
+    },
+    "vargen" : {
+        "bb" : [ {
+            "@id" : "uuid:aaa78cf0-be82-4b3c-bccd-af76266dd303"
+        } ],
+        "d" : [ {
+            "@id" : "uuid:5be9652f-2c02-4d59-af57-f848c4b01190"
+        } ]
+    },
+    "context" : {
+        "ex" : "http://example.com/",
+        "uuid" : "urn:uuid:",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "template" : null
+}

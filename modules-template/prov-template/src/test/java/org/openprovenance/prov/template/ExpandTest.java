@@ -11,6 +11,7 @@ import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.expander.*;
 
 import junit.framework.TestCase;
+import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 public class ExpandTest extends TestCase {
@@ -21,23 +22,23 @@ public class ExpandTest extends TestCase {
 
     ObjectMapper mapper=new ObjectMapper();
 
-    public  void expandAndCheck(String in, String inBindings, String out)  {
+    public  void expandAndCheck(String in, String inBindings_asProv, String inBindings, String out) throws IOException {
 
         Document doc= new Utility().readDocument(in, pf);
-        Document docBindings= new Utility().readDocument(inBindings, pf);
+        Document docBindings= new Utility().readDocument(inBindings_asProv, pf);
 
-        Bindings bindings1=Bindings.fromDocument_v1(docBindings, pf);
+        OldBindings oldBindings= OldBindings.fromDocument_v1(docBindings, pf);
 
 
+        //Bindings newBindings=mapper.readValue(new File(inBindings),Bindings.class);
 
+        //BindingsBean bindingsBean3=newBindings.toBean();
 
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
-
         Groupings grp1=Groupings.fromDocument(doc);
-
         System.err.println("Found groupings " + grp1);
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, bindings1, grp1).get(0);
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, null, oldBindings, grp1).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -51,13 +52,17 @@ public class ExpandTest extends TestCase {
         //InteropFramework inf=new InteropFramework();
         //inf.writeDocument(out, doc1);
 
+        BindingsBean bindingsBean1=BindingsJson.toBean(oldBindings);
+        BindingsJson.exportBean(out+".json",bindingsBean1,true);
+
+
         System.err.println("expander ==========================================> ");
     }
 
 
     public void expandAndCheck(String inFilename,
                                String outFileName,
-                               Bindings bindings1,
+                               OldBindings oldBindings,
                                String outBindings,
                                String inFileBindings) throws IOException {
         System.err.println("expander ==========================================> " + inFilename);
@@ -68,9 +73,13 @@ public class ExpandTest extends TestCase {
         Groupings grp1=Groupings.fromDocument(doc);
         System.err.println("Found groupings " + grp1);
 
+        Bindings newBindings=mapper.readValue(new File(inFileBindings),Bindings.class);
+        BindingsBean bindingsBean3=newBindings.toBean();
+        OldBindings oldBindings2=BindingsJson.fromBean(newBindings,pf);
 
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, bindings1, grp1).get(0);
+
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, oldBindings, grp1).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -86,14 +95,21 @@ public class ExpandTest extends TestCase {
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, outFileName, pf);
 
-        BindingsBean bindingsBean1=BindingsJson.toBean(bindings1);
+        BindingsBean bindingsBean1=BindingsJson.toBean(oldBindings);
         BindingsJson.exportBean(outBindings+".json",bindingsBean1,true);
+
+        BindingsBean bindingsBean4=BindingsJson.toBean(oldBindings2);
 
         if (inFileBindings!=null) {
             BindingsBean bindingsBean2=mapper.readValue(new File(inFileBindings),BindingsBean.class);
+
+            assertEquals("bindingsBean (from newBinding) and loaded bindings differ ("+inFileBindings+"): ", bindingsBean3, bindingsBean2);
+
             bindingsBean2.vargen=bindingsBean1.vargen;
 
             assertEquals("hand bindings and loaded bindings differ ("+inFileBindings+"): ", bindingsBean1, bindingsBean2);
+            // THIS TEST IS FAILING
+            // /assertEquals("bindingsBean4 and bindingsBean2 differ ("+inFileBindings+"): ", bindingsBean4, bindingsBean2);
         }
 
     }
@@ -102,7 +118,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand1() throws IOException {
 
-        Bindings bindings1 = bindingsBuilder.makeBindings1();
+        OldBindings bindings1 = bindingsBuilder.makeBindings1();
 
 
         expandAndCheck("src/test/resources/templates/template1.provn",
@@ -116,7 +132,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand2() throws IOException {
 
-        Bindings bindings2 = bindingsBuilder.makeBindings2();
+        OldBindings bindings2 = bindingsBuilder.makeBindings2();
 
 
         expandAndCheck("src/test/resources/templates/template2.provn",
@@ -130,7 +146,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand3() throws IOException {
 
-        Bindings bindings3 = bindingsBuilder.makeBindings3();
+        OldBindings bindings3 = bindingsBuilder.makeBindings3();
 
 
         expandAndCheck("src/test/resources/templates/template3.provn",
@@ -146,7 +162,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand20() throws IOException {
 
-        Bindings bindings20 = bindingsBuilder.makeBindings20();
+        OldBindings bindings20 = bindingsBuilder.makeBindings20();
 
 
         expandAndCheck("src/test/resources/templates/template20.provn",
@@ -162,7 +178,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand21() throws IOException {
 
-        Bindings bindings21 = bindingsBuilder.makeBindings21();
+        OldBindings bindings21 = bindingsBuilder.makeBindings21();
 
 
         expandAndCheck("src/test/resources/templates/template21.provn",
@@ -178,7 +194,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand22() throws IOException {
 
-        Bindings bindings22 = bindingsBuilder.makeBindings22();
+        OldBindings bindings22 = bindingsBuilder.makeBindings22();
 
 
         expandAndCheck("src/test/resources/templates/template22.provn",
@@ -194,7 +210,7 @@ public class ExpandTest extends TestCase {
 
     public void testExpand23() throws IOException {
 
-        Bindings bindings23 = bindingsBuilder.makebindinsg23();
+        OldBindings bindings23 = bindingsBuilder.makebindinsg23();
 
 
         expandAndCheck("src/test/resources/templates/template23.provn",
@@ -209,7 +225,7 @@ public class ExpandTest extends TestCase {
 
 
     public void testExpand25() throws IOException {
-        Bindings bindings25a = bindingsBuilder.makeBindings25a();
+        OldBindings bindings25a = bindingsBuilder.makeBindings25a();
 
             expandAndCheck("src/test/resources/templates/template25.provn",
                     "target/expanded25a.provn",
@@ -218,7 +234,7 @@ public class ExpandTest extends TestCase {
                     "src/test/resources/bindings/bindings25a.json");
 
 
-        Bindings bindings25b = bindingsBuilder.makeBindings25b();
+        OldBindings bindings25b = bindingsBuilder.makeBindings25b();
 
         expandAndCheck("src/test/resources/templates/template25.provn",
                 "target/expanded25b.provn",
@@ -232,12 +248,15 @@ public class ExpandTest extends TestCase {
 
     public void testExpand10() throws IOException {
 
-        Bindings bindings10=bindingsBuilder.makeBindings10();
+        OldBindings bindings10=bindingsBuilder.makeBindings10();
 
 
         expandAndCheck("src/test/resources/templates/template10.provn",
-                "src/test/resources/bindings10.provn",
-                "target/expanded10.provn");
+                "target/expanded10.provn",
+                bindings10,
+                "target/bindings10.provn",
+                "src/test/resources/bindings/bindings10.json"
+                );
 
 
     }
@@ -248,7 +267,8 @@ public class ExpandTest extends TestCase {
 
 
         expandAndCheck("src/test/resources/templates/a_template.provn",
-                "src/test/resources/a_binding.provn",
+                "src/test/resources/bindings_as_prov/a_bindings.provn",
+                    "src/test/resources/bindings/a_bindings.json",
                 "target/a_expanded_template.provn");
 
 

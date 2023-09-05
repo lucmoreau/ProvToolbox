@@ -20,13 +20,12 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
-import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
-import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
 
@@ -1025,7 +1024,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
             Document expanded;
             if (config.bindingsVersion==3) {
-                Bindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(config.bindings)),pFactory);
+                OldBindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(config.bindings)),pFactory);
                 expanded = myExpand.expander(doc, bb);
 
             } else {

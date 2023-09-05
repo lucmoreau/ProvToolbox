@@ -14,7 +14,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Groupings;
@@ -37,7 +37,7 @@ public class BindingTest extends TestCase {
 
     public void testBindings1() {
 
-        Bindings bindings1=new Bindings(pf);
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -70,7 +70,7 @@ public class BindingTest extends TestCase {
 
     public void testBindings20() {
 
-        Bindings bindings1=new Bindings(pf);
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -105,7 +105,7 @@ public class BindingTest extends TestCase {
 
     public void testBindings21() throws IOException, Throwable {
 
-        Bindings bindings1=new Bindings(pf);
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -148,12 +148,12 @@ public class BindingTest extends TestCase {
 
 
 
-    public void bindingsTest(Bindings bindings1, String filename) throws IOException, Throwable {
+    public void bindingsTest(OldBindings bindings1, String filename) throws IOException, Throwable {
         Document doc1=bindings1.toDocument_v1();
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, filename, pf);
 
-        Bindings bindings2=Bindings.fromDocument_v1(new Utility().readDocument(filename, pf),pf);
+        OldBindings bindings2= OldBindings.fromDocument_v1(new Utility().readDocument(filename, pf),pf);
 
 
         assertEquals(bindings1, bindings2);
@@ -161,7 +161,7 @@ public class BindingTest extends TestCase {
 
     public void testBindings21_v2() throws IOException, Throwable {
 
-        Bindings bindings1=new Bindings(pf);
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -198,19 +198,19 @@ public class BindingTest extends TestCase {
 
 
 
-    public void bindingsTest_v2(Bindings bindings1, String filename) throws IOException, Throwable {
+    public void bindingsTest_v2(OldBindings bindings1, String filename) throws IOException, Throwable {
         Document doc1=bindings1.toDocument_v2();
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, filename, pf);
 
-        Bindings bindings2=Bindings.fromDocument_v2(new Utility().readDocument(filename, pf),pf);
+        OldBindings bindings2= OldBindings.fromDocument_v2(new Utility().readDocument(filename, pf),pf);
 
         bindings1.addVariableBindingsAsAttributeBindings();
 
         assertEquals(bindings1, bindings2);
     }
 
-    public void bindingsTest_v3(Bindings bindings_v1, String filename_root) throws IOException, Throwable {
+    public void bindingsTest_v3(OldBindings bindings_v1, String filename_root) throws IOException, Throwable {
         Document doc1=bindings_v1.toDocument_v2();
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, filename_root+"_1.provn", pf);
@@ -229,7 +229,7 @@ public class BindingTest extends TestCase {
 
         BindingsBean bb2=BindingsJson.importBean(new File(filename_root+"_1.json"));
 
-        Bindings bindings_v2=BindingsJson.fromBean(bb2,pf);
+        OldBindings bindings_v2=BindingsJson.fromBean(bb2,pf);
 
 
 
@@ -241,7 +241,7 @@ public class BindingTest extends TestCase {
 
     public void testBindings21_v3() throws IOException, Throwable {
 
-        Bindings bindings1=new Bindings(pf);
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));

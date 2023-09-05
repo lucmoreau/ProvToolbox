@@ -19,7 +19,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
 
-public class Bindings {
+public class OldBindings {
     
     public static final String VALUE = "value_";
     public static final String VALUE2 = "2dvalue_";
@@ -35,13 +35,13 @@ public class Bindings {
     final private Name name;
     static ProvUtilities u= new ProvUtilities();
 
-    public Bindings(ProvFactory pf) {
+    public OldBindings(ProvFactory pf) {
         this(new HashMap<>(), new HashMap<>(), pf);
     }
 
-    public Bindings(HashMap<QualifiedName, List<QualifiedName>> variables,
-                    HashMap<QualifiedName, List<List<TypedValue>>> attributes,
-                    ProvFactory pf) {
+    public OldBindings(HashMap<QualifiedName, List<QualifiedName>> variables,
+                       HashMap<QualifiedName, List<List<TypedValue>>> attributes,
+                       ProvFactory pf) {
         this.variables=variables;
         this.attributes=attributes;
         this.pf=pf;
@@ -50,8 +50,8 @@ public class Bindings {
 
     @Override
     public boolean equals (Object o) {
-        if (!(o instanceof Bindings)) return false;
-        Bindings b=(Bindings)o;
+        if (!(o instanceof OldBindings)) return false;
+        OldBindings b=(OldBindings)o;
         return b.variables.equals(this.variables)
                 && b.attributes.equals(this.attributes);
 
@@ -191,8 +191,8 @@ public class Bindings {
     }
 
 
-    public static Bindings fromDocument_v1(Document doc, ProvFactory pf) {
-        Bindings result=new Bindings(pf);
+    public static OldBindings fromDocument_v1(Document doc, ProvFactory pf) {
+        OldBindings result=new OldBindings(pf);
         
         List<Entity> entities=u.getEntity(doc);
         for (Entity entity: entities) {
@@ -242,8 +242,8 @@ public class Bindings {
     }
     
 
-    public static Bindings fromDocument_v2(Document doc,ProvFactory pf) {
-        Bindings result=new Bindings(pf);
+    public static OldBindings fromDocument_v2(Document doc, ProvFactory pf) {
+        OldBindings result=new OldBindings(pf);
         List<Entity> entities=u.getEntity(doc);
         for (Entity entity: entities) {
             Map<Integer,QualifiedName> map= new HashMap<>();

@@ -80,7 +80,7 @@ public class Using implements Iterable<List<Integer>> {
         return "<using:" + groups + "," + lengths + ">";
     }
 
-    Map<QualifiedName, QualifiedName> get(Bindings b,
+    Map<QualifiedName, QualifiedName> get(OldBindings b,
                                           Groupings gr,
                                           List<Integer> index) {
         Map<QualifiedName,QualifiedName> result= new HashMap<>();
@@ -101,8 +101,8 @@ public class Using implements Iterable<List<Integer>> {
         return result;
     }
 
-    public Map<QualifiedName, List<TypedValue>> getAttr(HashSet<QualifiedName> variables,
-                                                              Bindings b,
+    public Map<QualifiedName, List<TypedValue>> getAttr(Set<QualifiedName> variables,
+                                                              OldBindings b,
                                                               UsingIterator iter) {
         Map<QualifiedName,List<TypedValue>> result= new HashMap<>();
         int ind=iter.getCount();

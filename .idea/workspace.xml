@@ -8,19 +8,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/ArrayDescriptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/Descriptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/DescriptorDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/Descriptors.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/DescriptorsDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/MyTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/SingleDescriptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/TestBean.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings100.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings101.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/QDescriptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/SingleDescriptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/VDescriptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/deserializer/SingleDescriptorDeserializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/MyTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/a_bindings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings/bindings10.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/BindingsBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/BindingsBeanGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/example/TestBindingsBeanInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/example/TestBindingsBeanInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Bindings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/OldBindings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBeanInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsBeanInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Expand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/ExpandUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/Using.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingsBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/BindingsBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/ExpandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/ExpandTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/ArrayDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/SingleDescriptors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/Descriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/Descriptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/DescriptorDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/deserializer/DescriptorDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/Descriptors.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/Descriptors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/DescriptorsDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/deserializer/DescriptorsDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/MyTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/QDescriptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/SingleDescriptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/SingleDescriptorDeserializer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/TestBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/json/Bindings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/json/VDescriptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/a_binding.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings_as_prov/a_bindings.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings10.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings_as_prov/bindings10.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings25.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings_as_prov/bindings25.provn" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,9 +130,9 @@
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="1Sn3wNZbfFqwhTxNiyaVJ58yqRM" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -124,7 +150,7 @@
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "private",
     "git-widget-placeholder": "development2__0",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model-scala/src/test/scala/org.openprovenance.prov.scala",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/java",
     "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/test/resources/bindings",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -134,7 +160,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "scala_project_settings_configurable.last_selected_tab_index": "7",
-    "settings.editor.selected.configurable": "scala.compiler",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -154,11 +180,11 @@
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings_as_prov" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates" />
       <recent name="$PROJECT_DIR$/modules-misc" />
       <recent name="$PROJECT_DIR$/modules-core" />
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/composite" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
@@ -182,11 +208,11 @@
       <recent name="org.openprovenance.prov.core" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template" />
       <recent name="org.openprovenance.prov.core.json" />
       <recent name="org.openprovenance.prov.core.jsonld11" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.template.compiler.common" />
-      <recent name="org.openprovenance.prov.template" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template.json" />
@@ -196,8 +222,8 @@
       <recent name="org.openprovenance.prov.template.compiler" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.MyTest.testMethod2">
-    <configuration name="ExpandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.ExpandTest.testExpand23">
+    <configuration name="ExpandTest.testExpand10" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
@@ -217,8 +243,34 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.ExpandTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="METHOD_NAME" value="testExpand10" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExpandTest.testExpand23" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-template" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.ExpandTest" />
+      <option name="METHOD_NAME" value="testExpand23" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -227,7 +279,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.json.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.json.deserializer.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -241,36 +293,10 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.json.MyTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.MyTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MyTest.testMethod" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.json.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.json.MyTest" />
-      <option name="METHOD_NAME" value="testMethod" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -279,7 +305,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.json.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.json.deserializer.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -293,8 +319,8 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.json.MyTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.MyTest" />
       <option name="METHOD_NAME" value="testMethod1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
@@ -305,7 +331,7 @@
       <module name="prov-template" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.json.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.json.deserializer.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -319,8 +345,8 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.json.MyTest" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.MyTest" />
       <option name="METHOD_NAME" value="testMethod2" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
@@ -382,16 +408,6 @@
       </method>
     </configuration>
     <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
       <option name="allowRunningInParallel" value="false" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
@@ -405,20 +421,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.ExpandTest.testExpand10" />
+      <item itemvalue="JUnit.ExpandTest.testExpand23" />
       <item itemvalue="JUnit.MyTest" />
-      <item itemvalue="JUnit.MyTest.testMethod" />
       <item itemvalue="JUnit.MyTest.testMethod1" />
       <item itemvalue="JUnit.MyTest.testMethod2" />
-      <item itemvalue="JUnit.ExpandTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ExpandTest.testExpand23" />
+        <item itemvalue="JUnit.ExpandTest.testExpand10" />
         <item itemvalue="JUnit.MyTest.testMethod2" />
         <item itemvalue="JUnit.MyTest.testMethod1" />
         <item itemvalue="JUnit.MyTest" />
-        <item itemvalue="JUnit.MyTest.testMethod" />
-        <item itemvalue="JUnit.ExpandTest" />
       </list>
     </recent_temporary>
   </component>
@@ -791,7 +807,8 @@
       <workItem from="1693821094936" duration="9200000" />
       <workItem from="1693851419696" duration="923000" />
       <workItem from="1693852690547" duration="107000" />
-      <workItem from="1693852823120" duration="10122000" />
+      <workItem from="1693852823120" duration="10727000" />
+      <workItem from="1693919563810" duration="15784000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -14,7 +14,7 @@ import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
@@ -108,7 +108,7 @@ public class ActionExpand implements ActionPerformer {
 
 
         final BindingsBean bean = BindingsJson.importBean(stream);
-        Bindings bb= BindingsJson.fromBean(bean,pFactory);
+        OldBindings bb= BindingsJson.fromBean(bean,pFactory);
 
         Document expanded = myExpand.expander(templateDocument, bb);
 

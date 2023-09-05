@@ -104,7 +104,7 @@ public class ExpandUtil {
     }
 
     static public Set<QualifiedName> freeVariables(Bundle statement) {
-        HashSet<QualifiedName> result = new HashSet<QualifiedName>();
+        Set<QualifiedName> result = new HashSet<>();
         QualifiedName name = statement.getId();
         if (name != null && isVariable(name)) {
             result.add(name);
@@ -113,8 +113,8 @@ public class ExpandUtil {
     }
 
 
-    static public HashSet<QualifiedName> freeAttributeVariables(Statement statement, ProvFactory pf) {
-        HashSet<QualifiedName> result = new HashSet<QualifiedName>();
+    static public Set<QualifiedName> freeAttributeVariables(Statement statement, ProvFactory pf) {
+        Set<QualifiedName> result = new HashSet<>();
         Collection<Attribute> ll = pf.getAttributes(statement);
         for (Attribute attr : ll) {
             if (pf.getName().PROV_QUALIFIED_NAME.equals(attr.getType())) {
@@ -132,9 +132,9 @@ public class ExpandUtil {
     }
 
 
-   public static Using usedGroups(Statement statement, Groupings groupings, Bindings bindings) {
+   public static Using usedGroups(Statement statement, Groupings groupings, OldBindings bindings) {
         Set<QualifiedName> vars = freeVariables(statement);
-        Set<Integer> groups = new HashSet<Integer>();
+        Set<Integer> groups = new HashSet<>();
         for (QualifiedName var : vars) {
             for (int grp = 0; grp < groupings.size(); grp++) {
                 List<QualifiedName> names = groupings.get(grp);

@@ -15,6 +15,7 @@ import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.expander.Using.UsingIterator;
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.template.json.Bindings;
 
 public class Expand {
     static Logger logger = LogManager.getLogger(Expand.class);
@@ -29,18 +30,13 @@ public class Expand {
         this.allUpdatedRequired = allUpdatedRequired;
     }
 
-    Document expand(Document template, Bindings bindings) {
-        return null;
-
-    }
-
     public Document expander(Document docIn, String out, Document docBindings) {
         return expander(docIn,docBindings);
     }
         
     public Document expander(Document docIn, Document docBindings) {        
 
-        Bindings bindings1 = Bindings.fromDocument_v1(docBindings, pf);
+        OldBindings bindings1 = OldBindings.fromDocument_v1(docBindings, pf);
         
 
         return expander(docIn,bindings1);
@@ -65,7 +61,7 @@ public class Expand {
     }
     
 
-    public Document expander(Document docIn, Bindings bindings1) {
+    public Document expander(Document docIn, OldBindings bindings1) {
 
         
         Bundle bun;
@@ -79,7 +75,7 @@ public class Expand {
         Groupings grp1 = Groupings.fromDocument(docIn);
         logger.debug("expander: Found groupings " + grp1);
 
-        Bundle bun1 = (Bundle) expand(bun, bindings1, grp1).get(0);
+        Bundle bun1 = (Bundle) expand(bun, null, bindings1, grp1).get(0);
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -96,9 +92,9 @@ public class Expand {
 
     static ProvUtilities u = new ProvUtilities();
 
-    public List<StatementOrBundle> expand(Statement statement, Bindings bindings1, Groupings grp1) {
-        Using us1 = ExpandUtil.usedGroups(statement, grp1, bindings1);
-        return expand(statement, bindings1, grp1, us1);
+    public List<StatementOrBundle> expand(Statement statement, OldBindings oldBindings, Groupings grp1) {
+        Using us1 = ExpandUtil.usedGroups(statement, grp1, oldBindings);
+        return expand(statement, oldBindings, grp1, us1);
     }
     
     boolean allExpanded=true;
@@ -106,7 +102,7 @@ public class Expand {
     	return allExpanded;
     }
 
-    public List<StatementOrBundle> expand(Bundle bun, Bindings bindings1, Groupings grp1) {
+    public List<StatementOrBundle> expand(Bundle bun, Bindings newBindings, OldBindings oldBindings, Groupings grp1) {
         Map<QualifiedName, QualifiedName> env0 = new HashMap<>();
         Map<QualifiedName, List<TypedValue>> env1 = new HashMap<>();
 
@@ -116,7 +112,7 @@ public class Expand {
                                                env0,
                                                env1,
                                                null,
-                                               bindings1,
+                                               oldBindings,
                                                grp1,
                                                addOrderp,
                                                allUpdatedRequired);
@@ -126,7 +122,7 @@ public class Expand {
     }
 
     public List<StatementOrBundle> expand(Statement statement,
-                                          Bindings bindings1,
+                                          OldBindings bindings1,
                                           Groupings grp1,
                                           Using us1) {
         List<StatementOrBundle> results = new LinkedList<>();

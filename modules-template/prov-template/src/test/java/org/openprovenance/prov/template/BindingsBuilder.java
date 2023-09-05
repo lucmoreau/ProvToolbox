@@ -3,7 +3,7 @@ package org.openprovenance.prov.template;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
-import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.ExpandUtil;
 
 import java.util.LinkedList;
@@ -19,6 +19,7 @@ public class BindingsBuilder {
     private final QualifiedName var_c;
     private final QualifiedName var_d;
     private final QualifiedName var_e;
+    private final QualifiedName var_e2;
     private final QualifiedName var_ag;
     private final QualifiedName var_pl;
     private final QualifiedName var_label;
@@ -32,6 +33,7 @@ public class BindingsBuilder {
         this.var_c = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "c", "var");
         this.var_d = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "d", "var");
         this.var_e = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "e", "var");
+        this.var_e2 = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "e2", "var");
         this.var_ag = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "ag", "var");
         this.var_pl = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "pl", "var");
         this.var_label = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "label", "var");
@@ -39,8 +41,8 @@ public class BindingsBuilder {
         this.var_end = this.pf.newQualifiedName(ExpandUtil.VAR_NS, "end", "var");
     }
 
-    Bindings makeBindings1() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makeBindings1() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -56,8 +58,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings2() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makeBindings2() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -71,8 +73,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings3() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makeBindings3() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -93,8 +95,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings20() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makeBindings20() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -148,8 +150,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings21() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makeBindings21() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -197,8 +199,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings22() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makeBindings22() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -246,8 +248,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makebindinsg23() {
-        Bindings bindings1 = new Bindings(pf);
+    OldBindings makebindinsg23() {
+        OldBindings bindings1 = new OldBindings(pf);
 
         bindings1.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -309,8 +311,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings10() {
-        Bindings bindings10=new Bindings(pf);
+    OldBindings makeBindings10() {
+        OldBindings bindings10=new OldBindings(pf);
 
         bindings10.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
@@ -318,7 +320,8 @@ public class BindingsBuilder {
 
         bindings10.addVariable(var_e,
                 pf.newQualifiedName(EX_NS, "ev1", "ex"));
-
+        bindings10.addVariable(var_e2,
+                pf.newQualifiedName(EX_NS, "ev2", "ex"));
         bindings10.addVariable(var_ag,
                 pf.newQualifiedName(EX_NS, "agv1", "ex"));
         bindings10.addVariable(var_pl,
@@ -328,21 +331,22 @@ public class BindingsBuilder {
         List<TypedValue> ll=new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         ll.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), "m22@example", pf.getName().XSD_STRING));
+        bindings10.addAttribute(var_d, ll);
 
 
         List<TypedValue> ll2=new LinkedList<>();
-        ll2.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
+        ll2.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newISOTime("2023-09-05T21:31:56.570+01:00"), pf.getName().XSD_DATETIME));
         bindings10.addAttribute(var_start, ll2);
 
         List<TypedValue> ll3=new LinkedList<>();
-        ll3.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newTimeNow(), pf.getName().XSD_DATETIME));
+        ll3.add(pf.newOther(pf.newQualifiedName(TMPL_NS, "ignore", "app"), pf.newISOTime("2023-09-05T21:31:56.571+01:00"), pf.getName().XSD_DATETIME));
         bindings10.addAttribute(var_end, ll3);
         return bindings10;
     }
 
 
-    Bindings makeBindings25a() {
-        Bindings bindings1=new Bindings(pf);
+    OldBindings makeBindings25a() {
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "apple", "ex"));
         bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "orange", "ex"));
@@ -366,8 +370,8 @@ public class BindingsBuilder {
         return bindings1;
     }
 
-    Bindings makeBindings25b() {
-        Bindings bindings1=new Bindings(pf);
+    OldBindings makeBindings25b() {
+        OldBindings bindings1=new OldBindings(pf);
 
         bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "apple", "ex"));
         bindings1.addVariable(var_a, pf.newQualifiedName(EX_NS, "orange", "ex"));

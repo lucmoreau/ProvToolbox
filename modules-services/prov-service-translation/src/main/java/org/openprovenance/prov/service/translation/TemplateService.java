@@ -18,7 +18,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.model.ProvUtilities;
 
@@ -248,7 +248,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         Document document= interop.readDocument(the_template);
 
-        Bindings bb= getBindingsFromSchema(bindings_schema, provFactory);
+        OldBindings bb= getBindingsFromSchema(bindings_schema, provFactory);
 
         Document expanded = myExpand.expander(document, bb);
 

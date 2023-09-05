@@ -52,7 +52,7 @@ public class ExpandAction implements StatementAction {
     final private ProvUtilities u;
     final private List<StatementOrBundle> ll = new LinkedList<StatementOrBundle>();
     final private List<Integer> index;
-    final private Bindings bindings;
+    final private OldBindings oldBindings;
     final private Groupings grp1;
     final private Map<QualifiedName, List<TypedValue>> env2;
     final private boolean addOrderp;
@@ -71,7 +71,7 @@ public class ExpandAction implements StatementAction {
                         Map<QualifiedName, QualifiedName> env,
                         Map<QualifiedName, List<TypedValue>> env2,
                         List<Integer> index,
-                        Bindings bindings1,
+                        OldBindings oldBindings,
                         Groupings grp1,
                         boolean addOrderp,
                         boolean allUpdatedRequired) {
@@ -80,7 +80,7 @@ public class ExpandAction implements StatementAction {
         this.env = env;
         this.u = u;
         this.index = index;
-        this.bindings = bindings1;
+        this.oldBindings = oldBindings;
         this.grp1 = grp1;
         this.env2 = env2;
         this.addOrderp = addOrderp;
@@ -481,7 +481,7 @@ public class ExpandAction implements StatementAction {
                 if (Expand.isGensymVariable(id)) {
                     QualifiedName uuid = getUUIDQualifiedName();
                     u.setter(res, position, uuid);
-                    bindings.addVariable(id, uuid);
+                    oldBindings.addVariable(id, uuid);
                     return true;
                 } else {
                     return false;
@@ -693,13 +693,13 @@ public class ExpandAction implements StatementAction {
         List<Statement> newStatements = new LinkedList<Statement>();
 
         for (Statement s : statements) {
-            for (StatementOrBundle sb : expand.expand(s, bindings, grp1)) {
+            for (StatementOrBundle sb : expand.expand(s, oldBindings, grp1)) {
                 newStatements.add((Statement) sb);
             }
 
         }
 
-        updateEnvironmentForBundleId(bun, bindings, env);
+        updateEnvironmentForBundleId(bun, oldBindings, env);
 
         QualifiedName newId;
         final QualifiedName bunId = bun.getId();
@@ -712,7 +712,7 @@ public class ExpandAction implements StatementAction {
                 if (Expand.isGensymVariable(bunId)) {
                     QualifiedName uuid = getUUIDQualifiedName();
                     newId = uuid;
-                    bindings.addVariable(bunId, uuid);
+                    oldBindings.addVariable(bunId, uuid);
                 } else {
                     newId = bunId;
                 }
@@ -725,7 +725,7 @@ public class ExpandAction implements StatementAction {
     }
 
     public void updateEnvironmentForBundleId(Bundle bun,
-                                             Bindings bindings1,
+                                             OldBindings bindings1,
                                              Map<QualifiedName, QualifiedName> env0) {
         final QualifiedName id = bun.getId();
         if (ExpandUtil.isVariable(id)) {

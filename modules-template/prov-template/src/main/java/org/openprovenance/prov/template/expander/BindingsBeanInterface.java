@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.expander;
 
 public interface BindingsBeanInterface {
-    Bindings getBindings();
+    OldBindings getBindings();
     String getTemplate();
 
 }

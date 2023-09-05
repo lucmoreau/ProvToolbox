@@ -13,7 +13,7 @@ import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.expander.Bindings;
+import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.BindingsBeanInterface;
 
 import com.squareup.javapoet.JavaFile;
@@ -124,7 +124,7 @@ public class BindingsBeanGenerator {
         return TypeSpec.classBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(BindingsBeanInterface.class)
-                .addField(Bindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
+                .addField(OldBindings.class, "bindings", Modifier.PRIVATE, Modifier.FINAL)
                 .addField(ProvFactory.class, "pf", Modifier.PRIVATE, Modifier.FINAL);
     }
 
@@ -134,7 +134,7 @@ public class BindingsBeanGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ProvFactory.class, "pf")
                 .addStatement("this.$N = $N", "pf", "pf")
-                .addStatement("this.bindings = new $T($N)", Bindings.class, "pf")
+                .addStatement("this.bindings = new $T($N)", OldBindings.class, "pf")
                 .build();
         
     }
@@ -168,7 +168,7 @@ public class BindingsBeanGenerator {
     public MethodSpec generateBindingsGetter() {
         MethodSpec method = MethodSpec.methodBuilder("getBindings")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(Bindings.class)
+                .returns(OldBindings.class)
                 .addStatement("return bindings")
                 .build();
         

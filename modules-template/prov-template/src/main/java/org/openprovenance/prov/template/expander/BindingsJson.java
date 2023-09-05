@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
@@ -16,6 +17,7 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openprovenance.prov.template.json.*;
 
 public class BindingsJson {
     static final ObjectMapper mapper = new ObjectMapper();
@@ -44,7 +46,7 @@ public class BindingsJson {
 				return o;
 			} else {
                 Map<String,String> table= new HashMap<>();
-				table.put("@type",type.toString());
+				table.put("@type",type.getPrefix()+":"+type.getLocalPart());
 				table.put("@value",o.toString());
 				return table;
 			}
@@ -99,20 +101,46 @@ public class BindingsJson {
             	}
             	return new Object[] {value , pf.newQualifiedName(namespace,local,prefix)};
             }
-            return new Object[] {value , pf.newQualifiedName("xa","xb","cx")};  //TODO
+            System.out.println("===> " + table); //new RuntimeException().printStackTrace();
+            return new Object[] {value , pf.newQualifiedName("xal","xbl","cxl")};  //TODO
+        }
+        if (v instanceof QDescriptor) {
+            QDescriptor qd=(QDescriptor)v;
+            return new Object[] {ns.stringToQualifiedName(qd.id,pf),pf.getName().PROV_QUALIFIED_NAME};
+        }
+        if (v instanceof VDescriptor) {
+
+            VDescriptor vd=(VDescriptor)v;
+            if (vd.type!=null) {
+                String[] strings = vd.type.split(":");
+                String prefix = "";
+                String local = vd.type;
+                if (strings.length > 1) {
+                    prefix = strings[0];
+                    local = strings[1];
+                }
+                String namespace = "http://foo/";
+                namespace = context.getOrDefault(prefix, namespace);
+                if ("xsd".equals(prefix)) {
+                    namespace = NamespacePrefixMapper.XSD_NS;
+                }
+                return new Object[]{vd.value, pf.newQualifiedName(namespace, local, prefix)};
+            } else {
+                return new Object[] {vd.value , pf.newQualifiedName("xxa","xxb","cxx")};  //TODO
+            }
         }
         throw new UnsupportedOperationException("bean is " + v.getClass());
 	}
 
 	
-	public static BindingsBean toBean(Bindings bindings) {
+	public static BindingsBean toBean(OldBindings bindings) {
 		BindingsBean bean=new BindingsBean();
 		bean.var= new HashMap<>();
 		bean.vargen= new HashMap<>();
 		bean.context= new HashMap<>();
 
 
-        for (Entry<QualifiedName, List<QualifiedName>> entry:bindings.getVariables() .entrySet()) {
+        for (Entry<QualifiedName, List<QualifiedName>> entry:bindings.getVariables().entrySet()) {
             List<Object> l1= new LinkedList<>();
             for (QualifiedName qn: entry.getValue()) {
                 l1.add(convertValueToBean(qn, null, bean.context));
@@ -148,8 +176,8 @@ public class BindingsJson {
 		return bean;
 	}
 	
-	public static Bindings fromBean(BindingsBean bean, ProvFactory pf) {
-        Bindings result=new Bindings(pf);
+	public static OldBindings fromBean(BindingsBean bean, ProvFactory pf) {
+        OldBindings result=new OldBindings(pf);
         Namespace ns=new Namespace(bean.context);
 
         for (Entry<String,List<Object>> bindings: bean.var.entrySet()) {
@@ -180,7 +208,7 @@ public class BindingsJson {
                     Object theValue=conversion[0];
                     QualifiedName type=(QualifiedName)conversion[1];
                     if (!(type.equals(pf.getName().PROV_QUALIFIED_NAME))) single_value=false; // interested only in qualified names
-                    values.add(pf.newAttribute(ExpandUtil.TMPL_NS, Bindings.VALUE2+i+"_"+count, ExpandUtil.TMPL_PREFIX, theValue, type));
+                    values.add(pf.newAttribute(ExpandUtil.TMPL_NS, OldBindings.VALUE2+i+"_"+count, ExpandUtil.TMPL_PREFIX, theValue, type));
                     count++;
                 }
                 
@@ -212,6 +240,72 @@ public class BindingsJson {
 	    return result;
 	}
 
+    public static OldBindings fromBean(Bindings bean, ProvFactory pf) {
+        OldBindings result=new OldBindings(pf);
+        Namespace ns=new Namespace(bean.context);
+
+        for (Entry<String, Descriptors> bindings: bean.var.entrySet()) {
+            String var=bindings.getKey();
+            int i=0;
+            List<List<TypedValue>> allvalues= new LinkedList<>();
+
+            boolean single_value=true;
+
+            for (Descriptor value: bindings.getValue().values) {
+
+                List<Object> wrapped;
+                if (value instanceof SingleDescriptor) {
+                    wrapped= new LinkedList<>();
+                    wrapped.add(value.toObject());
+                } else if (value instanceof SingleDescriptors) {
+                    wrapped=((SingleDescriptors) value).values.stream().map(Descriptor::toObject).collect(Collectors.toList()) ;
+                    single_value=false;
+                } else {
+                    throw new IllegalArgumentException("Unexpected type " + value.getClass());
+                }
+                int count=0;
+
+
+
+                List<TypedValue> values= new LinkedList<>();
+
+                for (Object o: wrapped) {
+                    System.out.println("Converting " + o);
+                    Object[] conversion=convertBeanToValue(o,bean.context, ns, pf);
+                    Object theValue=conversion[0];
+                    QualifiedName type=(QualifiedName)conversion[1];
+                    if (!(type.equals(pf.getName().PROV_QUALIFIED_NAME))) single_value=false; // interested only in qualified names
+                    values.add(pf.newAttribute(ExpandUtil.TMPL_NS, OldBindings.VALUE2+i+"_"+count, ExpandUtil.TMPL_PREFIX, theValue, type));
+                    count++;
+                }
+
+                //System.out.println("Adding values " + values + " to allvalues " + allvalues);
+                allvalues.add(values);
+
+                i++;
+            }
+
+            QualifiedName myvar=pf.newQualifiedName(ExpandUtil.VAR_NS,var,"var");
+
+            result.getAttributes().put(myvar,allvalues);
+
+
+            if (single_value) {
+                List<QualifiedName> ll= new LinkedList<>();
+                for (Descriptor o: bindings.getValue().values) {
+                    Object[] conversion=convertBeanToValue(o,bean.context, ns, pf);
+                    Object theValue=conversion[0];
+                    ll.add((QualifiedName) theValue);
+                }
+                result.getVariables().put(myvar,ll);
+            }
+
+
+        }
+
+
+        return result;
+    }
 
 
 	public static void exportBean(String output_file1,
@@ -264,7 +358,7 @@ public class BindingsJson {
         }
     }
 
-    public static Bindings getBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {
+    public static OldBindings getBindingsFromSchema(JsonNode bindings_schema, ProvFactory provFactory) {
         return BindingsJson.fromBean(BindingsJson.importBean(bindings_schema), provFactory);
     }
 

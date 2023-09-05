@@ -4,12 +4,12 @@ prefix var <http://openprovenance.org/var#>
 prefix ex <http://example.org/>
 prefix tmpl <http://openprovenance.org/tmpl#>
 
-entity(var:e,[tmpl:value_0 = 'ex:e1'])
+entity(var:e,[tmpl:value_0 = 'ex:ev1'])
 entity(var:e2,[tmpl:value_0 = 'ex:e2'])
-entity(var:ag,[tmpl:value_0 = 'ex:ag1'])
-entity(var:a,[tmpl:value_0 = 'ex:a1'])
+entity(var:ag,[tmpl:value_0 = 'ex:agv1'])
+entity(var:a,[tmpl:value_0 = 'ex:av1'])
 entity(var:pl,[tmpl:value_0 = 'ex:pl1'])
 entity(var:d,[tmpl:2dvalue_0_0 = "me1@example" %% xsd:string, tmpl:2dvalue_1_0 = "m22@example" %% xsd:string])
-entity(var:start,[tmpl:2dvalue_0_0 = "2015-01-01T13:06:16.237000+00:00" %% xsd:dateTime])
-entity(var:end,  [tmpl:2dvalue_0_0 = "2015-01-08T13:06:16.237000+00:00" %% xsd:dateTime])
+entity(var:start,[tmpl:2dvalue_0_0 = "2023-09-05T21:31:56.570+01:00" %% xsd:dateTime])
+entity(var:end,  [tmpl:2dvalue_0_0 = "2023-09-05T21:31:56.571+01:00" %% xsd:dateTime])
 endDocument

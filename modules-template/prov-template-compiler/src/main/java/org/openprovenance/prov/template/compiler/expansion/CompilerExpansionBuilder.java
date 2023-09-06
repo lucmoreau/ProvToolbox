@@ -18,7 +18,7 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import org.openprovenance.prov.template.expander.ExpandAction;
 import org.openprovenance.prov.template.expander.ExpandUtil;
-import org.openprovenance.prov.template.expander.MissingAttributeValue;
+import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
 import org.openprovenance.prov.template.types.TypesRecordProcessor;
 
 import javax.lang.model.element.Modifier;

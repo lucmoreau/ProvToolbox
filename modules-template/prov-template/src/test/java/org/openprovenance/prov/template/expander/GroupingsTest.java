@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
 

@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.expander.ExpandUtil;
-import org.openprovenance.prov.template.expander.MissingAttributeValue;
+import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

@@ -41,6 +41,8 @@ import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
+import org.openprovenance.prov.template.expander.exception.BundleVariableHasMultipleValues;
+import org.openprovenance.prov.template.expander.exception.BundleVariableHasNoValue;
 
 public class ExpandAction implements StatementAction {
 
@@ -690,7 +692,7 @@ public class ExpandAction implements StatementAction {
     @Override
     public void doAction(Bundle bun, ProvUtilities provUtilities) {
         List<Statement> statements = bun.getStatement();
-        List<Statement> newStatements = new LinkedList<Statement>();
+        List<Statement> newStatements = new LinkedList<>();
 
         for (Statement s : statements) {
             for (StatementOrBundle sb : expand.expand(s, oldBindings, grp1)) {

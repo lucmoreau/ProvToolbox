@@ -14,7 +14,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.expander.OldBindings;
-import org.openprovenance.prov.template.expander.BindingsBeanInterface;
+import org.openprovenance.prov.template.expanderBindingsBeanInterface;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;

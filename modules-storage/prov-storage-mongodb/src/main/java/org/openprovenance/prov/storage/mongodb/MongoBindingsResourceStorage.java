@@ -3,7 +3,7 @@ package org.openprovenance.prov.storage.mongodb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 
 public class MongoBindingsResourceStorage extends MongoGenericResourceStorage<BindingsBean> implements Constants {

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.template.json;
 
-import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 import java.util.Map;
 import java.util.stream.Collectors;

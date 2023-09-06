@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.expander.deprecated;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class BindingsBean {
     public Map<String, List<Object>> var;
     public Map<String, List<Object>> vargen;

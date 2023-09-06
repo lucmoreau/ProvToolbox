@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import static org.openprovenance.prov.template.expander.ExpandUtil.TMPL_NS;
 import static org.openprovenance.prov.template.expander.ExpandUtil.VAR_NS;
@@ -14,10 +14,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.expander.OldBindings;
-import org.openprovenance.prov.template.expander.BindingsBean;
-import org.openprovenance.prov.template.expander.BindingsJson;
-import org.openprovenance.prov.template.expander.Groupings;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 import junit.framework.TestCase;
 
@@ -203,7 +200,7 @@ public class BindingTest extends TestCase {
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, filename, pf);
 
-        OldBindings bindings2= OldBindings.fromDocument_v2(new Utility().readDocument(filename, pf),pf);
+        OldBindings bindings2= Conversions.fromDocument_v2(new Utility().readDocument(filename, pf),pf);
 
         bindings1.addVariableBindingsAsAttributeBindings();
 
@@ -221,15 +218,15 @@ public class BindingTest extends TestCase {
 
         Document doc_v2=bindings_v1.toDocument_v2();
 
-        BindingsBean bb1=BindingsJson.toBean(bindings_v1);
+        BindingsBean bb1=Conversions.toBean(bindings_v1);
 
 
 
-        BindingsJson.exportBean(filename_root+"_1.json",bb1,true);
+        Conversions.exportBean(filename_root+"_1.json",bb1,true);
 
-        BindingsBean bb2=BindingsJson.importBean(new File(filename_root+"_1.json"));
+        BindingsBean bb2=Conversions.importBean(new File(filename_root+"_1.json"));
 
-        OldBindings bindings_v2=BindingsJson.fromBean(bb2,pf);
+        OldBindings bindings_v2= Conversions.fromBean(bb2,pf);
 
 
 

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

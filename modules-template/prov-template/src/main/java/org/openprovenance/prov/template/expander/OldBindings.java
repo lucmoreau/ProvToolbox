@@ -18,6 +18,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 public class OldBindings {
     
@@ -242,85 +243,6 @@ public class OldBindings {
     }
     
 
-    public static OldBindings fromDocument_v2(Document doc, ProvFactory pf) {
-        OldBindings result=new OldBindings(pf);
-        List<Entity> entities=u.getEntity(doc);
-        for (Entity entity: entities) {
-            Map<Integer,QualifiedName> map= new HashMap<>();
-            Map<Integer, Set<TypedValue>> map_v2= new HashMap<>();
-            for (Other attr: entity.getOther()) {
-                String uri = attr.getElementName().getUri();
-                if (uri.startsWith(APP_VALUE_v2)) {
-                    String index=uri.substring(APP_VALUE_v2.length());
-                    Integer i=Integer.valueOf(index);
-                    map_v2.computeIfAbsent(i, k -> new HashSet<>());
-                    map_v2.get(i).add(attr);
-                } else {
-                    if (uri.startsWith(APP_VALUE)) {
-                        Integer i=Integer.valueOf(uri.substring(APP_VALUE.length()));
-                        map_v2.computeIfAbsent(i, k -> new HashSet<>());
-                        map_v2.get(i).add(attr);                    
-                    }
-                }            
-            }
-            
-            // reconstructing the map data structure for variables uniquely mapped to qualified names.
-            boolean single_map=true;
-            for (int i: map_v2.keySet()) {
-                single_map=single_map && (map_v2.get(i).size()==1);
-                if (single_map) {
-                    for (TypedValue tv: map_v2.get(i)) { // only one element to iterate over
-                        single_map=(tv.getValue() instanceof QualifiedName) ;
-                    }
-                }
-            }
-            if (single_map) {
-                for (int i: map_v2.keySet()) {
-                    for (TypedValue tv: map_v2.get(i)) { // only one element to iterate over
-                        map.put(i, (QualifiedName) tv.getValue());
-                    }   
-                }
-            }
-            
-            List<QualifiedName> ll= new ArrayList<>();
-            int size=map.entrySet().size();
-            if (size>0) {
-                for (Entry<Integer, QualifiedName> entry: map.entrySet()) {
-                    set(entry.getKey(),ll,entry.getValue());
-                }
-                result.getVariables().put(entity.getId(),ll);
-            } 
-            
-            int size2=map_v2.entrySet().size();
-            if (size2>0) {
-                List<List<TypedValue>> allvalues= new LinkedList<>();
-
-                for (Entry<Integer, Set<TypedValue>> entry1: map_v2.entrySet()) {
-                    List<TypedValue> values= new LinkedList<>();
-                    //convert to 2dvalue
-                    int count=0;
-                    for (TypedValue tv: entry1.getValue()) {
-                        if (tv instanceof Other) {
-                            Other o=(Other)tv;
-                            String uri = o.getElementName().getUri();
-                            if (uri.startsWith(APP_VALUE_v2)) {
-                                 Integer i=Integer.valueOf(uri.substring(APP_VALUE_v2.length()));
-                                 values.add(pf.newAttribute(TMPL_NS, VALUE2+i+"_"+count, TMPL_PREFIX, o.getValue(), o.getType()));
-                            }
-                        }
-                        count++;
-                    }
-                    
-                    set(entry1.getKey(),allvalues,values);
-                }
-                result.getAttributes().put(entity.getId(),allvalues);
-            }
-        }
-        
-        return result;
-    }
-
-    
     public void addVariableBindingsAsAttributeBindings() {
     	Map<QualifiedName, List<QualifiedName>> vb=getVariables();
     	for(Entry<QualifiedName,List<QualifiedName>> entry: vb.entrySet()) {
@@ -344,8 +266,8 @@ public class OldBindings {
     }
     
     public void exportToJson(String filename) {
-        BindingsBean bb=BindingsJson.toBean(this);
-        BindingsJson.exportBean(filename,bb,true);
+        BindingsBean bb=Conversions.toBean(this);
+        Conversions.exportBean(filename,bb,true);
     }
 	
 }

@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.template.expander.exception.MissingAttributeValue;
 
 public class Using implements Iterable<List<Integer>> {
 

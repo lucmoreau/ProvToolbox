@@ -15,9 +15,7 @@ import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
-import org.openprovenance.prov.template.expander.OldBindings;
-import org.openprovenance.prov.template.expander.BindingsBean;
-import org.openprovenance.prov.template.expander.BindingsJson;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
 import org.quartz.JobKey;
@@ -25,7 +23,6 @@ import org.quartz.SchedulerException;
 
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -110,19 +107,14 @@ public class ActionExpand implements ActionPerformer {
         Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
 
         InputStream stream = new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8));
-
         Bindings bindings = om.readValue(stream, Bindings.class);
-        BindingsBean bean=bindings.toBean();
+        //BindingsBean bean=bindings.toBean();
 
-        // stream is read, i cannot read the following
-        //final BindingsBean bean = BindingsJson.importBean(stream);
-
-        OldBindings bb= BindingsJson.fromBean(bean,pFactory);
-
-        Document expanded = myExpand.expander(templateDocument, bindings, bb);
+        Document expanded = myExpand.expander(templateDocument, bindings);
 
 
-        storeBindings(tr, bean);
+        storeBindings(tr, bindings);
+        //storeBindings(tr, bean);
 
 
         return expanded;
@@ -131,6 +123,18 @@ public class ActionExpand implements ActionPerformer {
     private void storeBindings(TemplateResource tr, BindingsBean bean) throws IOException {
 
         final NonDocumentGenericResourceStorage<BindingsBean> bindingsStorage = (NonDocumentGenericResourceStorage<BindingsBean> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
+        String bindingsStoreId= bindingsStorage.newStore("json", "application/json");
+
+        bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);
+
+        logger.debug("saving bindings " + " " + bindingsStoreId);
+        tr.setBindingsStorageId(bindingsStoreId);
+
+    }
+
+    private void storeBindings(TemplateResource tr, Bindings bean) throws IOException {
+
+        final NonDocumentGenericResourceStorage<Bindings> bindingsStorage = (NonDocumentGenericResourceStorage<Bindings> ) utils.getGenericResourceStorageMap().get(BINDINGS_KEY);
         String bindingsStoreId= bindingsStorage.newStore("json", "application/json");
 
         bindingsStorage.serializeObjectToStore(bean,bindingsStoreId);

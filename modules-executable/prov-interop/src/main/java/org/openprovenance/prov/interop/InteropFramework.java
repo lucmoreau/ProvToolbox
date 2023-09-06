@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import javax.ws.rs.core.MediaType;
@@ -25,8 +26,6 @@ import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
-import org.openprovenance.prov.template.expander.OldBindings;
-import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
 
 
@@ -596,7 +595,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 throw new InteropException("Unknown output file format: " + filename);
             }
         try {
-            return deserialiseDocument(new FileInputStream(filename), format);
+            return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format);
         } catch (IOException e) {
             throw new InteropException(e);
         }
@@ -1024,14 +1023,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
             Document expanded;
             if (config.bindingsVersion==3) {
-                Bindings inBindings= null;
+                Bindings inBindings;
                 try {
                     inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
                 } catch (IOException e) {
                     throw new InteropException("problem parsing bindings file " + config.bindings,e);
                 }
-                OldBindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(config.bindings)),pFactory);
-                expanded = myExpand.expander(doc, inBindings, bb);
+                expanded = myExpand.expander(doc, inBindings);
 
             } else {
                 throw new DocumentedUnsupportedCaseException("bindings version number <> 3");

@@ -30,38 +30,8 @@ public class Expand {
         this.allUpdatedRequired = allUpdatedRequired;
     }
 
-    public Document expander(Document docIn, String out, Document docBindings) {
-        return expander(docIn,docBindings);
-    }
-        
-    public Document expander(Document docIn, Document docBindings) {        
 
-        OldBindings bindings1 = OldBindings.fromDocument_v1(docBindings, pf);
-        
-
-        return expander(docIn, null, bindings1);
-        /*
-        Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
-
-
-        Groupings grp1 = Groupings.fromDocument(docIn);
-        logger.debug("expander: Found groupings " + grp1);
-
-        Bundle bun1 = (Bundle) expand(bun, bindings1, grp1).get(0);
-        Document doc1 = pf.newDocument();
-        doc1.getStatementOrBundle().add(bun1);
-
-        bun1.setNamespace(Namespace.gatherNamespaces(bun1));
-
-        // doc1.setNamespace(bun1.getNamespace());
-        doc1.setNamespace(new Namespace());
-
-        return doc1;
-        */
-    }
-    
-
-    public Document expander(Document docIn, Bindings bindings, OldBindings legacyBindings) {
+    public Document expander(Document docIn, Bindings bindings) {
 
         
         Bundle bun;
@@ -75,7 +45,7 @@ public class Expand {
         Groupings grp1 = Groupings.fromDocument(docIn);
         logger.debug("expander: Found groupings " + grp1);
 
-        Bundle bun1 = (Bundle) expand(bun, bindings, legacyBindings, grp1).get(0);
+        Bundle bun1 = (Bundle) expand(bun, bindings, grp1).get(0);
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -102,10 +72,10 @@ public class Expand {
     	return allExpanded;
     }
 
-    public List<StatementOrBundle> expand(Bundle bun, Bindings newBindings, OldBindings oldBindings, Groupings grp1) {
+    public List<StatementOrBundle> expand(Bundle bun, Bindings bindings, Groupings grp1) {
 
-        OldBindings legacyBindings=BindingsJson.fromBean(newBindings,pf);
-
+        OldBindings legacyBindings=BindingsJson.fromBean(bindings,pf);
+        // TODO: make ExpandAction to take Bindings directly
 
 
         Map<QualifiedName, QualifiedName> env0 = new HashMap<>();

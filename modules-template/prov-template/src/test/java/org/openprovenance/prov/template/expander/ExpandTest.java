@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template;
+package org.openprovenance.prov.template.expander;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +8,9 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.notation.Utility;
-import org.openprovenance.prov.template.expander.*;
 
 import junit.framework.TestCase;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 import org.openprovenance.prov.template.json.Bindings;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -37,7 +37,7 @@ public class ExpandTest extends TestCase {
         Groupings grp1=Groupings.fromDocument(doc);
         System.err.println("Found groupings " + grp1);
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, oldBindings, grp1).get(0);
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, grp1).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -51,8 +51,8 @@ public class ExpandTest extends TestCase {
         //InteropFramework inf=new InteropFramework();
         //inf.writeDocument(out, doc1);
 
-        BindingsBean bindingsBean1=BindingsJson.toBean(oldBindings);
-        BindingsJson.exportBean(out+".json",bindingsBean1,true);
+        BindingsBean bindingsBean1=Conversions.toBean(oldBindings);
+        Conversions.exportBean(out+".json",bindingsBean1,true);
 
 
         System.err.println("expander ==========================================> ");
@@ -76,10 +76,10 @@ public class ExpandTest extends TestCase {
         BindingsBean inBindingsBean=inBindings.toBean();
         OldBindings inBindingsLegacy=BindingsJson.fromBean(inBindings,pf);
        System.out.println(inBindingsLegacy.toString());
-        BindingsBean inBindingsBean2=BindingsJson.toBean(inBindingsLegacy);
+        BindingsBean inBindingsBean2=Conversions.toBean(inBindingsLegacy);
 
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, inBindings, handBindingsLegacy, grp1).get(0);
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, inBindings, grp1).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
@@ -88,8 +88,8 @@ public class ExpandTest extends TestCase {
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, outFileName, pf);
 
-        BindingsBean handBindingsBean=BindingsJson.toBean(handBindingsLegacy);
-        BindingsJson.exportBean(outBindings+".json",handBindingsBean,true);
+        BindingsBean handBindingsBean=Conversions.toBean(handBindingsLegacy);
+        Conversions.exportBean(outBindings+".json",handBindingsBean,true);
 
 
         BindingsBean inBindingsBean3 = mapper.readValue(new File(inFileBindings), BindingsBean.class);

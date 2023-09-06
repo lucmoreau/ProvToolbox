@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.template.expander.BindingsJson;
-import org.openprovenance.prov.template.expander.BindingsBean;
+import org.openprovenance.prov.template.expander.Conversions;
+import org.openprovenance.prov.template.expander.deprecated.BindingsBean;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class MongoBindingsDbTest extends TestCase {
         assertNotNull(id);
 
 
-        BindingsBean bindings1= BindingsJson.importBean(new File("src/test/resources/bindings1.json"));
+        BindingsBean bindings1= Conversions.importBean(new File("src/test/resources/bindings1.json"));
 
         ds.serializeObjectToStore(bindings1,id);
 

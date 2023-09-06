@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.expander;
+package org.openprovenance.prov.template.expander.exception;
 
 import java.util.List;
 

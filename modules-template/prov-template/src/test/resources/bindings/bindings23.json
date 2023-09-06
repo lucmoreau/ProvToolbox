@@ -41,13 +41,9 @@
     } ] ]
   },
   "vargen" : {
-    "123" : [ {
-      "@id" : "uuid:faab3b80-8387-4ed9-9cda-ea36deebbf43"
-    } ]
   },
   "context" : {
-    "ex" : "http://example.org/",
-    "uuid" : "urn:uuid:"
+    "ex" : "http://example.org/"
   },
   "template" : null
 }

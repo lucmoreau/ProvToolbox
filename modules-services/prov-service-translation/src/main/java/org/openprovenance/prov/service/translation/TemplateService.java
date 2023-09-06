@@ -18,9 +18,11 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
+import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.template.json.Bindings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.openprovenance.prov.template.expander.BindingsJson.getBindingsFromSchema;
+import static org.openprovenance.prov.template.expander.BindingsJson.getOldBindingsFromSchema;
 
 @Path("")
 public class TemplateService  implements Constants, InteropMediaType {
@@ -248,9 +251,11 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         Document document= interop.readDocument(the_template);
 
-        OldBindings bb= getBindingsFromSchema(bindings_schema, provFactory);
+        Bindings bindings = BindingsJson.importBindings(bindings_schema);
 
-        Document expanded = myExpand.expander(document, bb);
+        OldBindings bb=  BindingsJson.fromBean(bindings, provFactory);
+
+        Document expanded = myExpand.expander(document, bindings, bb);
 
         return utils.composeResponseOK(expanded).build();
 

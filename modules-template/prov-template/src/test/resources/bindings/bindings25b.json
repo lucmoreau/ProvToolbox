@@ -16,13 +16,9 @@
     } ]
   },
   "vargen" : {
-    "a_bundle" : [ {
-      "@id" : "uuid:fb94c76f-306c-49f1-9dd8-b26d740228c4"
-    } ]
   },
   "context" : {
-    "ex" : "http://example.org/",
-    "uuid" : "urn:uuid:"
+    "ex" : "http://example.org/"
   },
   "template" : null
 }

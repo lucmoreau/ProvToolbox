@@ -30,15 +30,14 @@ public class ExpandTest extends TestCase {
         OldBindings oldBindings= OldBindings.fromDocument_v1(docBindings, pf);
 
 
-        //Bindings newBindings=mapper.readValue(new File(inBindings),Bindings.class);
+        Bindings newBindings=mapper.readValue(new File(inBindings),Bindings.class);
 
-        //BindingsBean bindingsBean3=newBindings.toBean();
 
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
         Groupings grp1=Groupings.fromDocument(doc);
         System.err.println("Found groupings " + grp1);
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, null, oldBindings, grp1).get(0);
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, oldBindings, grp1).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -62,7 +61,7 @@ public class ExpandTest extends TestCase {
 
     public void expandAndCheck(String inFilename,
                                String outFileName,
-                               OldBindings oldBindings,
+                               OldBindings handBindingsLegacy,
                                String outBindings,
                                String inFileBindings) throws IOException {
         System.err.println("expander ==========================================> " + inFilename);
@@ -73,47 +72,38 @@ public class ExpandTest extends TestCase {
         Groupings grp1=Groupings.fromDocument(doc);
         System.err.println("Found groupings " + grp1);
 
-        Bindings newBindings=mapper.readValue(new File(inFileBindings),Bindings.class);
-        BindingsBean bindingsBean3=newBindings.toBean();
-        OldBindings oldBindings2=BindingsJson.fromBean(newBindings,pf);
-        
+        Bindings inBindings=mapper.readValue(new File(inFileBindings),Bindings.class);
+        BindingsBean inBindingsBean=inBindings.toBean();
+        OldBindings inBindingsLegacy=BindingsJson.fromBean(inBindings,pf);
+       System.out.println(inBindingsLegacy.toString());
+        BindingsBean inBindingsBean2=BindingsJson.toBean(inBindingsLegacy);
 
-        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, oldBindings, grp1).get(0);
+
+        Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, inBindings, handBindingsLegacy, grp1).get(0);
         Document doc1= pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
-
-
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
-
         //doc1.setNamespace(bun1.getNamespace());
         doc1.setNamespace(new Namespace());
-
-        //System.out.println(bun1.getNamespace());
-
-
         Namespace.withThreadNamespace(doc1.getNamespace());
         new Utility().writeDocument(doc1, outFileName, pf);
 
-        BindingsBean bindingsBean1=BindingsJson.toBean(oldBindings);
-        BindingsJson.exportBean(outBindings+".json",bindingsBean1,true);
-
-        BindingsBean bindingsBean4=BindingsJson.toBean(oldBindings2);
-
-        if (inFileBindings!=null) {
-            BindingsBean bindingsBean2=mapper.readValue(new File(inFileBindings),BindingsBean.class);
-
-            assertEquals("bindingsBean (from newBinding) and loaded bindings differ ("+inFileBindings+"): ", bindingsBean3, bindingsBean2);
-
-            bindingsBean2.vargen=bindingsBean1.vargen;
-
-            assertEquals("hand bindings and loaded bindings differ ("+inFileBindings+"): ", bindingsBean1, bindingsBean2);
+        BindingsBean handBindingsBean=BindingsJson.toBean(handBindingsLegacy);
+        BindingsJson.exportBean(outBindings+".json",handBindingsBean,true);
 
 
-            // ignore vargen as it is being recreated
-            bindingsBean4.vargen=bindingsBean1.vargen;
+        BindingsBean inBindingsBean3 = mapper.readValue(new File(inFileBindings), BindingsBean.class);
 
-            assertEquals("bindingsBean4 and bindingsBean2 differ ("+inFileBindings+"): ", bindingsBean4, bindingsBean2);
-        }
+        assertEquals("inBindingsBean (from newBindings) and directly loaded bindings bean differ ("+inFileBindings+"): ", inBindingsBean, inBindingsBean3);
+
+
+        assertEquals("hand bindings and directly loaded bindings bean differ ("+inFileBindings+"): ", handBindingsBean, inBindingsBean3);
+
+
+        // ignore vargen as it is being recreated
+        inBindingsBean2.vargen=handBindingsBean.vargen;
+
+        assertEquals("inBindingsBean2 and directly loaded bindings bean differ  differ ("+inFileBindings+"): ", inBindingsBean2, inBindingsBean3);
 
     }
 

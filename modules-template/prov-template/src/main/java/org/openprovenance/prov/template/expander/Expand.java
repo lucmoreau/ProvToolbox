@@ -39,7 +39,7 @@ public class Expand {
         OldBindings bindings1 = OldBindings.fromDocument_v1(docBindings, pf);
         
 
-        return expander(docIn,bindings1);
+        return expander(docIn, null, bindings1);
         /*
         Bundle bun = (Bundle) docIn.getStatementOrBundle().get(0);
 
@@ -61,7 +61,7 @@ public class Expand {
     }
     
 
-    public Document expander(Document docIn, OldBindings bindings1) {
+    public Document expander(Document docIn, Bindings bindings, OldBindings legacyBindings) {
 
         
         Bundle bun;
@@ -75,7 +75,7 @@ public class Expand {
         Groupings grp1 = Groupings.fromDocument(docIn);
         logger.debug("expander: Found groupings " + grp1);
 
-        Bundle bun1 = (Bundle) expand(bun, null, bindings1, grp1).get(0);
+        Bundle bun1 = (Bundle) expand(bun, bindings, legacyBindings, grp1).get(0);
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
 
@@ -103,6 +103,11 @@ public class Expand {
     }
 
     public List<StatementOrBundle> expand(Bundle bun, Bindings newBindings, OldBindings oldBindings, Groupings grp1) {
+
+        OldBindings legacyBindings=BindingsJson.fromBean(newBindings,pf);
+
+
+
         Map<QualifiedName, QualifiedName> env0 = new HashMap<>();
         Map<QualifiedName, List<TypedValue>> env1 = new HashMap<>();
 
@@ -112,7 +117,7 @@ public class Expand {
                                                env0,
                                                env1,
                                                null,
-                                               oldBindings,
+                                               legacyBindings,
                                                grp1,
                                                addOrderp,
                                                allUpdatedRequired);

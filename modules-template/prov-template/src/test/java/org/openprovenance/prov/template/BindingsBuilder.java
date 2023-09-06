@@ -267,6 +267,7 @@ public class BindingsBuilder {
                 pf.newQualifiedName(EX_NS, "bv3", "ex"));
 
 
+
         List<TypedValue> ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
         bindings23.addAttribute(var_d, ll);

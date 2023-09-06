@@ -34,6 +34,7 @@ import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
+import org.openprovenance.prov.template.json.Bindings;
 
 import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
 
@@ -855,8 +856,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             return CommandLineArguments.STATUS_NO_INPUT;
 
         if ((Objects.equals(config.infile, "-")) && (Objects.equals(config.bindings, "-")))
-            throw new InteropException(
-                    "Cannot use standard input for both infile and bindings");
+            throw new InteropException("Cannot use standard input for both infile and bindings");
         
 
         Document doc;
@@ -1024,8 +1024,14 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
             Document expanded;
             if (config.bindingsVersion==3) {
+                Bindings inBindings= null;
+                try {
+                    inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
+                } catch (IOException e) {
+                    throw new InteropException("problem parsing bindings file " + config.bindings,e);
+                }
                 OldBindings bb=BindingsJson.fromBean(BindingsJson.importBean(new File(config.bindings)),pFactory);
-                expanded = myExpand.expander(doc, bb);
+                expanded = myExpand.expander(doc, inBindings, bb);
 
             } else {
                 throw new DocumentedUnsupportedCaseException("bindings version number <> 3");

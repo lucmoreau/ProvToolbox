@@ -23,8 +23,8 @@ public class Bindings {
 
     public BindingsBean toBean() {
         BindingsBean bindingsBean = new BindingsBean();
-        bindingsBean.var=var.keySet().stream().collect(Collectors.toMap(k -> k, k -> var.get(k).toList()));
-        bindingsBean.vargen=vargen.keySet().stream().collect(Collectors.toMap(k -> k, k -> vargen.get(k).toList()));
+        if (var!=null) bindingsBean.var=var.keySet().stream().collect(Collectors.toMap(k -> k, k -> var.get(k).toList()));
+        if (vargen!=null) bindingsBean.vargen=vargen.keySet().stream().collect(Collectors.toMap(k -> k, k -> vargen.get(k).toList()));
         bindingsBean.context=context;
         bindingsBean.template=template;
         return bindingsBean;

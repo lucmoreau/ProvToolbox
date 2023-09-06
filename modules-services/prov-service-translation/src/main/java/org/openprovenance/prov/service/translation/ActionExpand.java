@@ -1,5 +1,6 @@
 package org.openprovenance.prov.service.translation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -18,11 +19,13 @@ import org.openprovenance.prov.template.expander.OldBindings;
 import org.openprovenance.prov.template.expander.BindingsBean;
 import org.openprovenance.prov.template.expander.BindingsJson;
 import org.openprovenance.prov.template.expander.Expand;
+import org.openprovenance.prov.template.json.Bindings;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -37,9 +40,11 @@ public class ActionExpand implements ActionPerformer {
     private final ServiceUtils utils;
 
     private final ResourceIndex<TemplateResource> resourceIndex;
+    private final ObjectMapper om;
 
     ActionExpand(ServiceUtils utils) {
         this.utils= utils;
+        this.om=new ObjectMapper();
 
         ResourceIndex<?> indexer=utils.getExtensionMap().get(TemplateResource.getResourceKind());
         this.resourceIndex=(ResourceIndex<TemplateResource>) indexer;
@@ -97,20 +102,24 @@ public class ActionExpand implements ActionPerformer {
         }
     }
 
-    private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindings) throws IOException {
+    private Document expandTemplateWithBindings(Document templateDocument, TemplateResource tr, String bindingsString) throws IOException {
         boolean allExpanded=false;
         ProvFactory pFactory=utils.getProvFactory();
         boolean addOrderp=false;
 
         Expand myExpand=new Expand(pFactory, addOrderp,allExpanded);
 
-        InputStream stream = new ByteArrayInputStream(bindings.getBytes(StandardCharsets.UTF_8));
+        InputStream stream = new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8));
 
+        Bindings bindings = om.readValue(stream, Bindings.class);
+        BindingsBean bean=bindings.toBean();
 
-        final BindingsBean bean = BindingsJson.importBean(stream);
+        // stream is read, i cannot read the following
+        //final BindingsBean bean = BindingsJson.importBean(stream);
+
         OldBindings bb= BindingsJson.fromBean(bean,pFactory);
 
-        Document expanded = myExpand.expander(templateDocument, bb);
+        Document expanded = myExpand.expander(templateDocument, bindings, bb);
 
 
         storeBindings(tr, bean);

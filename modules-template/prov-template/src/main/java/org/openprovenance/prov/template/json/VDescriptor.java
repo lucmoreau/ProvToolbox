@@ -29,7 +29,7 @@ public class VDescriptor implements SingleDescriptor {
     public String toString() {
         return "VDescriptor{" +
                 "value='" + value + '\'' +
-                ", type='" + type + '\'' +
+                ((type==null)? "": ", type='" + type + '\'') +
                 '}';
     }
 

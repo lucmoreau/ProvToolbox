@@ -98,13 +98,13 @@ public class OldBindings {
     
     /** Attribute value */
     public List<TypedValue> a_val(String s) {
-        List<TypedValue> ll=new LinkedList<TypedValue>();
+        List<TypedValue> ll= new LinkedList<>();
         ll.add(pf.newAttribute(pf.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.XSD_STRING));
         return ll;
     }
     
     public List<TypedValue> a_val(QualifiedName s) {
-        List<TypedValue> ll=new LinkedList<TypedValue>();
+        List<TypedValue> ll= new LinkedList<>();
         ll.add(pf.newAttribute(pf.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.PROV_QUALIFIED_NAME));
         return ll;
     }

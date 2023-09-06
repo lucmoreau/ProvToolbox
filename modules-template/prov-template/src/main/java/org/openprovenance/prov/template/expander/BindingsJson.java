@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
@@ -53,8 +52,41 @@ public class BindingsJson {
 		}
 		throw new UnsupportedOperationException("type is " + o);
 	}
-	
-	public static Object[] convertBeanToValue(Object v, Map<String, String> context, Namespace ns, ProvFactory pf) {
+
+    public static Object[] convertBeanToValue(Descriptor v, Map<String, String> context, Namespace ns, ProvFactory pf) {
+        if (v instanceof QDescriptor) {
+            QDescriptor qd=(QDescriptor)v;
+            return new Object[] {ns.stringToQualifiedName(qd.id,pf),pf.getName().PROV_QUALIFIED_NAME};
+        }
+        if (v instanceof VDescriptor) {
+
+            VDescriptor vd=(VDescriptor)v;
+            if (vd.language!=null) {
+                return new Object[]{pf.newInternationalizedString(vd.value,vd.language),pf.getName().XSD_STRING};
+            }
+            if (vd.type!=null) {
+                String[] strings = vd.type.split(":");
+                String prefix = "";
+                String local = vd.type;
+                if (strings.length > 1) {
+                    prefix = strings[0];
+                    local = strings[1];
+                }
+                String namespace = "http://foo/";
+                namespace = context.getOrDefault(prefix, namespace);
+                if ("xsd".equals(prefix)) {
+                    namespace = NamespacePrefixMapper.XSD_NS;
+                }
+                return new Object[]{vd.value, pf.newQualifiedName(namespace, local, prefix)};
+            } else {
+                System.out.println("===> vd " + vd); //new RuntimeException().printStackTrace();
+                return new Object[]{vd.value,pf.getName().XSD_STRING};
+            }
+        }
+        else throw new UnsupportedOperationException("bean is " + v.getClass());
+    }
+
+        public static Object[] convertBeanToValue(Object v, Map<String, String> context, Namespace ns, ProvFactory pf) {
 	   
         if (v instanceof Integer) return new Object[] {v , pf.getName().XSD_INT};
         if (v instanceof Float)   return new Object[] {v , pf.getName().XSD_FLOAT};
@@ -101,9 +133,10 @@ public class BindingsJson {
             	}
             	return new Object[] {value , pf.newQualifiedName(namespace,local,prefix)};
             }
-            System.out.println("===> " + table); //new RuntimeException().printStackTrace();
+            System.out.println("===> ?? " + table); //new RuntimeException().printStackTrace();
             return new Object[] {value , pf.newQualifiedName("xal","xbl","cxl")};  //TODO
         }
+        /*
         if (v instanceof QDescriptor) {
             QDescriptor qd=(QDescriptor)v;
             return new Object[] {ns.stringToQualifiedName(qd.id,pf),pf.getName().PROV_QUALIFIED_NAME};
@@ -111,6 +144,9 @@ public class BindingsJson {
         if (v instanceof VDescriptor) {
 
             VDescriptor vd=(VDescriptor)v;
+            if (vd.language!=null) {
+                return new Object[]{pf.newInternationalizedString(vd.value,vd.language),pf.getName().XSD_STRING};
+            }
             if (vd.type!=null) {
                 String[] strings = vd.type.split(":");
                 String prefix = "";
@@ -126,9 +162,12 @@ public class BindingsJson {
                 }
                 return new Object[]{vd.value, pf.newQualifiedName(namespace, local, prefix)};
             } else {
-                return new Object[] {vd.value , pf.newQualifiedName("xxa","xxb","cxx")};  //TODO
+                System.out.println("===> vd " + vd); //new RuntimeException().printStackTrace();
+                return new Object[]{vd.value,pf.getName().XSD_STRING};
             }
         }
+
+         */
         throw new UnsupportedOperationException("bean is " + v.getClass());
 	}
 
@@ -244,24 +283,38 @@ public class BindingsJson {
         OldBindings result=new OldBindings(pf);
         Namespace ns=new Namespace(bean.context);
 
-        for (Entry<String, Descriptors> bindings: bean.var.entrySet()) {
-            String var=bindings.getKey();
+        fromBeanForVariables(bean, pf, bean.var, ns, result, VAR_KIND.IS_VAR);
+        fromBeanForVariables(bean, pf, bean.vargen, ns, result, VAR_KIND.IS_VARGEN);
+
+
+        return result;
+    }
+
+    enum VAR_KIND { IS_VAR, IS_VARGEN };
+    private static void fromBeanForVariables(Bindings bean,
+                                             ProvFactory pf,
+                                             Map<String, Descriptors> var,
+                                             Namespace ns,
+                                             OldBindings result, VAR_KIND varKind) {
+        for (String key: var.keySet()) {
             int i=0;
             List<List<TypedValue>> allvalues= new LinkedList<>();
 
             boolean single_value=true;
 
-            for (Descriptor value: bindings.getValue().values) {
+            Descriptors descriptors = var.get(key);
+            for (Descriptor descriptor: descriptors.values) {
 
-                List<Object> wrapped;
-                if (value instanceof SingleDescriptor) {
-                    wrapped= new LinkedList<>();
-                    wrapped.add(value.toObject());
-                } else if (value instanceof SingleDescriptors) {
-                    wrapped=((SingleDescriptors) value).values.stream().map(Descriptor::toObject).collect(Collectors.toList()) ;
+                SingleDescriptors wrapped;
+                if (descriptor instanceof SingleDescriptor) {
+                    wrapped=new SingleDescriptors();
+                    wrapped.values=new LinkedList<>();
+                    wrapped.values.add((SingleDescriptor)descriptor);
+                } else if (descriptor instanceof SingleDescriptors) {
+                    wrapped=((SingleDescriptors) descriptor);
                     single_value=false;
                 } else {
-                    throw new IllegalArgumentException("Unexpected type " + value.getClass());
+                    throw new IllegalArgumentException("Unexpected type " + descriptor.getClass());
                 }
                 int count=0;
 
@@ -269,9 +322,9 @@ public class BindingsJson {
 
                 List<TypedValue> values= new LinkedList<>();
 
-                for (Object o: wrapped) {
+                for (SingleDescriptor o: wrapped.values) {
                     System.out.println("Converting " + o);
-                    Object[] conversion=convertBeanToValue(o,bean.context, ns, pf);
+                    Object[] conversion=convertBeanToValue(o, bean.context, ns, pf);
                     Object theValue=conversion[0];
                     QualifiedName type=(QualifiedName)conversion[1];
                     if (!(type.equals(pf.getName().PROV_QUALIFIED_NAME))) single_value=false; // interested only in qualified names
@@ -279,36 +332,38 @@ public class BindingsJson {
                     count++;
                 }
 
-                //System.out.println("Adding values " + values + " to allvalues " + allvalues);
                 allvalues.add(values);
 
                 i++;
             }
 
-            QualifiedName myvar=pf.newQualifiedName(ExpandUtil.VAR_NS,var,"var");
+            QualifiedName myvar;
+            if (varKind.equals(VAR_KIND.IS_VAR)) {
+                 myvar = pf.newQualifiedName(ExpandUtil.VAR_NS, key, "var");
+            } else {
+                 myvar = pf.newQualifiedName(ExpandUtil.VARGEN_NS, key, "vargen");
+            }
 
-            result.getAttributes().put(myvar,allvalues);
+            result.getAttributes().put(myvar, allvalues);
 
 
             if (single_value) {
-                List<QualifiedName> ll= new LinkedList<>();
-                for (Descriptor o: bindings.getValue().values) {
-                    Object[] conversion=convertBeanToValue(o,bean.context, ns, pf);
-                    Object theValue=conversion[0];
+                List<QualifiedName> ll = new LinkedList<>();
+                for (Descriptor o : descriptors.values) {
+                    Object[] conversion = convertBeanToValue(o, bean.context, ns, pf);
+                    Object theValue = conversion[0];
                     ll.add((QualifiedName) theValue);
                 }
-                result.getVariables().put(myvar,ll);
+                result.getVariables().put(myvar, ll);
             }
 
 
+
         }
-
-
-        return result;
     }
 
 
-	public static void exportBean(String output_file1,
+    public static void exportBean(String output_file1,
 			                      BindingsBean bean,
 			                      boolean pretty) {
 

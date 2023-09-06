@@ -11,11 +11,11 @@ bundle vargen:123
 entity(vargen:123, [prov:type='prov:Bundle'])
 entity(var:a)
 
-wasDerivedFrom(var:a,vargen:e)
-entity(vargen:e)
+wasDerivedFrom(var:a,var:e)
+entity(var:e)
 
-entity(vargen:f)
-wasDerivedFrom(var:a,vargen:f)
+entity(var:f)
+wasDerivedFrom(var:a,var:f)
 
 
 entity(var:b, [tmpl:label='var:label', ex:email='var:d', tmpl:linked='var:a',ex:hi='vargen:hi'])

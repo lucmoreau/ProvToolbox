@@ -76,8 +76,7 @@ public class ExpandTest extends TestCase {
         Bindings newBindings=mapper.readValue(new File(inFileBindings),Bindings.class);
         BindingsBean bindingsBean3=newBindings.toBean();
         OldBindings oldBindings2=BindingsJson.fromBean(newBindings,pf);
-
-
+        
 
         Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, oldBindings, grp1).get(0);
         Document doc1= pf.newDocument();
@@ -108,8 +107,12 @@ public class ExpandTest extends TestCase {
             bindingsBean2.vargen=bindingsBean1.vargen;
 
             assertEquals("hand bindings and loaded bindings differ ("+inFileBindings+"): ", bindingsBean1, bindingsBean2);
-            // THIS TEST IS FAILING
-            // /assertEquals("bindingsBean4 and bindingsBean2 differ ("+inFileBindings+"): ", bindingsBean4, bindingsBean2);
+
+
+            // ignore vargen as it is being recreated
+            bindingsBean4.vargen=bindingsBean1.vargen;
+
+            assertEquals("bindingsBean4 and bindingsBean2 differ ("+inFileBindings+"): ", bindingsBean4, bindingsBean2);
         }
 
     }

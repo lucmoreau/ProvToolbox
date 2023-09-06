@@ -43,12 +43,6 @@
   "vargen" : {
     "123" : [ {
       "@id" : "uuid:faab3b80-8387-4ed9-9cda-ea36deebbf43"
-    } ],
-    "e" : [ {
-      "@id" : "uuid:8718825a-4a3c-41e5-982b-73e33d474473"
-    } ],
-    "f" : [ {
-      "@id" : "uuid:ba0f21cd-5a58-420a-b8a8-a4b955912029"
     } ]
   },
   "context" : {

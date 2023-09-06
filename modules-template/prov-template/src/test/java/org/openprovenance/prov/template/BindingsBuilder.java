@@ -249,66 +249,66 @@ public class BindingsBuilder {
     }
 
     OldBindings makebindinsg23() {
-        OldBindings bindings1 = new OldBindings(pf);
+        OldBindings bindings23 = new OldBindings(pf);
 
-        bindings1.addVariable(var_a,
+        bindings23.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av1", "ex"));
-        bindings1.addVariable(var_a,
+        bindings23.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av2", "ex"));
-        bindings1.addVariable(var_a,
+        bindings23.addVariable(var_a,
                 pf.newQualifiedName(EX_NS, "av3", "ex"));
 
-        bindings1.addVariable(var_b,
+        bindings23.addVariable(var_b,
                 pf.newQualifiedName(EX_NS, "bv1", "ex"));
-        bindings1.addVariable(var_b,
+        bindings23.addVariable(var_b,
                 pf.newQualifiedName(EX_NS, "bv2", "ex"));
 
-        bindings1.addVariable(var_b,
+        bindings23.addVariable(var_b,
                 pf.newQualifiedName(EX_NS, "bv3", "ex"));
 
 
         List<TypedValue> ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "me1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
+        bindings23.addAttribute(var_d, ll);
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "me2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
+        bindings23.addAttribute(var_d, ll);
 
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "me3@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_d, ll);
+        bindings23.addAttribute(var_d, ll);
 
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "Luc1@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
+        bindings23.addAttribute(var_e, ll);
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "Luc2@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
+        bindings23.addAttribute(var_e, ll);
 
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "Luc6@example", pf.getName().XSD_STRING));
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "Luc7@example", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_e, ll);
+        bindings23.addAttribute(var_e, ll);
 
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "label1", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_label, ll);
+        bindings23.addAttribute(var_label, ll);
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "label2", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_label, ll);
+        bindings23.addAttribute(var_label, ll);
 
         ll = new LinkedList<>();
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "label3", pf.getName().XSD_STRING));
         ll.add(pf.newOther(pf.newQualifiedName(ExpandUtil.TMPL_NS, "ignore", "app"), "label3b", pf.getName().XSD_STRING));
-        bindings1.addAttribute(var_label, ll);
-        return bindings1;
+        bindings23.addAttribute(var_label, ll);
+        return bindings23;
     }
 
     OldBindings makeBindings10() {

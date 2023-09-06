@@ -1,25 +1,19 @@
 package org.openprovenance.prov.template.compiler;
 
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeSpec.Builder;
+import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.expander.BindingsBeanInterface;
+import org.openprovenance.prov.template.expander.OldBindings;
+
+import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.lang.model.element.Modifier;
-
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.ProvUtilities;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.template.expander.OldBindings;
-import org.openprovenance.prov.template.expanderBindingsBeanInterface;
-
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeSpec.Builder;
 
 public class BindingsBeanGenerator {
     
@@ -78,9 +72,9 @@ public class BindingsBeanGenerator {
 
         Bundle bun=u.getBundle(doc).get(0);
         
-        Set<QualifiedName> allVars=new HashSet<QualifiedName>();
-        Set<QualifiedName> allAtts=new HashSet<QualifiedName>();
-        
+        Set<QualifiedName> allVars= new HashSet<>();
+        Set<QualifiedName> allAtts= new HashSet<>();
+
         gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
         
         return generate(allVars,allAtts,name, templateName, packge, resource);

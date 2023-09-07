@@ -10,11 +10,20 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dependencies.md" beforeDir="false" afterPath="$PROJECT_DIR$/Dependencies.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/bindings-plps-log1.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/bindingsCheneyTRENDDB09.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/bindingsMoreauOPM101.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/plps-log-template.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/template-attribution.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/test-template.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/license/tree.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/prov/invalid.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/prov/invalid.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/prov/pc1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/prov/pc1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/prov/primer.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/prov/primer.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/templates/org/openprovenance/generic/binaryop/1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/light/IntegrationLightTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/light/LightIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/IntegrationTemplateTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/TemplateIT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -192,7 +201,7 @@
       <recent name="org.openprovenance.prov.template.compiler" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.IntegrationTemplateTests.testTemplateAction1">
+  <component name="RunManager" selected="JUnit.TemplateIT.testTemplateAction1">
     <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-service-core" />
       <extension name="coverage">
@@ -245,58 +254,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="IntegrationLightTests.testEntity101" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-translator" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.translator.light.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator.light" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.light.IntegrationLightTests" />
-      <option name="METHOD_NAME" value="testEntity101" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="IntegrationTemplateTests.testTemplateAction1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-translator" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.translator.template.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.template.IntegrationTemplateTests" />
-      <option name="METHOD_NAME" value="testTemplateAction1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="InteropTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-interop" />
       <extension name="coverage">
@@ -323,6 +280,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="LightIT.testEntity101" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.light.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator.light" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.light.LightIT" />
+      <option name="METHOD_NAME" value="testEntity101" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -339,6 +322,32 @@
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TemplateIT.testTemplateAction1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.template.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.template.TemplateIT" />
+      <option name="METHOD_NAME" value="testTemplateAction1" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -392,16 +401,16 @@
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.AppTest" />
-      <item itemvalue="JUnit.IntegrationLightTests.testEntity101" />
-      <item itemvalue="JUnit.IntegrationTemplateTests.testTemplateAction1" />
       <item itemvalue="JUnit.InteropTest" />
+      <item itemvalue="JUnit.LightIT.testEntity101" />
+      <item itemvalue="JUnit.TemplateIT.testTemplateAction1" />
       <item itemvalue="JUnit.ExpandTest.testExpandQualifiedName" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.IntegrationTemplateTests.testTemplateAction1" />
-        <item itemvalue="JUnit.IntegrationLightTests.testEntity101" />
+        <item itemvalue="JUnit.TemplateIT.testTemplateAction1" />
+        <item itemvalue="JUnit.LightIT.testEntity101" />
         <item itemvalue="JUnit.InteropTest" />
         <item itemvalue="JUnit.AppTest" />
         <item itemvalue="JUnit.ExpandTest.testExpandQualifiedName" />
@@ -780,7 +789,7 @@
       <workItem from="1693852823120" duration="10727000" />
       <workItem from="1693919563810" duration="27570000" />
       <workItem from="1694027380052" duration="12448000" />
-      <workItem from="1694092947150" duration="10243000" />
+      <workItem from="1694092947150" duration="11295000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

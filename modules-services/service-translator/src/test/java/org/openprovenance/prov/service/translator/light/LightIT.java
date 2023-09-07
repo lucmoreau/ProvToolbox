@@ -23,13 +23,13 @@ import java.util.*;
 import static org.openprovenance.prov.interop.InteropMediaType.*;
 
 
-public class IntegrationLightTests extends RoundTripFromJavaTest {
+public class LightIT extends RoundTripFromJavaTest {
 
     private final Client client;
     private final DocumentEquality documentEquality;
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
-    public IntegrationLightTests() {
+    public LightIT() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
         this.client=getClient();
@@ -46,7 +46,7 @@ public class IntegrationLightTests extends RoundTripFromJavaTest {
 
 
 
-    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(IntegrationLightTests.class, "config.properties")).getProperty("service.port");
+    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(LightIT.class, "config.properties")).getProperty("service.port");
 
     String postURL="http://localhost:" + port + "/provapi/documents2/";
 

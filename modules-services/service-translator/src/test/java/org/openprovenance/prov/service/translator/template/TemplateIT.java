@@ -15,7 +15,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translator.DocumentMessageBodyReader;
-import org.openprovenance.prov.service.translator.light.IntegrationLightTests;
+import org.openprovenance.prov.service.translator.light.LightIT;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;
@@ -37,12 +37,12 @@ import java.util.Objects;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class IntegrationTemplateTests extends TestCase {
-    static Logger logger = LogManager.getLogger(IntegrationTemplateTests.class);
+public class TemplateIT extends TestCase {
+    static Logger logger = LogManager.getLogger(TemplateIT.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
-    public IntegrationTemplateTests() {
+    public TemplateIT() {
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
 
     }
@@ -56,7 +56,7 @@ public class IntegrationTemplateTests extends TestCase {
     }
 
 
-    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(IntegrationLightTests.class, "config.properties")).getProperty("service.port");
+    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(LightIT.class, "config.properties")).getProperty("service.port");
     
     String expansionURL="http://localhost:" + port + "/provapi/documents/";
     

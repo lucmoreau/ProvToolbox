@@ -53,13 +53,13 @@
             <scope>test</scope>
         </dependency>
 
-
+<!--
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
             <version>1.1.2</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
@@ -259,7 +259,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.18.1</version>
+                        <version>${failsafe.plugin.version}</version>
                         <configuration>
                             <encoding>UTF-8</encoding>
                             <runOrder>alphabetical</runOrder>
@@ -296,8 +296,9 @@
 
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.19.1</version>
+                        <version>${surefire.plugin.version}</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -330,10 +331,11 @@
                 <hsqldb.location>target/test-database/database</hsqldb.location>
             </properties>
             <build>
-
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.plugin.version}</version>
                         <configuration>
                             <skip>false</skip>
                         </configuration>

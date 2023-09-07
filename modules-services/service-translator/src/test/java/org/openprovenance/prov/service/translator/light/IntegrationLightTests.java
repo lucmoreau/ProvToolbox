@@ -18,21 +18,18 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.openprovenance.prov.interop.InteropMediaType.*;
 
 
-public class IT extends RoundTripFromJavaTest {
+public class IntegrationLightTests extends RoundTripFromJavaTest {
 
     private final Client client;
     private final DocumentEquality documentEquality;
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
-    public IT() {
+    public IntegrationLightTests() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
         this.client=getClient();
@@ -48,34 +45,16 @@ public class IT extends RoundTripFromJavaTest {
     
 
 
-    public String extension() {
-        return "";
-    }
 
-
-    static String port= Configuration.getPropertiesFromClasspath(IT.class,"config.properties").getProperty("service.port");
+    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(IntegrationLightTests.class, "config.properties")).getProperty("service.port");
 
     String postURL="http://localhost:" + port + "/provapi/documents2/";
 
 
-    ProvFormat format= ProvFormat.TRIG;
-
-    public boolean isRdf(ProvFormat format) {
-        switch (format) {
-            case TRIG:
-            case RDFXML:
-            case TURTLE: {
-                return true;
-            }
-            default:
-                return false;
-        }
-    }
 
 
 
-
-    class Pair {
+    static public class Pair {
         Document document;
         ProvFormat format;
         Pair(Document document, ProvFormat format) {
@@ -97,15 +76,7 @@ public class IT extends RoundTripFromJavaTest {
     }
     public boolean checkTest(String name, ProvFormat format)
     {
-        if (isRdf(format)) {
-            if(name.endsWith("mention1"+extension()) || name.endsWith("mention2"+extension()))
-            {
-                return false;
-            }
-            if (name.contains("scruffy")) {
-                return false;
-            }
-        }
+
         if (name.endsWith("bundle4"+extension()) && format.toString().equals("JSON")) {
             return false;
         }
@@ -130,6 +101,7 @@ public class IT extends RoundTripFromJavaTest {
         Document doc1 = readDocument(location,MEDIA_APPLICATION_PROVENANCE_XML, ".provx");
         //Document doc4 = readDocument(location,MEDIA_APPLICATION_TRIG,           ".trig");
         Document doc5 = readDocument(location,MEDIA_APPLICATION_JSONLD,         ".jsonld");
+        @SuppressWarnings("unused")
         Object o1=readObject(location, MEDIA_IMAGE_SVG_XML);
         List<Pair> ll= new LinkedList<>();
         ll.add(new Pair(doc1, ProvFormat.XML));
@@ -148,6 +120,7 @@ public class IT extends RoundTripFromJavaTest {
 
 
 
+    @SuppressWarnings("unused")
     public String readAsString(String location, String media) {
         Client client=ClientBuilder.newBuilder().build();
         client.register(StringMessageBodyReader.class);
@@ -159,14 +132,12 @@ public class IT extends RoundTripFromJavaTest {
     }
 
     public Object readObject(String location, String media) {
-
         WebTarget target=client.target(location);
         Response response2=target.request(media).get();
-        Object o=response2.readEntity(InputStream.class);
-        return o;
+        return response2.readEntity(InputStream.class);
     }
 
-    static Map<String,String> fileToUri=new HashMap<String,String>();
+    static Map<String,String> fileToUri= new HashMap<>();
 
     @Override
     public void writeDocument(Document doc, String file) {
@@ -186,8 +157,8 @@ public class IT extends RoundTripFromJavaTest {
 
 
     public void compareDocuments(Document doc, Document doc2, boolean check) {
-        assertTrue("self doc equality",     doc.equals(doc));
-        assertTrue("self doc2 equality",    doc2.equals(doc2));
+        assertEquals("self doc equality", doc, doc);
+        assertEquals("self doc2 equality", doc2, doc2);
         if (check) {
             boolean result=this.documentEquality.check(doc, doc2);
             if (!result) {
@@ -195,7 +166,6 @@ public class IT extends RoundTripFromJavaTest {
                 System.out.println("Read graph: "+doc2);
             }
             assertTrue("doc equals doc2", result);
-        } else {
         }
     }
 

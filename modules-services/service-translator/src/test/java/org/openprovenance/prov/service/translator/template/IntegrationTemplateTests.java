@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translator.template;
 
 import junit.framework.TestCase;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
@@ -14,6 +15,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translator.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.translator.light.IntegrationLightTests;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;
@@ -29,17 +31,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class IT extends TestCase {
-    static Logger logger = LogManager.getLogger(IT.class);
+public class IntegrationTemplateTests extends TestCase {
+    static Logger logger = LogManager.getLogger(IntegrationTemplateTests.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
-    public IT(String name) {
-        super(name);
+    public IntegrationTemplateTests() {
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
 
     }
@@ -53,21 +56,21 @@ public class IT extends TestCase {
     }
 
 
-    static String port= Configuration.getPropertiesFromClasspath(org.openprovenance.prov.service.translator.light.IT.class,"config.properties").getProperty("service.port");
+    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(IntegrationLightTests.class, "config.properties")).getProperty("service.port");
     
     String expansionURL="http://localhost:" + port + "/provapi/documents/";
     
 
-    public static HashMap<String, String> table=new HashMap<String, String>();
+    public static Map<String, String> table= new HashMap<>();
      
 
     public void testTemplateAction1() throws IOException {
-    	testAction("src/test/resources/test-templates/bindings1.json", "src/test/resources/test-templates/expansion-bindings1.provn");
+    	doTestAction("src/test/resources/test-templates/bindings1.json", "src/test/resources/test-templates/expansion-bindings1.provn");
     }
    
 
    
-    public void testAction(String file, String expectedFile) throws IOException {
+    public void doTestAction(String file, String expectedFile) throws IOException {
         
         logger.debug("/////////////////////////////////// testAction");
 
@@ -122,14 +125,12 @@ public class IT extends TestCase {
           }
 
     public String doPostStatements(String url, String template, String file) {
-        InteropFramework intF=new InteropFramework();
-        
+
         String str;
         try {
             str=readFile(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.throwing(Level.WARN,e); //e.printStackTrace();
             str=null;
         } 
         assertNotNull(" string (" + file + ") is not null", str);
@@ -164,12 +165,10 @@ public class IT extends TestCase {
 
 
     public Document readDocument(String location) {
-
         Client client=getClient();
         WebTarget target=client.target(location);
         Response response2=target.request().get();
-        Document doc=response2.readEntity(org.openprovenance.prov.vanilla.Document.class);
-        return doc;
+        return response2.readEntity(org.openprovenance.prov.vanilla.Document.class);
     }
 
 

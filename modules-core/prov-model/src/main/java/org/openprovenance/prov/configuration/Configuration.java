@@ -26,7 +26,7 @@ public class Configuration {
         try {
             props.load(inputStream);
         } catch (IOException ee) {
-            return null;
+            return props;
         }
         return props;
     }

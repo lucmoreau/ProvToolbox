@@ -100,7 +100,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
+				<version>${antrun.plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>package</phase>

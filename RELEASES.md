@@ -21,6 +21,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   * refactored testing
 * tutorials upgraded to support the above
   * tutorial4: uses json representation for bindings
+* upgraded service to Jakarta EE (servlet5)
+  * solved recurring dependency conficts
 
 ==1.0.0==
 * Bumped up versions for many dependencies

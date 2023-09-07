@@ -21,6 +21,7 @@ import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translation.RandomService;
+import org.openprovenance.prov.service.translation.SwaggerTags;
 import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
 
@@ -28,6 +29,8 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.openprovenance.prov.service.translation.SwaggerTags.*;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -41,11 +44,10 @@ import java.util.Set;
 						           email = "provenance@kcl.ac.uk")
 		),
 		tags = {
-				@Tag(name = "documents",  description = "provenance api (documents)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
-			//	@Tag(name = "provapi",    description = "provenance api",                 externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = "vis",        description = "provenance api (visualisation)", externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = "random",     description = "provenance api (random)",        externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = "view",       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "NOTE: /provapi is incorrect and should be /view"))
+				@Tag(name = DOCUMENTS,  description = "provenance api (documents)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
+			 	@Tag(name = TEMPLATE,   description = "provenance api (templates)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = RANDOM,     description = "provenance api (random)",        externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = VIEW,       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "NOTE: /provapi is incorrect and should be /view"))
 		},
 		externalDocs = @ExternalDocumentation(description = "definition docs desc"),
 		security = {
@@ -59,15 +61,16 @@ import java.util.Set;
 				),
 				@Server(
 						description = "dev",
-						url = "http://localhost:{port}/",
+						url = "http://localhost:{port}/{context}/",
 						variables = {
-								@ServerVariable(name = "port", description = "service port", defaultValue = "7071", allowableValues = {"7070", "7071", "8080"})
+								@ServerVariable(name = "port", description = "service port", defaultValue = "7071", allowableValues = {"7070", "7071", "8080"}),
+								@ServerVariable(name = "context", description = "service context", defaultValue = "service", allowableValues = {"service", "context"})
 						})
 		}
 )
 
 @ApplicationPath("/provapi")
-public class ProvapiApplication extends Application {
+public class ProvapiApplication extends Application  {
 	private final Set<Object> singletons = new HashSet<>();
 
 
@@ -89,8 +92,7 @@ public class ProvapiApplication extends Application {
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		
-		//singletons.add(new io.swagger.jaxrs.listing.SwaggerSerializers());
-		//singletons.add(new io.swagger.jaxrs.listing.ApiListingResource());
+
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());			
 		

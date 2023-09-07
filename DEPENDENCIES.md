@@ -96,7 +96,6 @@
 [INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.2:compile
 [INFO] |  |  \- jakarta.activation:jakarta.activation-api:jar:1.2.1:compile
 [INFO] |  \- org.apache.commons:commons-collections4:jar:4.4:compile
-[INFO] +- javax.json:javax.json-api:jar:1.1.2:compile
 [INFO] +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.20.0:compile
 [INFO] |  \- org.slf4j:slf4j-api:jar:1.7.25:compile
 [INFO] +- org.jboss.resteasy:resteasy-servlet-initializer:jar:6.2.5.Final:compile
@@ -108,14 +107,6 @@
 [INFO] |  |  \- com.ibm.async:asyncutil:jar:0.1.0:compile
 [INFO] |  +- jakarta.ws.rs:jakarta.ws.rs-api:jar:3.1.0:compile
 [INFO] |  \- org.jboss.logging:jboss-logging:jar:3.5.3.Final:compile
-[INFO] +- org.jboss.resteasy:resteasy-client:jar:6.2.5.Final:test
-[INFO] |  +- org.jboss.resteasy:resteasy-client-api:jar:6.2.5.Final:test
-[INFO] |  +- org.jboss.resteasy:resteasy-core-spi:jar:6.2.5.Final:compile
-[INFO] |  +- org.apache.httpcomponents:httpclient:jar:4.5.14:test
-[INFO] |  |  +- org.apache.httpcomponents:httpcore:jar:4.4.16:test
-[INFO] |  |  \- commons-logging:commons-logging:jar:1.2:test
-[INFO] |  +- commons-codec:commons-codec:jar:1.15:test
-[INFO] |  \- org.reactivestreams:reactive-streams:jar:1.0.4:compile
 [INFO] +- commons-io:commons-io:jar:2.8.0:compile
 [INFO] +- org.quartz-scheduler:quartz:jar:2.3.2:compile
 [INFO] |  +- com.mchange:c3p0:jar:0.9.5.4:compile
@@ -138,12 +129,20 @@
 [INFO] |  \- com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider:jar:2.15.1:compile
 [INFO] |     +- com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-base:jar:2.15.1:compile
 [INFO] |     \- com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:jar:2.15.1:compile
-[INFO] +- org.webjars:swagger-ui:jar:4.1.3:compile
-[INFO] +- org.webjars:jquery:jar:3.6.2:compile
+[INFO] +- org.webjars:swagger-ui:jar:5.6.1:compile
+[INFO] +- org.webjars:jquery:jar:3.7.1:compile
 [INFO] +- org.webjars:bootstrap-table:jar:1.9.1-1:compile
 [INFO] +- org.webjars:bootstrap:jar:3.4.0:compile
 [INFO] +- org.webjars:font-awesome:jar:4.7.0:compile
 [INFO] +- org.webjars.bowergithub.ajaxorg:ace-builds:jar:1.4.5:compile
+[INFO] +- org.jboss.resteasy:resteasy-client:jar:6.2.5.Final:test
+[INFO] |  +- org.jboss.resteasy:resteasy-client-api:jar:6.2.5.Final:test
+[INFO] |  +- org.jboss.resteasy:resteasy-core-spi:jar:6.2.5.Final:compile
+[INFO] |  +- org.apache.httpcomponents:httpclient:jar:4.5.14:test
+[INFO] |  |  +- org.apache.httpcomponents:httpcore:jar:4.4.16:test
+[INFO] |  |  \- commons-logging:commons-logging:jar:1.2:test
+[INFO] |  +- commons-codec:commons-codec:jar:1.15:test
+[INFO] |  \- org.reactivestreams:reactive-streams:jar:1.0.4:compile
 [INFO] +- org.eclipse.jetty:jetty-util:jar:11.0.16:compile
 [INFO] +- org.eclipse.microprofile.config:microprofile-config-api:jar:3.0.3:compile
 [INFO] +- junit:junit:jar:4.13.2:test

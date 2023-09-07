@@ -21,8 +21,10 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   * refactored testing
 * tutorials upgraded to support the above
   * tutorial4: uses json representation for bindings
-* upgraded service to Jakarta EE (servlet5)
+* service-translator upgraded to Jakarta EE (servlet5)
   * solved recurring dependency conficts
+  * jetty using web-jar target, with webapp.filtering
+  * upgraded webjar dependencies, html filtered according to versions in pom.xml
 
 ==1.0.0==
 * Bumped up versions for many dependencies

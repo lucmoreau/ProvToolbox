@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Optional;
 
 
+
 @Path("")
-//@Api(value = "", description = "Provenance API")
-public class TranslationService implements Constants, InteropMediaType {
+public class TranslationService implements Constants, InteropMediaType, SwaggerTags {
 	
-    private static Logger logger = LogManager.getLogger(TranslationService.class);
+    private static final Logger logger = LogManager.getLogger(TranslationService.class);
     private final ServiceUtils utils;
 
 
@@ -53,7 +53,7 @@ public class TranslationService implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/{docId:  [a-zA-Z][a-zA-Z_0-9]*}")
-    @Tag(name="documents")
+    @Tag(name=DOCUMENTS)
     @Operation(summary = "Get Conceptual provenance document.  Use content negotiation to choose its representation", 
                description = "Content negotiation is expected to specify which representation to produce.  This is a non-information resource. Note that types are enumerated here for convenience: these are the types of the ProvToolbox, in addition of text/html used to access an html landing page",
                responses={
@@ -91,13 +91,13 @@ public class TranslationService implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/{docId}.{type}")
-    @Tag(name="documents")
+    @Tag(name=DOCUMENTS)
     @Operation(summary = "Representation of a document into given serialization format", 
                description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
                responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),
                              @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
-    public Response actionTranslateAsType(@Context HttpServletResponse response,
-                                          @Context HttpServletRequest request,
+    public Response actionTranslateAsType(@Context HttpServletResponse ignoredResponse,
+                                          @Context HttpServletRequest ignoredRequest,
                                           @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
                                           @Parameter(name = "type", description = "serialization type", example = "provn", 
                                                      schema=@Schema(allowableValues={"json","ttl","provn","provx","trig","svg","png","pdf","jpg","jpeg", "jsonld"}), required = true) @PathParam("type") String type)
@@ -136,7 +136,7 @@ public class TranslationService implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/{docId}/original")
-    @Tag(name="documents")
+    @Tag(name=DOCUMENTS)
     @Operation(summary = "Original document, as posted in its original representation", 
                description = "No content negotiation allowed here. Mime type of result set to be the mime type of the original document.",
                responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),

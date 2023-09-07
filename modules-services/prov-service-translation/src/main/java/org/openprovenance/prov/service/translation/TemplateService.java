@@ -36,6 +36,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.openprovenance.prov.service.translation.SwaggerTags.DOCUMENTS;
+import static org.openprovenance.prov.service.translation.SwaggerTags.TEMPLATE;
+
 @Path("")
 public class TemplateService  implements Constants, InteropMediaType {
 
@@ -67,92 +70,12 @@ public class TemplateService  implements Constants, InteropMediaType {
     }
 
 
-/*
-    public static final String [] ALL_OUTPUT_MEDIA
-            =new String[] { MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-            MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG};
-    public static final String ALL_OUTPUT_MEDIA_AS_STRING= Arrays.toString(ALL_OUTPUT_MEDIA);
- */
-
-    /* In Random Service
-
-    @GET
-    @Path("/documents/random/{nodes}/{degree}")
-    @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-            MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
-    @Tag(name="random")
-    @Operation(summary = "Randomly generated Document",
-            description = "Random generation of PROV document, with a set number of nodes and a maximum degree",
-            responses = { @ApiResponse(responseCode = "200",
-                    content={@Content(mediaType=MEDIA_TEXT_TURTLE),
-                            @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-                            @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_TRIG),
-                            @Content(mediaType=MEDIA_APPLICATION_RDF_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_JSON),
-                            @Content(mediaType=MEDIA_IMAGE_SVG_XML),
-                            @Content(mediaType=MEDIA_IMAGE_PNG),
-                            @Content(mediaType=MEDIA_IMAGE_JPEG),
-                            @Content(mediaType=MEDIA_APPLICATION_PDF)}),
-                    @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
-    public Response getRandom(@Context HttpServletResponse response,
-                              @Context Request request,
-                              @PathParam("nodes") Integer nodes,
-                              @PathParam("degree") Integer degree) {
-        return getRandom(response, request, nodes, degree, null);
-    }
-
-
-    @GET
-    @Path("/documents/random/{nodes}/{degree}/{seed}")
-    @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-            MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
-    @Tag(name="random")
-    @Operation(summary = "Randomly generated Document",
-            description = "andom generation of PROV document, with a set number of nodes,  a maximum degree and a set seed for the random generato",
-            responses = { @ApiResponse(responseCode = "200",
-                    content={@Content(mediaType=MEDIA_TEXT_TURTLE),
-                            @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-                            @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_TRIG),
-                            @Content(mediaType=MEDIA_APPLICATION_RDF_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_JSON),
-                            @Content(mediaType=MEDIA_IMAGE_SVG_XML),
-                            @Content(mediaType=MEDIA_IMAGE_PNG),
-                            @Content(mediaType=MEDIA_IMAGE_JPEG),
-                            @Content(mediaType=MEDIA_APPLICATION_PDF)}),
-                    @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
-    public Response getRandom(@Context HttpServletResponse response,
-                              @Context Request request,
-                              @PathParam("nodes") Integer nodes,
-                              @PathParam("degree") Integer degree,
-                              @PathParam("seed") Long seed) {
-
-        InteropFramework intF = new InteropFramework();
-        List<Variant> vs = intF.getVariants();
-        Variant v = request.selectVariant(vs);
-        MediaType mt = v.getMediaType();
-
-
-        GeneratorDetails gd=new GeneratorDetails(nodes, degree, GraphGenerator.FIRST_NODE_AS_ENTITY, "http://example.org/", seed, "e1");
-        GraphGenerator gg=new GraphGenerator(gd, f);
-        gg.generateElements();
-        Document doc=gg.getDocument();
-        Namespace.withThreadNamespace(doc.getNamespace());
-        return utils.composeResponseOK(doc).type(mt).build();
-
-    }
-
-     */
-
     static ObjectMapper mapper = new ObjectMapper();
 
     @GET
     @Path("/bindings/{name}")
     @Produces({ MEDIA_APPLICATION_JSON})
+    @Tag(name = TEMPLATE)
 
     public Response getBindings(@Context HttpServletResponse response,
                                 @Context Request request,
@@ -223,6 +146,7 @@ public class TemplateService  implements Constants, InteropMediaType {
     @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
              MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
+    @Tag(name = TEMPLATE)
     public Response getDocumentsFromBindingsSchema(@Context HttpServletResponse response,
                                                    @Context Request request,
                                                    @PathParam("name") String name,
@@ -260,7 +184,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/{docId}/template.{type}")
-    @Tag(name="documents")
+    @Tag(name=TEMPLATE)
     @Operation(summary = "Representation of the template used to generate the current document into given serialization format",
             description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
             responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),
@@ -302,7 +226,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/{docId}/bindings")
-    @Tag(name="documents")
+    @Tag(name=TEMPLATE)
     @Operation(summary = "Representation of the bindings used to generate the current document into given serialization format",
             description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
             responses = { @ApiResponse(responseCode = "200", description = "Representation of document"),

@@ -16,17 +16,8 @@
 			padding: 9px 0;
 		}
 	</style>
-	<script src="../webjars/jquery/3.6.2/jquery.min.js"></script>
-	<link href="../webjars/bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
-
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-39466031-7"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'UA-39466031-7');
-	</script>
+	<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+	<link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
@@ -53,7 +44,7 @@
 <section>
 	<div class="row">
 		<div class="col-sm-8" style="text-align:center;margin-top:80px;margin-bottom:50px">
-			<form action="../provapi/documents/" method="post" enctype="multipart/form-data">
+			<form action="${service.context}/provapi/documents/" method="post" enctype="multipart/form-data">
 				<style type="text/css">
 					.input-append .btn .dropdown-toggle {
 						float: none;
@@ -88,7 +79,7 @@
 
 									<ul class="dropdown-menu">
 										<li>Templates</li>
-										<li><a href="#" onclick="updateRootURLInputBox('/resources/templates/org/openprovenance/generic/binaryop/1.provn')">
+										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1.provn')">
 											<i class="icon-ok"></i>  generic.binaryop</a>
 										</li>
 
@@ -117,16 +108,16 @@
 
 									<ul class="dropdown-menu">
 										<li>Bindings Examples</li>
-										<li><a href="#" onclick="updateRootBindingsBox('/resources/templates/org/openprovenance/generic/binaryop/1/b1.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b1.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b1 (1 output)</a>
 										</li>
-										<li><a href="#" onclick="updateRootBindingsBox('/resources/templates/org/openprovenance/generic/binaryop/1/b2.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b2.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b2 (2 outputs)</a>
 										</li>
-										<li><a href="#" onclick="updateRootBindingsBox('/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b3 (1 output, 2 properties)</a>
 										</li>
-										<li><a href="#" onclick="updateRootBindingsBox('/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b4 (2 outputs, 1 or 2 properties)</a>
 										</li>
 
@@ -160,7 +151,7 @@
 
 
 
-<script src="../webjars/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
 
 <script src="../js/provservice.js"></script>
 

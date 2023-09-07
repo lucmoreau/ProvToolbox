@@ -15,17 +15,8 @@
 			padding: 9px 0;
 		}
 	</style>
-	<script src="../webjars/jquery/3.6.2/jquery.min.js"></script>
-	<link href="../webjars/bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
-
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-39466031-7"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-39466031-7');
-	</script>
+	<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+	<link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
@@ -99,7 +90,7 @@
 
 
 
-<script src="../webjars/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
 
 <script src="../js/provservice.js"></script>
 <script>

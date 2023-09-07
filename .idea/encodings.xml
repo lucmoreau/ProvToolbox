@@ -79,6 +79,7 @@
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/config" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java" charset="UTF-8" />

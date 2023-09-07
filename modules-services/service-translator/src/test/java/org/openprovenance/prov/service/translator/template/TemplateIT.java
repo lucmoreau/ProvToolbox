@@ -57,8 +57,9 @@ public class TemplateIT extends TestCase {
 
 
     static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(LightIT.class, "config.properties")).getProperty("service.port");
-    
-    String expansionURL="http://localhost:" + port + "/provapi/documents/";
+    static String context= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(LightIT.class, "config.properties")).getProperty("service.context");
+
+    String expansionURL="http://localhost:" + port + context + "/provapi/documents/";
     
 
     public static Map<String, String> table= new HashMap<>();

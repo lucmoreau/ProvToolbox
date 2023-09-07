@@ -42,13 +42,14 @@ public class LightIT extends RoundTripFromJavaTest {
         client.register(DocumentMessageBodyReader.class);
         return client;
     }
-    
+
 
 
 
     static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(LightIT.class, "config.properties")).getProperty("service.port");
+    static String context= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(LightIT.class, "config.properties")).getProperty("service.context");
 
-    String postURL="http://localhost:" + port + "/provapi/documents2/";
+    String postURL="http://localhost:" + port + context + "/provapi/documents2/";
 
 
 
@@ -142,6 +143,7 @@ public class LightIT extends RoundTripFromJavaTest {
     @Override
     public void writeDocument(Document doc, String file) {
         System.out.println("*** doing " + file);
+        System.out.println("*** using " + postURL);
 
         WebTarget target = client.target(postURL);
         Response response=target.request(MEDIA_TEXT_PROVENANCE_NOTATION).post(Entity.entity(doc, MEDIA_TEXT_PROVENANCE_NOTATION));

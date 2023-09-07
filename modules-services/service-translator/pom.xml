@@ -14,13 +14,11 @@
 
     <dependencies>
 
-
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop-light</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
@@ -35,22 +33,10 @@
             <scope>compile</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
             <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- for testing -->
-
-
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-model</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
         </dependency>
 
 <!--
@@ -66,24 +52,12 @@
             <version>${log4j.version}</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-servlet-initializer</artifactId>
             <version>${resteasy.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${resteasy.version}</version>
-            <scope>test</scope>
-
-        </dependency>
-
-
-        <!-- optional, good for handling I/O task -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -96,13 +70,11 @@
             <version>${quartz.version}</version>
         </dependency>
 
-
-        <dependency> <!-- overriding library -->
+        <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -116,7 +88,6 @@
             <artifactId>swagger-jaxrs2-jakarta</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.webjars</groupId>
@@ -154,14 +125,24 @@
             <version>${webjars.ace.version}</version>
         </dependency>
 
-        <!--
+
+        <!-- for testing -->
+
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        -->
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 
@@ -182,7 +163,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>${javadoc.plugin.version}</version>
                 <configuration>
                     <source>1.9</source>
                 </configuration>
@@ -216,6 +197,11 @@
                     <include>log4j2.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/webapp.filter</directory>
+                <targetPath>${project.build.directory}/webapp.filtered</targetPath>
+                <filtering>true</filtering>
+            </resource>
         </resources>
 
 
@@ -236,6 +222,7 @@
 
     <properties>
         <service.port>7071</service.port>
+        <service.context>/service</service.context>
     </properties>
 
 
@@ -378,12 +365,72 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${war.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>default-war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                                    <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
+                                    <filters>
+                                        <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                                    </filters>
+                                    <classifier />
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>build-jetty-war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <classifier>jetty</classifier>
+                                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
+                                    <!-- <webXml>${project.basedir}/src/main/web-config/jetty-web.xml</webXml> -->
+                                    <filters>
+                                        <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                                    </filters>
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
                         <version>${jetty.version}</version>
                         <configuration>
+                            <webApp>
+                                <contextPath>${service.context}</contextPath>
+                            </webApp>
                             <httpConnector>
-                                <!--host>localhost</host-->
                                 <port>${service.port}</port>
                             </httpConnector>
                             <!--<scanIntervalSeconds>10</scanIntervalSeconds> -->
@@ -398,8 +445,7 @@
                                     <goal>start</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- <scanIntervalSeconds>0</scanIntervalSeconds> -->
-                                   <!-- <daemon>true</daemon>-->
+                                    <!-- -->
                                 </configuration>
                             </execution>
                             <execution>
@@ -410,22 +456,6 @@
                                 </goals>
                             </execution>
                         </executions>
-
-                        <!--
-                        <dependencies>
-                              <dependency>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-util</artifactId>
-                        <version>${jetty.version}</version>
-                          </dependency>
-
-                          <dependency>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-jsp</artifactId>
-                        <version>${jetty.version}</version>
-                          </dependency>
-                        </dependencies>
-                          -->
                     </plugin>
                 </plugins>
             </build>

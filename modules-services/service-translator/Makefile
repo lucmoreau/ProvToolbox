@@ -12,7 +12,7 @@ build.docker:
 
 # will run on port 7070 as per root pom.xml
 jetty:
-	 export CURL_TOKEN=1bdb1beda869662b65ce8051a408268d0cbd3c33; mvn jetty:run
+	 mvn jetty:run-war -Pjetty
 
 jetty.post:
 	 mvn -Ppostgres jetty:run

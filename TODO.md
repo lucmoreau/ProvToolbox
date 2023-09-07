@@ -3,8 +3,7 @@
 
 # TODO
 - upgrade scala version
-- services using webapp.filter and upgrade webjar versions
-- remove viz, clean swagger api (check provman), add template as options in pull down
+- add template as options in pull down
 
 
 # DeleteJob/Redis issue

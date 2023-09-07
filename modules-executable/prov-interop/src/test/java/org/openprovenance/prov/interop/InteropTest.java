@@ -31,15 +31,6 @@ public class InteropTest
         //pFactory=new ProvFactory(namespaces);
     }
 
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public InteropTest( String testName )
-    {
-        super( testName );
-    }
 
     public void testXML2XML() throws javax.xml.bind.JAXBException,  org.xml.sax.SAXException, java.io.IOException {
     }

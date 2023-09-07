@@ -15,9 +15,9 @@ import org.openprovenance.prov.service.core.jobs.JobManagement;
 import org.openprovenance.prov.service.core.memory.LRUHashMap;
 import org.openprovenance.prov.storage.api.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Response.Status;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;

@@ -10,10 +10,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Variant;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Variant;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.configuration.Configuration;
@@ -176,7 +176,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             boolean isHttp = (theURL.getProtocol().equals("http") || theURL
                     .getProtocol().equals("https"));
 
-            logger.debug("Requesting: " + theURL.toString());
+            logger.debug("Requesting: " + theURL);
 
             conn = theURL.openConnection();
 
@@ -701,9 +701,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             if (informat == null) {
                 throw new InteropException("File format for standard input not specified");
             }
-            doc = (Document) readDocument(System.in, informat,"file://stdin/");
+            doc = readDocument(System.in, informat,"file://stdin/");
         } else {
-            doc = (Document) readDocumentFromFile(filename, informat);
+            doc = readDocumentFromFile(filename, informat);
         }
 
         return doc;

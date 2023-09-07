@@ -61,13 +61,13 @@
             <artifactId>commons-cli</artifactId>
             <version>${commons.cli.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-            <version>2.0.0.Final</version>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${jakarta.ws.rs.version}</version>
             <scope>compile</scope>
         </dependency>
+
 
     </dependencies>
 

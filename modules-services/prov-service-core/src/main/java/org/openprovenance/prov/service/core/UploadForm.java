@@ -1,13 +1,10 @@
 package org.openprovenance.prov.service.core;
 
-import javax.ws.rs.FormParam;
+import jakarta.ws.rs.FormParam;
 
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterStyle;
-import io.swagger.v3.oas.annotations.media.Schema;
+
 
 import java.io.File;
 

@@ -8,16 +8,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.service.core.ServiceUtils;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.xml.bind.JAXBException;
-import java.io.FileNotFoundException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import java.io.IOException;
 
 
@@ -73,7 +71,7 @@ public class ViewService {
                     @Context HttpServletRequest request,
                     @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
                     @Parameter(name = "kind", description = "visualization kind", example = "hive,gantt,wheel", required = true) @PathParam("kind") String kind)
-            throws FileNotFoundException, JAXBException, IOException,
+            throws IOException,
             ServletException {
         logger.debug("visualization page for " + kind);
 

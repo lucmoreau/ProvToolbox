@@ -15,7 +15,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResource> {
 
-    private static Logger logger = LogManager.getLogger(RedisDocumentResourceIndex.class);
+    private static final Logger logger = LogManager.getLogger(RedisDocumentResourceIndex.class);
 
     public static final String FIELD_VISIBLE_ID  = "_vid_";
     public static final String FIELD_EXTENSION   = "_ext_";

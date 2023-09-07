@@ -22,14 +22,6 @@
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- to load the configuration: FIXME: we should move away from this! -->
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>${jaxb.runtime.version}</version>
-        </dependency>
-
-
         <!-- testing -->
 
         <dependency>

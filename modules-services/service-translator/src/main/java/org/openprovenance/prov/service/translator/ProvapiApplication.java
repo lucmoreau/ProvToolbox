@@ -25,8 +25,8 @@ import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
 import org.openprovenance.prov.service.translation.VisService;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 

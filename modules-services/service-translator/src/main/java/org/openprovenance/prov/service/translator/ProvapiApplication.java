@@ -23,7 +23,6 @@ import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translation.RandomService;
 import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
-import org.openprovenance.prov.service.translation.VisService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
@@ -87,7 +86,6 @@ public class ProvapiApplication extends Application {
 		singletons.add(new TemplateService(ps));
 		singletons.add(new RandomService(ps));
 
-		singletons.add(new VisService(ps));
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		

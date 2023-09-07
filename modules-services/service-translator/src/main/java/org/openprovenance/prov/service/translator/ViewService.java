@@ -1,9 +1,8 @@
 package org.openprovenance.prov.service.translator;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.service.core.ServiceUtils;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import java.io.IOException;
@@ -61,25 +59,6 @@ public class ViewService {
     }
 
 
-    @GET
-    @Path("/documents/{docId}/vis/{kind}")
-    @Operation(summary = "Translation of a document into given representation",
-            description = "No content negotiation allowed here",
-            responses = { @ApiResponse(responseCode = "404", description = "Document not found") })
-    @Tag(name="view")
-    public void vis(@Context HttpServletResponse response,
-                    @Context HttpServletRequest request,
-                    @Parameter(name = "docId", description = "document id", required = true) @PathParam("docId") String msg,
-                    @Parameter(name = "kind", description = "visualization kind", example = "hive,gantt,wheel", required = true) @PathParam("kind") String kind)
-            throws IOException,
-            ServletException {
-        logger.debug("visualization page for " + kind);
-
-        request.setAttribute("docId", msg);
-        request.setAttribute("kind", kind);
-        request.getRequestDispatcher("../../../../vis.jsp").forward(request, response);
-
-    }
 
     @GET
     @Path("/api")

@@ -10,21 +10,9 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/bindings-plps-log1.provn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/bindingsCheneyTRENDDB09.provn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/bindingsMoreauOPM101.provn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/plps-log-template.provn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/template-attribution.provn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/resources/test-template.provn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/license/tree.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/prov/invalid.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/prov/invalid.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/prov/pc1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/prov/pc1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/prov/primer.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/prov/primer.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/resources/templates/org/openprovenance/generic/binaryop/1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/resources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/light/IntegrationLightTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/light/LightIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/IntegrationTemplateTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/TemplateIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/VisService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ViewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ViewService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,11 +147,11 @@
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/resources/templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/bindings_as_prov" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/test/resources/templates" />
       <recent name="$PROJECT_DIR$/modules-misc" />
       <recent name="$PROJECT_DIR$/modules-core" />
-      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
@@ -789,7 +777,7 @@
       <workItem from="1693852823120" duration="10727000" />
       <workItem from="1693919563810" duration="27570000" />
       <workItem from="1694027380052" duration="12448000" />
-      <workItem from="1694092947150" duration="11295000" />
+      <workItem from="1694092947150" duration="11561000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

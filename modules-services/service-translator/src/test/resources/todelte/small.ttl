@@ -1,6 +1,0 @@
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix ex: <http://example/> .
-
-
-ex:article a prov:Entity.
-

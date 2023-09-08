@@ -29,9 +29,10 @@ RUN mkdir -p ${upload.directory}/log/ ${upload.directory}/files/ ${upload.direct
 #
 VOLUME ${upload.directory}
 
-RUN rm -r -f /usr/local/tomcat/webapps/ROOT
+#RUN rm -r -f /usr/local/tomcat/webapps/ROOT
 
 ADD ${origin.project}-${project.version}-docker.war /usr/local/tomcat/webapps/${service.context}.war
 
+EXPOSE 8080
 
 CMD ["catalina.sh", "run"]

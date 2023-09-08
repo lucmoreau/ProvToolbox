@@ -7,8 +7,8 @@ services:
     env_file: env_file.env
     image: docker-service-translator.open9j
     restart: always
-    expose:
-      - 8080
+    ports:
+      - 9090:8080
     links:
       - redis:redis
     environment:
@@ -24,7 +24,7 @@ services:
     image: redis
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
     volumes:
       - $REDIS_HOME:/data
     command: [redis-server, '--appendonly yes']

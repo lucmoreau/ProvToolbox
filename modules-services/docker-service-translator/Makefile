@@ -53,7 +53,7 @@ run.bash:
 	$(DOCKER) run -ti  -p 9090:8080  -i -v $(DOCKER_RUN_DIR):/home/pservice -t ${TARGET_IMAGE} /bin/bash
 
 cli1:
-	curl -D - -H "content-type: text/provenance-notation" -H "accept: application/json" -X POST --data-binary @src/test/resources/sculpture.provn http://localhost:8080/service/provapi/documents2
+	curl -D - -H "content-type: text/provenance-notation" -H "accept: application/json" -X POST --data-binary @src/test/resources/sculpture.provn http://localhost:9090/service/provapi/documents2
 
 
 docker.up:

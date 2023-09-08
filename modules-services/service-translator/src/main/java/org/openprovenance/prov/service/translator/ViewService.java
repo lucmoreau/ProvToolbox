@@ -34,10 +34,12 @@ public class ViewService {
     @Path("/translator")
     @Produces("text/html")
     @Operation(summary = "Translator entry point")
-    @Tag(name="view")
+    @Tag(name= "service")
     public void translator(@Context HttpServletResponse response,
                            @Context HttpServletRequest request)
             throws ServletException, IOException {
+
+
 
         request.getRequestDispatcher("../translator.html").forward(request,response);
     }
@@ -47,7 +49,7 @@ public class ViewService {
     @Path("/expander")
     @Produces("text/html")
     @Operation(summary = "Template expansion entry point")
-    @Tag(name="view")
+    @Tag(name= "service")
     public void expander(@Context HttpServletResponse response,
                          @Context HttpServletRequest request)
             throws ServletException, IOException {
@@ -65,11 +67,18 @@ public class ViewService {
     @Path("/api")
     @Produces("text/html")
     @Operation(summary = "API documentation")
-    @Tag(name="view")
+    @Tag(name= "service")
     public void getApiDescription(@Context HttpServletResponse response,
                                   @Context HttpServletRequest request)
             throws ServletException, IOException {
-        logger.debug(" api " +      request.getParameterMap());
+        logger.info(" api " +      request.getParameterMap());
+        logger.info(" api " +      request.getPathInfo());
+        logger.info(" api " +      request.getRequestURI());
+        logger.info(" api " +      request.getServletPath());
+
+        String redirected=request.getRequestURI().replace("/api","/api.html").replace("/service","");
+
+
 
         request.getRequestDispatcher("../api.html").forward(request, response);
     }
@@ -78,7 +87,7 @@ public class ViewService {
     @Path("/about")
     @Produces("text/html")
     @Operation(summary = "About Validator and PROV Service")
-    @Tag(name="view")
+    @Tag(name= "service")
     public void getAboutPage(@Context HttpServletResponse response,
                              @Context HttpServletRequest request)
             throws ServletException, IOException {
@@ -90,7 +99,7 @@ public class ViewService {
     @Path("/contact")
     @Produces("text/html")
     @Operation(summary = "Contact details")
-    @Tag(name="view")
+    @Tag(name= "service")
     public void getContactPage(@Context HttpServletResponse response,
                                @Context HttpServletRequest request)
             throws ServletException, IOException {

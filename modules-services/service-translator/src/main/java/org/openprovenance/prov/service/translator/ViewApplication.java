@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
 import jakarta.ws.rs.ApplicationPath;
@@ -33,7 +32,7 @@ import java.util.Set;
 						email = "provenance@kcl.ac.uk")
 		),
 		tags = {
-				@Tag(name = "view",       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "docs desc"))
+				@Tag(name = "service",       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "docs desc"))
 		},
 		externalDocs = @ExternalDocumentation(description = "definition docs desc"),
 		security = {

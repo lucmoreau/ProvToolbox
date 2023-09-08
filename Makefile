@@ -30,6 +30,12 @@ release.doc:
 doc.test:
 	mvn -Prelease javadoc:javadoc
 
+git.untag:
+	@echo "git tag -d ProvToolbox-2.0.0"
+	@echo "git push --delete origin  ProvToolbox-2.0.0"
+	@echo "mvn release:rollback"
+
+
 
 yum:
 	sudo yum install -y toolbox/target/rpm/provconvert/RPMS/noarch/provconvert-*.noarch.rpm

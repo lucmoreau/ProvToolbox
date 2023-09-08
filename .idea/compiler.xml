@@ -13,7 +13,6 @@
         <module name="demo" />
         <module name="prov-storage-api" />
         <module name="prov-jsonld-xml" />
-        <module name="templates_cli" />
         <module name="prov-service-translation" />
         <module name="prov-storage-index-redis" />
         <module name="prov-n" />
@@ -32,7 +31,6 @@
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />
         <module name="prov-jsweet-candy-java" />
-        <module name="templates_l2p" />
         <module name="roundtrip" />
         <module name="prov-model-scala" />
         <module name="toolbox" />
@@ -57,6 +55,9 @@
       <module name="prov-xml" target="9" />
       <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />
+      <module name="templates" target="1.5" />
+      <module name="templates_cli" target="1.8" />
+      <module name="templates_l2p" target="1.8" />
       <module name="toolbox" target="1.8" />
     </bytecodeTargetLevel>
   </component>

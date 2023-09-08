@@ -42,7 +42,7 @@ public class SerialisationBenchmarks {
 
     @Setup(Level.Trial)
     public void doSetup() throws IOException {
-        jsonldSerialiser=new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(false);
+        jsonldSerialiser=new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser();
         jsonldDeserialiser=new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser();
         provnSerialiser    = new org.openprovenance.prov.notation.ProvSerialiser(pf);
         provnDeserialiser  = new org.openprovenance.prov.notation.ProvDeserialiser(pf);

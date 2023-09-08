@@ -46,8 +46,7 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     }
 
 
-    public void convert(Document graph, String dotFile, String pdfFile, String title)
-            throws java.io.IOException {
+    public void convert(Document graph, String dotFile, String pdfFile, String title) throws java.io.IOException {
         convert(graph,new File(dotFile), title);
         Runtime runtime = Runtime.getRuntime();
         @SuppressWarnings("unused")

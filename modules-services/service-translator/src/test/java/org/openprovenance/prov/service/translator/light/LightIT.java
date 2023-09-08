@@ -143,7 +143,6 @@ public class LightIT extends RoundTripFromJavaTest {
     @Override
     public void writeDocument(Document doc, String file) {
         System.out.println("*** doing " + file);
-        System.out.println("*** using " + postURL);
 
         WebTarget target = client.target(postURL);
         Response response=target.request(MEDIA_TEXT_PROVENANCE_NOTATION).post(Entity.entity(doc, MEDIA_TEXT_PROVENANCE_NOTATION));

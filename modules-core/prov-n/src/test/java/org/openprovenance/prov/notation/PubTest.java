@@ -1,5 +1,6 @@
 package org.openprovenance.prov.notation;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import junit.framework.TestCase;
@@ -37,12 +38,12 @@ abstract public class PubTest extends TestCase
 
     static public Document graph1;
 
-    public void auxTestReadASNSaveXML() throws java.io.IOException, java.lang.Throwable {
+    public void auxTestReadASNSaveXML() throws java.io.IOException {
         String file="src/test/resources/prov/w3c-publication1.prov-asn";
         auxTestReadASNSaveXML(file,"target/w3c-publication1.prov-xml");
     }
 
-    public void auxTestReadASNSaveXML(String file, String file2) throws java.io.IOException, java.lang.Throwable {
+    public void auxTestReadASNSaveXML(String file, String file2) throws IOException {
 
         Utility u=new Utility();
         CommonTree tree = u.convertSyntaxTreeToTree(file);

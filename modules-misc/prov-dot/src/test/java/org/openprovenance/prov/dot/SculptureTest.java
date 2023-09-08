@@ -5,16 +5,14 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.notation.ProvSerialiser;
 
-import javax.xml.bind.JAXBException;
-import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.openprovenance.prov.notation.Utility;
 
 public class SculptureTest extends TestCase {
 
-    public void sculptureToDot(String asnFile, String xmlFile, String dotFile, String pdfFile, String title) 
-        throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
+    public void sculptureToDot(String asnFile, String xmlFile, String dotFile, String pdfFile, String title) throws IOException {
         Utility u=new Utility();
         ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 
@@ -32,7 +30,7 @@ public class SculptureTest extends TestCase {
         toDot.convert(o,dotFile,pdfFile,title);
     }
 
-    public void testSculptureToDot1() throws java.io.FileNotFoundException,  java.io.IOException, JAXBException, Throwable {
+    public void testSculptureToDot1() throws   java.io.IOException{
         sculptureToDot("src/test/resources/prov/sculpture.provn",
                        "target/sculpture.prov-xml",
                        "target/sculpture.dot",

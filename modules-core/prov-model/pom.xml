@@ -34,11 +34,11 @@
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
         </dependency>
+
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>3.0.1</version>
-            <scope>compile</scope>
+            <version>${jakarta.xml.bind.version}</version>
         </dependency>
 
     </dependencies>

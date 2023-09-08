@@ -1,5 +1,4 @@
 package org.openprovenance.prov.dot;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -23,7 +22,7 @@ public class PC1FullTest extends org.openprovenance.prov.model.PC1FullTest {
         subtestDoToDot();
     }
 
-    void subtestDoToDot() throws FileNotFoundException, IOException {
+    void subtestDoToDot() throws IOException {
         ProvToDot toDot=new ProvToDot(new ProvFactory());
 
         if (graph1==null) System.out.println("doToDot with null ");

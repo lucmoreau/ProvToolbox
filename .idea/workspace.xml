@@ -10,10 +10,17 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DEPENDENCIES.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEPENDENCIES.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PubTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PubTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/test/java/org/openprovenance/prov/interop/InteropTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvToDot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PubTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/PubTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/java/org/openprovenance/prov/template/GroupingsTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/GroupingsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/test/java/org/openprovenance/prov/template/expander/GroupingsTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -779,7 +786,7 @@
       <workItem from="1693852823120" duration="10727000" />
       <workItem from="1693919563810" duration="27570000" />
       <workItem from="1694027380052" duration="12448000" />
-      <workItem from="1694092947150" duration="24482000" />
+      <workItem from="1694092947150" duration="26814000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

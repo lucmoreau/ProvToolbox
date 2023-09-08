@@ -1,4 +1,0 @@
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix ex:   <http://example.org#> .
-<http://purl.org/twc/page/thoughts-from-the-dagstuhl-workshop> a prov:Entity,
-        <http://example/Foo>, prov:Bundle.

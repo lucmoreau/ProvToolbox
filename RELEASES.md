@@ -1,6 +1,6 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-==2.0.0-SNAPSHOT==
+==2.0.0==
 * made the vanilla beans (in org.openprovenance.prov.vanilla) the default implementation of the prov data model (org.openprovenance.prov.model) instead of the xml-oriented beans
 * dropped prov-xml, as it relied on jaxb, which is not supported in Java 11
 * dropped prov-sql, as it relied on jaxb, and was never properly tested. Is also totally supersed by the sql support through the prov-template-compiler
@@ -25,6 +25,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   * solved recurring dependency conficts
   * jetty using web-jar target, with webapp.filtering
   * upgraded webjar dependencies, html filtered according to versions in pom.xml
+* docker image with tomcat 10 and docker compose
+
 
 ==1.0.0==
 * Bumped up versions for many dependencies

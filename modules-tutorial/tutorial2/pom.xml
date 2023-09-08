@@ -34,21 +34,6 @@
         </developer>
     </developers>
 
-    <repositories>
-        <!--
-            <repository>
-              <id>mvn.prov.toolbox</id>
-              <name>maven repository for PROV toolbox</name>
-              <url>http://openprovenance.org/java/maven-releases/</url>
-            </repository>
-        -->
-
-        <repository>
-            <id>mvn.prov.toolbox.snapshots</id>
-            <name>maven snapshot repository for PROV toolbox</name>
-            <url>http://openprovenance.org/java/maven-snapshots/</url>
-        </repository>
-    </repositories>
 
     <licenses>
         <license>
@@ -60,7 +45,7 @@
     <dependencies>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-interop-light</artifactId>
+            <artifactId>prov-interop</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -4,13 +4,13 @@ import java.math.BigInteger;
 import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.DatatypeConfigurationException;
 
+import jakarta.xml.bind.DatatypeConverter;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
@@ -749,7 +749,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	public XMLGregorianCalendar newISOTime(String time) {
-		return newTime(javax.xml.bind.DatatypeConverter.parseDateTime(time)
+		return newTime(DatatypeConverter.parseDateTime(time)
 				.getTime());
 	}
 	/*ValueConverter vconv=new ValueConverter(this);

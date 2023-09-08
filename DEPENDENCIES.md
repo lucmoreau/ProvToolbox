@@ -150,3 +150,32 @@
 [INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
 [INFO] \- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
 ```
+
+# prov-scala
+
+``````
+[INFO] org.openprovenance.prov:prov-model-scala:jar:2.0.0-SNAPSHOT
+[INFO] +- org.openprovenance.prov:prov-model:jar:2.0.0-SNAPSHOT:compile
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.9:compile
+[INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.2:compile
+[INFO] |  |  \- jakarta.activation:jakarta.activation-api:jar:1.2.1:compile
+[INFO] |  +- org.apache.commons:commons-collections4:jar:4.4:compile
+[INFO] |  \- commons-io:commons-io:jar:2.8.0:compile
+[INFO] +- org.openprovenance.prov:prov-jsonld:jar:2.0.0-SNAPSHOT:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.15.2:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.15.2:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.15.2:compile
+[INFO] +- org.scala-lang:scala-library:jar:2.12.18:compile
+[INFO] +- org.scalatest:scalatest_2.12:jar:3.1.0-RC3:test
+[INFO] |  +- org.scalatest:scalatest-compatible:jar:3.1.0-RC3:test
+[INFO] |  +- org.scalactic:scalactic_2.12:jar:3.1.0-RC3:test
+[INFO] |  +- org.scala-lang:scala-reflect:jar:2.12.10:test
+[INFO] |  \- org.scala-lang.modules:scala-xml_2.12:jar:1.2.0:test
+[INFO] +- org.parboiled:parboiled_2.12:jar:2.3.0:compile
+[INFO] |  \- com.chuusai:shapeless_2.12:jar:2.3.4:compile
+[INFO] +- org.openprovenance.prov:prov-model:jar:tests:2.0.0-SNAPSHOT:test
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] \- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+```

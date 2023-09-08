@@ -3,7 +3,7 @@
     <parent>
         <artifactId>modules-misc</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
@@ -15,35 +15,35 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model-scala</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld-xml</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

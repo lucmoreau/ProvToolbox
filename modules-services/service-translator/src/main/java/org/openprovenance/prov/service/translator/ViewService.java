@@ -3,6 +3,7 @@ package org.openprovenance.prov.service.translator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.servlet.RequestDispatcher;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.service.core.ServiceUtils;
@@ -94,7 +95,9 @@ public class ViewService {
                                @Context HttpServletRequest request)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher("../contact.html").forward(request, response);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("../contact.html");
+        logger.info("found dispatcher " + requestDispatcher);
+        requestDispatcher.forward(request, response);
     }
 
 }

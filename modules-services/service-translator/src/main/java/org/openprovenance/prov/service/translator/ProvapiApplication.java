@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
@@ -71,6 +73,9 @@ import static org.openprovenance.prov.service.translation.SwaggerTags.*;
 
 @ApplicationPath("/provapi")
 public class ProvapiApplication extends Application  {
+
+	static Logger logger = LogManager.getLogger(ProvapiApplication.class);
+
 	private final Set<Object> singletons = new HashSet<>();
 
 
@@ -100,7 +105,10 @@ public class ProvapiApplication extends Application  {
         corsFilter.getAllowedOrigins().add("*");
         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
         singletons.add(corsFilter);
-        
+
+
+
+		logger.info("ProvapiApplication constructor ... completion");
 
 
 	}

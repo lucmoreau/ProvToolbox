@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
 import jakarta.ws.rs.ApplicationPath;
@@ -56,6 +57,7 @@ import java.util.Set;
 
 @ApplicationPath("/view")
 public class ViewApplication extends Application {
+
 	private final Set<Object> singletons = new HashSet<>();
  
 	public ViewApplication() {

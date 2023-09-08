@@ -52,4 +52,25 @@ setup.dir:
 run.bash:
 	$(DOCKER) run -ti  -p 9090:8080  -i -v $(DOCKER_RUN_DIR):/home/pservice -t ${TARGET_IMAGE} /bin/bash
 
+cli1:
+	curl -D - -H "content-type: text/provenance-notation" -H "accept: application/json" -X POST --data-binary @src/test/resources/sculpture.provn http://localhost:8080/service/provapi/documents2
+
+
+docker.up:
+	docker-compose -f docker.conf/docker-compose.yml up -d
+
+docker.ps:
+	docker-compose -f docker.conf/docker-compose.yml ps
+
+docker.stop:
+	docker-compose -f docker.conf/docker-compose.yml stop
+
+docker.rm:
+	docker-compose -f docker.conf/docker-compose.yml rm
+
+docker.logs:
+	docker-compose -f docker.conf/docker-compose.yml logs
+
+docker.restart:
+	docker-compose -f docker.conf/docker-compose.yml restart prov-wrt
 

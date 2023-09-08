@@ -1,0 +1,30 @@
+version: "3.0"
+
+
+services:
+
+  provtranslator:
+    env_file: env_file.env
+    image: docker-service-translator.open9j
+    restart: always
+    expose:
+      - 8080
+    links:
+      - redis:redis
+    environment:
+      - CATALINA_OPTS=-DPSERVICE_REDIS_HOST=redis -DPSERVICE_REDIS_PORT=6379
+    volumes:
+      - $DOCKER_HOME/log-dir:/home/pservice
+    depends_on:
+      - redis
+
+
+  redis:
+    env_file: env_file.env
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - $REDIS_HOME:/data
+    command: [redis-server, '--appendonly yes']

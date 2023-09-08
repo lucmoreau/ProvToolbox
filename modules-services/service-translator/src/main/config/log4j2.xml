@@ -13,15 +13,15 @@
     </Root>
 
 
-    <Logger name="org.quartz-scheduler" level="info">
+    <Logger name="org.quartz-scheduler" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
 
-
-    <Logger name="org.openprovenance.prov.interop" level="info">
+    <Logger name="org.openprovenance.prov.interop" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
-    <Logger name="org.openprovenance.prov.service" level="info">
+
+    <Logger name="org.openprovenance.prov.service" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
   </Loggers>

@@ -117,6 +117,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionStart3() {
+		logger.info("testExpansionStart3");
 		WasStartedBy start = pFactory.newWasStartedBy(q("start1"), null, null,null);
 		assertTrue(start.getActivity() == null);
 		assertTrue(start.getTrigger() == null);
@@ -130,6 +131,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionStart4() {
+		logger.info("testExpansionStart4");
 		WasStartedBy start = pFactory.newWasStartedBy((QualifiedName) null,
 				q("a1"),
 				q("e1"),
@@ -140,6 +142,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionEnd1() {
+		logger.info("testExpansionEnd1");
 		WasEndedBy end = pFactory.newWasEndedBy(q("end1"),
 				q("a1"),
 				q("e1"),
@@ -152,6 +155,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionEnd2() {
+		logger.info("testExpansionEnd2");
 		WasEndedBy end = pFactory.newWasEndedBy(q("end1"),
 				q("a1"),
 				null,
@@ -166,6 +170,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionEnd3() {
+		logger.info("testExpansionEnd3");
 		WasEndedBy end = pFactory.newWasEndedBy(q("end1"), null, null, null);
 		assertTrue(end.getActivity() == null);
 		assertTrue(end.getTrigger() == null);
@@ -179,6 +184,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionEnd4() {
+		logger.info("testExpansionEnd4");
 		WasEndedBy end = pFactory.newWasEndedBy((QualifiedName) null,
 				q("a1"),
 				q("e1"),
@@ -189,6 +195,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionGeneration1() {
+		logger.info("testExpansionGeneration1");
 		WasGeneratedBy der = pFactory.newWasGeneratedBy(q("gen1"),
 				q("e1"),
 				null);
@@ -200,6 +207,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionGeneration2() {
+		logger.info("testExpansionGeneration2");
 		WasGeneratedBy der = pFactory.newWasGeneratedBy(q("gen2"),
 				null,
 				null);
@@ -214,6 +222,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionInvalidation1() {
+		logger.info("testExpansionInvalidation1");
 		WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv1"),
 				q("e1"),
 				null);
@@ -225,6 +234,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionInvalidation2() {
+		logger.info("testExpansionInvalidation2");
 		WasInvalidatedBy inv = pFactory.newWasInvalidatedBy(q("inv1"),
 				(QualifiedName)null,
 				null);
@@ -239,6 +249,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionUsage1() {
+		logger.info("testExpansionUsage1");
 		Used use = pFactory.newUsed(q("use1"),
 				q("e1"),
 				null);
@@ -250,6 +261,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionUsage2() {
+		logger.info("testExpansionUsage2");
 		Used use = pFactory.newUsed(q("use1"),
 				(QualifiedName) null,
 				null);
@@ -264,6 +276,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionDerivation1() {
+		logger.info("testExpansionDerivation1");
 		WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der1"),
 				q("e2"),
 				q("e1"));
@@ -282,6 +295,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionDerivation2() {
+		logger.info("testExpansionDerivation2");
 		WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der2"),
 				q("e2"),
 				null);
@@ -295,6 +309,7 @@ public class ExpansionTest extends TestCase {
 		}
 	}
 	public void testExpansionDerivation3() {
+		logger.info("testExpansionDerivation3");
 		WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der3"),
 				null,
 				q("e2"));
@@ -308,6 +323,7 @@ public class ExpansionTest extends TestCase {
 		}
 	}
 	public void testExpansionDerivation4() {
+		logger.info("testExpansionDerivation4");
 		WasDerivedFrom der = pFactory.newWasDerivedFrom(q("der4"),
 				q("e2"),
 				q("e1"));
@@ -326,6 +342,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionAssociation1() {
+		logger.info("testExpansionAssociation1");
 		WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc1"),
 				q("a1"),
 				null);
@@ -341,6 +358,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionAssociation2() {
+		logger.info("testExpansionAssociation2");
 		WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc1"),
 				q("a1"),
 				q("ag1"));
@@ -354,6 +372,7 @@ public class ExpansionTest extends TestCase {
 
 	}
 	public void testExpansionAssociation3() {
+		logger.info("testExpansionAssociation3");
 		WasAssociatedWith assoc = pFactory.newWasAssociatedWith(q("assoc1"),
 				null,
 				q("ag1"));
@@ -368,6 +387,7 @@ public class ExpansionTest extends TestCase {
 
 	}
 	public void testExpansionDelegation1() {
+		logger.info("testExpansionDelegation1");
 		ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del1"),
 				q("del1_ag2"),
 				null);
@@ -381,21 +401,23 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionDelegation2() {
+		logger.info("testExpansionDelegation2");
 		ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del2"),
 				q("ag2"),
 				q("ag1"));
-		assertTrue(del.getDelegate() != null);
-		assertTrue(del.getResponsible() != null);
-		assertTrue(del.getActivity() == null);
+        assertNotNull(del.getDelegate());
+        assertNotNull(del.getResponsible());
+        assertNull(del.getActivity());
 		expa.expansion_actedOnBehalfOf(config, del);
-		assertTrue(del.getDelegate() != null);
-		assertTrue(del.getResponsible() != null);
-		assertTrue(del.getActivity() != null);
+        assertNotNull(del.getDelegate());
+        assertNotNull(del.getResponsible());
+        assertNotNull(del.getActivity());
 
 	}
 
 
 	public void testExpansionDelegation3() {
+		logger.info("testExpansionDelegation3");
 		ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del3"),
 				q("ag2"),
 				null,
@@ -412,6 +434,7 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionDelegation4() {
+		logger.info("testExpansionDelegation4");
 		ActedOnBehalfOf del = pFactory.newActedOnBehalfOf(q("del4"),
 				null,
 				q("ag1"),
@@ -429,6 +452,7 @@ public class ExpansionTest extends TestCase {
 
 
 	public void testExpansionMembership1() {
+		logger.info("testExpansionMembership1");
 		HadMember mem = pFactory.newHadMember((QualifiedName)null);
 
 		assertTrue(mem.getCollection() == null);
@@ -440,9 +464,10 @@ public class ExpansionTest extends TestCase {
 		}
 	}
 	public void testExpansionMembership2() {
+		logger.info("testExpansionMembership2");
 		HadMember mem = pFactory.newHadMember(q("ex:c1"));
 
-		assertTrue(mem.getCollection()!= null);
+        assertNotNull(mem.getCollection());
 		assertTrue(mem.getEntity().isEmpty());
 		try {
 			expa.expansion_membership(config, mem);

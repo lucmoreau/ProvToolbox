@@ -21,7 +21,7 @@ public class TypeTest extends CoreValidateTester{
     static Logger logger = LogManager.getLogger(TypeTest.class);
 
 
-    public Validate testType(Document b, String out, String reportFile, List<String> rulesToDisable)
+    public Validate doTestType(Document b, String out, String reportFile, List<String> rulesToDisable)
             throws java.io.IOException {
         Config config=Config.newYesToAllConfig(new org.openprovenance.prov.scala.mutable.ProvFactory(), new ValidationObjectMaker());
         for (String ruleToDisable: rulesToDisable) {
@@ -34,28 +34,28 @@ public class TypeTest extends CoreValidateTester{
         return v;
     }
 
-    public Validate testType(String file) {
-        return testType(file, new LinkedList<String>(), false, null, 0);
+    public Validate doTestType(String file) {
+        return doTestType(file, new LinkedList<String>(), false, null, 0);
     }
-    public Validate testType(String file, String name, int typeOverlaps) {
-        return testType(file, new LinkedList<String>(), false, name, typeOverlaps);
+    public Validate doTestType(String file, String name, int typeOverlaps) {
+        return doTestType(file, new LinkedList<String>(), false, name, typeOverlaps);
     }
-    public Validate testType(String file, String rule) {
+    public Validate doTestType(String file, String rule) {
         LinkedList<String> ll=new LinkedList<String>();
         ll.add(rule);
-        return testType(file, ll, false, null, -1);
+        return doTestType(file, ll, false, null, -1);
     }
 
-    public Validate testType(String file, List<String> rulesToDisable, boolean excp,  String name, int typeOverlaps) {
+    public Validate doTestType(String file, List<String> rulesToDisable, boolean excp, String name, int typeOverlaps) {
         try {
-            logger.debug("testing " + file);
+            logger.info("testing " + file);
             File f = new File(file);
             org.openprovenance.prov.scala.immutable.Document d = Parser.readDocument(file);
             Document b=pf.newDocument(d);
             String out = "target/complete-" + f.getName();
             String report = "target/report-" + f.getName();
 
-            Validate val=testType(b,out,report,rulesToDisable);
+            Validate val= doTestType(b,out,report,rulesToDisable);
             assertFalse(excp);
             if (name!=null) {
                 //assertTrue(val.constraints.getReport().getTypeReport()!=null);
@@ -93,7 +93,7 @@ public class TypeTest extends CoreValidateTester{
             }
             logger.debug(">>>>>>>>>>>>>> " + val.constraints.typeOverlapTable);
             logger.debug(">>>>>>>>>>>>>> " + val.typeChecker.aggregatedTypes);
-            assertTrue(typeOverlaps==0);
+            assertEquals(0, typeOverlaps);
             //assertTrue(val.expa.aggregatedTypes.get(EX_NS+name)==null || val.expa.aggregatedTypes.get(EX_NS+name).size()==typeOverlaps);
         } else {
         }
@@ -112,7 +112,7 @@ public class TypeTest extends CoreValidateTester{
         checkTypeOf(val, name, type, true);
     }
     public void checkTypeOf(Validate val, String name, String type, boolean yes) {
-        assertTrue(yes==isTypeOf(val, name, type));
+        assertEquals(yes, isTypeOf(val, name, type));
     }
     private boolean illegal(String type1, String type2) {
         List<String> ll=Arrays.asList(new String[]{ type1, type2 });
@@ -138,55 +138,52 @@ public class TypeTest extends CoreValidateTester{
 
 
     public void testTypeSuccess1() {
-        Validate val=testType("src/test/resources/validate/type/type-success1.provn","e1", 0);
+        Validate val= doTestType("src/test/resources/validate/type/type-success1.provn","e1", 0);
     }
 
     public void testTypeFail1() {
-        Validate val=testType("src/test/resources/validate/type/type-fail1.provn","e1", 2);
+        Validate val= doTestType("src/test/resources/validate/type/type-fail1.provn","e1", 2);
     }
 
     public void testTypeFail1b() {
-        Validate val=testType("src/test/resources/validate/type/type-fail1.provn",Config.CONSTRAINT_TYPING);
+        Validate val= doTestType("src/test/resources/validate/type/type-fail1.provn",Config.CONSTRAINT_TYPING);
     }
 
 
     public void testTypeFail2() {
-        Validate val=testType("src/test/resources/validate/type/type-fail2.provn","e2",2);
+        Validate val= doTestType("src/test/resources/validate/type/type-fail2.provn","e2",2);
         testOverlap(val, "e1", 0);
     }
 
     public void testTypeFail3() {
-        Validate val=testType("src/test/resources/validate/type/type-fail3.provn","e1",2);
+        Validate val= doTestType("src/test/resources/validate/type/type-fail3.provn","e1",2);
         testOverlap(val, "e2", 0);
     }
 
     public void testTypeFail4() {
-        Validate val=testType("src/test/resources/validate/type/type-fail4.provn","gen",2);
+        Validate val= doTestType("src/test/resources/validate/type/type-fail4.provn","gen",2);
     }
 
 
     public void testTypeSuccess2() {
-        Validate val=testType("src/test/resources/validate/type/type-success2.provn","e1", 0);
+        Validate val= doTestType("src/test/resources/validate/type/type-success2.provn","e1", 0);
     }
 
     public void testTypeSuccess3() {
-        Validate val=testType("src/test/resources/validate/type/type-success3.provn","e1", 0);
+        Validate val= doTestType("src/test/resources/validate/type/type-success3.provn","e1", 0);
         checkTypeOf(val, "e1", Types.VAL_TYPE_NS+"Entity");
-        //checkTypeOf(val, "e1", EX_NS+"test1");
         checkTypeOf(val, "e1", EX_NS+"test1");
         checkTypeOf(val, "e1", EX_NS+"test2", false);
 
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Entity");
-        //checkTypeOf(val, "e2", EX_NS+"test1");// "inherited" through specialization
         checkTypeOf(val, "e2", EX_NS+"test1");// "inherited" through specialization
-        //checkTypeOf(val, "e2", EX_NS+"test2"); 
         checkTypeOf(val, "e2", EX_NS+"test2");
 
     }
 
 
     public void testTypeSuccess4() {
-        Validate val=testType("src/test/resources/validate/type/type-success3.provn",
+        Validate val= doTestType("src/test/resources/validate/type/type-success3.provn",
                 Config.INFERENCE_SPECIALIZATION_ATTRIBUTES_INFERENCE);
 
         checkTypeOf(val, "e1", Types.VAL_TYPE_NS+"Entity");
@@ -205,7 +202,7 @@ public class TypeTest extends CoreValidateTester{
 
 
     public void testTypeMembershipSuccess1() {
-        Validate val=testType("src/test/resources/validate/unification/membership-success1.provn");
+        Validate val= doTestType("src/test/resources/validate/unification/membership-success1.provn");
 
         checkTypeOf(val, "e1", Types.VAL_TYPE_NS+"Entity");
 
@@ -215,7 +212,7 @@ public class TypeTest extends CoreValidateTester{
     }
 
     public void testTypeMembershipFail1() {
-        Validate val=testType("src/test/resources/validate/type/type-collection-fail1.provn", "e1", 0);
+        Validate val= doTestType("src/test/resources/validate/type/type-collection-fail1.provn", "e1", 0);
         testOverlap(val, "e1", 0);
         testOverlap(val, "e2", 2);
 
@@ -228,7 +225,7 @@ public class TypeTest extends CoreValidateTester{
 
 
     public void testAssociation() {
-        Validate val=testType("src/test/resources/validate/ordering/association2.provn");
+        Validate val= doTestType("src/test/resources/validate/ordering/association2.provn");
         testOverlap(val, "ag", 0);
     }
 

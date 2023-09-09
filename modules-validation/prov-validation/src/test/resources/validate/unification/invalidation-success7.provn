@@ -1,0 +1,8 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+activity(ex:a1,-,-)
+wasInvalidatedBy(ex:gen1;ex:e1,ex:a1,-)
+wasInvalidatedBy(ex:gen1;ex:e1,ex:a1,2011-11-16T16:05:00)
+wasInvalidatedBy(ex:e1,ex:a1,2011-11-16T16:05:00)
+endDocument

@@ -25,7 +25,7 @@ mk.dir:
 
 generate.docker.war:
 	rm -f $(LOCATION_IMAGE)/*.war
-	cd ${project.basedir}/../$(ORIGIN) ; mvn clean install -Pdocker
+	cd ${project.basedir}/../$(ORIGIN) ; mvn clean install -Pjetty -Pdocker
 
 copy.war:
 	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE).war $(LOCATION_IMAGE)

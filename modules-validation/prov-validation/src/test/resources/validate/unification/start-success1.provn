@@ -1,0 +1,8 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+activity(ex:a1,-,-)
+activity(ex:a2,-,-)
+wasStartedBy(ex:start1;ex:a1,ex:e1,ex:a2,-)
+wasStartedBy(ex:a1,ex:e1,ex:a2,-)
+endDocument

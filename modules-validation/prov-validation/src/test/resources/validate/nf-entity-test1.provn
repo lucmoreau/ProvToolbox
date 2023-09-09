@@ -1,0 +1,4 @@
+document
+prefix pc1 <http://www.ipaw.info/pc1/>
+entity(pc1:e1)
+endDocument

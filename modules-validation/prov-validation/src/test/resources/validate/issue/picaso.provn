@@ -1,0 +1,16 @@
+document
+prefix pic <http://www.ipaw.info/ns/picaso#>
+prefix ex4 <http://dblp.rkbexplorer.com/>
+prefix ex0 <http://eprints.soton.ac.uk/id/eprint/>
+prefix ex0_1 <http://dblp.org/db/>
+wasDerivedFrom(ex4:, ex0_1:)
+wasDerivedFrom(ex0:265181, ex4:,[prov:type = 'pic:BasedOn'])
+wasDerivedFrom(ex0:264361, ex4:,[prov:type = 'pic:BasedOn'])
+entity(ex0:265181,[prov:type = 'pic:Article'])
+entity(ex0:265181,[prov:Type = 'pic:Article'])
+entity(ex0:264361,[prov:type = 'pic:Article'])
+entity(ex0:264361,[prov:Type = 'pic:Article'])
+entity(ex4:,[prov:label = "DBLP RKBExplorer", prov:Type = 'pic:Dataset'])
+entity(ex4:,[prov:type = 'pic:Dataset', prov:label = "DBLP RKBExplorer"])
+entity(ex0_1:,[prov:type = 'pic:Dataset', prov:label = "DBLP"])
+endDocument

@@ -1,0 +1,7 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+activity(ex:a1,-,-)
+wasGeneratedBy(ex:gen1;ex:e1,ex:a1,-)
+wasGeneratedBy(ex:gen1;ex:e1-other,ex:a1,-)
+endDocument

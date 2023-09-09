@@ -1,0 +1,49 @@
+<?org.openprovenance.prov.xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:ex="http://example.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <prov:activity prov:id="ex:a">
+        </prov:activity>
+        <prov:activity prov:id="ex:ag">
+        </prov:activity>
+	<prov:agent prov:id="ex:ag">
+	</prov:agent>
+        <prov:entity prov:id="ex:e1">
+        </prov:entity>
+        <prov:entity prov:id="ex:e2">
+        </prov:entity>
+        <prov:entity prov:id="ex:e3">
+        </prov:entity>
+        <prov:entity prov:id="ex:e4">
+        </prov:entity>
+
+
+
+
+            <prov:wasAssociatedWith prov:id="ex:assoc">
+	      <prov:activity prov:ref="ex:a"/>
+	      <prov:agent prov:ref="ex:ag"/>
+            </prov:wasAssociatedWith>
+
+	    <prov:wasStartedBy prov:id="ex:start1">
+	      <prov:activity prov:ref="ex:a"/>
+              <prov:trigger prov:ref="ex:e1"/>
+	    </prov:wasStartedBy>
+
+	    <prov:wasStartedBy prov:id="ex:start2">
+	      <prov:activity prov:ref="ex:ag"/>
+	      <prov:trigger prov:ref="ex:e3"/>
+	    </prov:wasStartedBy>
+
+
+	    <prov:wasEndedBy prov:id="ex:end2">
+	      <prov:activity prov:ref="ex:ag"/>
+	      <prov:trigger  prov:ref="ex:e4"/>
+            </prov:wasEndedBy>
+
+	    <prov:wasEndedBy prov:id="ex:end1">
+	      <prov:activity prov:ref="ex:a"/>
+              <prov:trigger prov:ref="ex:e2"/>
+	    </prov:wasEndedBy>
+
+
+
+</prov:document>

@@ -1,0 +1,7 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1,[prov:type = 'prov:Plan'])
+activity(ex:a1,-,-)
+agent(ex:ag1)
+wasAssociatedWith(ex:assoc1;-,ex:ag1,ex:e1)
+endDocument

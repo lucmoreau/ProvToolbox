@@ -1,0 +1,13 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+entity(ex:e2)
+activity(ex:a1,-,-)
+activity(ex:a2,-,-)
+activity(ex:a3,-,-)
+activity(ex:a4,-,-)
+wasGeneratedBy(ex:gen2;ex:e2,ex:a3,-)
+wasStartedBy(ex:start2;ex:a2,ex:e2,-,-)
+wasStartedBy(ex:start1;ex:a1,ex:e1,-,-)
+wasInvalidatedBy(ex:inv1;ex:e1,ex:a4,-)
+endDocument

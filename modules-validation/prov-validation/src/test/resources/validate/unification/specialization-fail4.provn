@@ -1,0 +1,7 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+entity(ex:e2)
+specializationOf(ex:e2,ex:e1)
+specializationOf(ex:e1,ex:e2)
+endDocument

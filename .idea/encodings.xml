@@ -128,6 +128,10 @@
     <file url="file://$PROJECT_DIR$/modules-tutorial/tutorial6" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tutorial/tutorial6/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-tutorial/tutorial6/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-validation/prov-validation/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-validation/prov-validation/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-validation/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-validation/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

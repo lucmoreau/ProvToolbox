@@ -1,0 +1,10 @@
+document
+prefix ex <http://example.org/>
+entity(ex:ag1)
+agent(ex:ag1)
+entity(ex:ag2)
+agent(ex:ag2)
+actedOnBehalfOf(ex:del;ex:ag2,ex:ag1,-)
+wasGeneratedBy(ex:gen1;ex:ag1,-,-)
+wasInvalidatedBy(ex:inv2;ex:ag2,-,-)
+endDocument

@@ -1,0 +1,6 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+activity(ex:a1,-,-,[prov:type = 'ex:test1'])
+activity(ex:a1,-,-,[prov:type = 'ex:test2'])
+endDocument

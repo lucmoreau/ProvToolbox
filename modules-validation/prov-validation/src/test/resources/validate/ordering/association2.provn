@@ -1,0 +1,15 @@
+document
+prefix ex <http://example.org/>
+activity(ex:a,-,-)
+activity(ex:ag,-,-)
+agent(ex:ag)
+entity(ex:e1)
+entity(ex:e2)
+entity(ex:e3)
+entity(ex:e4)
+wasAssociatedWith(ex:assoc;ex:a,ex:ag,-)
+wasStartedBy(ex:start1;ex:a,ex:e1,-,-)
+wasStartedBy(ex:start2;ex:ag,ex:e3,-,-)
+wasEndedBy(ex:end2;ex:ag,ex:e4,-,-)
+wasEndedBy(ex:end1;ex:a,ex:e2,-,-)
+endDocument

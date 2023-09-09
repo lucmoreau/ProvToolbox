@@ -1,0 +1,37 @@
+<?org.openprovenance.prov.xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:ex="http://example.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <prov:entity prov:id="ex:e1">
+        </prov:entity>
+        <prov:entity prov:id="ex:e2">
+        </prov:entity>
+        <prov:activity prov:id="ex:a1">
+        </prov:activity>
+        <prov:activity prov:id="ex:a2">
+        </prov:activity>
+        <prov:activity prov:id="ex:a3">
+        </prov:activity>
+        <prov:activity prov:id="ex:a4">
+        </prov:activity>
+
+
+	    <prov:wasGeneratedBy prov:id="ex:gen2">
+	      <prov:entity  prov:ref="ex:e2"/>
+	      <prov:activity prov:ref="ex:a3"/>
+            </prov:wasGeneratedBy>
+	    <prov:wasEndedBy prov:id="ex:end2">
+	      <prov:activity prov:ref="ex:a2"/>
+	      <prov:trigger prov:ref="ex:e2"/>
+	    </prov:wasEndedBy>
+
+
+	    <prov:wasEndedBy prov:id="ex:end1">
+	      <prov:activity prov:ref="ex:a1"/>
+	      <prov:trigger prov:ref="ex:e1"/>
+	    </prov:wasEndedBy>
+	    <prov:wasInvalidatedBy prov:id="ex:inv1">
+	      <prov:entity  prov:ref="ex:e1"/>
+	      <prov:activity prov:ref="ex:a4"/>
+            </prov:wasInvalidatedBy>
+
+
+</prov:document>

@@ -1,0 +1,8 @@
+document
+prefix ex <http://example.org/>
+activity(ex:a2,-,-)
+agent(ex:ag2)
+agent(ex:ag1)
+actedOnBehalfOf(ex:del1;ex:ag2,ex:ag1,ex:a2)
+actedOnBehalfOf(ex:del1;ex:ag2,ex:ag1,-)
+endDocument

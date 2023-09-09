@@ -1,0 +1,10 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e2)
+entity(ex:bundle1,[prov:entity = """
+           """, prov:activity = """
+           """])
+entity(ex:bundle2,[prov:entity = """prov:EmptyCollection
+           """, prov:hadMember = """
+           """])
+endDocument

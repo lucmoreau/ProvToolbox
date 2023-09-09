@@ -1,0 +1,4 @@
+document
+prefix pc1 <http://www.ipaw.info/pc1/>
+activity(pc1:a1,-,-)
+endDocument

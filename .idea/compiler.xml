@@ -14,6 +14,7 @@
         <module name="prov-storage-api" />
         <module name="prov-jsonld-xml" />
         <module name="templates_cli" />
+        <module name="prov-validation" />
         <module name="prov-service-translation" />
         <module name="prov-storage-index-redis" />
         <module name="prov-n" />

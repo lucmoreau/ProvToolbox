@@ -1,0 +1,676 @@
+<?org.openprovenance.prov.xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:file="file://" xmlns:load="pyimport://">
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings"/>
+        <prov:informant prov:ref="load:codecs"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:sre_compile"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:sre_compile"/>
+        <prov:informant prov:ref="load:sre_parse"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings"/>
+        <prov:informant prov:ref="load:encodings.utf_8"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:sre_parse"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings.hex_codec"/>
+        <prov:informant prov:ref="load:binascii"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings.utf_8"/>
+        <prov:informant prov:ref="load:codecs"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:os"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:weakref"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:threading"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:atexit"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:traceback"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:thread"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil"/>
+        <prov:informant prov:ref="load:dateutil.relativedelta"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil"/>
+        <prov:informant prov:ref="load:dateutil.tz"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:cStringIO"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil"/>
+        <prov:informant prov:ref="load:dateutil.parser"/>
+    </prov:wasInformedBy>
+    <prov:used>
+        <prov:activity prov:ref="load:linecache"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/linecache.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:codecs"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/codecs.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:os"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/os.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:copy_reg"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/copy_reg.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:UserDict"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/UserDict.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:sre_compile"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/sre_compile.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:stat"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/stat.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:genericpath"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/genericpath.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:locale"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/locale.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:dateutil.relativedelta"/>
+        <prov:entity prov:ref="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/relativedelta.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:dateutil.tz"/>
+        <prov:entity prov:ref="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/tz.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:cStringIO"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/lib-dynload/cStringIO.so"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:sre_parse"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/sre_parse.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:threading"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/threading.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:atexit"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/atexit.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:weakref"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/weakref.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:traceback"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/traceback.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:functools"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/functools.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:dateutil.parser"/>
+        <prov:entity prov:ref="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/parser.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:_abcoll"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/_abcoll.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:heapq"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/heapq.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:datetime"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/lib-dynload/datetime.so"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:prov.model"/>
+        <prov:entity prov:ref="file:///home/tom/.local/lib/python2.7/site-packages/prov/model/__init__.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:prov"/>
+        <prov:entity prov:ref="file:///home/tom/.local/lib/python2.7/site-packages/prov/__init__.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:json"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/json/__init__.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:logging"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/logging/__init__.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:dateutil"/>
+        <prov:entity prov:ref="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/__init__.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:collections"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/collections.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:encodings.aliases"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/encodings/aliases.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:binascii"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/lib-dynload/binascii.so"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:encodings.utf_8"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/encodings/utf_8.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:encodings.hex_codec"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/encodings/hex_codec.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:encodings"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/encodings/__init__.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:operator"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/lib-dynload/operator.so"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:json.decoder"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/json/decoder.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:struct"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/struct.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:calendar"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/calendar.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:string"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/string.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:warnings"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/warnings.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:time"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/lib-dynload/time.so"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:json.encoder"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/json/encoder.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:json.scanner"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/json/scanner.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:re"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/re.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:posixpath"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/posixpath.pyc"/>
+    </prov:used>
+    <prov:used>
+        <prov:activity prov:ref="load:types"/>
+        <prov:entity prov:ref="file:///usr/lib/python2.7/types.pyc"/>
+    </prov:used>
+    <prov:entity prov:id="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/tz.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/stat.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/re.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/logging/__init__.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/lib-dynload/operator.so"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/json/scanner.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/warnings.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/calendar.pyc"/>
+    <prov:entity prov:id="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/parser.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/encodings/__init__.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/locale.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/codecs.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/lib-dynload/datetime.so"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/linecache.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/lib-dynload/cStringIO.so"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/UserDict.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/string.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/genericpath.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/copy_reg.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/heapq.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/threading.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/posixpath.pyc"/>
+    <prov:entity prov:id="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/__init__.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/sre_parse.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/lib-dynload/binascii.so"/>
+    <prov:entity prov:id="file:///home/tom/.local/lib/python2.7/site-packages/dateutil/relativedelta.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/struct.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/json/encoder.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/encodings/aliases.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/traceback.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/json/__init__.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/weakref.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/atexit.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/types.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/encodings/hex_codec.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/json/decoder.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/_abcoll.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/lib-dynload/time.so"/>
+    <prov:entity prov:id="file:///home/tom/.local/lib/python2.7/site-packages/prov/model/__init__.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/os.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/encodings/utf_8.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/collections.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/sre_compile.pyc"/>
+    <prov:entity prov:id="file:///usr/lib/python2.7/functools.pyc"/>
+    <prov:activity prov:id="load:logging"/>
+    <prov:activity prov:id="load:codecs"/>
+    <prov:activity prov:id="load:encodings.hex_codec"/>
+    <prov:activity prov:id="load:datetime"/>
+    <prov:activity prov:id="load:atexit"/>
+    <prov:activity prov:id="load:functools"/>
+    <prov:activity prov:id="load:sre_parse"/>
+    <prov:activity prov:id="load:json"/>
+    <prov:activity prov:id="load:json.encoder"/>
+    <prov:activity prov:id="load:dateutil.tz"/>
+    <prov:activity prov:id="load:__builtin__"/>
+    <prov:activity prov:id="load:copy_reg"/>
+    <prov:activity prov:id="load:linecache"/>
+    <prov:activity prov:id="load:encodings"/>
+    <prov:activity prov:id="load:_abcoll"/>
+    <prov:activity prov:id="load:dateutil"/>
+    <prov:activity prov:id="load:_sre"/>
+    <prov:activity prov:id="load:os"/>
+    <prov:activity prov:id="load:posixpath"/>
+    <prov:activity prov:id="load:cStringIO"/>
+    <prov:activity prov:id="load:operator"/>
+    <prov:activity prov:id="load:binascii"/>
+    <prov:activity prov:id="load:weakref"/>
+    <prov:activity prov:id="load:encodings.utf_8"/>
+    <prov:activity prov:id="load:types"/>
+    <prov:activity prov:id="load:string"/>
+    <prov:activity prov:id="load:collections"/>
+    <prov:activity prov:id="load:warnings"/>
+    <prov:activity prov:id="load:UserDict"/>
+    <prov:activity prov:id="load:heapq"/>
+    <prov:activity prov:id="load:calendar"/>
+    <prov:activity prov:id="load:json.scanner"/>
+    <prov:activity prov:id="load:dateutil.relativedelta"/>
+    <prov:activity prov:id="load:encodings.aliases"/>
+    <prov:activity prov:id="load:time"/>
+    <prov:activity prov:id="load:locale"/>
+    <prov:activity prov:id="load:sys"/>
+    <prov:activity prov:id="load:sre_compile"/>
+    <prov:activity prov:id="load:stat"/>
+    <prov:activity prov:id="load:dateutil.parser"/>
+    <prov:activity prov:id="load:struct"/>
+    <prov:activity prov:id="load:prov.model"/>
+    <prov:activity prov:id="load:errno"/>
+    <prov:activity prov:id="load:re"/>
+    <prov:activity prov:id="load:thread"/>
+    <prov:activity prov:id="load:traceback"/>
+    <prov:activity prov:id="load:genericpath"/>
+    <prov:activity prov:id="load:json.decoder"/>
+    <prov:activity prov:id="load:threading"/>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:codecs"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:warnings"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:logging"/>
+        <prov:informant prov:ref="load:time"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json"/>
+        <prov:informant prov:ref="load:json.encoder"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json"/>
+        <prov:informant prov:ref="load:json.scanner"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json"/>
+        <prov:informant prov:ref="load:json.decoder"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:_abcoll"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.tz"/>
+        <prov:informant prov:ref="load:datetime"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.tz"/>
+        <prov:informant prov:ref="load:struct"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.relativedelta"/>
+        <prov:informant prov:ref="load:calendar"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.tz"/>
+        <prov:informant prov:ref="load:os"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.tz"/>
+        <prov:informant prov:ref="load:time"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.tz"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:collections"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:dateutil.tz"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:datetime"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.relativedelta"/>
+        <prov:informant prov:ref="load:datetime"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:string"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:collections"/>
+        <prov:informant prov:ref="load:heapq"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:prov.model"/>
+        <prov:informant prov:ref="load:json"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:prov.model"/>
+        <prov:informant prov:ref="load:logging"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:prov.model"/>
+        <prov:informant prov:ref="load:dateutil"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:prov.model"/>
+        <prov:informant prov:ref="load:collections"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:prov.model"/>
+        <prov:informant prov:ref="load:datetime"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:prov"/>
+        <prov:informant prov:ref="load:prov.model"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:collections"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:collections"/>
+        <prov:informant prov:ref="load:_abcoll"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:traceback"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:traceback"/>
+        <prov:informant prov:ref="load:types"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:threading"/>
+        <prov:informant prov:ref="load:warnings"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:threading"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:os"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:atexit"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:dateutil.relativedelta"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:dateutil.parser"/>
+        <prov:informant prov:ref="load:time"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:traceback"/>
+        <prov:informant prov:ref="load:linecache"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:weakref"/>
+        <prov:informant prov:ref="load:UserDict"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:warnings"/>
+        <prov:informant prov:ref="load:linecache"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:warnings"/>
+        <prov:informant prov:ref="load:types"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:os"/>
+        <prov:informant prov:ref="load:UserDict"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:os"/>
+        <prov:informant prov:ref="load:copy_reg"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:os"/>
+        <prov:informant prov:ref="load:posixpath"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:os"/>
+        <prov:informant prov:ref="load:errno"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:codecs"/>
+        <prov:informant prov:ref="load:__builtin__"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:os"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:warnings"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:codecs"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings.hex_codec"/>
+        <prov:informant prov:ref="load:codecs"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:calendar"/>
+        <prov:informant prov:ref="load:locale"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:string"/>
+        <prov:informant prov:ref="load:re"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json.decoder"/>
+        <prov:informant prov:ref="load:re"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json.decoder"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:calendar"/>
+        <prov:informant prov:ref="load:datetime"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:calendar"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json.encoder"/>
+        <prov:informant prov:ref="load:re"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json.scanner"/>
+        <prov:informant prov:ref="load:re"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json.decoder"/>
+        <prov:informant prov:ref="load:json.scanner"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:json.decoder"/>
+        <prov:informant prov:ref="load:struct"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:re"/>
+        <prov:informant prov:ref="load:copy_reg"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:re"/>
+        <prov:informant prov:ref="load:sre_compile"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:posixpath"/>
+        <prov:informant prov:ref="load:os"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:posixpath"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:posixpath"/>
+        <prov:informant prov:ref="load:warnings"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:posixpath"/>
+        <prov:informant prov:ref="load:stat"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:posixpath"/>
+        <prov:informant prov:ref="load:genericpath"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:UserDict"/>
+        <prov:informant prov:ref="load:_abcoll"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:linecache"/>
+        <prov:informant prov:ref="load:os"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:linecache"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:locale"/>
+        <prov:informant prov:ref="load:functools"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:locale"/>
+        <prov:informant prov:ref="load:encodings"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:re"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:re"/>
+        <prov:informant prov:ref="load:sre_parse"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:locale"/>
+        <prov:informant prov:ref="load:sys"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:genericpath"/>
+        <prov:informant prov:ref="load:stat"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:locale"/>
+        <prov:informant prov:ref="load:re"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:locale"/>
+        <prov:informant prov:ref="load:operator"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:genericpath"/>
+        <prov:informant prov:ref="load:os"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:sre_compile"/>
+        <prov:informant prov:ref="load:_sre"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings"/>
+        <prov:informant prov:ref="load:encodings.hex_codec"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings"/>
+        <prov:informant prov:ref="load:__builtin__"/>
+    </prov:wasInformedBy>
+    <prov:wasInformedBy>
+        <prov:informed prov:ref="load:encodings"/>
+        <prov:informant prov:ref="load:encodings.aliases"/>
+    </prov:wasInformedBy>
+</prov:document>

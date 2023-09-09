@@ -1,0 +1,7 @@
+document
+prefix ex <http://example.org/>
+activity(ex:e1,-,-)
+entity(ex:a1)
+used(ex:use1;ex:e1,ex:a1,-)
+used(ex:use1;ex:e1-other,ex:a1,-)
+endDocument

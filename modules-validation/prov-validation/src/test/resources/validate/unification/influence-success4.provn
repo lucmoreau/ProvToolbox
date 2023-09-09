@@ -1,0 +1,5 @@
+document
+prefix ex <http://example.org/>
+wasInfluencedBy(ex:x1,ex:x2)
+wasInfluencedBy(ex:x1,ex:x2)
+endDocument

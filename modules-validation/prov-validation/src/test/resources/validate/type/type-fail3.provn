@@ -1,0 +1,6 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1,[prov:type = 'ex:test1'])
+entity(ex:e2,[prov:type = 'ex:test2'])
+wasGeneratedBy(ex:e1;ex:e3,ex:a4,-)
+endDocument

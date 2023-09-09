@@ -1,0 +1,5 @@
+document
+prefix ex <http://example.org/>
+wasGeneratedBy(ex:gen;ex:e3,ex:a4,-)
+used(ex:gen;ex:a4,ex:e5,-)
+endDocument

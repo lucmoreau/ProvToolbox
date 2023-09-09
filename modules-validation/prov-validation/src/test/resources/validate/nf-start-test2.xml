@@ -1,0 +1,13 @@
+<?org.openprovenance.prov.xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:prim="http://openprovenance.org/primitives#" xmlns:pc1="http://www.ipaw.info/pc1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <prov:entity prov:id="pc1:e1">
+        </prov:entity>
+        <prov:activity prov:id="pc1:a1">
+        </prov:activity>
+
+            <prov:wasStartedBy prov:id="pc1:id1">
+                <prov:activity prov:ref="pc1:a1"/>
+                <prov:starter prov:ref="pc1:a2"/>
+            </prov:wasStartedBy>
+
+</prov:document>

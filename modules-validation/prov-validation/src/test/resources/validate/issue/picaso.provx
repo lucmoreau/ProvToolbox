@@ -1,0 +1,41 @@
+<?org.openprovenance.prov.xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ex4="http://dblp.rkbexplorer.com/" xmlns:pic="http://www.ipaw.info/ns/picaso#" xmlns:ex0_1="http://dblp.org/db/" xmlns:ex0="http://eprints.soton.ac.uk/id/eprint/">
+    <prov:wasDerivedFrom>
+        <prov:generatedEntity prov:ref="ex4:_"/>
+        <prov:usedEntity prov:ref="ex0_1:_"/>
+    </prov:wasDerivedFrom>
+    <prov:wasDerivedFrom>
+        <prov:generatedEntity prov:ref="ex0:265181"/>
+        <prov:usedEntity prov:ref="ex4:_"/>
+        <prov:type xsi:type="xsd:QName">pic:BasedOn</prov:type>
+    </prov:wasDerivedFrom>
+    <prov:wasDerivedFrom>
+        <prov:generatedEntity prov:ref="ex0:264361"/>
+        <prov:usedEntity prov:ref="ex4:_"/>
+        <prov:type xsi:type="xsd:QName">pic:BasedOn</prov:type>
+    </prov:wasDerivedFrom>
+    <prov:entity prov:id="ex0:265181">
+        <prov:type xsi:type="xsd:QName">pic:Article</prov:type>
+    </prov:entity>
+    <prov:entity prov:id="ex0:265181">
+        <prov:Type xsi:type="xsd:QName">pic:Article</prov:Type>
+    </prov:entity>
+    <prov:entity prov:id="ex0:264361">
+        <prov:type xsi:type="xsd:QName">pic:Article</prov:type>
+    </prov:entity>
+    <prov:entity prov:id="ex0:264361">
+        <prov:Type xsi:type="xsd:QName">pic:Article</prov:Type>
+    </prov:entity>
+    <prov:entity prov:id="ex4:_">
+        <prov:label>DBLP RKBExplorer</prov:label>
+        <prov:Type xsi:type="xsd:QName">pic:Dataset</prov:Type>
+    </prov:entity>
+    <prov:entity prov:id="ex4:_">
+        <prov:label>DBLP RKBExplorer</prov:label>
+        <prov:type xsi:type="xsd:QName">pic:Dataset</prov:type>
+    </prov:entity>
+    <prov:entity prov:id="ex0_1:_">
+        <prov:label>DBLP</prov:label>
+        <prov:type xsi:type="xsd:QName">pic:Dataset</prov:type>
+    </prov:entity>
+</prov:document>

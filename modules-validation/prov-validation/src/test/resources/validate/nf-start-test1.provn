@@ -1,0 +1,4 @@
+document
+prefix pc1 <http://www.ipaw.info/pc1/>
+wasStartedBy(pc1:id1;pc1:a1,-,pc1:a2,-)
+endDocument

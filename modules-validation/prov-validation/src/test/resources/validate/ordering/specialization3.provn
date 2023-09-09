@@ -1,0 +1,9 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+entity(ex:e2)
+specializationOf(ex:e2,ex:e1)
+wasGeneratedBy(ex:gen2;ex:e2,-,-)
+wasGeneratedBy(ex:gen1;ex:e1,-,-)
+wasDerivedFrom(ex:der1;ex:e2, ex:e1)
+endDocument

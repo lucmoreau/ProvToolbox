@@ -1,0 +1,7 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+entity(ex:e2)
+wasDerivedFrom(ex:der1;ex:e2, ex:e1, ex:a, ex:gen, -)
+wasDerivedFrom(ex:der1;ex:e2, ex:e1)
+endDocument

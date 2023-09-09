@@ -1,0 +1,25 @@
+
+document
+bundle uuid:55348dff-4fcc-4ac2-ab56-641798c64400
+prefix xsd <http://www.w3.org/2001/XMLSchema>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix eprint <http://eprints.soton.ac.uk/id/eprint/>
+prefix pic <http://www.ipaw.info/ns/picaso#>
+prefix personid <http://eprints.soton.ac.uk/id/person/>
+prefix uuid <urn:uuid:>
+prefix ui <http://openprovenance.org/ui#>
+
+entity(eprint:363608,[prov:type = 'pic:Article', prov:label = "Collective intelligence in citizen science  a study of performers and talkers", ui:type = 'pic:Article', ui:type = 'pic:Book', ui:type = 'pic:Code', ui:type = 'pic:Dataset', ui:type = 'pic:Figure', ui:type = 'pic:Poster', ui:type = 'pic:Slides', ui:type = 'pic:Table', ui:type = 'pic:Tweet', ui:minimum = "1" %% xsd:int, ui:maximum = "1" %% xsd:int, tmpl:order = "[0]" %% xsd:string])
+agent(personid:ext-67702,[prov:type = 'prov:Person', prov:label = "Ramine Tinati", ui:type = 'prov:Person', ui:type = 'prov:Organization', ui:minimum = "1" %% xsd:int, tmpl:order = "[0]" %% xsd:string])
+agent(personid:ext-82600,[prov:type = 'prov:Person', prov:label = "Elena Simperl", ui:type = 'prov:Person', ui:type = 'prov:Organization', ui:minimum = "1" %% xsd:int, tmpl:order = "[1]" %% xsd:string])
+agent(personid:ext-82858,[prov:type = 'prov:Person', prov:label = "Markus Luczak-Rösch", ui:type = 'prov:Person', ui:type = 'prov:Organization', ui:minimum = "1" %% xsd:int, tmpl:order = "[2]" %% xsd:string])
+agent(personid:ext-63776,[prov:type = 'prov:Person', prov:label = "Max Van Kleek", ui:type = 'prov:Person', ui:type = 'prov:Organization', ui:minimum = "1" %% xsd:int, tmpl:order = "[3]" %% xsd:string])
+agent(personid:ext-45004,[prov:type = 'prov:Person', prov:label = "Nigel Shadbolt", ui:type = 'prov:Person', ui:type = 'prov:Organization', ui:minimum = "1" %% xsd:int, tmpl:order = "[4]" %% xsd:string])
+wasAttributedTo(eprint:363608, personid:ext-67702,[prov:type = 'pic:Author', ui:type = 'pic:Author', ui:type = 'pic:Contributor', ui:type = 'pic:Editor', ui:type = 'pic:Reviewer', ui:type = 'pic:Funder', tmpl:order = "[0, 0]" %% xsd:string])
+wasAttributedTo(eprint:363608, personid:ext-82600,[prov:type = 'pic:Author', ui:type = 'pic:Author', ui:type = 'pic:Contributor', ui:type = 'pic:Editor', ui:type = 'pic:Reviewer', ui:type = 'pic:Funder', tmpl:order = "[1, 0]" %% xsd:string])
+wasAttributedTo(eprint:363608, personid:ext-82858,[prov:type = 'pic:Author', ui:type = 'pic:Author', ui:type = 'pic:Contributor', ui:type = 'pic:Editor', ui:type = 'pic:Reviewer', ui:type = 'pic:Funder', tmpl:order = "[2, 0]" %% xsd:string])
+wasAttributedTo(eprint:363608, personid:ext-63776,[prov:type = 'pic:Author', ui:type = 'pic:Author', ui:type = 'pic:Contributor', ui:type = 'pic:Editor', ui:type = 'pic:Reviewer', ui:type = 'pic:Funder', tmpl:order = "[3, 0]" %% xsd:string])
+wasAttributedTo(eprint:363608, personid:ext-45004,[prov:type = 'pic:Author', ui:type = 'pic:Author', ui:type = 'pic:Contributor', ui:type = 'pic:Editor', ui:type = 'pic:Reviewer', ui:type = 'pic:Funder', tmpl:order = "[4, 0]" %% xsd:string])
+endBundle
+endDocument
+

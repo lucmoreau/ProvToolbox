@@ -1,0 +1,6 @@
+document
+prefix ex <http://example.org/>
+entity(ex:e1)
+agent(ex:ag2)
+wasAttributedTo(ex:del1;ex:e1, -)
+endDocument

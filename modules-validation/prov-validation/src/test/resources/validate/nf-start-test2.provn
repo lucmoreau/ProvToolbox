@@ -1,0 +1,6 @@
+document
+prefix pc1 <http://www.ipaw.info/pc1/>
+entity(pc1:e1)
+activity(pc1:a1,-,-)
+wasStartedBy(pc1:id1;pc1:a1,-,pc1:a2,-)
+endDocument

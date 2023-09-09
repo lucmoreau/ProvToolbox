@@ -1,0 +1,6 @@
+document
+prefix ex <http://example.org/>
+activity(ex:a1,-,-)
+activity(ex:a2,-,-)
+wasInformedBy(ex:inf1;-,ex:a1)
+endDocument

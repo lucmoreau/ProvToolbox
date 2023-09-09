@@ -12,12 +12,11 @@ import org.openprovenance.prov.validation.report.ValidationReport;
 import org.openprovenance.prov.scala.immutable.Parser;
 
 public class ImpossibilityTest extends CoreValidateTester{
-    
+
     ProvFactory pFactory=new org.openprovenance.prov.scala.mutable.ProvFactory();
 
 
-    public Validate testImpossibility(Document b, String out, String reportFile, List<String> rulesToDisable)
-            throws java.io.IOException {
+    public Validate testImpossibility(Document b, String out, String reportFile, List<String> rulesToDisable) throws java.io.IOException {
         Config config=Config.newYesToAllConfig(pFactory, new ValidationObjectMaker());
         for (String ruleToDisable: rulesToDisable) {
             config.config.remove(ruleToDisable);
@@ -28,18 +27,18 @@ public class ImpossibilityTest extends CoreValidateTester{
 
         return v;
     }
-    
+
     public Validate testImpossibility(String file) {
-	return testImpossibility(file, new LinkedList<String>(), false);
+        return testImpossibility(file, new LinkedList<String>(), false);
     }
     public Validate testImpossibility(String file, boolean excp) {
-	return testImpossibility(file, new LinkedList<String>(), excp);
+        return testImpossibility(file, new LinkedList<String>(), excp);
     }
 
     public Validate testImpossibility(String file, List<String> rulesToDisable, boolean excp) {
         try {
-            logger.debug("testing " + file);
-            
+            logger.info("testing " + file);
+
             File f = new File(file);
             org.openprovenance.prov.scala.immutable.Document d = Parser.readDocument(file);
             Document b=pf.newDocument(d);
@@ -56,9 +55,9 @@ public class ImpossibilityTest extends CoreValidateTester{
         return null;
     }
 
-   
+
     //-----------------  specialization
-    
+
     public void testImpossibilitySuccess1() {
         testImpossibility("src/test/resources/validate/unification/specialization-success1.provn");
     }
@@ -73,51 +72,51 @@ public class ImpossibilityTest extends CoreValidateTester{
         //assertTrue(val.getInference().specializationTable.get(val.uniq.indexer.namespace.stringToQualifiedName("ex:e2",pFactory)).size()==1);
         //assertTrue(val.getInference().specializationTable.get(val.uniq.indexer.namespace.stringToQualifiedName("ex:e3",pFactory)).size()==2);
     }
-    
+
     public void NOtestImpossibilityFail1() {
-	ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail1.provn").getReport();
-	assertFalse(val.getMalformedStatements()==null);
+        ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail1.provn").getReport();
+        assertFalse(val.getMalformedStatements()==null);
 
     }
     public void NOtestImpossibilityFail2() {
-	ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail2.provn").getReport();
-	assertFalse(val.getMalformedStatements()==null);
+        ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail2.provn").getReport();
+        assertFalse(val.getMalformedStatements()==null);
     }
     public void testImpossibilityFail3() {
         ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail3.provn", false).getReport();
-                
+
         assertTrue(val.getSpecializationReport().getSpecializationOf().size()==1);
     }
     public void testImpossibilityFail4() {
         ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail4.provn", false).getReport();
-                
+
         assertTrue(val.getSpecializationReport().getSpecializationOf().size()==2);
     }
-   
+
     public void testImpossibilityFail4b() {
         List<String> rules=new LinkedList<String>();
         rules.add(Config.INFERENCE_SPECIALIZATION_TRANSITIVE);
         ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail4.provn", rules, false).getReport();
-                
+
         assertTrue(val.getSpecializationReport()==null);
     }
     public void testImpossibilityFail4c() {
         List<String> rules=new LinkedList<String>();
         rules.add(Config.CONSTRAINT_IMPOSSIBLE_SPECIALIZATION_REFLEXIVE);
         ValidationReport val=testImpossibility("src/test/resources/validate/unification/specialization-fail4.provn", rules, false).getReport();
-                
+
         assertTrue(val.getSpecializationReport()==null);
     }
-    
+
     //-----------------  membership
 
-   
+
     public void testImpossibilityMembershipSuccess1() {
         testImpossibility("src/test/resources/validate/unification/membership-success1.provn");
     }
     public void NOtestImpossibilityMembershipFail1() {
-	ValidationReport val=testImpossibility("src/test/resources/validate/unification/membership-fail1.provn").getReport();
-	assertFalse(val.getMalformedStatements()==null);
+        ValidationReport val=testImpossibility("src/test/resources/validate/unification/membership-fail1.provn").getReport();
+        assertFalse(val.getMalformedStatements()==null);
     }
     
     /*
@@ -153,5 +152,5 @@ public class ImpossibilityTest extends CoreValidateTester{
     }
     
     */
-    
+
 }

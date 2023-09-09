@@ -15,9 +15,6 @@ public class ImpossibilityTest extends CoreValidateTester{
     
     ProvFactory pFactory=new org.openprovenance.prov.scala.mutable.ProvFactory();
 
-    public ImpossibilityTest(String testName) {
-        super(testName);
-    }
 
     public Validate testImpossibility(Document b, String out, String reportFile, List<String> rulesToDisable)
             throws java.io.IOException {
@@ -67,8 +64,8 @@ public class ImpossibilityTest extends CoreValidateTester{
     }
     public void testImpossibilitySuccess2() {
         Validate val=testImpossibility("src/test/resources/validate/unification/specialization-success2.provn");
-        System.out.println("table " + val.getInference().specializationTable);
-        System.out.println("table " + val.getInference().specializationTable.get(pFactory.newQualifiedName("http://example.org/","e2","ex")));
+        //System.out.println("table " + val.getInference().specializationTable);
+        //System.out.println("table " + val.getInference().specializationTable.get(pFactory.newQualifiedName("http://example.org/","e2","ex")));
         // WATCHOUT: the qualified names in the table are those created by the parser (the mutable ones).
         assertTrue(val.getInference().specializationTable.get(new org.openprovenance.prov.scala.immutable.ProvFactory().newQualifiedName("http://example.org/","e2","ex")).size()==1);
         assertTrue(val.getInference().specializationTable.get(new org.openprovenance.prov.scala.immutable.ProvFactory().newQualifiedName("http://example.org/","e3","ex")).size()==2);

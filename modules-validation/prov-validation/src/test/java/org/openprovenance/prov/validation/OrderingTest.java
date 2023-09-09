@@ -12,10 +12,6 @@ public class OrderingTest extends CoreValidateTester {
     static Logger logger = LogManager.getLogger(OrderingTest.class);
 
 
-    public OrderingTest(String name) {
-        super(name);
-    }
-    
 
     public void testPrecede(Validate val, String evt1, String evt2) {
         testPrecede(val,evt1,evt2,true);
@@ -71,7 +67,7 @@ public class OrderingTest extends CoreValidateTester {
     //-----------------  derivation
     
     public void testConstraintsDerivation1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/derivation1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/derivation1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -82,7 +78,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsDerivation1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/derivation1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/derivation1.provn",
                                   Config.CONSTRAINT_DERIVATION_GENERATION_GENERATION_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -96,7 +92,7 @@ public class OrderingTest extends CoreValidateTester {
 
 
     public void testConstraintsDerivation2() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/derivation2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/derivation2.provn");
         testPrecedeStrict(val,"gen1","gen2");
         testPrecedeStrict(val,"gen2","gen1");
 
@@ -108,7 +104,7 @@ public class OrderingTest extends CoreValidateTester {
     
     
     public void testConstraintsDerivation3() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/derivation3.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/derivation3.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -120,7 +116,7 @@ public class OrderingTest extends CoreValidateTester {
     }
 
     public void testConstraintsDerivation3b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/derivation3.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/derivation3.provn",
                                   Config.CONSTRAINT_DERIVATION_USAGE_GENERATION_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -133,7 +129,7 @@ public class OrderingTest extends CoreValidateTester {
     }
 
     public void testConstraintsStarts1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/starts1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/starts1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -143,7 +139,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsStarts1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/starts1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/starts1.provn",
                                   Config.CONSTRAINT_WASSTARTEDBY_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -154,7 +150,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsEnds1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/ends1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/ends1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -164,7 +160,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsEnds1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/ends1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/ends1.provn",
                                   Config.CONSTRAINT_WASENDEDBY_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -176,7 +172,7 @@ public class OrderingTest extends CoreValidateTester {
     
     
     public void testConstraintsEntity1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -186,7 +182,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsEntity1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity1.provn",
                                   Config.CONSTRAINT_USAGE_PRECEDES_INVALIDATION);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -197,7 +193,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsEntityb() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity1.provn",
                                   Config.CONSTRAINT_GENERATION_PRECEDES_USAGE);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -208,7 +204,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsEntity2() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity2.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -216,7 +212,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","inv1");
     }
     public void testConstraintsEntity2b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity2.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity2.provn",
                                   Config.CONSTRAINT_GENERATION_PRECEDES_INVALIDATION);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -226,7 +222,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsActivity1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -235,7 +231,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsActivity1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity1.provn",
                                   Config.CONSTRAINT_START_PRECEDES_END);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -245,7 +241,7 @@ public class OrderingTest extends CoreValidateTester {
     }
 
     public void testConstraintsActivity2() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity2.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -254,7 +250,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"use1","end1");
     }
     public void testConstraintsActivity2b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity2.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity2.provn",
                                   Config.CONSTRAINT_USAGE_WITHIN_ACTIVITY);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -265,7 +261,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsActivity3() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity3.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity3.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -274,7 +270,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","end1");
     }
     public void testConstraintsActivity3b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity3.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity3.provn",
                                   Config.CONSTRAINT_GENERATION_WITHIN_ACTIVITY);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -284,7 +280,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","end1",false);
     }
     public void testConstraintsEntity3() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity3.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity3.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -293,7 +289,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen2","gen1");
     }
     public void testConstraintsEntity3b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity3.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity3.provn",
                                   Config.CONSTRAINT_GENERATION_GENERATION_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -303,7 +299,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen2","gen1",false);
     }
     public void testConstraintsEntity4() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity4.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity4.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -312,7 +308,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"inv2","inv1");
     }
     public void testConstraintsEntity4b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/entity4.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/entity4.provn",
                                   Config.CONSTRAINT_INVALIDATION_INVALIDATION_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -323,7 +319,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsActivity4() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity4.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity4.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -332,7 +328,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"start2","start1");
     }
     public void testConstraintsActivity4b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity4.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity4.provn",
                                   Config.CONSTRAINT_START_START_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -342,7 +338,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"start2","start1",false);
     }
     public void testConstraintsActivity5() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity5.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity5.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -351,7 +347,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"end2","end1");
     }
     public void testConstraintsActivity5b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/activity5.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/activity5.provn",
                                   Config.CONSTRAINT_END_END_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -361,7 +357,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"end2","end1",false);
     }
     public void testConstraintsAssociation1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/association1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/association1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -370,7 +366,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","end1");
     }
     public void testConstraintsAssociation1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/association1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/association1.provn",
                                   Config.CONSTRAINT_WASASSOCIATEDWITH_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -381,7 +377,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsAssociation2() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/association2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/association2.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -391,7 +387,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsAssociation2b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/association2.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/association2.provn",
                                   Config.CONSTRAINT_WASASSOCIATEDWITH_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -402,7 +398,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsAttribution1() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/attribution1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/attribution1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -410,7 +406,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","gen2");
     }
     public void testConstraintsAttribution1b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/attribution1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/attribution1.provn",
                                   Config.CONSTRAINT_WASATTRIBUTEDTO_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -420,7 +416,7 @@ public class OrderingTest extends CoreValidateTester {
     }
   
     public void testConstraintsAttribution2() {  //TODO revisit example, not sure the agent needs to be declared.
-        Validate val=testOrdering("src/test/resources/validate/ordering/attribution2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/attribution2.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -428,7 +424,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"start1","gen2");  //PROBLEM here
     }
     public void testConstraintsAttribution2b() {
-        Validate val=testOrdering("src/test/resources/validate/ordering/attribution2.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/attribution2.provn",
                                   Config.CONSTRAINT_WASATTRIBUTEDTO_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -438,7 +434,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsDelegation1() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/delegation1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/delegation1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -446,7 +442,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","inv2");  //PROBLEM here
     }
     public void testConstraintsDelegation1b() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/delegation1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/delegation1.provn",
                                   Config.CONSTRAINT_ACTEDONBEHALFOF_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -455,7 +451,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen1","inv2",false);  //PROBLEM here
     }
     public void testConstraintsDelegation2() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/delegation2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/delegation2.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -463,7 +459,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"start1","end2");  //PROBLEM here
     }
     public void testConstraintsDelegation2b() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/delegation2.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/delegation2.provn",
                                   Config.CONSTRAINT_ACTEDONBEHALFOF_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -475,7 +471,7 @@ public class OrderingTest extends CoreValidateTester {
     // specialization
     
     public void testConstraintsSpecialization1() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/specialization1.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/specialization1.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -484,7 +480,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"gen2","gen1",false); 
     }
     public void testConstraintsSpecialization1b() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/specialization1.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/specialization1.provn",
                                   Config.CONSTRAINT_SPECIALIZATION_GENERATION_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -496,7 +492,7 @@ public class OrderingTest extends CoreValidateTester {
     
     
     public void testConstraintsSpecialization2() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/specialization2.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/specialization2.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -505,7 +501,7 @@ public class OrderingTest extends CoreValidateTester {
         testPrecede(val,"inv1","inv2",false); 
     }
     public void testConstraintsSpecialization2b() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/specialization2.provn",
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/specialization2.provn",
                                   Config.CONSTRAINT_SPECIALIZATION_INVALIDATION_ORDERING);
         if (val==null) {
             assertTrue(false); // should not be here
@@ -516,7 +512,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsSpecialization3() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/specialization3.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/specialization3.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;
@@ -526,7 +522,7 @@ public class OrderingTest extends CoreValidateTester {
     }
     
     public void testConstraintsSpecialization4() {  
-        Validate val=testOrdering("src/test/resources/validate/ordering/specialization4.provn");
+        Validate val= doTestOrdering("src/test/resources/validate/ordering/specialization4.provn");
         if (val==null) {
             assertTrue(false); // should not be here
             return;

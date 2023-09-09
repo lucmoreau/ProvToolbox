@@ -2,9 +2,6 @@ package org.openprovenance.prov.validation;
 
 public class Validate2Test extends CoreValidateTester{
 
-    public Validate2Test(String testName) {
-        super(testName);
-    }
     //-----------------  bundle
 
     

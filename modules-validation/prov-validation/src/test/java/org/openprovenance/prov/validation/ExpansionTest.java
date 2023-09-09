@@ -58,27 +58,29 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionStart1() {
+		logger.info("testExpansionStart1");
 		WasStartedBy start = pFactory.newWasStartedBy(q("start1"),
 				q("start1_a1"),
 				q("start1_e1"),
 				null);
 		start.setTime(pFactory.newTimeNow());
 
-		assertTrue(start.getActivity() != null);
-		assertTrue(start.getStarter() == null);
-		assertTrue(start.getTime() !=null);
+		assertNotNull(start.getActivity());
+		assertNull(start.getStarter());
+		assertNotNull(start.getTime());
 
 		expa.expansion_wasStartedBy(config, start);
 
-		assertTrue(start.getActivity() != null);
-		assertTrue(start.getStarter() != null);
-		assertTrue(start.getTime() !=null);
+		assertNotNull(start.getActivity());
+		assertNotNull(start.getStarter());
+		assertNotNull(start.getTime());
 
 
 
 	}
 
 	public void testExpansionStart1bis() {
+		logger.info("testExpansionStart1bis");
 		WasStartedBy start = pFactory.newWasStartedBy(q("start1"),
 				q("start1_a1"),
 				q("start1_e1"),
@@ -99,17 +101,18 @@ public class ExpansionTest extends TestCase {
 	}
 
 	public void testExpansionStart2() {
+		logger.info("testExpansionStart2");
 		WasStartedBy start = pFactory.newWasStartedBy(q("start2"),
 				q("start2_a1"),
 				null,
 				null);
-		assertTrue(start.getActivity() != null);
-		assertTrue(start.getTrigger() == null);
-		assertTrue(start.getStarter() == null);
+		assertNotNull(start.getActivity());
+		assertNull(start.getTrigger());
+		assertNull(start.getStarter());
 		expa.expansion_wasStartedBy(config, start);
-		assertTrue(start.getActivity() != null);
-		assertTrue(start.getTrigger() != null);
-		assertTrue(start.getStarter() != null);
+		assertNotNull(start.getActivity());
+		assertNotNull(start.getTrigger());
+		assertNotNull(start.getStarter());
 
 	}
 

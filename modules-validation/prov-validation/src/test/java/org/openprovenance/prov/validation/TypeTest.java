@@ -15,14 +15,11 @@ import org.openprovenance.prov.validation.report.TypeOverlap;
 import org.openprovenance.prov.scala.immutable.Parser;
 
 public class TypeTest extends CoreValidateTester{
-    
+
     static final String EX_NS = "http://example.org/";
 
     static Logger logger = LogManager.getLogger(TypeTest.class);
 
-    public TypeTest(String testName) {
-        super(testName);
-    }
 
     public Validate testType(Document b, String out, String reportFile, List<String> rulesToDisable)
             throws java.io.IOException {
@@ -36,18 +33,18 @@ public class TypeTest extends CoreValidateTester{
 
         return v;
     }
-    
+
     public Validate testType(String file) {
-	return testType(file, new LinkedList<String>(), false, null, 0);
+        return testType(file, new LinkedList<String>(), false, null, 0);
     }
     public Validate testType(String file, String name, int typeOverlaps) {
-   	return testType(file, new LinkedList<String>(), false, name, typeOverlaps);
-       }
+        return testType(file, new LinkedList<String>(), false, name, typeOverlaps);
+    }
     public Validate testType(String file, String rule) {
-	LinkedList<String> ll=new LinkedList<String>();
-	ll.add(rule);
-   	return testType(file, ll, false, null, -1);
-       }
+        LinkedList<String> ll=new LinkedList<String>();
+        ll.add(rule);
+        return testType(file, ll, false, null, -1);
+    }
 
     public Validate testType(String file, List<String> rulesToDisable, boolean excp,  String name, int typeOverlaps) {
         try {
@@ -65,11 +62,11 @@ public class TypeTest extends CoreValidateTester{
                 //assertTrue(val.constraints.getReport().getTypeReport().getEntityOrActivityOrWasGeneratedBy()!=null);
                 //assertTrue(val.constraints.getReport().getTypeReport().getEntityOrActivityOrWasGeneratedBy().size()==typeOverlaps);
                 testOverlap(val,name,typeOverlaps);
-                
+
             } else {
-               // assertTrue(val.constraints.getReport().getTypeReport()==null);
+                // assertTrue(val.constraints.getReport().getTypeReport()==null);
             }
-            
+
             return val;
         } catch (IOException e) {
         } catch (UnsupportedOperationException e) {
@@ -78,19 +75,19 @@ public class TypeTest extends CoreValidateTester{
         assertTrue(excp);
         return null;
     }
-    
+
     public void testOverlap(Validate val, String name, int typeOverlaps) {
         if (name!=null) {
             List<TypeOverlap> ll=val.getReport().getTypeOverlap();
-            
-            System.out.println("$$$ overlaping types " + ll); 
+
+            //System.out.println("$$$ overlaping types " + ll);
 
             for (TypeOverlap to: ll) {
                 if (to.getKey().equals(EX_NS+name)) {
-                    System.out.println("$$$ overlaping types " + to); 
-                    System.out.println("$$$ overlaping types " + EX_NS+name); 
+                    //System.out.println("$$$ overlaping types " + to); 
+                    //System.out.println("$$$ overlaping types " + EX_NS+name); 
 
-                    assertTrue(to.getType().size()==typeOverlaps);
+                    assertEquals(to.getType().size(), typeOverlaps);
                     return;
                 }
             }
@@ -102,7 +99,7 @@ public class TypeTest extends CoreValidateTester{
         }
 
     }
-   
+
     public boolean isTypeOf(Validate val, String name, String type) {
         if (name!=null) {
             logger.debug("name " + name);
@@ -118,168 +115,168 @@ public class TypeTest extends CoreValidateTester{
         assertTrue(yes==isTypeOf(val, name, type));
     }
     private boolean illegal(String type1, String type2) {
-	List<String> ll=Arrays.asList(new String[]{ type1, type2 });
-		
-	Collection<String> col=new Types(null,null,null).conflictingTypes(ll);
-	return !(col==null || col.isEmpty());
+        List<String> ll=Arrays.asList(new String[]{ type1, type2 });
+
+        Collection<String> col=new Types(null,null,null).conflictingTypes(ll);
+        return !(col==null || col.isEmpty());
     }
 
     private Collection<String> illegal(String type1, String type2, String type3) {
-	List<String> ll=Arrays.asList(new String[]{ type1, type2, type3 });
-		
-	Collection<String> col=new Types(null,null,null).conflictingTypes(ll);
-	return col;
+        List<String> ll=Arrays.asList(new String[]{ type1, type2, type3 });
+
+        Collection<String> col=new Types(null,null,null).conflictingTypes(ll);
+        return col;
     }
     private Collection<String> illegal(String type1, String type2, String type3, String type4, String type5) {
-	List<String> ll=Arrays.asList(new String[]{ type1, type2, type3, type4, type5 });
-		
-	Collection<String> col=new Types(null,null,null).conflictingTypes(ll);
-	return col;
+        List<String> ll=Arrays.asList(new String[]{ type1, type2, type3, type4, type5 });
+
+        Collection<String> col=new Types(null,null,null).conflictingTypes(ll);
+        return col;
     }
- 
+
     //-----------------  specialization
-    
- 
+
+
     public void testTypeSuccess1() {
         Validate val=testType("src/test/resources/validate/type/type-success1.provn","e1", 0);
     }
- 
-        public void testTypeFail1() {
+
+    public void testTypeFail1() {
         Validate val=testType("src/test/resources/validate/type/type-fail1.provn","e1", 2);
     }
-    
+
     public void testTypeFail1b() {
         Validate val=testType("src/test/resources/validate/type/type-fail1.provn",Config.CONSTRAINT_TYPING);
     }
-    
+
 
     public void testTypeFail2() {
         Validate val=testType("src/test/resources/validate/type/type-fail2.provn","e2",2);
         testOverlap(val, "e1", 0);
     }
-    
+
     public void testTypeFail3() {
         Validate val=testType("src/test/resources/validate/type/type-fail3.provn","e1",2);
         testOverlap(val, "e2", 0);
     }
-    
+
     public void testTypeFail4() {
         Validate val=testType("src/test/resources/validate/type/type-fail4.provn","gen",2);
     }
-   
-    
+
+
     public void testTypeSuccess2() {
         Validate val=testType("src/test/resources/validate/type/type-success2.provn","e1", 0);
     }
-  
+
     public void testTypeSuccess3() {
         Validate val=testType("src/test/resources/validate/type/type-success3.provn","e1", 0);
         checkTypeOf(val, "e1", Types.VAL_TYPE_NS+"Entity");
         //checkTypeOf(val, "e1", EX_NS+"test1");
         checkTypeOf(val, "e1", EX_NS+"test1");
-        checkTypeOf(val, "e1", EX_NS+"test2", false); 
-                
+        checkTypeOf(val, "e1", EX_NS+"test2", false);
+
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Entity");
         //checkTypeOf(val, "e2", EX_NS+"test1");// "inherited" through specialization
         checkTypeOf(val, "e2", EX_NS+"test1");// "inherited" through specialization
         //checkTypeOf(val, "e2", EX_NS+"test2"); 
-        checkTypeOf(val, "e2", EX_NS+"test2"); 
+        checkTypeOf(val, "e2", EX_NS+"test2");
 
     }
 
-    
+
     public void testTypeSuccess4() {
         Validate val=testType("src/test/resources/validate/type/type-success3.provn",
-                              Config.INFERENCE_SPECIALIZATION_ATTRIBUTES_INFERENCE);
-        
+                Config.INFERENCE_SPECIALIZATION_ATTRIBUTES_INFERENCE);
+
         checkTypeOf(val, "e1", Types.VAL_TYPE_NS+"Entity");
         //FIXME: BUG, namespace lost
 
         //checkTypeOf(val, "e1", EX_NS+"test1");
         checkTypeOf(val, "e1", EX_NS+"test1");
-        checkTypeOf(val, "e1", EX_NS+"test2",false); 
-                
+        checkTypeOf(val, "e1", EX_NS+"test2",false);
+
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Entity");
         checkTypeOf(val, "e2", EX_NS+"test1",false);// not "inherited" through specialization, since rule disabled
         //checkTypeOf(val, "e2", EX_NS+"test2"); 
-        checkTypeOf(val, "e2", EX_NS+"test2"); 
+        checkTypeOf(val, "e2", EX_NS+"test2");
 
     }
 
-    
+
     public void testTypeMembershipSuccess1() {
         Validate val=testType("src/test/resources/validate/unification/membership-success1.provn");
-        
+
         checkTypeOf(val, "e1", Types.VAL_TYPE_NS+"Entity");
-                        
+
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Entity");
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Collection");
-        
+
     }
-    
+
     public void testTypeMembershipFail1() {
         Validate val=testType("src/test/resources/validate/type/type-collection-fail1.provn", "e1", 0);
         testOverlap(val, "e1", 0);
         testOverlap(val, "e2", 2);
-        
-        
+
+
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Entity");
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"Collection");
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"NonEmptyCollection");
         checkTypeOf(val, "e2", Types.VAL_TYPE_NS+"EmptyCollection");
     }
-    
-    
+
+
     public void testAssociation() {
         Validate val=testType("src/test/resources/validate/ordering/association2.provn");
         testOverlap(val, "ag", 0);
     }
-   
+
 
     public void testIllegalTypes() {
-	
-  	assertTrue(illegal(Types.activityURI,Types.entityURI));
-  	assertTrue(illegal(Types.activityURI,Types.bundleURI));
-  	assertTrue(illegal(Types.activityURI,Types.collectionURI));
-  	assertTrue(illegal(Types.activityURI,Types.emptyCollectionURI));
-  	
-  	
-  	assertFalse(illegal(Types.softwareAgentURI,Types.entityURI));
-  	assertFalse(illegal(Types.softwareAgentURI,Types.bundleURI));
-  	assertFalse(illegal(Types.softwareAgentURI,Types.collectionURI));
-  	assertFalse(illegal(Types.softwareAgentURI,Types.emptyCollectionURI));
-  	
-  	assertFalse(illegal(Types.agentURI,Types.entityURI));
-  	assertFalse(illegal(Types.agentURI,Types.bundleURI));
-  	assertFalse(illegal(Types.agentURI,Types.collectionURI));
-  	assertFalse(illegal(Types.agentURI,Types.emptyCollectionURI));
-  	
-  	
-  	assertFalse(illegal(Types.bundleURI,Types.entityURI));
-  	assertFalse(illegal(Types.bundleURI,Types.bundleURI));
-  	assertFalse(illegal(Types.bundleURI,Types.collectionURI));
-          assertFalse(illegal(Types.bundleURI,Types.emptyCollectionURI));
 
-          
-          assertTrue(illegal(Types.nonEmptyCollectionURI,Types.emptyCollectionURI));
+        assertTrue(illegal(Types.activityURI,Types.entityURI));
+        assertTrue(illegal(Types.activityURI,Types.bundleURI));
+        assertTrue(illegal(Types.activityURI,Types.collectionURI));
+        assertTrue(illegal(Types.activityURI,Types.emptyCollectionURI));
 
-  	assertFalse(illegal("foo1", "foo2"));
-  	
-  	
-      }
+
+        assertFalse(illegal(Types.softwareAgentURI,Types.entityURI));
+        assertFalse(illegal(Types.softwareAgentURI,Types.bundleURI));
+        assertFalse(illegal(Types.softwareAgentURI,Types.collectionURI));
+        assertFalse(illegal(Types.softwareAgentURI,Types.emptyCollectionURI));
+
+        assertFalse(illegal(Types.agentURI,Types.entityURI));
+        assertFalse(illegal(Types.agentURI,Types.bundleURI));
+        assertFalse(illegal(Types.agentURI,Types.collectionURI));
+        assertFalse(illegal(Types.agentURI,Types.emptyCollectionURI));
+
+
+        assertFalse(illegal(Types.bundleURI,Types.entityURI));
+        assertFalse(illegal(Types.bundleURI,Types.bundleURI));
+        assertFalse(illegal(Types.bundleURI,Types.collectionURI));
+        assertFalse(illegal(Types.bundleURI,Types.emptyCollectionURI));
+
+
+        assertTrue(illegal(Types.nonEmptyCollectionURI,Types.emptyCollectionURI));
+
+        assertFalse(illegal("foo1", "foo2"));
+
+
+    }
 
     public void testIllegalType3() {
-	
-	assertTrue(illegal(Types.activityURI,Types.entityURI, Types.agentURI).size()==2);
-	
-	assertTrue(illegal(Types.softwareAgentURI,
-	                   Types.bundleURI,
-	                   Types.agentURI,
-	                   Types.entityURI, 
-	                   Types.agentURI).size()==0);
 
-      }
+        assertTrue(illegal(Types.activityURI,Types.entityURI, Types.agentURI).size()==2);
 
-    
- 
+        assertTrue(illegal(Types.softwareAgentURI,
+                Types.bundleURI,
+                Types.agentURI,
+                Types.entityURI,
+                Types.agentURI).size()==0);
+
+    }
+
+
+
 }

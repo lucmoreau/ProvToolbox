@@ -9,458 +9,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-validation/modules-validation.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/ActivityEntry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Cleanup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Config.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Constraints.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/EntityEntry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/EventIndexer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/EventMatrix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/ExistentialVariable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Expansion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Gensym.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Indexer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Inference.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Merger.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/ObjectMaker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Pair.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/TwoKeys.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Types.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Unification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Uniqueness.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Unknown.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/Validate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/VarQName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/VarQNameWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/VarTime.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/matrix/DenseMatrix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/matrix/Matrix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/matrix/Pair.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/matrix/SparseMatrix.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/Dependencies.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/MalformedStatements.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/MergeReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/SomeStatements.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/SpecializationReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/TypeOverlap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/TypeReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/CustomXMLGregorianCalendarDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/DependenciesInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/Mapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/MergeReportInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/SpecializationReportInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/resources/org/openprovenance/prov/validation/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/AttributesTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/BundleTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ExpansionTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ImpossibilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/MatrixTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/OrderingTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/TypeTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/Validate2Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidationObjectMaker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/issue/picaso.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/issue/picaso.provx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/issue/tom-bytheway.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/issue/tom-bytheway.provx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-activity-test1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-activity-test1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-entity-test1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-entity-test1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-start-test1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-start-test1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-start-test2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/nf-start-test2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/activity5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/association1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/association1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/association2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/association2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/attribution1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/attribution1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/attribution2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/attribution2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/delegation1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/delegation1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/delegation2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/delegation2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/derivation1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/derivation1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/derivation2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/derivation2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/derivation3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/derivation3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/ends1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/ends1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/entity4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/specialization4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/starts1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/ordering/starts1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/pc1-full.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/pc1-full.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/picaso-file.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/primer.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-collection-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-collection-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/type/type-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-end-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-end-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-end-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-end-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-start-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-start-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-start-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-start-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/activity-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-fail6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/association-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-activity-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-activity-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-end-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-end-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-end-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-end-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-entity-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-entity-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-start-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-start-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-start-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attributes-start-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/attribution-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/bundle-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/bundle-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/bundle-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/bundle-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/bundle-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/bundle-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/communication-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-fail6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/delegation-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/derivation-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/end-success6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-fail7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success8.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/generation-success8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/influence-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-fail7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success8.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/invalidation-success8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/membership-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/membership-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/membership-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/membership-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/mention-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/specialization-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail8.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-fail8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success8.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success9.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/start-success9.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-fail7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success5.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success6.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success8.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/validate/unification/usage-success8.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources/config/log4j2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/AttributesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/AttributesTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/BundleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/BundleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/CoreValidateTester.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ExpansionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ExpansionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ImpossibilityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ImpossibilityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/MatrixTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/MatrixTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/OrderingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/OrderingTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/TypeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/TypeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/Validate2Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/Validate2Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/test/java/org/openprovenance/prov/validation/ValidateTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -567,7 +128,7 @@
     "extract.method.default.visibility": "private",
     "git-widget-placeholder": "development2__0",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/java",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-validation/prov-validation/src/test/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -590,11 +151,11 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-validation/prov-validation/src/test/resources" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/view" />
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/config" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/docker-service-translator" />
@@ -639,12 +200,12 @@
       <recent name="org.openprovenance.prov.template.compiler" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.docker.logs">
-    <configuration name="LightIT.testEntity0" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-translator" />
+  <component name="RunManager" selected="JUnit.AttributesTest.testAttributesActivitySuccess1">
+    <configuration name="AttributesTest.testAttributesActivitySuccess1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-validation" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.translator.light.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.validation.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -658,9 +219,9 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator.light" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.light.LightIT" />
-      <option name="METHOD_NAME" value="testEntity0" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.validation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.validation.AttributesTest" />
+      <option name="METHOD_NAME" value="testAttributesActivitySuccess1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -784,7 +345,7 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.LightIT.testEntity0" />
+      <item itemvalue="JUnit.AttributesTest.testAttributesActivitySuccess1" />
       <item itemvalue="JUnit.TemplateIT.testTemplateAction1" />
       <item itemvalue="Makefile Target.cli1" />
       <item itemvalue="Makefile Target.docker.logs" />
@@ -793,11 +354,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AttributesTest.testAttributesActivitySuccess1" />
         <item itemvalue="Makefile Target.docker.logs" />
         <item itemvalue="Makefile Target.docker.ps" />
         <item itemvalue="Makefile Target.cli1" />
         <item itemvalue="JUnit.TemplateIT.testTemplateAction1" />
-        <item itemvalue="JUnit.LightIT.testEntity0" />
       </list>
     </recent_temporary>
   </component>

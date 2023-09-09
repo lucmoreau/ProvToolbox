@@ -2,12 +2,7 @@ package org.openprovenance.prov.validation;
 
 import java.io.File;
 
-public class ValidateTest extends CoreValidateTester{
-
-    public ValidateTest(String testName) {
-        super(testName);
-    }
-    //-----------------  activity
+public class ValidateTest extends CoreValidateTester {
 
     public void testUnificationActivitySuccess1() {
         testUnification("src/test/resources/validate/unification/activity-success1.provn",
@@ -745,7 +740,7 @@ public class ValidateTest extends CoreValidateTester{
     }
 
     public void testValidatePrimer() throws java.io.IOException {
-        testValidate("src/test/resources/validate/primer.provn");
+        doTestValidate("src/test/resources/validate/primer.provn");
         assertTrue(report.getCycle().size()==0);
         assertTrue(report.getNonStrictCycle().size()==2); // two simultaneous generations
         assertTrue(report.getFailedMerge().size() == 0);
@@ -755,7 +750,7 @@ public class ValidateTest extends CoreValidateTester{
     public void testValidateJPL() throws java.io.IOException {
         String jplFile="../../ProvToolbox/toolbox/target/jpl.provn";
         if (new File(jplFile).exists()) {
-            testValidate(jplFile);
+            doTestValidate(jplFile);
             assertTrue(report.getCycle().size()==0);
             assertTrue(report.getNonStrictCycle().size()==0);
             assertTrue(report.getFailedMerge().size() == 0);
@@ -788,32 +783,14 @@ public class ValidateTest extends CoreValidateTester{
        Thomas Bytheway
     */
     public void testFailingDocumentTomBytheway() throws java.io.IOException {
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out
-                .println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("");
-        testValidate("src/test/resources/validate/issue/tom-bytheway.provn");
+        doTestValidate("src/test/resources/validate/issue/tom-bytheway.provn");
     }
     public void testFailingDocumentPicaso() throws java.io.IOException {
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out
-                .println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("");
-        testValidate("src/test/resources/validate/issue/picaso.provn");
+        doTestValidate("src/test/resources/validate/issue/picaso.provn");
     }
 
     public void NOtestValidateAmir() throws java.io.IOException {
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out
-                .println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("");
-        testValidate("/home/lavm/Downloads/amir.provn");
+        doTestValidate("/home/lavm/Downloads/amir.provn");
     }
 
     public void NOtestValidateAmir2() throws java.io.IOException {
@@ -823,7 +800,7 @@ public class ValidateTest extends CoreValidateTester{
         System.out
                 .println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("");
-        testValidate("/home/lavm/Downloads/amir2.provn");
+        doTestValidate("/home/lavm/Downloads/amir2.provn");
     }
 
     /*    public void testValidatePicaso() {

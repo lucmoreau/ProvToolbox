@@ -17,30 +17,28 @@ public class MatrixTest extends TestCase {
 		super(testName);
 	}
 
-	public void testMatrix1() {
+	public void IGNOREDtestMatrix1() {
 		System.out.println("1 :" +  Integer.valueOf(1).hashCode());
 		System.out.println("2 :" +  Integer.valueOf(2).hashCode());
 		System.out.println("1000d :" +  Integer.valueOf(1000).hashCode());
 	}
 
-	public void testMatrix2() throws jakarta.xml.bind.JAXBException,
-			java.io.IOException {
+	public void testMatrix2() {
 		SparseMatrix m = new SparseMatrix(10, 10);
-		assertTrue(m.g(0, 0) == null);
+        assertNull(m.g(0, 0));
 		m.set(0, 0, 10);
-		assertTrue(m.g(0, 0).getValue() == 10);
+        assertEquals(10, m.g(0, 0).getValue());
 
 		m.set(0, 1, 11);
-		assertTrue(m.g(0, 0).getValue() == 10);
-		assertTrue(m.g(0, 1).getValue() == 11);
+        assertEquals(10, m.g(0, 0).getValue());
+        assertEquals(11, m.g(0, 1).getValue());
 
 		m.set(4, 5, 20);
-		assertTrue(m.g(0, 0).getValue() == 10);
-		assertTrue(m.g(0, 1).getValue() == 11);
-		assertTrue(m.g(4, 5).getValue() == 20);
-		System.out.println(" m is " + m);
-		System.out.println(" m row 0 is "
-				+ ((org.openprovenance.prov.validation.matrix.SparseMatrix) m).getRow(0));
+        assertEquals(10, m.g(0, 0).getValue());
+        assertEquals(11, m.g(0, 1).getValue());
+        assertEquals(20, m.g(4, 5).getValue());
+		logger.debug(" m is " + m);
+		logger.debug(" m row 0 is " + m.getRow(0));
 	}
 
 }

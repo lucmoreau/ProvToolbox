@@ -3,12 +3,6 @@ package org.openprovenance.prov.validation;
 
 public class BundleTest extends CoreValidateTester{
 
-    public BundleTest(String testName) {
-        super(testName);
-    }
-    //-----------------  bundle
-
-    
     
     public void testUnificationBundleSuccess1() {
         testUnification("src/test/resources/validate/unification/bundle-success1.provn",

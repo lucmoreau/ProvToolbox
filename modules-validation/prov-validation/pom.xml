@@ -77,6 +77,16 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources/config</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>log4j2.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
 
           <plugin>

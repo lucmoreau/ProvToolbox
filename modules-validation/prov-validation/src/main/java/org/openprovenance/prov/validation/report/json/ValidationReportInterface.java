@@ -15,7 +15,6 @@ import java.util.List;
 public interface ValidationReportInterface {
     List<Dependencies> getCycle();
 
-    @JsonProperty("nonstrictcycle")
     List<Dependencies> getNonStrictCycle();
 
     List<MergeReport> getFailedMerge();

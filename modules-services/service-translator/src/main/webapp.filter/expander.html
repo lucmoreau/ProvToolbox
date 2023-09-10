@@ -28,11 +28,12 @@
 <nav class="navbar navbar-inverse">
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
-			<li id="header-translator"> <a href="translator">Translate</a></li>
-			<li id="header-expander">   <a href="expander">Expand</a></li>
-			<li id="header-api">        <a href="api">API</a></li>
-			<li id="header-about">      <a href="about">About</a></li>
-			<li id="header-contact">    <a href="contact">Contact</a></li>
+			<li id="header-translator"> <a href="translator.html">Translate</a></li>
+			<li id="header-expander">   <a href="expander.html">Expand</a></li>
+			<li id="header-validator">  <a href="validator.html">Validate</a></li>
+			<li id="header-api">        <a href="api.html">API</a></li>
+			<li id="header-about">      <a href="about.html">About</a></li>
+			<li id="header-contact">    <a href="contact.html">Contact</a></li>
 		</ul>
 	</div>
 </nav>
@@ -79,7 +80,7 @@
 
 									<ul class="dropdown-menu">
 										<li>Templates</li>
-										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1.provn')">
+										<li><a href="#" onclick="updateRootURLInputBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1.provn')">
 											<i class="icon-ok"></i>  generic.binaryop</a>
 										</li>
 
@@ -108,16 +109,16 @@
 
 									<ul class="dropdown-menu">
 										<li>Bindings Examples</li>
-										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b1.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b1.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b1 (1 output)</a>
 										</li>
-										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b2.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b2.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b2 (2 outputs)</a>
 										</li>
-										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b3.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b3 (1 output, 2 properties)</a>
 										</li>
-										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
+										<li><a href="#" onclick="updateRootBindingsBox('${service.context}/provapi/resources/templates/org/openprovenance/generic/binaryop/1/b4.json')">
 											<i class="icon-ok"></i>  generic.binaryop.b4 (2 outputs, 1 or 2 properties)</a>
 										</li>
 
@@ -153,7 +154,7 @@
 
 <script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
 
-<script src="../js/provservice.js"></script>
+<script src="provservice.js"></script>
 
 </body>
 

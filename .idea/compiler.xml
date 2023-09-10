@@ -27,6 +27,7 @@
         <module name="benchmarks" />
         <module name="service-translator" />
         <module name="prov-model" />
+        <module name="prov-service-validation" />
         <module name="prov-interop" />
         <module name="prov-log" />
         <module name="prov-template" />

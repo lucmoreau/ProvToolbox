@@ -96,7 +96,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<Dependencies> getCycle() {
         if (cycle == null) {
-            cycle = new ArrayList<Dependencies>();
+            cycle = new ArrayList<>();
         }
         return this.cycle;
     }
@@ -125,7 +125,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<Dependencies> getNonStrictCycle() {
         if (nonStrictCycle == null) {
-            nonStrictCycle = new ArrayList<Dependencies>();
+            nonStrictCycle = new ArrayList<>();
         }
         return this.nonStrictCycle;
     }
@@ -154,7 +154,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<MergeReport> getFailedMerge() {
         if (failedMerge == null) {
-            failedMerge = new ArrayList<MergeReport>();
+            failedMerge = new ArrayList<>();
         }
         return this.failedMerge;
     }
@@ -183,7 +183,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<MergeReport> getSuccessfulMerge() {
         if (successfulMerge == null) {
-            successfulMerge = new ArrayList<MergeReport>();
+            successfulMerge = new ArrayList<>();
         }
         return this.successfulMerge;
     }
@@ -212,7 +212,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<MergeReport> getQualifiedNameMismatch() {
         if (qualifiedNameMismatch == null) {
-            qualifiedNameMismatch = new ArrayList<MergeReport>();
+            qualifiedNameMismatch = new ArrayList<>();
         }
         return this.qualifiedNameMismatch;
     }
@@ -288,7 +288,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<TypeOverlap> getTypeOverlap() {
         if (typeOverlap == null) {
-            typeOverlap = new ArrayList<TypeOverlap>();
+            typeOverlap = new ArrayList<>();
         }
         return this.typeOverlap;
     }
@@ -316,7 +316,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
      */
     public List<ValidationReport> getValidationReport() {
         if (validationReport == null) {
-            validationReport = new ArrayList<ValidationReport>();
+            validationReport = new ArrayList<>();
         }
         return this.validationReport;
     }

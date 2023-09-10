@@ -1,0 +1,25 @@
+{
+    "var": {
+        "a": [
+            {
+                "@id": "ex:aa1"
+            }
+        ],
+        "b": [
+            {
+                "@id": "ex:bb1"
+            }
+        ],
+        "c": [
+            {
+                "@id": "ex:cc1"
+            }
+        ]
+    },
+    "vargen": {},
+    "context": {
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "ex": "http://example.org/"
+    }
+}
+

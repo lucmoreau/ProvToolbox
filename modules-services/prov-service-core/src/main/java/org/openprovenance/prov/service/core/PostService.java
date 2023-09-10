@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
@@ -28,7 +30,7 @@ import java.io.InputStream;
 import java.util.*;
 
 @Path("")
-public class PostService implements Constants, InteropMediaType {
+public class PostService implements Constants, InteropMediaType, SwaggerTags {
 
     static Logger logger = LogManager.getLogger(PostService.class);
 
@@ -48,6 +50,8 @@ public class PostService implements Constants, InteropMediaType {
 
     private final List<ActionPerformer> performers;
     private Optional<OtherActionPerformer> otherPerformer;
+
+    InteropFramework interopFramework = new InteropFramework();
 
     public static <E> List<E> addToList(E element, List<E> list) {
         List<E> result = new LinkedList<>();
@@ -87,7 +91,7 @@ public class PostService implements Constants, InteropMediaType {
     @POST
     @Path("/documents/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Tag(name = "documents")
+    @Tag(name = DOCUMENTS)
 
     @Operation(summary = "Post a document. Payload is a form that may contain a file, prov statements or a url",
             description = "Post a document in a form; indicate if validation or translation required; and redirects to the appropriate page. This method  is also designed for browser interaction, allowing the user to select a file, a url or statements for provenance.  The user may specify validate or translate directly.",
@@ -186,7 +190,7 @@ public class PostService implements Constants, InteropMediaType {
 
     @POST
     @Path("/documents2/")
-    @Tag(name = "documents")
+    @Tag(name = DOCUMENTS)
     @Consumes({MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})
     @Operation(summary = "Post a document, directly, creates a resource, supports content negotiation, redirects to URL providing serialization for the resource",
@@ -274,23 +278,32 @@ public class PostService implements Constants, InteropMediaType {
                         + vr.getStorageId());
     }
 
+    
+
     @GET
-    @Path("/resources/prov/{name}.{type}")
-    @Tag(name = "documents")
+    @Path("/resources/prov/{name: .+}.{type}")
+    @Tag(name = DOCUMENTS)
     @Operation(summary = "Returns static provenance document",
             description = "No content negotiation allowed here.",
             responses = {@ApiResponse(responseCode = "200", description = "Representation of document"),
                          @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND)})
+    @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})
     public Response getResource(@Context HttpServletResponse response,
                                 @Context HttpServletRequest request,
                                 @Parameter(name = "name", description = "document name", required = true) @PathParam("name") String name,
                                 @Parameter(name = "type", description = "document type", required = true) @PathParam("type") String type) throws IOException {
 
 
-        logger.debug("requesting resource " + name);
-        InputStream stream=this.getClass().getResourceAsStream("/resources/prov/" + name + "." + type);
+        logger.info("requesting resource " + name);
+        InputStream stream=this.getClass().getClassLoader().getResourceAsStream("/webresources/prov/" + name + "." + type);
         StreamingOutput promise=out -> stream.transferTo(out);
-        return utils.composeResponseOK(promise).type(MEDIA_TEXT_PROVENANCE_NOTATION).build();
+
+        String mediaType=interopFramework.mimeTypeMap.get(interopFramework.extensionRevMap.get(type));
+
+        logger.info("media type is " + mediaType);
+        if (mediaType==null) mediaType="text/plain";
+	
+        return utils.composeResponseOK(promise).type(mediaType).build();
 
 
     }

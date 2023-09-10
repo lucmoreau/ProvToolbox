@@ -36,8 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.openprovenance.prov.service.translation.SwaggerTags.DOCUMENTS;
-import static org.openprovenance.prov.service.translation.SwaggerTags.TEMPLATE;
+import static org.openprovenance.prov.service.core.SwaggerTags.TEMPLATE;
 
 @Path("")
 public class TemplateService  implements Constants, InteropMediaType {

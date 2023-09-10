@@ -27,8 +27,8 @@
 
 		<module>modules-tutorial</module>
 
-		<module>modules-services</module>
 		<module>modules-validation</module>
+		<module>modules-services</module>
 
 	</modules>
 
@@ -258,7 +258,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${mvn.compiler.plugin}</version>
+					<version>${compiler.plugin.version}</version>
 					<configuration>
 						<source>11</source>
 						<target>11</target>
@@ -307,7 +307,7 @@
 
 		<!-- maven plugins -->
 
-		<mvn.compiler.plugin>3.8.1</mvn.compiler.plugin>
+		<compiler.plugin.version>3.8.1</compiler.plugin.version>
 		<jar.plugin.version>3.3.0</jar.plugin.version>
 		<war.plugin.version>3.3.1</war.plugin.version>
 		<javadoc.plugin.version>3.1.1</javadoc.plugin.version>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>ProvValidator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <style type="text/css">
+        body {
+            padding-left: 5px;
+        }
+
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        .accordion-heading .accordion-toggle {
+            padding: 8px 15px;
+        }
+
+        .accordion-toggle {
+            cursor: pointer;
+        }
+
+        a[class="nounderline"]:link {
+            text-decoration: none;
+        }
+
+        /* unvisited link */
+        a[class="nounderline"]:visited {
+            text-decoration: none;
+        }
+
+        /* visited link */
+        a[class="nounderline"]:hover {
+            text-decoration: none;
+        }
+
+        /* mouse over link */
+        a[class="nounderline"]:active {
+            text-decoration: none;
+        }
+
+        /* selected link */
+
+        .glossary {
+            font-style: italic;
+        }
+
+        pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+        .pretty .string { color: green; }
+        .pretty .uri { color: darkolivegreen; }
+        .pretty .number { color: darkorange; }
+        .pretty .boolean { color: blue; }
+        .pretty .symbol { color: blue; }
+        .pretty .indent { color: #23ff51; }
+        .pretty .null { color: magenta; }
+        .pretty .operator { color: red; }
+        .pretty .key { color: red; }
+        .pretty .date { color: red; }
+        .pretty .feature { color: saddlebrown; }
+        .pretty .attribute { color: skyblue; }
+        .pretty .category { color: green; }
+        .pretty .provkeyword { color: saddlebrown; }
+        .pretty .querykeyword { color: coral;  font-weight: bold; }
+        .pretty .phrasekeyword { color: coral;  font-weight: bold; }
+        .pretty .snlgkeyword { color: saddlebrown; font-weight: bold; }
+        .pretty .templatekeyword { color: royalblue; font-weight: bold; text-decoration: underline; font-variant: small-caps;}
+
+    </style>
+
+    <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+    <link href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="${service.context}/webjars/font-awesome/${webjars.fontawesome.version}/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="${service.context}/validation.css" rel="stylesheet" type="text/css"/>
+
+
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li id="header-translator"> <a href="${service.context}/translator.html">Translate</a></li>
+            <li id="header-expander">   <a href="${service.context}/expander.html">Expand</a></li>
+            <li id="header-validator">  <a href="${service.context}/validator.html">Validate</a></li>
+            <li id="header-api">        <a href="${service.context}/api.html">API</a></li>
+            <li id="header-about">      <a href="${service.context}/about.html">About</a></li>
+            <li id="header-contact">    <a href="${service.context}/contact.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<script>
+    $('#header-validator').addClass("active");
+</script>
+
+
+<section>
+    <div class="container" style="text-align:left;margin-top:20px">
+
+        <p><em>No guarantees are provided as to the correctness of this validation result.</em></p>
+
+    </div>
+
+    <div id="report-to-insert">
+        <div id="headings" style="margin-bottom:50px; margin-left:20px; padding-left: 5px;">
+            <div class="row" style="margin-top:30px">
+                <div class="col-sm-4">
+                    <div id="accordion1">
+                        <a href="#tab-ordering-constraints" data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-failed-merge"         data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-type-check"           data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-malformed-expression" data-toggle="collapse" class="showHideTab"></a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div id="accordion2">
+                        <a href="#tab-specialization-constraints"   data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-term-duplication"             data-toggle="collapse" class="showHideTab"></a>
+                        <a href="#tab-qualified-name"               data-toggle="collapse" class="showHideTab"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="explanations" style="margin-bottom:50px;  margin-left: 40px; padding-left: 5px;">
+            <div class="row" style="margin-top:30px">
+                <div class="row-fluid" style="margin-top:30px">
+                    <div class="col-sm-8">
+                        <div id="myTabContent-report" class="tab-content">
+                            <div class="collapse" id="tab-ordering-constraints"></div>
+                            <div class="collapse" id="tab-failed-merge"></div>
+                            <div class="collapse" id="tab-type-check"></div>
+                            <div class="collapse" id="tab-malformed-expression"></div>
+                            <div class="collapse" id="tab-specialization-constraints"></div>
+                            <div class="collapse" id="tab-term-duplication"></div>
+                            <div class="collapse" id="tab-qualified-name"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div id="spec-to-go-here"><a href="http://www.w3.org/TR/prov-constraints/"
+                                                     onclick="window.open(&#39;http://www.w3.org/TR/prov-constraints/&#39;,&#39;popup&#39;,&#39;width=600,height=700,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=yes,menubar=no,status=no,left=0,top=0&#39;); return false">PROV-Constraints</a><br><br><a
+                                href="http://www.w3.org/TR/prov-constraints/#communication-generation-use-inference"
+                                onclick="window.open(&#39;http://www.w3.org/TR/prov-constraints/#communication-generation-use-inference&#39;,&#39;popup&#39;,&#39;width=600,height=700,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=yes,menubar=no,status=no,left=0,top=0&#39;); return false">communication-generation-use-inference</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="overview-ordering-constraint" style="display:none; ">
+        <p>Provenance consists of a description of past entities and activities. Valid provenance instances MUST satisfy
+            ordering constraints between instantaneous <span class="glossary" data-ref="dfn-event">events.</span></p>
+        <p>Specifically, there exists a preorder between instantaneous events. A constraint of the form 'e1 precedes e2'
+            means that e1 happened at the same time as or before e2. For symmetry, follows is defined as the inverse of
+            precedes; that is, a constraint of the form 'e1 follows e2' means that e1 happened at the same time as or
+            after e2. Both relations are preorders, meaning that they are reflexive and transitive. Moreover, we
+            sometimes consider strict forms of these orders: we say e1 strictly precedes e2 to indicate that e1 happened
+            before e2, but not at the same time. This is a transitive relation.</p>
+        <p>One way to check ordering constraints is to generate all precedes and strictly precedes relationships arising
+            from the ordering constraints to form a directed graph, with edges marked precedes or strictly precedes, and
+            check that there is no cycle containing a strictly precedes edge.</p>
+    </div>
+
+    <div id="overview-malformed-statements" style="display:none; ">
+        Expressions are malformed when ...
+    </div>
+
+    <div id="overview-failed-merge" style="display:none; ">
+        Statements may be merged when ...
+    </div>
+
+    <div id="overview-type-check" style="display:none; ">
+        PROV defines some type inferences and identifies some mutually exclusive types. For instance, an activity cannot
+        be an entity. This section identifies type impossibilities.
+    </div>
+    <div id="overview-specialization-constraints" style="display:none; ">
+        Specialization is not reflexive.
+    </div>
+    <div id="overview-duplicate-statements" style="display:none; ">
+        This is purely a warning. The purpose of this section is to identify terms that are repeated in the current
+        instance but successfully unified. No action is required, since such terms are perfect valid as far as
+        [PROV-Constraints] is concerned.
+    </div>
+
+    <div id="overview-misleading-qnames" style="display:none; ">
+        This is purely a warning. Qualified names, in PROV, map to URIs by concatenating the namespace (denoted by a
+        qualified name prefix) and the local name. Two different qualified names may map to the same URI. Nothing wrong,
+        from a PROV view point, since comparison is on URIs. However, having two distinct qualified names for a same
+        URIs make provenance<em> confusing for human readers</em>.
+    </div>
+
+</section>
+
+
+<script>
+    var thisUrl = document.URL;
+    var jsonUrl = thisUrl.replace('/view/', '/provapi/');
+    jsonUrl = jsonUrl.replace('.html', '.json');
+
+    console.log(jsonUrl);
+
+
+    $(document).ready(function () {
+
+        var json2load=jsonUrl;
+        console.log(json2load);
+        $.getJSON(json2load,
+            function (report) {
+                updateWith(report);
+                $(function () {
+                    $('[data-toggle="popover"]').popover()
+                });
+
+            });
+
+
+        $('.showHideTab').click(function () {
+            var _this = $(this);
+            var _target = $(this).attr("href");
+            //console.log("++++" + _target);
+            $('.showHideTab').each(function () {
+                if ($(this).attr("href") != _target) {
+                    //console.log($(this).attr("href") );
+                    $($(this).attr("href")).removeClass("in").addClass('collapse');
+                } else {
+                    $($(this).attr("href")).collapse('show');
+                }
+            });
+        });
+
+
+    });
+
+    var report_fields=["cycle", "failedMerge", "successfulMerge", "qualifiedNameMismatch", "specializationReport.specializationOf", "typeReport", "typeOverlap", "malformedStatements.@graph"];
+    var report_tab_ids={
+        "cycle": "tab-ordering-constraints",
+        "failedMerge": "tab-failed-merge",
+        "successfulMerge": "tab-type-check",
+        "qualifiedNameMismatch": "tab-qualified-name",
+        "specializationReport.specializationOf": "tab-specialization-constraints",
+        "typeReport": "tab-type-report",
+        "typeOverlap": "tab-term-duplication",
+        "malformedStatements.@graph": "tab-malformed-expression"};
+    var alert_texts={
+        "cycle": "Cycles have been detected",
+        "failedMerge": "Statements failed to be merged",
+        "successfulMerge": "There is some type checking error",
+        "qualifiedNameMismatch": "Some distinct qualified names map to the same URI",
+        "specializationReport.specializationOf": "Specialization was detected to be reflexive",
+        "typeReport": "??? type report",
+        "typeOverlap": "Some terms are duplicated",
+        "malformedStatements.@graph": "Some statements are malformed"};
+    var titles_ids={
+        "cycle": "Ordering Constraints",
+        "failedMerge": "Merge Constraints",
+        "successfulMerge": "Type Constraints",
+        "qualifiedNameMismatch": "Misleading Qualified Names",
+        "specializationReport.specializationOf": "Specialization Constraints",
+        "typeReport": "??? Type report ....",
+        "typeOverlap": "Duplicate Statements",
+        "malformedStatements.@graph": "Malformed Expressions"};
+
+    var overviews={
+        "cycle": "overview-ordering-constraint",
+        "failedMerge": "overview-failed-merge",
+        "successfulMerge": "overview-type-check",
+        "qualifiedNameMismatch": "overview-misleading-qnames",
+        "specializationReport.specializationOf": "overview-specialization-constraints",
+        "typeReport": "overview-typeReport",
+        "typeOverlap": "overview-duplicate-statements",
+        "malformedStatements.@graph": "overview-malformed-statements"};
+
+    var successes={
+        "cycle": "There is no unsatisfied ordering constraint",
+        "failedMerge": "There is no merge failure",
+        "successfulMerge": "There is no type checking error",
+        "qualifiedNameMismatch": "There is no mismatching qualified name",
+        "specializationReport.specializationOf": "There is no violation of specialization irreflexivity",
+        "typeReport": "overview-typeReport",
+        "typeOverlap": "There is no duplicated term",
+        "malformedStatements.@graph": "There is no malformed statement"};
+
+
+    var warnings=["typeOverlap", "qualifiedNameMismatch"];
+
+    var snippets={};
+
+    function populateExplanation(key,tab_id, count) {
+        var elem = $('<div style="margin: 1.5em 10em 1.5em 5em;">');
+        var alert = $('<div class="alert">');
+        if (count > 0) {
+            if (warnings.includes(key)) {
+                alert.addClass("alert-warning");
+                alert.append($('<img src="${service.context}/Warning_32.png">'));
+            } else {
+                alert.addClass("alert-danger");
+                alert.append($('<img src="${service.context}/button_cancel-32.png">'));
+            }
+            alert.append(alert_texts[key] + "!");
+        } else {
+            alert.addClass("alert-success");
+            alert.append($('<img src="${service.context}/agt_action_success-32.png">'));
+            alert.append(successes[key] + "!");
+        }
+        elem.append(alert);
+        var title = $('<div>');
+        var span = $('<span style="font-size:large; font-weight: bold;">');
+        span.append(titles_ids[key]);
+        var link = $('<a rel="popover" class="withpopover" href="#" html="false" data-trigger="focus" data-toggle="popover">What is this?</a>');
+        link.attr('title', titles_ids[key]);
+        var overview_id = overviews[key];
+        var overview = $('#' + overview_id).html();
+        link.attr('data-content', overview);
+        title.append(span);
+        title.append(" ");
+        title.append(link);
+
+        let snippet_array = snippets[key];
+        if (!(typeof snippet_array === "unspecified")) {
+            $.each(snippet_array, function (id, snippet) {
+                var code = $('<pre>').addClass('pretty');
+                code.html(syntaxHighlight_json(JSON.stringify(snippet, undefined, 2)));
+                $('#' + tab_id).prepend(code);
+            });
+        }
+        $('#' + tab_id).prepend(elem);
+        $('#' + tab_id).prepend(title);
+        //console.log("explanation for " + titles_ids[key] + "(" + tab_id + ")");
+    }
+
+    function populateSummary(key,tab_id, count) {
+        var root=$('[href="#'+tab_id+'"]');
+
+        var alert = $('<div class="alert">');
+        if (count > 0) {
+            if (warnings.includes(key)) {
+                alert.addClass("alert-warning");
+                alert.append("<i class=\"glyphicon glyphicon-warning-sign\"></i>");
+            } else {
+                alert.addClass("alert-danger");
+                alert.append("<i class=\"glyphicon glyphicon-remove\"></i>");
+            }
+        } else {
+            alert.addClass("alert-success");
+            alert.append("<i class=\"glyphicon glyphicon-ok\"></i> ");
+        }
+        var span=$('<span>')
+        span.append(titles_ids[key]);
+        span.append(" (" + count + ")");
+        alert.append(span);
+
+
+        root.prepend(alert);
+    }
+
+
+    function updateWith(report) {
+        var counts={};
+        $.each(report_fields, function (ind,field) {
+            var field_seq=field.split(".");
+            var current=report;
+            $.each(field_seq, function (_ind,afield) {
+                if ((typeof current==="unspecified")  || (current===null)){
+                } else {
+                    current=current[afield];
+                }
+            });
+            if ((typeof current==="unspecified")|| (current===null)) {
+                counts[field] = 0;
+            } else {
+                counts[field] = current.length;
+                snippets[field] = current;
+            }
+
+        });
+        //console.log(counts);
+        $.each(counts, function(key,count) {
+            var tab_id=report_tab_ids[key];
+            if (tab_id!=null) {
+                populateExplanation(key,tab_id,count);
+                populateSummary(key,tab_id,count);
+            }
+        })
+    }
+
+
+
+    function syntaxHighlight_json(json) {
+        if (typeof json != 'string') {
+            json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            if (cls=='key') {
+                if (/^"(wasGeneratedBy|prov:)|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|type|\$|actedOnBehalfOf/.test(match)) {
+                    cls='provkeyword';
+                }
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+</script>
+
+<style type="text/css">
+    .popover-inner {
+        width: 600px;
+    }
+</style>
+
+
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+
+
+<script src="${service.context}/provservice.js"></script>
+
+
+</body>
+</html>

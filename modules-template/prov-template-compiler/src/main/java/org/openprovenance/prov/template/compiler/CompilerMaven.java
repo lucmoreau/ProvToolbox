@@ -75,7 +75,7 @@ public class CompilerMaven {
             addProvDependency("prov-n", model);
             //addProvDependency("prov-json", model);
             addProvDependency("prov-template-compiler", model);
-            addProvDependency("prov-interop-light", model);
+            addProvDependency("prov-interop", model);
 
         } else if (escape) {
             addProvDependency("prov-model", model);

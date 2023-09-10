@@ -42,6 +42,9 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     }
 
 
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
         getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);

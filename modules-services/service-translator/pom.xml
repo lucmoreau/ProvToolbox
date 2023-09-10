@@ -22,6 +22,12 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
             <version>2.0.1-SNAPSHOT</version>
         </dependency>
@@ -35,7 +41,20 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-service-validation</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-compiler</artifactId>
             <version>2.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -142,6 +161,13 @@
             <version>${resteasy.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-mongodb</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
 
     </dependencies>
 
@@ -211,7 +237,7 @@
                 <filtering>true</filtering>
             </testResource>
             <testResource>
-                <directory>src/test/config</directory>
+                <directory>src/test/resources/config</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>log4j2.xml</include>
@@ -365,6 +391,50 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>set-system-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <properties>
+                                        <property>
+                                            <name>PSERVICE_MONGO_HOST</name>
+                                            <value>localhost</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_DBNAME</name>
+                                            <value>provtest</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_INDEX</name>
+                                            <value>redis</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_STORAGE</name>
+                                            <value>fs</value>
+                                        </property>
+                                        <property>
+                                            <name>PSERVICE_REDIS_HOST</name>
+                                            <value>localhost</value>
+                                        </property>
+                                        <property>
+                                            <name>POSTGRES_HOST</name>
+                                            <name>localhost</name>
+                                        </property>
+                                        <property>
+                                            <name>RESOURCES_HOST</name>
+                                            <value>http://localhost:${service.port}${service.context}/provapi/resources</value>
+                                        </property>
+                                    </properties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
                         <version>${war.plugin.version}</version>
@@ -414,7 +484,7 @@
                                             <filtering>true</filtering>
                                             <!-- this is relative to the pom.xml directory -->
                                             <directory>src/main/webapp.filter</directory>
-                                            <includes>*</includes>
+                                            <includes>**/*</includes>
                                         </resource>
                                     </webResources>
 

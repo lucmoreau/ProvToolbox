@@ -18,7 +18,7 @@ public class RedisValidationResource extends RedisDocumentResource implements Va
 
     @Override
     public boolean getCompleted() {
-        return Boolean.valueOf(getMap().get(RedisValidationResourceIndex.FIELD_COMPLETED));
+        return Boolean.parseBoolean(getMap().get(RedisValidationResourceIndex.FIELD_COMPLETED));
     }
 
     @Override

@@ -20,9 +20,9 @@ public interface ValidationResource  extends DocumentResource {
     void setMatrix(String matrix);
 
 
-    static public String COMPLETE="complete";
-    static public String REPORT="report";
-    static public String BUNDLE="bundle";
+    String COMPLETE="complete";
+    String REPORT="report";
+    String BUNDLE="bundle";
 
     void setPngMatrix(String matrixPngId);
     String getPngMatrix();

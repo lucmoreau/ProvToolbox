@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.core.SwaggerTags;
 
 import jakarta.servlet.RequestDispatcher;
@@ -44,8 +43,10 @@ public class ViewService implements SwaggerTags {
                                           @PathParam("docId") String visibleId)
             throws ServletException, IOException {
         logger.info("getValidationReportAsHtml: " + visibleId +  ", url:" + request.getRequestURL());
-        //request.setAttribute("event", visibleId);
-        request.getRequestDispatcher("../../../../validationReport.html").forward(request, response);
+        //request.getRequestDispatcher("../../../../validationReport.html").forward(request, response);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/validationReport.html");
+        logger.info("getValidationReportAsHtml:  url:" + request.getRequestURL() + " dispatcher: " + requestDispatcher);
+        requestDispatcher.forward(request, response);
     }
 
 

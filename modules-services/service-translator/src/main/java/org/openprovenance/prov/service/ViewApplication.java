@@ -32,7 +32,7 @@ import java.util.Set;
 						email = "provenance@kcl.ac.uk")
 		),
 		tags = {
-				@Tag(name = "resources",       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "docs desc"))
+				@Tag(name = "WEB-INF/resources",       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "docs desc"))
 		},
 		externalDocs = @ExternalDocumentation(description = "definition docs desc"),
 		security = {
@@ -49,7 +49,7 @@ import java.util.Set;
 						url = "http://localhost:{port}/{context}/",
 						variables = {
 								@ServerVariable(name = "port", description = "service port", defaultValue = "7071", allowableValues = {"7070", "7071", "8080"}),
-								@ServerVariable(name = "context", description = "service context", defaultValue = "resources", allowableValues = {"resources", "context"})
+								@ServerVariable(name = "context", description = "service context", defaultValue = "WEB-INF/resources", allowableValues = {"WEB-INF/resources", "context"})
 						})
 		}
 )

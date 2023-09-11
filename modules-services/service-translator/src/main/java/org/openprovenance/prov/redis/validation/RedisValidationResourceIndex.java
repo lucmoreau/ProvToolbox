@@ -26,10 +26,10 @@ public class RedisValidationResourceIndex extends RedisExtendedDocumentResourceI
         super(dri, factory, extra);
     }
 
-    public static Instantiable<ValidationResource> factory =new Instantiable<ValidationResource>() {
+    public static Instantiable<ValidationResource> factory = new Instantiable<>() {
         @Override
         public ValidationResource newResource(DocumentResource dr) {
-            return new RedisValidationResource(((RedisDocumentResource)dr).getMap());
+            return new RedisValidationResource(((RedisDocumentResource) dr).getMap());
         }
 
         @Override

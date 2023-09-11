@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
@@ -66,8 +65,8 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
         this.deletePeriod = config.deletePeriod;
         jobManager.setupScheduler();
         try {
-            jobManager.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
-            jobManager.getScheduler().getContext().put(JobManagement.DURATION_KEY, config.deletePeriod);
+            JobManagement.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
+            JobManagement.getScheduler().getContext().put(JobManagement.DURATION_KEY, config.deletePeriod);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -281,7 +280,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
     
 
     @GET
-    @Path("/resources/prov/{name: .+}.{type}")
+    @Path("/resources/{path: .+}")
     @Tag(name = DOCUMENTS)
     @Operation(summary = "Returns static provenance document",
             description = "No content negotiation allowed here.",
@@ -290,22 +289,46 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
     @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})
     public Response getResource(@Context HttpServletResponse response,
                                 @Context HttpServletRequest request,
-                                @Parameter(name = "name", description = "document name", required = true) @PathParam("name") String name,
-                                @Parameter(name = "type", description = "document type", required = true) @PathParam("type") String type) throws IOException {
+                                @Parameter(name = "path", description = "document path", required = true) @PathParam("path") String path) {
+
+        logger.info("get resources " + path);
+
+        // find file extension in  path
+        String type=path.substring(path.lastIndexOf(".")+1);
+
+        logger.info(" type " + type);
+
+        String mediaType;
+        if (!interopFramework.extensionRevMap.containsKey(type)) {
+            mediaType="text/plain";
+        } else {
+            mediaType=interopFramework.mimeTypeMap.get(interopFramework.extensionRevMap.get(type));
+            if (mediaType == null) mediaType = "text/plain";
+        }
 
 
-        logger.info("requesting resource " + name);
-        InputStream stream=this.getClass().getClassLoader().getResourceAsStream("/webresources/prov/" + name + "." + type);
-        StreamingOutput promise=out -> stream.transferTo(out);
+        String the_path = "/webresources/" + path;
 
-        String mediaType=interopFramework.mimeTypeMap.get(interopFramework.extensionRevMap.get(type));
+        logger.info(" the_path " + the_path);
+
+        // do not auto-close stream as returned in a closure
+        InputStream stream=this.getClass().getClassLoader().getResourceAsStream(the_path);
+        StreamingOutput promise = null;
+        if (stream != null) {
+            promise = stream::transferTo;
+        } else {
+            promise = (out) -> {
+                out.write(("Resource " + the_path + " not found").getBytes());
+            };
+        }
+
 
         logger.info("media type is " + mediaType);
-        if (mediaType==null) mediaType="text/plain";
-	
+
         return utils.composeResponseOK(promise).type(mediaType).build();
 
 
     }
+
 
 }

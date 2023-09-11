@@ -9,83 +9,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ActionValidate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/JobDeleteValidationResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationObjectMaker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationServiceUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/memory/ValidationResourceInMemory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/memory/ValidationResourceIndexInMemory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/test/java/org/prov/service/validation/AppTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/test/resources/bindings1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/redis/validation/RedisValidationResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/redis/validation/RedisValidationResourceIndex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/StaticApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/store/ValidationReportWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/prov/invalid.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/prov/pc1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/prov/primer.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/foo1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validationReport.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validator.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/IsDocumentWithFieldsToIgnore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/ValidationReportMessageBodyReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidatorIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/config/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/test-validator/doc-tovalidate.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/test-validator/picaso-file.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/test-validator/picaso-file2.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf/.env" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf/env_file.env" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/docker.conf/env_file.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/SwaggerTags.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/SwaggerTags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/config/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/EnvironmentVariables.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/EnvironmentVariables.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/StorageConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ViewApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ViewApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator/ViewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ViewService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/api.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/css/XMLPrettyPrint/XMLMonoPrint.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/css/XMLPrettyPrint/XMLPrettyPrint.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/css/XMLPrettyPrint/XMLPrettyPrint.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/css/XMLPrettyPrint/viewsource.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/css/validation.css" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/validation.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/expander.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/images/Warning_32.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/Warning_32.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/images/agt_action_success-256.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/agt_action_success-256.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/images/agt_action_success-32.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/agt_action_success-32.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/images/button_cancel-32.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/button_cancel-32.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/js/provservice.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/provservice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b1.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b2.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b3.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/templates/org/openprovenance/generic/binaryop/1/b4.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b4.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/translator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DocumentMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/DocumentMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/StreamMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/StreamMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/StringMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/StringMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/light/LightIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslatorIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/template/TemplateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/TemplateIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/service/translator/light/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/service/translator/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerMaven.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerMaven.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/json/ValidationReportInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/redis/validation/RedisValidationResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/redis/validation/RedisValidationResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/redis/validation/RedisValidationResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/redis/validation/RedisValidationResourceIndex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ViewApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ViewApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ViewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ViewService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/foo1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/prov/invalid.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/prov/pc1.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources/prov/primer.provn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/config/log4j2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/TemplateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/TemplateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidatorIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidatorIT.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,31 +126,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "development2__0",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/java",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/main/webapp.filter/view",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.66091955",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "scala_project_settings_configurable.last_selected_tab_index": "7",
-    "settings.editor.selected.configurable": "project.propCompiler",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
+    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/java&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-services&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;7&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.service.translation" />
@@ -215,18 +160,18 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/view" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/translator" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/js" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/org/openprovenance/prov/service/translator" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.template.compiler.common.Constants" />
@@ -264,7 +209,7 @@
       <recent name="org.openprovenance.prov.core.json" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.TranslatorIT.testQualifiedAlternateOf2">
+  <component name="RunManager" selected="JUnit.ValidatorIT.testValidatorAction1 (1)">
     <configuration name="AttributesTest.testAttributesActivitySuccess1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-validation" />
       <extension name="coverage">
@@ -337,6 +282,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ValidatorIT.testValidatorAction1 (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.validator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.validator" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.validator.ValidatorIT" />
+      <option name="METHOD_NAME" value="testValidatorAction1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ValidatorIT.testValidatorAction1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-translator" />
       <extension name="coverage">
@@ -387,12 +358,6 @@
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="docker.ps" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-services/docker-service-translator/Makefile" target="docker.ps" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
       <option name="allowRunningInParallel" value="false" />
@@ -432,17 +397,17 @@
       <item itemvalue="JUnit.AttributesTest.testAttributesActivitySuccess1" />
       <item itemvalue="JUnit.TranslatorIT.testQualifiedAlternateOf2" />
       <item itemvalue="JUnit.ValidatorIT.testValidatorAction1" />
+      <item itemvalue="JUnit.ValidatorIT.testValidatorAction1 (1)" />
       <item itemvalue="Makefile Target.docker.logs" />
-      <item itemvalue="Makefile Target.docker.ps" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ValidatorIT.testValidatorAction1 (1)" />
         <item itemvalue="JUnit.TranslatorIT.testQualifiedAlternateOf2" />
         <item itemvalue="JUnit.ValidatorIT.testValidatorAction1" />
         <item itemvalue="JUnit.AttributesTest.testAttributesActivitySuccess1" />
         <item itemvalue="Makefile Target.docker.logs" />
-        <item itemvalue="Makefile Target.docker.ps" />
       </list>
     </recent_temporary>
   </component>
@@ -819,6 +784,7 @@
       <workItem from="1693919563810" duration="27570000" />
       <workItem from="1694027380052" duration="12448000" />
       <workItem from="1694092947150" duration="40519000" />
+      <workItem from="1694451178713" duration="8643000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

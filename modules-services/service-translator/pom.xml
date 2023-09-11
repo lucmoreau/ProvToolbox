@@ -36,14 +36,12 @@
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
             <version>2.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-validation</artifactId>
             <version>2.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -58,13 +56,20 @@
             <version>2.0.1-SNAPSHOT</version>
         </dependency>
 
-<!--
         <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.1.2</version>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-mongodb</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
         </dependency>
--->
+
+
+        <!--
+                <dependency>
+                    <groupId>javax.json</groupId>
+                    <artifactId>javax.json-api</artifactId>
+                    <version>1.1.2</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
@@ -161,12 +166,7 @@
             <version>${resteasy.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-storage-mongodb</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
 
 
     </dependencies>
@@ -414,6 +414,10 @@
                                             <value>redis</value>
                                         </property>
                                         <property>
+                                            <name>PSERVICE_DEL_PERIOD</name>
+                                            <value>60</value>
+                                        </property>
+                                        <property>
                                             <name>PSERVICE_STORAGE</name>
                                             <value>fs</value>
                                         </property>
@@ -518,6 +522,7 @@
                                     <!-- -->
                                 </configuration>
                             </execution>
+                            <!--
                             <execution>
                                 <id>stop-jetty</id>
                                 <phase>post-integration-test</phase>
@@ -525,6 +530,7 @@
                                     <goal>stop</goal>
                                 </goals>
                             </execution>
+                            -->
                         </executions>
                     </plugin>
                 </plugins>

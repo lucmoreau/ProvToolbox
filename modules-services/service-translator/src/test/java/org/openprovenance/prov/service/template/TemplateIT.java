@@ -157,8 +157,6 @@ public class TemplateIT extends TestCase {
         String location=response.getHeaderString("Location");
         System.out.println("*** write " + location);
         client.close();
-
-
         return location;  
 
     }

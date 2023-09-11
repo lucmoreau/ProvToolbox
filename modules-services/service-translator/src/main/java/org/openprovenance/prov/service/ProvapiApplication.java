@@ -69,7 +69,7 @@ import static org.openprovenance.prov.service.core.SwaggerTags.*;
 						url = "http://localhost:{port}/{context}/",
 						variables = {
 								@ServerVariable(name = "port", description = "service port", defaultValue = "7071", allowableValues = {"7070", "7071", "8080"}),
-								@ServerVariable(name = "context", description = "service context", defaultValue = "resources", allowableValues = {"resources", "context"})
+								@ServerVariable(name = "context", description = "service context", defaultValue = "WEB-INF/resources", allowableValues = {"WEB-INF/resources", "context"})
 						})
 		}
 )

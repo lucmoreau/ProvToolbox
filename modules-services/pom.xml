@@ -22,7 +22,7 @@
     </modules>
 
 
-
+<!--
     <profiles>
         <profile>
             <id>local</id>
@@ -52,6 +52,7 @@
         </profile>
 
     </profiles>
+    -->
 
 
 </project>

@@ -89,7 +89,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         expandBindingsSchema(bindings_schema, valueMap);
 
-        return utils.composeResponseOK(bindings_schema).build();
+        return ServiceUtils.composeResponseOK(bindings_schema).build();
     }
 
 
@@ -174,7 +174,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         Document expanded = myExpand.expander(document, bindings);
 
-        return utils.composeResponseOK(expanded).build();
+        return ServiceUtils.composeResponseOK(expanded).build();
 
     }
 
@@ -215,7 +215,7 @@ public class TemplateService  implements Constants, InteropMediaType {
             }
             InteropFramework intF = new InteropFramework();
             String mimeType = intF.convertExtensionToMediaType(type);
-            return utils.composeResponseOK(doc).type(mimeType).build();
+            return ServiceUtils.composeResponseOK(doc).type(mimeType).build();
         } finally {
             index.close();
         }
@@ -254,7 +254,7 @@ public class TemplateService  implements Constants, InteropMediaType {
             StreamingOutput promise= out -> utils.getGenericResourceStorageMap().get(ActionExpand.BINDINGS_KEY).copyStoreToOutputStream(bindings_Id,out);
 
 
-            return utils.composeResponseOK(promise).type(MediaType.APPLICATION_JSON_TYPE).build();
+            return ServiceUtils.composeResponseOK(promise).type(MediaType.APPLICATION_JSON_TYPE).build();
         } finally {
             index.close();
         }

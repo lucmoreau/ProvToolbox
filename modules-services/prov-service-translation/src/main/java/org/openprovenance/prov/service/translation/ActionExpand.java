@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class ActionExpand implements ActionPerformer {
     public static final String BINDINGS_KEY = "bindings";
-    private static Logger logger = LogManager.getLogger(ActionExpand.class);
+    private static final Logger logger = LogManager.getLogger(ActionExpand.class);
 
     private final ServiceUtils utils;
 
@@ -162,7 +162,7 @@ public class ActionExpand implements ActionPerformer {
             // remove previous job, and replace it
             JobManagement.getScheduler().deleteJob(new JobKey(visibleId,"graph"));
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.throwing(e);
         }
         return utils.getJobManager().scheduleJob(JobDeleteTemplateResource.class,visibleId,"-template", "graph");
     }

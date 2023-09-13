@@ -3,8 +3,10 @@ ORIGIN=${origin.project}
 
 SERVICE=${project.artifactId}
 
-TARGET_IMAGE=$(SERVICE).open9j
-LOCATION_IMAGE=target/$(TARGET_IMAGE)
+
+
+TARGET_IMAGE=$(SERVICE).${docker.java.platform}
+LOCATION_IMAGE=$(TARGET_IMAGE)
 
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 
@@ -19,17 +21,23 @@ WAR_FILE=$(ORIGIN)-$(WAR_VERSION)-docker
 DOCKER=sudo /usr/bin/docker
 DOCKER=docker
 
-build.all: mk.dir NO.generate.docker.war copy.war dck.file build
+build.all: mk.dir NO.generate.docker.war alt.copy.war dck.file build
 
 mk.dir:
 	mkdir -p $(LOCATION_IMAGE)
 
 generate.docker.war:
 	rm -f $(LOCATION_IMAGE)/*.war
-	cd ${project.basedir}/../$(ORIGIN) ; mvn clean install -Pjetty -Pdocker
+	cd ${project.basedir}/../$(ORIGIN) ; mvn clean install -Pdocker,jetty
 
 NO.generate.docker.war:
 	@echo "No need to generate docker war"
+
+NO.copy.war:
+	@echo "No need to copy war"
+
+alt.copy.war:
+	cp ${project.build.directory}/$(WAR_FILE).war $(LOCATION_IMAGE)/$(WAR_FILE).war
 
 copy.war:
 	cp ${project.basedir}/../$(ORIGIN)/target/$(WAR_FILE_ORIGINAL).war $(LOCATION_IMAGE)/$(WAR_FILE).war

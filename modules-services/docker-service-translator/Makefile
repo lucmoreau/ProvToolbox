@@ -56,21 +56,22 @@ cli1:
 	curl -D - -H "content-type: text/provenance-notation" -H "accept: application/json" -X POST --data-binary @src/test/resources/sculpture.provn http://localhost:9090/service/provapi/documents2
 
 
+DOCKER_PROJECT=prov
 docker.up:
-	docker-compose -f docker.conf/docker-compose.yml up -d
+	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml up -d
 
 docker.ps:
-	docker-compose -f docker.conf/docker-compose.yml ps
+	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml ps
 
 docker.stop:
-	docker-compose -f docker.conf/docker-compose.yml stop
+	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml stop
 
 docker.rm:
-	docker-compose -f docker.conf/docker-compose.yml rm
+	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml rm
 
 docker.logs:
-	docker-compose -f docker.conf/docker-compose.yml logs
+	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml logs
 
 docker.restart:
-	docker-compose -f docker.conf/docker-compose.yml restart prov-wrt
+	docker-compose --project-name $(DOCKER_PROJECT) -f docker.conf/docker-compose.yml restart prov-wrt
 

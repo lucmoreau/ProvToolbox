@@ -19,6 +19,11 @@
     <Logger name="org.openprovenance.prov.service" level="info"  additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
+    <Logger name="org.openprovenance.prov.template" level="info"  additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+
   </Loggers>
 </Configuration>
 

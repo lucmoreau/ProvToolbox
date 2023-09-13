@@ -181,11 +181,85 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${war.plugin.version}</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
 
+
+                        <configuration>
+                            <classifier/>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <webXml>src/main/webapp.filter/WEB-INF/jetty-web.xml</webXml>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
+                            <filters>
+                                <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                                <filter>src/main/resources/properties/jetty.webapp.config.properties</filter>
+                            </filters>
+                            <webResources>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/webapp.filter</directory>
+                                    <excludes>
+                                        <exclude>WEB-INF/jetty-web.xml</exclude>
+                                        <exclude>WEB-INF/tomcat-web.xml</exclude>
+                                        <exclude>WEB-INF/classes</exclude>
+                                    </excludes>
+                                    <includes>**/*</includes>
+                                </resource>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/resources/org</directory>
+                                    <targetPath>WEB-INF/classes/org</targetPath>
+                                </resource>
+                            </webResources>
+
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-docker-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>docker</classifier>
+
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
+                            <filters>
+                                <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
+                                <filter>src/main/resources/properties/tomcat.webapp.config.properties</filter>
+                            </filters>
+                            <webResources>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/webapp.filter</directory>
+                                    <excludes>
+                                        <exclude>WEB-INF/jetty-web.xml</exclude>
+                                        <exclude>WEB-INF/tomcat-web.xml</exclude>
+                                        <exclude>WEB-INF/classes</exclude>
+                                    </excludes>
+                                    <includes>**/*</includes>
+                                </resource>
+                                <resource>
+                                    <filtering>true</filtering>
+                                    <!-- this is relative to the pom.xml directory -->
+                                    <directory>src/main/resources/org</directory>
+                                    <targetPath>WEB-INF/classes/org</targetPath>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -207,8 +281,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
 
         <resources>
@@ -223,11 +295,13 @@
                     <include>log4j2.xml</include>
                 </includes>
             </resource>
+            <!--
             <resource>
                 <directory>src/main/webapp.filter</directory>
                 <targetPath>${project.build.directory}/webapp.filtered</targetPath>
                 <filtering>true</filtering>
             </resource>
+            -->
         </resources>
 
 
@@ -249,6 +323,8 @@
     <properties>
         <service.port>7071</service.port>
         <service.context>/service</service.context>
+        <service.host>localhost</service.host>
+        <service.protocol>http</service.protocol>
     </properties>
 
 
@@ -261,10 +337,9 @@
             </activation>
             <properties>
                 <isdocker />
-                <upload.directory>${project.build.directory}/</upload.directory>
+                <IGNOREM.upload.directory>${project.build.directory}/</IGNOREM.upload.directory>
                 <validation.log.location>target/</validation.log.location>
                 <validation.prov.log.location>target/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
             </properties>
 
             <build>
@@ -300,13 +375,11 @@
             <id>docker</id>
             <properties>
                 <isdocker>docker</isdocker>
-                <upload.directory>/home/pservice/files/</upload.directory>
+                <IGNOREME.upload.directory>/home/pservice/files/</IGNOREME.upload.directory>
                 <validation.log.location>/home/pservice/log/</validation.log.location>
                 <validation.prov.log.location>/home/pservice/log/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
             </properties>
             <build>
-
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -316,60 +389,11 @@
                             <skip>true</skip>
                         </configuration>
                     </plugin>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <classifier>docker</classifier>
-                        </configuration>
-                    </plugin>
-                    <!--<plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <classifier>docker</classifier>
-                        </configuration>
-                    </plugin> -->
                 </plugins>
             </build>
         </profile>
 
-        <profile>
-            <id>mac</id>
-            <properties>
-                <isdocker>mac</isdocker>
-                <upload.directory>/Users/luc/docker/log-dir/</upload.directory>
-                <validation.log.location>/Users/luc/docker/log-dir/log/</validation.log.location>
-                <validation.prov.log.location>/Users/luc/docker/log-dir/log/</validation.prov.log.location>
-                <hsqldb.location>target/test-database/database</hsqldb.location>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.plugin.version}</version>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <classifier>mac</classifier>
-                        </configuration>
-                    </plugin>
-                    <!--<plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                        <classifier>docker</classifier>
-                        </configuration>
-                        </plugin> -->
-                </plugins>
-            </build>
-        </profile>
+
 
         <profile>
             <id>jetty</id>
@@ -390,6 +414,18 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${jar.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>test-jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
@@ -431,71 +467,14 @@
                                         </property>
                                         <property>
                                             <name>RESOURCES_HOST</name>
-                                            <value>http://localhost:${service.port}${service.context}/provapi/resources</value>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi/resources</value>
                                         </property>
                                     </properties>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${war.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>default-war</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>war</goal>
-                                </goals>
 
-                                <configuration>
-                                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                                    <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
-                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
-                                    <filters>
-                                        <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
-                                    </filters>
-                                    <classifier />
-                                    <webResources>
-                                        <resource>
-                                            <filtering>true</filtering>
-                                            <!-- this is relative to the pom.xml directory -->
-                                            <directory>src/main/webapp.filter</directory>
-                                            <includes>*</includes>
-                                        </resource>
-                                    </webResources>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>build-jetty-war</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>war</goal>
-                                </goals>
-
-                                <configuration>
-                                    <classifier>jetty</classifier>
-                                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
-                                    <!-- <webXml>${project.basedir}/src/main/web-config/jetty-web.xml</webXml> -->
-                                    <filters>
-                                        <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
-                                    </filters>
-                                    <webResources>
-                                        <resource>
-                                            <filtering>true</filtering>
-                                            <!-- this is relative to the pom.xml directory -->
-                                            <directory>src/main/webapp.filter</directory>
-                                            <includes>**/*</includes>
-                                        </resource>
-                                    </webResources>
-
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
@@ -519,10 +498,13 @@
                                     <goal>start</goal>
                                 </goals>
                                 <configuration>
+
+
+
                                     <!-- -->
                                 </configuration>
                             </execution>
-                            <!--
+
                             <execution>
                                 <id>stop-jetty</id>
                                 <phase>post-integration-test</phase>
@@ -530,7 +512,7 @@
                                     <goal>stop</goal>
                                 </goals>
                             </execution>
-                            -->
+
                         </executions>
                     </plugin>
                 </plugins>
@@ -538,50 +520,6 @@
         </profile>
 
 
-        <profile>
-            <id>tomcat</id>
-            <build>
-                <plugins>
-                    <plugin>
-
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>2.2</version>
-                        <configuration>
-                            <server>local.tomcat</server> <!-- see .m2/settings.xml -->
-                            <port>${service.port}</port>
-                            <path>/</path>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>start-tomcat</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <fork>true</fork>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>stop-tomcat</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>shutdown</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.tomcat</groupId>
-                                <artifactId>tomcat-el-api</artifactId>
-                                <version>8.0.9</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
 
     </profiles>
 

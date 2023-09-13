@@ -83,18 +83,18 @@ public class ExpandUtil {
     }
 
     static public Set<QualifiedName> freeVariables(Statement statement) {
-        HashSet<QualifiedName> result = new HashSet<QualifiedName>();
+        Set<QualifiedName> result = new HashSet<>();
         for (int i = 0; i < getFirstTimeIndex(statement); i++) {
             Object o = u.getter(statement, i);
             if (o instanceof QualifiedName) {
                 QualifiedName name = (QualifiedName) o;
-                if (name != null && isVariable(name))
+                if (isVariable(name))
                     result.add(name);
             } else {
                 if (o instanceof List) {
                     List<QualifiedName> ll = (List<QualifiedName>) o;
                     for (QualifiedName name : ll) {
-                        if (name != null && isVariable(name))
+                        if (isVariable(name))
                             result.add(name);
                     }
                 }
@@ -106,7 +106,7 @@ public class ExpandUtil {
     static public Set<QualifiedName> freeVariables(Bundle statement) {
         Set<QualifiedName> result = new HashSet<>();
         QualifiedName name = statement.getId();
-        if (name != null && isVariable(name)) {
+        if (isVariable(name)) {
             result.add(name);
         }
         return result;
@@ -183,6 +183,7 @@ public class ExpandUtil {
         final String namespaceURI = id.getNamespaceURI();
         return VARGEN_NS.equals(namespaceURI);
     }
+
 
 }
 

@@ -33,7 +33,7 @@ public class ViewService implements SwaggerTags {
 
 
     @GET
-    @Path("/documents/{docId}/validation/report.html")
+    @Path("/view/documents/{docId}/validation/report.html")
     @Produces("text/html")
     @Operation(summary = "Validation Report --- html representation",
             responses = { @ApiResponse(responseCode = "404", description = "Document not found") })
@@ -42,10 +42,9 @@ public class ViewService implements SwaggerTags {
                                           @Context HttpServletRequest request,
                                           @PathParam("docId") String visibleId)
             throws ServletException, IOException {
-        logger.info("getValidationReportAsHtml: " + visibleId +  ", url:" + request.getRequestURL());
+        //logger.info("getValidationReportAsHtml: " + visibleId +  ", url:" + request.getRequestURL());
         //request.getRequestDispatcher("../../../../validationReport.html").forward(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/validationReport.html");
-        logger.info("getValidationReportAsHtml:  url:" + request.getRequestURL() + " dispatcher: " + requestDispatcher);
         requestDispatcher.forward(request, response);
     }
 

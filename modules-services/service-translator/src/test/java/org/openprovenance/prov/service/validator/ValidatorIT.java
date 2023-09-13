@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Properties;
 
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSON;
@@ -33,11 +34,20 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION
 public class ValidatorIT extends TestCase {
     static Logger logger = LogManager.getLogger(ValidatorIT.class);
 
-    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties")).getProperty("service.port");
-    static String context= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties")).getProperty("service.context");
 
-    String validationURL="http://localhost:" + port + context + "/provapi/documents/";
-    String htmlURL="http://localhost:" + port + context + "/contact.html";
+    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties"));
+    final static String port= properties.getProperty("service.port");
+    final static String context= properties.getProperty("service.context");
+    final static String host= properties.getProperty("service.host");
+    final static String protocol= properties.getProperty("service.protocol");
+
+    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
+    final static String postURL=hostURLprefix + "/provapi/documents2/";
+    final static String expansionURL=hostURLprefix + "/provapi/documents/";
+    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
+    final static String validationURL=hostURLprefix + "/provapi/documents/";
+    final static String htmlURL=hostURLprefix + "/contact.html";
+
 
     final InteropFramework intF=new InteropFramework();
 

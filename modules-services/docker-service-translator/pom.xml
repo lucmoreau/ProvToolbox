@@ -16,6 +16,7 @@
     <properties>
         <service.context>service</service.context>
         <origin.project>service-translator</origin.project>
+        <docker.java.platform>temurin</docker.java.platform>
         <upload.directory>/home/pservice/files</upload.directory>  <!-- same folder as in docker profile in service-translator -->
     </properties>
 
@@ -31,6 +32,33 @@
 
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>org.openprovenance.prov</groupId>
+                            <artifactId>service-translator</artifactId>
+                            <version>${project.version}</version>
+                            <classifier>docker</classifier>
+                            <type>war</type>
+                            <overWrite>true</overWrite>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </artifactItem>
+                    </artifactItems>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

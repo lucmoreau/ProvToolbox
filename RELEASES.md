@@ -1,5 +1,11 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+==2.0.1==
+* validator code (satisfied w3c interoperability tests)
+* validator service
+* updated docker container
+
+
 ==2.0.0==
 * made the vanilla beans (in org.openprovenance.prov.vanilla) the default implementation of the prov data model (org.openprovenance.prov.model) instead of the xml-oriented beans
 * dropped prov-xml, as it relied on jaxb, which is not supported in Java 11

@@ -131,7 +131,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
         }
 
         String mimeType = intF.convertExtensionToMediaType(type);
-        return utils.composeResponseOK(doc).type(mimeType).build();
+        return ServiceUtils.composeResponseOK(doc).type(mimeType).build();
     }
 
     @GET
@@ -168,7 +168,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
 
         logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + dr.getStorageId());
 
-        return utils.composeResponseOK((Object) f).type(mimeType).build();
+        return ServiceUtils.composeResponseOK((Object) f).type(mimeType).build();
     }
 
 }

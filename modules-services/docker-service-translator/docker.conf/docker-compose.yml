@@ -5,16 +5,16 @@ services:
 
   provtranslator:
     env_file: env_file.env
-    image: docker-service-translator.open9j
+    image: docker-service-translator.temurin
     restart: always
     ports:
       - "8080:8080"
     links:
       - redis:redis
     environment:
-      - CATALINA_OPTS=-DPSERVICE_REDIS_HOST=redis -DPSERVICE_REDIS_PORT=6379
+      - CATALINA_OPTS=-DPSERVICE_REDIS_HOST=redis -DPSERVICE_REDIS_PORT=6379 -DPSERVICE_STORAGE=fs
     volumes:
-      - $DOCKER_HOME/log-dir:/home/pservice
+      - $FILE_HOME:/home/pservice
     depends_on:
       - redis
 
@@ -23,8 +23,8 @@ services:
     env_file: env_file.env
     image: redis
     restart: always
-    ports:
-      - "6379:6379"
+    expose:
+      - 6379
     volumes:
       - $REDIS_HOME:/data
     command: [redis-server, '--appendonly yes']

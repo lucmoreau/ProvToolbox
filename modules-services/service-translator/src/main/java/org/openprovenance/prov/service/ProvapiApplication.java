@@ -18,10 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.service.core.NodeMessageBodyWriter;
-import org.openprovenance.prov.service.core.PostService;
-import org.openprovenance.prov.service.core.ServiceUtilsConfig;
-import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.translation.RandomService;
 import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
@@ -47,12 +44,12 @@ import static org.openprovenance.prov.service.core.SwaggerTags.*;
 						           email = "provenance@kcl.ac.uk")
 		),
 		tags = {
-				@Tag(name = DOCUMENTS,  description = "provenance api (documents)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = TEMPLATE,   description = "provenance api (templates)",     externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = VALIDATION, description = "provenance api (validation)",    externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = STATIC, 	description = "provenance api (sttic)",    		externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = RANDOM,     description = "provenance api (random)",        externalDocs = @ExternalDocumentation(description = "docs desc")),
-				@Tag(name = VIEW,       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "NOTE: /provapi is incorrect and should be /view"))
+				@Tag(name = DOCUMENTS,  description = "provenance documents",     externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = TEMPLATE,   description = "provenance templates",     externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = VALIDATION, description = "provenance validation",    externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = RESOURCES, 	description = "static resources",    	externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = RANDOM,     description = "provenance random generation",        externalDocs = @ExternalDocumentation(description = "docs desc")),
+				@Tag(name = VIEW,       description = "browsing interface",             externalDocs = @ExternalDocumentation(description = "docs desc"))
 		},
 		externalDocs = @ExternalDocumentation(description = "definition docs desc"),
 		security = {
@@ -69,7 +66,7 @@ import static org.openprovenance.prov.service.core.SwaggerTags.*;
 						url = "http://localhost:{port}/{context}/",
 						variables = {
 								@ServerVariable(name = "port", description = "service port", defaultValue = "7071", allowableValues = {"7070", "7071", "8080"}),
-								@ServerVariable(name = "context", description = "service context", defaultValue = "WEB-INF/resources", allowableValues = {"WEB-INF/resources", "context"})
+								@ServerVariable(name = "context", description = "service context", defaultValue = "service", allowableValues = {"service", "context"})
 						})
 		}
 )
@@ -95,6 +92,9 @@ public class ProvapiApplication extends Application  {
 		singletons.add(new TemplateService(ps));
         singletons.add(new ValidationService(ps));
 		singletons.add(new RandomService(ps));
+		singletons.add(new ResourcesService());
+		singletons.add(new ViewService());
+
 
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());

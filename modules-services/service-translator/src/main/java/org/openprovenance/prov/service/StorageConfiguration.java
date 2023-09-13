@@ -139,7 +139,7 @@ public class StorageConfiguration implements EnvironmentVariables{
     File path=new File(UPLOADED_FILE_PATH); //FIXME, integrate with configuration?
 
 
-    public ServiceUtilsConfig withFileSystem(ServiceUtilsConfig utilsConfig, ProvFactory factory, Map<String,String> configuration) {
+    public void withFileSystem(ServiceUtilsConfig utilsConfig, ProvFactory factory, Map<String,String> configuration) {
         utilsConfig.storageManager=new DocumentResourceStorageFileSystem(factory, path);
 
         ProvSerialiser serial = new ProvSerialiser();
@@ -149,7 +149,6 @@ public class StorageConfiguration implements EnvironmentVariables{
         utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY,new NonDocumentGenericResourceStorageFileSystem<>(Mapper.getValidationReportMapper(), ValidationReport.class, path));
         utilsConfig.genericResourceStorageMap.put(ActionValidate.MATRIX_KEY,new NonDocumentGenericResourceStorageFileSystem<>(new ObjectMapper(), Object.class, path));
 
-        return utilsConfig;
     }
 
 
@@ -167,7 +166,7 @@ public class StorageConfiguration implements EnvironmentVariables{
 
     public void initRedis(ServiceUtilsConfig config, Map<String, String> configuration) {
         Consumer<Map<String, ResourceIndex<?>>> redisInit = extensionMap -> {
-            RedisDocumentResourceIndex di=new RedisDocumentResourceIndex(configuration.get(PSERVICE_REDIS_HOST), Integer.valueOf(configuration.get(PSERVICE_REDIS_PORT)));
+            RedisDocumentResourceIndex di=new RedisDocumentResourceIndex(configuration.get(PSERVICE_REDIS_HOST), Integer.parseInt(configuration.get(PSERVICE_REDIS_PORT)));
             extensionMap.put(DocumentResource.getResourceKind(), di);
             extensionMap.put(TemplateResource.getResourceKind(),   new RedisTemplateResourceIndex(di,RedisTemplateResourceIndex.factory));
             extensionMap.put(ValidationResource.getResourceKind(), new RedisValidationResourceIndex(di,RedisValidationResourceIndex.factory));

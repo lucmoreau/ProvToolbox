@@ -75,7 +75,7 @@ public class JobManagement {
 		try {
 			duration=(Integer)the_scheduler.getContext().get(JobManagement.DURATION_KEY);
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.throwing(e);
 		}
 		JobDetail job = JobBuilder.newJob(jobClazz).withIdentity(visibleId, group).build();
 
@@ -89,7 +89,7 @@ public class JobManagement {
 			logger.debug("schedule date " + date);
 			return date;
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.throwing(e);
 			return null;
 		}
 	}

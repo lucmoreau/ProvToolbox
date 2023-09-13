@@ -6,5 +6,5 @@ public interface SwaggerTags {
     String DOCUMENTS="documents";
     String RANDOM="random";
     String VIEW="view";
-    String STATIC="static";
+    String RESOURCES ="resources";
 }

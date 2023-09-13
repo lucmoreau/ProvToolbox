@@ -33,8 +33,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
+import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TemplateIT extends TestCase {
@@ -56,11 +58,21 @@ public class TemplateIT extends TestCase {
     }
 
 
-    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties")).getProperty("service.port");
-    static String context= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties")).getProperty("service.context");
 
-    String expansionURL="http://localhost:" + port + context + "/provapi/documents/";
-    
+    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties"));
+    final static String port= properties.getProperty("service.port");
+    final static String context= properties.getProperty("service.context");
+    final static String host= properties.getProperty("service.host");
+    final static String protocol= properties.getProperty("service.protocol");
+
+    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
+    final static String postURL=hostURLprefix + "/provapi/documents2/";
+    final static String expansionURL=hostURLprefix + "/provapi/documents/";
+    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
+    final static String validationURL=hostURLprefix + "/provapi/documents/";
+    final static String htmlURL=hostURLprefix + "/contact.html";
+
+
 
     public static Map<String, String> table= new HashMap<>();
      
@@ -75,9 +87,15 @@ public class TemplateIT extends TestCase {
         
         logger.debug("/////////////////////////////////// testAction");
 
+        String theTemplate= resourcesURLprefix + "templates/org/openprovenance/generic/binaryop/1.provn";
+
 
         logger.debug("*** action 1");
-        String location=doPostStatements(expansionURL,"https://openprovenance.org/templates/org/openprovenance/generic/binaryop/1.provn",file);
+
+        Response responseTemplate=getResource(theTemplate, MEDIA_TEXT_PROVENANCE_NOTATION);
+        assertEquals("Response template status is NOT OK", Response.Status.OK.getStatusCode(), responseTemplate.getStatus());
+
+        String location=doPostStatements(expansionURL, theTemplate,file);
         assertNotNull("location", location);
         table.put("location", location);
 

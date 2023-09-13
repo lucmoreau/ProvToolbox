@@ -49,11 +49,18 @@ public class TranslatorIT extends RoundTripFromJavaTest {
 
 
 
+    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties"));
+    final static String port= properties.getProperty("service.port");
+    final static String context= properties.getProperty("service.context");
+    final static String host= properties.getProperty("service.host");
+    final static String protocol= properties.getProperty("service.protocol");
 
-    static String port= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties")).getProperty("service.port");
-    static String context= Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties")).getProperty("service.context");
-
-    String postURL="http://localhost:" + port + context + "/provapi/documents2/";
+    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
+    final static String postURL=hostURLprefix + "/provapi/documents2/";
+    final static String expansionURL=hostURLprefix + "/provapi/documents/";
+    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
+    final static String validationURL=hostURLprefix + "/provapi/documents/";
+    final static String htmlURL=hostURLprefix + "/contact.html";
 
 
 

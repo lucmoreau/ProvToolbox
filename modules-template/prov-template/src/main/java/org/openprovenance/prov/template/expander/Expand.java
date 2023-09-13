@@ -35,6 +35,7 @@ public class Expand {
 
         
         Bundle bun;
+        logger.info("expander: expander " + bindings);
 
         try {
             bun = (Bundle) u.getBundle(docIn).get(0);
@@ -48,6 +49,10 @@ public class Expand {
         Bundle bun1 = (Bundle) expand(bun, bindings, grp1).get(0);
         Document doc1 = pf.newDocument();
         doc1.getStatementOrBundle().add(bun1);
+
+        logger.info("expander: id uri " + bun1.getId().getNamespaceURI());
+        logger.info("expander: id pre " + bun1.getId().getPrefix());
+        logger.info("expander: id loc " + bun1.getId().getLocalPart());
 
         bun1.setNamespace(Namespace.gatherNamespaces(bun1));
 
@@ -139,13 +144,6 @@ public class Expand {
 
     }
 
-  
 
-    static public boolean isGensymVariable(QualifiedName id) {
-        if (id == null)
-            return false;
-        final String namespaceURI = id.getNamespaceURI();
-        return ExpandUtil.VARGEN_NS.equals(namespaceURI);
-    }
 
 }

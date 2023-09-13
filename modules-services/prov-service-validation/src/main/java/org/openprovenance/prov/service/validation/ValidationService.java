@@ -143,7 +143,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
         String mimeType = intF.convertExtensionToMediaType(type);
         logger.debug("setting mimeType " + mimeType + " for " + type);
 
-        return utils.composeResponseOK(f).type(mimeType).build();
+        return ServiceUtils.composeResponseOK(f).type(mimeType).build();
 
     }
 
@@ -172,7 +172,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
             MediaType mt = v.getMediaType();
             if (mt.equals(MediaType.TEXT_HTML_TYPE)) {
                 return utils.composeResponseSeeOther(
-                        "../view/documents/"
+                        "view/documents/"
                                 + msg
                                 + "/validation/report.html").build();
             } else if (mt.equals(MediaType.APPLICATION_JSON_TYPE)) {
@@ -212,7 +212,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
 
             StreamingOutput out = outputStream -> utils.getGenericResourceStorageMap().get(REPORT_KEY).copyStoreToOutputStream(vr.getJsonReportStorageId(), outputStream);
 
-            return utils.composeResponseOK(out).type(MEDIA_APPLICATION_JSON).build();
+            return ServiceUtils.composeResponseOK(out).type(MEDIA_APPLICATION_JSON).build();
         } finally {
             index.close();
         }
@@ -372,7 +372,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
 
             StreamingOutput promise = out -> utils.getGenericResourceStorageMap().get(ActionValidate.MATRIX_KEY).copyStoreToOutputStream(vr.getMatrix(), out);
 
-            return utils.composeResponseOK(promise).type(MediaType.TEXT_PLAIN).build();
+            return ServiceUtils.composeResponseOK(promise).type(MediaType.TEXT_PLAIN).build();
         } finally {
             index.close();
         }
@@ -404,7 +404,7 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
 
         String matrixBase64= (String) utils.getGenericResourceStorageMap().get(ActionValidate.MATRIX_KEY).deserializeObjectFromStore(vr.getPngMatrix());
 
-        return utils.composeResponseOK(Base64.getDecoder().decode(matrixBase64)).type("image/png").build();
+        return ServiceUtils.composeResponseOK(Base64.getDecoder().decode(matrixBase64)).type("image/png").build();
     }
 
 

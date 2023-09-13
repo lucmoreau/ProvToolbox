@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Path("")
 public class RandomService implements Constants, InteropMediaType {
 
@@ -120,7 +119,7 @@ public class RandomService implements Constants, InteropMediaType {
         gg.generateElements();
         Document doc=gg.getDocument();
         Namespace.withThreadNamespace(doc.getNamespace());
-        return utils.composeResponseOK(doc).type(mt).build();
+        return ServiceUtils.composeResponseOK(doc).type(mt).build();
 
     }
 

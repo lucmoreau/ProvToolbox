@@ -68,7 +68,8 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
     public String[] myKeys()  { return myKeyArray; }
 
 
-    public static Instantiable<DocumentResource> factory =new Instantiable<DocumentResource>() {
+    /*
+    public static Instantiable<DocumentResource> factory = new Instantiable<>() {
         @Override
         public DocumentResource newResource(DocumentResource dr) {
             throw new UnsupportedOperationException("Should not attempt to create a Document Resource from a Document Resource");
@@ -79,7 +80,7 @@ public class RedisDocumentResourceIndex implements ResourceIndex<DocumentResourc
             return new RedisDocumentResource(new HashMap<>());
         }
     };
-
+*/
     @Override
     public DocumentResource get(String key) {
         List<String> values=client.hmget(key, myKeys());

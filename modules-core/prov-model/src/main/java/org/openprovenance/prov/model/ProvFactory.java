@@ -825,7 +825,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	public Bundle newNamedBundle(QualifiedName id, Collection<Statement> lks) {
 		Bundle res = of.createNamedBundle();
 		res.setId(id);
-
 		if (lks != null) {
 			res.getStatement().addAll(lks);
 		}

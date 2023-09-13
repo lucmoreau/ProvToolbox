@@ -357,7 +357,7 @@ public class ExpandAction implements StatementAction {
         if (dstStatement instanceof HasOther) {
 
             Collection<Attribute> attributes = pf.getAttributes(srcStatement);
-            Collection<Attribute> dstAttributes = new LinkedList<Attribute>();
+            Collection<Attribute> dstAttributes = new LinkedList<>();
 
             for (Attribute attribute : attributes) {
                 if (qualifiedNameURI.equals(attribute.getType().getUri())) {
@@ -373,7 +373,7 @@ public class ExpandAction implements StatementAction {
                             List<TypedValue> vals = env2.get(qn1);
 
                             if (vals == null) {
-                                if (Expand.isGensymVariable(qn1)) {
+                                if (ExpandUtil.isGensymVariable(qn1)) {
                                     dstAttributes.add(pf.newAttribute(attribute.getElementName(),
                                                                       getUUIDQualifiedName(),
                                                                       pf.getName().PROV_QUALIFIED_NAME));
@@ -480,7 +480,7 @@ public class ExpandAction implements StatementAction {
                 u.setter(res, position, val);
                 return true;
             } else {
-                if (Expand.isGensymVariable(id)) {
+                if (ExpandUtil.isGensymVariable(id)) {
                     QualifiedName uuid = getUUIDQualifiedName();
                     u.setter(res, position, uuid);
                     oldBindings.addVariable(id, uuid);
@@ -711,7 +711,7 @@ public class ExpandAction implements StatementAction {
             if (val != null) {
                 newId = val;
             } else {
-                if (Expand.isGensymVariable(bunId)) {
+                if (ExpandUtil.isGensymVariable(bunId)) {
                     QualifiedName uuid = getUUIDQualifiedName();
                     newId = uuid;
                     oldBindings.addVariable(bunId, uuid);
@@ -733,7 +733,7 @@ public class ExpandAction implements StatementAction {
         if (ExpandUtil.isVariable(id)) {
             List<QualifiedName> vals = bindings1.getVariables().get(id);
             if (vals == null) {
-                if (Expand.isGensymVariable(id)) {
+                if (ExpandUtil.isGensymVariable(id)) {
                     // OK, we'll generate a uuid later
                 } else {
                     throw new BundleVariableHasNoValue(id);

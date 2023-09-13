@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends DocumentResource>  implements ResourceIndex<EXTENDED_RESOURCE> {
-    private static Logger logger = LogManager.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
+    private static final Logger logger = LogManager.getLogger(RedisExtendedDocumentResourceIndexFactory.class);
 
     public static <T> T[] concat(T[] first, T[] second) {
         T[] result = Arrays.copyOf(first, first.length + second.length);
@@ -56,7 +56,7 @@ public class RedisExtendedDocumentResourceIndexFactory<EXTENDED_RESOURCE extends
     @Override
     public EXTENDED_RESOURCE get(String key) {
         logger.debug("get " + key );
-        logger.debug("get " + myKeys() );
+        logger.debug("get " + Arrays.toString(myKeys()));
         logger.debug("get " + dri.client );
         List<String> values=dri.client.hmget(key, myKeys());
         logger.debug("get " + key + values);

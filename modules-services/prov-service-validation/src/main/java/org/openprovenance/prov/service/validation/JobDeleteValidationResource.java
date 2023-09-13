@@ -28,7 +28,7 @@ public class JobDeleteValidationResource implements Job {
             SchedulerContext schedulerContext = context.getScheduler().getContext();
             utils=(ValidationServiceUtils)schedulerContext.getOrDefault(VALIDATION_UTILS_KEY,utils);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.throwing(e);
         }
 
         String visibleId = context.getJobDetail().getKey().getName();

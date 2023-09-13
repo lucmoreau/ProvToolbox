@@ -74,6 +74,8 @@
 
             <div id="swagger-ui"></div>
 
+            <div id="swagger-ui2"></div>
+
         </div>
     </div>
 
@@ -83,6 +85,7 @@
     <script type="text/javascript">
         var myUrl=document.URL;
         myApiUrl=myUrl.replace("/api.html","/provapi/openapi.json");
+        //myApiUrl2=myUrl.replace("/api.html","/resources/openapi.json");
         //myApiUrl=myUrl.replace("/view/api","/luc.yaml");
 
         console.log("myApiUrl");
@@ -92,7 +95,8 @@
 
             // Build a system
             const ui = SwaggerUIBundle({
-                url: myApiUrl,
+                url:myApiUrl,
+                //urls: [{url: myApiUrl, name: "PROV API"}, {url: myApiUrl2, name: "Resources"}],
                 dom_id: '#swagger-ui',
                 deepLinking: true,
                 presets: [
@@ -104,6 +108,7 @@
                 ],
                 layout: "StandaloneLayout"
             })
+
 
             window.ui = ui
         }

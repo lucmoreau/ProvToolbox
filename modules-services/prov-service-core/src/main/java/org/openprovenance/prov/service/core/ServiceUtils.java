@@ -38,14 +38,13 @@ public class ServiceUtils {
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
     public static final String HEADER_PARAM_ACCEPT = "Accept";
 
-    private static String fileName = "config.properties";
+    private static final String CONFIG_PROPERTIES = "config.properties";
 
-    public static final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(fileName).getProperty("upload.directory");
+    public static final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("upload.directory");
+    public static final String containerVersion = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.version");
+    public static final String containerClassifier = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.classifier");
 
-    public static final String containerVersion = getPropertiesFromClasspath(fileName).getProperty("container.version");
-    public static final String containerClassifier = getPropertiesFromClasspath(fileName).getProperty("container.classifier");
-
-    public static final String longContainerVersion = "ProvToolbox/modules-services " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(fileName).getProperty("timestamp") + ")";
+    public static final String longContainerVersion = "ProvToolbox/modules-services " + containerVersion + (((containerClassifier==null) || (containerClassifier=="")) ? "" : "-" + containerClassifier) + " (" + getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("timestamp") + ")";
 
     private final JobManagement jobManager;
 
@@ -376,7 +375,7 @@ public class ServiceUtils {
                 .header(ACCESS_CONTROL_ALLOW_ORIGIN, WILDCARD);
     }
 
-    public Response.ResponseBuilder composeResponseOK(Object o) {
+    static public Response.ResponseBuilder composeResponseOK(Object o) {
         return Response.status(Response.Status.OK).entity(o)
                 .header(ACCESS_CONTROL_ALLOW_ORIGIN, WILDCARD);
     }

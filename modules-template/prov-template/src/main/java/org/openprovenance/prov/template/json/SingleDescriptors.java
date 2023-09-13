@@ -13,4 +13,11 @@ public class SingleDescriptors implements Descriptor {
     public Object toObject() {
         return values.stream().map(Descriptor::toObject).collect(Collectors.toList());
     }
+
+    @Override
+    public String toString() {
+        return "SingleDescriptors{" +
+                "values=" + values +
+                '}';
+    }
 }

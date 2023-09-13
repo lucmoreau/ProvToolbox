@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
@@ -21,10 +20,9 @@ import org.openprovenance.prov.storage.api.DocumentResource;
 import org.quartz.SchedulerException;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.*;
 
@@ -35,7 +33,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
 
     private final JobManagement jobManager = new JobManagement();
     private final boolean autoDelete;
-    private final int deletePeriod;
 
     public PostService(ServiceUtilsConfig config) {
         this(config, new LinkedList<>(), Optional.empty());
@@ -50,7 +47,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
     private final List<ActionPerformer> performers;
     private Optional<OtherActionPerformer> otherPerformer;
 
-    InteropFramework interopFramework = new InteropFramework();
 
     public static <E> List<E> addToList(E element, List<E> list) {
         List<E> result = new LinkedList<>();
@@ -62,13 +58,12 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
     public PostService(ServiceUtilsConfig config, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
         utils = new ServiceUtils(this, config);
         this.autoDelete = config.autoDelete;
-        this.deletePeriod = config.deletePeriod;
         jobManager.setupScheduler();
         try {
             JobManagement.getScheduler().getContext().put(JobManagement.UTILS_KEY, utils);
             JobManagement.getScheduler().getContext().put(JobManagement.DURATION_KEY, config.deletePeriod);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.throwing(e);
         }
         this.performers = performers;
         this.otherPerformer = otherPerformer;
@@ -105,7 +100,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
             schema = @Schema(implementation = UploadForm.class))
                            MultipartFormDataInput input,
                            @Context HttpHeaders headers,
-                           @Context HttpServletRequest requestContext) {
+                           @Context HttpServletRequest ignoredRequestContext) {
         MediaType mediaType = headers.getMediaType();
         //logger.debug("post media type is" + mediaType);
 
@@ -175,7 +170,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
             } catch (ParserException e) {
                 return utils.composeResponseBadRequest("Parser problem", e);
             } catch (Throwable t) {
-                t.printStackTrace();
+                logger.throwing(t);
                 String result = "exception occurred";
                 return utils.composeResponseInternalServerError(result, t);
             }
@@ -275,59 +270,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
                 "" + action + ","
                         + vr.getVisibleId() + ","
                         + vr.getStorageId());
-    }
-
-    
-
-    @GET
-    @Path("/resources/{path: .+}")
-    @Tag(name = DOCUMENTS)
-    @Operation(summary = "Returns static provenance document",
-            description = "No content negotiation allowed here.",
-            responses = {@ApiResponse(responseCode = "200", description = "Representation of document"),
-                         @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND)})
-    @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})
-    public Response getResource(@Context HttpServletResponse response,
-                                @Context HttpServletRequest request,
-                                @Parameter(name = "path", description = "document path", required = true) @PathParam("path") String path) {
-
-        logger.info("get resources " + path);
-
-        // find file extension in  path
-        String type=path.substring(path.lastIndexOf(".")+1);
-
-        logger.info(" type " + type);
-
-        String mediaType;
-        if (!interopFramework.extensionRevMap.containsKey(type)) {
-            mediaType="text/plain";
-        } else {
-            mediaType=interopFramework.mimeTypeMap.get(interopFramework.extensionRevMap.get(type));
-            if (mediaType == null) mediaType = "text/plain";
-        }
-
-
-        String the_path = "/webresources/" + path;
-
-        logger.info(" the_path " + the_path);
-
-        // do not auto-close stream as returned in a closure
-        InputStream stream=this.getClass().getClassLoader().getResourceAsStream(the_path);
-        StreamingOutput promise = null;
-        if (stream != null) {
-            promise = stream::transferTo;
-        } else {
-            promise = (out) -> {
-                out.write(("Resource " + the_path + " not found").getBytes());
-            };
-        }
-
-
-        logger.info("media type is " + mediaType);
-
-        return utils.composeResponseOK(promise).type(mediaType).build();
-
-
     }
 
 

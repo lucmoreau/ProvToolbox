@@ -13,7 +13,7 @@ services:
       - redis:redis
       - mongo:mongo
     environment:
-      - CATALINA_OPTS=-DPSERVICE_STORAGE=mongodb -DPSERVICE_REDIS_HOST=redis -DPSERVICE_REDIS_PORT=6379 -DPSERVICE_MONGO_HOST=mongo -DPSERVICE_MONGO_PORT=27017
+      - CATALINA_OPTS=-DPSERVICE_STORAGE=fs -DPSERVICE_REDIS_HOST=redis -DPSERVICE_REDIS_PORT=6379 -DPSERVICE_MONGO_HOST=mongo -DPSERVICE_MONGO_PORT=27017
     volumes:
       - $FILE_HOME:/home/pservice
     depends_on:

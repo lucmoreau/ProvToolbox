@@ -10,9 +10,6 @@
     <name>|---- PROV-VALIDATION</name>
     <artifactId>prov-validation</artifactId>
 
-    <properties>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-    </properties>
 
 
     <dependencies>

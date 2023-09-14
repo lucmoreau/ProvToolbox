@@ -74,7 +74,8 @@ public class TypeOverlap
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link String }
-     * 
+     *
+     * @return a list of types
      * 
      */
     public List<String> getType() {

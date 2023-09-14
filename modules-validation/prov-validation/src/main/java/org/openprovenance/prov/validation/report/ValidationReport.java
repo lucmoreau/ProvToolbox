@@ -355,7 +355,7 @@ public class ValidationReport implements Equals, HashCode, ToString {
 
     /**
      * Sets the value of the deposited property.
-     * @param value
+     * @param value a boolean
      */
     public void setDeposited(boolean value) {
         this.deposited = value;

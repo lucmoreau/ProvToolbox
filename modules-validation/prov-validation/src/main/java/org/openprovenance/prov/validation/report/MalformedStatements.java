@@ -69,6 +69,8 @@ public class MalformedStatements
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
+     *
+     * @return list of statements
 
      */
     public List<Statement> getStatement() {

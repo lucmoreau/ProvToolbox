@@ -33,6 +33,7 @@ public class Dependencies
      *    getUsedOrWasGeneratedByOrWasStartedBy().add(newItem);
      * </pre>
      *
+     * @return a list of statements
      *
      * 
      */

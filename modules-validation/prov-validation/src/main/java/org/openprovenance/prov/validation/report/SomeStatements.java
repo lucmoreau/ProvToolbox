@@ -96,7 +96,8 @@ public class SomeStatements
      * </pre>
      * 
      * 
-     * <p>
+     *
+     * @return a list of statements
      * 
      * 
      */

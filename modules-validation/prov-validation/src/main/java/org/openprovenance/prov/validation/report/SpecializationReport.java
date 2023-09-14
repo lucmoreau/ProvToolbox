@@ -73,7 +73,8 @@ public class SpecializationReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link SpecializationOf }
-     * 
+     *
+     * @return a list of specializations
      * 
      */
     public List<SpecializationOf> getSpecializationOf() {

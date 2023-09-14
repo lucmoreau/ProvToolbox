@@ -1,0 +1,120 @@
+{
+  "types" : {
+    "0" : [ {
+      "type" : "Ent"
+    } ],
+    "5" : [ {
+      "type" : "Act"
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Waw",
+      "t" : [ {
+        "type" : "Ag"
+      } ],
+      "pl" : [ ]
+    } ],
+    "1" : [ {
+      "type" : "Ag"
+    } ],
+    "6" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "2" : [ {
+      "type" : "Wdf",
+      "t" : [ {
+        "type" : "Ent"
+      } ],
+      "a" : [ ]
+    }, {
+      "type" : "Wgb",
+      "t" : [ {
+        "type" : "Act"
+      } ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "3" : [ {
+      "type" : "Spec",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Ent"
+    } ],
+    "4" : [ {
+      "type" : "Act"
+    }, {
+      "type" : "Waw",
+      "t" : [ {
+        "type" : "Ag"
+      } ],
+      "pl" : [ {
+        "type" : "Ent"
+      } ]
+    }, {
+      "type" : "Usd",
+      "t" : [ {
+        "type" : "Ent"
+      } ]
+    } ]
+  },
+  "typeStrings" : {
+    "0" : "[Ent()]",
+    "5" : "[Act(),Usd([Ent()]),Waw([Ag()],[])]",
+    "1" : "[Ag()]",
+    "6" : "[Ent(),Wdf([Ent()],[])]",
+    "2" : "[Ent(),Wdf([Ent()],[]),Wgb([Act()])]",
+    "3" : "[Ent(),Spec([Ent()])]",
+    "4" : "[Act(),Usd([Ent()]),Waw([Ag()],[Ent()])]"
+  },
+  "names" : {
+    "t:T6" : 6,
+    "t:T1" : 1,
+    "t:T5" : 5,
+    "t:T2" : 2,
+    "t:T3" : 3,
+    "t:T0" : 0,
+    "t:T4" : 4
+  },
+  "base" : {
+    "0" : [ "https://mimic.physionet.org/mimiciii/1.4/process/223253", "https://mimic.physionet.org/mimiciii/1.4/process/224274", "https://mimic.physionet.org/mimiciii/1.4/process/225401", "https://mimic.physionet.org/mimiciii/1.4/process/221223", "https://mimic.physionet.org/mimiciii/1.4/process/224275", "https://mimic.physionet.org/mimiciii/1.4/process/225402", "https://mimic.physionet.org/mimiciii/1.4/patients/75500" ],
+    "5" : [ "https://mimic.physionet.org/mimiciii/1.4/stay/227217", "https://mimic.physionet.org/mimiciii/1.4/stay/227216", "https://mimic.physionet.org/mimiciii/1.4/stay/227218", "https://mimic.physionet.org/mimiciii/1.4/stay/227219" ],
+    "1" : [ "https://mimic.physionet.org/mimiciii/1.4/units/7", "https://mimic.physionet.org/mimiciii/1.4/staff/15218", "https://mimic.physionet.org/mimiciii/1.4/units/45", "https://mimic.physionet.org/mimiciii/1.4/staff/14411", "https://mimic.physionet.org/mimiciii/1.4/staff/20889" ],
+    "6" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632464293.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632464920.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632481600.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632485200.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632482800.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632474340.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632499300.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632491020.0" ],
+    "2" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632485260.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632919990.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632481660.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632895802.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632474400.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632993203.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632565173.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632491080.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632499360.0", "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473.6632565120.0" ],
+    "3" : [ "https://mimic.physionet.org/mimiciii/1.4/patients/75500/162473" ],
+    "4" : [ "https://mimic.physionet.org/mimiciii/1.4/procedures/227034", "https://mimic.physionet.org/mimiciii/1.4/procedures/227030", "https://mimic.physionet.org/mimiciii/1.4/procedures/227033", "https://mimic.physionet.org/mimiciii/1.4/procedures/227032", "https://mimic.physionet.org/mimiciii/1.4/procedures/227036", "https://mimic.physionet.org/mimiciii/1.4/procedures/227035", "https://mimic.physionet.org/mimiciii/1.4/procedures/227031" ]
+  },
+  "prettyNames" : {
+    "0" : "_0",
+    "5" : "_5",
+    "1" : "_1",
+    "6" : "_6",
+    "2" : "_2",
+    "3" : "_3",
+    "4" : "_4"
+  },
+  "prefixes" : {
+    "t" : "http://openprovenance.og/summary/xyz/types#"
+  },
+  "nsBase" : "http://openprovenance.og/summary/xyz/types#",
+  "features" : {
+    "[Act(),Usd([Ent()]),Waw([Ag()],[Ent()])]" : 7,
+    "[Act(),Usd([Ent()]),Waw([Ag()],[])]" : 4,
+    "[Ent(),Wdf([Ent()],[])]" : 8,
+    "[Ent(),Wdf([Ent()],[]),Wgb([Act()])]" : 10,
+    "[Ag()]" : 5,
+    "[Ent()]" : 7,
+    "[Ent(),Spec([Ent()])]" : 1
+  }
+}

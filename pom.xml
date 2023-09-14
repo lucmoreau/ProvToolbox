@@ -29,6 +29,7 @@
 
 		<module>modules-validation</module>
 		<module>modules-services</module>
+		<module>modules-summarisation</module>		
 
 	</modules>
 

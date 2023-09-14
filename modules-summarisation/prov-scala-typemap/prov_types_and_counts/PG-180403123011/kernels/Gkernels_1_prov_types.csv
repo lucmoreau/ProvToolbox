@@ -1,0 +1,6 @@
+Number,Type
+1,Set(Ent())
+2,"Set(Act(), Usd(Set(Ent())))"
+3,"Set(Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent())"
+4,"Set(Winvb(Set(Act())), Wgb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent())"
+5,"Set(Wgb(Set(Act())), Winvb(Set(Act())), Wdf(Set(Ent()),Set(Act())), Ent())"

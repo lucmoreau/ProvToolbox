@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="prov-template-compiler" />
+        <module name="prov-scala-summarisation" />
         <module name="prov-service-core" />
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-storage-filesystem" />
+        <module name="prov-scala-typemap" />
         <module name="demo" />
         <module name="prov-storage-api" />
         <module name="templates_cli" />

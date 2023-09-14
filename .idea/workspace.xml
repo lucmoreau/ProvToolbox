@@ -9,17 +9,74 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.0.1/bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/2.0.1/bundle.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/2.0.1/bundle.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/modules-summarisation.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/java/org/openprovenance/prov/summary/Level0MapperJson.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/java/org/openprovenance/prov/summary/SummaryDescriptionBean.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/Merge.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/Summary.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/TypePropagator.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/types/SummaryTypes.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/types/SummaryTypesNames.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/types/SummaryTypesOrder.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/viz/SummaryGraphics.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/100009/100009-3.types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/100009/100009.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/100009/100009.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/100009/models-MIMIC-replaced3-e.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/100009/models-MIMIC-replaced3-s.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/4-deriv.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/4-deriv.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/4-deriv.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/example_2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/example_2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/example_2_depth_1_mapping.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/resources/types/example_2_depth_2_mapping.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/scala/org/openprovenance/prov/scala/CountCheckSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/scala/org/openprovenance/prov/scala/SummarySpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Akernels_0_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Akernels_1_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Akernels_2_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Akernels_3_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Akernels_4_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Akernels_5_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Ekernels_0_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Ekernels_1_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Ekernels_2_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Ekernels_3_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Ekernels_4_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Ekernels_5_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Gkernels_0_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Gkernels_1_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Gkernels_2_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Gkernels_3_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Gkernels_4_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/kernels/Gkernels_5_prov_types.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/prov_types_and_counts/PG-180403123011/type_counts.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/main/scala/org/openprovenance/prov/scala/typemap/TypeMap.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/summary1-2020-02-28-02.16.43-types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/summary1-2020-02-28-12.51.32-types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/summary1-2020-03-01-03.26.17-types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/typemap/issue1/162473-0.types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/typemap/issue1/162473-1.types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/typemap/issue1/162473-2.types.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/typemap/issue1/index2-simp.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/resources/typemap/issue1/terminal" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/scala/org/openprovenance/prov/scala/typemap/ProvTypeMapSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-typemap/src/test/scala/org/openprovenance/prov/scala/typemap/TypeLibraryIssueSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/META-INF/resources/webjars/prov-jsweet-candy-js/2.0.2-SNAPSHOT/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/2.0.2-SNAPSHOT/bundle.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-js/src/main/resources/src/typings/prov-jsweet-candy-js/2.0.2-SNAPSHOT/bundle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/Dependencies.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/Dependencies.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/MalformedStatements.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/MalformedStatements.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/SomeStatements.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/SomeStatements.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/SpecializationReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/SpecializationReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/TypeOverlap.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/TypeOverlap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/ValidationReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,11 +166,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-misc" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.service.translation" />
@@ -123,11 +181,11 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/modules-misc" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/classers/org/openprovenance/prov/service/core" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/properties" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
@@ -1045,7 +1103,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
@@ -1066,7 +1123,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java</url>
           <line>486</line>
-          <properties class="org.openprovenance.prov.model.ProvFactory" method="newAttribute">
+          <properties class="org.openprovenance.prov.model.ProvFactory">
             <option name="EMULATED" value="true" />
           </properties>
           <option name="timeStamp" value="5" />

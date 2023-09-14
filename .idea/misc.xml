@@ -32,6 +32,7 @@
         <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp/pom.xml" />
         <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial5/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

@@ -1,5 +1,10 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+==2.0.2-SNAPSHOT==
+* summarisation code
+* type library code
+* Summarisation demonstrator service
+
 ==2.0.1==
 * validator code (satisfied w3c interoperability tests)
 * validator service

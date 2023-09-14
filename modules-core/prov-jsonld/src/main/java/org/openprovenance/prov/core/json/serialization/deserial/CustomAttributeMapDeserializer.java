@@ -14,6 +14,9 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.*;
 
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.JSON_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.getAttributes;
+
 public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
 
 
@@ -26,8 +29,9 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
     }
 
     @Override
-    public Map deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+    public Map deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
+        final Namespace ns = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
+
         Map<QualifiedName, Set<Attribute>> result=new HashMap<>();
         JsonNode node = jp.getCodec().readTree(jp);
 
@@ -44,10 +48,8 @@ public class CustomAttributeMapDeserializer extends StdDeserializer<Map> {
                 set.add(attr);
             }
             result.put(elementName,set);
-            System.out.println("==> CustomAttributeMapDeserializer" + vObj  + " " + vObj.getClass());
         }
 
-        System.out.println("==> CustomAttributeMapDeserializer " + result  + " " + result.getClass());
 
         return result;
 

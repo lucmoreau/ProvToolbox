@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKeyDeserializerNoAction;
+import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespacePrefixDeserializer;
 import org.openprovenance.prov.core.json.serialization.serial.CustomQualifiedNameSerializerAsField;
 import org.openprovenance.prov.vanilla.*;
 
@@ -13,9 +14,13 @@ import java.util.Map;
 @JsonPropertyOrder({ "prefix", "defaultNamespace"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface JSON_SortedDocument {
-   // @JsonFilter("nsFilter")
-   // @JsonProperty("context")
-   // Namespace getNamespace();
+    // @JsonFilter("nsFilter")
+    // @JsonProperty("context")
+    // Namespace getNamespace();
+
+    @JsonProperty("prefix")
+    @JsonDeserialize(using = CustomNamespacePrefixDeserializer.class)
+    public Map<String,String> getPrefix();
 
 
     @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Entity.class)

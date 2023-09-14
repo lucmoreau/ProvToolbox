@@ -108,7 +108,8 @@ public class ActionExpand implements ActionPerformer {
 
         InputStream stream = new ByteArrayInputStream(bindingsString.getBytes(StandardCharsets.UTF_8));
         Bindings bindings = om.readValue(stream, Bindings.class);
-        //BindingsBean bean=bindings.toBean();
+
+
 
         Document expanded = myExpand.expander(templateDocument, bindings);
 

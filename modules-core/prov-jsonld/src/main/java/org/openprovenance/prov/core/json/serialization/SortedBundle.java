@@ -13,12 +13,11 @@ import java.util.Map;
 public class SortedBundle {
     Map<QualifiedName,Entity> entity=new HashMap<>();
     Namespace namespace=new Namespace();
-    Map<QualifiedName,Activity> activity= new HashMap<QualifiedName, Activity>();
-    Map<QualifiedName,Agent> agent= new HashMap<QualifiedName, Agent>();
-    Map<QualifiedName,Used> used= new HashMap<QualifiedName, Used>();
-    Map<QualifiedName,WasGeneratedBy> wgb= new HashMap<QualifiedName, WasGeneratedBy>();
-    Map<QualifiedName,WasInvalidatedBy> wib= new HashMap<QualifiedName, WasInvalidatedBy>();
-
+    Map<QualifiedName,Activity> activity= new HashMap<>();
+    Map<QualifiedName,Agent> agent= new HashMap<>();
+    Map<QualifiedName,Used> used= new HashMap<>();
+    Map<QualifiedName,WasGeneratedBy> wgb= new HashMap<>();
+    Map<QualifiedName,WasInvalidatedBy> wib= new HashMap<>();
     Map<QualifiedName,WasAssociatedWith> wasAssociatedWith=new HashMap<>();
     Map<QualifiedName,WasAttributedTo> wasAttributedTo=new HashMap<>();
     Map<QualifiedName,ActedOnBehalfOf> actedOnBehalfOf=new HashMap<>();

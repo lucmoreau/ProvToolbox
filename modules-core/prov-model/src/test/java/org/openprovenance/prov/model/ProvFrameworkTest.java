@@ -1,7 +1,6 @@
 package org.openprovenance.prov.model;
 
 import junit.framework.TestCase;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -9,6 +8,8 @@ import java.util.Arrays;
 public class ProvFrameworkTest extends TestCase {
     public static final String EX_NS = "http://example.org/";
     public static final String EX_PREFIX = "ex";
+    public static final String OUTER_PREFIX = "outer";
+    public static final String INNER_PREFIX = "inner";
     static final org.openprovenance.prov.vanilla.ProvUtilities util = new org.openprovenance.prov.vanilla.ProvUtilities();
     public static ProvFactory pFactory = new org.openprovenance.prov.vanilla.ProvFactory();
     public static Name name = pFactory.getName();
@@ -54,6 +55,23 @@ public class ProvFrameworkTest extends TestCase {
     }
 
     public void makeDocAndTest(Statement[] stment, Bundle[] bundles, String file, Statement[] opt, boolean check) {
+        Document doc = makeDocument(stment, bundles);
+
+        doTest(doc, file, opt, check);
+    }
+
+    public void doTest(Document doc, String file, Statement[] opt, boolean check) {
+        String file1 = (opt == null) ? file : file + "-S";
+        compareDocAndFile(doc, file1, check);
+
+        if ((opt != null) && doOptional(opt)) {
+            String file2 = file + "-M";
+            doc.getStatementOrBundle().addAll(Arrays.asList(opt));
+            compareDocAndFile(doc, file2, check);
+        }
+    }
+
+    public Document makeDocument(Statement[] stment, Bundle[] bundles) {
         Document doc = pFactory.newDocument();
         for (Statement statement : stment) {
             doc.getStatementOrBundle().add(statement);
@@ -70,15 +88,7 @@ public class ProvFrameworkTest extends TestCase {
                 bundle.getNamespace().setParent(doc.getNamespace());
             }
         }
-
-        String file1 = (opt == null) ? file : file + "-S";
-        compareDocAndFile(doc, file1, check);
-
-        if ((opt != null) && doOptional(opt)) {
-            String file2 = file + "-M";
-            doc.getStatementOrBundle().addAll(Arrays.asList(opt));
-            compareDocAndFile(doc, file2, check);
-        }
+        return doc;
     }
 
     public boolean doOptional(Statement[] opt) {

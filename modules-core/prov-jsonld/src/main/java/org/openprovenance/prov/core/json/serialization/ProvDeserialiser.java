@@ -9,8 +9,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomAttributeSetDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomBundleDeserializer;
 import org.openprovenance.prov.core.json.serialization.deserial.CustomKindDeserializer;
-import org.openprovenance.prov.core.json.serialization.deserial.CustomNamespaceDeserializer;
-import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -21,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Set;
+
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.JSON_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.getAttributes;
 
 public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeserialiser{
 
@@ -39,7 +40,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         return deserialiseDocument(new FileInputStream(serialised));
     }
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
-
+        getAttributes().get().remove(JSON_CONTEXT_KEY_NAMESPACE);
         SortedDocument doc= null;
         try {
             doc = mapper.readValue(in, SortedDocument.class);
@@ -62,8 +63,8 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         TypeFactory typeFactory = mapper.getTypeFactory();
 
 
-        MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);
-        module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
+        //MapType mapType2 = typeFactory.constructMapType(HashMap.class, String.class, String.class);
+       // module.addDeserializer(Namespace.class, new CustomNamespaceDeserializer(mapType2));
 
 
         module.addDeserializer(Bundle.class, new CustomBundleDeserializer());

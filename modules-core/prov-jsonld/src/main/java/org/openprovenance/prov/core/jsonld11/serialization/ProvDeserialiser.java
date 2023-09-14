@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 
@@ -47,7 +47,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
-        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
+        getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (BufferedReader in)  {
-        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
+        getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {

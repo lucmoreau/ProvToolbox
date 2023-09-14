@@ -18,11 +18,16 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     public static final String EX3_NS = "http://example3.org/";
 
 
-    public org.openprovenance.prov.model.QualifiedName qInner(String n) {
+    public org.openprovenance.prov.model.QualifiedName qInnerAsEx(String n) {
         return pFactory.newQualifiedName(EX_NS+"inner/", n, EX_PREFIX);
     }
-    public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
+    public org.openprovenance.prov.model.QualifiedName qOuterAsEx(String n) {
         return pFactory.newQualifiedName(EX_NS+"outer/", n, EX_PREFIX);
+    }
+    public org.openprovenance.prov.model.QualifiedName qInner(String n) {
+        return pFactory.newQualifiedName(EX_NS+"inner/", n, INNER_PREFIX);
+    }public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
+        return pFactory.newQualifiedName(EX_NS+"outer/", n, OUTER_PREFIX);
     }
 
     public boolean checkSchema(String name) {
@@ -1656,17 +1661,17 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     }
 
     public void testBundle5() {
-        Activity a1 = pFactory.newActivity(qInner("a1"));
+        Activity a1 = pFactory.newActivity(qInnerAsEx("a1"));
         List<Statement> st1 = new LinkedList<>();
         st1.add(a1);
 
 
-        Bundle b5 = pFactory.newNamedBundle(qInner("bundle5"), st1);
+        Bundle b5 = pFactory.newNamedBundle(qInnerAsEx("bundle5"), st1);
         Namespace ns5 = Namespace.gatherNamespaces(b5, pFactory);
         b5.setNamespace(ns5);
 
 
-        Entity e1 = pFactory.newEntity(qOuter("e1"));
+        Entity e1 = pFactory.newEntity(qOuterAsEx("e1"));
 
         //System.out.println("bundle 1 ns " + b5);
         Statement[] statements = new Statement[]{e1};
@@ -1675,6 +1680,41 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
 
 
         makeDocAndTest(statements, bundles, "target/bundle5", null, true);
+    }
+
+    public void testBundle6() {
+        Activity a1 = pFactory.newActivity(qInner("a1"));
+        List<Statement> st1 = new LinkedList<>();
+        st1.add(a1);
+
+
+        QualifiedName b5Id = qInner("bundle5");
+        Bundle b6 = pFactory.newNamedBundle(b5Id, st1);
+        Namespace ns6 = Namespace.gatherNamespaces(b6, pFactory);
+        b6.setNamespace(ns6);
+
+
+        QualifiedName q1 = qOuter("e1");
+        Entity e1 = pFactory.newEntity(q1);
+
+        QualifiedName q2 = qOuter("a2");
+        Entity a2 = pFactory.newEntity(q2);
+        b6.getStatement().add(a2);
+
+        //System.out.println("bundle 1 ns " + b6);
+        Statement[] statements = new Statement[]{e1};
+        Bundle[] bundles = new Bundle[]{b6};
+
+        Namespace ns=new Namespace();
+        ns.register(q1.getPrefix(), q1.getNamespaceURI());
+
+        ns6.setParent(ns);
+
+        Document doc=pFactory.newDocument(ns,  Arrays.asList(statements), Arrays.asList(bundles));
+
+
+
+        doTest(doc, "target/bundle6", null, true);
     }
 
 

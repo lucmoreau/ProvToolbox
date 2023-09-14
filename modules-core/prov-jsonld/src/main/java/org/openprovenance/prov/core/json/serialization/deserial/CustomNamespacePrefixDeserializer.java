@@ -13,6 +13,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.JSON_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.getAttributes;
+
 
 public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<String,String>> {
 
@@ -28,17 +31,18 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
 
 
     @Override
-    public Map<String, String> deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Map<String, String> deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
 
 
         JsonNode prefixes=jp.readValueAsTree();
 
 
-        Namespace ns=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
-        if (ns==null) {
-            ns=new Namespace();
-            deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
-        }
+        Namespace parentNs = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
+
+        Namespace ns=new Namespace();
+        ns.setParent(parentNs);
+        getAttributes().get().put(JSON_CONTEXT_KEY_NAMESPACE,ns);
+
 
 
         Hashtable<String, String> map= new Hashtable<>();
@@ -48,6 +52,8 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
             map.put(prefix,namespace);
             ns.register(prefix,namespace);
         }
+
+        // now context is ready with current namespace
 
         return map;
     }

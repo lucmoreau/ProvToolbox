@@ -9,7 +9,7 @@ import org.openprovenance.prov.model.Namespace;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 
@@ -33,7 +33,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
 
         //Namespace previous=(Namespace)deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
-        Namespace previous=getAttributes().get().get(CONTEXT_KEY_NAMESPACE);
+        Namespace previous=getAttributes().get().get(JSONLD_CONTEXT_KEY_NAMESPACE);
 
 
 
@@ -55,7 +55,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
         //deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
 
-        getAttributes().get().put(CONTEXT_KEY_NAMESPACE,ns);
+        getAttributes().get().put(JSONLD_CONTEXT_KEY_NAMESPACE,ns);
 
 
 

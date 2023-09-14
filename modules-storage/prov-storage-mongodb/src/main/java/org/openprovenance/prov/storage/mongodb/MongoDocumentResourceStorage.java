@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 public class MongoDocumentResourceStorage implements ResourceStorage, Constants {
-    private static Logger logger = LogManager.getLogger(MongoDocumentResourceStorage.class);
+    private static final Logger logger = LogManager.getLogger(MongoDocumentResourceStorage.class);
 
     private final DB db;
     private final JacksonDBCollection<DocumentWrapper, String> documentCollection;
@@ -98,9 +98,9 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     }
 
     @Override
-    public Document readDocument(String id, boolean known) throws IOException {
+    public Document readDocument(String id, boolean known) {
         // HACK
-        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
+        getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         DocumentWrapper wrapper=documentCollection.findOneById(id);
         if (wrapper==null) {
             return null;
@@ -111,7 +111,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     @Override
     public Document readDocument(String id) throws IOException {
         // HACK, global variable, prevents concurrren tuse
-        getAttributes().get().remove(CONTEXT_KEY_NAMESPACE);
+        getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         DocumentWrapper wrapper=documentCollection.findOneById(id);
         return wrapper.document;
     }

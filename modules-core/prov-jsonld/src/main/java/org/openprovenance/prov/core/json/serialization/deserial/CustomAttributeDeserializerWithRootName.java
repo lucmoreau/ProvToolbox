@@ -16,6 +16,9 @@ import org.openprovenance.prov.model.QualifiedName;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.JSON_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.getAttributes;
+
 public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Attribute> implements Constants {
 
 
@@ -40,7 +43,9 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     }
 
     public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        //Namespace ns= (Namespace) deserializationContext.getAttribute(CustomThreadConfig.JSON_CONTEXT_KEY_NAMESPACE);
+        final Namespace ns = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
+
         Map.Entry<String, JsonNode> pair=node.fields().next();
 
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
@@ -51,7 +56,8 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     }
 
     public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        final Namespace ns = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
+
         return pf.newAttribute(elementName, astring, CustomTypedValueSerializer.QUALIFIED_NAME_XSD_STRING);
     }
 
@@ -60,7 +66,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
 
     public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
+        final Namespace ns = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
 
 
         JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);

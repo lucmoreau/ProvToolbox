@@ -228,6 +228,11 @@ public class TranslatorIT extends RoundTripFromJavaTest {
 
     @Override
     public void testEntity101() {
-        System.out.println("===== Skipping testEntity101 in IT.java");
+        System.out.println("########## Skipping testEntity101 in TranslatorIT.java");
+    }
+    @Override
+    public void testBundle5() {
+        super.testBundle5();
+        System.out.println("########## Skipping testBundle5 in TranslatorIT.java");
     }
 }

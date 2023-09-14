@@ -10,7 +10,7 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
 
-import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedName> {
@@ -34,7 +34,7 @@ public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedNa
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
 
         //Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        Namespace ns= getAttributes().get().get(CONTEXT_KEY_NAMESPACE);
+        Namespace ns= getAttributes().get().get(JSONLD_CONTEXT_KEY_NAMESPACE);
 
         String text = jsonParser.getText();
         //System.out.println("--> CustomQualifiedNameDeserializer deserialize: " + text + " : thread " + Thread.currentThread().getId());
@@ -47,7 +47,7 @@ public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedNa
     public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException {
 
         //Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        Namespace ns= getAttributes().get().get(CONTEXT_KEY_NAMESPACE);
+        Namespace ns= getAttributes().get().get(JSONLD_CONTEXT_KEY_NAMESPACE);
 
 
         if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;

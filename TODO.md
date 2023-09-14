@@ -5,6 +5,7 @@
 - upgrade scala version
 - add template as options in pull down
 
+# templateIT fails when service is usign mongo.
 
 # DeleteJob/Redis issue
 

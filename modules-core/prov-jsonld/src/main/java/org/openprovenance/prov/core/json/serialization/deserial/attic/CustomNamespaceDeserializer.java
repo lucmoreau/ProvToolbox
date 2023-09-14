@@ -1,4 +1,4 @@
-package org.openprovenance.prov.core.json.serialization.deserial;
+package org.openprovenance.prov.core.json.serialization.deserial.attic;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,19 +12,19 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.JSON_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig.getAttributes;
 
-public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
-    public static final Object CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
+abstract public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
 
     public CustomNamespaceDeserializer(JavaType tr) {
         super(tr);
     }
 
     @Override
-    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
         
-
 
         JsonNode map2=jp.readValueAsTree();
         JsonNode prefixes=map2.get("prefixes");
@@ -42,8 +42,8 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
         Namespace ns=new Namespace(map);
         ns.setDefaultNamespace(def.textValue());
 
-        //System.out.println("NS " + ns);
-        deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE,ns);
+        getAttributes().get().put(JSON_CONTEXT_KEY_NAMESPACE,ns);
+
 
 
         return ns;

@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class SortedDocument extends SortedBundle {
 
-    Map<QualifiedName,Bundle> theBundles = new HashMap<QualifiedName, Bundle>();
+    Map<QualifiedName,Bundle> theBundles = new HashMap<>();
 
     private SortedDocument() {}
 

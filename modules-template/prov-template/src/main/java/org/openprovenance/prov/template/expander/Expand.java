@@ -38,7 +38,7 @@ public class Expand {
         logger.info("expander: expander " + bindings);
 
         try {
-            bun = (Bundle) u.getBundle(docIn).get(0);
+            bun = u.getBundle(docIn).get(0);
         } catch (RuntimeException e) {
             throw new UncheckedException("Bundle missing in template", e);
         }

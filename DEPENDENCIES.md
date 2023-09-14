@@ -39,6 +39,7 @@
 [INFO] +- junit:junit:jar:4.13.2:test
 [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
 [INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] \- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
 
 ```
 
@@ -52,8 +53,6 @@
 [INFO] |  |     +- org.codehaus.woodstox:stax2-api:jar:4.2.1:compile
 [INFO] |  |     \- com.fasterxml.woodstox:woodstox-core:jar:6.5.1:compile
 [INFO] |  +- org.openprovenance.prov:prov-dot:jar:2.0.1-SNAPSHOT:compile
-[INFO] |  +- org.openprovenance.prov:prov-template:jar:2.0.1-SNAPSHOT:compile
-[INFO] |  |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.15.2:compile
 [INFO] |  +- org.openprovenance.prov:prov-n:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  |  +- org.antlr:antlr-runtime:jar:3.4:compile
 [INFO] |  |  |  \- antlr:antlr:jar:2.7.7:compile
@@ -61,35 +60,58 @@
 [INFO] |  +- org.openprovenance.prov:prov-generator:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  +- commons-cli:commons-cli:jar:1.5.0:compile
 [INFO] |  \- jakarta.ws.rs:jakarta.ws.rs-api:jar:3.1.0:compile
-[INFO] +- org.openprovenance.prov:prov-service-core:jar:2.0.1-SNAPSHOT:compile
+[INFO] +- org.openprovenance.prov:prov-template:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  +- org.openprovenance.prov:prov-model:jar:2.0.1-SNAPSHOT:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.15.2:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.15.2:compile
+[INFO] |     \- com.fasterxml.jackson.core:jackson-core:jar:2.15.2:compile
+[INFO] +- org.openprovenance.prov:prov-service-core:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  +- org.openprovenance.prov:prov-log:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  +- org.openprovenance.prov:prov-storage-api:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  +- org.openprovenance.prov:prov-storage-filesystem:jar:2.0.1-SNAPSHOT:compile
-[INFO] |  +- org.jboss.resteasy:resteasy-multipart-provider:jar:6.2.5.Final:compile
-[INFO] |  |  +- org.jboss.resteasy:resteasy-jaxb-provider:jar:6.2.5.Final:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:codemodel:jar:4.0.3:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:jaxb-core:jar:4.0.3:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:jaxb-jxc:jar:4.0.3:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:jaxb-runtime:jar:4.0.3:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:txw2:jar:4.0.3:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:jaxb-xjc:jar:4.0.3:compile
-[INFO] |  |  |  +- org.glassfish.jaxb:xsom:jar:4.0.3:compile
-[INFO] |  |  |  +- com.sun.istack:istack-commons-runtime:jar:4.1.2:compile
-[INFO] |  |  |  +- com.sun.istack:istack-commons-tools:jar:4.1.2:compile
-[INFO] |  |  |  +- com.sun.xml.bind.external:relaxng-datatype:jar:4.0.3:compile
-[INFO] |  |  |  \- com.sun.xml.bind.external:rngom:jar:4.0.3:compile
-[INFO] |  |  +- jakarta.mail:jakarta.mail-api:jar:2.1.2:compile
-[INFO] |  |  +- org.eclipse.angus:angus-mail:jar:1.0.0:compile
-[INFO] |  |  +- org.apache.james:apache-mime4j-dom:jar:0.8.9:compile
-[INFO] |  |  |  \- org.apache.james:apache-mime4j-core:jar:0.8.9:compile
-[INFO] |  |  \- org.apache.james:apache-mime4j-storage:jar:0.8.9:compile
-[INFO] |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.15.2:compile
-[INFO] |     \- com.fasterxml.jackson.core:jackson-core:jar:2.15.2:compile
+[INFO] |  \- org.jboss.resteasy:resteasy-multipart-provider:jar:6.2.5.Final:compile
+[INFO] |     +- org.jboss.resteasy:resteasy-jaxb-provider:jar:6.2.5.Final:compile
+[INFO] |     |  +- org.glassfish.jaxb:codemodel:jar:4.0.3:compile
+[INFO] |     |  +- org.glassfish.jaxb:jaxb-core:jar:4.0.3:compile
+[INFO] |     |  +- org.glassfish.jaxb:jaxb-jxc:jar:4.0.3:compile
+[INFO] |     |  +- org.glassfish.jaxb:jaxb-runtime:jar:4.0.3:compile
+[INFO] |     |  +- org.glassfish.jaxb:txw2:jar:4.0.3:compile
+[INFO] |     |  +- org.glassfish.jaxb:jaxb-xjc:jar:4.0.3:compile
+[INFO] |     |  +- org.glassfish.jaxb:xsom:jar:4.0.3:compile
+[INFO] |     |  +- com.sun.istack:istack-commons-runtime:jar:4.1.2:compile
+[INFO] |     |  +- com.sun.istack:istack-commons-tools:jar:4.1.2:compile
+[INFO] |     |  +- com.sun.xml.bind.external:relaxng-datatype:jar:4.0.3:compile
+[INFO] |     |  \- com.sun.xml.bind.external:rngom:jar:4.0.3:compile
+[INFO] |     +- jakarta.mail:jakarta.mail-api:jar:2.1.2:compile
+[INFO] |     +- org.eclipse.angus:angus-mail:jar:1.0.0:compile
+[INFO] |     +- org.apache.james:apache-mime4j-dom:jar:0.8.9:compile
+[INFO] |     |  \- org.apache.james:apache-mime4j-core:jar:0.8.9:compile
+[INFO] |     \- org.apache.james:apache-mime4j-storage:jar:0.8.9:compile
 [INFO] +- org.openprovenance.prov:prov-service-translation:jar:2.0.1-SNAPSHOT:compile
+[INFO] +- org.openprovenance.prov:prov-service-validation:jar:2.0.1-SNAPSHOT:compile
+[INFO] |  \- org.openprovenance.prov:prov-validation:jar:2.0.1-SNAPSHOT:compile
+[INFO] |     \- com.googlecode.matrix-toolkits-java:mtj:jar:0.9.14:compile
+[INFO] |        \- com.googlecode.netlib-java:netlib-java:jar:0.9.3:compile
+[INFO] |           \- net.sourceforge.f2j:arpack_combined_all:jar:0.1:compile
 [INFO] +- org.openprovenance.prov:prov-storage-index-redis:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  \- redis.clients:jedis:jar:2.8.1:compile
 [INFO] |     \- org.apache.commons:commons-pool2:jar:2.4.2:compile
+[INFO] +- org.openprovenance.prov:prov-template-compiler:jar:2.0.1-SNAPSHOT:compile
+[INFO] |  +- com.squareup:javapoet:jar:1.13.0:compile
+[INFO] |  +- org.apache.maven:maven-model:jar:3.6.1:compile
+[INFO] |  |  \- org.codehaus.plexus:plexus-utils:jar:3.2.0:compile
+[INFO] |  +- org.apache.commons:commons-text:jar:1.10.0:compile
+[INFO] |  +- com.networknt:json-schema-validator:jar:1.0.52:compile
+[INFO] |  \- org.apache.commons:commons-csv:jar:1.10.0:compile
+[INFO] +- org.openprovenance.prov:prov-storage-mongodb:jar:2.0.1-SNAPSHOT:compile
+[INFO] |  \- org.mongojack:mongojack:jar:2.10.1:compile
+[INFO] |     +- org.mongodb:mongodb-driver-legacy:jar:3.11.0:compile
+[INFO] |     |  +- org.mongodb:bson:jar:3.11.0:compile
+[INFO] |     |  +- org.mongodb:mongodb-driver-core:jar:3.11.0:compile
+[INFO] |     |  \- org.mongodb:mongodb-driver-sync:jar:3.11.0:compile
+[INFO] |     +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.10:compile
+[INFO] |     +- de.undercouch:bson4jackson:jar:2.9.2:compile
+[INFO] |     \- javax.persistence:persistence-api:jar:1.0.2:compile
 [INFO] +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.20.0:compile
 [INFO] |  \- org.slf4j:slf4j-api:jar:1.7.25:compile
 [INFO] +- org.jboss.resteasy:resteasy-servlet-initializer:jar:6.2.5.Final:compile
@@ -117,8 +139,7 @@
 [INFO] |  +- io.swagger.core.v3:swagger-annotations-jakarta:jar:2.2.15:compile
 [INFO] |  +- io.swagger.core.v3:swagger-integration-jakarta:jar:2.2.15:compile
 [INFO] |  |  \- io.swagger.core.v3:swagger-core-jakarta:jar:2.2.15:compile
-[INFO] |  |     +- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.1:compile
-[INFO] |  |     \- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.15.1:compile
+[INFO] |  |     \- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.1:compile
 [INFO] |  +- org.yaml:snakeyaml:jar:2.0:compile
 [INFO] |  \- com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider:jar:2.15.1:compile
 [INFO] |     +- com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-base:jar:2.15.1:compile
@@ -152,14 +173,14 @@
 # prov-scala
 
 ``````
-[INFO] org.openprovenance.prov:prov-model-scala:jar:2.0.0-SNAPSHOT
-[INFO] +- org.openprovenance.prov:prov-model:jar:2.0.0-SNAPSHOT:compile
+[INFO] org.openprovenance.prov:prov-model-scala:jar:2.0.1-SNAPSHOT
+[INFO] +- org.openprovenance.prov:prov-model:jar:2.0.1-SNAPSHOT:compile
 [INFO] |  +- org.apache.commons:commons-lang3:jar:3.9:compile
-[INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.2:compile
-[INFO] |  |  \- jakarta.activation:jakarta.activation-api:jar:1.2.1:compile
 [INFO] |  +- org.apache.commons:commons-collections4:jar:4.4:compile
-[INFO] |  \- commons-io:commons-io:jar:2.8.0:compile
-[INFO] +- org.openprovenance.prov:prov-jsonld:jar:2.0.0-SNAPSHOT:compile
+[INFO] |  +- commons-io:commons-io:jar:2.8.0:compile
+[INFO] |  \- jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.0:compile
+[INFO] |     \- jakarta.activation:jakarta.activation-api:jar:2.1.0:compile
+[INFO] +- org.openprovenance.prov:prov-jsonld:jar:2.0.1-SNAPSHOT:compile
 [INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.15.2:compile
 [INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.15.2:compile
 [INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.15.2:compile
@@ -171,9 +192,10 @@
 [INFO] |  \- org.scala-lang.modules:scala-xml_2.12:jar:1.2.0:test
 [INFO] +- org.parboiled:parboiled_2.12:jar:2.3.0:compile
 [INFO] |  \- com.chuusai:shapeless_2.12:jar:2.3.4:compile
-[INFO] +- org.openprovenance.prov:prov-model:jar:tests:2.0.0-SNAPSHOT:test
+[INFO] +- org.openprovenance.prov:prov-model:jar:tests:2.0.1-SNAPSHOT:test
 [INFO] +- junit:junit:jar:4.13.2:test
 [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
 [INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
 [INFO] \- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+
 ```

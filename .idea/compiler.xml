@@ -37,6 +37,7 @@
         <module name="prov-jsweet-candy-java" />
         <module name="templates_l2p" />
         <module name="roundtrip" />
+        <module name="prov-scala-misc" />
         <module name="prov-model-scala" />
         <module name="tutorial5" />
         <module name="toolbox" />

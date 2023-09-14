@@ -8,17 +8,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/modules-validation.iml" beforeDir="false" />
-    </list>
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -110,6 +100,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modules-misc" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -120,11 +111,11 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-misc" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/classers/org/openprovenance/prov/service/core" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources/properties" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
@@ -771,7 +762,7 @@
       <workItem from="1694027380052" duration="12448000" />
       <workItem from="1694092947150" duration="40519000" />
       <workItem from="1694451178713" duration="75949000" />
-      <workItem from="1694718736380" duration="376000" />
+      <workItem from="1694718736380" duration="3786000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

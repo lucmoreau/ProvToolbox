@@ -1,0 +1,20 @@
+document
+prefix alice <http://example.org/alice/>
+prefix ex <http://www.example.com/>
+prefix bob <http://example.org/bob/>
+wasDerivedFrom(ex:report2, ex:report1bis)
+wasAttributedTo(alice:bundle5, ex:Alice)
+wasAttributedTo(bob:bundle4, ex:Bob)
+mentionOf(ex:report1bis, ex:report1, bob:bundle4)
+agent(ex:Bob)
+agent(ex:Alice)
+entity(ex:report1,[prov:type = "report" %% xsd:string, ex:version = "1" %% xsd:int])
+entity(ex:report1bis)
+entity(ex:report2,[prov:type = "report" %% xsd:string, ex:version = "2" %% xsd:int])
+entity(bob:bundle4,[prov:type = 'prov:Bundle'])
+entity(alice:bundle5,[prov:type = 'prov:Bundle'])
+wasGeneratedBy(ex:report1,-,2012-05-24T10:00:01.000+01:00)
+wasGeneratedBy(ex:report2,-,2012-05-25T11:00:01.000+01:00)
+wasGeneratedBy(bob:bundle4,-,2012-05-24T10:30:00.000+01:00)
+wasGeneratedBy(alice:bundle5,-,2012-05-25T11:15:00.000+01:00)
+endDocument

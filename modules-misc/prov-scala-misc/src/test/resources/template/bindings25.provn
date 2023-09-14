@@ -1,0 +1,8 @@
+document
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix ex <http://example.org/>
+
+  entity(var:a, [tmpl:value_0='ex:apple',     tmpl:value_1='ex:orange',     tmpl:value_2='ex:pear'    ])
+  entity(var:b, [tmpl:2dvalue_0_0='ex:apple/v/0', tmpl:2dvalue_1_0='ex:orange/v/0', tmpl:2dvalue_20_0='ex:pear/v/0'])
+endDocument

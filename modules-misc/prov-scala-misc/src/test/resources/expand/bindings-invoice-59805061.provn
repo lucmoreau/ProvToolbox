@@ -1,0 +1,26 @@
+document
+prefix ord <https://provenance.ecs.soton.ac.uk/food/order/>
+prefix jo <https://provenance.ecs.soton.ac.uk/food/journey/>
+prefix inv <https://provenance.ecs.soton.ac.uk/food/invoice/>
+prefix prod <https://provenance.ecs.soton.ac.uk/food/product#>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix cus <https://provenance.ecs.soton.ac.uk/food/customer/>
+prefix product <https://provenance.ecs.soton.ac.uk/food/invoice/line/>
+prefix var <http://openprovenance.org/var#>
+prefix org <https://provenance.ecs.soton.ac.uk/food/org/>
+entity(var:invoice,[tmpl:value_0 = 'inv:59805061'])
+entity(var:item,[tmpl:value_0 = 'product:59805061#0'])
+entity(var:customer,[tmpl:value_0 = 'cus:5222187'])
+entity(var:school,[tmpl:value_0 = 'var:school'])
+entity(var:journey,[tmpl:value_0 = 'jo:0_0_0'])
+entity(var:product,[tmpl:value_0 = 'prod:53350'])
+entity(var:distributor,[tmpl:value_0 = 'org:Bidvest3663'])
+entity(var:order,[tmpl:value_0 = 'ord:365095'])
+entity(var:packsize,[tmpl:2dvalue_0_0 = "1-18ptn" %% xsd:string])
+entity(var:total,[tmpl:2dvalue_0_0 = "20.99" %% xsd:double])
+entity(var:price,[tmpl:2dvalue_0_0 = "20.99" %% xsd:double])
+entity(var:quantity,[tmpl:2dvalue_0_0 = "-" %% xsd:string])
+entity(var:vatrate,[tmpl:2dvalue_0_0 = "20.99" %% xsd:float])
+entity(var:cases,[tmpl:2dvalue_0_0 = "1" %% xsd:positiveInteger])
+entity(var:label,[tmpl:2dvalue_0_0 = "3663 LUSCIOUS LEMON GATEAU" %% xsd:string])
+endDocument

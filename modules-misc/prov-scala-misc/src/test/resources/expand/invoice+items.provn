@@ -1,0 +1,50 @@
+document
+  prefix food <http://provenance.ecs.soton.ac.uk/food#>
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+
+
+  bundle vargen:bundleId
+    entity(var:invoice,[food:total='var:total'])
+    agent(var:customer)
+    entity(var:order, [food:deliveryAddress='var:deliveryAddress'])
+    entity(var:journey, [prov:type='food:Journey'])  
+
+    agent(var:distributor)
+    agent(var:school)
+
+    entity(vargen:shipment,[prov:location='var:deliveryAddress'])
+
+
+    activity(vargen:delivery)
+    wasGeneratedBy(var:invoice,vargen:delivery,-)
+    wasGeneratedBy(vargen:shipment,vargen:delivery,-,[tmpl:time='var:deliveryDate'])
+    used(vargen:delivery, var:order,-)
+
+    wasAssociatedWith(vargen:delivery,var:distributor,var:journey)
+    wasAttributedTo(var:invoice, var:distributor)
+    wasDerivedFrom(var:invoice,var:order)
+
+    specializationOf(var:customer,var:school)
+    wasAttributedTo(var:order,var:customer)
+
+    entity(var:item,[prov:type='food:Delivered',
+                     food:label='var:label',
+                     food:packsize='var:packsize',
+                     food:units='var:units',
+                     food:line='var:line',
+                     food:price='var:price',
+                     food:cases='var:cases',
+                     food:quantity='var:quantity',
+                     food:total='var:total',		
+                     food:vatrate='var:vatrate' ])
+
+    entity(var:product,[prov:type='food:Product',tmpl:linked='var:item'])
+    specializationOf(var:item, var:product)
+
+    hadMember(var:invoice,var:item)
+
+
+  endBundle
+endDocument

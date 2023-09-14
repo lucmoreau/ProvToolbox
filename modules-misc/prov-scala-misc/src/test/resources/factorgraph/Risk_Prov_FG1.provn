@@ -1,0 +1,143 @@
+document
+
+  prefix food <http://provenance.ecs.soton.ac.uk/food#>
+  prefix qmra <http://provenance.ecs.soton.ac.uk/qmra#>
+  prefix factorGraph <http://provenance.ecs.soton.ac.uk/factorGraph#>
+  prefix prov <http://provenance.ecs.soton.ac.uk/prov#>
+  prefix var <http://openprovenance.org/var#>
+  
+//  bundle food:foodProduct1  
+
+  //Activity=====================================================
+  activity(qmra:processing, [
+	prov:type='food:distributingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.0000; 0.9666; 0.0334"
+  ])
+  activity(qmra:storing_1, [
+	prov:type='food:storingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.0000,0.9897,0.0103; 0.0000,0.0000,1.0000"
+  ])
+  activity(qmra:storing_2, [
+	prov:type='food:storingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.0000,0.9897,0.0103; 0.0000,0.0000,1.0000"
+  ])
+  activity(qmra:storing_3, [
+	prov:type='food:storingProcess',
+	food:pathogen='qmra:growth',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.0000,0.9897,0.0103; 0.0000,0.0000,1.0000"
+  ])
+  activity(qmra:preparing_1, [  
+	prov:type='food:preparingProcess',
+	food:pathogen='qmra:crossContamination',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.0000,1.0000,0.0000; 0.0000,0.2765,0.7235"
+  ])
+  activity(qmra:preparing_2, [  
+	prov:type='food:preparingProcess',
+	food:pathogen='qmra:crossContamination',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.0000,1.0000,0.0000; 0.0000,0.2765,0.7235"
+  ])
+  activity(qmra:preparing_3, [  
+	prov:type='food:preparingProcess',
+	food:pathogen='qmra:crossContamination',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.0000,1.0000,0.0000; 0.0000,0.2765,0.7235"
+  ])
+  activity(qmra:cooking_1, [
+    prov:type='food:cookingProcess',
+	food:pathogen='qmra:inactivation',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.9676,0.0324,0.0000; 0.9108,0.0064,0.0828"
+  ])
+  activity(qmra:cooking_2, [
+    prov:type='food:cookingProcess',
+	food:pathogen='qmra:inactivation',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.9676,0.0324,0.0000; 0.9108,0.0064,0.0828"
+  ])
+  activity(qmra:cooking_3, [
+    prov:type='food:cookingProcess',
+	food:pathogen='qmra:inactivation',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.9676,0.0324,0.0000; 0.9108,0.0064,0.0828"
+  ])
+  activity(qmra:cooking_4, [
+    prov:type='food:cookingProcess',
+	food:pathogen='qmra:inactivation',
+	qmra:cpd="0.0000,0.0000,0.0000; 0.9676,0.0324,0.0000; 0.9108,0.0064,0.0828"
+  ])
+  //Entity=====================================================
+  entity(qmra:processedProduct, [
+	//prov:type='factorGraph:variableNode', 
+	prov:type='food:processedProduct', 
+	//qmra:value="2425",
+	qmra:value='var:bacteria_level',
+	qmra:unit="cfu/g"
+  ])
+  entity(qmra:storedProduct_1, [
+	prov:type='food:storedProduct'
+  ])  
+  entity(qmra:storedProduct_2, [
+	prov:type='food:storedProduct'
+  ])
+  entity(qmra:storedProduct_3, [  
+	prov:type='food:storedProduct'
+  ])
+  entity(qmra:preparedProduct_1, [
+	prov:type='food:preparedProduct'
+  ])
+  entity(qmra:preparedProduct_2, [
+	prov:type='food:preparedProduct'
+  ])
+  entity(qmra:preparedProduct_3, [
+	prov:type='food:preparedProduct'
+  ])
+  entity(qmra:cookedProduct_1, [
+	prov:type='food:cookedProduct'
+  ])
+  entity(qmra:cookedProduct_2, [
+	prov:type='food:cookedProduct'
+  ])
+  entity(qmra:cookedProduct_3, [
+	prov:type='food:cookedProduct'
+  ])
+  entity(qmra:cookedProduct_4, [
+	prov:type='food:cookedProduct'
+  ])
+  
+
+  //Generation + Communication + Usage====================================
+  wasGeneratedBy(qmra:processedProduct, qmra:processing, -)
+  wasGeneratedBy(qmra:storedProduct_1, qmra:storing_1, -)
+  wasGeneratedBy(qmra:storedProduct_2, qmra:storing_2, -)
+  wasGeneratedBy(qmra:storedProduct_3, qmra:storing_3, -)
+  wasGeneratedBy(qmra:preparedProduct_1, qmra:preparing_1, -)
+  wasGeneratedBy(qmra:preparedProduct_2, qmra:preparing_2, -)
+  wasGeneratedBy(qmra:preparedProduct_3, qmra:preparing_3, -)
+  wasGeneratedBy(qmra:cookedProduct_1, qmra:cooking_1, -)
+  wasGeneratedBy(qmra:cookedProduct_2, qmra:cooking_2, -)
+  wasGeneratedBy(qmra:cookedProduct_3, qmra:cooking_3, -)
+  wasGeneratedBy(qmra:cookedProduct_4, qmra:cooking_4, -)
+  
+  used(qmra:storing_1, qmra:processedProduct, -)
+  used(qmra:storing_2, qmra:processedProduct, -)
+  used(qmra:storing_3, qmra:processedProduct, -)
+  used(qmra:preparing_1, qmra:storedProduct_1, -)
+  used(qmra:preparing_2, qmra:storedProduct_2, -)
+  used(qmra:preparing_3, qmra:storedProduct_3, -)
+  used(qmra:cooking_1, qmra:preparedProduct_1, -)  
+  used(qmra:cooking_2, qmra:preparedProduct_1, -)  
+  used(qmra:cooking_3, qmra:preparedProduct_2, -)  
+  used(qmra:cooking_4, qmra:preparedProduct_3, -)  
+    
+  wasDerivedFrom(qmra:storedProduct_1, qmra:processedProduct, -, -, -)
+  wasDerivedFrom(qmra:storedProduct_2, qmra:processedProduct, -, -, -)
+  wasDerivedFrom(qmra:storedProduct_3, qmra:processedProduct, -, -, -)
+  wasDerivedFrom(qmra:preparedProduct_1, qmra:storedProduct_1, -, -, -)
+  wasDerivedFrom(qmra:preparedProduct_2, qmra:storedProduct_2, -, -, -)
+  wasDerivedFrom(qmra:preparedProduct_3, qmra:storedProduct_3, -, -, -)
+  wasDerivedFrom(qmra:cookedProduct_1, qmra:preparedProduct_1, -, -, -)
+  wasDerivedFrom(qmra:cookedProduct_2, qmra:preparedProduct_1, -, -, -)
+  wasDerivedFrom(qmra:cookedProduct_3, qmra:preparedProduct_2, -, -, -)
+  wasDerivedFrom(qmra:cookedProduct_4, qmra:preparedProduct_3, -, -, -)
+
+//  endBundle
+endDocument

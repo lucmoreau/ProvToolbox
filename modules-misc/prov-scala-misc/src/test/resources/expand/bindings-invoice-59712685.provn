@@ -1,0 +1,26 @@
+document
+prefix ord <https://provenance.ecs.soton.ac.uk/food/order/>
+prefix jo <https://provenance.ecs.soton.ac.uk/food/journey/>
+prefix inv <https://provenance.ecs.soton.ac.uk/food/invoice/>
+prefix prod <https://provenance.ecs.soton.ac.uk/food/product#>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix cus <https://provenance.ecs.soton.ac.uk/food/customer/>
+prefix product <https://provenance.ecs.soton.ac.uk/food/invoice/line/>
+prefix var <http://openprovenance.org/var#>
+prefix org <https://provenance.ecs.soton.ac.uk/food/org/>
+entity(var:invoice,[tmpl:value_0 = 'inv:59712685'])
+entity(var:item,[tmpl:value_0 = 'product:59712685#0', tmpl:value_1 = 'product:59712685#1', tmpl:value_2 = 'product:59712685#2', tmpl:value_3 = 'product:59712685#3', tmpl:value_4 = 'product:59712685#4', tmpl:value_5 = 'product:59712685#5', tmpl:value_6 = 'product:59712685#6', tmpl:value_7 = 'product:59712685#7'])
+entity(var:customer,[tmpl:value_0 = 'cus:5222187'])
+entity(var:school,[tmpl:value_0 = 'var:school'])
+entity(var:journey,[tmpl:value_0 = 'jo:MA_102_152_0'])
+entity(var:product,[tmpl:value_0 = 'prod:55572', tmpl:value_1 = 'prod:31129', tmpl:value_2 = 'prod:04364', tmpl:value_3 = 'prod:04386', tmpl:value_4 = 'prod:05776', tmpl:value_5 = 'prod:39498', tmpl:value_6 = 'prod:05661', tmpl:value_7 = 'prod:23540'])
+entity(var:distributor,[tmpl:value_0 = 'org:Bidvest3663'])
+entity(var:order,[tmpl:value_0 = 'ord:204689'])
+entity(var:packsize,[tmpl:2dvalue_0_0 = "1-60Ea" %% xsd:string, tmpl:2dvalue_1_0 = "6-600g" %% xsd:string, tmpl:2dvalue_2_0 = "4-2.5kg" %% xsd:string, tmpl:2dvalue_3_0 = "4-2.5kg" %% xsd:string, tmpl:2dvalue_4_0 = "10-1kg" %% xsd:string, tmpl:2dvalue_5_0 = "1-80Ea" %% xsd:string, tmpl:2dvalue_6_0 = "128-30g" %% xsd:string, tmpl:2dvalue_7_0 = "6-2.5kg" %% xsd:string])
+entity(var:total,[tmpl:2dvalue_0_0 = "14.47" %% xsd:double, tmpl:2dvalue_1_0 = "19.8" %% xsd:double, tmpl:2dvalue_2_0 = "9.6" %% xsd:double, tmpl:2dvalue_3_0 = "9.76" %% xsd:double, tmpl:2dvalue_4_0 = "7.99" %% xsd:double, tmpl:2dvalue_5_0 = "18.88" %% xsd:double, tmpl:2dvalue_6_0 = "12.47" %% xsd:double, tmpl:2dvalue_7_0 = "8.32" %% xsd:double])
+entity(var:price,[tmpl:2dvalue_0_0 = "14.47" %% xsd:double, tmpl:2dvalue_1_0 = "4.95" %% xsd:double, tmpl:2dvalue_2_0 = "4.8" %% xsd:double, tmpl:2dvalue_3_0 = "4.88" %% xsd:double, tmpl:2dvalue_4_0 = "7.99" %% xsd:double, tmpl:2dvalue_5_0 = "9.44" %% xsd:double, tmpl:2dvalue_6_0 = "12.47" %% xsd:double, tmpl:2dvalue_7_0 = "4.16" %% xsd:double])
+entity(var:quantity,[tmpl:2dvalue_0_0 = "-" %% xsd:string, tmpl:2dvalue_1_0 = "4 Units" %% xsd:string, tmpl:2dvalue_2_0 = "2 Units" %% xsd:string, tmpl:2dvalue_3_0 = "2 Units" %% xsd:string, tmpl:2dvalue_4_0 = "1 Unit" %% xsd:string, tmpl:2dvalue_5_0 = "-" %% xsd:string, tmpl:2dvalue_6_0 = "-" %% xsd:string, tmpl:2dvalue_7_0 = "2 Units" %% xsd:string])
+entity(var:vatrate,[tmpl:2dvalue_0_0 = "14.47" %% xsd:float, tmpl:2dvalue_1_0 = "4.95" %% xsd:float, tmpl:2dvalue_2_0 = "4.8" %% xsd:float, tmpl:2dvalue_3_0 = "4.88" %% xsd:float, tmpl:2dvalue_4_0 = "7.99" %% xsd:float, tmpl:2dvalue_5_0 = "9.44" %% xsd:float, tmpl:2dvalue_6_0 = "12.47" %% xsd:float, tmpl:2dvalue_7_0 = "4.16" %% xsd:float])
+entity(var:cases,[tmpl:2dvalue_0_0 = "1" %% xsd:positiveInteger, tmpl:2dvalue_1_0 = "0" %% xsd:positiveInteger, tmpl:2dvalue_2_0 = "0" %% xsd:positiveInteger, tmpl:2dvalue_3_0 = "0" %% xsd:positiveInteger, tmpl:2dvalue_4_0 = "0" %% xsd:positiveInteger, tmpl:2dvalue_5_0 = "2" %% xsd:positiveInteger, tmpl:2dvalue_6_0 = "1" %% xsd:positiveInteger, tmpl:2dvalue_7_0 = "0" %% xsd:positiveInteger])
+entity(var:label,[tmpl:2dvalue_0_0 = "HARRY RAMSDN FISH FILET 50-70G" %% xsd:string, tmpl:2dvalue_1_0 = "PORK LOIN SLICE 80% 60G" %% xsd:string, tmpl:2dvalue_2_0 = "3663 PEAS TT" %% xsd:string, tmpl:2dvalue_3_0 = "3663 BROCCOLI FLORETS BAG" %% xsd:string, tmpl:2dvalue_4_0 = "QUORN PIECES CATERING" %% xsd:string, tmpl:2dvalue_5_0 = "FREEDOM FOODS PORK 16S SAUSAGE" %% xsd:string, tmpl:2dvalue_6_0 = "VEGETARIAN SAUSAGE 128 X 30G" %% xsd:string, tmpl:2dvalue_7_0 = "MCAINS STRAIGHT CUT OVEN CHIP$" %% xsd:string])
+endDocument

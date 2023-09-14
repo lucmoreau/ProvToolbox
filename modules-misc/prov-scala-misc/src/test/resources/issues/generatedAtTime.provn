@@ -1,0 +1,5 @@
+document
+	prefix ex <http://example.org>
+
+	wasGeneratedBy(ex:e1,-,2014-05-19T10:30:00.000+01:00)
+endDocument

@@ -1,0 +1,18 @@
+document
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix var <http://openprovenance.org/var#>
+prefix exe <http://uml2prov.unirioja.es/execution#>
+
+entity(var:event,[tmpl:value_0 = 'exe:enrolStudent_1'])
+entity(var:eventStartTime,
+    [tmpl:2dvalue_0_0 = "2017-02-09T11:54:24" %% xsd:dateTime])
+entity(var:eventEndTime,
+    [tmpl:2dvalue_0_0 = "2017-02-09T11:54:24" %% xsd:dateTime])
+entity(var:source,[tmpl:value_0 = 'exe:Seminar@57fa26b7_1'])
+entity(var:target,[tmpl:value_0 = 'exe:Seminar@57fa26b7_2'])
+entity(var:performing,[tmpl:value_0 = 'exe:Performing_1'])
+entity(var:object,[tmpl:value_0 = 'exe:Seminar@57fa26b7_0'])
+entity(var:lifeline,[tmpl:value_0 = 'exe:Student@28180122'])
+entity(var:objectSMD,[tmpl:value_0 = 'exe:Seminar@57fa26b7'])
+
+endDocument

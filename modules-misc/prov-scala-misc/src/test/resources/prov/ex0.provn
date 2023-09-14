@@ -1,0 +1,68 @@
+
+
+document
+
+   prefix ex <http://example/>
+   prefix dcterms <http://purl.org/dc/terms/>
+   prefix foaf <http://xmlns.com/foaf/0.1/>
+
+   entity(ex:article)
+   entity(ex:articleV1,[prov:type='ex:Type'])
+   entity(ex:articleV2,[prov:location='ex:Location'])
+   entity(ex:dataSet0)   
+   entity(ex:dataSet1, [prov:value='ex:Value'])
+   entity(ex:dataSet2, [foaf:mbox = "<mailto:derek@example.org>" %% xsd:string, foaf:mbox = "<mailto:otheremail@example.org>" %% xsd:string])
+   entity(ex:regionList)
+         entity(ex:xxxx)
+
+   activity(ex:compile)
+   activity(ex:compile2)
+   activity(ex:compose)
+   activity(ex:correct, 2012-03-31T09:21:00, 2012-04-01T15:21:00)
+   activity(ex:illustrate)
+
+   wasDerivedFrom(ex:dataSet2, ex:dataSet1, [prov:type='prov:Revision'])
+   wasDerivedFrom(ex:chart2, ex:dataSet2)
+
+   wasDerivedFrom(ex:dataSet2, ex:dataSet0, ex:xxxx, - , -, [prov:type='prov:Revision'])
+
+   wasGeneratedBy(ex:composition, ex:compose, -)
+
+   used(ex:compose, ex:dataSet1, -)
+   used(ex:compose, ex:regionList, -)
+
+   wasInvalidatedBy(ex:composition, ex:compose, -)
+
+   agent(ex:derek)
+   actedOnBehalfOf(ex:derek,ex:derek,-,[ prov:type = 'ex:MyDelegation'])
+
+   hadMember(ex:article,ex:dataSet0)
+
+   
+   wasAssociatedWith(ex:illustrate, ex:derek, ex:plan)
+   wasAttributedTo(ex:chart1, ex:derek)
+   wasInformedBy(ex:compose,ex:illustrate)
+
+   wasInfluencedBy(ex:id0; ex:compose,ex:illustrate, [prov:type='ex:SomeInfluence'])
+   wasStartedBy(ex:compose,ex:dataSet1,ex:illustrate, 2012-04-01T15:21:00, [prov:type='ex:SomeStart'])
+
+   wasEndedBy(ex:compose,ex:dataSet1,ex:illustrate, 2012-04-01T15:21:00, [prov:type='ex:SomeStart'])
+
+   specializationOf(ex:articleV1, ex:article)
+   alternateOf(ex:articleV2, ex:articleV1)
+
+   entity(ex:composition,[prov:type = 'prov:Person', foaf:givenName = "Derek" %% xsd:string, foaf:mbox = "<mailto:derek@example.org>" %% xsd:string])
+
+   bundle ex:b1
+   entity(ex:composition,[prov:type = 'prov:Person', foaf:givenName = "Derek" %% xsd:string, foaf:mbox = "<mailto:derek@example.org>" %% xsd:string])
+   entity(ex:chart1,[prov:label="me"])
+   entity(ex:chart3,[prov:label="me",prov:label="moi"@fr])	
+   entity(ex:chart2)
+   entity(ex:blogEntry)
+   endBundle
+
+
+
+
+
+endDocument

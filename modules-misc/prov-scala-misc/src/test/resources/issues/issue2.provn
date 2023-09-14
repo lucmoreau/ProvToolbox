@@ -1,0 +1,23 @@
+document
+prefix ex2 <http://www.ipaw.info/data/people/>
+prefix uuid <urn:uuid:>
+prefix ex1 <http://www.ipaw.info/data/paper/>
+prefix xsd_1 <http://www.w3.org/2001/XMLSchema>
+prefix ex0 <https://www.youtube.com/>
+prefix vargen <http://openprovenance.org/vargen#>
+prefix pic <http://www.ipaw.info/ns/picaso#>
+prefix ui <http://openprovenance.org/ui#>
+prefix tmpl <http://openprovenance.org/tmpl#>
+prefix var <http://openprovenance.org/var#>
+prefix ex3 <http://www.ipaw.info/ipaw14/>
+entity(var:paperType,[tmpl:2dvalue_0_0 = 'pic:Article'])
+entity(var:title,[tmpl:2dvalue_0_0 = "Looking Inside the Black-Box: Capturing Data Provenance using Dynamic Instrumentation" %% xsd:string])
+entity(vargen:presenting,[tmpl:value_0 = 'uuid:64c3a732-6820-4703-8ae1-635371c47b6e'])
+entity(var:session,[tmpl:value_0 = 'ex3:session6'])
+entity(var:presenterName,[tmpl:2dvalue_0_0 = "Manolis Stamatogiannakis" %% xsd:string])
+entity(var:presenter,[tmpl:value_0 = 'ex2:StamatogiannakisManolis'])
+entity(var:presenterType,[tmpl:2dvalue_0_0 = 'prov:Person'])
+entity(var:slidesType,[tmpl:2dvalue_0_0 = 'pic:Slides'])
+entity(var:slides,[tmpl:value_0 = 'ex0:watch?v\=BD0h6M5mVoo'])
+entity(var:paper,[tmpl:value_0 = 'ex1:StamatogiannakisIPAW2014'])
+endDocument

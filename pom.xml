@@ -323,7 +323,7 @@
 
 		<scala.library.version>2.12.18</scala.library.version>
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
-
+		<scalatest.version>3.1.0-RC3</scalatest.version>
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 

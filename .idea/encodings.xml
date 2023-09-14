@@ -27,6 +27,8 @@
     <file url="file://$PROJECT_DIR$/modules-misc/prov-dot/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-generator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/prov-generator/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/roundtrip" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator" charset="UTF-8" />

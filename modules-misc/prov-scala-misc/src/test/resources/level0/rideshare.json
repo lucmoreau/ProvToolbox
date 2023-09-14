@@ -1,0 +1,13 @@
+
+{
+    "mapper":
+    {
+	"http://smartsociety-project.github.io/cas/#Reputation":"ReputationPeer",
+	"http://smartsociety-project.github.io/cas/#Orches":"OrchestrationPeer",
+	"http://smartsociety-project.github.io/cas/#RideRequest":"RideRequest",
+	"http://smartsociety-project.github.io/cas/#TaskRequest":"RideRequest",
+	"http://smartsociety-project.github.io/cas/#InvalidTaskRequest":"RideRequest",
+	"http://smartsociety-project.github.io/cas/#Task":"RideTask"
+    },
+    "ignore":[]
+}

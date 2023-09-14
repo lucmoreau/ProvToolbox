@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.12</artifactId>
-            <version>3.1.0-RC3</version> <!-- 3.1.0-RC3 -->
+            <version>${scalatest.version}</version> <!-- 3.1.0-RC3 -->
             <scope>test</scope>
         </dependency>
 

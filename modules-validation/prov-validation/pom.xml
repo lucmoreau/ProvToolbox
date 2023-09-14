@@ -61,9 +61,9 @@
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>modules-scala-core</artifactId>
+            <artifactId>prov-scala-misc</artifactId>
             <version>2.0.1-SNAPSHOT</version>
-           <scope>test</scope>
+            <scope>test</scope>
         </dependency>
 
 

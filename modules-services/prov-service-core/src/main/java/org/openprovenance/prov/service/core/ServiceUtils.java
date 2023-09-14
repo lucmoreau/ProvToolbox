@@ -722,6 +722,8 @@ public class ServiceUtils {
     /**
      * header sample { Content-Type=[image/png], Content-Disposition=[form-data;
      * name="file"; filename="filename.extension"] }
+     * @param header a mapping
+     * @return a string
      **/
     // get uploaded filename, is there a easy way in RESTEasy?
     public String getFileName(MultivaluedMap<String, String> header) {

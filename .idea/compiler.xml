@@ -12,12 +12,12 @@
         <module name="prov-storage-filesystem" />
         <module name="demo" />
         <module name="prov-storage-api" />
-        <module name="prov-jsonld-xml" />
         <module name="templates_cli" />
+        <module name="prov-jsonld-xml" />
         <module name="prov-validation" />
         <module name="prov-service-translation" />
-        <module name="prov-storage-index-redis" />
         <module name="prov-n" />
+        <module name="prov-storage-index-redis" />
         <module name="prov-jsweet-candy-js" />
         <module name="docker-service-translator" />
         <module name="prov-jsonld" />
@@ -29,6 +29,7 @@
         <module name="prov-model" />
         <module name="prov-service-validation" />
         <module name="prov-interop" />
+        <module name="prov-interop-light" />
         <module name="prov-log" />
         <module name="prov-template" />
         <module name="prov-dot" />
@@ -37,6 +38,7 @@
         <module name="templates_l2p" />
         <module name="roundtrip" />
         <module name="prov-model-scala" />
+        <module name="tutorial5" />
         <module name="toolbox" />
         <module name="prov-generator" />
       </profile>
@@ -50,7 +52,7 @@
     <bytecodeTargetLevel>
       <module name="jsweet-quickstart" target="11" />
       <module name="modules-legacy" target="1.5" />
-      <module name="prov-interop-light" target="11" />
+      <module name="prov-interop-light" target="1.5" />
       <module name="prov-json" target="9" />
       <module name="prov-jsonld-xml (1)" target="11" />
       <module name="prov-rdf" target="11" />
@@ -60,6 +62,7 @@
       <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />
       <module name="toolbox" target="1.8" />
+      <module name="tutorial5" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

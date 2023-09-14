@@ -311,7 +311,7 @@
 		<jar.plugin.version>3.3.0</jar.plugin.version>
 		<war.plugin.version>3.3.1</war.plugin.version>
 		<javadoc.plugin.version>3.1.1</javadoc.plugin.version>
-		<exec.plugin.version>3.0.0</exec.plugin.version>
+		<exec.plugin.version>3.1.0</exec.plugin.version>
 		<assembly.plugin.version>3.0.0</assembly.plugin.version>
 		<antrun.plugin.version>3.1.0</antrun.plugin.version>
 		<surefire.plugin.version>3.1.2</surefire.plugin.version>

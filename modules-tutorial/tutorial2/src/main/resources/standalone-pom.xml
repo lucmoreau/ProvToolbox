@@ -32,22 +32,6 @@
         </developer>
     </developers>
 
-    <repositories>
-        <!--
-            <repository>
-              <id>mvn.prov.toolbox</id>
-              <name>maven repository for PROV toolbox</name>
-              <url>http://openprovenance.org/java/maven-releases/</url>
-            </repository>
-        -->
-
-        <repository>
-            <id>mvn.prov.toolbox.snapshots</id>
-            <name>maven snapshot repository for PROV toolbox</name>
-            <url>http://openprovenance.org/java/maven-snapshots/</url>
-        </repository>
-    </repositories>
-
     <licenses>
         <license>
             <name>MIT License</name>
@@ -111,7 +95,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${mvn.compiler.plugin}</version>
+                    <version>${compiler.plugin.version}</version>
                     <configuration>
                         <source>1.9</source>
                         <target>1.9</target>

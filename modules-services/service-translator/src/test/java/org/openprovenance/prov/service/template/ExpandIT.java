@@ -15,7 +15,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
-import org.openprovenance.prov.service.translator.TranslatorIT;
+import org.openprovenance.prov.service.translator.TranslateIT;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;
@@ -39,12 +39,12 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TemplateIT extends TestCase {
-    static Logger logger = LogManager.getLogger(TemplateIT.class);
+public class ExpandIT extends TestCase {
+    static Logger logger = LogManager.getLogger(ExpandIT.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
-    public TemplateIT() {
+    public ExpandIT() {
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
 
     }
@@ -59,7 +59,7 @@ public class TemplateIT extends TestCase {
 
 
 
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties"));
+    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
     final static String port= properties.getProperty("service.port");
     final static String context= properties.getProperty("service.context");
     final static String host= properties.getProperty("service.host");

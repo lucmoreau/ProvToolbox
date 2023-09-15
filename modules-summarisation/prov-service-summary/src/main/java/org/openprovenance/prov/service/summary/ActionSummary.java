@@ -7,8 +7,8 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.scala.immutable.Document;
 import org.openprovenance.prov.scala.immutable.Indexer;
-import org.openprovenance.prov.scala.interop.CommandLine;
-import org.openprovenance.prov.scala.interop.Config;
+import org.openprovenance.prov.scala.summary.SummaryAPI;
+import org.openprovenance.prov.scala.summary.SummaryConfig;
 import org.openprovenance.prov.scala.summary.SummaryIndex;
 import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.service.core.ActionPerformer;
@@ -111,11 +111,11 @@ public final class ActionSummary implements ActionPerformer {
         org.openprovenance.prov.model.Document doc=utils.getDocumentFromCacheOrStore(vr.getStorageId());
         org.openprovenance.prov.model.Document d2=org.openprovenance.prov.scala.immutable.ProvFactory.pf().newDocument(doc);
         Document d3=(Document)d2;
-        Config config=new Config(1);
-        Tuple2<Indexer, TypePropagator> pair= CommandLine.sum(d3,config,null);
+        SummaryConfig config=new SummaryConfig(1);
+        Tuple2<Indexer, TypePropagator> pair= SummaryAPI.sum(d3,config,null);
         Indexer ind=pair._1;
         TypePropagator tp=pair._2;
-        SummaryIndex indexed= CommandLine.makeSummaryIndex(config,tp,ind,1,null, null);
+        SummaryIndex indexed= SummaryAPI.makeSummaryIndex(config,tp,ind,1,null, null);
 
         return indexed;
     }

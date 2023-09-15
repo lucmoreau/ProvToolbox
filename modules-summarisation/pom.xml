@@ -14,7 +14,8 @@
     <modules>
         <module>prov-scala-summarisation</module>
         <module>prov-scala-typemap</module>
-        <!-- <module>prov-service-summary</module> -->
+        <module>prov-service-summary</module>
+        <module>service-summary</module>
     </modules>
 
 

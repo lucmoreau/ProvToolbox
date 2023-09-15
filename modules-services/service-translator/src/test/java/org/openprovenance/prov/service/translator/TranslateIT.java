@@ -25,15 +25,15 @@ import java.util.*;
 import static org.openprovenance.prov.interop.InteropMediaType.*;
 
 
-public class TranslatorIT extends RoundTripFromJavaTest {
+public class TranslateIT extends RoundTripFromJavaTest {
 
-    static Logger logger = LogManager.getLogger(TranslatorIT.class);
+    static Logger logger = LogManager.getLogger(TranslateIT.class);
 
     private final Client client;
     private final DocumentEquality documentEquality;
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
-    public TranslatorIT() {
+    public TranslateIT() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
         this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
         this.client=getClient();
@@ -49,7 +49,7 @@ public class TranslatorIT extends RoundTripFromJavaTest {
 
 
 
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties"));
+    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
     final static String port= properties.getProperty("service.port");
     final static String context= properties.getProperty("service.context");
     final static String host= properties.getProperty("service.host");

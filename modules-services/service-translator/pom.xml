@@ -295,13 +295,6 @@
                     <include>log4j2.xml</include>
                 </includes>
             </resource>
-            <!--
-            <resource>
-                <directory>src/main/webapp.filter</directory>
-                <targetPath>${project.build.directory}/webapp.filtered</targetPath>
-                <filtering>true</filtering>
-            </resource>
-            -->
         </resources>
 
 
@@ -486,7 +479,6 @@
                             <httpConnector>
                                 <port>${service.port}</port>
                             </httpConnector>
-                            <!--<scanIntervalSeconds>10</scanIntervalSeconds> -->
                             <stopKey>foo</stopKey>
                             <stopPort>9999</stopPort>
                         </configuration>

@@ -2,8 +2,8 @@ package org.openprovenance.prov.scala.immutable
 
 
 import java.io.{BufferedWriter, File, FileWriter, OutputStreamWriter}
-
 import org.openprovenance.prov.model.Namespace
+import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.interop._
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
@@ -24,13 +24,13 @@ object NS {
 
 object Format extends Enumeration {
   type Format = Value
-  val PROVN  = Value("provn")
-  val SVG    = Value("svg")
-  val PNG    = Value("png")
-  val MATLAB = Value("m")
-  val CSV    = Value("csv")
-  val DOT    = Value("dot")
-  val PDF    = Value("pdf")
+  val PROVN: Format.Value = Value("provn")
+  val SVG: Format.Value = Value("svg")
+  val PNG: Format.Value = Value("png")
+  val MATLAB: Format.Value = Value("m")
+  val CSV: Format.Value = Value("csv")
+  val DOT: Format.Value = Value("dot")
+  val PDF: Format.Value = Value("pdf")
 
   def fromMediatype(s: String): Format.Format = {
     s match {
@@ -45,9 +45,9 @@ object Format extends Enumeration {
 
 
 
-  val inputers=Map(PROVN  -> new ProvNInputer)
+  val inputers: Map[Format.Value, ProvNInputer] =Map(PROVN  -> new ProvNInputer)
 
-  def substParams(s:String, params:Map[String,String]) = {
+  def substParams(s:String, params:Map[String,String]): String = {
     params.foldLeft(s){case (old:String,(param:String, value:String)) => old.replace(param, value)}
   }
 

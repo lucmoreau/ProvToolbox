@@ -23,6 +23,7 @@
         <module name="prov-storage-index-redis" />
         <module name="prov-jsweet-candy-js" />
         <module name="docker-service-translator" />
+        <module name="service-summary" />
         <module name="prov-jsonld" />
         <module name="ProvToolbox-Tutorial4" />
         <module name="ProvToolbox-Tutorial3" />

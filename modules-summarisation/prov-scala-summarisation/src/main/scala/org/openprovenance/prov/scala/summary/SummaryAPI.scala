@@ -1,7 +1,8 @@
 package org.openprovenance.prov.scala.summary
 
 import org.openprovenance.prov.model.Namespace
-import org.openprovenance.prov.scala.immutable.{Document, Indexer}
+import org.openprovenance.prov.scala.immutable.{Document, Format, Indexer}
+import org.openprovenance.prov.scala.interop.{Format2, Output}
 
 object SummaryAPI {
 
@@ -46,6 +47,13 @@ object SummaryAPI {
     val summaryIndex = summaryConstructor.makeIndex()
 
     summaryIndex
+
+  }
+
+  def outputer(doc: Document, config: SummaryConfig): Unit = {
+    val theformats = config.theOutputFormats()
+
+    config.outfiles.zip(theformats).par foreach { case (o: Output, format: Format.Format) => Format2.outputers(format).output(doc, o, Map[String, String]()) }
 
   }
 }

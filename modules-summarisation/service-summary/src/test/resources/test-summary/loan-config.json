@@ -1,0 +1,10 @@
+
+{"mapper":
+ {
+     "https://plead-project.org/ns/loan#LoanApplication": "ln:LoanApplication",
+     "https://plead-project.org/ns/loan#LoanAssessment": "ln:LoanAssessment",
+     "https://plead-project.org/ns/loan#LoanApplicant": "ln:LoanApplicant",     
+     "http://www.w3.org/ns/prov#Organization": "prov:Organization",
+     "http://www.w3.org/ns/prov#SoftwareAgent": "prov:SoftwareAgent"
+ },
+ "ignore":["a","b"]}

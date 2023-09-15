@@ -18,7 +18,7 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
-import org.openprovenance.prov.service.translator.TranslatorIT;
+import org.openprovenance.prov.service.translator.TranslateIT;
 import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.ByteArrayOutputStream;
@@ -31,11 +31,11 @@ import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSON;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ValidatorIT extends TestCase {
-    static Logger logger = LogManager.getLogger(ValidatorIT.class);
+public class ValidateIT extends TestCase {
+    static Logger logger = LogManager.getLogger(ValidateIT.class);
 
 
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslatorIT.class, "config.properties"));
+    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
     final static String port= properties.getProperty("service.port");
     final static String context= properties.getProperty("service.context");
     final static String host= properties.getProperty("service.host");

@@ -1,0 +1,11 @@
+document
+  prefix ex <http://example.org/>
+
+
+  entity(ex:e1)
+  entity(ex:e2)
+  entity(ex:e3)  
+  wasDerivedFrom(ex:e2,ex:e1)
+  wasDerivedFrom(ex:e3,ex:e2)  
+
+endDocument

@@ -1,0 +1,1216 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PROV Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+      
+      pre .pretty {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+      .pretty .string { color: green; }
+      .pretty .uri { color: green; }
+      .pretty .number { color: darkorange; }
+      .pretty .boolean { color: blue; }
+      .pretty .symbol { color: blue; }
+      .pretty .null { color: magenta; }
+      .pretty .key { color: red; }
+      .pretty .date { color: red; }
+      .pretty .provkeyword { color: saddlebrown; }
+      .pretty .feature { color: #8910ff; }
+
+      .active .navbar-brand {
+	  color: white;
+      }
+
+      #top_sum {display: none; }
+      #top_pt{display: none; }
+
+    </style>
+
+    <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+
+    
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap-table/1.9.1/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+  </head>
+
+  <body>
+    <section class="round">
+
+
+
+
+
+      <div class="container">
+
+
+        <div class="document-block">
+          <ul class="nav nav-tabs" id="topTabs">
+            <li class="nav-item"><a href="#top_newdocument" class="nav-link repr"><i class="fa fa-plus-square"></i> Document</a></li>
+            <li class="nav-item disabled" id="top_doc"><a href="#top_document"	 class="nav-link repr"><i class="fa fa-file-o"></i> Document</a></li>
+            <li class="nav-item disabled" id="top_newsum"><a href="#top_newsummary" class="nav-link repr"><i class="fa fa-plus-square"></i> Summary</a></li>
+            <li class="nav-item disabled" id="top_sum"><a href="#top_summary" 	 class="nav-link repr"><i class="fa fa-cog"></i> Summary</a></li>
+            <li class="nav-item disabled" id="top_newpt"><a href="#top_newprovtypes" class="nav-link repr"><i class="fa fa-plus-square"></i> PROV Types</a></li>
+            <li class="nav-item disabled" id="top_pt"><a href="#top_provtypes" 	 class="nav-link repr"><i class="fa fa-cog"></i> PROV Types</a></li>
+          </ul>
+
+
+          <div class="tab-content" id="all-tab-contents">
+            <div id="top_newdocument" class="tab-pane fade">
+              <div class="mybreadcrumb"><em>Document: not specified</em></div>
+
+              <form enctype="multipart/form-data" name="myForm">
+                <table>
+                  <tr>
+                    <td><input name="file" type="file" /></td>
+                  </tr>
+                  <tr>
+                    <td><input type="button" value="upload" id="upload-document-button"/></td>
+                  </tr>
+                </table>
+              </form>
+              <progress></progress>
+            </div>
+
+
+            <div id="top_document" class="tab-pane fade">
+              <div class="mybreadcrumb"><em>Document: not specified</em></div>
+
+              <ul class="nav nav-pills" id="myTabs">
+                <li class="nav-item disabled"><a href="#menu_provn"	  class="nav-link repr"   data-url=".provn"  data-verbatim="true" data-provn="true">PROV-N</a></li>
+                <li class="nav-item disabled"><a href="#menu_jsonld"  class="nav-link repr"   data-url=".jsonld" data-verbatim="true" data-json="true">JSON-LD</a></li>
+                <li class="nav-item disabled"><a href="#menu_json" 	  class="nav-link repr"   data-url=".json"   data-verbatim="true" data-json="true">JSON</a></li>
+                <li class="nav-item disabled"><a href="#menu_svg"  	  class="nav-link repr"   data-url=".svg">SVG</a></li>
+                <li class="nav-item disabled"><a href="#menu_orig" 	  class="nav-link vigate" data-url="/original" data-verbatim="true">Original</a></li>
+              </ul>
+
+              <div class="tab-content">
+                <div id="menu_provn" class="tab-pane fade provn_code" ace-mode="ace/mode/provn" ace-theme="ace/theme/chrome">
+                </div>
+                <div id="menu_jsonld" class="tab-pane fade">
+                </div>
+                <div id="menu_json" class="tab-pane fade">
+                </div>
+                <div id="menu_ttl" class="tab-pane fade">
+                </div>
+                <div id="menu_trig" class="tab-pane fade">
+                </div>
+                <div id="menu_svg" class="tab-pane fade">
+                </div>
+                <div id="menu_pdf" class="tab-pane fade">
+                </div>
+                <div id="menu_orig" class="tab-pane fade">
+                </div>
+              </div>
+            </div>
+
+
+            <div id="top_summary" class="tab-pane fade" data-document="">
+              <div class="mybreadcrumb">Document: <em>not specified</em></div>
+
+              <ul class="nav nav-pills" id="mySummaryTabs">
+                <li class="nav-item disabled"><a href="#menu_sum_config"  class="nav-link repr"  data-url="/config"  data-verbatim="true" data-json="true">Config</a></li>
+                <li class="nav-item disabled"><a href="#menu_sum_provn"	  class="nav-link repr"  data-url=".provn"   data-verbatim="true" data-provn="true">PROV-N</a></li>
+                <li class="nav-item disabled"><a href="#menu_sum_jsonld"  class="nav-link repr"  data-url=".jsonld"  data-verbatim="true" data-provn="true">JSON-LD</a></li>
+                <li class="nav-item disabled"><a href="#menu_sum_json"	  class="nav-link repr"  data-url="/details" data-verbatim="true" data-json="true">P-Types</a></li>
+                <li class="nav-item disabled"><a href="#menu_sum_svg"  	  class="nav-link repr"  data-url=".svg">SVG</a></li>
+                <li class="nav-item disabled"><a href="#menu_sum_anim"    class="nav-link repr animtab"  data-url="">ANIM</a></li>
+              </ul>
+
+              <div class="tab-content">
+                <div id="menu_sum_config" class="tab-pane fade">
+                </div>
+                <div id="menu_sum_provn" class="tab-pane fade">
+                </div>
+                <div id="menu_sum_jsonld" class="tab-pane fade">
+                </div>
+                <div id="menu_sum_json" class="tab-pane fade">
+                </div>
+                <div id="menu_sum_svg" class="tab-pane fade">
+                </div>
+                <div id="menu_sum_anim" class="tab-pane fade summary-animation-tab animation-tab">
+                  <div class="row">
+                    <div class="col-xs-6 left">left
+                    </div>
+                    <div class="col-xs-6 right">right
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="top_newsummary" class="tab-pane fade">
+
+              <div class="mybreadcrumb">Document: <em>not specified</em></div>
+
+
+              <form enctype="multipart/form-data" name="mySummaryForm">
+                <table>
+                  <tr>
+                    <td>Level:</td>
+                    <td></td>
+                    <td><input name="summary-level" id="select-summary-level" type="number" value="1"/></td>
+                  </tr>
+                  <tr>
+                    <td>Configuration: </td>
+                    <td></td>
+                    <td><input name="summary-configuration" id="select-summary-configuration" type="file" /></td>
+                  </tr>
+                  <tr>
+                    <td>Aggregated: </td>
+                    <td></td>
+                    <td><input name="summary-aggregated" id="select-summary-aggregated" type="checkbox" checked value="true"/></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td><input type="button" value="load" id="upload-summary-configuration"/></td>
+                  </tr>
+                </table>
+              </form>
+              <progress></progress>
+
+              <div class="summary-redirect">Summary: <em>not specified</em></div>
+
+            </div>
+
+            <div id="top_provtypes" class="tab-pane fade" data-document="">
+              <div class="mybreadcrumb">Document: <em>not specified</em></div>
+
+              <ul class="nav nav-pills" id="myProvTypesTabs">
+                <li class="nav-item disabled"><a href="#menu_ptype_config"  class="nav-link repr"  data-url="/config" data-verbatim="true" data-json="true">Config</a></li>
+                <li class="nav-item disabled"><a href="#menu_ptype_json"	class="nav-link repr"  data-url=".json"  data-verbatim="true" data-json="true">P-Types</a></li>
+                <li class="nav-item disabled"><a href="#menu_ptype_anim"    class="nav-link repr animtab"  data-url="">ANIM</a></li>
+              </ul>
+
+              <div class="tab-content">
+                <div id="menu_ptype_config" class="tab-pane fade">
+                </div>
+                <div id="menu_ptype_provn" class="tab-pane fade">
+                </div>
+                <div id="menu_ptype_json" class="tab-pane fade">
+                </div>
+                <div id="menu_ptype_anim" class="tab-pane fade ptype-animation-tab animation-tab">
+                  <div class="row">
+                    <div class="col-xs-6 left">left
+                    </div>
+                    <div class="col-xs-6 right">right
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="top_newprovtypes" class="tab-pane fade">
+
+              <div class="mybreadcrumb">Document: <em>not specified</em></div>
+
+
+              <p></p>
+              <p></p>
+              <p></p>
+              <p></p>
+              <form enctype="multipart/form-data" name="myProvtypeForm">
+                <table>
+                  <tr>
+                    <td>Level:</td>
+                    <td></td>
+                    <td><input name="ptype-level" id="select-ptype-level" type="number" value="1"/></td>
+                  </tr>
+                  <tr>
+                    <td>Configuration: </td>
+                    <td></td>
+                    <td><input name="ptype-configuration" id="select-ptype-configuration" type="file" /></td>
+                  </tr>
+                  <tr>
+                    <td>Aggregated: </td>
+                    <td></td>
+                    <td><input name="ptype-aggregated" id="select-ptype-aggregated" type="checkbox" checked value="true"/></td>
+                  </tr>
+                  <tr><td> </td></tr>
+                  <tr>
+                    <td></td>
+                    <td><input type="button" value="load" id="upload-ptype-configuration"/></td>
+                  </tr>
+                </table>
+              </form>
+              <progress></progress>
+
+              <div class="provtypes-redirect">prov types: <em>not specified</em></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <script>
+      $(':file').on('change', function () {
+        const file = this.files[0];
+
+        if (file.size > 1024 * 1024 * 10) {
+          alert('max upload size is 10M');
+        }
+
+        console.log("found file " + file.name);
+
+      });
+
+      $('#upload-document-button').on('click', function () {
+
+        const formData = new FormData($('form')[0]);
+        formData.append('upload','upload');
+
+        let redirectURL = null;
+
+        const mybutton = $(this);
+        const xhr = new XMLHttpRequest();
+        const url = '../provapi/documents/';
+        xhr.open('POST', url, true);
+        xhr.onprogress = function(event) {
+          console.log(event);
+          if (xhr.responseURL === url) {
+            console.log('got what we wanted, hooray!');
+          }
+          else {
+            if (redirectURL==null) {
+              redirectURL=xhr.responseURL;
+              redirectURL=redirectURL.substr(0,redirectURL.lastIndexOf('.'));
+              console.log('We were redirected from', url, 'to', redirectURL);
+              const lnk = $('<a>').attr('id', 'current-document').attr('href', redirectURL).append(redirectURL);
+              $('.mybreadcrumb').empty().append("Document: ").append(lnk);
+              $('#top_summary').attr('data-document',redirectURL);
+              $('#top_provtypes').attr('data-document',redirectURL);
+              $.each($('#myTabs .nav-link'), function (index,obj) {
+                $(obj).attr('data-url',redirectURL + $(obj).attr('data-url'));
+              });
+              $('#top_doc').removeClass("disabled");
+              $('#top_newsum').removeClass("disabled");
+              $('#top_newpt').removeClass("disabled");
+              $('#top_document').find('li').removeClass("disabled");
+
+            }
+          }
+        };
+        xhr.onerror= function(xhr,event) {
+          console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+          console.log("abort with " + event);
+        };
+        xhr.setRequestHeader("ACCEPT", "text/provenance-notation");  // Note, we set this accept in full knowledge that this is
+        // an acceptable type, which will lead to a further redirect, we then trim '.prov' at the end of the URI.
+        xhr.send(formData);
+
+
+
+
+      });
+
+      var summarycount=1;
+      var ptypescount=1;
+
+      $('#upload-summary-configuration').on('click', function () {
+
+
+        const files = document.getElementById('select-summary-configuration').files;
+        const levelString = document.getElementById('select-summary-level').value;
+        const aggregated = document.getElementById('select-summary-aggregated').checked;
+
+        console.log(files);
+        if (files.length <= 0) {
+          return false;
+        }
+
+        const fr = new FileReader();
+
+        let redirectURL = null;
+
+
+        fr.onload = function(e) {
+          console.log(e);
+          const result = JSON.parse(e.target.result);
+
+          const summary_config = {};
+          summary_config.level=levelString;
+          summary_config.level0=result;
+          summary_config.aggregated=aggregated;
+
+          const formatted = JSON.stringify(summary_config, null, 2);
+          console.log(formatted)
+
+          //var formatted = JSON.stringify(result, null, 2);
+          //document.getElementById('result').value = formatted;
+
+          const xhr = new XMLHttpRequest();
+          const currentDoc = $('#current-document').attr('href');
+          console.log("currentDoc is " + currentDoc);
+          const url = currentDoc + '/summary';
+
+          xhr.open('POST', url, true);
+
+          xhr.onprogress = function(event) {
+            console.log(event);
+            if (xhr.responseURL === url) {
+              console.log('got what we wanted, hooray!');
+            }
+            else {
+              if (redirectURL==null) {
+                redirectURL=xhr.responseURL;
+                redirectURL=redirectURL.substr(0,redirectURL.lastIndexOf('.'));
+                console.log('Summary: We were redirected from', url, 'to', redirectURL);
+                const lnk = $('<a>').attr('id', 'current-summary').attr('href', redirectURL).append(redirectURL);
+                $('.summary-redirect').empty().append("Summary: ").append(lnk.clone());
+
+                const newcount = summarycount++;
+
+                const aNewTab = $('#top_sum').clone();
+                $(aNewTab).attr('id',$(aNewTab).attr('id') + newcount);
+                const childLink = $(aNewTab).find('a');
+                $(childLink).attr('href',$(childLink).attr('href')+newcount);
+                $(childLink).append(newcount);
+                $(childLink).click(showToplevelTabFunction);
+                $('#top_sum').parent().append(aNewTab);
+                $(aNewTab).removeClass("disabled");
+
+
+                const aNewTabContent = $('#top_summary').clone();
+                $(aNewTabContent).attr('id',$(aNewTabContent).attr('id') + newcount);
+                $('#all-tab-contents').append(aNewTabContent);
+                $(aNewTabContent).find('.tab-pane').each(function(id,pane) {
+                  $(pane).attr('id',$(pane).attr('id') + newcount);
+                });
+                $.each($(aNewTabContent).find('.nav-pills'),function(id,pills) {
+                  $(pills).attr('id',$(pills).attr('id') + newcount);
+                });
+                $.each($(aNewTabContent).find('a'),function(id,lnk) {
+                  $(lnk).attr('href', $(lnk).attr('href') + newcount);
+                  if ($(lnk).hasClass('animtab')) {
+                    $(lnk).click(showAnimInnerTabFunction);
+                  } else {
+                    $(lnk).click(showInnerTabFunction);
+                  }
+                });
+                $(aNewTabContent).find('li').removeClass('disabled');
+
+                $(aNewTabContent).find('.mybreadcrumb').append(" Summary: ").append(lnk);
+
+                $.each($(aNewTabContent).find('.nav-link'), function (index,obj) {
+                  $(obj).attr('data-url',redirectURL + $(obj).attr('data-url'));
+                });
+
+
+              }
+            }
+          };
+
+          xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xhr.setRequestHeader("ACCEPT", "text/provenance-notation");  // Note, we set this accept in full knowledge that this is
+          // an acceptable type, which will lead to a further redirect, we then trim '.prov' at the end of the URI.
+          xhr.send(formatted);
+
+
+        };
+
+        fr.readAsText(files.item(0));
+
+
+
+
+
+
+
+      });
+
+      $('#upload-ptype-configuration').on('click', function () {
+
+
+        const files = document.getElementById('select-ptype-configuration').files;
+        const levelString = document.getElementById('select-ptype-level').value;
+        const aggregated = document.getElementById('select-ptype-aggregated').checked;
+        if (files.length <= 0) {
+          return false;
+        }
+
+        const fr = new FileReader();
+
+        let redirectURL = null;
+
+
+        fr.onload = function(e) {
+          const result = JSON.parse(e.target.result);
+          const ptype_config = {};
+          ptype_config.level=levelString;
+          ptype_config.level0=result;
+          ptype_config.aggregated=aggregated;
+          const formatted = JSON.stringify(ptype_config, null, 2);
+          //document.getElementById('result').value = formatted;
+
+          const xhr = new XMLHttpRequest();
+          const currentDoc = $('#current-document').attr('href');
+          console.log("currentDoc is " + currentDoc);
+          const url = currentDoc + '/provtypes';
+
+          xhr.open('POST', url, true);
+
+          xhr.onprogress = function(event) {
+            console.log(event);
+            if (xhr.responseURL === url) {
+              console.log('got what we wanted, hooray!');
+            }
+            else {
+              if (redirectURL==null) {
+                redirectURL=xhr.responseURL;
+                redirectURL=redirectURL.substr(0,redirectURL.lastIndexOf('.'));
+                console.log('PROV Types: We were redirected from', url, 'to', redirectURL);
+                const lnk = $('<a>').attr('id', 'current-provtypes').attr('href', redirectURL).append(redirectURL);
+                $('.provtypes-redirect').empty().append("PROV Types: ").append(lnk.clone());
+
+                const newcount = ptypescount++;
+
+                const aNewTab = $('#top_pt').clone();
+                $(aNewTab).attr('id',$(aNewTab).attr('id') + newcount);
+                const childLink = $(aNewTab).find('a');
+                $(childLink).attr('href',$(childLink).attr('href')+newcount);
+                $(childLink).append(newcount);
+                $(childLink).click(showToplevelTabFunction);
+                $('#top_pt').parent().append(aNewTab);
+                $(aNewTab).removeClass("disabled");
+
+
+                const aNewTabContent = $('#top_provtypes').clone();
+                $(aNewTabContent).attr('id',$(aNewTabContent).attr('id') + newcount);
+                $('#all-tab-contents').append(aNewTabContent);
+                $(aNewTabContent).find('.tab-pane').each(function(id,pane) {
+                  $(pane).attr('id',$(pane).attr('id') + newcount);
+                });
+                $.each($(aNewTabContent).find('.nav-pills'),function(id,pills) {
+                  $(pills).attr('id',$(pills).attr('id') + newcount);
+                });
+                $.each($(aNewTabContent).find('a'),function(id,lnk) {
+                  $(lnk).attr('href', $(lnk).attr('href') + newcount);
+                  if ($(lnk).hasClass('animtab')) {
+                    $(lnk).click(showAnimPtypeInnerTabFunction);
+                  } else {
+                    $(lnk).click(showInnerTabFunction);
+                  }
+                });
+                $(aNewTabContent).find('li').removeClass('disabled');
+
+                $(aNewTabContent).find('.mybreadcrumb').append(" PROV Types: ").append(lnk);
+
+                $.each($(aNewTabContent).find('.nav-link'), function (index,obj) {
+                  $(obj).attr('data-url',redirectURL + $(obj).attr('data-url'));
+                });
+
+
+              }
+            }
+          };
+
+          xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xhr.setRequestHeader("ACCEPT", "text/provenance-notation");  // Note, we set this accept in full knowledge that this is
+          // an acceptable type, which will lead to a further redirect, we then trim '.prov' at the end of the URI.
+          xhr.send(formatted);
+
+
+        };
+
+        fr.readAsText(files.item(0));
+
+
+
+
+
+
+
+      });
+
+      function showToplevelTabFunction (e) {
+        e.preventDefault();
+        if ($(this).parent().hasClass("disabled")) {
+          return false;
+        }
+        const pane = $(this);
+        $(pane).tab('show');
+      }
+
+      function showInnerTabFunction (e) {
+        e.preventDefault();
+        if ($(this).hasClass("disabled")) {
+          return false;
+        }
+        const pane = $(this);
+        const href = $(this).attr('href');
+        doLoadContent(pane,href);
+        $(pane).tab('show');
+      }
+
+      function showAnimInnerTabFunction (e) {
+        e.preventDefault();
+        if ($(this).hasClass("disabled")) {
+          return false;
+        }
+        const pane = $(this);
+        const href = $(this).attr('href');
+        doAnimLoadContent(pane,href);
+        $(pane).tab('show');
+      }
+
+      function showAnimPtypeInnerTabFunction (e) {
+        e.preventDefault();
+        if ($(this).hasClass("disabled")) {
+          return false;
+        }
+        const pane = $(this);
+        const href = $(this).attr('href');
+        doAnimPtypeLoadContent(pane,href);
+        $(pane).tab('show');
+
+
+
+      }
+
+      function doLoadContent(pane,href) {
+        const url = $(pane).attr("data-url");
+        const verbatim = $(pane).attr("data-verbatim");
+        const prettyjson = $(pane).attr("data-json");
+        const prettyprovn = $(pane).attr("data-provn");
+        let toextend;
+        if (verbatim) {
+          const elem = $('<pre>').addClass('code');
+          $(href).html(elem);
+          toextend=elem;
+        } else {
+          toextend=href;
+        }
+        // ajax load from data-url
+        $(toextend).load(url,function(result,status,jqXHR){
+          if (status==="error") {
+            //console.log(result);
+            if (!verbatim) {
+              const elem = $('<pre>').addClass('code');
+              $(href).html(elem);
+              toextend=elem;
+            }
+            const json = JSON.parse(result);
+            $(toextend).html("<p><em>There was an error loading content.</em></p><p>Error code: " + json.status + " (" + json.error + ") </p><br/><br/>" + syntaxHighlight_json(JSON.stringify(json,null,2)));
+            $(toextend).addClass("pretty");
+            if (json.status===401) {
+              console.log("updated token");
+            }
+          } else {
+            if (verbatim && !prettyjson) {
+              if (prettyprovn) {
+                $(toextend).html(syntaxHighlight_provn(escapeHTMLChars(result)));
+                $(toextend).addClass("pretty");
+              } else {
+                $(toextend).html(escapeHTMLChars(result));
+              }
+/* TOEXPLORE HOW TO MAKE THIS WORK
+              qsa(".provn_code").forEach(function (codeEl) {
+                highlight(codeEl, {
+                  mode: codeEl.getAttribute('ace-mode'),
+                  theme: codeEl.getAttribute('ace-theme'),
+                  startLineNumber: 1,
+                  showGutter: codeEl.getAttribute("ace-gutter"),
+                  trim: true
+                }, function (highlighted) {});
+              });
+
+
+    */
+            } else if (prettyjson) {
+              $(toextend).html(syntaxHighlight_json(JSON.stringify(JSON.parse(result),null,2)));
+              $(toextend).addClass("pretty");
+            }
+          }
+        }) ;
+      }
+
+
+      const typeId2Num={};
+
+      const summary_types={};
+
+      function insert_svg_function_for_parent (href, toextend, document_for_ptype_animation, document_for_summary_animation, summary_for_summary_animation) {
+        return function  (result,status,jqXHR) {
+          if (status==="error") {
+
+            const json = JSON.parse(result);
+            $(toextend).html("<p><em>There was an error loading content.</em></p><p>Error code: " + json.status + " (" + json.error + ") </p><br/><br/>" + syntaxHighlight_json(JSON.stringify(json,null,2)));
+            $(toextend).addClass("pretty");
+            if (json.status===401) {
+              console.log("updated token");
+            }
+          } else {
+            $(toextend).find('svg').attr('width','100%').attr('height','100%'); //.attr('width','90%'); //.attr('height','100%');
+            if (document_for_summary_animation) {
+              updateDocumentWithType(href,summary_types[href]);
+              listeners_for_prov_objects_in_document(href,toextend,false);
+            } else if (document_for_ptype_animation) {
+              updateDocumentWithType(href,id2types);
+              listeners_for_prov_objects_in_document(href,toextend,true);
+            } else if (summary_for_summary_animation) {
+              updateSummaryWithType(href,typeId2Num[href]);
+              listeners_for_prov_objects_in_summary(href, toextend);
+            }
+          }
+        }
+      }
+
+      function populateTypes2IdMap(id2types, base) {
+        $.each(base, function(typeNumber, ids) {
+          $.each(ids, function (index,id) {
+            let entry = id2types[typeNumber];
+            if (!entry) {
+              entry=[];
+              id2types[typeNumber]=entry;
+            }
+            entry.push(id);
+          })
+        });
+      }
+
+      function populateId2TypesMap(id2types, base) {
+        $.each(base, function(typeNumber, ids) {
+          $.each(ids, function (index,id) {
+            let entry = id2types[id];
+            if (!entry) {
+              entry=[];
+              id2types[id]=entry;
+            }
+            entry.push(typeNumber);
+          })
+        });
+      }
+
+      function populateTypeId2NumMap(glob, names, prefix) {
+        $.each(names, function(qn, num) {
+          let str=qn.split(':');
+
+          let id=prefix[str[0]] + str[1];
+          let entry=glob[id];
+          if (!entry) {
+            entry=[];
+            glob[id]=entry;
+          }
+          entry.push(num);
+        });
+      }
+
+      // variable can be shared by the callbacks populating left and right ptype panes
+      var id2types={};
+
+      function insert_json_function_for_parent (href,toextend) {
+        return function  (result,status,jqXHR) {
+          if (status==="error") {
+
+            let json=JSON.parse(result);
+            $(toextend).html("<p><em>There was an error loading content.</em></p><p>Error code: " + json.status + " (" + json.error + ") </p><br/><br/>" + syntaxHighlight_json(JSON.stringify(json,null,2)));
+            $(toextend).addClass("pretty");
+            if (json.status===401) {
+              console.log("updated token");
+            }
+          } else {
+            let json=JSON.parse(result);
+            let base=json.base;
+            let features=json.features;
+            let typeStrings=json.typeStrings;
+
+            id2types={};
+            populateId2TypesMap(id2types,base);
+
+            updateDocumentWithType(href,id2types);
+            let str=json.typeStrings;
+            $(toextend).html(syntaxHighlight_set_ptype(str));
+            $(toextend).addClass("pretty");
+
+            $('.provtype').each(function () {
+              let k=$(this).prev('.key').text();
+              k=k.replace("\":","").replace("\"","");
+              $(this).attr('data-ptype',k);
+              $.each($(this).parent().contents().filter(function() { // method contents() returns all children including text nodes
+                return this.nodeType === 3;
+              }), function() {
+                $(this).remove();
+              });
+              let my_feature=features[typeStrings[k]];
+              console.log("found feature " + my_feature);
+              let elem=$('<span class="feature">');
+              elem.text( " (count: " + my_feature + ")");
+              $(this).append(elem).append($('<br/>'));
+            });
+
+            $('.provtype').off("removing any handler").hover(function () {
+              let myid = $(this).attr('data-ptype');
+              $(this).css("background-color", "gold");
+              darken_prov_objects_in_ptype(href,myid);
+            }, function () {
+              $(this).css("background-color", "white");
+              let myid = $(this).attr('data-ptype');
+              lighten_prov_objects_in_ptype(href,myid);
+            })
+          }
+        }
+      }
+
+      const PROV_BLUE = "#9fb1fc";
+      const PROV_ORANGE = "#fdb266";
+      const PROV_YELLOW= "#fffc87";
+      const PROV_LIGHT_BLUE = "#E4FAFC";       //"LightSkyBlue";
+      const PROV_LIGHT_ORANGE = "#FDE9D4";     //"Bisque";
+      const PROV_LIGHT_YELLOW = "#F9FDEB";     //"LightYellow";
+
+
+      function initLightener() {
+        const res = {};
+        res[PROV_BLUE]=PROV_LIGHT_BLUE;
+        res[PROV_ORANGE]=PROV_LIGHT_ORANGE;
+        res[PROV_YELLOW]=PROV_LIGHT_YELLOW;
+        return res
+      }
+      function initDarkener() {
+        const res = {};
+        res[PROV_LIGHT_BLUE]=PROV_BLUE;
+        res[PROV_LIGHT_ORANGE]=PROV_ORANGE;
+        res[PROV_LIGHT_YELLOW]=PROV_YELLOW;
+        return res
+      }
+
+      const PROV_COLOR_LIGHTENER = initLightener();
+
+      const PROV_COLOR_DARKENER = initDarkener();
+
+      function lighten_fill (value) {
+        const newColor = PROV_COLOR_LIGHTENER[$(value).attr("fill")];
+        if (newColor) {
+          $(value).attr("fill",newColor)
+        }
+      }
+      function darken_fill (value) {
+        const newColor = PROV_COLOR_DARKENER[$(value).attr("fill")];
+        if (newColor) {
+          $(value).attr("fill",newColor)
+        }
+      }
+
+
+      function lighten_prov_objects(toextend) {
+        $.each($(toextend).find('polygon'), function (idx, value) {
+          lighten_fill(value)
+        });
+        $.each($(toextend).find('ellipse'), function (idx, value) {
+          lighten_fill(value);
+        });
+      }
+      function darken_prov_objects(toextend) {
+        $.each($(toextend).find('polygon'), function (idx, value) {
+          darken_fill(value)
+        });
+        $.each($(toextend).find('ellipse'), function (idx, value) {
+          darken_fill(value);
+        });
+      }
+
+      //TODO: should the following queries be scoped to the anim_tab (href)
+
+
+      function lighten_prov_objects_with_id(toextend,id) {
+        const query = '.left a[*|href="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          lighten_prov_objects(element);
+        });
+      }
+      function darken_prov_objects_with_id(toextend,id) {
+        const query = '.left a[*|href="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          darken_prov_objects(element);
+        });
+      }
+
+      function lighten_prov_objects_with_id_right(href,id) {
+        const query = '.right a[*|href="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          lighten_prov_objects(element);
+        });
+      }
+      function darken_prov_objects_with_id_right(href,id) {
+        const query = '.right a[*|href="' + id + '"]';
+        const elements = document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          darken_prov_objects(element);
+        });
+      }
+      function lighten_prov_objects_in_ptype(toextend, id) {
+        const query = '.left a[data-in-ptype="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          lighten_prov_objects(element);
+        });
+      }
+      function darken_prov_objects_in_ptype(toextend, id) {
+        const query = '.left a[data-in-ptype="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          darken_prov_objects(element);
+        });
+      }
+
+      function lighten_prov_objects_with_ptype(toextend, id) {
+        const query = '.right a[data-ptype="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          lighten_prov_objects(element);
+        });
+      }
+      function darken_prov_objects_with_ptype(toextend, id) {
+        const query = '.right a[data-ptype="' + id + '"]';
+        const elements=document.querySelectorAll(query);
+        elements.forEach(function(element) {
+          darken_prov_objects(element);
+        });
+      }
+
+
+      function isProvObject(obj) {
+        const val1=PROV_COLOR_LIGHTENER[$(obj).attr("fill")];
+        const val2=PROV_COLOR_DARKENER[$(obj).attr("fill")];
+        return val1 || val2
+      }
+
+      function shapeToLink(obj) {
+        return $(obj).parent().attr('xlink:href');
+      }
+      function shapeToPtype(obj) {
+        return $(obj).parent().attr('data-in-ptype');
+      }
+      function shapeToPtypeRight(obj) {
+        return $(obj).parent().attr('data-ptype');
+      }
+      function highlightPtypeDescriptor(myid) {
+        colorPtypeDescriptor(myid,"gold");
+      }
+      function turnoffPtypeDescriptor(myid) {
+        colorPtypeDescriptor(myid,"white");
+      }
+
+
+
+      function colorPtypeDescriptor(myid, color) {
+        $('.provtype[data-ptype="' + myid + '"]').css("background-color", color);
+      }
+
+      function listeners_for_prov_objects_in_document(href, toextend, for_ptype) {
+        let objects=[];
+        $.each($(toextend).find('polygon'), function (idx, value) {
+          if (isProvObject(value)) objects.push(value)
+        });
+        $.each($(toextend).find('ellipse'), function (idx, value) {
+          if (isProvObject(value)) objects.push(value)
+        });
+
+        $.each(objects, function (id, obj) {
+          $(obj).hover(function () {
+            let myPtype = shapeToPtype(this);
+            let myId=shapeToLink(this);
+            darken_prov_objects_with_id(href,myId);
+            if (for_ptype) {
+              highlightPtypeDescriptor(myPtype);
+            } else {
+              darken_prov_objects_with_ptype(href, myPtype);
+            }
+
+          }, function () {
+            let myPtype = shapeToPtype(this);
+            let myId=shapeToLink(this);
+            lighten_prov_objects_with_id(href, myId);
+            if (for_ptype) {
+              turnoffPtypeDescriptor(myPtype);
+            } else {
+              lighten_prov_objects_with_ptype(href,myPtype);
+            }
+          });
+        })
+      }
+
+      function listeners_for_prov_objects_in_summary(href, toextend) {
+        let objects=[];
+        $.each($(toextend).find('polygon'), function (idx, value) {
+          if (isProvObject(value)) objects.push(value)
+        });
+        $.each($(toextend).find('ellipse'), function (idx, value) {
+          if (isProvObject(value)) objects.push(value)
+        });
+
+        $.each(objects, function (id, obj) {
+
+          let myPtype = shapeToPtypeRight(this);
+          $(obj).hover(function () {
+            let myId=shapeToLink(this);
+            darken_prov_objects_with_id_right(href,myId);
+            darken_prov_objects_in_ptype(href,myPtype);
+          }, function () {
+            let myId=shapeToLink(this);
+            lighten_prov_objects_with_id_right(href,myId);
+            lighten_prov_objects_in_ptype(href,myPtype);
+          });
+        })
+      }
+
+
+
+      function updateDocumentWithType(href, mapId2Type) {
+        let trimmed_href=href.substring(1,href.length);
+        $.each (mapId2Type, function (id,type) {
+          let query = 'div[id="' + trimmed_href + '"] .left a[*|href="' + id + '"]';
+          let elements = document.querySelectorAll(query);
+          elements.forEach(function (element) {
+            lighten_prov_objects(element);
+            element.setAttribute("data-in-ptype", "" + type);
+          });
+        });
+      }
+
+      function updateSummaryWithType(href,mapId2Type) {
+        let trimmed_href=href.substring(1,href.length);
+        $.each (mapId2Type, function (id,type) {
+          let query = 'div[id="' + trimmed_href + '"] .right a[*|href="' + id + '"]';
+          let elements = document.querySelectorAll(query);
+          elements.forEach(function (element) {
+            lighten_prov_objects(element);
+            element.setAttribute("data-ptype", "" + type);
+          });
+        });
+      }
+
+
+
+      function doAnimLoadContent(pane,href) {
+
+        let url=$('#top_summary').attr('data-document');
+
+        let toextend=$(href).find('.left');
+        $(toextend).load(url + ".svg",insert_svg_function_for_parent(href,toextend,false,true,false));
+
+        let url2=$(pane).attr("data-url");
+        let toextend2=$(href).find('.right');
+        $(toextend2).load(url2 + ".svg",insert_svg_function_for_parent(href,toextend2,false,false,true));
+
+        let url3=$(pane).attr("data-url");
+        url3=url3+"/details";
+        $(toextend2).load(url3,process_ptypes(href,toextend2));
+
+      }
+
+
+      function process_ptypes (href,toextend) {
+        return function  (result,status,jqXHR) {
+          if (status==="error") {
+
+            let json=JSON.parse(result);
+            $(toextend).html("<p><em>There was an error loading content.</em></p><p>Error code: " + json.status + " (" + json.error + ") </p><br/><br/>" + syntaxHighlight_json(JSON.stringify(json,null,2)));
+            $(toextend).addClass("pretty");
+            if (json.status===401) {
+              console.log("updated token");
+            }
+          } else {
+            let json=JSON.parse(result);
+            let base=json.base;
+
+            const my_summary_types={};
+            summary_types[href]=my_summary_types;
+            populateId2TypesMap(my_summary_types,base);
+
+
+            const my_typeId2Num={};
+            typeId2Num[href]=my_typeId2Num;
+            populateTypeId2NumMap(my_typeId2Num, json.names, json.prefixes);
+            updateSummaryWithType(href,my_typeId2Num);
+
+            listeners_for_prov_objects_in_document(href,toextend,false);
+          }
+        }
+      }
+
+      function doAnimPtypeLoadContent(pane,href) {
+
+
+        const url = $('#top_summary').attr('data-document');
+
+        const toextend = $(href).find('.left');
+        // ajax load from data-url
+        $(toextend).load(url + ".svg",insert_svg_function_for_parent(href,toextend,true,false,false));
+
+        const url2 = $(pane).attr("data-url");
+        const toextend2 = $(href).find('.right');
+        // ajax load from data-url
+        $(toextend2).load(url2 + ".json",insert_json_function_for_parent(href,toextend2));
+
+
+      }
+
+      function escapeHTMLChars(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json;
+      }
+
+      function syntaxHighlight_set_ptype(json) {
+
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        const res = json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          let cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          if (cls === 'key') {
+            if (/^"(wasGeneratedBy|prov:)|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|type|\$|actedOnBehalfOf/.test(match)) {
+              cls = 'provkeyword';
+            }
+          }
+          if (cls === 'string') {
+            const res = syntaxHighlight_ptype(match);
+            if (res) {
+              match = res;
+              cls = "provtype " + cls
+            }
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+        return res;
+      }
+
+      function syntaxHighlight_ptype(str) {
+        if ((str.startsWith("\"") && (str.endsWith("\"")))) {
+          str=str.substring(1,str.length-1);
+          //console.log(str);
+
+          const str2 = str.replace(/((Ent|Ag|Act)\(\)|([a-zA-Z0-9]+(:[a-zA-Z0-9]+)?))/g, function (match) {
+            let cls = 'provkeyword';
+            if (/(Ent|Ag|Act)\(\)/.test(match)) {
+              cls = 'provkeyword';
+              match = match.replace("()", "")
+            } else if (/(([a-zA-Z0-9])+:[a-zA-Z0-9]+?)/.test(match)) {
+              cls = 'symbol';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+          });
+
+          return str2 ;
+        }
+      }
+
+
+
+
+      function syntaxHighlight_json(json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          let cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          if (cls==='key') {
+            if (/^"(wasGeneratedBy|prov:)|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|type|\$|actedOnBehalfOf/.test(match)) {
+              cls='provkeyword';
+            }
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+      function syntaxHighlight_provn(code) {
+        console.log("in syntaxHighlight_provn");
+        //code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return code.replace(/(&lt;.*&gt;)|((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(([a-zA-Z0-9]+(:[a-zA-Z0-9]+)?)))/g, function (match) {
+          let cls = 'number';
+          if (/(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/.test(match)) {
+              cls = 'date';
+          } else if (/&lt;.*&gt;/.test(match)) {
+            cls = 'uri';
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/(([a-zA-Z0-9])+:[a-zA-Z0-9]+?)/.test(match)) {
+            if (/^prov/.test(match)) {
+              cls = 'provkeyword';
+            } else {
+              cls = 'symbol';
+            }
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          } else if (/document|endDocument|prefix|wasGeneratedBy|wasAssociatedWith|used|wasDerivedFrom|wasAttributedTo|specializationOf|alternateOf|entity|agent|activity|actedOnBehalfOf/.test(match)) {
+              cls='provkeyword';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        });
+      }
+
+
+      $(document).ready(function(){
+        $('#myTabs a').click(showInnerTabFunction);
+
+        $('#topTabs a').click(showToplevelTabFunction);
+      });
+
+    </script>
+
+
+    <script type="text/javascript" src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap-table/1.9.1/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="/webjars/ace-builds/src-min-noconflict/ace.js"></script>
+    <script type="text/javascript" src="/webjars/ace-builds/src-min-noconflict/ext-static_highlight.js"></script>
+
+    <script>
+      const highlight = ace.require("ace/ext/static_highlight");
+      const dom = ace.require("ace/lib/dom");
+
+      function qsa(sel) {
+        return [].slice.call(document.querySelectorAll(sel));
+      }
+
+    </script>
+  </body>
+</html>

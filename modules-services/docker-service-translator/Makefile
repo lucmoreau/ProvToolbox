@@ -3,8 +3,13 @@ ORIGIN=service-translator
 
 SERVICE=docker-service-translator
 
-TARGET_IMAGE=$(SERVICE).open9j
-LOCATION_IMAGE=target/$(TARGET_IMAGE)
+
+
+TARGET_IMAGE=$(SERVICE).temurin
+LOCATION_IMAGE=$(TARGET_IMAGE)
+
+
+EXPORT_IMAGE=provenance/provapi
 
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 
@@ -36,6 +41,19 @@ dck.file:
 build:
 	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
 	$(DOCKER) images
+
+
+NOW=`date "+%Y-%m-%d-%H-%M"`
+
+tag.now:
+	$(DOCKER) tag ${TARGET_IMAGE} $(EXPORT_IMAGE):$(NOW)
+
+tag:
+	$(MAKE) -f target/classes/Makefile tag
+
+push:
+	$(MAKE) -f target/classes/Makefile push
+
 
 run.8080:
 	$(MAKE) setup.dir

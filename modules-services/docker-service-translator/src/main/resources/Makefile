@@ -8,6 +8,9 @@ SERVICE=${project.artifactId}
 TARGET_IMAGE=$(SERVICE).${docker.java.platform}
 LOCATION_IMAGE=$(TARGET_IMAGE)
 
+
+EXPORT_IMAGE=provenance/provapi
+
 DOCKER_RUN_DIR=$(HOME)/docker/log-dir
 
 WAR_VERSION=${project.version}
@@ -48,6 +51,17 @@ dck.file:
 build:
 	$(DOCKER) build -t ${TARGET_IMAGE} ${LOCATION_IMAGE}
 	$(DOCKER) images
+
+NOW=`date "+%Y-%m-%d-%H-%M"`
+
+tag.now:
+	$(DOCKER) tag ${TARGET_IMAGE} $(EXPORT_IMAGE):$(NOW)
+
+tag:
+	$(DOCKER) tag ${TARGET_IMAGE} $(EXPORT_IMAGE):${project.version}
+
+push:
+	$(DOCKER) push $(EXPORT_IMAGE):${project.version}
 
 run.8080:
 	$(MAKE) setup.dir

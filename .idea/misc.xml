@@ -3,7 +3,9 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="Osmorc" url="file://$PROJECT_DIR$/modules-executable/prov-interop" />
+    <file type="web" url="file://$PROJECT_DIR$/modules-nf/service-signature" />
     <file type="web" url="file://$PROJECT_DIR$/modules-services/service-translator" />
+    <file type="web" url="file://$PROJECT_DIR$/modules-summarisation/service-summary" />
     <file type="web" url="file://$PROJECT_DIR$/modules-template/prov-template-compiler/demo.webapp" />
     <type id="Python" />
   </component>

@@ -393,6 +393,7 @@
 		<!-- jaxb -->
 		<jaxb.runtime.version>2.3.1</jaxb.runtime.version> <!-- now glassfish implementation -->
 
+		<xmlsec.version>2.1.7</xmlsec.version> <!--2.1.4, 2.0.6 -->
 
 		<!-- older jaxb stuff -->
 

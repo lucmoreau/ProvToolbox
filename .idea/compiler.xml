@@ -12,6 +12,7 @@
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-storage-filesystem" />
         <module name="prov-scala-typemap" />
+        <module name="prov-nf" />
         <module name="demo" />
         <module name="prov-storage-api" />
         <module name="templates_cli" />
@@ -26,6 +27,7 @@
         <module name="service-summary" />
         <module name="prov-jsonld" />
         <module name="ProvToolbox-Tutorial4" />
+        <module name="prov-service-sign" />
         <module name="ProvToolbox-Tutorial3" />
         <module name="provconvert" />
         <module name="benchmarks" />
@@ -36,6 +38,7 @@
         <module name="prov-interop-light" />
         <module name="prov-log" />
         <module name="prov-template" />
+        <module name="prov-signature" />
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />
         <module name="prov-jsweet-candy-java" />
@@ -46,6 +49,7 @@
         <module name="tutorial5" />
         <module name="toolbox" />
         <module name="prov-generator" />
+        <module name="service-signature" />
       </profile>
       <profile name="Annotation profile for ProvToolbox: JVM (Java and Scala) for W3C PROV" enabled="true">
         <sourceOutputDir name="../prov-scala/target/generated-sources/annotations" />

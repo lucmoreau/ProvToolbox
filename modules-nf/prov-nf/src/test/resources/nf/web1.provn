@@ -1,0 +1,20 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   wasEndedBy(ex:web1; ex:aa1, ex:e1, ex:a1, 2012-03-31T09:21:00)
+   wasEndedBy(ex:web1; ex:aa1, ex:e2, ex:a2, 2012-03-31T09:22:00)
+   wasEndedBy(ex:web1; ex:aa1, ex:e2, ex:a2, -)
+   wasEndedBy(ex:web1; ex:aa1, ex:e2, -, -)
+   wasEndedBy(ex:web1; ex:aa1, ex:e2, ex:a2, 2012-03-31T09:22:00,[ex:foo='ex:a'])
+   wasEndedBy(ex:web1; ex:aa2, ex:e2, ex:a2, 2012-03-31T09:22:00,[ex:foo='ex:b'])
+   wasEndedBy(ex:web1; ex:aa2, ex:e2, ex:a2, 2012-03-31T09:22:00,[ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

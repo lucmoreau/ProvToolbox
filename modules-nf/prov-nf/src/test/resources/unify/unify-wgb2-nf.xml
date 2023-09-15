@@ -1,0 +1,39 @@
+<?org.openprovenance.prov.xml version="1.0" encoding="UTF-8"?>
+<document>
+    <prefixes>
+        <xsd>http://www.w3.org/2001/XMLSchema#</xsd>
+        <ex>http://example/</ex>
+        <provext>http://openprovenance.org/prov/extension#</provext>
+        <prov>http://www.w3.org/ns/prov#</prov>
+    </prefixes>
+    <statements>
+        <entity>
+            <id>http://example/e10</id>
+            <id>http://example/e20</id>
+            <attr>
+                <element>http://www.w3.org/ns/prov#value</element>
+                <value>1</value>
+                <type>http://www.w3.org/2001/XMLSchema#int</type>
+            </attr>
+            <attr>
+                <element>http://example/foo</element>
+                <value>http://example/a</value>
+                <type>http://www.w3.org/ns/prov#QUALIFIED_NAME</type>
+            </attr>
+        </entity>
+    </statements>
+    <statements>
+        <wasGeneratedBy>
+            <id>http://example/gen10</id>
+            <id>http://example/gen20</id>
+            <entity>http://example/e10</entity>
+            <entity>http://example/e20</entity>
+            <activity>http://example/a1</activity>
+	    <attr>
+              <element>http://example/foo</element>
+              <value>1</value>
+              <type>http://www.w3.org/2001/XMLSchema#int</type>
+            </attr>
+        </wasGeneratedBy>
+    </statements>
+</document>

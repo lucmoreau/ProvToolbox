@@ -29,7 +29,8 @@
 
 		<module>modules-validation</module>
 		<module>modules-services</module>
-		<module>modules-summarisation</module>		
+		<module>modules-summarisation</module>
+		<module>modules-nf</module>
 
 	</modules>
 
@@ -328,6 +329,7 @@
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 
+		<xmlsec.version>2.1.4</xmlsec.version> <!--2.0.6 -->
 
 		<!-- web services -->
 

@@ -1,0 +1,58 @@
+
+
+document
+
+   prefix ex <http://example/>
+   prefix dcterms <http://purl.org/dc/terms/>
+   prefix foaf <http://xmlns.com/foaf/0.1/>
+
+
+   entity(ex:articleV1)
+   entity(ex:articleV2)
+   entity(ex:dataSet1)
+   entity(ex:dataSet2)
+   entity(ex:regionList)
+   entity(ex:composition)
+   entity(ex:chart1)
+   entity(ex:chart2)
+   entity(ex:blogEntry)
+
+
+
+   activity(ex:compile)
+   activity(ex:compile2)
+   activity(ex:compose)
+   activity(ex:correct, 2012-03-31T09:21:00, 2012-04-01T15:21:00)
+   activity(ex:illustrate)
+
+   agent(ex:jo)
+   agent(ex:derek, [ prov:type='prov:Person', foaf:givenName = "Derek", 
+          foaf:mbox= "<mailto:derek@example.org>"])
+
+   used(ex:compose, ex:dataSet1, -)
+   used(ex:compose, ex:regionList, -)
+   wasGeneratedBy(ex:composition, ex:compose, -)
+
+   bundle ex:foo
+
+   wasDerivedFrom(ex:dataSet2, ex:dataSet1, [prov:type='prov:Revision'])
+   wasDerivedFrom(ex:chart2, ex:dataSet2)
+
+    wasAttributedTo(ex:chart1, ex:derek)
+
+   alternateOf(ex:articleV2, ex:articleV1)
+   specializationOf(ex:articleV2, ex:articleV1)
+
+   wasInfluencedBy(ex:articleV2, ex:articleV1, [prov:type='ex:MyInfluence'])
+   wasInformedBy(ex:a1, ex:a2, [prov:type='ex:MyInform'])
+
+   wasStartedBy(ex:a1, ex:trig, ex:a2, -, [prov:type='ex:MyStart'])
+   wasEndedBy(ex:a1, ex:trig, ex:a2, -, [prov:type='ex:MyStart'])
+
+   actedOnBehalfOf(ex:derek, ex:chartgen, ex:compose)
+
+   wasAssociatedWith(ex:illustrate, ex:derek, -)
+
+   endBundle			    
+
+endDocument

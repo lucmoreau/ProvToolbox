@@ -1,0 +1,19 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   wasAssociatedWith(ex:waw1; ex:act1, ex:ag1, ex:p1)
+   wasAssociatedWith(ex:waw1; ex:act1, ex:ag2, ex:p2)
+   wasAssociatedWith(ex:waw1; ex:act1, ex:ag2, -)
+   wasAssociatedWith(ex:waw1; ex:act1, ex:ag2, ex:p2,[ex:foo='ex:a'])
+   wasAssociatedWith(ex:waw1; ex:act2, ex:ag2, ex:p2,[ex:foo='ex:b'])
+   wasAssociatedWith(ex:waw1; ex:act2, ex:ag2, ex:p2,[ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

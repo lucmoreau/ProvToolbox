@@ -1,0 +1,22 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+
+   entity(ex:e10, [prov:value=1])
+   entity(ex:e10, [ex:foo='ex:a'])
+
+   used(ex:gen10; ex:a1, ex:e10,2006-12-12T00:00:00)
+   used(ex:gen10; ex:a1, ex:e20,-)
+
+   used(ex:a1,ex:e10,-, [ex:foo=1])
+
+  
+
+
+endDocument
+

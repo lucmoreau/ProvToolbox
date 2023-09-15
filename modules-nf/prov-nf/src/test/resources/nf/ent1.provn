@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   entity(ex:e1)
+   entity(ex:e1, [prov:value=1])
+   entity(ex:e1, [ex:foo='ex:a'])
+   entity(ex:e1, [ex:foo='ex:b', prov:value=2])
+   entity(ex:e1, [ex:foo='ex:d',ex:foo='ex:c', ex:foo2='ex:d', ex:foo1='ex:d'])
+
+
+
+endDocument
+

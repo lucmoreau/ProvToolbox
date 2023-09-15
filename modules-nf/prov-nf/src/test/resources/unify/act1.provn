@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+
+   activity(ex:a1, [ex:foo=1])
+   activity(ex:a1, [ex:foo='ex:a'])
+
+   wasInvalidatedBy(ex:inv1; ex:e1,ex:a1,-)
+   wasInvalidatedBy(ex:inv1; ex:e1,ex:a2,-)
+
+
+endDocument
+

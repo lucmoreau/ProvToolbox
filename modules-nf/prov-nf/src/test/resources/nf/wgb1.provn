@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   wasGeneratedBy(ex:wgb1; ex:e1, ex:a1, 2012-03-31T09:21:00)
+   wasGeneratedBy(ex:wgb1; ex:e2, ex:a2, 2012-03-31T09:22:00)
+   wasGeneratedBy(ex:wgb1; ex:e2, ex:a2, 2012-03-31T09:22:00,[ex:foo='ex:a'])
+   wasGeneratedBy(ex:wgb1; ex:e2, ex:a2, 2012-03-31T09:22:00,[ex:foo='ex:b'])
+   wasGeneratedBy(ex:wgb1; ex:e2, ex:a2, 2012-03-31T09:22:00,[ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

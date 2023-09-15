@@ -1,0 +1,18 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   activity(ex:act1)
+   activity(ex:act1, [ex:value=1])
+   activity(ex:act1, 2012-03-31T09:21:00, 2012-03-31T09:22:00, [ex:foo='ex:a'])
+   activity(ex:act1, -, 2014-03-31T09:22:00, [ex:foo='ex:b', ex:value=2])
+   activity(ex:act1, 2016-03-31T09:21:00, -, [ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

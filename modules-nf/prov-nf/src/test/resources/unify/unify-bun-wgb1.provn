@@ -1,0 +1,22 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+   bundle ex:b1
+     entity(ex:e10, [prov:value=1])
+     entity(ex:e10, [ex:foo='ex:a'])
+     wasGeneratedBy(ex:gen10; ex:e10,ex:a1,2006-12-12T00:00:00)
+   endBundle
+
+   bundle ex:b1
+     wasGeneratedBy(ex:gen10; ex:e20,ex:a1,-)
+     wasGeneratedBy(ex:e10,ex:a1,-, [ex:foo=1])
+   endBundle
+  
+
+endDocument
+

@@ -1,0 +1,26 @@
+
+
+document
+
+   prefix ex <http://example/>
+
+
+
+
+   entity(ex:e10, [prov:value=1])
+   entity(ex:e10, [ex:foo='ex:a'])
+
+   wasInvalidatedBy(ex:gen10; ex:e10,ex:a1,-)
+   wasInvalidatedBy(ex:gen10; ex:e20,ex:a1,-)
+
+   wasInvalidatedBy(ex:e10,ex:a1,-, [ex:foo=1])
+
+
+   wasInvalidatedBy(ex:gen20; ex:e20,ex:a1,-)  
+
+
+
+  wasInvalidatedBy(ex:e20,ex:a100,-)
+
+endDocument
+

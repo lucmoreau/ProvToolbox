@@ -1,0 +1,19 @@
+
+
+document
+
+   prefix ex <http://example/>
+   prefix provext <http://openprovenance.org/prov/extension#>
+
+
+
+   provext:hadMember(ex:mem1; ex:e1, ex:ee1)
+   provext:hadMember(ex:mem1; ex:e1, ex:ee2)
+   provext:hadMember(ex:mem1; ex:e1, ex:ee2,[ex:foo='ex:a'])
+   provext:hadMember(ex:mem1; ex:e2, ex:ee2,[ex:foo='ex:b'])
+   provext:hadMember(ex:mem1; ex:e2, ex:ee2,[ex:foo='ex:c',ex:foo='ex:d'])
+
+
+
+endDocument
+

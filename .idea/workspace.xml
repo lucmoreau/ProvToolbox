@@ -9,7 +9,143 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/tmp.dot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/ActedOnBehalfOf.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Activity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Agent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/AlternateOf.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Attr.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Document.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Document3.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Entity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/HadMember.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/SpecializationOf.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Statement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/Used.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasAssociatedWith.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasAttributedTo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasDerivedFrom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasEndedBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasGeneratedBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasInfluencedBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasInformedBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasInvalidatedBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/java/org/openprovenance/prov/nf/xml/WasStartedBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/NormalForm.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/TransitiveClosure1.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/TransitiveClosure2.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlBean.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlNfBean.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/java/NormalizeTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-full-times2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-full-times4.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-full.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-with-id.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-with-id2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-with-id3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/canonical/pc1-with-id4.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/clientstore.jks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/act1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/ag1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/alt1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/aob1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/ent1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/mem1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/spe1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/usd1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/wat1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/waw1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/wdf1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/web1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/wgb1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/wib1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/winfb1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/winflb1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/nf/wsb1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/attr_entity_one_attr23.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/ex0.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/ex1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/longprimer.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/pc1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/primer.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/prov-family-graphics.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/prov/tester.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/servicestore.jks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/act1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/act2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/act20b.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/ent1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/ent10.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/ent10b.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-bun-wgb1-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-bun-wgb1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd0-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd0-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd0.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd1-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd1-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd2-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd2-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd3-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd3-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-usd3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wdf0-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wdf0-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wdf0.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wdf1-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wdf1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb0-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb0-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb0.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb1-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb1-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb2-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb2-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb3-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb3-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wgb3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib0-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib0-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib0.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib1-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib1-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib2-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib2-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib3-nf.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib3-sol.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/resources/unify/unify-wib3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/Canonical2Spec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/DenormalizeSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/ModelSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/NormalFormSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/TransitiveSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/Unification2Spec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/UnificationSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/java/org/apache/coheigea/santuario/xml/signature/TestSecurityEventListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/java/org/apache/coheigea/santuario/xml/signature/XmlReaderToWriter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/resources/removewrapper.xslt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlSignature.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/resources/clientstore.jks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/resources/nf/aob1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/resources/nf/ent1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/resources/store/clientstore.jks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/resources/store/clientstore.jks.new" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/resources/store/servicestore.jks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/CanonicalSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/KeystoreTest.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/NormalFormSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/SignatureTest.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +272,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-summarisation/service-summary/src/main",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox",
     "node.js.selected.package.tslint": "(autodetect)",
     "run.code.analysis.last.selected.profile": "pProject Default"
   }
@@ -150,9 +287,9 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/main" />
       <recent name="$PROJECT_DIR$/modules-summarisation" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/modules-misc" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core" />
     </key>

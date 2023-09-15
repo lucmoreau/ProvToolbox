@@ -13,10 +13,10 @@ import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD
 public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssociatedWith, Equals, HashCode, ToString, HasAttributes {
 
     private Optional<QualifiedName> id=Optional.empty();
-    private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
-    private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
-    private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
-    private List<org.openprovenance.prov.model.Role> role = new LinkedList<>();
+    private final List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
+    private final List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
+    private final List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
+    private final List<org.openprovenance.prov.model.Role> role = new LinkedList<>();
     protected QualifiedName activity;
     protected QualifiedName agent;
     protected Optional<QualifiedName> plan=Optional.empty();
@@ -110,7 +110,7 @@ public class WasAssociatedWith implements org.openprovenance.prov.model.WasAssoc
     /**
      * Set Plan
      *
-     * @param plan
+     * @param plan {@link QualifiedName}
      */
     @Override
     public void setPlan(QualifiedName plan) {

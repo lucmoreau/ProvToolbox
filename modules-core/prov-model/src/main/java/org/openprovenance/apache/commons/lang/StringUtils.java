@@ -4931,7 +4931,7 @@ public class StringUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Centers a String in a larger String of size {@code size}
-     * using the space character (' ').<p>
+     * using the space character (' ').
      *
      * <p>If the size is less than the String length, the String is returned.
      * A {@code null} String returns {@code null}.

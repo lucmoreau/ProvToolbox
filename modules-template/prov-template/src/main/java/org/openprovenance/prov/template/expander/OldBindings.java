@@ -97,7 +97,7 @@ public class OldBindings {
         return pf.newQualifiedName(ExpandUtil.VAR_NS, name, ExpandUtil.VAR_PREFIX);
     }
     
-    /** Attribute value */
+    /* Attribute value */
     public List<TypedValue> a_val(String s) {
         List<TypedValue> ll= new LinkedList<>();
         ll.add(pf.newAttribute(pf.newQualifiedName(TMPL_NS, "ignore", "app"), s, name.XSD_STRING));

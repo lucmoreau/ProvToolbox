@@ -2,8 +2,6 @@ package org.openprovenance.prov.model;
 
 import java.util.List;
 
-import org.openprovenance.prov.model.Namespace;
-
 /**
  * Interface for a PROV Document.
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-bundle">PROV-N Definition for Document</a>: 
@@ -98,7 +96,7 @@ public interface Document {
      * {@link DerivedByInsertionFrom }
      * {@link DerivedByRemovalFrom }
      * {@link Bundle }
-     * 
+     * @return a list of {@link StatementOrBundle}
      * 
      */  
 

@@ -117,7 +117,7 @@ public class WasInvalidatedBy implements org.openprovenance.prov.model.WasInvali
     /**
      * Set time instant
      *
-     * @param time
+     * @param time {@link XMLGregorianCalendar}
      */
     @Override
     public void setTime(XMLGregorianCalendar time) {

@@ -19,7 +19,7 @@ package org.openprovenance.prov.model;
  * <tbody class="term"> <tr style="vertical-align: baseline; "> <td>[<span class="prodNo">55</span>]&nbsp;&nbsp;&nbsp;</td> <td>&lt;<code class="production term">PN_CHARS_ESC</code>&gt;</td> <td>&nbsp;&nbsp;&nbsp;::=&nbsp;&nbsp;&nbsp;</td> <td><code class="content">"\" ( "=" | "'" | "(" | ")" | "," | "-" | ":" | ";" | "[" | "]" | "." )</code></td> </tr> </tbody>
  * <tbody class="term"> <tr style="vertical-align: baseline; "> <td>[<span class="prodNo">56</span>]&nbsp;&nbsp;&nbsp;</td> <td>&lt;<code class="production term">PERCENT</code>&gt;</td> <td>&nbsp;&nbsp;&nbsp;::=&nbsp;&nbsp;&nbsp;</td> <td><code class="content">"%" <span class="prod"><a class="grammarRef" href="#prod-HEX">HEX</a></span> <span class="prod"><a class="grammarRef" href="#prod-HEX">HEX</a></span></code></td> </tr> </tbody>
  * <tbody class="term"> <tr style="vertical-align: baseline; "> <td>[<span class="prodNo">57</span>]&nbsp;&nbsp;&nbsp;</td> <td>&lt;<code class="production term">HEX</code>&gt;</td> <td>&nbsp;&nbsp;&nbsp;::=&nbsp;&nbsp;&nbsp;</td> <td><code class="content">[0-9]<br> | [A-F]<br> | [a-f]</code></td> </tr> </tbody>
- * <caption></caption>
+ * <caption>productions in PROVN Grammar</caption>
  * </table>
  * 
  * 

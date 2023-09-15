@@ -914,11 +914,9 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 	@Override
 	public QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
-		List<QualifiedName> ll=new LinkedList<QualifiedName>();
+		List<QualifiedName> ll= new LinkedList<>();
 		if (e!=null) {
-			for (QualifiedName q: e) {
-				ll.add(q);
-			}
+			ll.addAll(e);
 		}
 		QualifiedHadMember res=of.createQualifiedHadMember();
 		res.setId(id);
@@ -964,8 +962,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	public Used newUsed(QualifiedName id, QualifiedName aid, String role, QualifiedName eid) {
 		Used res = newUsed(id);
 		res.setActivity(aid);
-		if (role!=null)
-			addRole(res, newRole(role,getName().XSD_STRING));
+		if (role!=null) addRole(res, newRole(role,getName().XSD_STRING));
 		res.setEntity(eid);
 		return res;
 	}
@@ -1121,8 +1118,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasAssociatedWith newWasAssociatedWith(WasAssociatedWith u) {
-		WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(),
-				u.getAgent());
+		WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent());
 		u1.getOther().addAll(u.getOther());
 		u1.setPlan(u.getPlan());
 		u1.getType().addAll(u.getType());
@@ -1169,8 +1165,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasAttributedTo newWasAttributedTo(WasAttributedTo u) {
-		WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(),
-				u.getAgent());
+		WasAttributedTo u1 = newWasAttributedTo(u.getId(), u.getEntity(), u.getAgent());
 		u1.getOther().addAll(u.getOther());
 		u1.getType().addAll(u.getType());
 		u1.getLabel().addAll(u.getLabel());
@@ -1231,9 +1226,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasDerivedFrom newWasDerivedFrom(WasDerivedFrom d) {
-		WasDerivedFrom wdf = newWasDerivedFrom(d.getId(),
-				d.getGeneratedEntity(),
-				d.getUsedEntity());
+		WasDerivedFrom wdf = newWasDerivedFrom(d.getId(), d.getGeneratedEntity(), d.getUsedEntity());
 		wdf.setActivity(d.getActivity());
 		wdf.setGeneration(d.getGeneration());
 		wdf.setUsage(d.getUsage());
@@ -1243,7 +1236,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return wdf;
 	}
 	/** A factory method to create an instance of an end {@link WasEndedBy}
-	 * @param id
+	 * @param id an identifier for an end
 	 * @return an instance of {@link WasEndedBy}
 	 */
 
@@ -1254,7 +1247,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	/** A factory method to create an instance of an end {@link WasEndedBy}
-	 * @param id
+	 * @param id an identifier for an end
 	 * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
 	 * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
 	 * @return an instance of {@link WasEndedBy}
@@ -1270,7 +1263,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	/** A factory method to create an instance of an end {@link WasEndedBy}
-	 * @param id
+	 * @param id optional identifier for an end
 	 * @param activity an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
 	 * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
 	 * @param ender an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
@@ -1294,8 +1287,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	public WasEndedBy newWasEndedBy(WasEndedBy u) {
-		WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(),
-				u.getTrigger());
+		WasEndedBy u1 = newWasEndedBy(u.getId(), u.getActivity(), u.getTrigger());
 		u1.setEnder(u.getEnder());
 		u1.setTime(u.getTime());
 		u1.getType().addAll(u.getType());
@@ -1347,8 +1339,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	 */
 
 	public WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity) {
-		WasGeneratedBy res=newWasGeneratedBy(id,entity,null,activity);
-		return res;
+        return newWasGeneratedBy(id,entity,null,activity);
 	}
 
 	/* (non-Javadoc)
@@ -1364,8 +1355,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasGeneratedBy newWasGeneratedBy(WasGeneratedBy g) {
-		WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null,
-				g.getActivity());
+		WasGeneratedBy wgb = newWasGeneratedBy(g.getId(), g.getEntity(), null, g.getActivity());
 		wgb.setId(g.getId());
 		wgb.setTime(g.getTime());
 		wgb.getOther().addAll(g.getOther());
@@ -1381,7 +1371,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	 * @param id optional identifier identifying the association
 	 * @param influencee an identifier for an entity, activity, or agent
 	 * @param influencer an identifier for an ancestor entity, activity, or agent that the former depends on
-	 *
 	 * @return an instance of {@link WasInfluencedBy}
 	 */
 
@@ -1408,9 +1397,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasInfluencedBy newWasInfluencedBy(WasInfluencedBy in) {
-		WasInfluencedBy out = newWasInfluencedBy(in.getId(),
-				in.getInfluencee(),
-				in.getInfluencer());
+		WasInfluencedBy out = newWasInfluencedBy(in.getId(), in.getInfluencee(), in.getInfluencer());
 		out.setId(in.getId());
 		out.getOther().addAll(in.getOther());
 		out.getType().addAll(in.getType());
@@ -1448,9 +1435,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasInformedBy newWasInformedBy(WasInformedBy d) {
-		WasInformedBy wtb = newWasInformedBy(d.getId(),
-				d.getInformed(),
-				d.getInformant());
+		WasInformedBy wtb = newWasInformedBy(d.getId(), d.getInformed(), d.getInformant());
 		wtb.setId(d.getId());
 		wtb.getOther().addAll(d.getOther());
 		wtb.getType().addAll(d.getType());
@@ -1494,8 +1479,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasInvalidatedBy newWasInvalidatedBy(WasInvalidatedBy u) {
-		WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(),
-				u.getActivity());
+		WasInvalidatedBy u1 = newWasInvalidatedBy(u.getId(), u.getEntity(), u.getActivity());
 		u1.setTime(u.getTime());
 		u1.getOther().addAll(u.getOther());
 		u1.getType().addAll(u.getType());
@@ -1506,7 +1490,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	/** A factory method to create an instance of a start {@link WasStartedBy}
-	 * @param id
+	 * @param id an identifier for a start
 	 * @return an instance of {@link WasStartedBy}
 	 */
 
@@ -1525,7 +1509,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 	/** A factory method to create an instance of a start {@link WasStartedBy}
-	 * @param id
+	 * @param id optional identifier for a start
 	 * @param activity an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
 	 * @param trigger an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.trigger">entity triggering</a> the activity
 	 * @param starter an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.starter">activity</a> that generated the (possibly unspecified) entity
@@ -1551,8 +1535,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public WasStartedBy newWasStartedBy(WasStartedBy u) {
-		WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(),
-				u.getTrigger());
+		WasStartedBy u1 = newWasStartedBy(u.getId(), u.getActivity(), u.getTrigger());
 		u1.setStarter(u.getStarter());
 		u1.setTime(u.getTime());
 		u1.getType().addAll(u.getType());
@@ -1584,9 +1567,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 			}
 		}
 		if (statement instanceof HasOther) {
-			for (Other o: ((HasOther)statement).getOther()) {
-				result.add(o);
-			}
+			result.addAll(((HasOther) statement).getOther());
 		}
 		return result;
 	}
@@ -1678,18 +1659,15 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 	public AlternateOf newAlternateOf(AlternateOf s) {
-		AlternateOf res=newAlternateOf(s.getAlternate1(), s.getAlternate2());
-		return res;
+        return newAlternateOf(s.getAlternate1(), s.getAlternate2());
 	}
 
 	public SpecializationOf newSpecializationOf(SpecializationOf s) {
-		SpecializationOf res=newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
-		return res;
+        return newSpecializationOf(s.getSpecificEntity(), s.getGeneralEntity());
 	}
 
 	public HadMember newHadMember(HadMember s) {
-		HadMember res=newHadMember(s.getCollection(), s.getEntity()); //FIXME: clone collection
-		return res;
+        return newHadMember(s.getCollection(), s.getEntity());
 	}
 
 	ProvUtilities util=new ProvUtilities();

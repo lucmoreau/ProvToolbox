@@ -132,6 +132,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Entity }
+     * @return a list of {@link Entity} objects
      * 
      * 
      */
@@ -161,7 +162,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Activity }
-     * 
+     * @return a list of {@link Activity} objects
      * 
      */
     public List<Activity> getActivity() {
@@ -190,7 +191,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasGeneratedBy }
-     * 
+     * @return a list of {@link WasGeneratedBy} objects
      * 
      */
     public List<WasGeneratedBy> getWasGeneratedBy() {
@@ -219,7 +220,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Used }
-     * 
+     * @return a list of {@link Used} objects
      * 
      */
     public List<Used> getUsed() {
@@ -248,7 +249,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasInformedBy }
-     * 
+     * @return a list of {@link WasInformedBy} objects
      * 
      */
     public List<WasInformedBy> getWasInformedBy() {
@@ -277,7 +278,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasStartedBy }
-     * 
+     * @return a list of {@link WasStartedBy} objects
      * 
      */
     public List<WasStartedBy> getWasStartedBy() {
@@ -306,7 +307,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasEndedBy }
-     * 
+     * @return a list of {@link WasEndedBy} objects
      * 
      */
     public List<WasEndedBy> getWasEndedBy() {
@@ -335,7 +336,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasInvalidatedBy }
-     * 
+     * @return a list of {@link WasInvalidatedBy} objects
      * 
      */
     public List<WasInvalidatedBy> getWasInvalidatedBy() {
@@ -364,7 +365,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasDerivedFrom }
-     * 
+     * @return a list of {@link WasDerivedFrom} objects
      * 
      */
     public List<WasDerivedFrom> getWasDerivedFrom() {
@@ -393,7 +394,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Agent }
-     * 
+     * @return a list of {@link Agent} objects
      * 
      */
     public List<Agent> getAgent() {
@@ -422,7 +423,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasAttributedTo }
-     * 
+     * @return a list of {@link WasAttributedTo} objects
      * 
      */
     public List<WasAttributedTo> getWasAttributedTo() {
@@ -451,7 +452,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasAssociatedWith }
-     * 
+     * @return a list of {@link WasAssociatedWith} objects
      * 
      */
     public List<WasAssociatedWith> getWasAssociatedWith() {
@@ -480,7 +481,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link ActedOnBehalfOf }
-     * 
+     * @return a list of {@link ActedOnBehalfOf} objects
      * 
      */
     public List<ActedOnBehalfOf> getActedOnBehalfOf() {
@@ -509,7 +510,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link WasInfluencedBy }
-     * 
+     * @return a list of {@link WasInfluencedBy} objects
      * 
      */
     public List<WasInfluencedBy> getWasInfluencedBy() {
@@ -538,7 +539,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link SpecializationOf }
-     * 
+     * @return a list of {@link SpecializationOf} objects
      * 
      */
     public List<SpecializationOf> getSpecializationOf() {
@@ -567,7 +568,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link AlternateOf }
-     * 
+     * @return a list of {@link AlternateOf} objects
      * 
      */
     public List<AlternateOf> getAlternateOf() {
@@ -596,7 +597,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link HadMember }
-     * 
+     * @return a list of {@link HadMember} objects
      * 
      */
     public List<HadMember> getHadMember() {
@@ -625,7 +626,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link MentionOf }
-     * 
+     * @return a list of {@link MentionOf} objects
      * 
      */
     public List<MentionOf> getMentionOf() {
@@ -656,7 +657,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link DictionaryMembership }
-     * 
+     * @return a list of {@link DictionaryMembership} objects
      * 
      */
     public List<DictionaryMembership> getHadDictionaryMember() {
@@ -685,7 +686,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link DerivedByInsertionFrom }
-     * 
+     * @return a list of {@link DerivedByInsertionFrom} objects
      * 
      */
     public List<DerivedByInsertionFrom> getDerivedByInsertionFrom() {
@@ -714,7 +715,7 @@ public class TypeReport
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link DerivedByRemovalFrom }
-     * 
+     * @return a list of {@link DerivedByRemovalFrom} objects
      * 
      */
     public List<DerivedByRemovalFrom> getDerivedByRemovalFrom() {

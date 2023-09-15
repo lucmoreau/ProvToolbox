@@ -73,7 +73,7 @@ import java.util.*;
  *  <tr>
  *   <td>ignoreEmptyTokens</td><td>boolean</td><td>true</td>
  *  </tr>
- *  <caption></caption>
+ *  <caption>Caption</caption>
  * </table>
  *
  * @author Apache Software Foundation

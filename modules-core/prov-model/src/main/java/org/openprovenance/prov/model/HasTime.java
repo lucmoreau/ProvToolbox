@@ -27,7 +27,7 @@ public interface HasTime {
     
     /**
      * Set time instant
-     * @param time 
+     * @param time {@link XMLGregorianCalendar}
      */
     public void setTime(XMLGregorianCalendar time);
 } 

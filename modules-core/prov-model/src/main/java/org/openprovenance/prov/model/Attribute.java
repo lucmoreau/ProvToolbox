@@ -17,7 +17,7 @@ public interface Attribute extends TypedValue {
      * @author lavm
      *
      */
-    public enum AttributeKind {
+    enum AttributeKind {
         PROV_TYPE,
         PROV_LABEL,
         PROV_ROLE,
@@ -27,34 +27,40 @@ public interface Attribute extends TypedValue {
         OTHER
     }
 
-    public abstract QualifiedName getQualifiedName(AttributeKind kind);
+    QualifiedName getQualifiedName(AttributeKind kind);
 
-    public abstract AttributeKind getAttributeKind(QualifiedName q);
+    AttributeKind getAttributeKind(QualifiedName q);
 
-    public abstract QualifiedName getElementName();
+    QualifiedName getElementName();
 
-    public abstract AttributeKind getKind();
+    AttributeKind getKind();
 
     
     /** Get the type of an Attribute 
      * @return  possible object of {@link String}, {@link QualifiedName}, {@link LangString}
      */
     
-    public abstract Object getValue();
+    Object getValue();
 
     
     /** Get the type of an Attribute 
      * @return  possible instance of  {@link QualifiedName}
      */
     
-    public abstract QualifiedName getType();
+    QualifiedName getType();
 
-    /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type */
+    /** A method to generate the prov-n representation of an attribute  ex:attr="value" %% xsd:type
+     *
+     * @return a string representation of the attribute
+     */
 
-    public abstract String toNotationString();
+    String toNotationString();
     
-    /** Returns the value of an Attribute as a Java Object. */
-    
-    public Object getConvertedValue();
+    /** Returns the value of an Attribute as a Java Object.
+     *
+     * @return a Java Object
+     * */
+
+    Object getConvertedValue();
 
 }

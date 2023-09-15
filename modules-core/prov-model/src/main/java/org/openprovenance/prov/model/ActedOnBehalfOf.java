@@ -8,7 +8,7 @@ package org.openprovenance.prov.model;
  *  to carry out a specific activity as a delegate or representative, while the agent it acts on behalf of 
  *  retains some responsibility for the outcome of the delegated work.
  *  
- * <p>
+ *
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newActedOnBehalfOf(QualifiedName, QualifiedName, QualifiedName)}

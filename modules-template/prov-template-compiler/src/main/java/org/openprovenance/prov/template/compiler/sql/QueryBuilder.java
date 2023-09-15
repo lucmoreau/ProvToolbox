@@ -208,7 +208,10 @@ public class QueryBuilder {
 
     /**
      * Appends a "from" clause to a query.
-    /*
+     * @param queryBuilderFun a builder for a subquery
+     * @param alias the alias for the subquery
+     * @return the {@link QueryBuilder} instance.
+
     public QueryBuilder from(QueryBuilder queryBuilder, String alias) {
         if (queryBuilder == null || alias == null) {
             throw new IllegalArgumentException();
@@ -669,6 +672,7 @@ public class QueryBuilder {
     /**
      * Appends alias
      *
+     * @param alias the alias for the subquery
      * @return
      * The {@link QueryBuilder} instance.
      */
@@ -684,7 +688,7 @@ public class QueryBuilder {
 
     /**
      * Appends comment
-     *
+     * @param comment the comment
      * @return
      * The {@link QueryBuilder} instance.
      */
@@ -1054,6 +1058,7 @@ public class QueryBuilder {
     /**
      * Appends return clause to an "create function" statement.
      *
+     * @param relation the relation name
      * @param params
      * The params of the function.
      *

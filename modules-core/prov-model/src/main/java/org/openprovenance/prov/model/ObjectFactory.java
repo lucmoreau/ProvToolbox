@@ -70,7 +70,7 @@ public interface ObjectFactory {
     
     /**
      * Create an instance of {@link Used }
-     * 
+     * @return an instance of {@link Used }
      */
     Used createUsed();
 

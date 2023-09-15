@@ -1146,6 +1146,8 @@ public class ProvUtilities {
 
     /**
      * Indicates whether object has no time field.
+     * @param o a statement
+     * @return true if object has no time field
      * 
      */
 

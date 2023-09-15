@@ -117,7 +117,7 @@ public class WasGeneratedBy implements org.openprovenance.prov.model.WasGenerate
     /**
      * Set time instant
      *
-     * @param time
+     * @param time {@link XMLGregorianCalendar}
      */
     @Override
     public void setTime(XMLGregorianCalendar time) {

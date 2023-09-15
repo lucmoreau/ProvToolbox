@@ -113,8 +113,7 @@ public  class Utility {
 
     public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
         if (tree==null) return null;
-        Object o=new TreeTraversal(pFactory,pFactory).convert(tree);
-        return o;
+        return new TreeTraversal(pFactory,pFactory).convert(tree);
     }
 
 
@@ -132,15 +131,17 @@ public  class Utility {
 
     public Object convertSyntaxTreeToJavaBean(String file, ProvFactory pFactory) {
         CommonTree tree= convertSyntaxTreeToTree(file);
-        Object o=convertTreeToJavaBean(tree,pFactory);
-        return o;
+        return convertTreeToJavaBean(tree,pFactory);
     }
 
-    /** A conversion function that copies a Java Bean deeply. */
+    /** A conversion function that copies a Java Bean deeply.
+     * @param doc a Document to convert
+     * @param pFactory a ProvFactory
+     * @return a copy of the Document
+     * */
     public Object convertJavaBeanToJavaBean(Document doc, ProvFactory pFactory) {
         BeanTraversal bt=new BeanTraversal(pFactory, pFactory);
-        Document o=bt.doAction(doc);
-        return o;
+        return bt.doAction(doc);
     }
 
 

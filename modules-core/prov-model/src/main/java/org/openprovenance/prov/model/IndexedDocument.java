@@ -145,73 +145,111 @@ public class IndexedDocument implements StatementAction {
     private final HashMap<QualifiedName, Collection<HadMember>> entityHadMemberMap= new HashMap<>();
 
 
-    /** Return all used edges for this graph. */
+    /** Return all used edges for this graph.
+     * @return a collection of {@link Used} edges
+     * */
     public Collection<Used> getUsed() {
         return anonUsed;
     }
-    /** Return all used edges with activity p as an effect. */
+    /** Return all used edges with activity p as an effect.
+     * @param p an activity
+     * @return a collection of {@link Used} edges
+     *  */
     public Collection<Used> getUsed(Activity p) {
         return activityUsedMap.get(p.getId());
     }
 
-    /** Return all used edges with entity a as a cause. */
+    /** Return all used edges with entity a as a cause.
+     *  @param p an entity
+     *  @return a collection of {@link Used} edges
+     *  */
     public Collection<Used> getUsed(Entity p) {
         return entityUsedMap.get(p.getId());
     }
 
-    /** Return all WasGeneratedBy edges for this graph. */
+    /** Return all WasGeneratedBy edges for this graph.
+     *
+     *  @return a collection of {@link WasGeneratedBy} edges
+     *  */
     public Collection<WasGeneratedBy> getWasGeneratedBy() {
         return anonWasGeneratedBy;
     }
-    /** Return all WasGeneratedBy edges with activity p as an effect. */
+
+    /** Return all WasGeneratedBy edges with activity p as an effect.
+     * @param p an activty
+     * @return a collection of {@link WasGeneratedBy} edges
+     * */
     public Collection<WasGeneratedBy> getWasGeneratedBy(Activity p) {
         return activityWasGeneratedByMap.get(p.getId());
     }
 
-    /** Return all WasGeneratedBy edges with entity a as a cause. */
+    /** Return all WasGeneratedBy edges with entity a as a cause.
+     * @param p an entity
+     * @return a collection of {@link WasGeneratedBy} edges
+     * */
     public Collection<WasGeneratedBy> getWasGeneratedBy(Entity p) {
         return entityWasGeneratedByMap.get(p.getId());
     }
 
-    /** Return all WasDerivedFrom edges for this graph. */
+    /** Return all WasDerivedFrom edges for this graph.
+     * @return a collection of {@link WasGeneratedBy} edges
+     * */
     public Collection<WasDerivedFrom> getWasDerivedFrom() {
         return anonWasDerivedFrom;
     }
-    /** Return all WasDerivedFrom edges with entity a as a cause. */
+
+    /** Return all WasDerivedFrom edges with entity a as a cause.
+     *  @param a an entity
+     * @return a collection of {@link WasDerivedFrom} edges*/
     public Collection<WasDerivedFrom> getWasDerivedFromWithCause(Entity a) {
         return entityCauseWasDerivedFromMap.get(a.getId());
     }
 
-    /** Return all WasDerivedFrom edges with entity a as an effect . */
+    /** Return all WasDerivedFrom edges with entity a as an effect.
+     *  @param a an entity
+     *  @return a collection of {@link WasDerivedFrom} edges */
     public Collection<WasDerivedFrom> getWasDerivedFromWithEffect(Entity a) {
         return entityEffectWasDerivedFromMap.get(a.getId());
     }
 
-
-    /** Return all WasInformedBy edges for this graph. */
+    /** Return all WasInformedBy edges for this graph.
+     *  @return a collection of {@link WasInformedBy} edges*/
     public Collection<WasInformedBy> getWasInformedBy() {
         return anonWasInformedBy;
     }
-    /** Return all WasInformedBy edges with activity p as a cause. */
+
+    /** Return all WasInformedBy edges with activity p as a cause.
+     * @param a an activity
+     * @return a collection of {@link WasInformedBy} edges
+     * */
     public Collection<WasInformedBy> getWasInformedByWithCause(Activity a) {
         return activityCauseWasInformedByMap.get(a.getId());
     }
 
-    /** Return all WasInformedBy edges with activity a as an effect. */
+    /** Return all WasInformedBy edges with activity a as an effect.
+     *  @param a an activity
+     * @return a collection of {@link WasInformedBy} edges*/
     public Collection<WasInformedBy> getWasInformedByWithEffect(Activity a) {
         return activityEffectWasInformedByMap.get(a.getId());
     }
 
-    /** Return all WasAssociatedWith edges for this graph. */
+    /** Return all WasAssociatedWith edges for this graph.
+     * @return  a collection of  {@link WasAssociatedWith} edges */
     public Collection<WasAssociatedWith> getWasAssociatedWith() {
         return anonWasAssociatedWith;
     }
-    /** Return all WasAssociatedWith edges with activity p as an effect. */
+
+    /** Return all WasAssociatedWith edges with activity p as an effect.
+     * @param p an activity
+     * @return  a collection of  {@link WasAssociatedWith} edges
+     * */
     public Collection<WasAssociatedWith> getWasAssociatedWith(Activity p) {
         return activityWasAssociatedWithMap.get(p.getId());
     }
 
-    /** Return all WasAssociatedWith edges with entity a as a cause. */
+    /** Return all WasAssociatedWith edges with entity a as a cause.
+     * @param a an agent
+     * @return  a collection of  {@link WasAssociatedWith} edges*/
     public Collection<WasAssociatedWith> getWasAssociatedWith(Agent a) {
         return agentWasAssociatedWithMap.get(a.getId());
 
@@ -444,6 +482,14 @@ public class IndexedDocument implements StatementAction {
 
     /** Add an  edge to the graph. Update namedRelationMap, effectRelationMap and causeRelationMap, accordingly.
      Edges with different attributes are considered distinct.
+        @param <T> the type of the edge to be added
+        @param statement the edge to be added
+        @param num an integer
+        @param anonRelationCollection the collection of anonymous edges
+        @param namedRelationMap the collection of named edges
+        @param effectRelationMap the collection of edges indexed by their effect
+        @param causeRelationMap the collection of edges indexed by their cause
+        @return the edge that was added
      */
 
     public <T extends Relation> T add(T statement,

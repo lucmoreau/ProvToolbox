@@ -12,7 +12,9 @@ public interface ResourceIndex<T extends DocumentResource> {
     enum StorageKind { ME, RE; }
     ResourceIndex<DocumentResource> getAncestor();
 
-    /** Returns a thread safe instance. */
+    /** Returns a thread safe instance.
+     *     @return  an index
+     *     */
     ResourceIndex<T> getIndex();
 
     void close();

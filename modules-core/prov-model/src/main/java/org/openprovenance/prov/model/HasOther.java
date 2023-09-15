@@ -4,7 +4,7 @@ import java.util.List;
 
 /** 
  * <p>Interface for PROV objects that have non-PROV attributes.
- * <p>
+ *
  * <p><span class="strong">Relevant class</span>
  * <ul>
  * <li>{@link Other}

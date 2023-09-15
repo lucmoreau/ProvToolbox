@@ -187,17 +187,15 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
         return new WasAttributedTo(id,entity,agent,attributes);
     }
 
-    /**
-     * A factory method to create an instance of a derivation {@link WasDerivedFrom}
-     *
-     * @param id         an optional identifier for a derivation
-     * @param e2         the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation
-     * @param e1         the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
-     * @param activity
-     * @param generation
-     * @param usage
-     * @param attributes
-     * @return an instance of {@link WasDerivedFrom}
+    /** A factory method to create an instance of a derivation {@link org.openprovenance.prov.model.WasDerivedFrom}
+     * @param id an optional identifier for a derivation
+     * @param e2 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation
+     * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @param activity an identifier for the <a href="http://www.w3.org/TR/prov-dm/#derivation.activity">activity</a> underpinning the derivation
+     * @param generation an identifier for the <a href="http://www.w3.org/TR/prov-dm/#derivation.genertion">generation</a> associated with the derivation
+     * @param usage an identifier for the <a href="http://www.w3.org/TR/prov-dm/#derivation.usage">usage</a> associated with the derivation
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this derivation
+     * @return an instance of {@link org.openprovenance.prov.model.WasDerivedFrom}
      */
     @Override
     public org.openprovenance.prov.model.WasDerivedFrom newWasDerivedFrom(QualifiedName id, QualifiedName e2, QualifiedName e1, QualifiedName activity, QualifiedName generation, QualifiedName usage, Collection<Attribute> attributes) {
@@ -207,7 +205,7 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
     /**
      * A factory method to create an instance of an end {@link WasEndedBy}
      *
-     * @param id
+     * @param id an optional identifier for a end
      * @param activity   an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
      * @param trigger    an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
      * @param ender      an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
@@ -281,7 +279,7 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
     /**
      * A factory method to create an instance of a start {@link WasStartedBy}
      *
-     * @param id
+     * @param id an optional identifier for a start
      * @param activity   an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
      * @param trigger    an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.trigger">entity triggering</a> the activity
      * @param starter    an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.starter">activity</a> that generated the (possibly unspecified) entity

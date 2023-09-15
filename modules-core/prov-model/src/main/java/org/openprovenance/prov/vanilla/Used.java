@@ -118,7 +118,7 @@ public class Used implements org.openprovenance.prov.model.Used, Equals, HashCod
     /**
      * Set time instant
      *
-     * @param time
+     * @param time {@link XMLGregorianCalendar}
      */
     @Override
     public void setTime(XMLGregorianCalendar time) {

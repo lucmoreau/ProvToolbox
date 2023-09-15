@@ -7,8 +7,7 @@ package org.openprovenance.prov.model;
  * Influence is the capacity of an entity, activity, or agent to have an effect on the character, 
  * development, or behavior of another by means of usage, start, end, generation, invalidation, 
  * communication, derivation, attribution, association, or delegation.
- *  
- * <p>
+ *
  * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>

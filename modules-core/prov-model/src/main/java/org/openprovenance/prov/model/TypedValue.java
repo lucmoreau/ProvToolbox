@@ -48,9 +48,9 @@ public interface TypedValue {
 
     /**
      * Converts the value associated with the {@code value} property into a Java object.
-     * 
-     * @return
-     *     possible object is
+     *
+     * @param vconv value converter
+     * @return possible object is
      *     {@link Object }
      *     
      */

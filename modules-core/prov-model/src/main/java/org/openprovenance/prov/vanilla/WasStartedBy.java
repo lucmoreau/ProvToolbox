@@ -123,7 +123,7 @@ public class WasStartedBy implements org.openprovenance.prov.model.WasStartedBy,
     /**
      * Set time instant
      *
-     * @param time
+     * @param time {@link XMLGregorianCalendar}
      */
     @Override
     public void setTime(XMLGregorianCalendar time) {
@@ -165,8 +165,6 @@ public class WasStartedBy implements org.openprovenance.prov.model.WasStartedBy,
     public List<org.openprovenance.prov.model.Type> getType() {
         return type;
     }
-
-
     @Override
     public List<org.openprovenance.prov.model.Other> getOther() {
         return other;

@@ -4,7 +4,7 @@ package org.openprovenance.prov.model;
 
 /** 
  * <p>Interface for non-PROV attributes.
- * <p>
+ *
  * <p><span class="strong">Relevant class</span>
  * <ul>
  * <li>{@link HasOther}

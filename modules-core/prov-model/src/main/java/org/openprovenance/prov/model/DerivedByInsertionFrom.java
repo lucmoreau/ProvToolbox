@@ -14,7 +14,7 @@ import java.util.List;
  * Note that this key-entity-set is considered to be complete. This means that we assume that no unknown keys were inserted in or 
  * removed from a dictionary derived by an insertion relation. 
  * 
- * <p>
+ *
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newDerivedByInsertionFrom(QualifiedName, QualifiedName, QualifiedName, List, java.util.Collection)}

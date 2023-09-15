@@ -12,8 +12,9 @@ public interface ProvDeserialiser {
      * Deerializes a document from a stream
      * @param in an {@link InputStream}
      * @return org.openprovenance.prov.model.Document
+     * @throws IOException if the stream cannot be read
      */
 
-    public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException;
+    org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException;
 
 }

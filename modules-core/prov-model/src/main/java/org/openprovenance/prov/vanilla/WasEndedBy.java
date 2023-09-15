@@ -124,7 +124,7 @@ public class WasEndedBy implements org.openprovenance.prov.model.WasEndedBy, Equ
     /**
      * Set time instant
      *
-     * @param time
+     * @param time {@link XMLGregorianCalendar}
      */
     @Override
     public void setTime(XMLGregorianCalendar time) {

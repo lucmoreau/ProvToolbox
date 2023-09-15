@@ -10,7 +10,7 @@ import java.util.List;
  *  Similar to the collection membership relation, the dictionary membership allows stating the members of a Dictionary. 
  *  However, it provides additional structure. Note that dictionary membership implies collection membership, but not vice versa. 
  * 
- * <p>
+ * 
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newDictionaryMembership(QualifiedName, List)}

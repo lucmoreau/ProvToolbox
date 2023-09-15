@@ -76,7 +76,6 @@
 
 
     <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <jmh.version>1.23</jmh.version>
       <jmh.generator>default</jmh.generator>  <!-- or "asm", or "reflection" -->
       <javac.target>12</javac.target>

@@ -289,6 +289,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * Support for content negotiation, jax-rs style. Create a list of media
      * type supported by the framework.
      * @see <a href="http://docs.oracle.com/javaee/6/tutorial/doc/gkqbq.html">Content Negotiation</a>
+     * @return a list of {@link Variant}
      */
     
     public List<Variant> getVariants() {
@@ -840,6 +841,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * Top level entry point of this class, when called from the command line.
      * <p>
      * See method {@link CommandLineArguments#main(String[])}
+     * @return an exit code
      */
 
     public int run() {
@@ -1071,7 +1073,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
-    /** Initializes a Document's namespace. */
+    /** Initializes a Document's namespace.
+     * @param doc a {@link Document} to initialize
+     * */
 
     public void setNamespaces(Document doc) {
         if (doc.getNamespace() == null)
@@ -1103,7 +1107,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         serialiseDocument(os,document,mimeTypeMap.get(format),true);
     }
 
-    /** TO BE DELETED */
+    /* TO BE DELETED */
         public void writeDocumentOLD(OutputStream os, ProvFormat format, Document document) {
             Namespace.withThreadNamespace(document.getNamespace());
 
@@ -1256,6 +1260,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     /**
          * Write a {@link Document} to file, serialized according to the file extension
          * @param filename path of the file to write the Document to
+         * @param format a {@link ProvFormat} to serialize the document to
          * @param document a {@link Document} to serialize
          */
 

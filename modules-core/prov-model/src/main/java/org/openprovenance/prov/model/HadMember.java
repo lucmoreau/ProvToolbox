@@ -8,7 +8,7 @@ import java.util.List;
  * <p><a href="http://www.w3.org/TR/prov-dm/#concept-membership">PROV-DM Definition for Collection Membership</a>: 
  * Membership is the belonging of an entity to a collection.
  * 
- * <p>
+ *
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newHadMember(QualifiedName, java.util.Collection)}

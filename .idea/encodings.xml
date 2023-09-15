@@ -32,11 +32,14 @@
     <file url="file://$PROJECT_DIR$/modules-misc/roundtrip" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-nf/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-signature/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-signature/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/service-signature/src/main/config" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/service-signature/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/service-signature/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-nf/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-nf/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-services/docker-service-translator/src/main/resources" charset="UTF-8" />
@@ -59,10 +62,13 @@
     <file url="file://$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-summarisation/service-summary/src/main/config" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-summarisation/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-summarisation/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/resources" charset="UTF-8" />

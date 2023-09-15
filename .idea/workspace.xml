@@ -9,76 +9,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/interop/Format2.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/java/org/openprovenance/prov/summary/FileNameWithoutExtensionException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/TODO.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/examples/empty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/examples/pc1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/examples/primer.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/examples/primer.sprov-xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/license/THIRD-PARTY.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/license/tree.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/config/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/EnvironmentVariables.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/StorageConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/SummariseApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/ViewApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/ViewService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/properties/jetty.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/properties/prov.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/properties/tomcat.webapp.config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/prov/invalid.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/prov/pc1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/prov/primer.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b1.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b3.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b4.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources2/removewrapper.xslt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/simple.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/summary.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/w3c-publication1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/w3c-publication2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/config/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/DocumentMessageBodyReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/MapMessageBodyReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/StreamMessageBodyReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/StringMessageBodyReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/summary/SummarizeIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/org/openprovenance/prov/service/summary/summary/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-explain/128350251.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/binary-tree-agents.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/binary-tree.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/empty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/merged.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/sc-level1-empty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/sc-level2-empty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/three.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-ptypes/two.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-summary/empty.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-summary/loan-config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/resources/test-summary/something.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/immutable/IO.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/immutable/IO.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/TemplateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslatorIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidatorIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidateIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/SummaryAPI.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/SummaryAPI.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/SummaryConfig.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/SummaryConfig.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ActionSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ActionSummary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ScalaDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ScalaDocumentMessageBodyWriter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/tmp.dot" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

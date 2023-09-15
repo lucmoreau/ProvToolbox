@@ -9,22 +9,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ActionSummary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ActionUpload.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/Level0MessageBodyWriter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ScalaDocumentMessageBodyWriter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryDocumentResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryDocumentResourceInMemory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryDocumentResourceRedis.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/SummaryAPI.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/SummaryConfig.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

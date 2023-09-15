@@ -15,8 +15,8 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.scala.immutable.Document;
 import org.openprovenance.prov.scala.immutable.Indexer;
-import org.openprovenance.prov.scala.interop.CommandLine;
-import org.openprovenance.prov.scala.interop.Config;
+import org.openprovenance.prov.scala.summary.SummaryAPI;
+import org.openprovenance.prov.scala.summary.SummaryConfig;
 import org.openprovenance.prov.scala.summary.*;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
@@ -176,11 +176,11 @@ public class SummaryService implements Constants, InteropMediaType {
             org.openprovenance.prov.model.Document doc = utils.getDocumentFromCacheOrStore(dr.getStorageId());
             org.openprovenance.prov.model.Document d2 = org.openprovenance.prov.scala.immutable.ProvFactory.pf().newDocument(doc);
             Document d3 = (Document) d2;
-            Config config = new Config(level, kernel, aggregated);
-            Tuple2<Indexer, TypePropagator> pair = CommandLine.sum(d3, config, level0);
+            SummaryConfig config = new SummaryConfig(level, kernel, aggregated);
+            Tuple2<Indexer, TypePropagator> pair = SummaryAPI.sum(d3, config, level0);
             Indexer ind = pair._1;
             TypePropagator tp = pair._2;
-            SummaryIndex indexed = CommandLine.makeSummaryIndex(config, tp, ind, level, null, null);
+            SummaryIndex indexed = SummaryAPI.makeSummaryIndex(config, tp, ind, level, null, null);
             return indexed;
         } finally {
             index.close();

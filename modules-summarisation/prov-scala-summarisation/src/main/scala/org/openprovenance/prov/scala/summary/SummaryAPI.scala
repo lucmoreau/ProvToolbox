@@ -2,7 +2,7 @@ package org.openprovenance.prov.scala.summary
 
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{Document, Format, Indexer}
-import org.openprovenance.prov.scala.interop.{Format2, Output}
+import org.openprovenance.prov.scala.interop.{Format2, Input, Output}
 
 object SummaryAPI {
 

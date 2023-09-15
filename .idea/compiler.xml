@@ -38,6 +38,7 @@
         <module name="prov-interop-light" />
         <module name="prov-log" />
         <module name="prov-template" />
+        <module name="modules-executable-provman" />
         <module name="prov-signature" />
         <module name="prov-dot" />
         <module name="prov-storage-mongodb" />

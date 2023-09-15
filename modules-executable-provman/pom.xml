@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ProvToolbox</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>2.0.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>|&gt;- MODULES: EXECUTABLE</name>
+    <artifactId>modules-executable-provman</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-scala-misc</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-validation</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-nf</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-signature</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-scala-summarisation</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>${xmlsec.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.scopt</groupId>
+            <artifactId>scopt_2.12</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.12</artifactId>
+            <version>${scalatest.version}</version> <!-- 3.1.0-RC3 -->
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+
+    <build>
+
+
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xms64m</jvmArg>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+
+
+            <!-- enable scalatest -->
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <junitxml>.</junitxml>
+                    <filereports>WDF TestSuite.txt</filereports>
+                    <!--	  <argLine>-Xmx1500m -Xms32M -Xprof</argLine>  -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <configuration>
+                    <programs>
+                        <program>
+                            <mainClass>org.openprovenance.prov.scala.interop.CommandLine</mainClass>
+                            <name>provmanagement</name>
+                        </program>
+                    </programs>
+                    <repositoryLayout>default</repositoryLayout>
+                    <repositoryName>repo</repositoryName>
+                    <platforms>
+                        <platform>windows</platform>
+                        <platform>unix</platform>
+                    </platforms>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <id>assemble</id>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${antrun.plugin.version}</version>
+                <executions>
+
+                    <execution>
+                        <id>patch.executable</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!--
+                                                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+                                                <arg value="-e s/^cd/#### no CD ### Luc/" />
+                                                <arg value="-iBAK" />
+                                                <arg value="provconvert" />
+                                                </exec>
+
+                                                <exec executable="sed" dir="${project.build.directory}/appassembler/bin">
+                                                <arg value="-e s/exit 1/#### no exit ### Luc/" />
+                                                <arg value="-iBAK" />
+                                                <arg value="provconvert" />
+                                                </exec>
+                                -->
+
+                                <exec executable="chmod" dir="${project.build.directory}/appassembler/bin">
+                                    <arg value="a+x" />
+                                    <arg value="provmanagement" />
+                                    <arg value="provmanagement.bat" />
+                                </exec>
+
+                                <!-- man page generation -->
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provsummary.1">
+                                    <arg value=".\&quot; Manpage for provmanagement." />
+                                </exec>
+
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value=".TH man 1 &quot;${maven.build.timestamp}&quot; &quot;${project.version}&quot; &quot;provmanagement man page&quot;" />
+                                </exec>
+
+
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value=".SH NAME" />
+                                </exec>
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value="provmanagement \- analytics over PROV representations" />
+                                </exec>
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value=".SH SYNOPSIS" />
+                                </exec>
+
+                                <exec executable="${project.build.directory}/appassembler/bin/provmanagement" dir="${project.build.directory}/appassembler/bin" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value="--help" />
+                                </exec>
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value=".SH BUGS" />
+                                </exec>
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value="See https://github.com/lucmoreau/ProvToolbox/issues" />
+                                </exec>
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value=".SH AUTHOR" />
+                                </exec>
+
+                                <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.1" append="true">
+                                    <arg value="Luc Moreau" />
+                                </exec>
+
+                                <exec executable="man" dir="${project.build.directory}" output="${project.build.directory}/provmanagement.txt" append="true">
+                                    <arg value="${project.build.directory}/provmanagement.1" />
+                                </exec>
+
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${assembly.plugin.version}</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/resources/provman-assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <id>make-assembly</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

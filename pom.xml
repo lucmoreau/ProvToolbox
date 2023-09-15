@@ -31,6 +31,7 @@
 		<module>modules-services</module>
 		<module>modules-summarisation</module>
 		<module>modules-nf</module>
+		<module>modules-executable-provman</module>
 
 	</modules>
 

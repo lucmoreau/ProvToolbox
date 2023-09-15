@@ -9,48 +9,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/java/org/openprovenance/prov/nlg/ValidationObjectMaker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/log4j.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/provman-assembly.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/stubs/Narrator.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/nlg/Config.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/query/StatementAccessor.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/batch/test.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG3.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG4.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/scala/FactorGraphSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/CharUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/CharUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/StringUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/StringUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/reflect/MethodUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/reflect/MethodUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/text/StrTokenizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/apache/commons/lang/text/StrTokenizer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ActedOnBehalfOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ActedOnBehalfOf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Attribute.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Attribute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByInsertionFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByInsertionFrom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByRemovalFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByRemovalFrom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryMembership.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryMembership.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Document.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Document.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HadMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HadMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HasOther.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HasOther.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HasTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HasTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/IndexedDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ModelConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ModelConstructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ObjectFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Other.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/Other.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvUtilities.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedName.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/QualifiedName.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/TypedValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/TypedValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/WasAssociatedWith.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/WasAssociatedWith.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/WasInfluencedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/WasInfluencedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/WasInformedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/WasInformedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ModelConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ModelConstructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Used.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Used.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasAssociatedWith.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasAssociatedWith.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasEndedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasEndedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasGeneratedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasGeneratedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInvalidatedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasInvalidatedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasStartedBy.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/WasStartedBy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/benchmarks/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/ResourceIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/ResourceIndex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/QueryBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/QueryBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/OldBindings.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/OldBindings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/TypeReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-validation/prov-validation/src/main/java/org/openprovenance/prov/validation/report/TypeReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +120,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/main",
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
@@ -154,11 +133,11 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-nf" />
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/main" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/modules-nf" />
       <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/main" />
       <recent name="$PROJECT_DIR$/modules-summarisation" />
-      <recent name="$PROJECT_DIR$/modules-misc" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />

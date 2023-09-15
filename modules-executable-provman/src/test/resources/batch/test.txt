@@ -1,0 +1,2 @@
+provman translate --infile modules-nf/prov-nf/src/test/resources/nf/wat1.provn --outfile target/wat.pdf
+provman translate --infile modules-nf/prov-nf/src/test/resources/nf/wat1.provn --outfile target/wat.provn

@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>|&gt;- MODULES: EXECUTABLE</name>
+    <name>|&gt;- MODULES: EXECUTABLE (PROVMAN)</name>
     <artifactId>modules-executable-provman</artifactId>
 
 

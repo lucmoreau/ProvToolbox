@@ -8,12 +8,11 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
-    <name>|&gt;- MODULES: EXECUTABLE</name>
+    <name>|&gt;- MODULES: EXECUTABLE (PROVCONVERT)</name>
     <artifactId>modules-executable</artifactId>
 
     <modules>
         <module>prov-interop</module>
-        <!--<module>prov-interop-light</module>-->
         <module>toolbox</module>
     </modules>
 

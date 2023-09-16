@@ -9,26 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/java/org/openprovenance/prov/nlg/ValidationObjectMaker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/resources/provman-assembly.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/stubs/Narrator.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/nlg/Config.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/query/StatementAccessor.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/batch/test.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG3.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/factorgraph/Risk_Prov_FG4.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/scala/FactorGraphSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,12 +101,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/main",
-    "node.js.selected.package.tslint": "(autodetect)"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/main&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.service.translation" />

@@ -60,7 +60,7 @@ object Merge {
 		val oldPrettyNames=ind2.prettyNames. map{case (i,s) => (renamingFunction(i),s)}
 	  val labelMapper= prettyNames.keySet.map(i => (oldPrettyNames(i), prettyNames(i))).toMap
 
-    val si=new SummaryIndex(ind2.provTypeIndex.mapValues(renamingFunction),
+    val si=new SummaryIndex(ind2.provTypeIndex.view.mapValues(renamingFunction).toMap,
 					                 newAmapForUnique.keys,
 					                 idsFun,
 					                 ind2.sumNodes.map(n => n.rename(qConverter,labelMapper)),

@@ -1,7 +1,6 @@
 package org.openprovenance.prov.scala.immutable
 
 import java.io.{InputStream, OutputStream}
-import java.util
 
 import org.parboiled2.{Rule1, _}
 
@@ -9,9 +8,7 @@ import scala.util.{Failure, Success}
 import org.openprovenance.prov.model.Namespace
 import ProvFactory.pf
 import javax.xml.datatype.XMLGregorianCalendar
-import org.openprovenance.prov.interop.InteropMediaType
 import org.openprovenance.prov.model
-//import org.openprovenance.prov.scala.immutable.Parser.{actions, actions2}
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}

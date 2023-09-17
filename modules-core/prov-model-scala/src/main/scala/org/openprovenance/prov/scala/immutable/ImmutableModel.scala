@@ -15,13 +15,12 @@ import org.openprovenance.prov.scala.immutable.Kind.Kind
 import org.openprovenance.prov.{model, vanilla}
 
 import scala.beans.BeanProperty
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.collection.immutable.HashMap
 
 
 trait HasLocation {
-    def getLocation(): java.util.List[org.openprovenance.prov.model.Location] = location.toSeq
+    def getLocation(): java.util.List[org.openprovenance.prov.model.Location] = location.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Location]].asJava
     val location: Set[Location]
 }
 
@@ -31,12 +30,12 @@ trait HasTime {
 
 
 trait HasRole {
-    def getRole (): java.util.List[org.openprovenance.prov.model.Role] = role.toSeq 
+    def getRole (): java.util.List[org.openprovenance.prov.model.Role] = role.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Role]].asJava
     val role: Set[Role]        
 }
 
 trait HasLabel {
-    def getLabel (): java.util.List[org.openprovenance.prov.model.LangString] = label.toSeq
+    def getLabel (): java.util.List[org.openprovenance.prov.model.LangString] = label.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.LangString]].asJava
     
     val label: Set[LangString]       
 }
@@ -50,7 +49,7 @@ trait HasOther {
 	    val setnil: Set[Other]=Set()
 	    def op (s:Set[Other], entry: (QualifiedName,Set[Other])): Set[Other]= {s++entry._2}
 	    val set: Set[Other]=other.foldLeft(setnil)(op)
-	    set.toSeq 
+	    set.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Other]].asJava
 	  }
 
 }
@@ -73,7 +72,7 @@ trait HasValue {
 trait HasType {
     val typex: Set[Type]
     
-    def getType() : java.util.List[org.openprovenance.prov.model.Type] = typex.toSeq
+    def getType() : java.util.List[org.openprovenance.prov.model.Type] = typex.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Type]].asJava
 }
 
 
@@ -1337,7 +1336,7 @@ trait ImmutableHadMember extends Relation with org.openprovenance.prov.model.Had
     def getCollection(): org.openprovenance.prov.model.QualifiedName = collection
     def setCollection(collection: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
     def getEntity(): java.util.List[org.openprovenance.prov.model.QualifiedName] = {
-      entity.toSeq
+      entity.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.QualifiedName]].asJava
     }
     def setEntity(entity: java.util.List[org.openprovenance.prov.model.QualifiedName]) = throw new UnsupportedOperationException
 
@@ -2397,14 +2396,14 @@ object HadMember {
       case e: org.openprovenance.prov.model.extension.QualifiedHadMember =>
         new HadMember(QualifiedName(e.getId),
           QualifiedName(e.getCollection),
-          e.getEntity.map(QualifiedName(_)).toSet,
+          e.getEntity.asScala.map(QualifiedName(_)).toSet,
           LangString(e.getLabel),
           Type(e.getType),
           Other(e.getOther))
       case _ =>
             new HadMember(null,
             		                 QualifiedName(e.getCollection),
-            		                 e.getEntity.map(QualifiedName(_)).toSet,
+            		                 e.getEntity.asScala.map(QualifiedName(_)).toSet,
             		                 Set(),
             		                 Set(),
             		                 Map())
@@ -2414,7 +2413,7 @@ object HadMember {
   def apply(e: org.openprovenance.prov.model.HadMember, gensym: () => org.openprovenance.prov.model.QualifiedName):HadMember = {
     new HadMember(QualifiedName(gensym()),
                   QualifiedName(e.getCollection),
-                  e.getEntity().map(QualifiedName(_)).toSet,
+                  e.getEntity().asScala.map(QualifiedName(_)).toSet,
                   Set(),
                   Set(),
                   Map())
@@ -2442,14 +2441,14 @@ trait ExtensionStatement {
 trait HasStatements {
     val statement: Iterable[Statement]
     def getStatement () : java.util.List[org.openprovenance.prov.model.Statement] = {
-            statement.toSeq 
+            statement.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Statement]].asJava
     }
 }
 
 trait HasStatementsOrBundle {
     val statementOrBundle: Iterable[StatementOrBundle]
     def getStatementOrBundle () : java.util.List[org.openprovenance.prov.model.StatementOrBundle] = {
-            statementOrBundle.toSeq 
+            statementOrBundle.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.StatementOrBundle]].asJava
     }
 }
 
@@ -2458,7 +2457,7 @@ object Bundle {
     bun match {
       case b: Bundle => b
       case b: org.openprovenance.prov.model.Bundle =>
-        val ss: Iterable[Statement] =b.getStatement.map((s: model.Statement) => Statement(s))
+        val ss: Iterable[Statement] =b.getStatement.asScala.map((s: model.Statement) => Statement(s))
         new Bundle(QualifiedName(b.getId),ss,b.getNamespace)
     }
   }
@@ -2517,11 +2516,11 @@ class Bundle(val id: QualifiedName,
 
 trait HasNamespace {
   val namespace: Namespace
-  def printNamespace(sb:StringBuilder) {
+  def printNamespace(sb:StringBuilder): Unit = {
     if (namespace.getDefaultNamespace()!=null) {
         sb++="  default <" ++ namespace.getDefaultNamespace() ++ ">\n"   // 
     }
-    namespace.getPrefixes.map(p => { 
+    namespace.getPrefixes.asScala.map(p => {
                                if (! ((p._1=="xsd" && p._2==org.openprovenance.prov.model.NamespacePrefixMapper.XSD_NS)
                                      || (p._1=="prov" && p._2==org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS))) {
                                sb++="  prefix " ++ p._1 ++ " <" ++ p._2 ++ ">\n" }}) 
@@ -2614,11 +2613,11 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
     }
     def union(doc2: Document, flatten:Boolean=false, setp: Boolean=false): Document = {
       val ns=new Namespace(namespace)
-      doc2.getNamespace.getNamespaces.foreach{case (namespaceuri:String, prefix:String) => ns.register(prefix, namespaceuri)}
+      doc2.getNamespace.getNamespaces.asScala.foreach{case (namespaceuri:String, prefix:String) => ns.register(prefix, namespaceuri)}
       val statements2=doc2.statementOrBundle
       val statements3=if (flatten) {
     	  statements2.flatMap(sb => sb match {
-    	                              case b:Bundle => {  b.namespace.getNamespaces.foreach{case (namespaceuri:String, prefix:String) => ns.register(prefix, namespaceuri)}
+    	                              case b:Bundle => {  b.namespace.getNamespaces.asScala.foreach{case (namespaceuri:String, prefix:String) => ns.register(prefix, namespaceuri)}
     	                                                  b.statement
     	                                                }
     	                              case s:Statement => Seq(s)
@@ -3231,7 +3230,7 @@ object Other {
                       }).toMap  // problem drops duplicate keys
                       * */
           group2
-      } 
+      }.toMap
       
       def extend(others: Map[QualifiedName,Set[Other]], o:Other):Map[QualifiedName,Set[Other]] = {
         val name=o.elementName
@@ -5581,10 +5580,10 @@ class ProvFactory extends ProvFactory1  {
 }
 
 object Kind extends Enumeration {
-    type Kind = Value
-    val ent, act, ag, wdf, wgb, usd, wib, waw, wat, wsb, web, aobo, winfob, winfl, alt, spec, mem, men, bun = Value
+    type Kind = this.Value
+    val ent, act, ag, wdf, wgb, usd, wib, waw, wat, wsb, web, aobo, winfob, winfl, alt, spec, mem, men, bun = this.Value
 
-    def toKind(k: org.openprovenance.prov.model.StatementOrBundle.Kind): Value = {
+    def toKind(k: org.openprovenance.prov.model.StatementOrBundle.Kind): this.Value = {
        k match {
          case PROV_ENTITY => ent
          case PROV_ACTIVITY => act

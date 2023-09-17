@@ -157,7 +157,7 @@ object FactorGraph {
 
   }
  
-  def toElements(s: Bundle,idmap: QualifiedName=>String, r: Indexing, 
+  def toElementsBundle(s: Bundle,idmap: QualifiedName=>String, r: Indexing,
                  entities: Map[QualifiedName,Int], entities_names: Seq[String],
                  activities: Map[QualifiedName,Int], activities_names: Seq[String]): Seq[GraphElement] = {
 
@@ -192,7 +192,7 @@ object FactorGraph {
   }
   
  
-  
+  /*
   def toElements(s: Relation,idmap: QualifiedName=>String, r: Indexing, 
                  entities: Map[QualifiedName,Int], entities_names: Seq[String],
                  activities: Map[QualifiedName,Int], activities_names: Seq[String]): Seq[GraphElement] = {
@@ -200,8 +200,10 @@ object FactorGraph {
           Seq()
 
   }
+
+   */
     
-  def toElements(doc: Document, idmap: QualifiedName=>String, r: Indexing, 
+  def toElementsDocument(doc: Document, idmap: QualifiedName=>String, r: Indexing,
                  entities: Map[QualifiedName,Int], entities_names: Seq[String],
                  activities: Map[QualifiedName,Int], activities_names: Seq[String]): Seq[GraphElement] = {
     val seq1=entities  .toSeq.sortWith{case ((q1,i1),(q2,i2)) => i1 < i2}.map(p => r.nodes(r.amap(p._1)))
@@ -212,7 +214,7 @@ object FactorGraph {
                doc.bundles.flatMap { s => toElements(s,idmap,r, entities, entities_names, activities, activities_names) }
                * 
                */
-    (seq1++seq2).flatMap { s => toElements(s.asInstanceOf[Statement],idmap,r, entities, entities_names, activities, activities_names) } 
+    (seq1++seq2).flatMap { s => toElements(s.asInstanceOf[Statement],idmap,r, entities, entities_names, activities, activities_names) }
   }
   
   /*
@@ -223,7 +225,7 @@ object FactorGraph {
          doc.orderedBundles.flatMap { s => toElements(s,idmap,r, entities, entities_names, activities, activities_names) }
   }*/
   
-  def nameNodes(doc:Document, ind: Indexer) = {
+  def nameNodes(doc:Document, ind: Indexer): (Map[QualifiedName, Int], Seq[String], Map[QualifiedName, Int], Seq[String]) = {
     val foundEntities   =ind.entities.map(_.id).toSet
     val foundActivities =ind.activities.map(_.id).toSet
     val order=ind.sortQualifiedNames(ind.pred)
@@ -239,7 +241,7 @@ object FactorGraph {
     //val activities_vec=doc.statements().filter(_.isInstanceOf[Activity]).map(_.id).toSeq
     val activities=activities_vec.zipWithIndex.toMap.mapValues(x=>x+1)
 
-    (entities, entities_names, activities, activities_names)
+    (entities, entities_names, activities.toMap, activities_names)
   }
   
   def variableDeclaration(names: Seq[String], outw: Writer) {
@@ -259,7 +261,7 @@ object FactorGraph {
     val (entities,entities_names, activities, activities_names)=nameNodes(doc, r)
     variableDeclaration(entities_names,outw)
     
-    toElements(doc, idmap, r, entities, entities_names, activities, activities_names)
+    toElementsDocument(doc, idmap, r, entities, entities_names, activities, activities_names)
       .foreach(e => e.toMatlab(outw))
       
     outw.write("% factor graph end\n");
@@ -274,7 +276,7 @@ object FactorGraph {
 		val (entities,entities_names, activities, activities_names)=nameNodes(doc, r)
     variableDeclaration(entities_names,outw)
     
-    toElements(doc, idmap, r, entities, entities_names, activities, activities_names)
+    toElementsDocument(doc, idmap, r, entities, entities_names, activities, activities_names)
       .foreach(e => e.toMatlab(outw))
       
     outw.write("% factor graph end\n");

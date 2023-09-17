@@ -6,17 +6,19 @@ import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
 import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Failure, Success}
 
 
-class ParserSpec extends FlatSpec with Matchers {
+class ParserSpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
-  val xsd_string=QualifiedName(ipf.xsd_string)
-  val prov_qualified_name=QualifiedName(ipf.prov_qualified_name)
+  val xsd_string: QualifiedName = QualifiedName(ipf.xsd_string)
+  val prov_qualified_name: QualifiedName = QualifiedName(ipf.prov_qualified_name)
 
-  def q(local: String) = {
+  def q(local: String): QualifiedName = {
     new QualifiedName("ex",local,EX_NS)
   }
 

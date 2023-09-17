@@ -49,8 +49,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-parallel-collections_${scala.binary.version}</artifactId>
+            <version>${scala.parallel.collection.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.scopt</groupId>
-            <artifactId>scopt_2.12</artifactId>
+            <artifactId>scopt_${scala.binary.version}</artifactId>
             <version>4.1.0</version>
         </dependency>
 
@@ -62,7 +68,7 @@
 
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.12</artifactId>
+            <artifactId>scalatest_${scala.binary.version}</artifactId>
             <version>${scalatest.version}</version> <!-- 3.1.0-RC3 -->
             <scope>test</scope>
         </dependency>

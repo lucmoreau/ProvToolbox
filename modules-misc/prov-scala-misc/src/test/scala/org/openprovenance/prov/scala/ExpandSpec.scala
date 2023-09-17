@@ -1,6 +1,5 @@
 package org.openprovenance.prov.scala
 import java.util.LinkedList
-
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
 import org.openprovenance.prov.scala.immutable._
@@ -9,10 +8,12 @@ import org.openprovenance.prov.scala.template.Expander
 import org.openprovenance.prov.template.Bindings
 import org.openprovenance.prov.template.ExpandUtil.{LABEL, TMPL_NS, TMPL_PREFIX, VAR_NS}
 import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.util.Success
+import org.scalatest.matchers.should.Matchers
 
-class ExpandSpec extends FlatSpec with Matchers {
+abstract class ExpandSpec extends AnyFlatSpec with Matchers {
   
   val EX_NS="http://example.org/"
   val EX_PRE="ex"

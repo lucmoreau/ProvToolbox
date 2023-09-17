@@ -111,10 +111,10 @@ object Animator {
       case _ => s
     })
   }
-  def merge(other1: Map[QualifiedName,Set[Other]],other2: Map[QualifiedName,Set[Other]]) = {
+  def merge(other1: Map[QualifiedName,Set[Other]],other2: Map[QualifiedName,Set[Other]]): Map[QualifiedName, Set[Other]] = {
     val set=other1.toSet ++ other2.toSet
     val x=set.groupBy{case(q,s) => q }.mapValues(x => x.flatMap{case (q,s) => s})
-    x
+    x.toMap
   }
   def transformerOther(doc: Document,  pred: StatementOrBundle=>Boolean, other: Map[QualifiedName,Set[Other]]): Document = {
     doc.map(s => 

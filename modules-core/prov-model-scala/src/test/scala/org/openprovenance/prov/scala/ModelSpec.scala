@@ -4,17 +4,20 @@ package org.openprovenance.prov.scala
 import org.scalatest._
 import org.openprovenance.prov.scala.immutable.ProvFactory
 import org.openprovenance.prov.model.StatementOrBundle.Kind
-import java.util.LinkedList
 
-import org.openprovenance.prov.model.Statement
+import org.openprovenance.prov.model.{QualifiedName, Statement}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+
+import java.util
 
 
-class ModelSpec extends FlatSpec with Matchers {
+class ModelSpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val pf=new ProvFactory
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
 
-  def q(local: String) = {
+  def q(local: String): QualifiedName = {
     val res=pf.newQualifiedName(EX_NS,local,"ex")
     res
   }
@@ -60,10 +63,10 @@ class ModelSpec extends FlatSpec with Matchers {
     entity2 should be (entity1)
     entity2 should not be (entity3)
     
-    val ll1: java.util.List[Statement] = new LinkedList()
+    val ll1: java.util.List[Statement] = new util.LinkedList()
     ll1.add(entity1)
     
-    val ll2: java.util.List[Statement] = new LinkedList()
+    val ll2: java.util.List[Statement] = new util.LinkedList()
     ll2.add(entity2)
     
     ll1 should be (ll2)

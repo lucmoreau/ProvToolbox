@@ -1,26 +1,21 @@
 
 package org.openprovenance.prov.scala
 
-import collection.mutable.Stack
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
 import org.openprovenance.prov.scala.mutable.ProvFactory
 import org.openprovenance.prov.scala.mutable.QualifiedName
-import org.openprovenance.prov.scala.mutable.ObjectFactory
-import org.openprovenance.prov.model.StatementOrBundle.Kind
-import org.openprovenance.prov.model.DocumentEquality
-import java.util.LinkedList
-import org.openprovenance.prov.model.Statement
-import org.openprovenance.prov.scala.immutable.Indexer
 import org.openprovenance.prov.scala.immutable.Indexer
 import org.openprovenance.prov.scala.immutable.Document
+import org.scalatest.flatspec.AnyFlatSpec
 
 
-class IndexerSpec extends FlatSpec with Matchers {
+abstract class IndexerSpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val pf=new ProvFactory
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
 
-  def q(local: String) = {
+  def q(local: String): QualifiedName = {
     val res=new QualifiedName
     res.localPart=local
     res.namespaceURI=EX_NS

@@ -473,8 +473,8 @@ class ForwardPropagator(ind: Indexing,
       // at that point, a Seq[Int,Set[ProvType]]
       .groupBy(_._1)
       // at that point, a Map[Int,Seq[Int,Set[ProvType]]]
-      .mapValues(x=>x.flatMap(_._2).toSet)
-  }
+      .view.mapValues(x=>x.flatMap(_._2).toSet)
+  }.toMap
 
 
   def computeTriangles(allRelations: Map[Int, Map[Int, Iterable[Relation]]]): Seq[(Int, Int, Int)] = {
@@ -747,7 +747,7 @@ class BackwardPropagator(ind: Indexing, common: CommonTypePropagator, fwd: Forwa
       .groupBy(_._1)
       // at that point, a Map[Int,Seq[Int,Set[ProvType]]]
       .mapValues(x=>x.flatMap(_._2).toSet)
-  }
+  }.toMap
 
   def computeBackwardTriangles(allRelations: Map[Int, Map[Int, Iterable[Relation]]]): Seq[(Int, Int, Int)] = {
     allRelations.toSeq.flatMap { case (src, m) =>
@@ -778,8 +778,8 @@ class BackwardPropagator(ind: Indexing, common: CommonTypePropagator, fwd: Forwa
        // at that point, a Seq[Int,Set[ProvType]]
      .groupBy(_._1)
       // at that point, a Map[Int,Seq[Int,Set[ProvType]]]
-     .mapValues(x=>x.flatMap(_._2).toSet)
-  }
+     .view.mapValues(x=>x.flatMap(_._2).toSet)
+  }.toMap
 
 
   def propagateType(typen: Map[Int,Set[ProvType with BackwardType ]], ind: Indexing): Map[Int,Set[ProvType with BackwardType]] = {
@@ -933,8 +933,8 @@ class TypePropagator(ind: Indexing, level0: Level0, primitivep: Boolean, triangl
         
     (set1++set2)
     .groupBy(_._1)
-    .mapValues(set1 => set1.flatMap(_._2))                                                                                
-  }
+    .view.mapValues(set1 => set1.flatMap(_._2))
+  }.toMap
   
   type ProvTypes=Map[Int,Set[ProvType]]
  

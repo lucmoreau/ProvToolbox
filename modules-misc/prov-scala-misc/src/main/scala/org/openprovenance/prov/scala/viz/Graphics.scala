@@ -186,14 +186,14 @@ object Graphics {
     val cast=s.asInstanceOf[org.openprovenance.prov.model.Relation]
     val causes=pu.getOtherCauses(cast)
     val time=if (s.isInstanceOf[HasTime]) s.asInstanceOf[HasTime].time else None
-    val attrs=s.getAttributes
-    if ((causes!=null) || (attrs!=null && !usefulAttributes(attrs).isEmpty) || (!time.equals(None))) {
+    val attrs=s.getAttributes()
+    if ((causes!=null) || (attrs!=null && usefulAttributes(attrs).nonEmpty) || (!time.equals(None))) {
           bncounter=bncounter+1
-          val bnid="bn" + bncounter.toString();
+          val bnid="bn" + bncounter.toString;
           val aset:Set[GraphElement]=Set(Vertex(bnid, Map(label->"",shape->point)++mapi),
-        		                             Edge(null,idmap(s.getEffect), bnid, addPenWidth(s,r,Map(arrowhead->none)++mapi)))    
+        		                             Edge(null,idmap(s.getEffect()), bnid, addPenWidth(s,r,Map(arrowhead->none)++mapi)))
           val aset2=if (s.getCause!=null) {
-        	             aset ++ Set(Edge(null,bnid, idmap(s.getCause), addPenWidth(s,r,mapi)))
+        	             aset ++ Set(Edge(null,bnid, idmap(s.getCause()), addPenWidth(s,r,mapi)))
                     } else {
                     	aset
                     }

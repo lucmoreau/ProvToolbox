@@ -324,9 +324,11 @@
 
 		<java.version>1.8</java.version>
 
-		<scala.library.version>2.12.18</scala.library.version>
+		<scala.library.version>2.13.12</scala.library.version> <!-- 2.12.18 -->
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
-		<scalatest.version>3.1.0-RC3</scalatest.version>
+		<scalatest.version>3.2.17</scalatest.version> <!-- 3.1.4, 3.1.0-RC3 -->
+		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
+		<scala.binary.version>2.13</scala.binary.version>
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 

@@ -385,15 +385,10 @@ object XmlNfBean {
     val seq=uris.asScala.toSet
     seq.map(q(_,ns))
   }
-  
-  /*
-   def hq(uris: java.util.List[String], ns: Namespace): HSet[QualifiedName] = {
-	  new HSet(q(uris,ns))
-  }
-*/
+
 
   
-  val prov_qualified_name=pf.prov_qualified_name
+  val prov_qualified_name: QualifiedName = pf.prov_qualified_name
   def makeAttribute(element: String, value: String, `type`: String, ns: Namespace): org.openprovenance.prov.model.Attribute = {
     val qElement=q(element,ns)
     val qType=q(`type`,ns)

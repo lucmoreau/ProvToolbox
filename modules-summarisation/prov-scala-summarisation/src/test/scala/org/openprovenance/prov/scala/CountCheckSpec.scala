@@ -7,11 +7,12 @@ import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.openprovenance.prov.scala.summary._
 import org.openprovenance.prov.scala.summary.types._
 import org.parboiled2.ParseError
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Failure, Success}
 
-class CountCheckSpec extends FlatSpec with Matchers {
+class CountCheckSpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
   val xsd_string: QualifiedName =QualifiedName(ipf.xsd_string)
@@ -27,8 +28,8 @@ class CountCheckSpec extends FlatSpec with Matchers {
       val p=new MyParser(s,null)
       p.document.run() match {
         case Success(result) => p.getNext().asInstanceOf[DocBuilder].document==doc
-        case Failure(e: ParseError) => false
-        case Failure(e) =>false
+        case Failure(_: ParseError) => false
+        case Failure(_) =>false
       }
   }
 

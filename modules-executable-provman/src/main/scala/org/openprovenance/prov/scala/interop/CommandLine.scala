@@ -28,6 +28,8 @@ import java.util.Calendar
 import javax.xml.namespace.QName
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.collection.parallel.immutable.ParVector
+import scala.collection.parallel.CollectionConverters._
 
 
 case class Config(outfiles: Seq[Output] = Seq(),
@@ -174,10 +176,17 @@ object CommandLine {
   opt[Output]('o', "outfile")                           valueName("<file>")              action { (x, c) => c.copy(outfiles = Seq(x)) }   text("file as output")
   opt[Seq[Format.Format]]('F', "outformats")            valueName("<fmt1>,<fmt2>,...")   action { (x, c) => c.copy(outformats = x) }      text("formats for outputs")
   opt[Format.Format]('f', "outformat")                  valueName("<fmt1>,<fmt2>,...")   action { (x, c) => c.copy(outformats = Seq(x)) } text("format for output")
-  opt[Input]('i', "infile")                  required() valueName("<file>")              action { (x, c) => c.copy(infile = x) }          text("use given file as input")
+  opt[Input]('i', "infile")
+    .required()
+    .valueName("<file>")
+    .action { (x, c) => c.copy(infile = x) }
+    .text("use given file as input")
   opt[Format.Format]("inputFormat") abbr("if")          valueName("format")              action { (x, c) => c.copy(defaultFormat = x) }   text("use format for input")
   opt[Format.Format]("defaultFormat") abbr("df")        valueName("format")              action { (x, c) => c.copy(defaultFormat = x) }   text("use format as default for output(s)")
-  opt[Unit]("debug")                         hidden()                                    action { (_, c) => c.copy(debug = true) }        text("this option is hidden in the usage text")
+  opt[Unit]("debug")
+    .hidden()
+    .action { (_, c) => c.copy(debug = true) }
+    .text("this option is hidden in the usage text")
 
 
   note("\n")
@@ -186,9 +195,10 @@ object CommandLine {
 
   note("\n")
 
-  cmd("config")          action { (_, c) =>  c.copy(command = "config") }   text("print configuration") children (
-
-  )
+  cmd("config")
+    .action { (_, c) =>  c.copy(command = "config") }
+    .text("print configuration")
+    .children ()
 
   checkConfig { c => if ((c.command!="config") && (c.command!="kernelize") && (c.command!="blockly") && ((c.outfiles == null) || c.outfiles.isEmpty)) failure("No output") else success }
 
@@ -202,33 +212,70 @@ object CommandLine {
 
   cmd("sign")           action { (_, c) =>  c.copy(command = "sign") }   text("produces a signed normalized PROV representation") children (
 		  opt[String]("id")                          valueName("<identifier>") action { (x, c) => c.copy(id = x) }             text("id used to identify element to sign"),
-		  opt[String]('s',"store")       required()  valueName("<file>")       action { (x, c) => c.copy(store = x) }          text("keystore location"),
-		  opt[String]('p',"storepass")   required()  valueName("<password>")   action { (x, c) => c.copy(storepass = x) }      text("keystore password")  ,
-		  opt[String]('k',"key")         required()  valueName("<key>")        action { (x, c) => c.copy(key = x) }            text("key")    ,
-		  opt[String]("keypass")         required()  valueName("<password>")   action { (x, c) => c.copy(keypass = x) }        text("key password")
+		  opt[String]('s',"store")
+        .required()
+        .valueName("<file>")
+        .action { (x, c) => c.copy(store = x) }
+        .text("keystore location"),
+		  opt[String]('p',"storepass")
+        .required()
+        .valueName("<password>")
+        .action { (x, c) => c.copy(storepass = x) }
+        .text("keystore password")  ,
+		  opt[String]('k',"key")
+        .required()
+        .valueName("<key>")
+        .action { (x, c) => c.copy(key = x) }
+        .text("key")    ,
+		  opt[String]("keypass")
+        .required()
+        .valueName("<password>")
+        .action { (x, c) => c.copy(keypass = x) }
+        .text("key password")
   )
 
 
   cmd("signature")           action { (_, c) =>  c.copy(command = "signature") }   text("get the signature") children (
 		  opt[String]("id")                          valueName("<identifier>") action { (x, c) => c.copy(id = x) }             text("id used to identify element to sign"),
-		  opt[String]('s',"store")       required()  valueName("<file>")       action { (x, c) => c.copy(store = x) }          text("keystore location"),
-		  opt[String]('p',"storepass")   required()  valueName("<password>")   action { (x, c) => c.copy(storepass = x) }      text("keystore password")  ,
-		  opt[String]('k',"key")         required()  valueName("<key>")        action { (x, c) => c.copy(key = x) }            text("key")    ,
-		  opt[String]("keypass")         required()  valueName("<password>")   action { (x, c) => c.copy(keypass = x) }        text("key password")
+		  opt[String]('s',"store")
+        .required()
+        .valueName("<file>")
+        .action { (x, c) => c.copy(store = x) }
+        .text("keystore location"),
+		  opt[String]('p',"storepass")
+        .required()
+        .valueName("<password>")
+        .action { (x, c) => c.copy(storepass = x) }
+        .text("keystore password")  ,
+		  opt[String]('k',"key")
+        .required()
+        .valueName("<key>")
+        .action { (x, c) => c.copy(key = x) }
+        .text("key")    ,
+		  opt[String]("keypass")
+        .required()
+        .valueName("<password>")
+        .action { (x, c) => c.copy(keypass = x) }
+        .text("key password")
   )
 
 
   note("\n")
 
+    /*
   cmd("normalize.old")       action { (_, c) =>  c.copy(command = "normalize.old") }   text("normalizes PROV representations") children (
 
-  )
+  ) */
 
   note("\n")
 
   cmd("blockly")                  action { (_, c) =>  c.copy(command = "blockly") } text("convert an explanation plan from json to blockly format") children (
     opt[Output]('b', "blockly") action { (x, c) => c.copy(blockly = x) }             text("blockly file"),
-    opt[Input]('w', "withfile")                  required() valueName("<file>")              action { (x, c) => c.copy(withfile = x) }          text("input file"),
+    opt[Input]('w', "withfile")
+      .required()
+      .valueName("<file>")
+      .action { (x, c) => c.copy(withfile = x) }
+      .text("input file"),
     opt[String]('x',"xplan")    action { (x, c) => c.copy(xplan = x) }          text("xplanation plan name to extract from library")
 
 
@@ -273,7 +320,11 @@ object CommandLine {
 
     note("\n")
   cmd("compare")           action { (_, c) =>  c.copy(command = "compare") }   text("Compare PROV files") children (
-		  opt[Input]('w', "withfile")                  required() valueName("<file>")              action { (x, c) => c.copy(withfile = x) }          text("use given file as other input"),
+		  opt[Input]('w', "withfile")
+        .required()
+        .valueName("<file>")
+        .action { (x, c) => c.copy(withfile = x) }
+        .text("use given file as other input"),
       opt[Int]('n', "nf")      action { (x, c) => c.copy(nf = x) }                 text("normal form level")
 
   )
@@ -350,9 +401,21 @@ object CommandLine {
     cmd("summary.compare")             action { (_, c) => c.copy(command = "summary.compare") }    text("compare two PROV summaries") children (
 
   	//opt[Input]('w', "summary")     required() valueName("<file>")  action { (x, c) => c.copy(summaryFile = x) }         text("use given file as other summary"),
-  	opt[Input]('d', "summaryDescription") required() valueName("<file>")  action { (x, c) => c.copy(summaryDescriptionFile = x) }     text("use given file as other summary descripton"),
-   	opt[Input]('w', "withSummary")     required() valueName("<file>")  action { (x, c) => c.copy(withSummaryFile = x) }         text("use given file as other summary"),
-  	opt[Input]('e', "withSummaryDescription") required() valueName("<file>")  action { (x, c) => c.copy(withSummaryDescriptionFile = x) }     text("use given file as other summary descripton"),
+  	opt[Input]('d', "summaryDescription")
+      .required()
+      .valueName("<file>")
+      .action { (x, c) => c.copy(summaryDescriptionFile = x) }
+      .text("use given file as other summary descripton"),
+   	opt[Input]('w', "withSummary")
+      .required()
+      .valueName("<file>")
+      .action { (x, c) => c.copy(withSummaryFile = x) }
+      .text("use given file as other summary"),
+  	opt[Input]('e', "withSummaryDescription")
+      .required()
+      .valueName("<file>")
+      .action { (x, c) => c.copy(withSummaryDescriptionFile = x) }
+      .text("use given file as other summary descripton"),
     opt[File]('D', "description")  action { (x, c) => c.copy(description = x) }              text("summary description in json format (paramer: %kind, %date)")
 
   )
@@ -370,7 +433,10 @@ object CommandLine {
   note("\n")
 
   cmd("expand")             action { (_, c) =>  c.copy(command = "expand") }             text("expand template") children (
-    opt[Input]('b', "bindings")   required() action { (x, c) => c.copy(bindings = x) }       text("bindings"),
+    opt[Input]('b', "bindings")
+      .required()
+      .action { (x, c) => c.copy(bindings = x) }
+      .text("bindings"),
     opt[Int]('v',"version")                 action { (x, c) => c.copy(bindingsVersion = x)} text("bindings version"),
     opt[Boolean]('g', "genorder")           action { (x, c) => c.copy(genorder = x) }       text("In template expansion, generate order attribute. By default does not."),
     opt[Boolean]('A', "allexpanded")        action { (x, c) => c.copy(allexpanded = x) }    text("In template expansion, generate term if all variables are bound."),
@@ -379,22 +445,31 @@ object CommandLine {
   note("\n")
 
   cmd("bindings")             action { (_, c) =>  c.copy(command = "bindings") }  text("convert bindings") children (
-    opt[Int]('v',"version")  required()             action { (x, c) => c.copy(bindingsVersion = x)} text("bindings version"),
+    opt[Int]('v',"version")
+      .required()
+      .action { (x, c) => c.copy(bindingsVersion = x)}
+      .text("bindings version"),
     opt[Boolean]('p', "pretty")           action { (x, c) => c.copy(pretty = x) }       text("Pretty print output where possible")
   )
 
   note("\n")
 
-  cmd("bindings.v2")             action { (_, c) =>  c.copy(command = "bindings.v2") }  text("convert bindings to v2") children (
+  cmd("bindings.v2")
+    .action { (_, c) =>  c.copy(command = "bindings.v2") }
+    .text("convert bindings to v2")
+    .children (
    )
 
    note("\n")
 
-   cmd("bindings.v3")             action { (_, c) =>  c.copy(command = "bindings.v3") }  text("convert bindings to v3") children (
-   )
+   cmd("bindings.v3")
+    .action { (_, c) =>  c.copy(command = "bindings.v3") }
+     .text("convert bindings to v3")
+     .children (
+     )
 
 
-  note("\n")
+    note("\n")
 
   cmd("validate")                          action { (_, c) =>  c.copy(command = "validate") }  text("validate prov document (as per prov-constraints)") children (
     opt[Output]('m',"matrix")               action { (x, c) => c.copy(matrix = x) }             text("matrix file"),
@@ -683,7 +758,6 @@ object CommandLine {
                 level: Int,
                 params: Map[String,String],
                 allDescriptions:mutable.Map[Int,SummaryDescriptionJson]): Unit = {
-
       val summaryIndex: SummaryIndex =SummaryAPI.makeSummaryIndex(projectConfiguration(config),s,ind,level,params,allDescriptions.get(0))
       
       val theformats=config.theOutputFormats()
@@ -990,7 +1064,7 @@ object CommandLine {
   }
 
   def processQueryAndOutput(doc: Document, config: Config): Unit = {
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val query: Input = config.query
     val context: Map[String, String] = doc.namespace.getPrefixes.asScala.toMap
     val environment=Environment(context,null,null,new Array[String](0),List())
@@ -1373,7 +1447,7 @@ object CommandLine {
 
   def batch_processing (config:Config):Unit = {
      val bufferedSource=toBufferedSource(config.infile)
-      val lines=bufferedSource.getLines()
+      val lines: Iterator[String] =bufferedSource.getLines()
       if (config.parallel) {
         println("batch parallel processing")
         lines.toSeq.par.foreach(process_item)

@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-scala_2.12</artifactId>
+            <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 
@@ -36,7 +36,7 @@
 
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.12</artifactId>
+            <artifactId>scalatest_${scala.binary.version}</artifactId>
             <version>${scalatest.version}</version> <!-- 3.1.0-RC3 -->
             <scope>test</scope>
         </dependency>

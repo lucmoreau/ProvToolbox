@@ -11,8 +11,7 @@ import org.openprovenance.prov.scala.summary.TypePropagator.QN_NBR
 import org.openprovenance.prov.scala.summary.types.{FlatType, NumberedFlatType, Prim, ProvType}
 
 import java.io.{File, InputStream, OutputStream, StringWriter}
-import scala.collection.JavaConversions._
-import scala.collection.JavaConverters.{seqAsJavaListConverter, _}
+import scala.jdk.CollectionConverters._
 import scala.collection.mutable
 
 
@@ -149,9 +148,9 @@ object Level0Mapper {
   }
   def apply(b: org.openprovenance.prov.summary.Level0MapperJson): Level0Mapper = {
     if (b==null) null else
-      new Level0Mapper(if (b.getMapper!=null) b.getMapper.toMap else null,
-        if (b.getIgnore!=null) b.getIgnore.toSet else null,
-        if (b.getProperties!=null) b.getProperties.toSet else null)
+      new Level0Mapper(if (b.getMapper!=null) b.getMapper.asScala.toMap else null,
+        if (b.getIgnore!=null) b.getIgnore.asScala.toSet else null,
+        if (b.getProperties!=null) b.getProperties.asScala.toSet else null)
   }
 }
 
@@ -268,7 +267,7 @@ class SummaryConstructor (val ind: Indexing,
   val xsd_int: QualifiedName =ProvFactory.pf.xsd_int
 
 
-  val typesVector: Seq[Set[ProvType]] =provtypes.values.to[scala.collection.immutable.HashSet].toVector
+  val typesVector: Seq[Set[ProvType]] =provtypes.values.to(scala.collection.immutable.HashSet).toVector
   val ordered: Seq[Set[ProvType]] =typesVector.sortBy(t => if (t.isEmpty) (0,t.hashCode()) else (t.map(_.depth()).max,t.hashCode())) // order by maximal depth, and then hash code
   val provTypeIndex: Map[Set[ProvType], Int] =ordered.zipWithIndex.toMap   //.asInstanceOf[Map[Set[ProvType],SummaryIndex]]
 
@@ -438,8 +437,8 @@ class SummaryConstructor (val ind: Indexing,
 
   //TODO: why map to String? space efficiency to think about?  merge map and groupby
 
-  lazy val mapToBaseUriOLD:Map[Int,Set[String]]=provtypes.map{ case (i,set) => (provTypeIndex(set),ind.idsFun(i).getUri) }.groupBy(_._1).mapValues( s => s.map(_._2).toSet )
-  lazy val mapToBaseUri:Map[Int,Set[String]]= toSummary0.toSeq.map{ case(i,j) => (j,i) }.groupBy(_._1).mapValues( s => s.map(i => ind.idsFun(i._2).getUri).toSet)
+  lazy val mapToBaseUriOLD:Map[Int,Set[String]]=provtypes.map{ case (i,set) => (provTypeIndex(set),ind.idsFun(i).getUri) }.groupBy(_._1).mapValues( s => s.map(_._2).toSet ).toMap
+  lazy val mapToBaseUri:Map[Int,Set[String]]= toSummary0.toSeq.map{ case(i,j) => (j,i) }.groupBy(_._1).mapValues( s => s.map(i => ind.idsFun(i._2).getUri).toSet).toMap
 
   lazy val prettyNames: Map[Int, String] =makePrettyNames(mapToBaseUri,provTypeIndex,prettyMethod)
 
@@ -455,10 +454,10 @@ class SummaryConstructor (val ind: Indexing,
   def getSuccessors(amap: Map[QualifiedName,Int], ss: Iterable[StatementOrBundle]): Map[Int, Map[Int, Iterable[Relation]]] = {
     ss.collect{case r:Relation => r}
       .groupBy(getEffect)
-      .mapValues(rels => rels.groupBy(getCause)
-                             .mapValues(rels2 => rels2.groupBy(convertRelation)
-                                                      .map{case (r,ll) => relationWithCount(r,ll.size)}))
-  }
+      .view.mapValues(rels => rels.groupBy(getCause)
+                             .view.mapValues(rels2 => rels2.groupBy(convertRelation)
+                                                      .map{case (r,ll) => relationWithCount(r,ll.size)}).toMap)
+  }.toMap
 
   lazy val succ: Map[Int, Map[Int, Iterable[Relation]]] =getSuccessors(amap,ind.document().statementOrBundle)
 
@@ -654,10 +653,10 @@ class SummaryIndex(val provTypeIndex: Map[Set[ProvType],Int],
         case None => None }}
     }
 
-    val onlyMeBaseuri     =filteredBaseuri(provTypeIndex,       onlyMeProvTypeIndex,       this.mapToBaseUri)
-    val meCommonBaseuri   =filteredBaseuri(provTypeIndex,       meCommonProvTypeIndex,     this.mapToBaseUri)
-    val onlyOtherBaseuri  =filteredBaseuri(other.provTypeIndex, onlyOtherProvTypeIndex,   other.mapToBaseUri)
-    val otherCommonBaseuri=filteredBaseuri(other.provTypeIndex, otherCommonProvTypeIndex, other.mapToBaseUri)
+    val onlyMeBaseuri     =filteredBaseuri(provTypeIndex,       onlyMeProvTypeIndex.toMap,       this.mapToBaseUri)
+    val meCommonBaseuri   =filteredBaseuri(provTypeIndex,       meCommonProvTypeIndex.toMap,     this.mapToBaseUri)
+    val onlyOtherBaseuri  =filteredBaseuri(other.provTypeIndex, onlyOtherProvTypeIndex.toMap,   other.mapToBaseUri)
+    val otherCommonBaseuri=filteredBaseuri(other.provTypeIndex, otherCommonProvTypeIndex.toMap, other.mapToBaseUri)
 
 
     val onlyMeNames     =this.amap.filter{case (n,i) => onlyMeIndexes.contains(i)}.map{ case(n,i) => (meNamespace.qualifiedNameToString(n),i)}
@@ -674,10 +673,10 @@ class SummaryIndex(val provTypeIndex: Map[Set[ProvType],Int],
  */
     // TODO: I use the same nsBase for all. Doesn't seem right.
 
-    val onlyMeSummaryDescription=       SummaryDescriptionJson(swap(onlyMeProvTypeIndex),      swap(onlyMeProvTypeIndex).map{ case (k,v) => (k,v.toString)},      onlyMeNames,      onlyMeBaseuri,      prettyNames, this.prefixes, this.nsBase)
-    val meCommonSummaryDescription=     SummaryDescriptionJson(swap(meCommonProvTypeIndex),    swap(meCommonProvTypeIndex).map{ case (k,v) => (k,v.toString)},    meCommonNames,    meCommonBaseuri,    prettyNames, this.prefixes, this.nsBase)
-    val onlyOtherSummaryDescription=    SummaryDescriptionJson(swap(onlyOtherProvTypeIndex),   swap(onlyOtherProvTypeIndex).map{ case (k,v) => (k,v.toString)},   onlyOtherNames,   onlyOtherBaseuri,   prettyNames, other.prefixes, this.nsBase)
-    val otherCommonSummaryDescription=  SummaryDescriptionJson(swap(otherCommonProvTypeIndex), swap(otherCommonProvTypeIndex).map{ case (k,v) => (k,v.toString)}, otherCommonNames, otherCommonBaseuri, prettyNames, other.prefixes, this.nsBase)
+    val onlyMeSummaryDescription=       SummaryDescriptionJson(swap(onlyMeProvTypeIndex.toMap),      swap(onlyMeProvTypeIndex.toMap).map{ case (k,v) => (k,v.toString)},      onlyMeNames,      onlyMeBaseuri,      prettyNames, this.prefixes, this.nsBase)
+    val meCommonSummaryDescription=     SummaryDescriptionJson(swap(meCommonProvTypeIndex.toMap),    swap(meCommonProvTypeIndex.toMap).map{ case (k,v) => (k,v.toString)},    meCommonNames,    meCommonBaseuri,    prettyNames, this.prefixes, this.nsBase)
+    val onlyOtherSummaryDescription=    SummaryDescriptionJson(swap(onlyOtherProvTypeIndex.toMap),   swap(onlyOtherProvTypeIndex.toMap).map{ case (k,v) => (k,v.toString)},   onlyOtherNames,   onlyOtherBaseuri,   prettyNames, other.prefixes, this.nsBase)
+    val otherCommonSummaryDescription=  SummaryDescriptionJson(swap(otherCommonProvTypeIndex.toMap), swap(otherCommonProvTypeIndex.toMap).map{ case (k,v) => (k,v.toString)}, otherCommonNames, otherCommonBaseuri, prettyNames, other.prefixes, this.nsBase)
 
     (onlyMeSummaryDescription, meCommonSummaryDescription, onlyOtherSummaryDescription, otherCommonSummaryDescription)
 

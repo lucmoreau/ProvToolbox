@@ -22,7 +22,7 @@ import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_INFLUENCE
 import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE
 
 import scala.beans.BeanProperty
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.model.Statement
 import org.openprovenance.prov.model.StatementOrBundle
@@ -35,7 +35,6 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model
 import org.openprovenance.prov.model.Attribute.AttributeKind
 
-import scala.collection.JavaConversions._
 
 trait HasLocation {
     @BeanProperty
@@ -1228,10 +1227,10 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
   }
   /** Deep copy of a document with the current factory */
   override def newDocument(doc: org.openprovenance.prov.model.Document): org.openprovenance.prov.model.Document = {
-    val coll1=doc.getStatementOrBundle
+    val coll1=doc.getStatementOrBundle.asScala
                 .toList.filter { x => x.isInstanceOf[org.openprovenance.prov.model.Statement] }
                 .map(x => newStatement(x.asInstanceOf[org.openprovenance.prov.model.Statement]))
-    val coll2=doc.getStatementOrBundle
+    val coll2=doc.getStatementOrBundle.asScala
                 .toList.filter { x => x.isInstanceOf[org.openprovenance.prov.model.Bundle] }
                 .map(_.asInstanceOf[org.openprovenance.prov.model.Bundle])
                 .map(b => newNamedBundle(b.getId(), b.getNamespace(), b.getStatement()))

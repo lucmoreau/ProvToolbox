@@ -1,13 +1,15 @@
 package org.openprovenance.prov.scala.template
 
-import java.util.{Hashtable, UUID}
+import org.openprovenance.prov.model
 
+import java.util.{Hashtable, UUID}
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model.{Namespace, ProvUtilities, QualifiedNameUtils, StatementAction}
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.template._
 
-import scala.collection.JavaConversions._
+import java.util
+import scala.jdk.CollectionConverters._
 
 
 object TermExpander {
@@ -18,7 +20,7 @@ import org.openprovenance.prov.template.ExpandUtil
   val qnU = new QualifiedNameUtils()
 	  
   def getUUIDQualifiedName():QualifiedName = {
-    val uuid = UUID.randomUUID();
+    val uuid = UUID.randomUUID()
     new QualifiedName(UUID_PREFIX,
     		              qnU.escapeProvLocalName(uuid.toString()),
     		              URN_UUID_NS)
@@ -38,10 +40,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
   import ProvFactory.pf
   import TermExpander._
   
-  def expandAttributes(s:Statement, env: Hashtable[QualifiedName, java.util.List[TypedValue]]): (Boolean,Set[Attribute],TemplateAttributeValues) = {
+  def expandAttributes(s:Statement, env: util.Hashtable[QualifiedName, java.util.List[TypedValue]]): (Boolean,Set[Attribute],TemplateAttributeValues) = {
     s match {
       case s: HasAttributes => { val ta=TemplateAttributeValues(None,None,None,None)
-                            val expansions=s.getAttributes.map { attr =>  expandAttribute(attr,env,s,ta) }
+                            val expansions=s.getAttributes().map { attr =>  expandAttribute(attr,env,s,ta) }
         
                             val attrs:Set[Attribute]=expansions.flatMap(_._2)
                               
@@ -53,13 +55,13 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
   }
   
   case class TemplateAttributeValues(var time: Option[XMLGregorianCalendar],var start: Option[XMLGregorianCalendar],var end: Option[XMLGregorianCalendar],var label: Option[Label]) {
-    def merge(ta:TemplateAttributeValues) = {
+    def merge(ta:TemplateAttributeValues): TemplateAttributeValues = {
       TemplateAttributeValues (time  match { case Some(v) => Some(v) case _ => ta.time},
                                start match { case Some(v) => Some(v) case _ => ta.start},
                                end   match { case Some(v) => Some(v) case _ => ta.end},
                                label match { case Some(v) => Some(v) case _ => ta.label})
     }
-    def update(ta:TemplateAttributeValues) {
+    def update(ta:TemplateAttributeValues): Unit = {
       time  match { case Some(v) => time=Some(v) case _ => }
       start match { case Some(v) => start=Some(v) case _ => }
       end   match { case Some(v) => end=Some(v) case _ => }
@@ -68,20 +70,19 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
   }
   
   
-  def processTemplateAttributes(attribute:Attribute, env2: Hashtable[QualifiedName, java.util.List[TypedValue]], s:Statement, ta:TemplateAttributeValues): Boolean = {
-    import scala.collection.JavaConversions._
-  
+  def processTemplateAttributes(attribute:Attribute, env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], s:Statement, ta:TemplateAttributeValues): Boolean = {
+
         
-    @inline def updateTime(t: Option[XMLGregorianCalendar]) {
+    @inline def updateTime(t: Option[XMLGregorianCalendar]): Unit = {
         ta.time=t
     }
-    @inline def updateStartTime(t: Option[XMLGregorianCalendar]){
+    @inline def updateStartTime(t: Option[XMLGregorianCalendar]): Unit = {
         ta.start=t
     }
-    @inline def updateEndTime(t: Option[XMLGregorianCalendar]){
+    @inline def updateEndTime(t: Option[XMLGregorianCalendar]): Unit = {
         ta.end=t
     }
-    @inline def updateLabel(t: Option[Label]) {
+    @inline def updateLabel(t: Option[Label]): Unit = {
         ta.label=t
     }
         
@@ -95,7 +96,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
               //println("bingo attribute is QN " + attribute)
 
               val vals=env2.get(qn)
-              val attr=if (vals==null) None else Some(vals.toList)
+              val attr=if (vals==null) None else Some(vals.asScala.toList)
         
               attr match {
                  case None => 
@@ -126,15 +127,15 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
 
   
 
-  def doExpand(id: QualifiedName, env: Hashtable[QualifiedName, QualifiedName], bindings:Bindings) = {
+  def doExpand(id: QualifiedName, env: util.Hashtable[QualifiedName, QualifiedName], bindings:Bindings): (Boolean, QualifiedName) = {
         if (ExpandUtil.isVariable(id)) {
-            val v:QualifiedName  = env.get(id);
+            val v:QualifiedName  = env.get(id)
             if (v != null) {
                (true, v)
             } else {
                 if (ExpandUtil.isGensymVariable(id)) {
-                    val uuid:QualifiedName = getUUIDQualifiedName();
-                    bindings.addVariable(id, uuid);
+                    val uuid:QualifiedName = getUUIDQualifiedName()
+                    bindings.addVariable(id, uuid)
                     (true, uuid)
                 } else {
                     (false, id)  
@@ -148,7 +149,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
 
   val null_attr_expansion: (Boolean,Set[Attribute])=(true, Set())
   
-  def expandAttribute(attribute:Attribute, env2: Hashtable[QualifiedName, java.util.List[TypedValue]], s: Statement, ta:TemplateAttributeValues): (Boolean,Set[Attribute]) = {
+  def expandAttribute(attribute:Attribute, env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], s: Statement, ta:TemplateAttributeValues): (Boolean,Set[Attribute]) = {
     if (attribute.`type`== ProvFactory.pf.prov_qualified_name) {
     	val o=attribute.value
     	o match {
@@ -158,7 +159,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     		  // this test should always
     		  // return true
     	     if (ExpandUtil.isVariable(qn1)) { 
-    	       val vals=env2.get(qn1);
+    	       val vals=env2.get(qn1)
     	       if (vals==null) {
     	           if (ExpandUtil.isGensymVariable(qn1)) {  
     	        	     (false, Set (pf.newAttribute(attribute.elementName,
@@ -173,7 +174,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     	         if (processTemplateAttributes(attribute, env2, s, ta)) {
     	           null_attr_expansion 
     	         } else {
-    	          (true, vals.toSet.map{v:TypedValue =>
+    	          (true, vals.asScala.toSet.map{v:TypedValue =>
     	                               pf.newAttribute(attribute.elementName,
     	                                               v.getValue(),
     	                                               v.getType()).asInstanceOf[Attribute]})
@@ -194,19 +195,19 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
   var allExpanded: Boolean=true
 
   
-  def addOrderAttribute(attrs:Set[Attribute]) = {
+  def addOrderAttribute(attrs:Set[Attribute]): Set[Attribute] = {
         if (addOrderp) {
             attrs + pf.newAttribute(ExpandUtil.TMPL_NS,
                                       "order",
                                       ExpandUtil.TMPL_PREFIX,
                                       index,
-                                      pf.getName().XSD_STRING).asInstanceOf[Attribute];
+                                      pf.getName.XSD_STRING).asInstanceOf[Attribute]
         } else {
           attrs
         }
     }
      
-  def doExpand(s: WasAttributedTo, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasAttributedTo] = {
+  def doExpand(s: WasAttributedTo, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasAttributedTo] = {
       
     val (updated1, n_id)       = doExpand(s.id,     env, bindings)
     val (updated2, n_entity)   = doExpand(s.entity, env, bindings)
@@ -218,10 +219,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wat  = pf.newWasAttributedTo(n_id, n_entity, n_agent,n_attrs3);
+        val wat  = pf.newWasAttributedTo(n_id, n_entity, n_agent,n_attrs3)
         Some(wat)
     } else {
         None
@@ -229,7 +230,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     
   }
   
-  def doExpand(s: WasAssociatedWith, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasAssociatedWith] = {
+  def doExpand(s: WasAssociatedWith, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasAssociatedWith] = {
       
     val (updated1, n_id)       = doExpand(s.id,     env, bindings)
     val (updated2, n_activity) = doExpand(s.activity, env, bindings)
@@ -242,10 +243,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val waw  = pf.newWasAssociatedWith(n_id, n_activity, n_agent, n_plan, n_attrs3);
+        val waw  = pf.newWasAssociatedWith(n_id, n_activity, n_agent, n_plan, n_attrs3)
         Some(waw)
     } else {
         None
@@ -253,7 +254,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     
   }
   
-  def doExpand(s: ActedOnBehalfOf, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[ActedOnBehalfOf] = {
+  def doExpand(s: ActedOnBehalfOf, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[ActedOnBehalfOf] = {
       
     val (updated1, n_id)       = doExpand(s.id,     env, bindings)
     val (updated2, n_delegate)    = doExpand(s.delegate,    env, bindings)
@@ -266,10 +267,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val aobo  = pf.newActedOnBehalfOf(n_id, n_delegate, n_responsible, n_activity, n_attrs3);
+        val aobo  = pf.newActedOnBehalfOf(n_id, n_delegate, n_responsible, n_activity, n_attrs3)
         Some(aobo)
     } else {
         None
@@ -277,7 +278,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     
   }
   
-  def doExpand(s: WasDerivedFrom, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasDerivedFrom] = {
+  def doExpand(s: WasDerivedFrom, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasDerivedFrom] = {
       
     val (updated1, n_id)        = doExpand(s.id,     env, bindings)
     val (updated2, n_generated) = doExpand(s.generatedEntity,  env, bindings)
@@ -292,10 +293,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wdf  = pf.newWasDerivedFrom(n_id, n_generated, n_used, n_activity, n_generation, n_usage, n_attrs3);
+        val wdf  = pf.newWasDerivedFrom(n_id, n_generated, n_used, n_activity, n_generation, n_usage, n_attrs3)
         Some(wdf)
     } else {
         None
@@ -303,7 +304,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     
   }
   
-  def doExpand(s: WasGeneratedBy, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasGeneratedBy] = {
+  def doExpand(s: WasGeneratedBy, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasGeneratedBy] = {
       
     val (updated1, n_id)       = doExpand(s.id,       env, bindings)
     val (updated2, n_entity)   = doExpand(s.entity,   env, bindings)
@@ -317,17 +318,17 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wgb  = pf.newWasGeneratedBy(n_id, n_entity, n_activity, n_time, n_attrs3);
+        val wgb  = pf.newWasGeneratedBy(n_id, n_entity, n_activity, n_time, n_attrs3)
         Some(wgb)
     } else {
         None
     }  
   }
   
-   def doExpand(s: Used, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Used] = {
+   def doExpand(s: Used, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Used] = {
       
     val (updated1, n_id)       = doExpand(s.id,       env, bindings)
     val (updated2, n_activity) = doExpand(s.activity, env, bindings)
@@ -341,17 +342,17 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val usd  = pf.newUsed(n_id, n_activity, n_entity, n_time, n_attrs3);
+        val usd  = pf.newUsed(n_id, n_activity, n_entity, n_time, n_attrs3)
         Some(usd)
     } else {
         None
     }  
   }
      
-  def doExpand(s: WasInvalidatedBy, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasInvalidatedBy] = {
+  def doExpand(s: WasInvalidatedBy, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasInvalidatedBy] = {
       
     val (updated1, n_id)       = doExpand(s.id,       env, bindings)
     val (updated2, n_entity)   = doExpand(s.entity,   env, bindings)
@@ -365,17 +366,17 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wgb  = pf.newWasInvalidatedBy(n_id, n_entity, n_activity, n_time, n_attrs3);
+        val wgb  = pf.newWasInvalidatedBy(n_id, n_entity, n_activity, n_time, n_attrs3)
         Some(wgb)
     } else {
         None
     }  
   }
   
-  def doExpand(s: WasInformedBy, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasInformedBy] = {
+  def doExpand(s: WasInformedBy, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasInformedBy] = {
       
     val (updated1, n_id)        = doExpand(s.id,        env, bindings)
     val (updated2, n_informed)  = doExpand(s.informed,  env, bindings)
@@ -390,14 +391,14 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wib  = pf.newWasInformedBy(n_id, n_informed, n_informant,n_attrs3);
+        val wib  = pf.newWasInformedBy(n_id, n_informed, n_informant,n_attrs3)
         Some(wib)
     } else {
         None
     }
     
   }
-    def doExpand(s: WasInfluencedBy, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasInfluencedBy] = {
+    def doExpand(s: WasInfluencedBy, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasInfluencedBy] = {
       
     val (updated1, n_id)         = doExpand(s.id,         env, bindings)
     val (updated2, n_influencee) = doExpand(s.influencee, env, bindings)
@@ -409,17 +410,17 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wib  = pf.newWasInfluencedBy(n_id, n_influencee, n_influencer,n_attrs3);
+        val wib  = pf.newWasInfluencedBy(n_id, n_influencee, n_influencer,n_attrs3)
         Some(wib)
     } else {
         None
     }
     
   }
-  def doExpand(s: SpecializationOf, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[SpecializationOf] = {
+  def doExpand(s: SpecializationOf, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[SpecializationOf] = {
       
     val (updated1, n_id)       = doExpand(s.id,             env, bindings)
     val (updated2, n_specific) = doExpand(s.specificEntity, env, bindings)
@@ -434,7 +435,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val spec  = pf.newSpecializationOf(n_id, n_specific, n_general,n_attrs3);
+        val spec  = pf.newSpecializationOf(n_id, n_specific, n_general,n_attrs3)
         Some(spec)
     } else {
         None
@@ -442,7 +443,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     
   }
   
-  def doExpand(s: AlternateOf, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[AlternateOf] = {
+  def doExpand(s: AlternateOf, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[AlternateOf] = {
       
     val (updated1, n_id)       = doExpand(s.id,         env, bindings)
     val (updated2, n_alt1)     = doExpand(s.alternate1, env, bindings)
@@ -454,10 +455,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val alt  = pf.newAlternateOf(n_id, n_alt1, n_alt2,n_attrs3);
+        val alt  = pf.newAlternateOf(n_id, n_alt1, n_alt2,n_attrs3)
         Some(alt)
     } else {
         None
@@ -465,7 +466,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     
   }
   
-  def doExpand(s: HadMember, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[HadMember] = {
+  def doExpand(s: HadMember, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[HadMember] = {
       
     val (updated1, n_id)       = doExpand(s.id,         env, bindings)
     val (updated2, n_coll)     = doExpand(s.collection, env, bindings)
@@ -477,10 +478,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val mem  = pf.newHadMember(n_id, n_coll, Set(n_ent),n_attrs3);
+        val mem  = pf.newHadMember(n_id, n_coll, Set(n_ent),n_attrs3)
         Some(mem)
     } else {
         None
@@ -489,7 +490,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
   }
   
     
-  def doExpand(s: WasStartedBy, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasStartedBy] = {
+  def doExpand(s: WasStartedBy, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[WasStartedBy] = {
       
     val (updated1, n_id)       = doExpand(s.id,       env, bindings)
     val (updated2, n_activity) = doExpand(s.activity,   env, bindings)
@@ -504,10 +505,10 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     allExpanded=allExpanded && allUpdated
 
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val wsb  = pf.newWasStartedBy(n_id, n_activity, n_trigger, n_starter, n_time, n_attrs3);
+        val wsb  = pf.newWasStartedBy(n_id, n_activity, n_trigger, n_starter, n_time, n_attrs3)
         Some(wsb)
     } else {
         None
@@ -520,47 +521,47 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     }
   }
   
-  def doExpand(s: Entity, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Entity] = {
+  def doExpand(s: Entity, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Entity] = {
     
  
     val (updated1, n_id)        = doExpand(s.id,      env, bindings)
     val (updated2, n_attrs, ta) = expandAttributes(s, env2)
 
     val updated = updated1 || updated2 
-    val allUpdated = updated1 ;
-    allExpanded=allExpanded && allUpdated;
+    val allUpdated = updated1
+    allExpanded=allExpanded && allUpdated
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val ent  = pf.newEntity(n_id,n_attrs3);
+        val ent  = pf.newEntity(n_id,n_attrs3)
         Some(ent)
     } else {
         None
     }
   }
   
-  def doExpand(s: Agent, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Agent] = {
+  def doExpand(s: Agent, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Agent] = {
     
  
     val (updated1, n_id)        = doExpand(s.id,      env, bindings)
     val (updated2, n_attrs, ta) = expandAttributes(s, env2)
 
     val updated = updated1 || updated2 
-    val allUpdated = updated1 ;
-    allExpanded=allExpanded && allUpdated;
+    val allUpdated = updated1
+    allExpanded=allExpanded && allUpdated
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val ag  = pf.newAgent(n_id,n_attrs3);
+        val ag  = pf.newAgent(n_id,n_attrs3)
         Some(ag)
     } else {
         None
     }
   }
   
-  def doExpand(s: Activity, env: Hashtable[QualifiedName, QualifiedName], env2: Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Activity] = {
+  def doExpand(s: Activity, env: util.Hashtable[QualifiedName, QualifiedName], env2: util.Hashtable[QualifiedName, java.util.List[TypedValue]], bindings:Bindings):Option[Activity] = {
     
  
     val (updated1, n_id)        = doExpand(s.id,      env, bindings)
@@ -569,12 +570,12 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
     val (updated4, n_end)       = (true,ta.end   match { case Some(t) => Some(t) case None => s.endTime}) 
     val updated = updated1 || updated2 || updated3 || updated4 
     val allUpdated = updated1 && updated3 && updated4  
-    allExpanded=allExpanded && allUpdated;
+    allExpanded=allExpanded && allUpdated
     val n_attrs2 = addLabelAttribute(ta,n_attrs)
-    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2;
+    val n_attrs3 = if (updated) addOrderAttribute(n_attrs2) else n_attrs2
     
     if (!allUpdatedRequired || allUpdated) {
-        val act  = pf.newActivity(n_id,n_start,n_end,n_attrs3);
+        val act  = pf.newActivity(n_id,n_start,n_end,n_attrs3)
         Some(act)
     } else {
         None
@@ -589,8 +590,8 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
 class ExpandActionLegacy(pf: org.openprovenance.prov.model.ProvFactory,
                          u: org.openprovenance.prov.model.ProvUtilities,
                          expand: Expander,
-                         envLegacy: Hashtable[org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName],
-                         envLegacy2: Hashtable[org.openprovenance.prov.model.QualifiedName, java.util.List[org.openprovenance.prov.model.TypedValue]],
+                         envLegacy: util.Hashtable[org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName],
+                         envLegacy2: util.Hashtable[org.openprovenance.prov.model.QualifiedName, java.util.List[org.openprovenance.prov.model.TypedValue]],
                          index: java.util.List[Integer],
                          bindings: Bindings,
                          grp1: Groupings,
@@ -598,16 +599,16 @@ class ExpandActionLegacy(pf: org.openprovenance.prov.model.ProvFactory,
                          allUpdatedRequired:Boolean) extends StatementAction { //extends ExpandAction(pf,u,expand,envLegacy,envLegacy2,index,bindings,grp1,addOrderp,allUpdatedRequired) {
   
     
-    val ll: java.util.List[org.openprovenance.prov.model.StatementOrBundle] = new java.util.LinkedList[org.openprovenance.prov.model.StatementOrBundle]();
-    def getList() = ll
+    val ll: java.util.List[org.openprovenance.prov.model.StatementOrBundle] = new java.util.LinkedList[org.openprovenance.prov.model.StatementOrBundle]()
+    def getList: util.List[model.StatementOrBundle] = ll
     
-    var allExpanded=true;
-    def  getAllExpanded() = {
-        allExpanded;
+    var allExpanded=true
+    def  getAllExpanded: Boolean = {
+        allExpanded
     }
     
-    val env=envLegacy.asInstanceOf[Hashtable[QualifiedName, QualifiedName]]
-    val env2=envLegacy2.asInstanceOf[Hashtable[QualifiedName, java.util.List[TypedValue]]]
+    val env: util.Hashtable[QualifiedName, QualifiedName] =envLegacy.asInstanceOf[util.Hashtable[QualifiedName, QualifiedName]]
+    val env2: util.Hashtable[QualifiedName, util.List[TypedValue]] =envLegacy2.asInstanceOf[util.Hashtable[QualifiedName, java.util.List[TypedValue]]]
  
 
     override def doAction(s: org.openprovenance.prov.model.Activity):Unit = { 
@@ -867,37 +868,37 @@ class ExpandActionLegacy(pf: org.openprovenance.prov.model.ProvFactory,
     def doAction(bun: org.openprovenance.prov.model.Bundle, provUtilities: ProvUtilities):Unit = { 
         import TermExpander.getUUIDQualifiedName
         
-        val statements:java.util.List[org.openprovenance.prov.model.Statement]= bun.getStatement();
-        val newStatements:java.util.List[org.openprovenance.prov.model.Statement] = new java.util.LinkedList[org.openprovenance.prov.model.Statement]();
+        val statements:java.util.List[org.openprovenance.prov.model.Statement]= bun.getStatement
+        val newStatements:java.util.List[org.openprovenance.prov.model.Statement] = new java.util.LinkedList[org.openprovenance.prov.model.Statement]()
 
-        for (s <- statements) {
-            for (sb: org.openprovenance.prov.model.StatementOrBundle <- expand.expand(s, bindings, grp1)) {
-                newStatements.add(sb.asInstanceOf[org.openprovenance.prov.model.Statement]);
+        for (s <- statements.asScala) {
+            for (sb: org.openprovenance.prov.model.StatementOrBundle <- expand.expand(s, bindings, grp1).asScala) {
+                newStatements.add(sb.asInstanceOf[org.openprovenance.prov.model.Statement])
             }
 
         }
 
-        updateEnvironmentForBundleId(bun, bindings, env);
+        updateEnvironmentForBundleId(bun, bindings, env)
 
         var newId: org.openprovenance.prov.model.QualifiedName=null
         
-        val bunId = bun.getId()
+        val bunId = bun.getId
         if (ExpandUtil.isVariable(bunId)) {
-            // System.out.println("===> bundle " + env + " " + bindings);
-            val value = env.get(bunId);
+            // System.out.println("===> bundle " + env + " " + bindings)
+            val value = env.get(bunId)
             if (value != null) {
-                newId = value;
+                newId = value
             } else {
                 if (ExpandUtil.isGensymVariable(bunId)) {
-                    val uuid = getUUIDQualifiedName();
-                    newId = uuid;
-                    bindings.addVariable(bunId, uuid);
+                    val uuid = getUUIDQualifiedName()
+                    newId = uuid
+                    bindings.addVariable(bunId, uuid)
                 } else {
-                    newId = bunId;
+                    newId = bunId
                 }
             }
         } else {
-            newId = bunId;
+            newId = bunId
         }
         val tmpBun=pf.newNamedBundle(newId, new Namespace, newStatements)
         val ns=Namespace.gatherNamespaces(tmpBun,pf)
@@ -909,21 +910,21 @@ class ExpandActionLegacy(pf: org.openprovenance.prov.model.ProvFactory,
 
     def updateEnvironmentForBundleId(bun: org.openprovenance.prov.model.Bundle,
                                      bindings1: Bindings,
-                                     env0: Hashtable[QualifiedName, QualifiedName]) {
-        val id = bun.getId();
+                                     env0: util.Hashtable[QualifiedName, QualifiedName]): Unit = {
+        val id = bun.getId
         if (ExpandUtil.isVariable(id)) {
-            val vals= bindings1.getVariables().get(id);
+            val vals= bindings1.getVariables.get(id)
             if (vals == null) {
                 if (ExpandUtil.isGensymVariable(id)) {
                     // OK, we'll generate a uuid later
                 } else {
-                    throw new BundleVariableHasNoValue(id);
+                    throw new BundleVariableHasNoValue(id)
                 }
             } else {
                 if (vals.size() > 1) {
-                    throw new BundleVariableHasMultipleValues(id, vals);
+                    throw new BundleVariableHasMultipleValues(id, vals)
                 } else {
-                    env0.put(id.asInstanceOf[QualifiedName], vals.get(0).asInstanceOf[QualifiedName]);
+                    env0.put(id.asInstanceOf[QualifiedName], vals.get(0).asInstanceOf[QualifiedName])
                 }
             }
         }
@@ -937,11 +938,11 @@ class ExpandActionLegacy(pf: org.openprovenance.prov.model.ProvFactory,
 class Expander(allUpdatedRequired:Boolean,addOrderp:Boolean) {
 import TermExpander.pu
   var allExpanded: Boolean=true
-  def getAllExpanded() = allExpanded
+  def getAllExpanded: Boolean = allExpanded
   
-   def  expand(bun: org.openprovenance.prov.model.Bundle, bindings1: Bindings, grp1: Groupings): java.util.List[org.openprovenance.prov.model.StatementOrBundle] = {
-        val env0: Hashtable[org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName] = new Hashtable[org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName]();
-        val env1: Hashtable[org.openprovenance.prov.model.QualifiedName, java.util.List[org.openprovenance.prov.model.TypedValue]] = new Hashtable[org.openprovenance.prov.model.QualifiedName, java.util.List[org.openprovenance.prov.model.TypedValue]]();
+   def  expandBundle(bun: org.openprovenance.prov.model.Bundle, bindings1: Bindings, grp1: Groupings): java.util.List[org.openprovenance.prov.model.StatementOrBundle] = {
+        val env0: util.Hashtable[org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName] = new util.Hashtable[org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName]()
+        val env1: util.Hashtable[org.openprovenance.prov.model.QualifiedName, java.util.List[org.openprovenance.prov.model.TypedValue]] = new util.Hashtable[org.openprovenance.prov.model.QualifiedName, java.util.List[org.openprovenance.prov.model.TypedValue]]()
 
         val action = new ExpandActionLegacy(ProvFactory.pf,
                                             pu,
@@ -953,29 +954,29 @@ import TermExpander.pu
                                             grp1,
                                             addOrderp,
                                             allUpdatedRequired)
-        pu.doAction(bun, action);
-        allExpanded=allExpanded && action.getAllExpanded();
-        return action.getList();
+        pu.doAction(bun, action)
+        allExpanded=allExpanded && action.getAllExpanded
+        action.getList
     }
-  
-  
+
+
     def expand(statement: org.openprovenance.prov.model.Statement, bindings1: Bindings, grp1: Groupings) : java.util.List[org.openprovenance.prov.model.StatementOrBundle]= {
         val us1 = ExpandUtil.usedGroups(statement, grp1, bindings1)
         expand(statement, bindings1, grp1, us1)
     }
-    
-  
+
+
 
     def expand(statement: org.openprovenance.prov.model.Statement,
                bindings1: Bindings ,
                grp1: Groupings,
                us1: Using): java.util.List[org.openprovenance.prov.model.StatementOrBundle] = {
         val results: java.util.List[org.openprovenance.prov.model.StatementOrBundle] = new java.util.LinkedList[org.openprovenance.prov.model.StatementOrBundle]()
-        val iter = us1.getUsingIterator()
+        val iter = us1.getUsingIterator
 
-        while (iter.hasNext()) {
+        while (iter.hasNext) {
             val index:java.util.List[Integer] = iter.next()
-            // System.out.println(" Index " + index);
+            // System.out.println(" Index " + index)
 
             val env = us1.get(bindings1, grp1, index)
             val env2 = us1.getAttr(ExpandUtil.freeAttributeVariables(statement, ProvFactory.pf),
@@ -991,36 +992,36 @@ import TermExpander.pu
                                                 bindings1,
                                                 grp1,
                                                 addOrderp,
-                                                allUpdatedRequired);
-            pu.doAction(statement, action);
-            allExpanded=allExpanded && action.getAllExpanded();
+                                                allUpdatedRequired)
+            pu.doAction(statement, action)
+            allExpanded=allExpanded && action.getAllExpanded
 
-            results.addAll(action.getList());
+            results.addAll(action.getList)
 
         }
-        return results;
+        results
 
     }
-    
+
     def expander(docIn: Document, out: String, docBindings: Document):Document= {
       expander(docIn,out,Bindings.fromDocument(docBindings, ProvFactory.pf))
     }
-    
+
 
     def expander(docIn: Document, out: String, docBindings: Document, kind: BindingKind.Value):Document= {
       kind match {
         case BindingKind.V1 => expander(docIn,out,Bindings.fromDocument(docBindings, ProvFactory.pf))
-        case BindingKind.V2 => expander(docIn,out,Bindings.fromDocument_v2(docBindings, ProvFactory.pf))        
+        case BindingKind.V2 => expander(docIn,out,Bindings.fromDocument_v2(docBindings, ProvFactory.pf))
       }
     }
-    
+
     def expander(docIn: Document, out: String, bindings: Bindings):Document= {
 
-        val bun= docIn.getStatementOrBundle().get(0).asInstanceOf[Bundle];
+        val bun= docIn.getStatementOrBundle().get(0).asInstanceOf[Bundle]
 
-        val grp1 = Groupings.fromDocument(docIn);
+        val grp1 = Groupings.fromDocument(docIn)
 
-        val bun1 = expand(bun, bindings, grp1).get(0).asInstanceOf[Bundle];
+        val bun1 = expandBundle(bun, bindings, grp1).get(0).asInstanceOf[Bundle]
         
         val docNS=new Namespace
         docNS.addKnownNamespaces()

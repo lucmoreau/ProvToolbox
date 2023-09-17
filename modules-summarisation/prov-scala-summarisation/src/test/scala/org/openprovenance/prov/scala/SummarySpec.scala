@@ -2,7 +2,6 @@
 package org.openprovenance.prov.scala
 
 import java.io.{BufferedWriter, File, FileWriter}
-
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.FileOutput
@@ -12,11 +11,12 @@ import org.openprovenance.prov.scala.summary._
 import org.openprovenance.prov.scala.summary.types._
 import org.openprovenance.prov.scala.viz.{Graphics, SVGOutputer}
 import org.parboiled2.ParseError
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Failure, Success}
 
-class SummarySpec extends FlatSpec with Matchers {
+class SummarySpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
   val xsd_string: QualifiedName =QualifiedName(ipf.xsd_string)
@@ -70,7 +70,7 @@ class SummarySpec extends FlatSpec with Matchers {
 
 
     val p=new MyParser(d,actions2,actions)
-    val doc =p.document.run() match {
+    val doc: Document =p.document.run() match {
           case Success(result) => db.document
           case _ => ???
     }

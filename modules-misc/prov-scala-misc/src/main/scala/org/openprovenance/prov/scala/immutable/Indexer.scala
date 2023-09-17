@@ -335,12 +335,12 @@ class Indexer (doc: Document, idsVecInit: Vector[QualifiedName]=Vector(), weakIn
        
     def getSuccessors(amap: Map[QualifiedName,Int]): Map[Int, Map[Int, Iterable[Relation]]] = {           
     	val relations:Iterable[Relation]=doc.statementOrBundle.collect{case r:Relation => r} 
-      relations.groupBy(getEffect).mapValues(rels => rels.groupBy(getCause))
+      relations.groupBy(getEffect).mapValues(rels => rels.groupBy(getCause)).toMap
     }        
     
     def getPredecessors(amap: Map[QualifiedName,Int]): Map[Int, Map[Int, Iterable[Relation]]] = {       
       val entries:Iterable[Relation]=doc.statementOrBundle.collect{case r:Relation => r} 
-      entries.groupBy(getCause).mapValues(rels => rels.groupBy(getEffect))
+      entries.groupBy(getCause).mapValues(rels => rels.groupBy(getEffect)).toMap
     }
                         
     def getNodes(doc: Document, amap: Map[QualifiedName,Int]): Map[Int,Node] = {
@@ -387,7 +387,7 @@ class Indexer (doc: Document, idsVecInit: Vector[QualifiedName]=Vector(), weakIn
      }
      
      def getTypes(doc: Document, amap: Map[QualifiedName,Int]): Map[Int, Set[QualifiedName]] = {
-       doc.statementOrBundle.flatMap(s => typesInStatement(s,weakInference)).groupBy(_._1).mapValues(_.map(_._2).toSet)
+       doc.statementOrBundle.flatMap(s => typesInStatement(s,weakInference)).groupBy(_._1).mapValues(_.map(_._2).toSet).toMap
      }
  
     

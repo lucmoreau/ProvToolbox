@@ -1,13 +1,10 @@
 
 package org.openprovenance.prov.scala
 
-import java.util.LinkedList
 
-import org.openprovenance.prov.model.{DocumentEquality, Statement}
-import org.openprovenance.prov.model.StatementOrBundle.Kind
+import org.openprovenance.prov.model.DocumentEquality
 import org.openprovenance.prov.scala.immutable.{Document, Indexer, ProvFactory, QualifiedName}
 import org.scalatest._
-//import org.openprovenance.prov.scala.summary.{CommonTypePropagator, DefaultLevel0}
 
 
 class ModelSpec extends FlatSpec with Matchers {

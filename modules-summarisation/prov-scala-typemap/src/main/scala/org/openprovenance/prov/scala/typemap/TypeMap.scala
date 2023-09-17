@@ -71,7 +71,7 @@ object TypeMap {
 
     val rtm: Map[ProvType, Int] = tm.map{case (x,y) => (y,x)}
     val rtsm: Map[Set[ProvType], Int] = tsm.map{case (x,y) => (y,x)}
-    val ctsm:Map[Int,Seq[Int]]=tsm.mapValues(ss => ss.toSeq.map(rtm).sorted)
+    val ctsm:Map[Int,Seq[Int]]=tsm.view.mapValues(ss => ss.toSeq.map(rtm).sorted).toMap
 
     val ctm=makeConciseTypeMap(tm,rtm,gm,tsm,rtsm)
 
@@ -80,7 +80,7 @@ object TypeMap {
 
     val s_acc_indexed_by_depth: Map[Int, mutable.Set[Set[ProvType]]] =s_acc.groupBy(ss => ss.map(s=>s.depth()).max)
 
-    val st: Map[Int, Seq[Seq[Int]]] =s_acc_indexed_by_depth.mapValues(vv => vv.map(s => s.toSeq.map(rtm).sorted).toSeq.sortWith{case (l1,l2) => l1.size < l2.size})
+    val st: Map[Int, Seq[Seq[Int]]] =s_acc_indexed_by_depth.mapValues(vv => vv.map(s => s.toSeq.map(rtm).sorted).toSeq.sortWith{case (l1,l2) => l1.size < l2.size}).toMap
 
     TypePropagator.om.writeValue(new File(tmap), Export(tm,ctsm, gm,ctm, st, sb.toString))
 
@@ -105,7 +105,7 @@ object TypeMap {
     val rtm: Map[ProvType, Int] =tm.map{case (x,y) => (y,x)}
     val rtsm: Map[Set[ProvType], Int] =tsm.map{case (x,y) => (y,x)}
 
-    val ctsm:Map[Int,Seq[Int]]=tsm.mapValues(ss => ss.toSeq.map(rtm).sorted)
+    val ctsm:Map[Int,Seq[Int]]=tsm.view.mapValues(ss => ss.toSeq.map(rtm).sorted).toMap
 
     prettyPrintTypeMap(tm)
 
@@ -116,7 +116,7 @@ object TypeMap {
 
     val s_acc_indexed_by_depth: Map[Int, mutable.Set[Set[ProvType]]] =s_acc.groupBy(ss => ss.map(s=>s.depth()).max)
 
-    val st: Map[Int, Seq[Seq[Int]]] =s_acc_indexed_by_depth.mapValues(vv => vv.map(s => s.toSeq.map(rtm).sorted).toSeq.sortWith{case (l1,l2) => l1.size < l2.size})
+    val st: Map[Int, Seq[Seq[Int]]] =s_acc_indexed_by_depth.view.mapValues(vv => vv.map(s => s.toSeq.map(rtm).sorted).toSeq.sortWith{case (l1,l2) => l1.size < l2.size}).toMap
 
     TypePropagator.om.writeValue(System.out, Export(tm,ctsm,gm,ctm,st,sb.toString))
 

@@ -1,9 +1,11 @@
 
 package org.openprovenance.prov.scala.typemap
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ProvTypeMapSpec extends FlatSpec with Matchers {
+
+class ProvTypeMapSpec extends AnyFlatSpec with Matchers {
 
 
   "A ProvType map " should "be readable" in {

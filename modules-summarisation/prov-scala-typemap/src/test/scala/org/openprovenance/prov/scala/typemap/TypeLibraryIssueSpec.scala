@@ -1,9 +1,11 @@
 
 package org.openprovenance.prov.scala.typemap
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-abstract class TypeLibraryIssueSpec extends FlatSpec with Matchers {
+
+abstract class TypeLibraryIssueSpec extends AnyFlatSpec with Matchers {
 
 
   "a Type Library " should " be constructed " in {

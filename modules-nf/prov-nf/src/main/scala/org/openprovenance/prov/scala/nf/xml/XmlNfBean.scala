@@ -19,11 +19,11 @@ import org.openprovenance.prov.model
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.nf.xml
 import org.openprovenance.prov.nf.xml.Attr
-import org.openprovenance.prov.scala.immutable.{Attribute, LangString, QualifiedName}
+import org.openprovenance.prov.scala.immutable.Attribute.{split2, split3}
+import org.openprovenance.prov.scala.immutable.{Attribute, LangString, Location, Other, QualifiedName, Role, Type, Value}
 import org.openprovenance.prov.scala.nf._
 
-import scala.collection.JavaConversions.seqAsJavaList
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.collection.immutable
 
 object Transformer {
@@ -73,7 +73,6 @@ object XmlNfBean {
 
   def sortAttributes(l: immutable.Seq[Attr]): util.LinkedList[Attr] = {
     logger.info("sort attributes list")
-    import collection.JavaConverters._
     val ll = l.asJava
     val ll2 = new util.LinkedList[Attr]()
     ll2.addAll(ll)
@@ -154,12 +153,12 @@ object XmlNfBean {
     if (time==null) Set[String]() else time.map(_.toXMLFormat())
   }
   
-  def orderUris(s: Set[String]): util.LinkedList[String] = {
-    new LinkedList(s.toSeq.sortWith((s1,s2) => s1<s2))
+  def orderUris(s: Set[String]): util.List[String] = {
+    s.toSeq.sortWith((s1,s2) => s1<s2).asJava
   }
   
-  def orderTimes(s: Set[String]): util.LinkedList[String] = {
-    new LinkedList(s.toSeq.sortWith((s1,s2) => s1<s2))
+  def orderTimes(s: Set[String]): util.List[String] = {
+    s.toSeq.sortWith((s1,s2) => s1<s2).asJava
   }
       
   def convert(ent: Entity):org.openprovenance.prov.nf.xml.Entity  ={
@@ -404,10 +403,10 @@ object XmlNfBean {
     
   }
   
-  def convertAttrs(attrList: java.util.List[org.openprovenance.prov.nf.xml.Attr], ns: Namespace) = {
+  def convertAttrs(attrList: java.util.List[org.openprovenance.prov.nf.xml.Attr], ns: Namespace): (Set[LangString], Set[Type], Set[Value], Set[Location], Set[Role], Map[QualifiedName, Set[Other]]) = {
     val attrs=if (attrList==null) Seq() else { attrList.asScala.toSeq }
-    val attrSet=ifNull(attrs).map{attr => makeAttribute(attr.element,attr.value,attr.`type`,ns)} 
-    val (l,t,v,loc,r,m)=split(attrSet)  //(Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]])
+    val attrSet=ifNull(attrs).map{attr => makeAttribute(attr.element,attr.value,attr.`type`,ns)}
+    val (l,t,v,loc,r,m)=split3(attrSet)  //(Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]])
     val langStrings=LangString(l.map(_.getLangString()))
     (langStrings,t,v,loc,r,m)
   }
@@ -553,7 +552,6 @@ object XmlNfBean {
 
   def sortBeans(l: immutable.Seq[org.openprovenance.prov.nf.xml.Statement]): util.LinkedList[org.openprovenance.prov.nf.xml.Statement] = {
     logger.info("sorting statements list (1)")
-    import collection.JavaConverters._
     val ll = l.asJava
     val ll2 = new util.LinkedList[org.openprovenance.prov.nf.xml.Statement]()
     ll2.addAll(ll)
@@ -570,7 +568,6 @@ object XmlNfBean {
     val ll: util.LinkedList[xml.Statement] =sortBeans(beans)
 
     val xmlMapper = new XmlMapper(module)
-    import scala.collection.JavaConverters._
     ll.iterator().asScala.foreach(xmlMapper.writeValue(sw, _))
   }
   
@@ -764,8 +761,8 @@ object XmlNfBean {
   def serializeIntoReadyStream(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.ProxyWithStatements,  prefixes: Boolean) {
     val nfDoc=new org.openprovenance.prov.nf.xml.Document()    
     val statements=doc.getStatements // TODO: what about bundles
-    val beanList: Set[xml.Statement] =statements.map(toBean(_))
-    nfDoc.statements=beanList.toSeq.sorted
+    val beanList: Set[xml.Statement] =statements.map(toBean)
+    nfDoc.statements=beanList.toSeq.sorted.asJava
 
     if (prefixes) {
     	val prefixes=doc.namespace.getPrefixes

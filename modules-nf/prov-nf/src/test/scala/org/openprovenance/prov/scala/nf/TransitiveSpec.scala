@@ -1,14 +1,14 @@
 
 
 
-package org.openprovenance.prov.scala
+package org.openprovenance.prov.scala.nf
 
 import org.openprovenance.prov.scala.immutable.QualifiedName
-import org.openprovenance.prov.scala.nf.TransitiveClosure2
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 
-class TransitiveSpec extends FlatSpec with Matchers {
+class TransitiveSpec extends AnyFlatSpec with Matchers {
 
   def q(s: String) = {
     new QualifiedName("ex", s, "http://example.org/")

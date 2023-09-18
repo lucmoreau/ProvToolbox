@@ -1,14 +1,14 @@
 
-package org.openprovenance.prov.scala
-
-import java.io.File
+package org.openprovenance.prov.scala.nf
 
 import org.openprovenance.prov.scala.immutable.{ProvNInputer, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
-import org.openprovenance.prov.scala.nf.Normalizer
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class Unification2Spec extends FlatSpec with Matchers {
+import java.io.File
+
+class Unification2Spec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
 	def q(local: String) = {

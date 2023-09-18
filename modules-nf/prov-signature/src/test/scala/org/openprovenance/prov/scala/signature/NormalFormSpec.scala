@@ -1,16 +1,17 @@
 
-package org.openprovenance.prov.scala
+package org.openprovenance.prov.scala.signature
 
-import java.io.{ByteArrayOutputStream, File}
-
-import javax.xml.stream.XMLOutputFactory
 import org.openprovenance.prov.scala.immutable.QualifiedName
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.nf.CommandLine
 import org.openprovenance.prov.scala.nf.xml.{XmlBean, XmlSignature}
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-abstract class NormalFormSpec extends FlatSpec with Matchers {
+import java.io.{ByteArrayOutputStream, File}
+import javax.xml.stream.XMLOutputFactory
+
+abstract class NormalFormSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
 

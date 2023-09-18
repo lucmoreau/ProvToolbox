@@ -1,13 +1,13 @@
 
-package org.openprovenance.prov.scala
-
+package org.openprovenance.prov.scala.nf
 
 import org.openprovenance.prov.model.DocumentEquality
 import org.openprovenance.prov.scala.immutable.{Document, Indexer, ProvFactory, QualifiedName}
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 
-class ModelSpec extends FlatSpec with Matchers {
+class ModelSpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val pf= ProvFactory.pf
   val ipf=ProvFactory.pf

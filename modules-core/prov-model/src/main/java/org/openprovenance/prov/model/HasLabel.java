@@ -38,5 +38,5 @@ public interface HasLabel {
      * 
      * @return a List of strings
      */
-    public abstract List<LangString> getLabel();
+    List<LangString> getLabel();
 } 

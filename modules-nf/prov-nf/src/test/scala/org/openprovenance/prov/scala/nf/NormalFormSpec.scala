@@ -1,18 +1,18 @@
 
-package org.openprovenance.prov.scala
+package org.openprovenance.prov.scala.nf
+
+import org.openprovenance.prov.scala.immutable.{Document, ProvNInputer, QualifiedName}
+import org.openprovenance.prov.scala.interop.{FileInput, Input}
+import org.openprovenance.prov.scala.nf.xml.XmlBean
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import java.io.File
 
-import org.openprovenance.prov.scala.immutable.{ProvNInputer, QualifiedName}
-import org.openprovenance.prov.scala.interop.{FileInput, Input}
-import org.openprovenance.prov.scala.nf.xml.XmlBean
-import org.openprovenance.prov.scala.nf.{CommandLine, TransitiveClosure}
-import org.scalatest._
-
-class NormalFormSpec extends FlatSpec with Matchers {
+class NormalFormSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
-	def q(local: String) = {
+	def q(local: String): QualifiedName = {
    new QualifiedName("ex",local,EX_NS)
   }
   "Entity ent1" should "have a normal form" in {
@@ -148,13 +148,13 @@ class NormalFormSpec extends FlatSpec with Matchers {
   }
 
   
-  def nf(f: String) = {
-    val in:Input=new FileInput(new File(f))
+  def nf(f: String): DocumentProxy = {
+    val in:Input=FileInput(new File(f))
 	  val doc=CommandLine.parseDocumentToNormalForm(in)
 	  doc
   }
-  def readDoc(f: String) = {
-    val in:Input=new FileInput(new File(f))
+  def readDoc(f: String): Document = {
+    val in:Input=FileInput(new File(f))
     val doc=new ProvNInputer().input(in,Map())
     doc
   }

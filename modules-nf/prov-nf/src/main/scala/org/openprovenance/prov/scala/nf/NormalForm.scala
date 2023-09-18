@@ -1,13 +1,13 @@
 package org.openprovenance.prov.scala.nf
 
 import java.io.File
-
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.model.StatementOrBundle.Kind._
 import org.openprovenance.prov.model.exception.ParserException
+import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
-import org.openprovenance.prov.scala.immutable._
+import org.openprovenance.prov.scala.immutable.{Kind, _}
 import org.openprovenance.prov.scala.interop.{FileInput, Input, StandardInput, StreamInput}
 import org.openprovenance.prov.scala.nf.Denormalize.{complete_args_list, elements_args_list, oneCombination, someCombinations}
 import org.openprovenance.prov.scala.nf.KeyIndexer.notKeyable
@@ -19,22 +19,22 @@ import org.parboiled2.ParseError
 import org.openprovenance.prov.scala.nf.StatementIndexer.extend
 
 import scala.beans.BeanProperty
-import scala.collection.JavaConversions.seqAsJavaList
+import scala.jdk.CollectionConverters._
 import scala.io.BufferedSource
 import scala.util.{Failure, Success}
 
 trait HasLocation {
-  def getLocation(): java.util.List[org.openprovenance.prov.model.Location] = location.toSeq
+  def getLocation(): java.util.List[org.openprovenance.prov.model.Location] = location.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Location]].asJava
   val location: Set[Location]
 }
 
 trait HasRole {
-  def getRole(): java.util.List[org.openprovenance.prov.model.Role] = role.toSeq
+  def getRole(): java.util.List[org.openprovenance.prov.model.Role] = role.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Role]].asJava
   val role: Set[Role]
 }
 
 trait HasLabel {
-  def getLabel(): java.util.List[org.openprovenance.prov.model.LangString] = label.toSeq
+  def getLabel(): java.util.List[org.openprovenance.prov.model.LangString] = label.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.LangString]].asJava
 
   val label: Set[LangString]
 }
@@ -47,7 +47,7 @@ trait HasOther {
     val setnil: Set[Other] = Set()
     def op(s: Set[Other], entry: (QualifiedName, Set[Other])): Set[Other] = { s ++ entry._2 }
     val set: Set[Other] = other.foldLeft(setnil)(op)
-    set.toSeq
+    set.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Other]].asJava
   }
 
 }
@@ -65,7 +65,7 @@ trait HasValue {
 trait HasType {
   val typex: Set[Type]
 
-  def getType(): java.util.List[org.openprovenance.prov.model.Type] = typex.toSeq
+  def getType(): java.util.List[org.openprovenance.prov.model.Type] = typex.toSeq.asInstanceOf[Seq[org.openprovenance.prov.model.Type]].asJava
 }
 
 trait SingleIdentifiable extends Identifiable //extends org.openprovenance.prov.scala.immutable.Identifiable 
@@ -81,7 +81,7 @@ trait MultiIdentifiable extends Identifiable //extends org.openprovenance.prov.s
 trait Identifiable {
   def idSets(): Set[Set[QualifiedName]]
 
-  def optionalId(id: QualifiedName, sb: StringBuilder) = {
+  def optionalId(id: QualifiedName, sb: StringBuilder):Unit = {
     if (id != null) {
       sb ++= id.toString()
       sb += ';'
@@ -94,7 +94,7 @@ trait Identifiable {
     }
   }
 
-  def idOrMarker(set: Set[QualifiedName], sb: StringBuilder) = {
+  def idOrMarker(set: Set[QualifiedName], sb: StringBuilder): Unit = {
     if (set != null) {
       set.addString(sb, "{", ",", "}")
       //sb++=set.toString()
@@ -103,7 +103,7 @@ trait Identifiable {
     }
   }
 
-  def timeOrMarker(time: Set[XMLGregorianCalendar], sb: StringBuilder) {
+  def timeOrMarker(time: Set[XMLGregorianCalendar], sb: StringBuilder): Unit = {
     if (time != null) {
       time.addString(sb, "{", ",", "}") //sb++=time.toString()
     } else { sb += '-' }
@@ -113,8 +113,8 @@ trait Identifiable {
   //      if (q==null) None else Some(q)
   //}
 
-  def mapMerge(map1: Map[QualifiedName, Set[Other]], map2: Map[QualifiedName, Set[Other]]) = {
-    (map1.toSet ++ map2.toSet).groupBy(_._1).mapValues(x => x.flatMap(_._2).toSet)
+  def mapMerge(map1: Map[QualifiedName, Set[Other]], map2: Map[QualifiedName, Set[Other]]): Map[QualifiedName, Set[Other]] = {
+    (map1.toSet ++ map2.toSet).groupBy(_._1).view.mapValues(x => x.flatMap(_._2).toSet).toMap
   }
 
 }
@@ -425,7 +425,7 @@ trait ImmutableWasGeneratedBy extends Relation with MultiIdentifiable with HasLa
     pr(pr(pr(pr(pr(pr(pr(h(id), h(activity)), h(entity)), h(location)), h(label)), h(typex)), h(role)), h(other))
 
   }
-  def idSets() = {
+  def idSets(): Set[Set[QualifiedName]] = {
     Set(id, entity, activity)
   }
 
@@ -434,7 +434,7 @@ trait ImmutableWasGeneratedBy extends Relation with MultiIdentifiable with HasLa
   }
 
 
-  def toNotation(sb: StringBuilder) {
+  def toNotation(sb: StringBuilder): Unit = {
     sb ++= "wasGeneratedBy("
     optionalId(id, sb)
     idOrMarker(entity, sb)
@@ -455,7 +455,7 @@ trait ImmutableUsed extends Relation with MultiIdentifiable with HasLabel with H
   val activity: Set[QualifiedName]
 
   val time: Set[javax.xml.datatype.XMLGregorianCalendar]
-  def getTime() = time
+  def getTime(): Set[XMLGregorianCalendar] = time
 
   @BeanProperty
   val kind = PROV_USAGE
@@ -587,25 +587,25 @@ trait ImmutableWasStartedBy extends Relation with MultiIdentifiable with HasLoca
   val starter: Set[QualifiedName]
 
   val time: Set[javax.xml.datatype.XMLGregorianCalendar]
-  def getTime() = time
+  def getTime(): Set[XMLGregorianCalendar] = time
 
   @BeanProperty
   val kind = PROV_START
-  val enumType = Kind.wsb
+  val enumType: Kind.Value = Kind.wsb
 
-  def getCause() = trigger
-  def getEffect() = activity
+  def getCause(): Set[QualifiedName] = trigger
+  def getEffect(): Set[QualifiedName] = activity
 
-  def getActivity() = activity
-  def getTrigger() = trigger
-  def getStarter() = starter
+  def getActivity(): Set[QualifiedName] = activity
+  def getTrigger(): Set[QualifiedName] = trigger
+  def getStarter(): Set[QualifiedName] = starter
 
   def setActivity(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
   def setTrigger(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
   def setStarter(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
   def setTime(x$1: javax.xml.datatype.XMLGregorianCalendar): Unit = throw new UnsupportedOperationException
 
-  def canEqual(a: Any) = a.isInstanceOf[ImmutableWasStartedBy]
+  private def canEqual(a: Any): Boolean = a.isInstanceOf[ImmutableWasStartedBy]
 
   override def equals(that: Any): Boolean =
     that match {
@@ -626,13 +626,13 @@ trait ImmutableWasStartedBy extends Relation with MultiIdentifiable with HasLoca
     pr(pr(pr(pr(pr(pr(pr(pr(h(id), h(activity)), h(trigger)), h(starter)), h(time)), h(location)), h(label)), h(typex)), h(other))
 
   }
-  def idSets() = {
+  def idSets(): Set[Set[QualifiedName]] = {
     Set(id, activity, trigger, starter)
   }
 
 
 
-  def getAttributes () :Set[Attribute]= {
+  def getAttributes (): Set[Attribute]= {
     label.map(l =>new Label(pf.prov_label,l).asInstanceOf[Attribute])++location++typex++role++other.values.flatten
   }
 
@@ -1074,7 +1074,7 @@ trait ImmutableWasInformedBy extends Relation with MultiIdentifiable with HasLab
     label.map(l =>new Label(pf.prov_label,l).asInstanceOf[Attribute])++typex++other.values.flatten
   }
 
-  def toNotation(sb: StringBuilder) {
+  def toNotation(sb: StringBuilder): Unit = {
     sb ++= "wasInformedBy("
     optionalId(id, sb)
     idOrMarker(informed, sb)
@@ -1096,11 +1096,11 @@ trait ImmutableWasInfluencedBy extends Relation with MultiIdentifiable with HasL
   val kind = PROV_INFLUENCE
   val enumType = Kind.winfl
 
-  def getCause() = influencer
-  def getEffect() = influencee
+  def getCause(): Set[QualifiedName] = influencer
+  def getEffect(): Set[QualifiedName] = influencee
 
-  def getInfluencer() = influencer
-  def getInfluencee() = influencee
+  def getInfluencer(): Set[QualifiedName] = influencer
+  def getInfluencee(): Set[QualifiedName] = influencee
 
   def setInfluencee(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
   def setInfluencer(x$1: org.openprovenance.prov.model.QualifiedName) = throw new UnsupportedOperationException
@@ -1287,7 +1287,7 @@ trait Serial[TYPE <: org.openprovenance.prov.scala.immutable.Statement] {
         pf.newWasAssociatedWith(waw.id, waw.activity, waw.agent, waw.plan, attr ++ org.openprovenance.prov.scala.immutable.Attribute(pf.getAttributes(waw))).asInstanceOf[TERM]
       case del: org.openprovenance.prov.scala.immutable.ActedOnBehalfOf =>
         pf.newActedOnBehalfOf(del.id, del.delegate, del.responsible, del.activity, attr ++ org.openprovenance.prov.scala.immutable.Attribute(pf.getAttributes(del))).asInstanceOf[TERM]
-
+      case _ => throw new IllegalStateException("Unknown statement type")
     }
   }
 }
@@ -1304,16 +1304,16 @@ class Entity(val id: Set[QualifiedName],
   }
 
   override
-  def merge(ent: Entity) = {
+  def merge(ent: Entity): Entity = {
     new Entity(id ++ ent.id, label ++ ent.label, typex ++ ent.typex, value ++ ent.value, location ++ ent.location, mapMerge(other, ent.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.Entity] = {
     if (value.size > 1) {
-      val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ other.values.flatten
+      val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ other.values.flatten).asInstanceOf[Set[Attribute]]
       id.toList.flatMap(id1 => addToFirst(value.toList.map((v: Attribute) => pf.newEntity(id1, Set(v))), attr))
     } else {
-      val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ value ++ location ++ other.values.flatten
+      val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ value ++ location ++ other.values.flatten).asInstanceOf[Set[Attribute]]
       id.map(id1 => pf.newEntity(id1, attr)).toList
     }
   }
@@ -1335,16 +1335,16 @@ class Agent(val id: Set[QualifiedName],
     this(Set(ag.id), ag.label, ag.typex, Set(ag.value).flatten, ag.location, ag.other)
   }
 
-  def merge(ag: Agent) = {
+  def merge(ag: Agent): Agent = {
     new Agent(id, label ++ ag.label, typex ++ ag.typex, value ++ ag.value, location ++ ag.location, mapMerge(other, ag.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.Agent] = {
     if (value.size > 1) {
-      val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ other.values.flatten
+      val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ other.values.flatten).asInstanceOf[Set[Attribute]]
       id.toList.flatMap(id1 => addToFirst(value.toList.map((v: Attribute) => pf.newAgent(id1, Set(v))), attr))
     } else {
-      val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ value ++ location ++ other.values.flatten
+      val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ value ++ location ++ other.values.flatten).asInstanceOf[Set[Attribute]]
       id.toList.map(id1 => pf.newAgent(id1, attr))
     }
   }
@@ -1371,13 +1371,13 @@ class Activity(val id: Set[QualifiedName],
     this(Set(act.id), Set(act.startTime).flatten, Set(act.endTime).flatten, act.label, act.typex, act.location, act.other)
   }
 
-  def merge(act: Activity) = {
+  def merge(act: Activity): Activity = {
     new Activity(id, startTime ++ act.startTime, endTime ++ act.endTime, label ++ act.label, typex ++ act.typex, location ++ act.location, mapMerge(other, act.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.Activity] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons2(startTime, MX_Cons2(endTime, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     id.toList.flatMap(id1 => addToFirst(oneCombination(complete_args_list(elements_args_list(ll1))).map(createActivity(id1, _)), attr))
 
   }
@@ -1402,13 +1402,13 @@ class WasDerivedFrom(val id: Set[QualifiedName],
     this(nullOption(wdf.id), Set(wdf.generatedEntity), Set(wdf.usedEntity), nullOption(wdf.activity), nullOption(wdf.generation), nullOption(wdf.usage), wdf.label, wdf.typex, wdf.other)
   }
 
-  def merge(wdf: WasDerivedFrom) = {
+  def merge(wdf: WasDerivedFrom): WasDerivedFrom = {
     new WasDerivedFrom(id++wdf.id, generatedEntity ++ wdf.generatedEntity, usedEntity ++ wdf.usedEntity, activity ++ wdf.activity, generation ++ wdf.generation, usage ++ wdf.usage, label ++ wdf.label, typex ++ wdf.typex, mapMerge(other, wdf.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasDerivedFrom] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(generatedEntity, MX_Cons1(usedEntity, MX_Cons1(activity, MX_Cons1(generation, MX_Cons1(usage, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]())))))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createWasDerivedFrom(id1, _)), attr))
   }
 
@@ -1436,13 +1436,13 @@ class WasGeneratedBy(val id: Set[QualifiedName],
     this(nullOption(wgb.id), Set(wgb.entity), nullOption(wgb.activity), Set(wgb.time).flatten, wgb.label, wgb.typex, wgb.location, wgb.role, wgb.other)
   }
 
-  def merge(wgb: WasGeneratedBy) = {
+  def merge(wgb: WasGeneratedBy): WasGeneratedBy = {
     new WasGeneratedBy(id++wgb.id, entity ++ wgb.entity, activity ++ wgb.activity, time ++ wgb.time, label ++ wgb.label, typex ++ wgb.typex, location ++ wgb.location, role ++ wgb.role, mapMerge(other, wgb.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasGeneratedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(entity, MX_Cons1(activity, MX_Cons2(time, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]())))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createWasGeneratedBy(id1, _)), attr))
   }
 
@@ -1469,13 +1469,13 @@ class Used(val id: Set[QualifiedName],
     this(nullOption(usd.id), Set(usd.activity), nullOption(usd.entity), Set(usd.time).flatten, usd.label, usd.typex, usd.location, usd.role, usd.other)
   }
 
-  def merge(usd: Used) = {
+  def merge(usd: Used): Used = {
     new Used(id ++ usd.id, activity ++ usd.activity, entity ++ usd.entity, time ++ usd.time, label ++ usd.label, typex ++ usd.typex, location ++ usd.location, role ++ usd.role, mapMerge(other, usd.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.Used] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(activity, MX_Cons1(entity, MX_Cons2(time, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]())))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createUsed(id1, _)), attr))
   }
 
@@ -1502,13 +1502,13 @@ class WasInvalidatedBy(val id: Set[QualifiedName],
     this(nullOption(wib.id), Set(wib.entity), nullOption(wib.activity), Set(wib.time).flatten, wib.label, wib.typex, wib.location, wib.role, wib.other)
   }
 
-  def merge(wib: WasInvalidatedBy) = {
+  def merge(wib: WasInvalidatedBy): WasInvalidatedBy = {
     new WasInvalidatedBy(id ++ wib.id, entity ++ wib.entity, activity ++ wib.activity, time ++ wib.time, label ++ wib.label, typex ++ wib.typex, location ++ wib.location, role ++ wib.role, mapMerge(other, wib.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasInvalidatedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(entity, MX_Cons1(activity, MX_Cons2(time, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]())))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createWasInvalidatedBy(id1, _)), attr))
   }
 
@@ -1537,13 +1537,13 @@ class WasStartedBy(val id: Set[QualifiedName],
     this(nullOption(wsb.id), Set(wsb.activity), nullOption(wsb.trigger), nullOption(wsb.starter), Set(wsb.time).flatten, wsb.label, wsb.typex, wsb.location, wsb.role, wsb.other)
   }
 
-  def merge(wsb: WasStartedBy) = {
+  def merge(wsb: WasStartedBy): WasStartedBy = {
     new WasStartedBy(id ++ wsb.id, activity ++ wsb.activity, trigger ++ wsb.trigger, starter ++ wsb.starter, time ++ wsb.time, label ++ wsb.label, typex ++ wsb.typex, location ++ wsb.location, role ++ wsb.role, mapMerge(other, wsb.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasStartedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(activity, MX_Cons1(trigger, MX_Cons1(starter, MX_Cons2(time, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createWasStartedBy(id1, _)), attr))
   }
 
@@ -1572,13 +1572,13 @@ class WasEndedBy(val id: Set[QualifiedName],
     this(nullOption(web.id), Set(web.activity), nullOption(web.trigger), nullOption(web.ender), Set(web.time).flatten, web.label, web.typex, web.location, web.role, web.other)
   }
 
-  def merge(web: WasEndedBy) = {
+  def merge(web: WasEndedBy): WasEndedBy = {
     new WasEndedBy(id ++ web.id, activity ++ web.activity, trigger ++ web.trigger, ender ++ web.ender, time ++ web.time, label ++ web.label, typex ++ web.typex, location ++ web.location, role ++ web.role, mapMerge(other, web.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasEndedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(activity, MX_Cons1(trigger, MX_Cons1(ender, MX_Cons2(time, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ location ++ role ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createWasEndedBy(id1, _)), attr))
   }
 
@@ -1600,13 +1600,13 @@ class ActedOnBehalfOf(val id: Set[QualifiedName],
     this(nullOption(aobo.id), Set(aobo.delegate), Set(aobo.responsible), nullOption(aobo.activity), aobo.label, aobo.typex, aobo.other)
   }
 
-  def merge(aobo: ActedOnBehalfOf) = {
+  def merge(aobo: ActedOnBehalfOf): ActedOnBehalfOf = {
     new ActedOnBehalfOf(id, delegate ++ aobo.delegate, responsible ++ aobo.responsible, activity ++ aobo.activity, label ++ aobo.label, typex ++ aobo.typex, mapMerge(other, aobo.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.ActedOnBehalfOf] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(delegate, MX_Cons1(responsible, MX_Cons1(activity, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]())))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createActedOnBehalfOf(id1, _)), attr))
   }
 
@@ -1628,13 +1628,13 @@ class WasAssociatedWith(val id: Set[QualifiedName],
     this(nullOption(waw.id), Set(waw.activity), nullOption(waw.agent), nullOption(waw.plan), waw.label, waw.typex, waw.role, waw.other)
   }
 
-  def merge(waw: WasAssociatedWith) = {
+  def merge(waw: WasAssociatedWith): WasAssociatedWith = {
     new WasAssociatedWith(id, activity ++ waw.activity, agent ++ waw.agent, plan ++ waw.plan, label ++ waw.label, typex ++ waw.typex, role ++ waw.role, mapMerge(other, waw.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasAssociatedWith] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(activity, MX_Cons1(agent, MX_Cons1(plan, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]())))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ role ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ role ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, complete_args_list(elements_args_list(ll1))).map(createWasAssociatedWith(id1, _)), attr))
   }
 
@@ -1654,13 +1654,13 @@ class WasAttributedTo(val id: Set[QualifiedName],
     this(nullOption(wat.id), Set(wat.entity), Set(wat.agent), wat.label, wat.typex, wat.other)
   }
 
-  def merge(wat: WasAttributedTo) = {
+  def merge(wat: WasAttributedTo): WasAttributedTo = {
     new WasAttributedTo(id, entity ++ wat.entity, agent ++ wat.agent, label ++ wat.label, typex ++ wat.typex, mapMerge(other, wat.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasAttributedTo] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(entity, MX_Cons1(agent, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createWasAttributedTo(id1, _)), attr))
   }
 
@@ -1680,13 +1680,13 @@ class SpecializationOf(val id: Set[QualifiedName],
     this(nullOption(spec.id), Set(spec.specificEntity), Set(spec.generalEntity), spec.label, spec.typex, spec.other)
   }
 
-  def merge(spe: SpecializationOf) = {
+  def merge(spe: SpecializationOf): SpecializationOf = {
     new SpecializationOf(id, specificEntity ++ spe.specificEntity, generalEntity ++ spe.generalEntity, label ++ spe.label, typex ++ spe.typex, mapMerge(other, spe.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.SpecializationOf] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(specificEntity, MX_Cons1(generalEntity, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createSpecializationOf(id1, _)), attr))
   }
 
@@ -1707,13 +1707,13 @@ class AlternateOf(val id: Set[QualifiedName],
     this(nullOption(alt.id), Set(alt.alternate1), Set(alt.alternate2), alt.label, alt.typex, alt.other)
   }
 
-  def merge(alt: AlternateOf) = {
+  def merge(alt: AlternateOf): AlternateOf = {
     new AlternateOf(id, alternate1 ++ alt.alternate1, alternate2 ++ alt.alternate2, label ++ alt.label, typex ++ alt.typex, mapMerge(other, alt.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.AlternateOf] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(alternate1, MX_Cons1(alternate2, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createAlternateOf(id1, _)), attr))
   }
 
@@ -1734,13 +1734,13 @@ class WasInformedBy(val id: Set[QualifiedName],
     this(nullOption(winfb.id), Set(winfb.informed), Set(winfb.informant), winfb.label, winfb.typex, winfb.other)
   }
 
-  def merge(winfb: WasInformedBy) = {
+  def merge(winfb: WasInformedBy): WasInformedBy = {
     new WasInformedBy(id, informed ++ winfb.informed, informant ++ winfb.informant, label ++ winfb.label, typex ++ winfb.typex, mapMerge(other, winfb.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasInformedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(informed, MX_Cons1(informant, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createWasInformedBy(id1, _)), attr))
   }
 
@@ -1760,13 +1760,13 @@ class WasInfluencedBy(val id: Set[QualifiedName],
     this(nullOption(winflb.id), Set(winflb.influencee), Set(winflb.influencer), winflb.label, winflb.typex, winflb.other)
   }
 
-  def merge(winflb: WasInfluencedBy) = {
+  def merge(winflb: WasInfluencedBy): WasInfluencedBy = {
     new WasInfluencedBy(id, influencee ++ winflb.influencee, influencer ++ winflb.influencer, label ++ winflb.label, typex ++ winflb.typex, mapMerge(other, winflb.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.WasInfluencedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(influencee, MX_Cons1(influencer, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel()) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createWasInfluencedBy(id1, _)), attr))
   }
 
@@ -1787,13 +1787,13 @@ class HadMember(val id: Set[QualifiedName],
     this(nullOption(mem.id), Set(mem.collection), mem.entity, mem.label, mem.typex, mem.other)
   }
 
-  def merge(mem: HadMember) = {
+  def merge(mem: HadMember): HadMember = {
     new HadMember(id, collection ++ mem.collection, entity ++ mem.entity, label ++ mem.label, typex ++ mem.typex, mapMerge(other, mem.other))
   }
 
-  def toTerms() = {
+  def toTerms(): List[immutable.HadMember] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(collection, MX_Cons1(entity, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = label.map(_.toLabel) ++ typex ++ other.values.flatten
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createHadMember(id1, _)), attr))
   }
 
@@ -1821,7 +1821,7 @@ class Bundle(val id: Set[QualifiedName],
   val kind = PROV_BUNDLE
   val enumType = Kind.bun
 
-  def canEqual(a: Any) = a.isInstanceOf[Bundle]
+  def canEqual(a: Any): Boolean = a.isInstanceOf[Bundle]
 
   override def equals(that: Any): Boolean =
     that match {
@@ -1835,13 +1835,13 @@ class Bundle(val id: Set[QualifiedName],
     pr(h(id), h(statement))
   }
 
-  def setNamespace(x: org.openprovenance.prov.model.Namespace) {
+  def setNamespace(x: org.openprovenance.prov.model.Namespace): Unit = {
     throw new UnsupportedOperationException
   }
-  def idSets() = {
+  def idSets(): Set[Set[QualifiedName]] = {
     Set(id)
   }
-  def toNotation(sb: StringBuilder) {
+  def toNotation(sb: StringBuilder): Unit = {
     sb ++= "bundle "
     sb ++= id.toString()
     sb += '\n'
@@ -1862,7 +1862,7 @@ class Bundle(val id: Set[QualifiedName],
 
   // See https://github.com/scala/scala/blob/v2.10.2/src/library/scala/collection/TraversableOnce.scala#L316
   // extended to support a stringbuilder
-  def addString2[T <: Statement](b: StringBuilder, set: TraversableOnce[T], start: String, sep: String, end: String): StringBuilder = {
+  def addString2[T <: Statement](b: StringBuilder, set: IterableOnce[T], start: String, sep: String, end: String): StringBuilder = {
     var first = true
 
     b append start
@@ -1988,7 +1988,7 @@ object Normalizer {
   }
 
 
-  def makeIndex(ss: Set[Statement], key: Statement=>Any, activeKey: Any=>Boolean) = {
+  def makeIndex(ss: Set[Statement], key: Statement=>Any, activeKey: Any=>Boolean): Map[IndexingPair, Set[Statement]] = {
     val grp=ss.groupBy { s => IndexingPair(key(s),s.kind) }
 
     val index=grp.map{case (k,s)=>(k,if (activeKey(k.k)) Set(mergeList2(s)) else s)}  // merge if we have an id!
@@ -1996,12 +1996,12 @@ object Normalizer {
     index
   }
 
-  def applyPartition(index: Map[IndexingPair, Set[Statement]]) = {
+  def applyPartition(index: Map[IndexingPair, Set[Statement]]): Iterable[Set[QualifiedName]] = {
     index.values.flatMap{_.flatMap(_.idSets())}
   }
 
 
-  def index_membership(ss: Set[Statement], key: Statement=>Any, activeKey: Any=>Boolean, equiv_init: Set[Set[QualifiedName]]) = {
+  def index_membership(ss: Set[Statement], key: Statement=>Any, activeKey: Any=>Boolean, equiv_init: Set[Set[QualifiedName]]): (Map[IndexingPair, Set[Statement]], Map[QualifiedName, Set[QualifiedName]]) = {
 
     val index=makeIndex(ss,key,activeKey)
 
@@ -2013,7 +2013,7 @@ object Normalizer {
     (index,psi)
   }
 
-  def index_membership1(ss: Set[Statement], equiv_init: Set[Set[QualifiedName]]=Set()) = {
+  def index_membership1(ss: Set[Statement], equiv_init: Set[Set[QualifiedName]]=Set()): (Map[IndexingPair, Set[Statement]], Map[QualifiedName, Set[QualifiedName]]) = {
     index_membership(ss,
       s=>s.asInstanceOf[MultiIdentifiable].id,
       {idset:Any=>idset.asInstanceOf[Set[QualifiedName]].nonEmpty},
@@ -2021,7 +2021,7 @@ object Normalizer {
   }
 
 
-  def index_membership2(ss: Set[Statement], equiv_init: Set[Set[QualifiedName]]=Set()) = {
+  def index_membership2(ss: Set[Statement], equiv_init: Set[Set[QualifiedName]]=Set()): (Map[IndexingPair, Set[Statement]], Map[QualifiedName, Set[QualifiedName]]) = {
     index_membership(ss,
       s=> s match {
         case wgb:WasGeneratedBy   => if (wgb.entity.isEmpty || wgb.activity.isEmpty)  None else Some(ComplexKey(wgb))
@@ -2665,30 +2665,30 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
   }
 
 
-  def mapMerge[T](map1: Map[ComplexKey[T], Set[T]], map2: Map[ComplexKey[T], Set[T]]) = {
-    (map1.toSet ++ map2.toSet).groupBy(_._1).mapValues(x => x.flatMap(_._2).toSet)
+  def mapMerge[T](map1: Map[ComplexKey[T], Set[T]], map2: Map[ComplexKey[T], Set[T]]): Map[ComplexKey[T], Set[T]] = {
+    (map1.toSet ++ map2.toSet).groupBy(_._1).view.mapValues(x => x.flatMap(_._2).toSet).toMap
   }
-  def mapMerge2[T](map1: Map[ComplexKey[T], Set[T]], set: Set[(ComplexKey[T],Set[T])]) = {
-    (map1.toSet ++ set).groupBy(_._1).mapValues(x => x.flatMap(_._2).toSet)
+  private def mapMerge2[T](map1: Map[ComplexKey[T], Set[T]], set: Set[(ComplexKey[T],Set[T])]) = {
+    (map1.toSet ++ set).groupBy(_._1).view.mapValues(x => x.flatMap(_._2).toSet).toMap
   }
 
   def unify(m: Map[QualifiedName, Set[QualifiedName]]): KeyIndexer = {
     new KeyIndexer(new NoIdStatementIndexer(nisi.statements.map(_.unify(m))),
       si.unify(m),
-      wasGeneratedBy.mapValues { x => x.map(_.unify(m))},
-      wasInvalidatedBy.mapValues { x => x.map(_.unify(m))},
-      wasStartedBy.mapValues { x => x.map(_.unify(m))},
-      wasEndedBy.mapValues { x => x.map(_.unify(m))},
+      wasGeneratedBy.view.mapValues { x => x.map(_.unify(m))}.toMap,
+      wasInvalidatedBy.view.mapValues { x => x.map(_.unify(m))}.toMap,
+      wasStartedBy.view.mapValues { x => x.map(_.unify(m))}.toMap,
+      wasEndedBy.view.mapValues { x => x.map(_.unify(m))}.toMap,
       namespace)
   }
 
-  def idSets() = {
-    val ids1=wasGeneratedBy.  values.flatMap(wgbs => wgbs.flatMap(_.idSets))
-    val ids2=wasInvalidatedBy.values.flatMap(wibs => wibs.flatMap(_.idSets))
-    val ids3=wasStartedBy.    values.flatMap(wsbs => wsbs.flatMap(_.idSets))
-    val ids4=wasEndedBy.      values.flatMap(webs => webs.flatMap(_.idSets))
+  def idSets(): Iterable[Set[QualifiedName]] = {
+    val ids1=wasGeneratedBy.  values.flatMap(wgbs => wgbs.flatMap(_.idSets()))
+    val ids2=wasInvalidatedBy.values.flatMap(wibs => wibs.flatMap(_.idSets()))
+    val ids3=wasStartedBy.    values.flatMap(wsbs => wsbs.flatMap(_.idSets()))
+    val ids4=wasEndedBy.      values.flatMap(webs => webs.flatMap(_.idSets()))
 
-    val sets=ids1++ids2++ids3++ids4++si.idSets()++nisi.statements.flatMap(_.idSets)
+    val sets=ids1++ids2++ids3++ids4++si.idSets()++nisi.statements.flatMap(_.idSets())
 
     val ks1=wasGeneratedBy.  map{case (k,wgbs) =>wgbs.flatMap(_.id)}
     val ks2=wasInvalidatedBy.map{case (k,wibs) =>wibs.flatMap(_.id)}
@@ -2700,7 +2700,7 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
   }
 
 
-  def keyConstraints() = {
+  def keyConstraints(): KeyIndexer = {
     val sets=idSets()
 
     val tc = new TransitiveClosure[QualifiedName]
@@ -2725,10 +2725,10 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
     //val allOthers=nisi.statements.filter(notKeyable)
     val ki= new KeyIndexer(new NoIdStatementIndexer(web_no), // allOthers++wgb_no++wib_no++usd_no++wsb_no++web_no
       si,
-      mapMerge2(wasGeneratedBy,  wgb_yes.map { wgb => (ComplexKey(wgb),Set(wgb))}).mapValues{s => Set(s.foldLeft(new WasGeneratedBy())((a,b) => a.merge(b)))},
-      mapMerge2(wasInvalidatedBy,wib_yes.map { wib => (ComplexKey(wib),Set(wib))}).mapValues{s => Set(s.foldLeft(new WasInvalidatedBy())((a,b) => a.merge(b)))},
-      mapMerge2(wasStartedBy,    wsb_yes.map { wsb => (ComplexKey(wsb),Set(wsb))}).mapValues{s => Set(s.foldLeft(new WasStartedBy())((a,b) => a.merge(b)))},
-      mapMerge2(wasEndedBy,      web_yes.map { web => (ComplexKey(web),Set(web))}).mapValues{s => Set(s.foldLeft(new WasEndedBy())((a,b) => a.merge(b)))},
+      mapMerge2(wasGeneratedBy,  wgb_yes.map { wgb => (ComplexKey(wgb),Set(wgb))}).view.mapValues{s => Set(s.foldLeft(new WasGeneratedBy())((a,b) => a.merge(b)))}.toMap,
+      mapMerge2(wasInvalidatedBy,wib_yes.map { wib => (ComplexKey(wib),Set(wib))}).view.mapValues{s => Set(s.foldLeft(new WasInvalidatedBy())((a,b) => a.merge(b)))}.toMap,
+      mapMerge2(wasStartedBy,    wsb_yes.map { wsb => (ComplexKey(wsb),Set(wsb))}).view.mapValues{s => Set(s.foldLeft(new WasStartedBy())((a,b) => a.merge(b)))}.toMap,
+      mapMerge2(wasEndedBy,      web_yes.map { web => (ComplexKey(web),Set(web))}).view.mapValues{s => Set(s.foldLeft(new WasEndedBy())((a,b) => a.merge(b)))}.toMap,
       namespace)
 
     //println(wgb_yes)
@@ -2746,7 +2746,7 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
     ki.unify(part)
   }
 
-  def toDocument() = {
+  def toDocument(): Document = {
     val ll1 = si.values.filter{x => notKeyable(x)}.map(_.toTerms).flatMap { x => x }
     val ll2 = nisi.statements.flatMap(_.toTerms)
     val ll3=wasGeneratedBy.values.flatMap( x=>x ).map(_.toTerms).flatMap { x => x } ++
@@ -2755,11 +2755,7 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
       wasEndedBy.values.flatMap( x=>x ).map(_.toTerms).flatMap { x => x }             // TODO: I don't understand why I have 2 levels of brackets
 
 
-    //    println(ll1)
-    //    println(ll2)
-    //    println(ll3)
-
-    val ss: Set[org.openprovenance.prov.scala.immutable.StatementOrBundle] = ll2 ++ ll1 ++ ll3
+    val ss: Set[org.openprovenance.prov.scala.immutable.StatementOrBundle] = (ll2 ++ ll1 ++ ll3).asInstanceOf[Set[org.openprovenance.prov.scala.immutable.StatementOrBundle]]
     new org.openprovenance.prov.scala.immutable.Document(ss, namespace)
 
   }
@@ -2771,7 +2767,7 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
 class DocumentProxyFromStatements(val statements: Set[Statement],
                                   val bundles: Set[Bundle],
                                   @BeanProperty val namespace: Namespace) extends HasNamespace with Hashable with ProxyWithStatements {
-  def canEqual(a: Any) = a.isInstanceOf[DocumentProxyFromStatements]
+  private def canEqual(a: Any): Boolean = a.isInstanceOf[DocumentProxyFromStatements]
 
   def getStatements (): Set[Statement] = {
     statements
@@ -2789,7 +2785,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
     h(statements) + h(bundles)
   }
 
-  def addString1[T <: Statement](b: StringBuilder, set: TraversableOnce[T], start: String, sep: String, end: String): StringBuilder = {
+  def addString1[T <: Statement](b: StringBuilder, set: IterableOnce[T], start: String, sep: String, end: String): StringBuilder = {
     var first = true
 
     b append start
@@ -2805,7 +2801,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
     b append end
     b
   }
-  def addString2(b: StringBuilder, set: TraversableOnce[Bundle], start: String, sep: String, end: String): StringBuilder = {
+  def addString2(b: StringBuilder, set: IterableOnce[Bundle], start: String, sep: String, end: String): StringBuilder = {
     var first = true
 
     b append start
@@ -2822,7 +2818,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
     b
   }
 
-  def toNotation(sb: StringBuilder) {
+  def toNotation(sb: StringBuilder): Unit = {
     Namespace.withThreadNamespace(namespace)
     sb ++= "normalForm\n"
     printNamespace(sb)
@@ -2952,7 +2948,7 @@ class DocumentProxy(val statement: NoIdStatementIndexer, //Set[Statement],
     val ll1 = indexer.values.map(_.toTerms).flatMap { x => x }
     val ll2 = statement.statements.flatMap(_.toTerms)
 
-    val ss: Set[org.openprovenance.prov.scala.immutable.StatementOrBundle] = ll2 ++ ll1
+    val ss: Set[org.openprovenance.prov.scala.immutable.StatementOrBundle] = (ll2 ++ ll1).asInstanceOf[Set[org.openprovenance.prov.scala.immutable.StatementOrBundle]]
     new org.openprovenance.prov.scala.immutable.Document(ss, namespace)
   }
 

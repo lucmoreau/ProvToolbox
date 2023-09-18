@@ -6,7 +6,8 @@ public class Formats {
      * Some of these serializations can be input, output, or both. */
 
     static public enum ProvFormat {
-        PROVN, XML, TURTLE, RDFXML, TRIG, JSON, JSONLD, DOT, JPEG, PNG, SVG, PDF
+        PROVN, XML, TURTLE, RDFXML, TRIG, // TURTLE, RDFXML, TRIG no longer supported by provtoolbox, lead to exceptions at invocation time
+        JSON, JSONLD, DOT, JPEG, PNG, SVG, PDF
     }
 
     static public enum ProvFormatType {

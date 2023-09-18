@@ -35,7 +35,7 @@ def allPairsShortestPath(nodes: Set[Int], links: Map[Int, Set[Int]]): Map[Int, M
     }
 
   // Helper function to carve out paths from the next vertex matrix.
-  def extractPath(path: ArrayBuffer[Int], i: Int, j: Int) {
+  def extractPath(path: ArrayBuffer[Int], i: Int, j: Int): Unit = {
     if (ds(i)(j) == inf) return
     val k = ns(i)(j)
     if (k != -1) {
@@ -57,7 +57,7 @@ def allPairsShortestPath(nodes: Set[Int], links: Map[Int, Set[Int]]): Map[Int, M
           extractPath(p, i, j)
           p.append(j)
         }
-        ps(j) = p
+        ps(j) = p.toSeq
       }
     pss(i) = ps.toMap
   }
@@ -170,7 +170,7 @@ class TransitiveClosure2[A <: Ordered[A]] {
   var set:Set[Set[A]]=Set()
   var computed=false
   
-  def duplicate() = {
+  def duplicate(): TransitiveClosure2[A] = {
     val tc=new TransitiveClosure2[A]()
     tc.set=set
     tc.computed=computed
@@ -178,15 +178,15 @@ class TransitiveClosure2[A <: Ordered[A]] {
   }
 
   
-  def add2(ss: Set[A]) {
-	  if (!ss.isEmpty) {
+  def add2(ss: Set[A]): Unit = {
+	  if (ss.nonEmpty) {
      set += ss
      computed=false;
 	  }
   }
   
-  def showds(ds: Array[Array[Boolean]]){
-    val n=ds.size
+  def showds(ds: Array[Array[Boolean]]): Unit = {
+    val n=ds.length
     for (i <- 0 until n) {
 			for (j <- 0 until n) {
 			  print(if (ds(i)(j)) "1," else  "0,")

@@ -1,19 +1,18 @@
 
-package org.openprovenance.prov.scala
-
-import java.io.File
+package org.openprovenance.prov.scala.nf
 
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{MyActions, MyActions2, MyParser, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
-import org.openprovenance.prov.scala.nf.{CommandLine, DocumentProxy}
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
+import java.io.File
 import scala.util.{Failure, Success}
 
-class DenormalizeSpec extends FlatSpec with Matchers {
+class DenormalizeSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
 	def q(local: String) = {
@@ -151,7 +150,7 @@ class DenormalizeSpec extends FlatSpec with Matchers {
 }
 
 
-class RoundTripFromStatement extends FlatSpec with Matchers {
+class RoundTripFromStatement extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example.org/"
   val EX_PRE="ex"
  

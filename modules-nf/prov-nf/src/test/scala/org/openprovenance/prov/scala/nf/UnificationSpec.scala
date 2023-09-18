@@ -1,17 +1,17 @@
 
-package org.openprovenance.prov.scala
-
-import java.io.File
+package org.openprovenance.prov.scala.nf
 
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.model.StatementOrBundle.Kind
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.nf.xml.XmlNfBean
-import org.openprovenance.prov.scala.nf.{CommandLine, DocumentProxy, TransitiveClosure}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class UnificationSpec extends FlatSpec with Matchers {
+import java.io.File
+
+class UnificationSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
 	def q(local: String) = {
@@ -76,9 +76,9 @@ class UnificationSpec extends FlatSpec with Matchers {
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
     u.indexer.entity(q("e1")).getKind() should be (Kind.PROV_ENTITY)
-    d.statements().filter(_.isInstanceOf[Activity]).size should be (0)
-    d.statements().filter(_.isInstanceOf[Entity]).size should be (2)
-    d.statements().filter(_.isInstanceOf[WasGeneratedBy]).size should be (2)
+    d.statements().count(_.isInstanceOf[Activity]) should be (0)
+    d.statements().count(_.isInstanceOf[Entity]) should be (2)
+    d.statements().count(_.isInstanceOf[WasGeneratedBy]) should be (2)
         
   }
   
@@ -91,9 +91,9 @@ class UnificationSpec extends FlatSpec with Matchers {
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
     u.indexer.activity(q("a1")).getKind() should be (Kind.PROV_ACTIVITY)
-    d.statements().filter(_.isInstanceOf[Activity]).size should be (2)
-    d.statements().filter(_.isInstanceOf[Entity]).size should be (0)
-    d.statements().filter(_.isInstanceOf[WasInvalidatedBy]).size should be (2)
+    d.statements().count(_.isInstanceOf[Activity]) should be (2)
+    d.statements().count(_.isInstanceOf[Entity]) should be (0)
+    d.statements().count(_.isInstanceOf[WasInvalidatedBy]) should be (2)
         
   }   
 
@@ -105,9 +105,9 @@ class UnificationSpec extends FlatSpec with Matchers {
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
     u.indexer.activity(q("a1")).getKind() should be (Kind.PROV_ACTIVITY)
-    d.statements().filter(_.isInstanceOf[Activity]).size should be (2)
-    d.statements().filter(_.isInstanceOf[Entity]).size should be (0)
-    d.statements().filter(_.isInstanceOf[Used]).size should be (2)
+    d.statements().count(_.isInstanceOf[Activity]) should be (2)
+    d.statements().count(_.isInstanceOf[Entity]) should be (0)
+    d.statements().count(_.isInstanceOf[Used]) should be (2)
         
   }   
   
@@ -122,9 +122,9 @@ class UnificationSpec extends FlatSpec with Matchers {
     u.indexer.activity.size should be (0)
     u.indexer.entity(q("e10")).getKind() should be (Kind.PROV_ENTITY)
     
-    d.statements().filter(_.isInstanceOf[Activity]).size should be (0)
-    d.statements().filter(_.isInstanceOf[Entity]).size should be (2)
-    d.statements().filter(_.isInstanceOf[WasGeneratedBy]).size should be (4)    
+    d.statements().count(_.isInstanceOf[Activity]) should be (0)
+    d.statements().count(_.isInstanceOf[Entity]) should be (2)
+    d.statements().count(_.isInstanceOf[WasGeneratedBy]) should be (4)
         
   }
   
@@ -139,9 +139,9 @@ class UnificationSpec extends FlatSpec with Matchers {
     u.indexer.entity(q("e10")).getKind() should be (Kind.PROV_ENTITY)
     
     
-    d.statements().filter(_.isInstanceOf[Activity]).size should be (0)
-    d.statements().filter(_.isInstanceOf[Entity]).size should be (2)
-    d.statements().filter(_.isInstanceOf[WasGeneratedBy]).size should be (6)
+    d.statements().count(_.isInstanceOf[Activity]) should be (0)
+    d.statements().count(_.isInstanceOf[Entity]) should be (2)
+    d.statements().count(_.isInstanceOf[WasGeneratedBy]) should be (6)
   
         
   }
@@ -156,15 +156,15 @@ class UnificationSpec extends FlatSpec with Matchers {
     u.indexer.activity(q("a1")).getKind() should be (Kind.PROV_ACTIVITY)
     
     
-    d.statements().filter(_.isInstanceOf[Activity]).size should be (2)
-    d.statements().filter(_.isInstanceOf[Entity]).size should be (0)
-    d.statements().filter(_.isInstanceOf[Used]).size should be (6)
+    d.statements().count(_.isInstanceOf[Activity]) should be (2)
+    d.statements().count(_.isInstanceOf[Entity]) should be (0)
+    d.statements().count(_.isInstanceOf[Used]) should be (6)
   
         
   }
     
 
-  def checkfile (name: String, test1: Boolean=true) {
+  def checkfile (name: String, test1: Boolean=true): Unit = {
 	  val doc1=nf("src/test/resources/unify/" + name + ".provn")
   
     // linearize to document, and check it has same normal form, as well as same normal form of reference solution

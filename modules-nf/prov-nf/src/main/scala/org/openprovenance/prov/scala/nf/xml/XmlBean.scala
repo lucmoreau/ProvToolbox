@@ -3,8 +3,6 @@ package org.openprovenance.prov.scala.nf.xml
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.io.StringWriter
-
-import scala.collection.JavaConversions.seqAsJavaList
 import org.openprovenance.prov.scala.immutable.ActedOnBehalfOf
 import org.openprovenance.prov.scala.immutable.Activity
 import org.openprovenance.prov.scala.immutable.Agent
@@ -28,6 +26,7 @@ import org.openprovenance.prov.scala.immutable.WasInvalidatedBy
 import org.openprovenance.prov.scala.immutable.WasStartedBy
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamReader
@@ -37,10 +36,12 @@ import javax.xml.transform.stax.StAXResult
 import javax.xml.transform.stax.StAXSource
 import org.openprovenance.prov.bean.xml
 
+import scala.jdk.CollectionConverters._
+
 object XmlBean {
   
   
-  def createAttr(attr: Set[Attribute])={
+  def createAttr(attr: Set[Attribute]) ={
       val ll=attr.map(x => { val res=new org.openprovenance.prov.bean.xml.Attr
                       res.element=x.elementName.getUri()
                       res.`type`=x.`type`.getUri()
@@ -95,7 +96,7 @@ object XmlBean {
     val attr=ent.getAttributes()
     val res=new org.openprovenance.prov.bean.xml.Entity
     res.id=uriIfNotNull(ent.id)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }  
   
@@ -105,7 +106,7 @@ object XmlBean {
     val attr=ag.getAttributes()
     val res=new org.openprovenance.prov.bean.xml.Agent
     res.id=uriIfNotNull(ag.id)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr).asJava
     res   
   }  
   
@@ -117,7 +118,7 @@ object XmlBean {
     res.startTime=timeOrNull(act.startTime)
     res.endTime=timeOrNull(act.endTime)
     res.id=uriIfNotNull(act.id)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr) .asJava
     res   
   }  
   
@@ -131,7 +132,7 @@ object XmlBean {
     res.activity=uriIfNotNull(wdf.activity)
     res.generation=uriIfNotNull(wdf.generation)
     res.usage=uriIfNotNull(wdf.usage)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr) .asJava 
     res   
   }
       
@@ -142,7 +143,7 @@ object XmlBean {
     res.entity=uriIfNotNull(wgb.entity)
     res.activity=uriIfNotNull(wgb.activity)
     res.time=timeOrNull(wgb.time)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr) .asJava 
     res   
   }
   
@@ -154,7 +155,7 @@ object XmlBean {
     res.entity=uriIfNotNull(wgb.entity)
     res.activity=uriIfNotNull(wgb.activity)
     res.time=timeOrNull(wgb.time)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
@@ -165,7 +166,7 @@ object XmlBean {
     res.activity=uriIfNotNull(usd.activity)
     res.entity=uriIfNotNull(usd.entity)
     res.time=timeOrNull(usd.time)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
@@ -177,7 +178,7 @@ object XmlBean {
     res.trigger=uriIfNotNull(wsb.trigger)
     res.starter=uriIfNotNull(wsb.starter)
     res.time=timeOrNull(wsb.time)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
@@ -189,7 +190,7 @@ object XmlBean {
     res.trigger=uriIfNotNull(wgb.trigger)
     res.ender=uriIfNotNull(wgb.ender)
     res.time=timeOrNull(wgb.time)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
     
@@ -200,7 +201,7 @@ object XmlBean {
     res.activity=uriIfNotNull(waw.activity)
     res.agent=uriIfNotNull(waw.agent)
     res.plan=uriIfNotNull(waw.plan)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
@@ -211,7 +212,7 @@ object XmlBean {
     res.activity=uriIfNotNull(aob.delegate)
     res.activity=uriIfNotNull(aob.responsible)
     res.activity=uriIfNotNull(aob.activity)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
 
@@ -221,7 +222,7 @@ object XmlBean {
     res.id=uriIfNotNull(wat.id)
     res.entity=uriIfNotNull(wat.entity)
     res.agent=uriIfNotNull(wat.agent)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
 
@@ -231,7 +232,7 @@ object XmlBean {
     res.id=uriIfNotNull(wat.id)
     res.informed=uriIfNotNull(wat.informed)
     res.informant=uriIfNotNull(wat.informant)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
 
@@ -241,7 +242,7 @@ object XmlBean {
     res.id=uriIfNotNull(winflb.id)
     res.influencee=uriIfNotNull(winflb.influencee)
     res.influencer=uriIfNotNull(winflb.influencer)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
 
@@ -251,7 +252,7 @@ object XmlBean {
     res.id=uriIfNotNull(spe.id)
     res.specificEntity=uriIfNotNull(spe.specificEntity)
     res.generalEntity=uriIfNotNull(spe.generalEntity)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
@@ -261,7 +262,7 @@ object XmlBean {
     res.id=uriIfNotNull(spe.id)
     res.alternate1=uriIfNotNull(spe.alternate1)
     res.alternate2=uriIfNotNull(spe.alternate2)
-    res.attr=createAttr(attr)  
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
@@ -270,12 +271,12 @@ object XmlBean {
     val res=new org.openprovenance.prov.bean.xml.HadMember
     res.id=uriIfNotNull(spe.id)
     res.collection=uriIfNotNull(spe.collection)
-    res.entity=spe.entity.map(x=>uriIfNotNull(x)).toList
-    res.attr=createAttr(attr)  
+    res.entity=spe.entity.map(x=>uriIfNotNull(x)).toList.asJava
+    res.attr=createAttr(attr)  .asJava
     res   
   }
   
-  def toXMLWithStream(sw: XMLStreamWriter, statements: Set[Statement]) = {
+  def toXMLWithStream(sw: XMLStreamWriter, statements: Set[Statement]): Unit = {
     val beans: Set[xml.Statement] =statements.map(toBean(_))
     val module=new JacksonXmlModule()
     // and then configure, for example:

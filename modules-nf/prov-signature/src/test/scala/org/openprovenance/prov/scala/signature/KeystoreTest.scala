@@ -1,4 +1,4 @@
-package org.openprovenance.prov.scala
+package org.openprovenance.prov.scala.signature
 
 import junit.framework.TestCase
 //import org.openprovenance.prov.scala.interop.CommandLine

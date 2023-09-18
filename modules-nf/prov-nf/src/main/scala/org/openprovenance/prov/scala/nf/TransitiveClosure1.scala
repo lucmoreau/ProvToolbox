@@ -54,7 +54,7 @@ class TransitiveClosure[A <: Ordered[A]] {
   
   def partition():Map[A,Set[A]] = {
     val s=transitiveClosure()
-    val grp1=s.groupBy({ case (x1,x2) => x1 } ).mapValues(s => s.map(_._2) )
+    val grp1=s.groupBy({ case (x1,x2) => x1 } ).view.mapValues(s => s.map(_._2) ).toMap
     //val grp2=s.groupBy({ case (x1,x2) => x1 } ).mapValues(s => s.map(_._2).toSeq.sortBy { x => x }.toSet )  // Set elements are ordered, ezier to read
     //val grp2=s.groupBy({ case (x1,x2) => x1 } ).mapValues(s => s.map(_._2).toSeq.sorted.toSet )  // Set elements are ordered, ezier to read
     

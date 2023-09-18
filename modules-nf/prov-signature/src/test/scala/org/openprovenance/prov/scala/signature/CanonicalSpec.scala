@@ -1,38 +1,37 @@
 
-package org.openprovenance.prov.scala
+package org.openprovenance.prov.scala.signature
 
-import java.io.{ByteArrayOutputStream, File, PrintWriter}
-import java.security.KeyStore
-import java.security.cert.X509Certificate
-
-import org.openprovenance.prov.scala.immutable.{ProvNInputer, QualifiedName}
+import org.openprovenance.prov.scala.immutable.{Document, ProvNInputer, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.nf.Normalizer
 import org.openprovenance.prov.scala.nf.xml.{XmlNfBean, XmlSignature}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
+import java.io.{ByteArrayOutputStream, File, PrintWriter}
+import scala.annotation.unused
 import scala.collection.mutable.ArrayBuffer
 
-abstract class CanonicalSpec extends FlatSpec with Matchers {
+abstract class CanonicalSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
-	def q(local: String) = {
+	def q(local: String): QualifiedName = {
    new QualifiedName("ex",local,EX_NS)
   }
 
 
-  def readDoc(f: String) = {
-    val in:Input=new FileInput(new File(f))
+  def readDoc(f: String): Document = {
+    val in:Input=FileInput(new File(f))
     val doc=new ProvNInputer().input(in,Map())
     doc
   }
-  var times = ArrayBuffer[(String,Long,Long, Long)]()
+  var times: ArrayBuffer[(String, Long, Long, Long)] = ArrayBuffer[(String,Long,Long, Long)]()
 
   def time[R](block: => R, comment: String): R = {  
     val t0 = System.nanoTime()
     val result = block    // call-by-name
     val t1 = System.nanoTime()
-    val tuple=(comment,t0,t1,(t1-t0)/1000)
+    val tuple: (String, Long, Long, Long) =(comment,t0,t1,(t1-t0)/1000)
     times += tuple
     result
   }
@@ -48,9 +47,9 @@ abstract class CanonicalSpec extends FlatSpec with Matchers {
   val cert = keyStore.getCertificate("myclientkey").asInstanceOf[X509Certificate];
      */
   
-  def checkfile (name: String, test2: Boolean=true) {
+  def checkfile (name: String, @unused test2: Boolean=true): Unit = {
 	  val doc1=time({readDoc("src/test/resources/canonical/" + name + ".provn")}, "read")
-	  val doc3=time({1.to(normalize_count).map(x => Normalizer.fusion(doc1)).last}, "normalize")     
+	  val doc3=time({1.to(normalize_count).map(_ => Normalizer.fusion(doc1)).last}, "normalize")
 	  
 	  
 	  time({XmlNfBean.toXMLFile("target/" + name + "-canonical.xml",doc3,null)}, "serializeToFile")
@@ -70,7 +69,7 @@ abstract class CanonicalSpec extends FlatSpec with Matchers {
     
 
   }
-  def checkfileN (name: String, test1: Boolean=true, n: Long=2) {
+  def checkfileN (name: String, test1: Boolean=true, n: Long=2): Unit = {
      if (n>0) {
        checkfile(name,test1)
        checkfileN(name,test1,n-1)
@@ -80,7 +79,7 @@ abstract class CanonicalSpec extends FlatSpec with Matchers {
      }
   }
   
-  def plotFile(name:String, times: ArrayBuffer[(String,Long,Long, Long)]) {
+  def plotFile(name:String, times: ArrayBuffer[(String,Long,Long, Long)]): Unit = {
 
     val read_times=times.filter{case (s,_,_,_) => s=="read"}.map(x=>x._4).takeRight(200)
     val norm_times=times.filter{case (s,_,_,_) => s=="normalize"}.map(x=>x._4/normalize_count).takeRight(200)
@@ -92,8 +91,8 @@ abstract class CanonicalSpec extends FlatSpec with Matchers {
     
     println(read_times)
     println(norm_times)
-    println(read_times.reduce((x,y)=>x+y)/read_times.length)
-    println(norm_times.reduce((x,y)=>x+y)/norm_times.length)
+    println(read_times.sum/read_times.length)
+    println(norm_times.sum/norm_times.length)
     
     val csv_file="target/stats_" +name + ".csv"
     val pw=new PrintWriter(new File(csv_file))
@@ -115,35 +114,6 @@ abstract class CanonicalSpec extends FlatSpec with Matchers {
   "File pc1-full" should " do stats" in {
      checkfileN("pc1-full")
    }
-  /*
-  "File pc1-full-times2" should " do stats" in {
-     checkfileN("pc1-full-times2")
-   }
 
-   "File pc1-full-times4" should " do stats" in {
-     checkfileN("pc1-full-times4")
-   }
-   
-   
-   "File pc1-with-id" should " do stats" in {
-     checkfileN("pc1-with-id",true,300)
-   }
-   
-   
-   "File pc1-with-id2" should " do stats" in {
-     checkfileN("pc1-with-id2",true,300)
-   }
-*/
-   /*
-   "File pc1-with-id3" should " do stats" in {
-     checkfileN("pc1-with-id3",true,300)
-   }
-      
-   "File pc1-with-id4" should " do stats" in {
-     checkfileN("pc1-with-id4",true,300)
-   }
-   * 
-   */
-         
 
 }

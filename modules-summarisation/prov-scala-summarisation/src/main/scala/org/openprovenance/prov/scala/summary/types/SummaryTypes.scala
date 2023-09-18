@@ -120,7 +120,7 @@ abstract class ProvType {
 	def others():Set[ProvType] = Set()
 }
 
-case class Resource()               extends ProvType with BasicProvType {
+case class Resource() extends ProvType with BasicProvType {
 	override lazy val hashCode: Int = ScalaRunTime._hashCode(Resource.this)
 	override def sortedTypes(): String = label() + "()"
 	final override def order(): Int = ProvType.sto.RESOURCE
@@ -135,14 +135,14 @@ case class Ent()                    extends ProvType with BasicProvType  {
 	final override def label(): String = ProvType.stn.ENT
 	override def flattenTypes(mapper: Set[_ <: ProvType]=>NumberedFlatType): FlatType= BasicFlatType(label(),this)
 }
-case class Act()                    extends ProvType with BasicProvType {
+case class Act() extends ProvType with BasicProvType {
 	override lazy val hashCode: Int = ScalaRunTime._hashCode(Act.this)
 	override def sortedTypes(): String = label() + "()"
 	final override def order(): Int = ProvType.sto.ACT
 	final override def label(): String = ProvType.stn.ACT
 	override def flattenTypes(mapper: Set[_ <: ProvType]=>NumberedFlatType): FlatType= BasicFlatType(label(), this)
 }
-case class Ag()                     extends ProvType with BasicProvType {
+case class Ag() extends ProvType with BasicProvType {
 	override lazy val hashCode: Int = ScalaRunTime._hashCode(Ag.this)
 	override def sortedTypes(): String = label() + "()"
 	final override def order(): Int = ProvType.sto.AG

@@ -1,0 +1,1334 @@
+<xml xmlns="https://developers.google.com/blockly/xml"><block type="factory_base" id="4MsO~t%42j}=bnkY*wxY" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">NOUN_PHRASE</field>
+    <field name="INLINE">EXT</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="*#z.9=)X{QUjjrErAoOC">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="PDu7ST(![A(r6p%l5^2$">
+            <field name="TEXT">Noun Phrase</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="Fu^WuHNjiX4dQ0]!iZQJ">
+            <field name="INPUTNAME">DETERMINER</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="pyq|B7aZ(Ub5LAGh^G?N">
+                <field name="TEXT">determiner</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="+R3K8.fGFbdXZ.%-w9A_"></shadow>
+              <block type="type_string" id="9KTmqBQL_#Tz+cyQADim"></block>
+            </value>
+            <next>
+              <block type="input_value" id="|UdZuJmb21OcY`II~1mL">
+                <field name="INPUTNAME">HEAD</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="wmMAu9oP`}]^jk=_,0XK">
+                    <field name="TEXT">head</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null" id="+DF@qVx+):%92{=U.mfg"></shadow>
+                  <block type="type_group" id="DZrnGq]3ns2(P$]j!Cmw">
+                    <mutation types="2"></mutation>
+                    <value name="TYPE0">
+                      <block type="type_string" id="Ad4CPN7LdO;E[e}n-;je"></block>
+                    </value>
+                    <value name="TYPE1">
+                      <block type="type_other" id="9kZo@P_I~4@38*S?n2TP">
+                        <field name="TYPE">Funcall</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="input_value" id="Ag55JQ0fFHFmq[e6vYB5">
+                    <field name="INPUTNAME">MODIFIERS</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="r%I/@ii:{x=QQJp./Or+">
+                        <field name="TEXT">modifiers</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null" id="Qj5O$)}%;J%s;|d+,~;S"></shadow>
+                      <block type="type_list" id="X{-($tL*[Vhs-b71A*h("></block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="pC=|pXg2aTBgYLB$NBbo">
+                        <field name="INPUTNAME">PRE_MODIFIERS</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="QVH4E#v~okXa4,3hij6N">
+                            <field name="TEXT">pre-modifiers</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null"></shadow>
+                          <block type="type_list" id="+0[I^(sE)N.0_Uw.+,--"></block>
+                        </value>
+                        <next>
+                          <block type="input_value" id="Jt/Y3rxbCK.4p$i^#}qi">
+                            <field name="INPUTNAME">POST_MODIFIERS</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="WM16tro-727+~5}+C,`F">
+                                <field name="TEXT">post-modifiers</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null"></shadow>
+                              <block type="type_list" id="=l+rW^m`!JkIpt3/zDp*"></block>
+                            </value>
+                            <next>
+                              <block type="input_value" id="A{n~3.-PhSZ3yu$V|*Sp">
+                                <field name="INPUTNAME">COMPLEMENTS</field>
+                                <field name="ALIGN">RIGHT</field>
+                                <statement name="FIELDS">
+                                  <block type="field_static" id="deF)1Ua3zEi/{Q.)eCaQ">
+                                    <field name="TEXT">complements</field>
+                                  </block>
+                                </statement>
+                                <value name="TYPE">
+                                  <shadow type="type_null"></shadow>
+                                  <block type="type_list" id="a(e*7bU}h8%JNko,DR={"></block>
+                                </value>
+                                <next>
+                                  <block type="input_value" id="~dA1GyAl][DZ,nUi;0_S">
+                                    <field name="INPUTNAME">FEATURES</field>
+                                    <field name="ALIGN">RIGHT</field>
+                                    <statement name="FIELDS">
+                                      <block type="field_static" id=".*mzZ}?~XJU]/+@#v.K`">
+                                        <field name="TEXT">features</field>
+                                      </block>
+                                    </statement>
+                                    <value name="TYPE">
+                                      <shadow type="type_null" id="5b7QygDEoF+=Gp7V#ip)"></shadow>
+                                      <block type="type_other" id="La!R@,te1AaoM@~w}0F3">
+                                        <field name="TYPE">FEATURES</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="F1Gy%(G6ua9Px|G{YGz9" deletable="false" movable="false">
+        <field name="TEXT">This is a noun phrase</field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="Jkv3Yz1hc/M%iqd:;AiN" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="5Ed?cJ`#k--dGXL3UK)-"></shadow>
+      <block type="type_other" id="AHGkF:.DFki1#rA^X8TJ">
+        <field name="TYPE">NounPhrase</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="^giWJ{=dlcqEf{i;i0pH">
+        <mutation colour="#9fa55b"></mutation>
+        <field name="HUE">65</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="WMr}~ukjz0#FxM#%N?-P" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">FUNCALL</field>
+    <field name="INLINE">EXT</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="pp]x%yt6*F?8l)B0d}ys">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id=",BZ}hmXO_8E1{|IAztbc">
+            <field name="TEXT">Funcall</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="q/b=_-,#G)M/]hFHY1bf">
+            <field name="INPUTNAME">OBJECT</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="(}EWiy/#8xf)t~4WinYK">
+                <field name="TEXT">@object</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="Q.0!bP@6ra4[[yk]@STM"></shadow>
+            </value>
+            <next>
+              <block type="input_value" id="ns$araQ4suA9tt!c?!F;">
+                <field name="INPUTNAME">FUNCTION</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="dJjMBwF/Zj[iIbGt;4t*">
+                    <field name="TEXT">@function</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null" id="y?O*j7LcY@n`(@rhi~JE"></shadow>
+                </value>
+                <next>
+                  <block type="input_value" id="#E~Fj{dWzF~Q=VEkyN;r">
+                    <field name="INPUTNAME">FIELD</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="YUSYn%UWO=NG^Qt_`,wR">
+                        <field name="TEXT">@field</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null" id="mg=_6eF.^n4#?DWJ|9#="></shadow>
+                    </value>
+                    <next>
+                      <block type="input_value" id="2nCMQ0`_3O`27V.2H[]/">
+                        <field name="INPUTNAME">ARG1</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="d,?a[jvf?gi.%w=J!9Mq">
+                            <field name="TEXT">@arg1</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null" id="[e;|7jSBV6_13u7*)-UI"></shadow>
+                        </value>
+                        <next>
+                          <block type="input_value" id="A/1w56M2YFvsy_[4zKv!">
+                            <field name="INPUTNAME">ARG2</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="n3XaR;X{tmE6?8|X9O1n">
+                                <field name="TEXT">@arg2</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null" id=")Z++t4oD/YPS6i?siG`c"></shadow>
+                            </value>
+                            <next>
+                              <block type="input_value" id="rt`IfnVH5cytNJdrJw[g">
+                                <field name="INPUTNAME">POST_MODIFIERS</field>
+                                <field name="ALIGN">RIGHT</field>
+                                <statement name="FIELDS">
+                                  <block type="field_static" id="#V=Q3#.Q?@BM?m;7E|:v">
+                                    <field name="TEXT">@post_modifiers</field>
+                                  </block>
+                                </statement>
+                                <value name="TYPE">
+                                  <shadow type="type_null"></shadow>
+                                  <block type="type_list" id="?fZ5sw#vlRSXryi,sQy*"></block>
+                                </value>
+                                <next>
+                                  <block type="input_value" id="-d^gc6;6PO)S,m4|FZsv">
+                                    <field name="INPUTNAME">FEATURES</field>
+                                    <field name="ALIGN">RIGHT</field>
+                                    <statement name="FIELDS">
+                                      <block type="field_static" id="eZ^_{^MV4qYh|0wV-_3#">
+                                        <field name="TEXT">@features</field>
+                                      </block>
+                                    </statement>
+                                    <value name="TYPE">
+                                      <shadow type="type_null" id="F@yEB]WpWO3v*_gi%(5o"></shadow>
+                                      <block type="type_other" id="b5z@,SkOW8t`;-.?b#k|">
+                                        <field name="TYPE">Features</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="Z.eOdSVdL^S/P;z[3tft" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="CD~X|yxV6~/(nRMUP!{P" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="@w(SkTFTO`i4pkNMhhrr"></shadow>
+      <block type="type_other" id="5qCqPDKS4},3t`=SzpdR">
+        <field name="TYPE">Funcall</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="6erU!oG1rL~)H?R4oe`R">
+        <mutation colour="#a55b80"></mutation>
+        <field name="HUE">330</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="K$X5#iZ+=L2kx4S5xzC$" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">FEATURES</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="b?goi%vlu2/01qrlA,l$">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="mjjmzqX*k?ho3.$A(!he">
+            <field name="TEXT">Features</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_dummy" id="l9)q35rnojVAX|eEVzcu">
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_checkbox" id="va-h.fPe7.9(R.Qpo({9">
+                <field name="CHECKED">FALSE</field>
+                <field name="FIELDNAME">TENSE_TICK</field>
+                <next>
+                  <block type="field_dropdown" id="{d8JS-]o$-#g`la88~rq">
+                    <mutation options="[&quot;text&quot;,&quot;text&quot;,&quot;text&quot;]"></mutation>
+                    <field name="FIELDNAME">TENSE_CHOICE</field>
+                    <field name="USER0">present tense</field>
+                    <field name="CPU0">PRESENT</field>
+                    <field name="USER1">past tense</field>
+                    <field name="CPU1">PAST</field>
+                    <field name="USER2">future tense</field>
+                    <field name="CPU2">FUTURE</field>
+                  </block>
+                </next>
+              </block>
+            </statement>
+            <next>
+              <block type="input_dummy" id="jVf9~|E*:U.+uEu5ULrC">
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_checkbox" id="@t7,8+*th~AfJ#F/cl0u">
+                    <field name="CHECKED">FALSE</field>
+                    <field name="FIELDNAME">VOICE_TICK</field>
+                    <next>
+                      <block type="field_dropdown" id="T:n~7a*n5gP@Dg~a^osB">
+                        <mutation options="[&quot;text&quot;,&quot;text&quot;]"></mutation>
+                        <field name="FIELDNAME">VOICE_CHOICE</field>
+                        <field name="USER0">passive voice</field>
+                        <field name="CPU0">PASSIVE</field>
+                        <field name="USER1">active voice</field>
+                        <field name="CPU1">ACTIVE</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+                <next>
+                  <block type="input_dummy" id="jgSm{T9$aZp%9Go71^q{">
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_checkbox" id="n=X|o~bWbn7OTu97/}Ac">
+                        <field name="CHECKED">FALSE</field>
+                        <field name="FIELDNAME">NUMBER_TICK</field>
+                        <next>
+                          <block type="field_dropdown" id="i%g3zC:T[sQQaVV5R{os">
+                            <mutation options="[&quot;text&quot;,&quot;text&quot;]"></mutation>
+                            <field name="FIELDNAME">NUMBER_CHOICE</field>
+                            <field name="USER0">singular</field>
+                            <field name="CPU0">SINGULAR</field>
+                            <field name="USER1">plural</field>
+                            <field name="CPU1">PLURAL</field>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
+                    <next>
+                      <block type="input_dummy" id="jr;gu^yZq@qjS-a-BGa4">
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_checkbox" id="@[Lo$V@-}3EV6AZQQi~a">
+                            <field name="CHECKED">FALSE</field>
+                            <field name="FIELDNAME">PARTICIPLE_TICK</field>
+                            <next>
+                              <block type="field_dropdown" id="}u?]YS/iPY|7Jvky|-gO">
+                                <mutation options="[&quot;text&quot;,&quot;text&quot;]"></mutation>
+                                <field name="FIELDNAME">PARTICIPLE_CHOICE</field>
+                                <field name="USER0">past participle</field>
+                                <field name="CPU0">PAST_PARTICIPLE</field>
+                                <field name="USER1">present participle</field>
+                                <field name="CPU1">PRESENT_PARTICIPLE</field>
+                              </block>
+                            </next>
+                          </block>
+                        </statement>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="`1xTcJU2ZD[XW1S,b.*o" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="[L|AUK}fzN~r_R^4,ECt" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="C}KF#eB[#e7o$kAsW*Dt"></shadow>
+      <block type="type_other" id="Wl6!qBFWM*N_^B5+l(%i">
+        <field name="TYPE">Features</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="BIzUi~-8T^+jb3DQ81ya">
+        <mutation colour="#5b67a5"></mutation>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="fGh9Am}th|W2{meZh[$A" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">PREPOSITION_PHRASE</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="y)|p7I=S9p0X#mg4Bb|A">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="e8UoI]v.NP;OZ(As9;#P">
+            <field name="TEXT">Preposition phrase</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="isFP7/bqDsJ[#n^7L/?L">
+            <field name="INPUTNAME">PREPOSITION</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="%L%2D+iB3bHM+)3B`UeQ">
+                <field name="TEXT">preposition</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="N8LDCcWmVgH!5-`IYAKw"></shadow>
+              <block type="type_string" id="]IA}oP@%#bH~R/oDwM8b"></block>
+            </value>
+            <next>
+              <block type="input_value" id="lHMc|A[,`D,XPvD@Xo%H">
+                <field name="INPUTNAME">NOUN</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="(Uk:yz2o|66loYL~=h_B">
+                    <field name="TEXT">noun</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null"></shadow>
+                  <block type="type_group" id="uSE0s8nu@)MQ;~ybu%i~">
+                    <mutation types="3"></mutation>
+                    <value name="TYPE0">
+                      <block type="type_string" id="u`T]kB+(|8#oW%lCgK88"></block>
+                    </value>
+                    <value name="TYPE1">
+                      <block type="type_other" id="WsH.?U}H0vc-x4P|e9|x">
+                        <field name="TYPE">NounPhrase</field>
+                      </block>
+                    </value>
+                    <value name="TYPE2">
+                      <block type="type_other" id="sNX$|4)b7XtwFkhIq14M">
+                        <field name="TYPE">Funcall</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="input_value" id="pVUetc;zXd|n}V/kR,f6">
+                    <field name="INPUTNAME">COMPLEMENTS</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="8M#,|Kt^L,Kr(#!/=z|+">
+                        <field name="TEXT">complements</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null" id="h]ne[Hf3:*}Vy%{9MY6`"></shadow>
+                      <block type="type_list" id="?_LOz`i}PUF|zd$H{_oC"></block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="MYR;D%]Zw:7?[C@$z7sw">
+                        <field name="INPUTNAME">SPECIFIER</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="Iaw`,DyFqg0xrmPzGn*0">
+                            <field name="TEXT">specifier</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null" id="jt2=oL}Ay1novb?{e`|C"></shadow>
+                          <block type="type_other" id="f5-XL;2!N]^@ls~SJWOB">
+                            <field name="TYPE">NounPhrase</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="input_value" id="ic-j+,1smfVv7~FTd=.1">
+                            <field name="INPUTNAME">FEATURES</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="o[6/kKgEu{{g0_oY96B]">
+                                <field name="TEXT">features</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null"></shadow>
+                              <block type="type_other" id="qgfLlV;q4hW!E0XQc([Q">
+                                <field name="TYPE">Features</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="BR$lQXbr?OIs/hy6I^/;" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="%eqG;R[J)iQr6s~.@q0R" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="X$dmSwwY5A?4PHDOh)VO"></shadow>
+      <block type="type_other" id="Fo]n;1O*p)UX*lIy@F0B">
+        <field name="TYPE">PrepositionPhrase</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="]m$#NPHF,Y0YKy=E0x_+">
+        <mutation colour="#5ba58c"></mutation>
+        <field name="HUE">160</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="ke{~b?fWDf6?}2p`o(Ql" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">VERB_PHRASE</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id=";eq2_kg!MhGB`)N8Cb`(">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="q!_U^|Y6`R?O.oz2@N^r">
+            <field name="TEXT">Verb Phrase</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="6kW+[.51~%k7}~10,rUc">
+            <field name="INPUTNAME">HEAD</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="u]gZcwLIKNMBhaKa8kKx">
+                <field name="TEXT">head</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="$_#x}8m8kxHHBSCUq!^@"></shadow>
+              <block type="type_string" id="LlTD]h;`z#7l`TfVjwvZ"></block>
+            </value>
+            <next>
+              <block type="input_value" id="cIWdOV!HN31A9%rR*7##">
+                <field name="INPUTNAME">MODIFIERS</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="oAN!aYnq(z.jJFL0$4FS">
+                    <field name="TEXT">modifiers</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null"></shadow>
+                  <block type="type_list" id="3@7;F9RLB*2r^jGZ|Ywn"></block>
+                </value>
+                <next>
+                  <block type="input_value" id="~ask.stf~axcq^bkhe{$">
+                    <field name="INPUTNAME">PRE_MODIFIERS</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="uSK[s{UCQ6KXb4kKx#C0">
+                        <field name="TEXT">pre-modifiers</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null"></shadow>
+                      <block type="type_list" id="PXVDnNr360`$51#e/2Fc"></block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="K!(?0x*F.Un9)ssO8.`@">
+                        <field name="INPUTNAME">POST_MODIFIERS</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="}-4g8j}|1$8A*=+o`yXq">
+                            <field name="TEXT">post-modifiers</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null"></shadow>
+                          <block type="type_list" id="n*6{u}s7,#P]4+gCo$Re"></block>
+                        </value>
+                        <next>
+                          <block type="input_value" id="i0/{Ag6C57X4?[ON=$9%">
+                            <field name="INPUTNAME">FEATURES</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="Q^6I7N[UlXTqrC~=b-}m">
+                                <field name="TEXT">features</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null"></shadow>
+                              <block type="type_other" id="ZYe4p2:TLDS~@%^Z-Uxe">
+                                <field name="TYPE">Features</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="MjM7I%M=9$gz#nKICXHB" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="7RS9k#/;C*?$)r6[]|bc" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="QvO2G:5Nn3-~-Zh.DsKa"></shadow>
+      <block type="type_other" id="]aaU0dM6~mFnb_t+T2Ti">
+        <field name="TYPE">VerbPhrase</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="!f_YzO~6SUUX#m^N*u7l">
+        <mutation colour="#5b80a5"></mutation>
+        <field name="HUE">210</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="tDPrdp7_gjax,[xsL,AG" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">ADJECTIVE_PHRASE</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="HW#5Sog@f:yFf^2uOZ-3">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id=":s]uFQy[_ST(qPm%*Jk$">
+            <field name="TEXT">Adjective Phrase</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="w@dQ6B1L+$+1Ln`A*_n@">
+            <field name="INPUTNAME">HEAD</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="69mx/?@^JRq?MCy670AL">
+                <field name="TEXT">head</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="BH)FFk3instRcXMG{oas"></shadow>
+              <block type="type_group" id="T/Pnv7g_@$,Pvf5gd9QR">
+                <mutation types="2"></mutation>
+                <value name="TYPE0">
+                  <block type="type_string" id="d+q8RkCOY{I;:S=MM(jd"></block>
+                </value>
+                <value name="TYPE1">
+                  <block type="type_other" id="Fi}-xRW7omYcrNTGI88C">
+                    <field name="TYPE">Funcall</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="input_value" id="/BmevvH?*o?h*}1Um}au">
+                <field name="INPUTNAME">MODIFIERS</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="Ewa^[q$;u2_48MQl+}54">
+                    <field name="TEXT">modifiers</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null" id="1ItQTCWwRs3fmg_#P_]O"></shadow>
+                  <block type="type_list" id="F*mN55VzG}}?`VsE[=CE"></block>
+                </value>
+                <next>
+                  <block type="input_value" id=":7XIw]A30K4h.gTM-#/D">
+                    <field name="INPUTNAME">PRE_MODIFIERS</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="Q+5G(FspbFj|wtcmZ`|g">
+                        <field name="TEXT">pre-modifiers</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null"></shadow>
+                      <block type="type_list" id="*FS*km{:EN}@yHOR7OD:"></block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="[7Fi?2Rq.1lv}u0,P}V=">
+                        <field name="INPUTNAME">POST_MODIFIERS</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="])w}{ZFY@A=SaEzhu(pk">
+                            <field name="TEXT">post-modifiers</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null"></shadow>
+                          <block type="type_list" id="Gc?eIa/`S5lynSCkuP]F"></block>
+                        </value>
+                        <next>
+                          <block type="input_value" id="w`hYInN1~V+*3#`|t:tK">
+                            <field name="INPUTNAME">FEATURES</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="Vilp:xNoT5Lfg!(v;Ev_">
+                                <field name="TEXT">features</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null" id="gac-EiUzYHBW`laZqsAj"></shadow>
+                              <block type="type_other" id="=W5M2oG+FFk%`$?dz^18">
+                                <field name="TYPE">Features</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="A2dvDD.tW%Y%Sju9LY^r" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="),UgWW5-K9XNTR4*/B#1" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="KaQ{XkYn~m]|uOnvZwck"></shadow>
+      <block type="type_other" id="}KX/:$7v`k=tMV~yKs-T">
+        <field name="TYPE">AdjectivePhrase</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="_57(]pP7+z7cV~Ud17-^">
+        <mutation colour="#6d5ba5"></mutation>
+        <field name="HUE">255</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="h_NZW![6bV+No#pa+PzY" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">COORDINATED_PHRASE</field>
+    <field name="INLINE">EXT</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="XPX_u.*[{]xYYQlD3ZYQ">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="eeHyxt%3ZK@bgZRuDU4?">
+            <field name="TEXT">Coordinated Phrase</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="jpD{Rj?%L,l}E@TT`1mU">
+            <field name="INPUTNAME">HEAD</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="}$3fYql9}he4Xby~E:_d">
+                <field name="TEXT">head</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="w3-a4Cp_%h9R+_g[W{B["></shadow>
+            </value>
+            <next>
+              <block type="input_value" id="nZ4{$/V7mUrwXF]prMrH">
+                <field name="INPUTNAME">CONJUNCTION</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="6#eZnp?O_zu{FUJztt2G">
+                    <field name="TEXT">conjunction</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null" id="QAqH1_9K|P%^b_(dTn!t"></shadow>
+                  <block type="type_string" id="V=DA-4cGE=$fWZyR:EmH"></block>
+                </value>
+                <next>
+                  <block type="input_value" id="0Kj!Oc8_?SRLE5:5h+Wc">
+                    <field name="INPUTNAME">COORDINATES</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="Dau?NOq]cpg:(GYi(}H3">
+                        <field name="TEXT">coordinates</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null" id="x5BJ6bci7@wr5i0Q?$oU"></shadow>
+                      <block type="type_list" id="H]b!fPnfs~:vF(hJ+i`v"></block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="kiNp`:8jbL:HqmL1_Al$">
+                        <field name="INPUTNAME">PHRASE_ITERATOR</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="nC;|suP;zOF:T}nqJB:1">
+                            <field name="TEXT">iterator</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null"></shadow>
+                          <block type="type_other" id="k8hL7bc-#!g4rsAT@3he">
+                            <field name="TYPE">PhraseIterator</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="input_value" id="P2^aBC=%-ldz7Y87}yXb">
+                            <field name="INPUTNAME">POST_MODIFIERS</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="pqw_0j/WNa:q:SbjafNo">
+                                <field name="TEXT">post-modifiers</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null"></shadow>
+                              <block type="type_list" id="gy[DJIlSY$oD9-+G_u4~"></block>
+                            </value>
+                            <next>
+                              <block type="input_value" id="*O)8/R[cuzqD,A/]aVN;">
+                                <field name="INPUTNAME">FEATURES</field>
+                                <field name="ALIGN">RIGHT</field>
+                                <statement name="FIELDS">
+                                  <block type="field_static" id="m/K{Y+3t]]MxL[*~#aS(">
+                                    <field name="TEXT">features</field>
+                                  </block>
+                                </statement>
+                                <value name="TYPE">
+                                  <shadow type="type_null"></shadow>
+                                  <block type="type_other" id="0G%}:d}748%/VRe,kk$r">
+                                    <field name="TYPE">Features</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id=".cQsD/cG_3/+OlbMiJ*5" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="=qhst?nci5:![7s4G[du" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="69zh6=Bw$=|{N%eL2anB"></shadow>
+      <block type="type_other" id=".=:DA2S`_oWeK!(ke381">
+        <field name="TYPE">CoordinatedPhrase</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="1_kWv8eYH1fi@_Q!IA:]">
+        <mutation colour="#995ba5"></mutation>
+        <field name="HUE">290</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="gOy+KvHmCcV%F+dERbvP" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">PHRASE_ITERATOR</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="^1X#t5;obN-M}PNkAw3|">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="9K]gtyi#6?CC3IGPy~dH">
+            <field name="TEXT">Phrase Iterator</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="~,KZi$SO!c8GQgh?Bb*v">
+            <field name="INPUTNAME">VARIABLE</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="7}@gq![5:Pbw6Os@huwV">
+                <field name="TEXT">@variable</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="oJO=ZOQ{YRkdu5#fbk9L"></shadow>
+              <block type="type_string" id="5{x!:6*j)4Bx^`;+Mh$J"></block>
+            </value>
+            <next>
+              <block type="input_value" id="}%23+ZQy?_sC?N.utwCO">
+                <field name="INPUTNAME">UNTIL_STRING</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="-lE{L`u_@woxEM{K_ioE">
+                    <field name="TEXT">@until_string</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null"></shadow>
+                  <block type="type_string" id="R8]1Z7%J]$w!-GL1vVse"></block>
+                </value>
+                <next>
+                  <block type="input_value" id="[Y?rl^(~Md;Tvv~k4d_y">
+                    <field name="INPUTNAME">FROM</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="$4pZK6U;@[@.tTbVHD5b">
+                        <field name="TEXT">@from</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null"></shadow>
+                      <block type="type_string" id="FD{p)mok6meEyk;+4iku"></block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="J=e3tksqcOKzH%[V13y:">
+                        <field name="INPUTNAME">FLATTEN</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="u31uUS,rt:PIGa6]Y?K_">
+                            <field name="TEXT">@flatten</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null"></shadow>
+                          <block type="type_string" id="32U)vuPAsj@HJRt`WrbJ"></block>
+                        </value>
+                        <next>
+                          <block type="input_value" id="UKoJ!TB![:a9Ss+{=^.P">
+                            <field name="INPUTNAME">CLAUSE</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id="NQ3HQ7mf?YkxFP{F{C?/">
+                                <field name="TEXT">@clause</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null"></shadow>
+                              <block type="type_string" id="L](/2hK@L$Q;k:}^/CNI"></block>
+                            </value>
+                            <next>
+                              <block type="input_value" id="C9]^U}R;;0A9@fsB8l}`">
+                                <field name="INPUTNAME">PROPERTY</field>
+                                <field name="ALIGN">RIGHT</field>
+                                <statement name="FIELDS">
+                                  <block type="field_static" id=")a39@Oe:Fj7|1lP!+C9F">
+                                    <field name="TEXT">@property</field>
+                                  </block>
+                                </statement>
+                                <value name="TYPE">
+                                  <shadow type="type_null"></shadow>
+                                  <block type="type_string" id="0y;qhX*_UDLKSpI=5vJ_"></block>
+                                </value>
+                                <next>
+                                  <block type="input_value" id="Vfc#;%LBjN.+DpJ=][v(">
+                                    <field name="INPUTNAME">ELEMENT</field>
+                                    <field name="ALIGN">RIGHT</field>
+                                    <statement name="FIELDS">
+                                      <block type="field_static" id="nGEc!jNN0b]mq1]Q74;M">
+                                        <field name="TEXT">@element</field>
+                                      </block>
+                                    </statement>
+                                    <value name="TYPE">
+                                      <shadow type="type_null"></shadow>
+                                      <block type="type_string" id="M7U5Zs3}o]2hpO*4?suX"></block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="sRrateL`DrF:HRQ76K7g" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="TElo|]m^|Em5#Z0{Tu:i" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="uv0P2lP91|dJjHC{A2FI"></shadow>
+      <block type="type_other" id="QoFF#i}|~9]|_|H79H4y">
+        <field name="TYPE">PhraseIterator</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="?3ZIVZk7;^~O[~_$c`p|">
+        <mutation colour="#a5745b"></mutation>
+        <field name="HUE">20</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="VLSUr:k_6H`c`CBM+A4I" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">CLAUSE</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="n$ILn2.x4rVGcr[mSF4k">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="!Uh]l@_/wR*zOwkZN;`B">
+            <field name="TEXT">Clause</field>
+          </block>
+        </statement>
+        <next>
+          <block type="input_value" id="ibTRSOn9w~m*^0Cf~_jJ">
+            <field name="INPUTNAME">SUBJECT</field>
+            <field name="ALIGN">RIGHT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="YFvt0~BpWuu@/zT!#_51">
+                <field name="TEXT">subject</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="EsobA;C[IUf`F~!+]sV["></shadow>
+              <block type="type_group" id="OP83kQS93$G([y*=yu)y">
+                <mutation types="4"></mutation>
+                <value name="TYPE0">
+                  <block type="type_string" id="I54Vj?]-Vg:(3ZCn2+6d"></block>
+                </value>
+                <value name="TYPE1">
+                  <block type="type_other" id="g^tWQ4/[z_C/Ei+5Q.7t">
+                    <field name="TYPE">NounPhrase</field>
+                  </block>
+                </value>
+                <value name="TYPE2">
+                  <block type="type_other" id="lvS#i9$~:Q*_+BB~RTj/">
+                    <field name="TYPE">Funcall</field>
+                  </block>
+                </value>
+                <value name="TYPE3">
+                  <block type="type_other" id="V2s3s;;#M_Yyz:[i!+?|">
+                    <field name="TYPE">CoordinatedPhrase</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="input_value" id="ynkm6{?:ra;{b)o4A8r#">
+                <field name="INPUTNAME">VERB</field>
+                <field name="ALIGN">RIGHT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="+xTn}mBl2,28C]NG/7Bt">
+                    <field name="TEXT">verb</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null"></shadow>
+                  <block type="type_group" id="1jcnpQH@zMwxm`RK4q]o">
+                    <mutation types="4"></mutation>
+                    <value name="TYPE0">
+                      <block type="type_string" id="JO+#9JHWw0-y{6n8I1)r"></block>
+                    </value>
+                    <value name="TYPE1">
+                      <block type="type_other" id="e~n01x7Mp0x`NaAO8-.P">
+                        <field name="TYPE">VerbPhrase</field>
+                      </block>
+                    </value>
+                    <value name="TYPE2">
+                      <block type="type_other" id="ONBR%#@]pT{(NLajK=p3">
+                        <field name="TYPE">Funcall</field>
+                      </block>
+                    </value>
+                    <value name="TYPE3">
+                      <block type="type_other" id="f@J*xO~?+R/6FwAHR[E(">
+                        <field name="TYPE">CoordinatedPhrase</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="input_value" id="KG,lI0S-229@?A18kNW.">
+                    <field name="INPUTNAME">DIRECT_OBJECT</field>
+                    <field name="ALIGN">RIGHT</field>
+                    <statement name="FIELDS">
+                      <block type="field_static" id="pLgFckhHDzYBO/vCK(Xd">
+                        <field name="TEXT">direct object</field>
+                      </block>
+                    </statement>
+                    <value name="TYPE">
+                      <shadow type="type_null"></shadow>
+                      <block type="type_group" id="IW]kNTr)saqj~rev#__3">
+                        <mutation types="4"></mutation>
+                        <value name="TYPE0">
+                          <block type="type_string" id="xysuN|@XH+=Y$BCm8Ds#"></block>
+                        </value>
+                        <value name="TYPE1">
+                          <block type="type_other" id=",rIaSY;Hse1D+=20Uo::">
+                            <field name="TYPE">NounPhrase</field>
+                          </block>
+                        </value>
+                        <value name="TYPE2">
+                          <block type="type_other" id="xb^1kG^B)M^:s~F?pa0o">
+                            <field name="TYPE">Funcall</field>
+                          </block>
+                        </value>
+                        <value name="TYPE3">
+                          <block type="type_other" id="#^nd!sKZ^88-QdN#4JV-">
+                            <field name="TYPE">CoordinatedPhrase</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="input_value" id="r7ea=w*XiW-J`$U-77y#">
+                        <field name="INPUTNAME">INDIRECT_OBJECT</field>
+                        <field name="ALIGN">RIGHT</field>
+                        <statement name="FIELDS">
+                          <block type="field_static" id="wq:7lO}[RPs4jniW;MWp">
+                            <field name="TEXT">indirect object</field>
+                          </block>
+                        </statement>
+                        <value name="TYPE">
+                          <shadow type="type_null"></shadow>
+                          <block type="type_group" id="^w|+%!8D{*HqqZy89xSx">
+                            <mutation types="4"></mutation>
+                            <value name="TYPE0">
+                              <block type="type_string" id="}t1eM+$%V.IK%`uu$kzM"></block>
+                            </value>
+                            <value name="TYPE1">
+                              <block type="type_other" id="z2@8IJ^JZl=wEC?$$0c7">
+                                <field name="TYPE">NounPhrase</field>
+                              </block>
+                            </value>
+                            <value name="TYPE2">
+                              <block type="type_other" id="(!,Imp+7_MW{u8/01S^T">
+                                <field name="TYPE">Funcall</field>
+                              </block>
+                            </value>
+                            <value name="TYPE3">
+                              <block type="type_other" id="c?gqGS[fVtqP2.||E5k[">
+                                <field name="TYPE">CoordinatedPhrase</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="input_value" id=";EDbJNFhzd=sX5}CTk{A">
+                            <field name="INPUTNAME">COMPLEMENTS</field>
+                            <field name="ALIGN">RIGHT</field>
+                            <statement name="FIELDS">
+                              <block type="field_static" id=".Drg{(^#yb.85#Z2Wh2Z">
+                                <field name="TEXT">complements</field>
+                              </block>
+                            </statement>
+                            <value name="TYPE">
+                              <shadow type="type_null"></shadow>
+                              <block type="type_group" id="M@Vn,*ta)zJU={5b7bly">
+                                <mutation types="4"></mutation>
+                                <value name="TYPE0">
+                                  <block type="type_string" id="Tt4,bL`eKJ$08yCdHhz{"></block>
+                                </value>
+                                <value name="TYPE1">
+                                  <block type="type_other" id=":e}=+OVxa{*_7yuGG3Q1">
+                                    <field name="TYPE">NounPhrase</field>
+                                  </block>
+                                </value>
+                                <value name="TYPE2">
+                                  <block type="type_other" id="dz(,D,jH$zK0x%5ndRav">
+                                    <field name="TYPE">Funcall</field>
+                                  </block>
+                                </value>
+                                <value name="TYPE3">
+                                  <block type="type_other" id="{AO,I7)XsxR11vbZS71y">
+                                    <field name="TYPE">CoordinatedPhrase</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="input_value" id="W(4BLt-Ub{IrR?q!T/Kr">
+                                <field name="INPUTNAME">MODIFIERS</field>
+                                <field name="ALIGN">RIGHT</field>
+                                <statement name="FIELDS">
+                                  <block type="field_static" id="Dly(}A@cB,^gyEY{?I.e">
+                                    <field name="TEXT">modifiers</field>
+                                  </block>
+                                </statement>
+                                <value name="TYPE">
+                                  <shadow type="type_null"></shadow>
+                                  <block type="type_group" id="sFQbXA@q=O6,Gp)z,qQh">
+                                    <mutation types="4"></mutation>
+                                    <value name="TYPE0">
+                                      <block type="type_string" id="Fjz3hG|;r@xay#h9=LD;"></block>
+                                    </value>
+                                    <value name="TYPE1">
+                                      <block type="type_other" id="F]]]gW6mx3tT#iF7C%id">
+                                        <field name="TYPE">NounPhrase</field>
+                                      </block>
+                                    </value>
+                                    <value name="TYPE2">
+                                      <block type="type_other" id="|{_#t-v%#|#}3u{QwqpK">
+                                        <field name="TYPE">Funcall</field>
+                                      </block>
+                                    </value>
+                                    <value name="TYPE3">
+                                      <block type="type_other" id="f#JMIom)6sknAL9JIi@8">
+                                        <field name="TYPE">CoordinatedPhrase</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="input_value" id="F|ag]Emg1Vm8fSFq#IcH">
+                                    <field name="INPUTNAME">COMPLEMENTISER</field>
+                                    <field name="ALIGN">RIGHT</field>
+                                    <statement name="FIELDS">
+                                      <block type="field_static" id="od.ugcAMUj@dL8+8!x`V">
+                                        <field name="TEXT">complementiser</field>
+                                      </block>
+                                    </statement>
+                                    <value name="TYPE">
+                                      <shadow type="type_null" id="(;(.8`bX##aA]J+k0eh;"></shadow>
+                                      <block type="type_string" id="k`(/Zm9#{Y|~OU+4BoG_"></block>
+                                    </value>
+                                    <next>
+                                      <block type="input_value" id="BV^]#)9.g!jJ;^lGw=P_">
+                                        <field name="INPUTNAME">FEATURES</field>
+                                        <field name="ALIGN">RIGHT</field>
+                                        <statement name="FIELDS">
+                                          <block type="field_static" id="@I*qkssX#47tT$Z;Sc`4">
+                                            <field name="TEXT">features</field>
+                                          </block>
+                                        </statement>
+                                        <value name="TYPE">
+                                          <shadow type="type_null"></shadow>
+                                          <block type="type_other" id="_iY%G#a_CA{o4:0,xj|i">
+                                            <field name="TYPE">Features</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="!flMB^hp)=oR*_e|PFCB" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="(w3|VhqrK`!9le:wV7gS" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="HT{2OyK3Eq+Qa4]}P7:)"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="Qr`stCW|oq:8%iBdh*p^">
+        <mutation colour="#a5745b"></mutation>
+        <field name="HUE">20</field>
+      </block>
+    </value>
+  </block></xml>

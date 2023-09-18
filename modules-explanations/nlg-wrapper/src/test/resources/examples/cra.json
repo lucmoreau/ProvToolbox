@@ -1,0 +1,153 @@
+{
+    "type" : "paragraph",
+    "items" : [ {
+        "type" : "clause",
+        "subject" : "we",
+        "verb" : "made",
+        "object" : {
+            "type" : "noun_phrase",
+            "determiner" : "this",
+            "head" : "decision",
+            "modifiers" : [ ],
+            "pre-modifiers" : [ ],
+            "post-modifiers" : [ ],
+            "specifier" : null,
+            "complements" : [ ],
+            "features" : { }
+        },
+        "indirect_object" : null,
+        "complements" : [ {
+            "type" : "preposition_phrase",
+            "preposition" : "using",
+            "noun" : {
+                "type" : "noun_phrase",
+                "determiner" : "a",
+                "head" : "scoring system",
+                "modifiers" : [ {
+                    "type" : "clause",
+                    "subject" : "that",
+                    "verb" : "take",
+                    "object" : {
+                        "type" : "coordinated_phrase",
+                        "coordinates" : [ {
+                            "type" : "noun_phrase",
+                            "determiner" : "the",
+                            "head" : "information",
+                            "modifiers" : [ ],
+                            "pre-modifiers" : [ ],
+                            "post-modifiers" : [ {
+                                "type" : "adjective_phrase",
+                                "head" : "provided",
+                                "modifiers" : [ ],
+                                "pre-modifiers" : [ ],
+                                "post-modifiers" : [ {
+                                    "type" : "preposition_phrase",
+                                    "preposition" : "in",
+                                    "noun" : {
+                                        "type" : "noun_phrase",
+                                        "determiner" : "your",
+                                        "head" : "application",
+                                        "modifiers" : [ ],
+                                        "pre-modifiers" : [ ],
+                                        "post-modifiers" : [ ],
+                                        "specifier" : null,
+                                        "complements" : [ ],
+                                        "features" : { }
+                                    },
+                                    "complements" : [ ],
+                                    "specifier" : null,
+                                    "features" : { }
+                                } ],
+                                "features" : { }
+                            } ],
+                            "specifier" : null,
+                            "complements" : [ ],
+                            "features" : { }
+                        }, {
+                            "type" : "noun_phrase",
+                            "determiner" : "a",
+                            "head" : "credit score",
+                            "modifiers" : [ ],
+                            "pre-modifiers" : [ ],
+                            "post-modifiers" : [ {
+                                "type" : "adjective_phrase",
+                                "head" : "produced",
+                                "modifiers" : [ ],
+                                "pre-modifiers" : [ ],
+                                "post-modifiers" : [ {
+                                    "type" : "preposition_phrase",
+                                    "preposition" : "by",
+                                    "noun" : {
+                                        "type" : "noun_phrase",
+                                        "head" : "credit refencing agency",
+                                        "modifiers" : [ ],
+                                        "pre-modifiers" : [ ],
+                                        "post-modifiers" : [ {
+                                            "type" : "adjective_phrase",
+                                            "head" : " (CRA)",
+                                            "modifiers" : [ ],
+                                            "pre-modifiers" : [ ],
+                                            "post-modifiers" : [ ],
+                                            "features" : {
+                                                "markup_element" : "span",
+                                                "markup_attributes" : "data-id=\"https://explain.openprovenance.org/creditscoring/CRA\" class=\"provelement\""
+                                            }
+                                        } ],
+                                        "specifier" : null,
+                                        "complements" : [ ],
+                                        "features" : {
+                                            "head_markup_element" : "span",
+                                            "head_markup_attributes" : "data-id=\"https://explain.openprovenance.org/creditscoring/CRA\" class=\"provelement\""
+                                        }
+                                    },
+                                    "complements" : [ ],
+                                    "specifier" : null,
+                                    "features" : { }
+                                } ],
+                                "features" : { }
+                            } ],
+                            "specifier" : null,
+                            "complements" : [ ],
+                            "features" : { }
+                        } ],
+                        "@iterator" : null,
+                        "conjunction" : "as well as",
+                        "post-modifiers" : [ ]
+                    },
+                    "indirect_object" : {
+                        "type" : "preposition_phrase",
+                        "preposition" : "into",
+                        "noun" : "account",
+                        "complements" : [ ],
+                        "specifier" : null,
+                        "features" : { }
+                    },
+                    "complements" : [ ],
+                    "modifiers" : [ ],
+                    "complementiser" : "that"
+                } ],
+                "pre-modifiers" : [ {
+                    "type" : "adjective_phrase",
+                    "head" : "automated",
+                    "modifiers" : [ ],
+                    "pre-modifiers" : [ ],
+                    "post-modifiers" : [ ],
+                    "features" : { }
+                } ],
+                "post-modifiers" : [ ],
+                "specifier" : null,
+                "complements" : [ ],
+                "features" : { }
+            },
+            "complements" : [ ],
+            "specifier" : null,
+            "features" : { }
+        } ],
+        "modifiers" : [ ],
+        "features" : {
+            "type" : "features",
+            "tense" : "past"
+        }
+    } ],
+    "properties" : { }
+}

@@ -1,0 +1,5 @@
+{
+    "name": "baking",
+    "templates": ["baking-generation1.json", "baking-generation2.json"]
+}
+	

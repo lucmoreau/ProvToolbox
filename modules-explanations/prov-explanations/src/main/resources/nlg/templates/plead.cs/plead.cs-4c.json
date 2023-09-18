@@ -1,0 +1,173 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query":[
+   
+        "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+        "prefix pl <http://openprovenance.org/ns/plead#>",
+        "prefix app <https://explain.openprovenance.org/creditscoring/>",
+        "",
+        "select * from decision a prov:Entity",
+        "",
+        "from der1 a prov:WasDerivedFrom",
+        "join decision.id = der1.generatedEntity",
+        "",
+        "from recommendation a prov:Entity",
+        "join der1.usedEntity = recommendation.id",
+        "",
+        "from der2 a prov:WasDerivedFrom",
+        "join recommendation.id = der2.generatedEntity",
+        "",
+        "from credit_history a prov:Entity",
+        "join der2.usedEntity = credit_history.id",
+        "",
+        "from wat1 a prov:WasAttributedTo",
+        "join credit_history.id = wat1.entity",
+        "",
+        "from cra a prov:Agent",
+        "join wat1.agent = cra.id",
+        "",
+        "where decision[prov:type] >= 'pl:Decision'",
+        "and recommendation[prov:type] >= 'pl:AutomatedRecommendation'",
+        "and credit_history[prov:type] >= 'cs:CreditHistory'",
+        "and cra[prov:type] >= 'cs:CreditReferencingAgency'"
+
+  ],
+  "sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "coordinated_phrase",
+        "conjunction": "and",
+        "coordinates": [
+          {
+            "type": "clause",
+            "subject": {
+              "type": "noun_phrase",
+              "determiner": "This",
+              "head": "information"
+            },
+            "verb": {
+              "type": "verb_phrase",
+              "head": "relates",
+              "post-modifiers": [
+                {
+                  "type": "adjective_phrase",
+                  "head": "to"
+                }
+              ]
+            },
+            "indirect_object": {
+              "type": "coordinated_phrase",
+              "conjunction": "and",
+              "coordinates": [
+                {
+                  "type": "noun_phrase",
+                  "head": "financial wellbeing ",
+                  "specifier": "##borrower-possessive"
+                },
+                {
+                  "type": "noun_phrase",
+                  "head": "credit history ",
+                  "specifier": "##borrower-possessive"
+                }
+              ]
+            }
+          },
+          {
+            "type": "clause",
+            "verb": {
+              "type": "verb_phrase",
+              "head": "used",
+              "post-modifiers": [
+                {
+                  "type": "verb_phrase",
+                  "head": "determine",
+                  "features": {
+                    "type": "features",
+                    "number": "plural"
+                  },
+                  "pre-modifiers": [
+                    {
+                      "type": "adjective_phrase",
+                      "head": "to"
+                    }
+                  ],
+                  "post-modifiers": [
+                    {
+                      "type": "adjective_phrase",
+                      "head": "how"
+                    },
+                    {
+                      "type": "coordinated_phrase",
+                      "conjunction": "and",
+                      "coordinates": [
+                        {
+                          "type": "noun_phrase",
+                          "head": "affordable"
+                        },
+                        {
+                          "type": "noun_phrase",
+                          "head": "sustainable"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "object": {
+              "type": "noun_phrase",
+              "head": "it"
+            },
+            "indirect_object": {
+              "type": "noun_phrase",
+              "head": "credit card plan",
+              "post-modifiers": [
+                {
+                  "type": "adjective_phrase",
+                  "head": "would be"
+                },
+                {
+                  "type": "preposition_phrase",
+                  "preposition": "for",
+                  "noun": "##borrower"
+                }
+              ]
+            },
+            "features": {
+              "type": "features",
+              "tense": "past",
+              "passive": "true"
+            }
+          }
+        ]
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+"ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

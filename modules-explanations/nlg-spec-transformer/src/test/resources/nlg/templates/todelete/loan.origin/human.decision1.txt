@@ -1,0 +1,1 @@
+The automated recommendation was reviewed by a credit officer (staff/112) whose decision was based on your application (applications/128350251), the automated recommendation (recommendation/128350251) itself, a credit reference (credit_history/128350251) and a fico score (fico_score/128350251).

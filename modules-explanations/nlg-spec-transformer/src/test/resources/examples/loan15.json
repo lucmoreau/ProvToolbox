@@ -1,0 +1,42 @@
+
+{"subject":{"type":"noun_phrase","head":"the loan application"},
+  "features":{"tense":"past"},
+  "features":{"tense":"past"},
+  "verb":"was automatically approved",
+  "complements":[{
+    "type":"preposition_phrase",
+    "preposition":"based on a combination of",
+    "noun":{
+      "type":"coordinated_phrase",
+      "conjunction":"and",
+      "coordinates":[{
+        "type":"noun_phrase",
+        "head":"loan application",
+        "specifier":{
+          "type":"noun_phrase",
+          "head":"borrower",
+          "determiner":"the",
+          "features":{"pronominal":"false","possessive":"true"}}}]}},
+    {
+      "type":"preposition_phrase",
+      "preposition":"and third party data: ",
+      "noun":{
+        "type":"coordinated_phrase",
+        "conjunction":"and",
+        "coordinates":[
+          {
+            "type":"noun_phrase",
+            "head":"FICO score",
+            "specifier":{
+              "type":"noun_phrase",
+              "head":"borrower",
+              "determiner":"the",
+              "features":{"pronominal":"false","possessive":"true"}}},
+          {"type":"noun_phrase",
+            "head":"credit reference",
+            "specifier":{
+              "type":"noun_phrase",
+              "head":"borrower",
+              "determiner":"the",
+              "features":{"pronominal":"false","possessive":"true"}}}]}}],
+  "type":"clause"}

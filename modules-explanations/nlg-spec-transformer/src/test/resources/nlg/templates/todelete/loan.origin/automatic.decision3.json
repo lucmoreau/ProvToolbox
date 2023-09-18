@@ -1,0 +1,155 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	"prefix pl <https://plead-project.org/ns/plead#>",
+
+
+	"select * from (",
+	"     select * from features a prov:Entity",
+
+	"     from der1 a prov:WasDerivedFrom",
+	"      join features.id=der1.generatedEntity",
+
+	"     from ourdata a prov:Entity",
+	"      join der1.usedEntity=ourdata.id",
+
+	"     from der2 a prov:WasDerivedFrom",
+	"      join features.id=der2.usedEntity",
+
+	"     from recommendation a prov:Entity",
+	"      join der2.generatedEntity=recommendation.id",
+
+	"     from der3 a prov:WasDerivedFrom",
+	"      join recommendation.id=der3.usedEntity",
+
+	"     from decision a prov:Entity",
+	"      join der3.generatedEntity=decision.id",
+
+
+	"     from der4 a prov:WasDerivedFrom",
+	"      join decision.id=der4.generatedEntity",
+
+	"     from application a prov:Entity",
+	"      join der4.usedEntity=application.id",
+
+
+	"     where decision[prov:type]          >= 'ln:AutomatedDecision'",
+	"       and recommendation[prov:type]    >= 'ln:AutomatedLoanRecommendation'",
+	"       and application[prov:type]       >= 'ln:LoanApplication'",
+	"       and ourdata[prov:type]           >= 'pl:Controlled'",
+
+	"     group by decision aggregate application,ourdata with Seq",
+	")",
+
+	"from (",
+	"     select * from features a prov:Entity",
+
+	"     from der1 a prov:WasDerivedFrom",
+	"      join features.id=der1.generatedEntity",
+
+	"     from theirdata a prov:Entity",
+	"      join der1.usedEntity=theirdata.id",
+
+	"     from der2 a prov:WasDerivedFrom",
+	"      join features.id=der2.usedEntity",
+
+	"     from recommendation a prov:Entity",
+	"      join der2.generatedEntity=recommendation.id",
+
+	"     from der3 a prov:WasDerivedFrom",
+	"      join recommendation.id=der3.usedEntity",
+
+	"     from decision_ a prov:Entity",
+	"      join der3.generatedEntity=decision_.id",
+
+
+	"     from der4 a prov:WasDerivedFrom",
+	"      join decision_.id=der4.generatedEntity",
+
+	"     from application a prov:Entity",
+	"      join der4.usedEntity=application.id",
+
+
+	"     where decision_[prov:type] >= 'ln:AutomatedDecision'",
+	"       and recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'",
+	"       and application[prov:type] >= 'ln:LoanApplication'",
+	"       and theirdata[prov:type] !>= 'pl:Controlled'",
+
+	"     group by decision_ aggregate application,theirdata with Seq",
+
+	")",
+	"join decision.id=decision_.id"
+
+    ],
+  
+	
+
+    "sentence": {
+	"type": "clause",
+
+	"subject": {"type": "noun_phrase",
+		    "head": "the loan application"},
+
+	"verb": "was automatically approved",
+
+
+	"complements": [
+
+		{
+			"type": "preposition_phrase",
+			"preposition": "based on a combination of",
+			"noun": {
+				"type": "coordinated_phrase",
+				"conjunction": "and",
+				"@iterator": {
+					"@variable": "ourdata",
+					"@clause": "coordinates",
+					"@element": {
+						"@object": "ourdata",
+						"@property":  "prov:type",
+						"@function": "lookup-type",
+						"@arg1": "noun_phrase",
+						"@arg2": "ln"}
+				}
+			}
+		},
+		{
+			"type": "preposition_phrase",
+			"preposition": "and third party data: ",
+			"noun": {
+				"type": "coordinated_phrase",
+				"conjunction": "and",
+				"@iterator": {
+					"@variable": "theirdata",
+					"@clause": "coordinates",
+					"@element": {
+						"@object": "theirdata",
+						"@property":  "prov:type",
+						"@function": "lookup-type",
+						"@arg1": "noun_phrase",
+						"@arg2": "ln"}
+				}
+			}
+		}
+
+	],
+	
+	"features" : {"tense": "past"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#"
+    }
+    
+    
+}

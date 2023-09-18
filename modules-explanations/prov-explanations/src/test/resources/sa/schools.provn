@@ -1,0 +1,21 @@
+document
+
+prefix sa <https://plead-project.org/ns/school-admission#>
+prefix sch <https://www.get-information-schools.service.gov.uk/Establishments/Establishment/Details/>
+
+entity(sch:136641,[prov:type = 'sa:Academyconverter', prov:type = 'sa:School', prov:label = "Freemantle Church of England Community Academy", sa:name = "Freemantle Church of England Community Academy" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:116458,[prov:type = 'sa:Foundationschool', prov:type = 'sa:School', prov:label = "Bitterne Park School", sa:name = "Bitterne Park School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:116469,[prov:type = 'sa:Foundationschool', prov:type = 'sa:School', prov:label = "Cantell School", sa:name = "Cantell School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:146284,[prov:type = 'sa:Academysponsorled', prov:type = 'sa:School', prov:label = "Oasis Academy Sholing", sa:name = "Oasis Academy Sholing" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:135628,[prov:type = 'sa:Academysponsorled', prov:type = 'sa:School', prov:label = "Oasis Academy Lord's Hill", sa:name = "Oasis Academy Lord's Hill" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:133943,[prov:type = 'sa:Communityschool', prov:type = 'sa:School', prov:label = "Sinclair Primary and Nursery School", sa:name = "Sinclair Primary and Nursery School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:137293,[prov:type = 'sa:Academyconverter', prov:type = 'sa:School', prov:label = "Springhill Catholic Primary School", sa:name = "Springhill Catholic Primary School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:116450,[prov:type = 'sa:Foundationschool', prov:type = 'sa:School', prov:label = "Regents Park Community College", sa:name = "Regents Park Community College" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:146029,[prov:type = 'sa:Academysponsorled', prov:type = 'sa:School', prov:label = "Weston Shore Infant School", sa:name = "Weston Shore Infant School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:116453,[prov:type = 'sa:Foundationschool', prov:type = 'sa:School', prov:label = "Redbridge Community School", sa:name = "Redbridge Community School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:116465,[prov:type = 'sa:Foundationschool', prov:type = 'sa:School', prov:label = "Woodlands Community College", sa:name = "Woodlands Community College" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:116507,[prov:type = 'sa:Voluntaryaidedschool', prov:type = 'sa:School', prov:label = "Saint George Catholic Voluntary Aided College Southampton", sa:name = "Saint George Catholic Voluntary Aided College Southampton" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+entity(sch:137037,[prov:type = 'sa:Academyconverter', prov:type = 'sa:School', prov:label = "Upper Shirley High School", sa:name = "Upper Shirley High School" %% xsd:string, sa:la = "Southampton" %% xsd:string])
+
+endDocument
+

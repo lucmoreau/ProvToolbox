@@ -1,0 +1,22 @@
+document
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix ex <http://example.org/>
+  
+  entity(ex:ei)
+  entity(ex:e1)
+  entity(ex:e2)
+  activity(ex:act)
+  activity(ex:act1)
+  activity(ex:act2)
+  used(ex:usd1;ex:act1,ex:e1,2012-03-02T10:30:00.000Z)
+  wasGeneratedBy(ex:gen1;ex:ei,ex:act1,2012-03-02T10:30:00.000Z)
+  wasDerivedFrom(ex:ei, ex:e1,ex:act1,ex:gen1, ex:usd1)
+  used(ex:usd2;ex:act2,ex:ei,2012-03-02T10:30:00.000Z)
+  wasGeneratedBy(ex:gen2;ex:e2,ex:act2,2012-03-02T10:30:00.000Z)
+  wasDerivedFrom(ex:e2, ex:ei,ex:act2,ex:gen2, ex:usd2)
+  used(ex:usd;ex:act,ex:e1,2012-03-02T10:30:00.000Z)
+  wasGeneratedBy(ex:gen;ex:e2,ex:act,2012-03-02T10:30:00.000Z)
+  wasDerivedFrom(ex:e2, ex:e1,ex:act,ex:gen, ex:usd)
+  agent(ex:ag1)
+  wasAttributedTo(ex:e2,ex:ag1)
+endDocument

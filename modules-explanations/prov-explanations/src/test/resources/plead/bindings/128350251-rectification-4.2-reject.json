@@ -1,0 +1,36 @@
+{
+    "var" : {
+        "institution" : [ {
+            "@id" : "ex:institution"
+        }],
+        "application": [ {
+            "@id": "ex:applications/128350251"
+        }],
+        "applicant": [ {
+            "@id": "ex:applicants/128350251"
+        }],
+        "staff2": [ {
+            "@id": "ex:staff/112"
+        }],
+        "reviewing_request": [ {
+            "@id": "ex:review_request/1234"
+        }],
+        "rectification_review_decision": [ {
+            "@id": "ex:rectification_review_decision/1234"
+        }],
+        "customer_request": [ {
+            "@id": "ex:customer_requests/1234"
+        }]
+    },
+    "vargen" : { },
+    "context" : {
+        "pd": "https://pandas.pydata.org/#",
+        "py": "urn:python:var:",
+        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn.",
+        "ln": "https://plead-project.org/ns/loan#",
+        "pl": "https://plead-project.org/ns/plead#",
+        "localfile": "file:///Users/me/mlpipeline/",
+        "ex" : "http://example.org/"
+    },
+    "template" : null
+}

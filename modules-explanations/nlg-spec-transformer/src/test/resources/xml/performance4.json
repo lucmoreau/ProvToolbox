@@ -1,0 +1,73 @@
+{
+	"type": "coordinated_phrase",
+	"conjunction": "and",
+	"coordinates": [
+		{
+			"type": "clause",
+			"subject": {
+				"type": "@funcall",
+				"@object": "agent",
+				"@property": "prov:type",
+				"@function": "lookup-type",
+				"@arg1": "noun_phrase",
+				"@arg2": "ln",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": {
+							"type": "@funcall",
+							"@object": "agent",
+							"@field": "id",
+							"@function": "noun+localname",
+							"@arg1": ""
+						}
+					}
+				]
+			},
+			"verb": {
+				"type": "@funcall",
+				"@object": "assessing",
+				"@property": "prov:type",
+				"@function": "lookup-type",
+				"@arg1": "verb_phrase",
+				"@arg2": "pl"
+			},
+			"object": {
+				"type": "@funcall",
+				"@object": "pipeline",
+				"@property": "prov:type",
+				"@function": "lookup-type",
+				"@arg1": "noun_phrase",
+				"@arg2": "sk"
+			},
+			"features": {
+				"tense": "past",
+				"passive": "true"
+			}
+		},
+		{
+			"type": "clause",
+			"object": {
+				"type": "noun_phrase",
+				"determiner": "the",
+				"head": "level of accuracy",
+				"post-modifiers": [
+					{
+						"type": "preposition_phrase",
+						"preposition": "of",
+						"noun": {
+							"type": "@funcall",
+							"@object": "score",
+							"@property": "prov:value",
+							"@function": "percentage"
+						}
+					}
+				]
+			},
+			"verb": "has",
+			"features": {
+				"tense": "present"
+			}
+		}
+	]
+}

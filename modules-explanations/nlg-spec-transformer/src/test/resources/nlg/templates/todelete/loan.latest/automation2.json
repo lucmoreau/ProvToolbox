@@ -1,0 +1,146 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"},
+	       "application":    {"@type": "prov:Entity"},
+	       "fico":           {"@type": "prov:Entity"},
+	       "reco":           {"@type": "prov:Entity"},
+	       "credit":         {"@type": "prov:Entity"},	       	       	       
+	       "officer":        {"@type": "prov:Agent"},	       
+	       "reviewing":      {"@type": "prov:Activity"},
+	       "assoc":          {"@type": "prov:WasAssociatedWith"},
+	       "der1":           {"@type": "prov:WasDerivedFrom"},
+	       "der2":           {"@type": "prov:WasDerivedFrom"},
+	       "der3":           {"@type": "prov:WasDerivedFrom"},
+	       "der4":           {"@type": "prov:WasDerivedFrom"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+
+
+	"select * from waw a prov:WasAssociatedWith",
+	"from officer a prov:Agent",
+	" join waw.agent = officer.id",
+	"from reviewing a prov:Activity",
+	" join waw.activity=reviewing.id",
+
+	"from der1 a prov:WasDerivedFrom",
+	" join reviewing.id=der1.activity",
+	"from decision a prov:Entity",
+	" join der1.generatedEntity=decision.id",
+	"from application a prov:Entity",
+	" join der1.usedEntity=application.id",
+
+	"from der2 a prov:WasDerivedFrom",
+	" join reviewing.id=der2.activity",
+	"from decision a prov:Entity",
+	" join der2.generatedEntity=decision.id",
+	"from fico a prov:Entity",
+	" join der2.usedEntity=fico.id",
+
+	"from der3 a prov:WasDerivedFrom",
+	" join reviewing.id=der3.activity",
+	"from decision a prov:Entity",
+	" join der3.generatedEntity=decision.id",
+	"from reco a prov:Entity",
+	" join der3.usedEntity=reco.id",
+
+	"from der4 a prov:WasDerivedFrom",
+	" join reviewing.id=der4.activity",
+	"from decision a prov:Entity",
+	" join der4.generatedEntity=decision.id",
+	"from credit a prov:Entity",
+	" join der4.usedEntity=credit.id",
+
+
+	"where officer[prov:type]     >= 'prov:Person'",
+	"  and decision[prov:type]    >= 'ln:HumanDecision'",
+	"  and application[prov:type] >= 'ln:LoanApplication'",
+	"  and reviewing[prov:type]   >= 'ln:LoanAssessment'",
+	"  and fico[prov:type]        >= 'ln:FICOScore'  ",
+	"  and reco[prov:type]        >= 'ln:AutomatedLoanRecommendation'  ",
+	"  and credit[prov:type]      >= 'ln:CreditReference'"
+
+    ],
+  
+	
+
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "determiner": "a",
+		    "head": {"@object": "officer",
+			     "@field":  "id",
+			     "@function": "noun+localname",
+			     "@arg1":   "credit officer"},
+		    "complements": [
+			{
+			    "type": "clause",
+			    "spec": {
+				"complementiser": "whose",
+				"subject": "decision",
+				"verb": "is based on",
+				"features" : {"tense": "past"},
+				"object": {
+				    "type": "coordinated_phrase",
+				    "conjunction": "and",
+				    "coordinates": [
+					{"type": "noun_phrase",
+					 "determiner": "your",
+					 "post-modifiers": [{"type":"noun_phrase",
+							     "head": "itself"},
+							    {"type":"noun_phrase",
+							     "head": {"@object": "application",
+								      "@field":  "id",
+								      "@function": "noun+localname",
+								      "@arg1": ""}}
+							   ],
+					 "head": "application"},
+					{"type":"noun_phrase",
+					 "determiner": "a",					 
+					 "head": {"@object": "reco",
+						  "@field":  "id",
+						  "@function": "noun+localname",
+						  "@arg1": "automated recommendation"}},
+					{"type": "noun_phrase",
+					 "determiner": "a",
+					 "post-modifiers": [{"type":"noun_phrase",
+							     "head": {"@object": "credit",
+								      "@field":  "id",
+								      "@function": "noun+localname",
+								      "@arg1": ""}}
+							   ],
+					 "head": "credit reference"},
+					{"type":"noun_phrase",
+					 "determiner": "a",					 
+					 "head": {"@object": "fico",
+						  "@field":  "id",
+						  "@function": "noun+localname",
+						  "@arg1": "fico score"}}
+				    ]
+				}
+			    }
+			}
+		    ]},
+	"object": {"type": "noun_phrase",
+		    "determiner": "your",		   
+		    "head": "loan application"},
+
+	"verb": "review",
+	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#"
+    }
+    
+    
+}

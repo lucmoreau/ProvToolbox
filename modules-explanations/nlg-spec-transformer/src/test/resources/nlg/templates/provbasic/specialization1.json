@@ -1,0 +1,34 @@
+
+{
+
+    "select": {"spe": {"@type": "provext:SpecializationOf"}},
+ 
+    "query": "select * from spe a provext:SpecializationOf",
+
+    "sentence": {
+	"type": "clause",
+	"subject":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			      "@object": "spe",
+			     "@field":  "specificEntity",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "spe",
+					    "@field": "specificEntity",
+					    "@function": "pluralp"}}},
+	"verb": "be a specialization",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "of",
+		       "noun": {"type": "@funcall",
+				"@object": "spe",
+				"@field": "generalEntity",
+				"@function": "localname"}}],	
+	"features" : {"tense": "past"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+}

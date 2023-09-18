@@ -1,0 +1,31 @@
+{
+    "type": "clause",
+    "subject": "I",
+    "verb": "like",
+    "object": {
+        "type": "verb_phrase",
+        "head": "to eat",
+        "object": {
+            "type": "noun_phrase",
+            "head": "greens",
+            "features": {
+                "number": "plural"
+            }
+        },
+        "modifiers": [],
+        "pre-modifiers": [],
+        "features": {}
+    },
+    "modifiers": [
+        {
+            "type": "adverb_phrase",
+            "head": "somehow"
+        }
+    ],
+    "front-modifiers": [
+        {
+            "type": "adverb_phrase",
+            "head": "thus"
+        }
+    ]
+}

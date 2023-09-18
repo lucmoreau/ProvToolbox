@@ -1,0 +1,54 @@
+{
+    "select": {"recommendation": {"@type": "prov:Entity"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+	"prefix pl <https://plead-project.org/ns/plead#>",
+	"prefix pd <https://pandas.pydata.org/#>",
+
+
+	"select * from recommendation a prov:Entity",
+	"from wdf a prov:WasDerivedFrom",
+	" join recommendation.id=wdf.generatedEntity",
+	"from  features a prov:Entity",
+	" join wdf.usedEntity=features.id",
+
+	"where features[prov:type] >= 'pd:Series'",
+	"and   recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'"
+
+
+    ],
+
+    "sentence": {
+	"type": "clause",
+	"object": {"type": "coordinated_phrase",
+		   "conjunction": "and",
+		   "coordinates": [
+		       {"type": "noun_phrase",
+			"head": {"@object": "features",
+				 "@property":  "@attributes",
+				 "@function": "identity"}}
+		   ]
+		  },
+	"verb": "are",
+	"subject": {"type": "noun_phrase",
+		   "determiner": "the",
+		   "head": "data we considered for your loan application"},
+	
+	"features" : {"tense": "present"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#",
+	"py": "urn:python:var:",
+	"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+    }
+    
+    
+}

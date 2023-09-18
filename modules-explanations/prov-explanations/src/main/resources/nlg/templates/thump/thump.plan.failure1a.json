@@ -1,0 +1,118 @@
+
+{
+
+	"select": {
+		"plan1":        {"@type": "prov:Entity"},
+		"plan2":        {"@type": "prov:Entity"},
+		"ag":           {"@type": "prov:Agent"}
+		},
+	"query": [
+		"prefix ros <https://openprovenance.org/ns/ros>",
+		"prefix rpl <http://openprovenance.org/ns/rosplan>",
+		"prefix rs <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/>",
+		"prefix rn <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/>",
+		"prefix msg <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/>",
+		"prefix ex <http://example.org/>",
+
+		"prefix pl <https://plead-project.org/ns/plead#>",
+
+		"select * from wdf a prov:WasDerivedFrom",
+		"from plan1 a prov:Entity",
+		" join wdf.usedEntity = plan1.id",
+		"from plan2 a prov:Entity",
+		" join wdf.generatedEntity=plan2.id",
+		"from usd a prov:Used",
+		" join plan1.id = usd.entity",
+		"from dispatching a prov:Activity",
+		" join usd.activity=dispatching.id",
+		"from waw a prov:WasAssociatedWith",
+		" join dispatching.id=waw.activity",
+		"from ag a prov:Agent",
+		" join waw.agent=ag.id",
+
+		"where plan2[prov:type]       >= 'rpl:CancelledPlan'",
+		"  and plan1[prov:type]       >= 'rpl:EsterelPlan'",
+		"  and ag[prov:type]          >= 'rpl:ROSPlanNode'",
+		"  and dispatching[prov:type] >= 'ex:DispatchingPlan'"
+
+
+	],
+
+
+
+	"sentence": {
+		"type": "clause",
+		"object": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"head": {
+				"type": "@funcall",
+				"@object": "plan1",
+				"@field":  "id",
+				"@function": "noun+localname",
+				"@arg1":   "plan"
+			},
+			"complements": [
+				{
+					"type": "clause",
+					"complementiser": "which",
+					"verb": "dispatch",
+					"features": {
+						"tense": "past",
+						"passive": "true"
+					},
+					"subject": {
+						"type": "noun_phrase",
+						"determiner": "the",
+						"head": {
+							"type": "@funcall",
+							"@object": "ag",
+							"@field":  "id",
+							"@function": "noun+localname",
+							"@arg1":   "dispatcher"
+						}
+					},
+					"modifiers": [
+						{
+							"type": "preposition_phrase",
+							"preposition": "during",
+							"noun": {
+								"type": "@funcall",
+								"@object": "dispatching",
+								"@field": "id",
+								"@function": "noun+localname",
+								"@arg1":   "activity"}
+						}
+					]
+
+
+				}
+			]
+		},
+
+		"verb": "cancel",
+		"features" : {
+			"tense": "past",
+			"passive": "true"
+		}
+
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#",
+		"ros": "https://openprovenance.org/ns/ros",
+		"rpl": "http://openprovenance.org/ns/rosplan",
+		"rs": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2",
+		"rn": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/",
+		"msg": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/"
+
+
+	}
+
+
+}

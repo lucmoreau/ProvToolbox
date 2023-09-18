@@ -1,0 +1,1 @@
+The loan application was automatically approved based on a combination of the borrower's loan application and third party data: the borrower's FICO score and a credit reference.

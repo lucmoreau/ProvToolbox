@@ -1,0 +1,42 @@
+
+{
+
+    "select": {"ag": {"@type": "prov:Agent"}},
+
+    "query": [
+
+	"prefix foaf <http://xmlns.com/foaf/0.1/>",
+	"select * from ag a prov:Agent ",
+	"where ag[prov:type] >= 'prov:Person'",
+        " and ag[foaf:givenName] exists"],
+
+
+
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head": {"@object": "ag",
+			     "@property":  "foaf:givenName",
+			     "@function": "identity"}},
+	"verb": "be",
+	"object": {"type":"noun_phrase",
+		   "head":"person",
+		   "determiner":"a"},
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "with email address",
+		       "noun": {"@object": "ag",
+				"@property": "foaf:mbox",
+				"@optional": "true",				
+				"@function": "email"}}],	
+	
+	"features" : {"tense": "present"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/"
+    }
+    
+    
+}

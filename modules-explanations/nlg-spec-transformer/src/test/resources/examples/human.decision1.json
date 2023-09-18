@@ -1,0 +1,73 @@
+{
+    "subject": {
+        "type": "noun_phrase",
+        "determiner": "a",
+        "head": "credit officer (staff/112)",
+        "complements": [
+            {
+                "complementiser": "whose",
+                "subject": "decision",
+                "features": {
+                    "tense": "past"
+                },
+                "object": {
+                    "type": "coordinated_phrase",
+                    "conjunction": "and",
+                    "coordinates": [
+                        {
+                            "type": "noun_phrase",
+                            "specifier": "your",
+                            "post-modifiers": [
+                                {
+                                    "type": "noun_phrase",
+                                    "head": " (applications/128350251)"
+                                }
+                            ],
+                            "head": "application"
+                        },
+                        {
+                            "type": "noun_phrase",
+                            "determiner": "the",
+                            "head": "automated recommendation (recommendation/128350251)",
+                            "post-modifiers": [
+                                {
+                                    "type": "noun_phrase",
+                                    "head": "itself"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "noun_phrase",
+                            "determiner": "a",
+                            "post-modifiers": [
+                                {
+                                    "type": "noun_phrase",
+                                    "head": " (credit_history/128350251)"
+                                }
+                            ],
+                            "head": "credit reference"
+                        },
+                        {
+                            "type": "noun_phrase",
+                            "determiner": "a",
+                            "head": "fico score (fico_score/128350251)"
+                        }
+                    ]
+                },
+                "verb": "is based on",
+                "type": "clause"
+            }
+        ]
+    },
+    "features": {
+        "tense": "past",
+        "passive": "true"
+    },
+    "object": {
+        "type": "noun_phrase",
+        "determiner": "the",
+        "head": "automated recommendation"
+    },
+    "verb": "review",
+    "type": "clause"
+}

@@ -1,0 +1,41 @@
+prefix ln <https://plead-project.org/ns/loan#>
+prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+prefix pl <https://plead-project.org/ns/plead#>
+
+
+
+
+select * from file a prov:Entity
+from wgb a prov:WasGeneratedBy
+ join file.id=wgb.entity
+from approving a prov:Activity
+ join wgb.activity=approving.id
+from waw a prov:WasAssociatedWith
+ join approving.id=waw.activity
+from agent1 a prov:Agent
+ join waw.agent = agent1.id
+
+from wdf2 a prov:WasDerivedFrom
+ join file.id=wdf2.generatedEntity
+from pipeline2 a prov:Entity
+ join wdf2.usedEntity=pipeline2.id
+from wgb2 a prov:WasGeneratedBy
+ join pipeline2.id=wgb2.entity
+from do2 a prov:Activity
+ join wgb2.activity=do2.id
+
+from waw2 a prov:WasAssociatedWith
+ join do2.id=waw2.activity
+from agent2 a prov:Agent
+ join waw2.agent = agent2.id
+
+
+
+where agent1[prov:type]          >= 'prov:Person'
+  and agent1[prov:type]          >= 'ln:Manager'
+  and file  [prov:type]          >= 'ln:File'
+  and agent2[prov:type]          >= 'prov:Person'
+  and agent2[prov:type]          >= 'ln:DataEngineer'
+  and do2[prov:type]             >= 'pl:FittingData'
+  and pipeline2[prov:type]       >= 'sk:pipeline.Pipeline'
+  and approving[prov:type]       >= 'pl:ApprovingPipeline'

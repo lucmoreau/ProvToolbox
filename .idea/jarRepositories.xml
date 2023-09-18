@@ -7,6 +7,11 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="clojars" />
+      <option name="name" value="clojars" />
+      <option name="url" value="https://repo.clojars.org/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jsweet-central" />
       <option name="name" value="libs-release" />
       <option name="url" value="https://repository.jsweet.org/artifactory/libs-release-local" />

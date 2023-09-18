@@ -1,0 +1,111 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+	"prefix pl <https://plead-project.org/ns/plead#>",
+	"prefix pd <https://pandas.pydata.org/#>",
+
+
+	"select * from application a prov:Entity",
+	"from wdf a prov:WasDerivedFrom",
+	" join application.id=wdf.usedEntity",
+	"from cfapp a prov:Entity",
+	" join wdf.generatedEntity=cfapp.id",
+	"from wdf2 a prov:WasDerivedFrom",
+	" join cfapp.id=wdf2.usedEntity",
+	"from decision a prov:Entity",
+	" join wdf2.generatedEntity=decision.id",
+
+	"where application[prov:type] >= 'ln:LoanApplication'",
+	"  and cfapp[prov:type]       >= 'ln:LoanApplication'",
+	"  and cfapp[prov:type]       >= 'pl:CounterFactualInput'",
+	"  and decision[prov:type]    >= 'ln:HumanDecision'",
+	"   or decision[prov:type]    >= 'ln:AutomatedDecision'  ",
+	"  and decision[prov:type]    >= 'pl:CounterFactualOutput'   ",
+	"  and wdf[prov:type]         >= 'pl:CounterFactualDerivation'",
+
+	"group by application aggregate wdf,cfapp,decision with Seq"
+
+
+
+    ],
+  
+	
+
+    "sentence": {
+	"type": "clause",
+
+	"subject": {"type": "noun_phrase",
+		    "head": "we"},
+
+	"verb": "simulate alternative loan applications for all possible values ",
+
+
+	"complements": [
+
+	    {
+		"type": "preposition_phrase",
+		"preposition": "of",
+		"noun": {
+		    "type": "coordinated_phrase",
+		    "conjunction": "and",
+		    "@pick": {
+			"@variable": "wdf",
+			"@clause": "coordinates",
+			"@element": {
+			    "type": "noun_phrase",
+			    "head": {
+				"@object": "wdf",
+				"@property":  "pl:cf_field",
+				"@function": "identity"}
+			}
+		    }
+		}
+		
+	    },
+
+	    {
+ 		"type": "noun_phrase",
+		"head": ", i.e., "
+	    },
+	    
+	    {
+		"type": "coordinated_phrase",
+		"conjunction": "and",
+		"@iterator": {
+		    "@variable": "wdf",
+		    "@clause": "coordinates",
+		    "@element": {
+			"type": "noun_phrase",
+			"head": {
+			    "@object": "wdf",
+			    "@property":  "pl:cf_value",
+			    "@function": "identity"
+			}
+		    }
+		}
+	    }
+
+	],
+	
+	"features" : {"tense": "past"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#",
+	"pl": "https://plead-project.org/ns/plead#"
+
+    }
+    
+    
+}

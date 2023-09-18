@@ -1,0 +1,1 @@
+The data sources were a credit reference (credit_history/128350251) provided by the credit agency (credit_agency) at <2019-01-10T14:10:16> and a fico score (fico_score/128350251) provided by the credit agency (fico) at <2019-03-10T11:00:00>.

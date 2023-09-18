@@ -1,0 +1,71 @@
+{
+    "type": "clause",
+    "subject": {
+        "type": "noun_phrase",
+        "head": "that"
+    },
+    "verb": "is",
+    "object": {
+        "type": "clause",
+        "subject": {
+            "type": "noun_phrase",
+            "head": "credit history information",
+            "modifiers": [
+                {
+                    "type": "adjective_phrase",
+                    "head": "negative",
+                    "modifiers": [],
+                    "pre-modifiers": [],
+                    "post-modifiers": [],
+                    "features": {}
+                }
+            ],
+            "pre-modifiers": [],
+            "post-modifiers": [
+                {
+                    "type": "preposition_phrase",
+                    "preposition": "on",
+                    "noun": {
+                        "type": "noun_phrase",
+                        "head": "file",
+                        "modifiers": [],
+                        "pre-modifiers": [],
+                        "post-modifiers": [],
+                        "specifier": {
+                            "type": "noun_phrase",
+                            "determiner": "the",
+                            "head": "borrower",
+                            "modifiers": [],
+                            "pre-modifiers": [],
+                            "post-modifiers": [],
+                            "specifier": null,
+                            "complements": [],
+                            "features": {
+                                "pronominal": "true",
+                                "possessive": "true",
+                                "person": "second"
+                            }
+                        },
+                        "complements": [],
+                        "features": {}
+                    },
+                    "complements": [],
+                    "specifier": null,
+                    "features": {}
+                }
+            ],
+            "specifier": null,
+            "complements": [],
+            "features": {}
+        },
+        "verb": null,
+        "object": null,
+        "indirect_object": null,
+        "complements": [],
+        "modifiers": [],
+        "complementiser": "because of"
+    },
+    "indirect_object": null,
+    "complements": [],
+    "modifiers": []
+}

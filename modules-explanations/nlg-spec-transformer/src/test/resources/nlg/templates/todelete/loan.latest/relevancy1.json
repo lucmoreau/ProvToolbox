@@ -1,0 +1,133 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"}},
+
+    "query": [
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	
+	"select * from der1 a prov:WasDerivedFrom",
+	"from decision a prov:Entity",
+	" join der1.generatedEntity=decision.id",
+	"from application a prov:Entity",
+	" join der1.usedEntity=application.id",
+
+	"from der2 a prov:WasDerivedFrom",
+	" join decision.id=der2.generatedEntity",
+	"from fico a prov:Entity",
+	" join der2.usedEntity=fico.id",
+	"from reviewing a prov:Activity",
+	" join der2.activity=reviewing.id",
+
+	"from der4 a prov:WasDerivedFrom",
+	" join decision.id=der4.generatedEntity",
+	"from credit a prov:Entity",
+	" join der4.usedEntity=credit.id",
+
+	"from wat1 a prov:WasAttributedTo",
+	" join credit.id=wat1.entity",
+	"from creditAgency a prov:Agent",
+	" join wat1.agent = creditAgency.id",
+
+	"from wat2 a prov:WasAttributedTo",
+	" join fico.id=wat2.entity",
+	"from creditAgency2 a prov:Agent",
+	" join wat2.agent = creditAgency2.id",
+
+	"where decision[prov:type]    >= 'ln:HumanDecision'",
+	"  and application[prov:type] >= 'ln:LoanApplication'",
+	"  and reviewing[prov:type]   >= 'ln:LoanAssessment'",
+	"  and fico[prov:type]        >= 'ln:FICOScore'  ",
+	"  and credit[prov:type]      >= 'ln:CreditReference'",
+	"  and creditAgency[prov:type]      >= 'ln:CreditReferencingAgency'    ",
+	"  and creditAgency2[prov:type]      >= 'ln:CreditReferencingAgency'    "
+    ],
+
+
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "determiner": "the",
+		    "features": {"number": "plural"},
+		    "head": "source",
+		    "pre-modifiers": [{"type":"adjective_phrase",
+				       "head":"data"}]
+		   },
+	"object": {
+	    "type": "coordinated_phrase",
+	    "conjunction": "and",
+	    "coordinates": [
+
+		{"type": "noun_phrase",
+		 "determiner": "a",
+		 "post-modifiers": [{"type":"noun_phrase",
+				     "head": {"@object": "credit",
+					      "@field":  "id",
+					      "@function": "noun+localname",
+					      "@arg1": ""}},
+				    {"type":"adjective_phrase",
+				     "head":"provided",
+				     "post-modifiers": [
+					 {"type":"preposition_phrase",
+					  "preposition": "by",
+					  "noun": {"type":"noun_phrase",
+						   "determiner": "the",
+						   "head": {"@object": "creditAgency",
+							    "@field":  "id",
+							    "@function": "noun+localname",
+							    "@arg1": "credit agency"}}},
+					 {"type": "preposition_phrase",
+					  "preposition": "at",
+					  "noun": {"@object": "credit",
+						   "@property": "ln:created_at",
+						   "@optional": "true",				
+						   "@function": "timestring"}}
+				     ]
+				    }
+				   ],
+		 "head": "credit reference"},
+		{"type":"noun_phrase",
+		 "determiner": "a",					 
+		 "head": {"@object": "fico",
+			  "@field":  "id",
+			  "@function": "noun+localname",
+			  "@arg1": "fico score"},
+		 "post-modifiers": [{"type":"adjective_phrase",
+				     "head":"provided",
+				     "post-modifiers": [
+					 {"type":"preposition_phrase",
+					  "preposition": "by",
+					  "noun": {"type":"noun_phrase",
+						   "determiner": "the",
+						   "head": {"@object": "creditAgency2",
+							    "@field":  "id",
+							    "@function": "noun+localname",
+							    "@arg1": "credit agency"}}},
+					 {"type": "preposition_phrase",
+					  "preposition": "at",
+					  "noun": {"@object": "fico",
+						   "@property": "ln:created_at",
+						   "@optional": "true",				
+						   "@function": "timestring"}}
+				     ]
+				    }
+				   ]}
+	    ]
+	},
+
+	"verb": "is",
+	
+	"features" : {"tense": "past"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#"
+    }
+    
+    
+}

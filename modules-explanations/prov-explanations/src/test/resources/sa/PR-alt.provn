@@ -1,0 +1,349 @@
+document
+	prefix uuid <urn:uuid:>
+	prefix sch <https://www.get-information-schools.service.gov.uk/Establishments/Establishment/Details/>
+	prefix ch <http://southampton-citizen-portal.mock/children/>
+	prefix pl <https://plead-project.org/ns/plead#>
+	prefix appl <http://southampton-citizen-portal.mock/school-applications/>
+	prefix ex <http://example.org/>
+	prefix sa <https://plead-project.org/ns/school-admission#>
+	prefix u <http://southampton-citizen-portal.mock/users/>
+
+
+	agent(u:PR,[prov:type = 'prov:Person', prov:type = 'sa:Parent'])
+	entity(appl:2020/PR,[prov:type = 'sa:SchoolPlaceApplication', sa:year = "2020" %% xsd:int, sa:applicant = 'ch:PR'])
+	wasAttributedTo(appl:2020/PR, u:PR)
+	entity(appl:2020/PR/1,[prov:type = 'sa:SchoolPlacePreference', prov:type = 'sa:Preference1', sa:school = 'sch:137037', sa:ehcp = "false" %% xsd:boolean, sa:pcare = "false" %% xsd:boolean, sa:vulnerable = "false" %% xsd:boolean, sa:medical = "false" %% xsd:boolean, sa:in_catchment = "true" %% xsd:boolean, sa:distance = "0.771" %% xsd:double, sa:sibling = "false" %% xsd:boolean, sa:feeder = "true" %% xsd:boolean, sa:late = "false" %% xsd:boolean])
+	hadMember(appl:2020/PR,appl:2020/PR/1)
+	wasAttributedTo(appl:2020/PR/1, u:PR)
+
+	activity(ex:catergorising/137037/2020,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:CatergorisingPreference'])
+	used(ex:catergorising/137037/2020,appl:2020/PR/1,-)
+
+	// USH 
+	entity(sch:137037/categorised_list/2020/1,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/1',
+    	sa:priority=1,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/2,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/2',
+    	sa:priority=2,
+    	sa:count=20,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/3,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/3',
+    	sa:priority=3,
+    	sa:count=30,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/4i,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/4i',
+    	sa:priority=4,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/4ii,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/4ii',
+    	sa:priority=5,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/4iii,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/4iii',
+    	sa:priority=6,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/4iv,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/4iv',
+    	sa:priority=7,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/categorised_list/2020/4v,
+    [ prov:type='sa:ApplicationCategoryList',
+    	sa:category='sch:137037/category/4v',
+    	sa:priority=8,
+    	sa:count=110,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+  entity(sch:137037/categorised_list/2020/4v/300,
+    [ prov:type='sa:ApplicationCategoryPosition',
+    	sa:category='sch:137037/category/4v'
+    ]
+  )
+  hadMember(sch:137037/categorised_list/2020/4v/300, sch:137037/categorised_list/2020/4v)
+  
+  wasGeneratedBy(sch:137037/categorised_list/2020/1, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/2, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/3, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/4i, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/4ii, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/4iii, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/4iv, ex:catergorising/137037/2020, -)
+  wasGeneratedBy(sch:137037/categorised_list/2020/4v, ex:catergorising/137037/2020, -)
+
+
+  wasGeneratedBy(sch:137037/categorised_list/2020/4v/300, ex:catergorising/137037/2020, -)
+  wasDerivedFrom(sch:137037/categorised_list/2020/4v/300, appl:2020/PR/1)
+
+  // Ranking template
+  activity(ex:ranking/137037/2020,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:RankingSchoolPlace'])
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/1, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/2, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/3, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/4i, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/4ii, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/4iii, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/4iv, -)
+	used(ex:ranking/137037/2020, sch:137037/categorised_list/2020/4v, -)
+
+	entity(sch:137037/ranked-list/2020,[prov:type = 'sa:SchoolPlaceRankedList', sa:year = "2020" %% xsd:int, sa:school = 'sch:137037'])
+	entity(sch:137037/ranked-list/2020/300,
+	  [ prov:type='sa:SchoolPlaceRankedPosition',
+	  	sa:category='sch:137037/category/4v',
+	  	sa:child = 'ch:PR',
+	    sa:rank = 300
+	  ]
+	)
+	hadMember(sch:137037/ranked-list/2020,sch:137037/ranked-list/2020/300)
+	wasGeneratedBy(sch:137037/ranked-list/2020,ex:ranking/137037/2020,-)
+	wasGeneratedBy(sch:137037/ranked-list/2020/300,ex:ranking/137037/2020,-)
+	wasDerivedFrom(sch:137037/ranked-list/2020/300, sch:137037/categorised_list/2020/4v/300)
+	wasDerivedFrom(sch:137037/ranked-list/2020/300, appl:2020/PR/1)
+
+	entity(sch:137037/pan/2020,[prov:type = 'sa:PublishedAdmissionNumber', prov:value = "210" %% xsd:int, sa:year = "2020" %% xsd:int, sa:school = 'sch:137037'])
+	entity(sch:137037/allocation/2020/1,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/1',
+    	sa:priority=1,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/2,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/2',
+    	sa:priority=20,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/3,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/3',
+    	sa:priority=30,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/4i,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/4i',
+    	sa:priority=4,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/4ii,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/4ii',
+    	sa:priority=5,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/4iii,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/4iii',
+    	sa:priority=6,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/4iv,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/4iv',
+    	sa:priority=7,
+    	sa:count=10,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+	entity(sch:137037/allocation/2020/4v,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:137037/category/4v',
+    	sa:priority=8,
+    	sa:count=110,
+    	sa:year=2020,
+    	sa:school='sch:137037'
+    ]
+  )
+
+	activity(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:AllocatingSchoolPlace'])
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c,sch:137037/ranked-list/2020/300,-)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c,sch:137037/pan/2020,-)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/1, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/2, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/3, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/4i, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/4ii, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/4iii, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/4iv, -)
+	used(uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c, sch:137037/allocation/2020/4v, -)
+	entity(sch:137037/waitinglist/2020/300,
+	  [ prov:type='sa:WaitingListPlace',
+	    sa:year = 2020,
+	    sa:school = 'sch:137037',
+	    sa:waiting_list_rank = 90,
+	    sa:child = 'ch:PR'
+	  ]
+	)
+	wasGeneratedBy(sch:137037/waitinglist/2020/300,uuid:0e5b0a85-2ddb-433b-981b-2e24c0ee664c,-)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/ranked-list/2020/300)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/pan/2020)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/1)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/2)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/3)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/4i)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/4ii)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/4iii)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/4iv)
+	wasDerivedFrom(sch:137037/waitinglist/2020/300, sch:137037/allocation/2020/4v)
+
+	//--------------------------------------------
+	// The alternative offer
+	entity(sch:116450/pan/2020,
+	  [ prov:type = 'sa:PublishedAdmissionNumber',
+	  	prov:value = 180,
+	  	sa:year = 2020,
+	  	sa:school = 'sch:116450'
+	  ]
+	)
+	activity(uuid:85014f90-0698-420b-97de-af57ed97607a,-,-,[prov:type = 'pl:MachineLedActivity', prov:type = 'sa:AllocatingSchoolPlace'])
+	wasStartedBy(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:137037/waitinglist/2020/300, -, -)
+	used(uuid:85014f90-0698-420b-97de-af57ed97607a,sch:116450/pan/2020,-)
+	entity(sch:116450/offers/2020/400,
+	  [ prov:type = 'sa:AlternativeSchoolPlaceOffer',
+	    sa:year = 2020,
+	    sa:school = 'sch:116450',
+	    sa:category='sch:116450/category/feeder',
+	    sa:child = 'ch:PR'
+	  ]
+	)
+	wasGeneratedBy(sch:116450/offers/2020/400,uuid:85014f90-0698-420b-97de-af57ed97607a,-)
+
+
+	// The alternative school offer list
+	entity(sch:116450/allocation/2020/ehcp,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/ehcp',
+    	sa:count=3,
+    	sa:priority=1,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+	entity(sch:116450/allocation/2020/p_care,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/p_care',
+    	sa:count=3,
+    	sa:priority=2,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+	entity(sch:116450/allocation/2020/vulnerable,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/vulnerable',
+    	sa:count=2,
+    	sa:priority=3,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+	entity(sch:116450/allocation/2020/sibling,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/sibling',
+    	sa:count=37,
+    	sa:priority=4,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+	entity(sch:116450/allocation/2020/feeder_before,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/feeder',
+    	sa:count=63,
+    	sa:priority=5,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+	entity(sch:116450/allocation/2020/distance,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/distance',
+    	sa:count=68,
+    	sa:priority=6,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+  used(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:116450/allocation/2020/ehcp, -)
+  used(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:116450/allocation/2020/p_care, -)
+  used(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:116450/allocation/2020/vulnerable, -)
+  used(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:116450/allocation/2020/sibling, -)
+  used(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:116450/allocation/2020/feeder_before, -)
+  used(uuid:85014f90-0698-420b-97de-af57ed97607a, sch:116450/allocation/2020/distance, -)
+
+  wasDerivedFrom(sch:116450/offers/2020/400, sch:116450/allocation/2020/ehcp)
+  wasDerivedFrom(sch:116450/offers/2020/400, sch:116450/allocation/2020/p_care)
+  wasDerivedFrom(sch:116450/offers/2020/400, sch:116450/allocation/2020/vulnerable)
+  wasDerivedFrom(sch:116450/offers/2020/400, sch:116450/allocation/2020/sibling)
+  wasDerivedFrom(sch:116450/offers/2020/400, sch:116450/allocation/2020/feeder_before)
+
+	entity(sch:116450/allocation/2020/feeder_after,
+    [ prov:type='sa:OfferCategoryList',
+    	sa:category='sch:116450/category/feeder',
+    	sa:count=64,
+    	sa:priority=5,
+    	sa:year=2020,
+    	sa:school='sch:116450'
+    ]
+  )
+  hadMember(sch:116450/allocation/2020/feeder_after, sch:116450/offers/2020/400)
+  wasGeneratedBy(sch:116450/allocation/2020/feeder_after, uuid:85014f90-0698-420b-97de-af57ed97607a, -)
+  wasDerivedFrom(sch:116450/allocation/2020/feeder_after, sch:116450/allocation/2020/feeder_before)
+
+endDocument

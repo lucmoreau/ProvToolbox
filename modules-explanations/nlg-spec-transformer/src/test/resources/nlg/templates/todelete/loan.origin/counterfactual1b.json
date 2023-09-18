@@ -1,0 +1,121 @@
+
+{
+
+    "select": {"decision":       {"@type": "prov:Entity"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+	"prefix pl <https://plead-project.org/ns/plead#>",
+	"prefix pd <https://pandas.pydata.org/#>",
+
+
+	"select * from application a prov:Entity",
+	"from wdf a prov:WasDerivedFrom",
+	" join application.id=wdf.usedEntity",
+	"from cfapp a prov:Entity",
+	" join wdf.generatedEntity=cfapp.id",
+	"from wdf2 a prov:WasDerivedFrom",
+	" join cfapp.id=wdf2.usedEntity",
+	"from decision a prov:Entity",
+	" join wdf2.generatedEntity=decision.id",
+
+	"where application[prov:type] >= 'ln:LoanApplication'",
+	"  and cfapp[prov:type]       >= 'ln:LoanApplication'",
+	"  and cfapp[prov:type]       >= 'pl:CounterFactualInput'",
+	"  and decision[prov:type]    >= 'ln:HumanDecision'",
+	"   or decision[prov:type]    >= 'ln:AutomatedDecision'  ",
+	"  and decision[prov:type]    >= 'pl:CounterFactualOutput'   ",
+	"  and wdf[prov:type]         >= 'pl:CounterFactualDerivation'",
+
+	"group by application aggregate wdf,cfapp,decision with Seq"
+
+
+
+    ],
+  
+	
+
+    "sentence": {
+	"type": "clause",
+
+
+
+
+	"subject": {"type": "noun_phrase",
+		    "head": "in these simulations, the alternate applications"},
+
+	"verb": "would result in the following decisions:",
+
+
+	"complements": [
+
+
+	    
+	    {
+		"type": "coordinated_phrase",
+		"conjunction": "and",
+		"@iterator": {
+		    "@variable": "wdf,decision",
+		    "@clause": "coordinates",
+		    "@element": {
+				"@object": "decision",
+				"@property":  "ln:result",
+				"@function": "lookup-type",
+				"@arg1": "noun_phrase",
+				"@arg2": "ln"								
+			    }
+		}
+	    },
+
+	    {
+		"type": "preposition_phrase",
+		"preposition": "for values",
+		"noun": {
+		    "type": "coordinated_phrase",
+		    "conjunction": "and",
+		    "@iterator": {
+			"@variable": "wdf,decision",
+			"@clause": "coordinates",
+			"@element": {
+			    "type": "noun_phrase",
+			    "head": {
+				"@object": "wdf",
+				"@property":  "pl:cf_value",
+				"@function": "identity"
+			    }
+			}
+		    }
+		}
+	    }
+	    ,
+
+	    {
+		"type": "preposition_phrase",
+		"preposition": ",",
+		"noun": "respectively"
+	    }
+
+	    
+
+
+
+	],
+	
+	"features" : {"number": "plural"}
+
+	
+    },
+
+    "context": {
+	"ex": "http://example.org/#",	
+	"foaf": "http://xmlns.com/foaf/0.1/",
+	"ln": "https://plead-project.org/ns/loan#",
+	"pd": "https://pandas.pydata.org/#",
+	"pl": "https://plead-project.org/ns/plead#"
+
+    }
+    
+    
+}

@@ -1,0 +1,50 @@
+{
+    "type": "clause",
+    "subject": "we",
+    "verb": "regret",
+    "complements": [
+        {
+            "type": "clause",
+            "subject": "we",
+            "verb": "inform",
+            "object": {
+                "type": "noun_phrase",
+                "head": "you"
+            },
+            "complements": [
+                {
+                    "type": "clause",
+                    "subject": "we",
+                    "verb": "decline",
+                    "object": {
+                        "type": "noun_phrase",
+                        "specifier": "your",
+                        "head": "application"
+                    },
+                    "complements": [
+                        {
+                            "type": "clause",
+                            "subject": {
+                                "type": "noun_phrase",
+                                "specifier": "your",
+                                "head": "credit score",
+                                "modifiers": [
+                                    {
+                                        "type": "adjective_phrase",
+                                        "head": "low"
+                                    }
+                                ]
+                            },
+                            "complementiser": "because of"
+                        }
+                    ],
+                    "features": {
+                        "type": "features",
+                        "tense": "past",
+                        "passive": "false"
+                    }
+                }
+            ]
+        }
+    ]
+}

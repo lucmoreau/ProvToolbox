@@ -1,0 +1,94 @@
+document
+  prefix pd <https://pandas.pydata.org/#>
+  prefix py <urn:python:var:>
+  prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+  prefix ln <https://plead-project.org/ns/loan#>
+  prefix pl <https://plead-project.org/ns/plead#>
+  prefix localfile <file:///Users/me/mlpipeline/>
+  prefix ex <http://example.org/>
+  
+  agent(ex:institution, [prov:type='prov:Organization', prov:type='pl:DataController'])
+  agent(ex:machine/iMac, [prov:type='prov:SoftwareAgent', ln:machine_system="Darwin", ln:machine_release="18.5.0", ln:machine_version="Darwin Kernel Version 18.5.0: Mon Mar 11 20:40:32 PDT 2019; root:xnu-4903.251.3~3/RELEASE_X86_64", ln:machine_python_version="3.7.3"])
+  entity(ex:applications/128350251, [
+    ln:attr_loan_amnt="12025" %% xsd:float, ln:attr_term=" 36 months", ln:attr_emp_title="Lead Vet Tech", ln:attr_emp_length="4 years", ln:attr_home_ownership="RENT", ln:attr_annual_inc="50000" %% xsd:float, ln:attr_purpose="credit_card", ln:attr_title="Credit card refinancing", ln:attr_zip_code="950xx", ln:attr_addr_state="CA", ln:attr_application_type="Joint App", prov:type='ln:LoanApplication',
+    ln:created_at="2019-05-13T14:58:00" %% xsd:dateTime,
+    prov:type='pl:Data'
+  ])
+  agent(ex:applicants/128350251, [prov:type='prov:Person', prov:type='ln:LoanApplicant', prov:type='pl:DataSubject'])
+  wasAttributedTo(ex:applications/128350251, ex:applicants/128350251)
+  entity(ex:credit_history/128350251, [
+    ln:attr_earliest_cr_line="Sep-2010", ln:attr_open_acc="5" %% xsd:float, ln:attr_pub_rec="0" %% xsd:float, ln:attr_revol_bal="4140" %% xsd:float, ln:attr_revol_util="18.6" %% xsd:float, ln:attr_mort_acc="0" %% xsd:float, ln:attr_pub_rec_bankruptcies="0" %% xsd:float, prov:type='ln:CreditReference', ln:created_at="2019-01-10T14:10:16" %% xsd:dateTime,
+    prov:type='pl:Data'
+  ])
+  agent(ex:credit_agency, [prov:type='prov:Organization', prov:type='ln:CreditReferencingAgency'])
+  wasAttributedTo(ex:credit_history/128350251, ex:credit_agency)
+  entity(ex:fico_score/128350251, [
+    prov:type='ln:FICOScore', ln:fico_range_low="710" %% xsd:float, ln:fico_range_high="714" %% xsd:float, ln:created_at="2019-03-10T11:00:00" %% xsd:dateTime,
+    prov:type='pl:Data'
+  ])
+  agent(ex:fico, [prov:type='prov:Organization', prov:type='ln:CreditReferencingAgency'])
+  wasAttributedTo(ex:fico_score/128350251, ex:fico)
+  entity(localfile:dt_pipeline.pickled, [prov:type="ln:File", ln:filesize=7100, ln:sha256="1d4bf23facda94ed4a36164da7304978f49ef3946fec5aae2a84a41213b360b4", ln:created_at="2019-05-10T14:10:16" %% xsd:dateTime])
+  entity(py:4780959224, [prov:type='sk:pipeline.Pipeline'])
+  wasDerivedFrom(py:4780959224, localfile:dt_pipeline.pickled, -, -, -)
+  entity(py:loan_features/128350251, [
+    ln:attr_loan_amnt="12025" %% xsd:float, ln:attr_term=36, ln:attr_int_rate="14.07" %% xsd:float, ln:attr_installment="411.4" %% xsd:float, ln:attr_emp_length="4" %% xsd:float, ln:attr_dti="4.6" %% xsd:float, ln:attr_earliest_cr_line=2010, ln:attr_open_acc="5" %% xsd:float, ln:attr_revol_util="18.6" %% xsd:float, ln:attr_total_acc="9" %% xsd:float, ln:attr_log_annual_inc="4.69898" %% xsd:float, ln:attr_fico_score="712" %% xsd:float, ln:attr_log_revol_bal="3.61711" %% xsd:float, ln:attr_sub_grade_C3=1, ln:attr_home_ownership_RENT=1, ln:attr_verification_status_Source_Verified=1, ln:attr_purpose_credit_card=1, ln:attr_addr_state_CA=1, ln:attr_initial_list_status_w=1, ln:attr_application_type_Joint_App=1, prov:type='pd:Series',
+    prov:type='pl:DerivedSubjectData'
+  ])
+  wasDerivedFrom(py:loan_features/128350251, ex:applications/128350251, -, -, -)
+  wasDerivedFrom(py:loan_features/128350251, ex:credit_history/128350251, -, -, -)
+  wasDerivedFrom(py:loan_features/128350251, ex:fico_score/128350251, -, -, -)
+  activity(ex:classify_loans/128350251, 2019-05-13T14:58:15.920834, 2019-05-13T14:58:15.922722, [prov:type='ln:Classifying'])
+  used(ex:classify_loans/128350251, py:loan_features/128350251, -)
+  wasAssociatedWith(ex:classify_loans/128350251, ex:machine/iMac, py:4780959224)
+  actedOnBehalfOf(ex:machine/iMac, ex:institution, -)
+  entity(ex:recommendation/128350251, [prov:type='ln:AutomatedLoanRecommendation', ln:recommendation='ln:approved', ln:probability_chargeoff="0.211044" %% xsd:float])
+  wasGeneratedBy(ex:recommendation/128350251, ex:classify_loans/128350251, -)
+  wasDerivedFrom(ex:recommendation/128350251, py:loan_features/128350251, ex:classify_loans/128350251, -, -)
+  activity(ex:review_recommendation/128350251, -, -, [prov:type='ln:LoanAssessment', prov:type='pl:HumanLedActivity'])
+  used(ex:review_recommendation/128350251, ex:applications/128350251, -)
+  used(ex:review_recommendation/128350251, ex:recommendation/128350251, -)
+  used(ex:review_recommendation/128350251, ex:credit_history/128350251, -)
+  used(ex:review_recommendation/128350251, ex:fico_score/128350251, -)
+  agent(ex:staff/112, [prov:type='prov:Person', prov:type='ln:CreditOfficer'])
+  actedOnBehalfOf(ex:staff/112, ex:institution, -)
+  entity(ex:decision/128350251, [prov:type='ln:HumanDecision', ln:result='ln:approved'])
+  wasGeneratedBy(ex:decision/128350251, ex:review_recommendation/128350251, -)
+  wasDerivedFrom(ex:decision/128350251, ex:recommendation/128350251, ex:review_recommendation/128350251, -, -)
+  wasDerivedFrom(ex:decision/128350251, ex:applications/128350251, ex:review_recommendation/128350251, -, -)
+  wasDerivedFrom(ex:decision/128350251, ex:credit_history/128350251, ex:review_recommendation/128350251, -, -)
+  wasDerivedFrom(ex:decision/128350251, ex:fico_score/128350251, ex:review_recommendation/128350251, -, -)
+  wasAttributedTo(ex:decision/128350251, ex:staff/112)
+  activity(ex:process_application/128350251, 2019-05-13T14:58:15.919700, 2019-05-13T14:58:15.923457)
+  wasAssociatedWith(ex:process_application/128350251, ex:institution, -)
+  used(ex:process_application/128350251, ex:applications/128350251, -)
+  wasGeneratedBy(ex:decision/128350251, ex:process_application/128350251, -)
+
+
+  // Request to rectify my data
+  entity(ex:customer_requests/1234, [
+    prov:type='pl:DataRectificationRequest',
+    pl:request_reason="My annual income is not correct, its 150000 not 50000" %% xsd:string,
+    pl:timestamp="2020-05-13T14:58:15" %% xsd:dateTime
+  ])
+  wasAttributedTo(ex:customer_requests/1234, ex:applicants/128350251)
+
+  // Reviewing the request
+  agent(ex:staff/211, [prov:type='prov:Person', prov:type='ln:DataProtectionOfficer'])
+  activity(ex:review_request/1234, 2020-05-15T14:21:00, 2020-05-15T14:29:00, [prov:type='pl:ReviewingRectificationRequest'])
+  wasAssociatedWith(ex:review_request/1234, ex:staff/211, -)
+  actedOnBehalfOf(ex:staff/211, ex:institution, ex:review_request/1234)
+  used(ex:review_request/1234, ex:customer_requests/1234, 2020-05-15T14:21:00)
+
+  entity(ex:rectification_review_decision/1234, [
+    prov:type='pl:ReviewDecision', prov:type='pl:HumanDecision',
+    prov:type='pl:RejectionDecision',
+    ln:comment="No evidence of income was provided by the customer" %% xsd:string,
+    ln:created_at="2020-05-15T14:28:00" %% xsd:dateTime,
+    pl:decision_basis='ln:reasons/630'  // e.g. missing evidence
+  ])
+  wasGeneratedBy(ex:rectification_review_decision/1234, ex:review_request/1234, -)
+  wasAttributedTo(ex:rectification_review_decision/1234, ex:staff/211)
+  wasDerivedFrom(ex:rectification_review_decision/1234, ex:customer_requests/1234, ex:review_request/1234, -, -)
+
+endDocument

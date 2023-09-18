@@ -1,0 +1,44 @@
+document
+  prefix pd <https://pandas.pydata.org/#>
+  prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+  prefix ln <https://plead-project.org/ns/loan#>
+  prefix pl <https://plead-project.org/ns/plead#>
+
+   prefix tmpl <http://openprovenance.org/tmpl#>
+   prefix var <http://openprovenance.org/var#>
+   prefix vargen <http://openprovenance.org/vargen#>
+
+
+  bundle vargen:bun
+  
+
+  // Request to rectify my data
+  entity(var:customer_request, [
+    prov:type='pl:DataRectificationRequest',
+    pl:request_reason="My annual income is not correct, it is 150000 not 50000" %% xsd:string,
+    pl:timestamp="2020-05-13T14:58:15" %% xsd:dateTime
+  ])
+  wasAttributedTo(var:customer_request, var:applicant)
+
+  // Reviewing the request
+  agent(var:staff2, [prov:type='prov:Person', prov:type='ln:DataProtectionOfficer'])
+  activity(var:reviewing_request, 2020-05-15T14:21:00, 2020-05-15T14:29:00, [prov:type='pl:ReviewingRectificationRequest'])
+  wasAssociatedWith(var:reviewing_request, var:staff2, -)
+  actedOnBehalfOf(var:staff2, var:institution, var:reviewing_request)
+  used(var:reviewing_request, var:customer_request, 2020-05-15T14:21:00)
+
+
+  entity(var:rectification_review_decision, [
+    prov:type='pl:ReviewDecision', prov:type='pl:HumanDecision',
+    prov:type='pl:RejectionDecision',
+    ln:comment="No evidence of income was provided by the customer" %% xsd:string,
+    pl:decision_basis='ln:reasons/630'  // e.g. missing evidence
+  ])
+  wasGeneratedBy(var:rectification_review_decision, var:reviewing_request, -)
+  wasAttributedTo(var:rectification_review_decision, var:staff2)
+  wasDerivedFrom(var:rectification_review_decision, var:customer_request, var:reviewing_request, -, -)
+
+
+endBundle
+
+endDocument

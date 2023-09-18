@@ -39,6 +39,7 @@
         <option value="$PROJECT_DIR$/modules-nf/pom.xml" />
         <option value="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" />
         <option value="$PROJECT_DIR$/modules-executable-provman/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

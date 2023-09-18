@@ -1,0 +1,42 @@
+
+{
+
+    "select": {"wib": {"@type": "prov:WasInvalidatedBy"}},
+ 
+    "sentence": {
+	"type": "clause",
+	"object":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "wib",
+			     "@field":  "entity",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "wib",
+					    "@field": "entity",
+					    "@function": "pluralp"}}},
+	"verb": "invalidate",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "by",
+		       "noun": {"type": "@funcall",
+				"@object": "wib",
+				"@field": "activity",
+				"@optional": "true",				
+				"@function": "localname"}},
+		     {"type": "preposition_phrase",
+		       "preposition": "at",
+		      "noun": {"type": "@funcall",
+			       "@object": "wib",
+				"@field": "time",
+				"@optional": "true",				
+				"@function": "timestring"}}],	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

@@ -1,0 +1,72 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+    <block type="noun_phrase" id="id22" x="191" y="-24">
+        <value name="DETERMINER">
+            <block type="text" id="id25">
+                <field name="TEXT">the</field>
+            </block>
+        </value>
+        <value name="HEAD">
+            <block type="text" id="id23">
+                <field name="TEXT">application</field>
+            </block>
+        </value>
+        <value name="PRE_MODIFIERS">
+            <block type="lists_create_with" id="o1)QM^ZmnI!fXLV6MvS*">
+                <mutation items="1"></mutation>
+                <value name="ADD0">
+                    <block type="noun_phrase" id=".]zuxV1=(#|(JiGj,~P[">
+                        <value name="HEAD">
+                            <block type="text" id="i26fhW,3i@xX$G~*/W(s">
+                                <field name="TEXT"> loan</field>
+                            </block>
+                        </value>
+                    </block>
+                </value>
+            </block>
+        </value>
+        <value name="COMPLEMENTS">
+            <block type="lists_create_with" id="id41">
+                <mutation items="1"></mutation>
+                <value name="ADD0">
+                    <block type="clause" id="as,fUqOafg[#d}{o}o9x">
+                        <value name="SUBJECT">
+                            <block type="text" id="id34">
+                                <field name="TEXT">you</field>
+                            </block>
+                        </value>
+                        <value name="VERB">
+                            <block type="text" id="id28">
+                                <field name="TEXT">provide</field>
+                            </block>
+                        </value>
+                        <value name="COMPLEMENTISER">
+                            <block type="text" id="`_Ef[tEPT+]Wh@!o2qds">
+                                <field name="TEXT">which</field>
+                            </block>
+                        </value>
+                        <value name="FEATURES">
+                            <block type="features" id="nR%QJ7L*`*CZUa~?:N~1">
+                                <field name="TENSE_TICK">TRUE</field>
+                                <field name="TENSE_CHOICE">PAST</field>
+                                <field name="VOICE_TICK">TRUE</field>
+                                <field name="VOICE_CHOICE">PASSIVE</field>
+                                <field name="NUMBER_TICK">FALSE</field>
+                                <field name="NUMBER_CHOICE">SINGULAR</field>
+                            </block>
+                        </value>
+                    </block>
+                </value>
+            </block>
+        </value>
+        <value name="FEATURES">
+            <block type="features" id="N?])V9-*F%bn*:baWtJ7">
+                <field name="TENSE_TICK">FALSE</field>
+                <field name="TENSE_CHOICE">PAST</field>
+                <field name="VOICE_TICK">FALSE</field>
+                <field name="VOICE_CHOICE">PASSIVE</field>
+                <field name="NUMBER_TICK">TRUE</field>
+                <field name="NUMBER_CHOICE">SINGULAR</field>
+            </block>
+        </value>
+    </block>
+</xml>

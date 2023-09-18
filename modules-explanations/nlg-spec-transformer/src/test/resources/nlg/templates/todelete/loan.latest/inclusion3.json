@@ -1,0 +1,100 @@
+{
+	"select": {"recommendation": {"@type": "prov:Entity"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+		"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+		"prefix pl <https://plead-project.org/ns/plead#>",
+		"prefix pd <https://pandas.pydata.org/#>",
+
+
+		"select * from recommendation a prov:Entity",
+		"from wdf a prov:WasDerivedFrom",
+		" join recommendation.id=wdf.generatedEntity",
+		"from  features a prov:Entity",
+		" join wdf.usedEntity=features.id",
+		"from wdf0 a prov:WasDerivedFrom",
+		" join features.id=wdf0.generatedEntity",
+		"from data a prov:Entity",
+		" join wdf0.usedEntity=data.id",
+
+		"where features[prov:type] >= 'pd:Series'",
+		"and   recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'",
+
+		"group by recommendation aggregate data with Seq"
+
+
+
+	],
+
+	"sentence": {
+		"type": "clause",
+		"object": {
+			"type": "coordinated_phrase",
+			"conjunction": "and",
+			"@iterator": {
+				"type": "@iterator",
+				"@variable": "data",
+				"@clause": "coordinates",
+				"@flatten": "true",
+
+				"@element": {
+					"type": "@iterator",
+					"@variable": "data",
+					"@property":  "@attributes",
+					"@clause": "@splice",
+					"@element": {
+						"type": "@funcall",
+						"@object": "data",
+						"@property":  "@attributes",
+						"@index":  "5",
+						"@function": "lookup-attribute",
+						"@arg1": "noun_phrase"}
+				}}},
+		"verb": "are",
+		"subject": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"head": "data",
+			"complements": [
+				{
+					"type": "clause",
+					"complementiser": "",
+					"subject": "##company",
+					"verb": "considered",
+					"features": {
+						"tense": "past"
+					},
+					"complements": [
+						{
+							"type": "preposition_phrase",
+							"preposition": "for",
+							"noun": {
+								"type": "noun_phrase",
+								"head": "loan application",
+								"specifier": "##borrower-possessive"
+							}
+
+						}
+					]
+				}
+			]
+		},
+
+
+		"features" : {"tense": "present"}
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pd": "https://pandas.pydata.org/#",
+		"py": "urn:python:var:",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+	}
+
+
+}

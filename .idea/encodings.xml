@@ -31,6 +31,16 @@
     <file url="file://$PROJECT_DIR$/modules-executable/toolbox" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-executable/toolbox/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-executable/toolbox/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/prov-query/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/prov-query/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-explanations/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/benchmarks/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-misc/benchmarks/src/main/resources" charset="UTF-8" />

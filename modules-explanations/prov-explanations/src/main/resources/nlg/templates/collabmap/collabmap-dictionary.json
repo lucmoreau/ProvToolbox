@@ -1,0 +1,122 @@
+
+{
+	"help": "https://github.com/simplenlg/simplenlg/blob/master/src/test/java/simplenlg/syntax/english/NounPhraseTest.java",
+
+	"snippets": {
+		"##datacontroller": {
+			"type": "noun_phrase",
+			"head": "data controller",
+			"features": {
+				"@key": "features",
+				"@function": "profile-features",
+				"@arg1": "ln:datacontroller"
+			}
+		},
+		"##datacontroller-possessive": {
+			"type": "noun_phrase",
+			"head": "data controller",
+			"determiner": "the",
+			"features": {
+				"@key": "features",
+				"@function": "profile-features",
+				"@arg1": "ln:datacontroller-possessive"
+			}
+		},
+		"##datasubject": {
+			"type": "noun_phrase",
+			"head": "data subject",
+			"determiner": "the",
+			"features": {
+				"@key": "features",
+				"@function": "profile-features",
+				"@arg1": "ln:datasubject"
+			}
+		},
+		"##datasubject-possessive": {
+			"type": "noun_phrase",
+			"head": "subject",
+			"pre-modifiers": [
+				{
+				    "type": "adjective_phrase",
+				    "head": "data"
+				}
+			    ],
+			"determiner": "the",
+			"features": {
+				"@key": "features",
+				"@function": "profile-features",
+				"@arg1": "ln:datasubject-possessive"
+			}
+		}
+	},
+	"dictionary": {
+
+		"collabmap:Route": {
+			"type": "noun_phrase",
+			"head":  "route",
+			"determiner": "a"
+		},
+		"collabmap:RouteSet": {
+			"type": "noun_phrase",
+			"head":  "route set",
+			"determiner": "a"
+		},
+		"collabmap:Vote": {
+			"type": "noun_phrase",
+			"head":  "vote",
+			"determiner": "a"
+		},
+		"collabmap:includes": {
+			"type": "string",
+			"value":  "include"
+		},
+		"collabmap:votedOn": {
+			"type": "string",
+			"value":  "relates to"
+		},
+		"collabmap:includes2": {
+			"type": "verb_phrase",
+			"head":  "includes",
+			"features" : {
+				"tense": "present",
+				"passive": "false"
+			}
+		},
+		"collabmap:yes": {
+			"type": "adverb_phrase",
+			"head":  "positively"
+		},
+		"collabmap:no": {
+			"type": "adverb_phrase",
+			"head":  "negatively"
+		},
+		"ln:File": {
+			"type": "noun_phrase",
+			"head":  "file"
+		},
+
+		"ln:approved": {
+			"type": "noun_phrase",
+			"head":  "'approval'"
+		},
+
+		"ln:rejected": {
+			"type": "noun_phrase",
+			"head":  "'rejection'"
+		}
+
+
+
+	},
+
+	"context": {
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#",
+		"py": "urn:python:var:",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn.",
+		"collabmap": "http://www.orchid.ac.uk/ontologies/collabmap.owl#"
+
+	}
+}

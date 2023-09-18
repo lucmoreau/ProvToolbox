@@ -1,0 +1,286 @@
+document
+	prefix ros <https://openprovenance.org/ns/ros>
+  prefix rpl <http://openprovenance.org/ns/rosplan>
+  prefix rs <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/>
+  prefix rn <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/> prefix msg <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/>
+
+	prefix ex <http://example.org/>
+	prefix tb3demo <https://github.com/KCL-Planning/rosplan_demos/tree/master/rosplan_turtlebot3_demo/>
+	prefix file <file:///home/usr/ROSPlan/src/rosplan_demos/rosplan_turtlebot3_demo/>
+
+	// agent(rs:amcl, [prov:type='ros:Node'])
+	// agent(rs:gazebo, [prov:type='ros:Node'])
+	// agent(rs:gazebo_gui, [prov:type='ros:Node'])
+	// agent(rs:map_server, [prov:type='ros:Node'])
+	// agent(rs:move_base, [prov:type='ros:Node'])
+	// agent(rs:robot_state_publisher, [prov:type='ros:Node'])
+	// agent(rs:rosout)
+	agent(rs:rosplan_knowledge_base, [prov:type='ros:Node'])
+	agent(rn:rosplan_parsing_interface, [prov:type='ros:Node'])
+	agent(rs:rosplan_planner_interface.0, [prov:type='ros:Node']) //LUC: Renamed
+	agent(rs:rosplan_problem_interface.1, [prov:type='ros:Node']) // LUC: Renamed
+	agent(rs:rosplan_roadmap_server, [prov:type='ros:Node'])
+	// agent(rs:rviz, [prov:type='ros:Node'])
+
+	entity(ex:knowledge_base, [prov:type='ex:MongoDBDatabase'])
+	entity(ex:knowledge_base/snapshots/1000)
+	specializationOf(ex:knowledge_base/snapshots/1000, ex:knowledge_base)
+
+	agent(ex:shell, [prov:type='ex:BashShell'])
+
+	entity(ex:launch_script, [prov:location='tb3demo:launch/turtlebot.launch', prov:type='prov:Plan', prov:type='ros:LaunchScript'])
+	entity(ex:explore_script, [prov:location='tb3demo:scripts/turtlebot_explore.bash', prov:type='prov:Plan', prov:type='ex:BashShellScript'])
+
+	activity(ex:launch_turtlebot3_env, -, -, [prov:type="ex:RunningScript", ex:note="Calling more launch scripts..."])
+	wasAssociatedWith(ex:launch_turtlebot3_env, ex:shell, ex:launch_script)
+
+	activity(ex:explore, -, -, [prov:type="ex:RunningScript"])
+	wasAssociatedWith(ex:explore, ex:shell, ex:explore_script)
+
+
+	entity(ex:world_map, [prov:type='ex:File', prov:location="rosplan_turtlebot3_demo/maps/playground.pgm"])
+	activity(rs:generate_waypoints)
+	wasAssociatedWith(rs:generate_waypoints, rs:rosplan_roadmap_server, -)
+	entity(rs:service_calls/1, [
+	  prov:type='ros:ServiceCall',
+	  ros:service='rs:rosplan_roadmap_server/create_prm',
+	  ros:arguments="""
+	  { nr_waypoints: 10,
+	  	min_distance: 0.3,
+	  	casting_distance: 2.0,
+	  	connecting_distance: 8.0,
+	  	occupancy_threshold: 10,
+	  	total_attempts: 10 }
+	  """
+	])
+	wasGeneratedBy(rs:service_calls/1, ex:explore, -)
+	wasStartedBy(rs:generate_waypoints, rs:service_calls/1, ex:explore, -)
+	used(rs:generate_waypoints, ex:world_map, -)
+	entity(rs:wp1, [prov:type='rpl:Waypoint', prov:type='rpl:PlanData', prov:location="A map location"])
+	entity(rs:wp2, [prov:type='rpl:Waypoint', prov:type='rpl:PlanData', prov:location="A map location"])
+	// entity(rs:wp3, [prov:type='rpl:Waypoint', prov:type='rpl:PlanData', prov:location="A map location"])
+	wasGeneratedBy(rs:wp1, rs:generate_waypoints, -)
+	wasGeneratedBy(rs:wp2, rs:generate_waypoints, -)
+	// wasGeneratedBy(rs:wp3, rs:generate_waypoints, -)
+	wasDerivedFrom(rs:wp1, ex:world_map)
+	wasDerivedFrom(rs:wp2, ex:world_map)
+	// wasDerivedFrom(rs:wp3, ex:world_map)
+	wasAttributedTo(rs:wp1, rs:rosplan_roadmap_server)
+	wasAttributedTo(rs:wp2, rs:rosplan_roadmap_server)
+	// wasAttributedTo(rs:wp3, rs:rosplan_roadmap_server)
+	entity(ex:knowledge_base/snapshots/1001)
+	hadMember(ex:knowledge_base/snapshots/1001, rs:wp1)
+	hadMember(ex:knowledge_base/snapshots/1001, rs:wp2)
+	// hadMember(ex:knowledge_base/snapshots/1001, rs:wp3)
+	used(rs:generate_waypoints, ex:knowledge_base/snapshots/1000, -)
+	wasDerivedFrom(ex:knowledge_base/snapshots/1001, ex:knowledge_base/snapshots/1000)
+	wasGeneratedBy(ex:knowledge_base/snapshots/1001, rs:generate_waypoints, -)  // LUC: ADDED
+
+	entity(ex:explore_common_script, [prov:location='tb3demo:scripts/turtlebot_explore_common.bash', prov:type='prov:Plan', prov:type='ex:BashShellScript'])
+	activity(ex:explore_common, -, -, [prov:type='ex:RunningScript'])
+	wasAssociatedWith(ex:explore_common, ex:shell, ex:explore_common_script)
+	wasStartedBy(ex:explore_common, -, ex:explore, -)
+
+	// Service call #2 looks up the identifiers of waypoints generated above by calling: rosservice call /rosplan_knowledge_base/state/instances "type_name: 'waypoint'" | grep -ohP "wp\d+"
+
+	entity(rs:service_calls/3, [
+	  prov:type='ros:ServiceCall',
+	  ros:service='rs:rosplan_knowledge_base/update_array',
+	  ros:arguments="""
+	  - knowledge_type: 1
+		  instance_type: ''
+		  instance_name: ''
+		  attribute_name: 'visited'
+		  values:
+		  - {key: 'wp', value: '$i'}
+		  function_value: 0.0
+	  """
+	])
+	wasGeneratedBy(rs:service_calls/3, ex:explore_common, -)
+	// wasDerivedFrom(rs:service_calls/3, rs:wp1)
+	// wasDerivedFrom(rs:service_calls/3, rs:wp2)
+	// wasDerivedFrom(rs:service_calls/3, rs:wp3)
+	wasDerivedFrom(rs:service_calls/3, ex:knowledge_base/snapshots/1001)
+	activity(rs:update_knowledge_base)
+	wasStartedBy(rs:update_knowledge_base, rs:service_calls/3, ex:explore_common, -)
+	wasAssociatedWith(rs:update_knowledge_base, rs:rosplan_knowledge_base, -)
+	entity(ex:knowledge_base/snapshots/1002)
+	used(rs:update_knowledge_base, ex:knowledge_base/snapshots/1001, -)
+	wasGeneratedBy(ex:knowledge_base/snapshots/1002, rs:update_knowledge_base, -)
+	wasDerivedFrom(ex:knowledge_base/snapshots/1002, ex:knowledge_base/snapshots/1001)
+
+	entity(rs:service_calls/4, [
+	  prov:type='ros:ServiceCall',
+	  ros:service='rs:rosplan_problem_interface/problem_generation_server',
+	  ros:arguments=""
+	])
+	wasGeneratedBy(rs:service_calls/4, ex:explore_common, -)
+	activity(rs:generate_problem, -, -, [prov:type="ex:GeneratingPDDLProblem"])
+	wasAssociatedWith(rs:generate_problem, rs:rosplan_problem_interface.1, -)
+	wasStartedBy(rs:generate_problem, rs:service_calls/4, ex:explore_common, -)
+
+	entity(file:common/problem.pddl, [prov:type='ex:PDDLFile'])
+	wasGeneratedBy(file:common/problem.pddl, rs:generate_problem, -)
+	wasDerivedFrom(file:common/problem.pddl, ex:knowledge_base/snapshots/1002)
+
+	entity(file:common/domain_turtlebot_demo.pddl, [prov:type='ex:PDDLFile'])
+
+	entity(rs:service_calls/5, [
+	  prov:type='ros:ServiceCall',
+	  ros:service='rs:rosplan_planner_interface/planning_server',
+	  ros:arguments=""
+	])
+	wasGeneratedBy(rs:service_calls/5, ex:explore_common, -)
+	activity(rs:pddl_planing, -, -, [prov:type="ex:PDDLPlanning"])
+	wasAssociatedWith(rs:pddl_planing, rs:rosplan_planner_interface.0, -)
+	wasStartedBy(rs:pddl_planing, rs:service_calls/5, ex:explore_common, -)
+
+	used(rs:pddl_planing, file:common/problem.pddl, -)
+	used(rs:pddl_planing, file:common/domain_turtlebot_demo.pddl, -)
+
+	entity(file:common/plan.pddl, [prov:type='ex:PDDLFile', prov:type='ex:AutomaticallyGeneratedPlan'])
+	wasGeneratedBy(file:common/plan.pddl, rs:pddl_planing, -)
+	wasDerivedFrom(file:common/plan.pddl, file:common/problem.pddl)
+	wasDerivedFrom(file:common/plan.pddl, file:common/domain_turtlebot_demo.pddl)
+
+	entity(rs:service_calls/6, [
+	  prov:type='ros:ServiceCall',
+	  ros:service='rn:rosplan_parsing_interface/parse_plan',
+	  ros:arguments=""
+	])
+	wasGeneratedBy(rs:service_calls/6, ex:explore_common, -)
+	activity(rs:parsing_pddl_plan, -, -, [prov:type="ex:ParsingPDDLPlan"])
+	wasAssociatedWith(rs:parsing_pddl_plan, rn:rosplan_parsing_interface, -)
+	wasStartedBy(rs:parsing_pddl_plan, rs:service_calls/6, ex:explore_common, -)
+	used(rs:parsing_pddl_plan, file:common/plan.pddl, -)
+
+	entity(rs:move-turtlebot.0, [prov:type='rpl:EsterelPlan'])
+	wasGeneratedBy(rs:move-turtlebot.0, rs:parsing_pddl_plan, -)
+	// wasAttributedTo(rs:move-turtlebot.0, rn:rosplan_parsing_interface, -)
+	wasDerivedFrom(rs:move-turtlebot.0, file:common/plan.pddl)
+	hadMember(rs:move-turtlebot.0, rs:plan/actions/0)
+	hadMember(rs:move-turtlebot.0, rs:plan/actions/1)
+
+	entity(rs:service_calls/7, [
+	  prov:type='ros:ServiceCall',
+	  ros:service='rs:rosplan_plan_dispatcher/dispatch_plan',
+	  ros:arguments=""
+	])
+	wasGeneratedBy(rs:service_calls/7, ex:explore_common, -)
+	activity(rs:dispatching_plan/367, -, -, [prov:type='ex:DispatchingPlan'])
+	wasAssociatedWith(rs:dispatching_plan/367, rn:rosplan_plan_dispatcher, -)
+	wasStartedBy(rs:dispatching_plan/367, rs:service_calls/7, ex:explore_common, -)
+	used(rs:dispatching_plan/367, rs:move-turtlebot.0, -)
+
+	// froms script
+	agent(rn:rosplan_plan_dispatcher, [prov:type='ros:Node', prov:type='rpl:ROSPlanNode'])
+  agent(rn:rosplan_interface_movebase, [prov:type='ros:Node', prov:type='rpl:ROSPlanNode'])
+  entity(rs:plan/actions/0, [prov:type='rpl:Action', rpl:action_id=0, rpl:action_name="goto_waypoint", rpl:action_duration="10" %% xsd:float, rpl:action_v="kenny", rpl:action_from="wp0", rpl:action_to="wp1"])
+  activity(rs:dispatching_action/0.0, -, -, [prov:type='rpl:DispatchingPlanAction'])
+  wasAssociatedWith(rs:dispatching_action/0.0, rn:rosplan_plan_dispatcher, -)
+  used(rs:dispatching_action/0.0, rs:plan/actions/0, -)
+  entity(msg:rosplan_plan_dispatcher/action_dispatch/0, [prov:type='ros:Message'])
+  wasGeneratedBy(msg:rosplan_plan_dispatcher/action_dispatch/0, rs:dispatching_action/0.0, -)
+  wasDerivedFrom(msg:rosplan_plan_dispatcher/action_dispatch/0, rs:plan/actions/0, -, -, -)
+  wasAttributedTo(msg:rosplan_plan_dispatcher/action_dispatch/0, rn:rosplan_plan_dispatcher)
+  entity(rs:plan/actions/1, [prov:type='rpl:Action', rpl:action_id=1, rpl:action_name="goto_waypoint", rpl:action_duration="10" %% xsd:float, rpl:action_v="kenny", rpl:action_from="wp1", rpl:action_to="wp2"])
+  activity(rs:dispatching_action/1.1, -, -, [prov:type='rpl:DispatchingPlanAction'])
+  wasAssociatedWith(rs:dispatching_action/1.1, rn:rosplan_plan_dispatcher, -)
+  used(rs:dispatching_action/1.1, rs:plan/actions/1, -)
+  entity(msg:rosplan_plan_dispatcher/action_dispatch/1, [prov:type='ros:Message'])
+  wasGeneratedBy(msg:rosplan_plan_dispatcher/action_dispatch/1, rs:dispatching_action/1.1, -)
+  wasDerivedFrom(msg:rosplan_plan_dispatcher/action_dispatch/1, rs:plan/actions/1, -, -, -)
+  wasAttributedTo(msg:rosplan_plan_dispatcher/action_dispatch/1, rn:rosplan_plan_dispatcher)
+  activity(rs:dispatching_action/0.2, -, -, [prov:type='rpl:DispatchingPlanAction'])
+  wasAssociatedWith(rs:dispatching_action/0.2, rn:rosplan_plan_dispatcher, -)
+  used(rs:dispatching_action/0.2, rs:plan/actions/0, -)
+  entity(rs:plan/actions/0.2, [prov:type='rpl:CompletedActionInCancelledPlan']) //LUC: TYPE ADDED
+  wasDerivedFrom(rs:plan/actions/0.2, rs:plan/actions/0/1, -, -, -)
+  entity(msg:rosplan_plan_dispatcher/action_dispatch/2, [prov:type='ros:Message'])
+  wasGeneratedBy(msg:rosplan_plan_dispatcher/action_dispatch/2, rs:dispatching_action/0.2, -)
+  wasDerivedFrom(msg:rosplan_plan_dispatcher/action_dispatch/2, rs:plan/actions/0.2, -, -, -)
+  wasAttributedTo(msg:rosplan_plan_dispatcher/action_dispatch/2, rn:rosplan_plan_dispatcher)
+  activity(rs:dispatching_action/1.3, -, -, [prov:type='rpl:DispatchingPlanAction'])
+  wasAssociatedWith(rs:dispatching_action/1.3, rn:rosplan_plan_dispatcher, -)
+  used(rs:dispatching_action/1.3, rs:plan/actions/1, -)
+  entity(rs:plan/actions/1.3, [prov:type='rpl:CancelledAction'])
+  wasDerivedFrom(rs:plan/actions/1.3, rs:plan/actions/1/3, -, -, -)
+  entity(msg:rosplan_plan_dispatcher/action_dispatch/3, [prov:type='ros:Message'])
+  wasGeneratedBy(msg:rosplan_plan_dispatcher/action_dispatch/3, rs:dispatching_action/1.3, -)
+  wasDerivedFrom(msg:rosplan_plan_dispatcher/action_dispatch/3, rs:plan/actions/1.3, -, -, -)
+  wasAttributedTo(msg:rosplan_plan_dispatcher/action_dispatch/3, rn:rosplan_plan_dispatcher)
+
+  // Link plan action to data
+  wasDerivedFrom(rs:plan/actions/0, rs:wp1)
+  wasDerivedFrom(rs:plan/actions/1, rs:wp2)
+
+  // Sub-activities of dispatching a plan
+  wasStartedBy(rs:dispatching_action/0.0, rs:dispatching_plan/367, -, -)
+  wasStartedBy(rs:dispatching_action/1.1, rs:dispatching_plan/367, -, -)
+  // wasStartedBy(rs:dispatching_action/0.2, rs:dispatching_plan/367, -, -)
+  // wasStartedBy(rs:dispatching_action/1.3, rs:dispatching_plan/367, -, -)
+
+  // Action feedback
+  activity(rs:rosplan_move_base/actions/0, -, -, [prov:type='rpl:CallingAction'])
+  wasAssociatedWith(rs:rosplan_move_base/actions/0, rn:rosplan_interface_movebase, -)
+  wasStartedBy(rs:rosplan_move_base/actions/0, -, msg:rosplan_plan_dispatcher/action_dispatch/0, -)
+  used(rs:rosplan_move_base/actions/0, rs:plan/actions/0, -)
+
+	entity(msg:rosplan_plan_dispatcher/action_feedback/0, [prov:type='ros:Message', prov:type='rpl:rosplan_dispatch_msgs.ActionFeedback', rpl:action_id=0, rpl:action_status="action enabled"])
+	wasAttributedTo(msg:rosplan_plan_dispatcher/action_feedback/0, rn:rosplan_interface_movebase)
+	wasGeneratedBy(msg:rosplan_plan_dispatcher/action_feedback/0, rs:rosplan_move_base/actions/0, -)
+  entity(rs:plan/actions/0/0, [prov:type='rpl:ActiveAction'])
+  wasDerivedFrom(rs:plan/actions/0/0, rs:plan/actions/0)
+  wasDerivedFrom(rs:plan/actions/0/0, msg:rosplan_plan_dispatcher/action_feedback/0)
+
+	entity(msg:rosplan_plan_dispatcher/action_feedback/1, [prov:type='ros:Message', prov:type='rpl:rosplan_dispatch_msgs.ActionFeedback', rpl:action_id=0, rpl:action_status="action achieved"])
+	wasAttributedTo(msg:rosplan_plan_dispatcher/action_feedback/1, rn:rosplan_interface_movebase)
+	wasGeneratedBy(msg:rosplan_plan_dispatcher/action_feedback/1, rs:rosplan_move_base/actions/0, -)
+	entity(rs:plan/actions/0/1, [prov:type='rpl:CompletedAction'])
+  wasDerivedFrom(rs:plan/actions/0/1, rs:plan/actions/0/0)
+  wasDerivedFrom(rs:plan/actions/0/1, msg:rosplan_plan_dispatcher/action_feedback/1)
+
+  wasStartedBy(rs:dispatching_action/1.1, -, msg:rosplan_plan_dispatcher/action_feedback/1, -)
+
+  // Doing the second action
+  activity(rs:rosplan_move_base/actions/1, -, -, [prov:type='rpl:CallingAction'])
+  wasAssociatedWith(rs:rosplan_move_base/actions/1, rn:rosplan_interface_movebase, -)
+  wasStartedBy(rs:rosplan_move_base/actions/1, -, msg:rosplan_plan_dispatcher/action_dispatch/1, -)
+  used(rs:rosplan_move_base/actions/0, rs:plan/actions/1, -)
+
+	entity(msg:rosplan_plan_dispatcher/action_feedback/2, [prov:type='ros:Message', prov:type='rpl:rosplan_dispatch_msgs.ActionFeedback', rpl:action_id=1, rpl:action_status="action enabled"])
+	wasAttributedTo(msg:rosplan_plan_dispatcher/action_feedback/2, rn:rosplan_interface_movebase)
+
+	wasGeneratedBy(msg:rosplan_plan_dispatcher/action_feedback/2, rs:rosplan_move_base/actions/1, -)
+  entity(rs:plan/actions/1/2, [prov:type='rpl:ActiveAction'])
+  wasDerivedFrom(rs:plan/actions/1/2, rs:plan/actions/1)
+  wasDerivedFrom(rs:plan/actions/1/2, msg:rosplan_plan_dispatcher/action_feedback/2)
+
+  // the action fails
+	entity(msg:rosplan_plan_dispatcher/action_feedback/3, [prov:type='ros:Message', prov:type='rpl:rosplan_dispatch_msgs.ActionFeedback', rpl:action_id=1, rpl:action_status="action failed"])
+	wasAttributedTo(msg:rosplan_plan_dispatcher/action_feedback/3, rn:rosplan_interface_movebase)
+
+	wasGeneratedBy(msg:rosplan_plan_dispatcher/action_feedback/3, rs:rosplan_move_base/actions/1, -)
+  entity(rs:plan/actions/1/3, [prov:type='rpl:FailedAction'])
+  wasDerivedFrom(rs:plan/actions/1/3, rs:plan/actions/1/2)
+  wasDerivedFrom(rs:plan/actions/1/3, msg:rosplan_plan_dispatcher/action_feedback/3)
+
+  // Imagine that there is a cancelling plan activity
+  activity(rs:cancelling_plan/0, -, -, [prov:type='rpl:CancellingPlan'])
+  wasAssociatedWith(rs:cancelling_plan/0, rn:rosplan_plan_dispatcher, -)
+  wasStartedBy(rs:cancelling_plan/0, -, msg:rosplan_plan_dispatcher/action_feedback/3, -)
+  used(rs:cancelling_plan/0, rs:move-turtlebot.0, -)
+  used(rs:cancelling_plan/0, rs:plan/actions/0/1, -)
+  used(rs:cancelling_plan/0, rs:plan/actions/1/2, -)
+
+  entity(rs:move-turtlebot.1, [prov:type='rpl:CancelledPlan'])
+  wasDerivedFrom(rs:move-turtlebot.1, rs:move-turtlebot.0)
+  hadMember(rs:move-turtlebot.1, rs:plan/actions/0.2)
+  hadMember(rs:move-turtlebot.1, rs:plan/actions/1.3)
+  wasGeneratedBy(rs:move-turtlebot.1, rs:cancelling_plan/0, -)
+  wasGeneratedBy(rs:plan/actions/0.2, rs:cancelling_plan/0, -)
+  wasGeneratedBy(rs:plan/actions/1.3, rs:cancelling_plan/0, -)
+  wasStartedBy(rs:dispatching_action/0.2, rs:cancelling_plan/0, -, -)
+  wasStartedBy(rs:dispatching_action/1.3, rs:cancelling_plan/0, -, -)
+
+endDocument

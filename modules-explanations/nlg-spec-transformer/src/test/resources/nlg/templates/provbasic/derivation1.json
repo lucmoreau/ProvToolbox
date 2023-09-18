@@ -1,0 +1,35 @@
+
+{
+
+    "select": {"der": {"@type": "prov:WasDerivedFrom"}},
+
+    "query": "select * from der a prov:WasDerivedFrom",        
+ 
+    "sentence": {
+	"type": "clause",
+	"object":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			      "@object": "der",
+			     "@field":  "generatedEntity",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "der",
+					    "@field": "generatedEntity",
+					    "@function": "pluralp"}}},
+	"verb": "derive",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "from",
+		       "noun": {"type": "@funcall",
+				"@object": "der",
+				"@field": "usedEntity",
+				"@function": "localname"}}],	
+	"features" : {"tense": "past",
+		      "passive": "true"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+}

@@ -1,0 +1,61 @@
+{
+    "select": {"pipeline": {"@type": "prov:Entity"}},
+
+    "query": [
+
+	"prefix ln <https://plead-project.org/ns/loan#>",
+	"prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>",
+	"prefix pl <https://plead-project.org/ns/plead#>",
+
+	"select * from pipeline a prov:Entity",
+	"from wdf a prov:WasDerivedFrom",
+	" join pipeline.id=wdf.usedEntity",
+	"from score a prov:Entity",
+	" join wdf.generatedEntity=score.id",
+	"from wgb a prov:WasGeneratedBy",
+	" join score.id=wgb.entity",
+	"from assessing a prov:Activity",
+	" join wgb.activity=assessing.id",
+	"from usd a prov:Used",
+	" join assessing.id=usd.activity",
+	"from waw a prov:WasAssociatedWith",
+	" join assessing.id=waw.activity",
+	"from agent a prov:Agent",
+	" join waw.agent=agent.id",
+
+	"where pipeline[prov:type] >= 'sk:pipeline.Pipeline'",
+	"and      score[prov:type] >= 'pl:AccuracyScore'",
+	"and  assessing[prov:type] >= 'pl:AssessingPerformance'",
+	"and      agent[prov:type] >= 'prov:Person'",
+	"and   pipeline.id=usd.entity"
+
+
+    ],
+
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head": "data engineer",
+		    "post-modifiers": [
+			{"type":"adjective_phrase",
+			 "head": {"@object": "agent",
+				  "@field":  "id",
+				  "@function": "noun+localname",
+				  "@arg1": ""}}
+		    ]},
+	"verb": "assess",
+	"object": {"type": "noun_phrase",
+		   "determiner": "the",
+		   "head": {"@object": "pipeline",
+			    "@field":  "id",
+			    "@function": "noun+localname",
+			    "@arg1": "decision pipeline"}},
+	
+	"features" : {"tense": "past", "passive": "true"}
+
+    },
+
+    "context": {}
+    
+    
+}

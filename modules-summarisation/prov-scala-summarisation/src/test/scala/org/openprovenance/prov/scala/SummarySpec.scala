@@ -12,6 +12,7 @@ import org.openprovenance.prov.scala.summary.types._
 import org.openprovenance.prov.scala.viz.{Graphics, SVGOutputer}
 import org.parboiled2.ParseError
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.must.Matchers.be
 import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Failure, Success}
@@ -1434,5 +1435,9 @@ endDocument
 
     
    }
+
+  "summaryTypesNames" should "exist" in {
+    new SummaryTypesNames{} .name_order_map should not be null
+  }
 
 }

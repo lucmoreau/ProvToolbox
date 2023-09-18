@@ -1,0 +1,68 @@
+{
+	"type": "clause",
+	"object":  {
+		"type": "coordinated_phrase",
+		"conjunction": "and",
+		"@iterator": {
+			"type": "@iterator",
+			"@variable": "@values",
+			"@element": {
+				"type": "@funcall",
+				"@clause": "coordinates",
+				"@function": "difference-lookup-attribute",
+				"@args": [
+					{
+						"type": "@iterator",
+						"@variable": "data",
+						"@clause": "@arg1",
+						"@flatten": "true",
+						"@element": {
+							"type": "@funcall",
+							"@object": "data",
+							"@property":  "@attributes",
+							"@function": "flatten"
+						}
+					},
+					{
+						"type": "@funcall",
+						"@object": "features",
+						"@property":  "@attributes",
+						"@function": "flatten"
+					}]}}},
+	"verb": "are",
+	"subject": {
+		"type": "noun_phrase",
+		"determiner": "the",
+		"head": "data",
+		"complements": [
+			{
+				"type": "clause",
+				"complementiser": "that",
+				"subject": "##company",
+				"verb": "exclude",
+				"features": {
+					"tense": "past"
+				},
+				"complements": [
+					{
+						"type": "preposition_phrase",
+						"preposition": "for the processing of",
+						"noun": {
+							"type": "noun_phrase",
+							"head": "loan application",
+							"specifier": "##borrower-possessive"
+						}
+
+					}
+				]
+			}
+		]
+	},
+
+
+	"features" : {"tense": "present", "number": "plural"}
+
+}
+
+
+

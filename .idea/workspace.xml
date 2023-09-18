@@ -9,30 +9,513 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org/openprovenance/prov/scala/signature/CanonicalSpec.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org/openprovenance/prov/scala/signature/KeystoreTest.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org/openprovenance/prov/scala/signature/NormalFormSpec.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org/openprovenance/prov/scala/signature/SignatureTest.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/Configuration.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/CustomHeadFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/CustomNounFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/CustomOptionNounFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/CustomOptionPhraseDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/CustomOptionVerbFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/CustomStringPhraseSerializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Keywords.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/Disjoint.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/ExtendedDerivations.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/Utils.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/examples/attribution.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/examples/data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/examples/human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/examples/loan15.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/jsonschema/xplan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/baking/baking-generation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/baking/baking-generation2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/baking/baking.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/foaf/foaf.agent1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/foaf/foaf.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/automatic.decision3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/counterfactual1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/counterfactual1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/data.sources2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/dictionary-loan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/exclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/inclusion3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/loan.application1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/performance4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/relevancy2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/relevancy3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/responsibility5.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/responsibility6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/loan/template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/actedonbehalfof1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/activity1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/agent1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/alternate1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/association1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/attribution1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/derivation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/end1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/end2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/end3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/entity1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/generation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/invalidation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/member1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/provbasic.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/provbasic2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/specialization1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/start1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/start2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/start3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/provbasic/usage1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/attic/automatic.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/attic/automatic.decision2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/attic/automatic.decision2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/attic/credit.rating1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/attic/data.sources1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/attic/human.decision1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/automatic.decision3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/automation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/automation2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/automation3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/counterfactual1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/counterfactual1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/data.sources2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/dictionary-loan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/exclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/inclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/inclusion2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/inclusion2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/inclusion3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan.application1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan10.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan5.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan7.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan8.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/loan9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/notes.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/performance1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/performance2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/performance3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/performance4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/relevancy1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/relevancy1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/relevancy2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/relevancy3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility3b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility3c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility5.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/responsibility6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.latest/template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/attic/credit.rating1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automatic.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automatic.decision2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automatic.decision2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automatic.decision3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automation2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/automation3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/counterfactual1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/counterfactual1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/data.sources1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/data.sources2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/dictionary-loan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/exclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/human.decision1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/inclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/inclusion2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/inclusion2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/inclusion3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan.application1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan10.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan5.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan7.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan8.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/loan9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/notes.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/performance1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/performance2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/performance3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/performance4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/relevancy1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/relevancy1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/relevancy2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/relevancy3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility3b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility3c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility5.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/responsibility6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/nlg/templates/todelete/loan.origin/template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/realisation/bundle4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/realisation/env-data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/realisation/env-data.sources2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/realisation/env-performance4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/realisation/mini-primer.jsonld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/sentences/regret1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/sentences/regret2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/xml/data.sources2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/xml/dissatisfied.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/xml/exclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/resources/xml/performance4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/scala/org/openprovenance/prov/scala/nlgspec_transformer/LoadPhraseSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/scala/org/openprovenance/prov/scala/nlgspec_transformer/SentencesFromJsonSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/scala/org/openprovenance/prov/scala/nlgspec_transformer/TransformSpecsSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/test/scala/org/openprovenance/prov/scala/nlgspec_transformer/XmlSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/${project.build.directory}/dictionary/lexAccess2013.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/${project.build.directory}/dictionary/lexAccess2013.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/${project.build.directory}/dictionary/lexAccess2013.script" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/dictionary/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Block.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/BlocklyContents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Constants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Field.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Mutation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Next.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Root.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Statement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/StatementsHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/Value.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/stax/ElementEraserXMLStreamWriter2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/stax/NamespaceXMLStreamWriter2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/stax/StaxStreamWriterUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/nlg/wrapper/stax/WrappedXMLStreamWriter2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/simplenlg/format/english/MarkupFormatter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/simplenlg/format/english/MarkupMorphologyProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/simplenlg/format/english/MarkupOrthographyProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/simplenlg/format/english/MarkupRealiser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/java/simplenlg/format/english/MarkupSyntaxProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources/blockly/library.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources/lexicon.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/BlocklyExport.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/BlocklySerializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomNounFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomOptionNounFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomOptionPhraseDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomOptionPhraseSerializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomOptionVerbFormDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomStringOrPhraseDeserializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/CustomStringPhraseSerializer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/scala/org/openprovenance/prov/scala/wrapper/Wrapper.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/blockly/example1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/application-provided.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/application-provided.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/application-provided2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/attribution.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/coordination2_toread.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/coordination3_toread.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/coordination_toread.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/cra.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/example-with-markup.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/house-built.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/houses-built.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/loan15.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/prep.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/this.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources/examples/toeat.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper/PhraseSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper/XMLPhraseSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/java/org/openprovenance/prov/nlg/ValidationObjectMaker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/baking/baking-generation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/baking/baking-generation2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/baking/baking.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/actedonbehalfof1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/activity1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/agent1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/alternate1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/association1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/attribution1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/collabmap-dictionary.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/collabmap-profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/collabmap-template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/derivation-verification1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/derivation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/derivation2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/end1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/end2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/end3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/entity1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/generation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/invalidation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/member1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/provbasic2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/specialization1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/start1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/start2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/start3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/collabmap/usage1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/foaf/foaf.agent1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/foaf/foaf.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/automatic.decision3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/counterfactual1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/counterfactual1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/data.sources1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/data.sources2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/dictionary-loan.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/exclusion1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/inclusion3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/loan.application1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/performance4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/relevancy2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/relevancy3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/responsibility5.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/responsibility6.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/ReadMe.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead-dictionary.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead-profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead-template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-1c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-2a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-2b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-2c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-2d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-3a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-3b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-3c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-4a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-4b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-4c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-4d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-5a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-5b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-5c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-5d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-6a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-6b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.cs-6c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.erasure.accept1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.erasure.accept2a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.erasure.accept2b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.erasure.reject.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.rectification.accept1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.rectification.accept2a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.rectification.accept2b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead.cs/plead.rectification.reject.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/ReadMe.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead-dictionary.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead-profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead-template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.erasure.accept1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.erasure.accept2a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.erasure.accept2b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.erasure.reject.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.human.decision1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.rectification.accept1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.rectification.accept2a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.rectification.accept2b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/plead/plead.rectification.reject.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/actedonbehalfof1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/activity1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/agent1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/alternate1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/association1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/attribution1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/derivation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/end1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/end2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/end3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/entity1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/generation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/invalidation1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/member1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/provbasic.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/provbasic2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/specialization1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/start1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/start2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/start3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/provbasic/usage1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/sa/plead.rectification.accept2a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/sa/sa-dictionary.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/sa/sa-profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/sa/sa-template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/sa/sa.on.time.first.choice2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump-dictionary.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump-profile1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump-template-library.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.actions1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.failure1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.failure1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.failure1c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.failure1d.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.models1a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.models1b.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/thump/thump.plan.models1c.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/ActivityInfo.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/ActivityProcessor.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/EventOrganiser.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/Narrator.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/RealiserFactory.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/collabmap/collabmap1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/collabmap/collabmap2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/collabmap/collabmap2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/nlg/summary_map0_prov_0.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/nlg/test1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-4.2-accept.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-4.2-accept.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-4.2-reject.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-4.2-reject.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-4.2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-5.2-accept.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-5.2-accept.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-5.2-reject.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-5.2-reject.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251-5.2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/128350251.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/bindings/128350251-application.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/bindings/128350251-rectification-4.2-accept.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/bindings/128350251-rectification-4.2-reject.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/bindings/old/b1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/application.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/application.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/application.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/application.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/old/128350251-4.2-accept.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/old/128350251-4.2-accept.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/rectification-4.2-accept.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/rectification-4.2-accept.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/rectification-4.2-accept.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/rectification-4.2-reject.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/plead/templates/rectification-4.2-reject.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/128350251.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/128350251.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/130910225-modified.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/130910225.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/130910225.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/16.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/16.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/7.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/7.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/cf_merged_ad.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/cf_merged_ad.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/cf_merged_hd.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/cf_merged_hd.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/loan1.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/loan1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/loan2-modified.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/loan2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/loan2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/small-loan2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/small-loan2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/training-1.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/training-1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/training.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/loan/training.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/prov/tester.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/plead/q-128350251-4.2-accept.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.automatic.decision1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.automatic.decision2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.automatic.decision3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.automation1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.automation2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.automation3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.counterfactual1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.datasource1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.datasource2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.exclusion1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.inclusion1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.inclusion3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.performance1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.relevancy1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.relevancy2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.responsibility1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.responsibility2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.responsibility3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.responsibility4.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.responsibility5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/q.responsibility6.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-alt-choice.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-alt-choice2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-first-choice.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-first-choice2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-third-choice.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-third-choice2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-third-choice2a.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/query/sa/q-on-time-third-choice2b.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/AN.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/AN.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/GH.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/GH.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/PR-alt.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/PR-alt.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/schools.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/sa/schools.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/thump/webist-rosplan-dong.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/thump/webist-rosplan.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/thump/webist-rosplan.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/resources/thump/webist-rosplan.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/ExplanationSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/NlgSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/EngineProcessFunction.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/JsonSupport.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QuerySetup.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/SummaryQueryGenerator.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/query.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/query_unstaged.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/resources/prov/loan/128350251.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/resources/prov/loan/loan2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QueryParserSpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-private/service-xplain/config/lexAccess2013.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-private/service-xplain/config/lexAccess2013.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services-private/service-xplain/config/lexAccess2013.script" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/Formats.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/Formats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HasLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/HasLabel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/NormalForm.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/NormalForm.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/TransitiveClosure1.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/TransitiveClosure1.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/TransitiveClosure2.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/TransitiveClosure2.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlBean.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlBean.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlNfBean.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlNfBean.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/Canonical2Spec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/Canonical2Spec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/DenormalizeSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/DenormalizeSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/ModelSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/ModelSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/NormalFormSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/NormalFormSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/TransitiveSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/TransitiveSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/Unification2Spec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/Unification2Spec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/UnificationSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/test/scala/org/openprovenance/prov/scala/nf/UnificationSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/CanonicalSpec.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/KeystoreTest.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/NormalFormSpec.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala/SignatureTest.scala" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/types/SummaryTypes.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/types/SummaryTypes.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/scala/org/openprovenance/prov/scala/SummarySpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/test/scala/org/openprovenance/prov/scala/SummarySpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,23 +608,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;upgrade__scala&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Global Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.scala.settings.ScalaProjectSettingsConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "upgrade__scala",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-explanations",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.settings.ScalaProjectSettingsConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.service.translation" />
@@ -151,18 +635,18 @@
       <recent name="org.openprovenance.prov.template.compiler.common" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-explanations" />
+      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper" />
+      <recent name="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer" />
+      <recent name="$PROJECT_DIR$/modules-explanation/nlg-spec-transformer" />
       <recent name="$PROJECT_DIR$/modules-executable-provman/src/main" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/modules-nf" />
-      <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/main" />
-      <recent name="$PROJECT_DIR$/modules-summarisation" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
+      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources" />
+      <recent name="$PROJECT_DIR$/modules-explanations" />
+      <recent name="$PROJECT_DIR$/modules-explanations/prov-explanations" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/js" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/resources" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/resources" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -785,6 +1269,7 @@
       <workItem from="1694938514558" duration="93000" />
       <workItem from="1694938635656" duration="15467000" />
       <workItem from="1695023224064" duration="55000" />
+      <workItem from="1695023287797" duration="12266000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -1,0 +1,65 @@
+document
+  prefix pd <https://pandas.pydata.org/#>
+  prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+  prefix ln <https://plead-project.org/ns/loan#>
+  prefix pl <https://plead-project.org/ns/plead#>
+
+   prefix tmpl <http://openprovenance.org/tmpl#>
+   prefix var <http://openprovenance.org/var#>
+   prefix vargen <http://openprovenance.org/vargen#>
+
+
+  bundle vargen:bun
+  
+
+  // Request to rectify my data
+  entity(var:customer_request, [
+    prov:type='pl:DataRectificationRequest',
+    pl:request_reason='var:request_reason',
+    pl:timestamp='var:request_date'
+  ])
+  wasAttributedTo(var:customer_request, var:applicant)
+
+  // Reviewing the request
+  agent(var:staff2, [prov:type='prov:Person', prov:type='ln:DataProtectionOfficer'])
+  activity(var:reviewing_request, -, -, [prov:type='pl:ReviewingRectificationRequest', tmpl:startTime='var:reviewing_start', tmpl:endTime='var:reviewing_end'])
+  wasAssociatedWith(var:reviewing_request, var:staff2, -)
+  actedOnBehalfOf(var:staff2, var:institution, var:reviewing_request)
+  used(var:reviewing_request, var:customer_request,  -, [tmpl:time='var:reviewing_start'])
+
+  entity(var:document, [prov:type='var:document_type', prov:location='var:document_location'])
+  hadMember(var:customer_request, var:document)
+  wasAttributedTo(var:document, var:applicant)
+  used(var:reviewing_request, var:document, -, [tmpl:time='var:used_time'])
+
+  entity(var:rectification_review_decision, [
+    prov:type='pl:ReviewDecision', prov:type='pl:HumanDecision',
+    prov:type='pl:AcceptanceDecision',
+    ln:comment='var:comment',
+    pl:decision_basis='var:document'
+  ])
+  wasGeneratedBy(var:rectification_review_decision, var:reviewing_request, -)
+  wasAttributedTo(var:rectification_review_decision, var:staff2)
+  wasDerivedFrom(var:rectification_review_decision, var:customer_request, var:reviewing_request, -, -)
+  wasDerivedFrom(var:rectification_review_decision, var:document, var:reviewing_request, -, -)
+
+  // The rectify activity
+  activity(var:rectifying, [prov:type='pl:AmendingData', tmpl:startTime='var:rectifying_start', tmpl:endTime='var:rectifying_end'])
+  wasStartedBy(var:rectifying, var:rectification_review_decision, -, -, [tmpl:time='var:rectifying_start'])
+  wasAssociatedWith(var:rectifying, var:staff2, -)
+  
+  entity(var:application/v1, [
+    ln:attr_loan_amnt='var:attr_loan_amnt', ln:attr_term='var:attr_term', ln:attr_emp_title='var:attr_emp_title', ln:attr_emp_length='var:attr_emp_length', ln:attr_home_ownership='var:attr_home_ownership',
+    ln:attr_annual_inc='var:attr_annual_inc', ln:attr_purpose='var:attr_purpose', ln:attr_title='var:attr_title', ln:attr_zip_code='var:attr_zip_code', ln:attr_addr_state='var:attr_addr_state', ln:attr_application_type='var:attr_application_type',
+    prov:type='ln:LoanApplication',
+    ln:created_at='var:application_created_at',
+    prov:type='pl:Data'
+  ])
+  wasGeneratedBy(var:application/v1, var:rectifying, -)
+  wasDerivedFrom(var:application/v1, var:application, var:rectifying, -, -)
+  wasDerivedFrom(var:application/v1, var:document, var:rectifying, -, -)
+  wasDerivedFrom(var:application/v1, var:rectification_review_decision)  
+
+endBundle
+
+endDocument

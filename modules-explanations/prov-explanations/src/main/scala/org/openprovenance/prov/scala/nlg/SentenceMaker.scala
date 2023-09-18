@@ -1,0 +1,152 @@
+package org.openprovenance.prov.scala.nlg
+
+import org.apache.http.client.methods.{CloseableHttpResponse, HttpPost}
+import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.HttpClientBuilder
+import org.openprovenance.prov.scala.immutable._
+import org.openprovenance.prov.scala.interop.Output
+import org.openprovenance.prov.scala.nlgspec_transformer.Environment
+import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary
+import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
+import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
+import org.openprovenance.prov.scala.query.{EngineProcessFunction, Processor}
+import org.openprovenance.prov.scala.summary.TypePropagator
+
+
+object SentenceMaker {
+
+
+
+  def toJsonSentence(s: Map[String,Object]): String = {
+    //TypePropagator.om.writeValueAsString(Template(query = null, sentence = s, context = null, select = null, where = null, name = null))
+    TypePropagator.om.writeValueAsString(s)
+  }
+
+  def toJsonSentence(s: Array[Object]): String = {
+    TypePropagator.om.writeValueAsString(s)
+  }
+  def fromJson(s:String): Map[String,Object] = {
+    val m = TypePropagator.om.readValue(s, classOf[Map[String,Object]])
+    m
+  }
+
+  def extractPotentialJSon(s: String): Object = {
+    if (s.startsWith("{")) fromJson(s) else s
+  }
+  def extractPotentialJSon(m: Array[Object]): Array[Object] = {
+    m.map {
+      case s: String => if (s.startsWith("{")) fromJson(s) else s
+      case value => value
+    }
+  }
+
+  def extractPotentialJSon(m: Map[String, Object]): Map[String, Object] = {
+    val value = m(Keywords.TMP)
+    value match {
+      case s:String => fromJson(s)
+      case _ => value.asInstanceOf[Map[String, Object]]
+    }
+  }
+
+}
+
+class SentenceMaker (val engine:Processor) {
+  val primitive: EngineProcessFunction =engine.primitive
+
+
+
+  def transform(selected_objects: Map[String,engine.RField],
+                phrase:Phrase,
+                environment0: Environment,
+                triples: scala.collection.mutable.Set[Triple],
+                profile: String): Option[Phrase] = {
+
+
+
+
+    val te=new TransformEnvironment {
+      override val environment: Environment = environment0
+      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => engine.getStatement(f) match {
+        case None => None
+        case Some(m) => Some((s,m))
+      }}
+      override val seqStatements: Map[String, Seq[Statement]] = selected_objects.flatMap{case (s,f) => engine.getSeqStatement(f) match {
+        case None => None
+        case Some(m) => Some((s,m))
+      }}
+    }
+
+    val phraseSpec = phrase.transform[Phrase](te)
+
+    phraseSpec
+
+  }
+
+
+  def surface_realiser(s:Map[String,Object], h:String, p:Integer, log: Output): String = {
+
+    val snlg: String = SentenceMaker.toJsonSentence(s)
+
+    if (log!=null) {
+      //TODO: this shoud be returned ... back to CommandLine
+    //  org.openprovenance.prov.scala.interop.CommandLine.toOutput(log,snlg)
+    }
+
+    callSimplenlgServer(h, p, snlg)
+
+  }
+
+  def callSimplenlgServer(h: String, p: Integer, snlg: String): String = {
+
+    println("snlg: " + snlg)
+
+    val post = new HttpPost("http://" + h + ":" + p + "/generateSentence")
+
+    // set the Content-type
+    post.setHeader("Content-type", "application/json")
+    // add the JSON as a StringEntity
+    post.setEntity(new StringEntity(snlg))
+
+    // send the post request
+    val response: CloseableHttpResponse = HttpClientBuilder.create().build().execute(post)
+
+    scala.io.Source.fromInputStream(response.getEntity.getContent).mkString
+  }
+
+  val mylib=true
+
+  val emptyRealisation: (String, String, () => String) =("", "", () => "")
+  def realisation(phrase:Option[Phrase], option: Int): (String, String, () => String) = {
+
+
+    val realised: Option[(String, String, () => String)] =phrase.map(phrase => callSimplenlgLibrary(phrase,option))
+
+    realised.getOrElse(emptyRealisation)
+  }
+
+/*
+
+  def callSimplenlgLibraryMOVED_AWAY(p: Phrase, option: Int): (String, String, () => String) = {
+    val sw=new StringWriter()
+    SpecLoader.phraseExport(sw,p)
+    val snlg: String =sw.getBuffer.toString
+
+    //println(snlg)
+
+
+    val phrase=IO.phraseImportFromString(snlg)
+
+    val realiser: Realiser =if (option==1) defs.withMarkupFormatter() else wrapper.defs.theRealiser
+    //val realiser: Realiser =nlg.wrapper.defs.theRealiser
+    val spec =phrase.expand().asInstanceOf[NLGElement]
+   // println(spec.printTree("  "))
+
+    val tree=() => spec.printTree("  ")
+
+    val result: String =realiser.realiseSentence(spec)
+    (result, snlg, tree)
+  }
+
+ */
+
+}

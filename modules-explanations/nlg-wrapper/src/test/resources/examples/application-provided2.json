@@ -1,0 +1,34 @@
+{
+    "type":"noun_phrase",
+    "determiner":"the",
+    "head":"application",
+    "features":{
+        "type":"features",
+        "number": "singular"
+    },
+    "complements":[
+        {
+            "type":"verb_phrase",
+            "head": "provided",
+            "features":{
+                "form":"pastParticiple"
+            },
+            "post-modifiers": [
+                {
+                    "type":"preposition_phrase",
+                    "preposition": "by",
+                    "noun": {
+                        "type":"noun_phrase",
+                        "determiner": "the",
+                        "head": "credit agency"
+                    }
+                }
+
+            ]
+        }
+    ],
+    "pre-modifiers":[
+        {
+            "type":"noun_phrase",
+            "head":" loan"}]
+}

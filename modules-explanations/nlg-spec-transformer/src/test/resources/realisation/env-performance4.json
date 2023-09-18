@@ -1,0 +1,665 @@
+{
+	"document":
+	{
+		"@context" : [ {
+			"xsd" : "http://www.w3.org/2001/XMLSchema#",
+			"ex" : "http://example.org/",
+			"prov" : "http://www.w3.org/ns/prov#",
+			"foo" : "http://example.org/"
+		}, "http://openprovenance.org/prov.jsonld" ],
+		"@graph" : [
+			{
+				"@type" : "prov:Activity",
+				"@id" : "ex:a11",
+				"prov:role" : [ ],
+				"prov:value" : [ ],
+				"prov:type" : [ ],
+				"prov:label" : [ ],
+				"prov:location" : [ ]
+			},
+			{
+				"@type" : "prov:Bundle",
+				"@context" : [ {
+					"xsd" : "http://www.w3.org/2001/XMLSchema#",
+					"ex" : "http://example.org/",
+					"prov" : "http://www.w3.org/ns/prov#"
+				}, "http://openprovenance.org/prov.jsonld" ],
+				"@id" : "ex:var1",
+				"@graph" : [
+					{
+						"@type" : "prov:Activity",
+						"@id" : "ex:a1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					},
+					{
+						"@type" : "prov:Entity",
+						"@id" : "ex:e1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					},
+					{
+						"@type" : "prov:Usage",
+						"@id" : "ex:use1",
+						"activity" : "ex:a1",
+						"entity" : "ex:e1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					} ]
+			},
+			{
+				"@type" : "prov:Bundle",
+				"@context" : [ {
+					"xsd" : "http://www.w3.org/2001/XMLSchema#",
+					"ex" : "http://another.org/",
+					"prov" : "http://www.w3.org/ns/prov#"
+				}, "http://openprovenance.org/prov.jsonld" ],
+				"@id" : "ex:agent",
+				"@graph" : [
+					{
+						"@type" : "prov:Entity",
+						"@id" : "ex:ee1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					}
+				]
+			},
+			{
+				"@type" : "prov:Bundle",
+				"@context" : [ {
+					"xsd" : "http://www.w3.org/2001/XMLSchema#",
+					"ex" : "http://another.org/",
+					"prov" : "http://www.w3.org/ns/prov#"
+				}, "http://openprovenance.org/prov.jsonld" ],
+				"@id" : "ex:assessing",
+				"@graph" : [
+					{
+						"@type" : "prov:Entity",
+						"@id" : "ex:ee1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					}
+				]
+			},
+			{
+				"@type" : "prov:Bundle",
+				"@context" : [ {
+					"xsd" : "http://www.w3.org/2001/XMLSchema#",
+					"ex" : "http://another.org/",
+					"prov" : "http://www.w3.org/ns/prov#"
+				}, "http://openprovenance.org/prov.jsonld" ],
+				"@id" : "ex:pipeline",
+				"@graph" : [
+					{
+						"@type" : "prov:Entity",
+						"@id" : "ex:ee1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					}
+				]
+			},
+			{
+				"@type" : "prov:Bundle",
+				"@context" : [ {
+					"xsd" : "http://www.w3.org/2001/XMLSchema#",
+					"ex" : "http://another.org/",
+					"prov" : "http://www.w3.org/ns/prov#"
+				}, "http://openprovenance.org/prov.jsonld" ],
+				"@id" : "ex:score",
+				"@graph" : [
+					{
+						"@type" : "prov:Entity",
+						"@id" : "ex:ee1",
+						"prov:role" : [ ],
+						"prov:value" : [ ],
+						"prov:type" : [ ],
+						"prov:label" : [ ],
+						"prov:location" : [ ]
+					}
+				]
+			}
+		]
+	}
+,
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#",
+		"py": "urn:python:var:",
+		"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+	},
+
+	"dictionary":
+	{
+		"help": "https://github.com/simplenlg/simplenlg/blob/master/src/test/java/simplenlg/syntax/english/NounPhraseTest.java",
+
+		"snippets": {
+			"##company": {
+				"type": "noun_phrase",
+				"head": "Company Co",
+				"features": {
+					"@key": "features",
+					"@function": "profile-features",
+					"@arg1": "ln:company"
+				}
+			},
+			"##company-possessive": {
+				"type": "noun_phrase",
+				"head": "company",
+				"determiner": "the",
+				"features": {
+					"@key": "features",
+					"@function": "profile-features",
+					"@arg1": "ln:company-possessive"
+				}
+			},
+			"##borrower": {
+				"type": "noun_phrase",
+				"head": "borrower",
+				"determiner": "the",
+				"features": {
+					"@key": "features",
+					"@function": "profile-features",
+					"@arg1": "ln:borrower"
+				}
+			},
+			"##borrower-possessive": {
+				"type": "noun_phrase",
+				"head": "borrower",
+				"determiner": "the",
+				"features": {
+					"@key": "features",
+					"@function": "profile-features",
+					"@arg1": "ln:borrower-possessive"
+				}
+			}
+		},
+		"dictionary": {
+			"sk:pipeline.Pipeline": {
+				"type": "noun_phrase",
+				"head":  "pipeline",
+				"specifier": "##company-possessive"
+			},
+			"ln:File": {
+				"type": "noun_phrase",
+				"head":  "file"
+			},
+			"ln:ApprovedPipeline": {
+				"type": "noun_phrase",
+				"head":  "pipeline"
+			},
+
+			"ln:approved": {
+				"type": "noun_phrase",
+				"head":  "'approval'"
+			},
+
+			"ln:rejected": {
+				"type": "noun_phrase",
+				"head":  "'rejection'"
+			},
+
+			"ln:DataEngineer": {
+				"type": "noun_phrase",
+				"head":  "data engineer",
+				"determiner": "a"
+			},
+
+			"ln:Manager": {
+				"type": "noun_phrase",
+				"head":  "manager"
+			},
+
+			"pl:AssessingPerformance": {
+				"type": "verb_phrase",
+				"head":  "assess"
+			},
+			"pl:AssessingPerformanceIGNORE": {
+				"type": "string",
+				"value":  "assess"
+			},
+			"pl:ApprovingPipeline": {
+				"type": "verb_phrase",
+				"head":  "approve"
+			},
+			"pl:FittingData": {
+				"type": "verb_phrase",
+				"head":  "fit data for"
+			},
+
+			"pl:SplittingTestData": {
+				"type": "verb_phrase",
+				"head":  "split"
+			},
+
+			"pl:SelectingData": {
+				"type": "verb_phrase",
+				"head":  "select"
+			},
+
+
+			"ln:FICOScore": {
+				"type": "noun_phrase",
+				"head":  "FICO score",
+				"specifier": "##borrower-possessive"
+			},
+
+			"ln:fico_range_low": {
+				"type": "noun_phrase",
+				"head":  "lower FICO score",
+				"specifier": "##borrower-possessive"
+			},
+
+			"ln:fico_range_high": {
+				"type": "noun_phrase",
+				"head":  "higher FICO score",
+				"specifier": "##borrower-possessive"
+			},
+
+			"ln:attr_emp_title": {
+				"type": "noun_phrase",
+				"head":  "the self-reported job title"
+			},
+
+			"ln:attr_title": {
+				"type": "noun_phrase",
+				"head":  "the loan title",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": "provided",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "by",
+								"noun": "##borrower"
+							}]
+
+					}]
+
+			},
+
+			"ln:attr_pub_rec_bankruptcies": {
+				"type": "noun_phrase",
+				"head":  "the number of public record bankruptcies"
+			},
+
+			"ln:attr_pub_rec": {
+				"type": "noun_phrase",
+				"head":  "the number of derogatory public records"
+			},
+
+			"ln:attr_mort_acc": {
+				"type": "noun_phrase",
+				"head":  "the number of mortgage accounts"
+			},
+
+			"ln:LoanApplication": {
+				"type": "noun_phrase",
+				"head":  "loan application",
+				"specifier": "##borrower-possessive"
+			},
+
+			"ln:LoanApplicant": {
+				"type": "noun_phrase",
+				"head": "loan applicant",
+				"determiner": "the",
+				"features": {
+					"@key": "features",
+					"@function": "profile-features",
+					"@arg1": "ln:borrower"
+				}
+			},
+
+			"ln:CreditReference": {
+				"type": "noun_phrase",
+				"head":  "credit reference",
+				"specifier": "##borrower-possessive"
+			},
+
+			"ln:CreditReferencingAgency": {
+				"type": "noun_phrase",
+				"head":  "credit referencing agency"
+			},
+
+
+			"ln:attr_term": {
+				"type": "noun_phrase",
+				"head": "the number of payments on the loan",
+				"comments": "values are in months and can be either 36 or 60" },
+
+
+			"ln:attr_revol_util": {
+				"type": "noun_phrase",
+				"head": "revolving line utilization rate",
+				"comments": "or the amount of credit the borrower is using relative to all available revolving credit"
+			},
+
+			"ln:attr_addr_state": {
+				"type": "noun_phrase",
+				"determiner": "the",
+				"head": "state"
+			},
+
+			"ln:attr_zip_code": {
+				"type": "noun_phrase",
+				"determiner": "the",
+				"head": "address"
+			},
+
+			"ln:attr_sub_grade_C3": {
+				"type": "noun_phrase",
+				"head": "loan subgrade",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": "assigned",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "by",
+								"noun": "##company"
+
+							}
+						]
+					}
+				]
+			},
+
+
+
+			"ln:attr_initial_list_status_w": {
+				"type": "noun_phrase",
+				"head": "the initial listing status of the loan",
+				"comments": "Possible values are – W, F"
+			},
+
+			"ln:attr_int_rate": {
+				"type": "noun_phrase",
+				"head": "interest rate on the loan"
+			},
+
+			"ln:attr_fico_score": {
+				"type": "noun_phrase",
+				"head": "FICO score"
+			},
+
+			"ln:attr_total_acc": {
+				"type": "noun_phrase",
+				"head": "the total number of credit lines currently",
+				"post-modifiers": [
+
+					{
+						"type": "preposition_phrase",
+						"preposition": "in",
+						"noun": {
+							"type": "noun_phrase",
+							"head":  "credit file",
+							"specifier": "##borrower-possessive" }}
+				]},
+
+			"ln:attr_emp_length": {
+				"type": "noun_phrase",
+				"head": "employment length in years",
+				"comments": "possible values are between 0 and 10 where 0 means less than one year and 10 means ten or more years"},
+
+			"ln:attr_installment": {
+				"type": "noun_phrase",
+				"head": "the monthly payment",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": "owed",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "by",
+								"noun": "##borrower"},
+							{
+								"type": "clause",
+								"subject": "if the loan",
+								"verb": "originates"
+							}]
+
+					}]},
+
+
+			"ln:attr_home_ownership": {
+				"type": "noun_phrase",
+				"head": "the home ownership status",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": "provided",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "by",
+								"noun": "##borrower"
+							},
+							{
+								"type": "preposition_phrase",
+								"preposition": "during",
+								"noun": "registration"
+							}]
+
+					}] },
+
+			"ln:attr_loan_amnt": {
+				"type": "noun_phrase",
+				"head": "the listed amount of the loan",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": "applied for",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "by",
+								"noun": "##borrower"} ]}
+				] },
+
+			"ln:attr_earliest_cr_line": {
+				"type": "noun_phrase",
+				"head": "the month",
+				"complements": [
+					{
+						"type": "clause",
+						"complementiser": "",
+						"subject": {
+							"type": "noun_phrase",
+							"head": "credit line",
+							"specifier": "##borrower-possessive",
+							"pre-modifiers": [
+								{
+									"type": "adjective_phrase",
+									"head": "earliest reported"
+								}
+							]
+						},
+						"verb": "was opened",
+						"features": {
+							"tense": "past"
+						}
+					}
+				]
+			},
+
+			"ln:attr_purpose": {
+				"type": "noun_phrase",
+				"head": "the purpose of the loan",
+				"comments": "a category provided by the borrower for the loan request"
+			},
+
+			"ln:attr_dti": {
+				"type": "noun_phrase",
+				"head": "the debt to income ratio",
+				"comments": "a ratio calculated using the borrower's total monthly debt payments on the total debt obligations, excluding mortgage and the requested LC loan, divided by the borrower's self-reported monthly income"},
+
+			"ln:attr_open_acc": {
+				"type": "noun_phrase",
+				"head": "the number of open credit lines",
+				"post-modifiers": [
+					{
+						"type": "preposition_phrase",
+						"preposition": "in",
+						"noun":
+						{
+							"type": "noun_phrase",
+							"head":  "credit file",
+							"specifier": "##borrower-possessive"
+						}
+					}
+				] },
+
+			"ln:attr_annual_inc": {
+				"type": "noun_phrase",
+				"head": "the self-reported annual income",
+				"post-modifiers": [
+					{
+						"type": "adjective_phrase",
+						"head": "provided",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "by",
+								"noun": "##borrower"
+							},
+							{
+								"type": "preposition_phrase",
+								"preposition": "during",
+								"noun": "registration"
+							}]
+
+					}] },
+
+			"ln:attr_revol_bal": {
+				"type": "noun_phrase",
+				"head": "total credit revolving balance",
+				"comments": "i.e. current debt"},
+
+			"ln:attr_verification_status_Source_Verified": {
+				"type": "clause",
+				"complementiser": "whether",
+				"subject": {
+					"type": "noun_phrase",
+					"head":  "income",
+					"specifier": "##borrower-possessive"
+				},
+				"verb": "was verified",
+				"features": {
+					"tense": "past"
+				},
+
+				"comments": "a flag that indicates if the co-borrowers' joint income was verified by LC, not verified, or if the income source was verified" },
+
+			"ln:attr_application_type": {
+				"type": "noun_phrase",
+				"head": "type of application" }
+		},
+
+		"context": {
+			"foaf": "http://xmlns.com/foaf/0.1/",
+			"ln": "https://plead-project.org/ns/loan#",
+			"pl": "https://plead-project.org/ns/plead#",
+			"pd": "https://pandas.pydata.org/#",
+			"py": "urn:python:var:",
+			"sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+		}
+	} ,
+
+	"phrase":
+	{
+		"type": "coordinated_phrase",
+		"conjunction": "and",
+		"coordinates": [
+			{
+				"type": "clause",
+				"subject": {
+					"type": "@funcall",
+					"@object": "agent",
+					"@property": "prov:type",
+					"@function": "lookup-type",
+					"@arg1": "noun_phrase",
+					"@arg2": "ln",
+					"post-modifiers": [
+						{
+							"type": "adjective_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "agent",
+								"@field": "id",
+								"@function": "noun+localname",
+								"@arg1": ""
+							}
+						}
+					]
+				},
+				"verb": {
+					"type": "@funcall",
+					"@object": "assessing",
+					"@property": "prov:type",
+					"@function": "lookup-type",
+					"@arg1": "verb_phrase",
+					"@arg2": "pl"
+				},
+				"object": {
+					"type": "@funcall",
+					"@object": "pipeline",
+					"@property": "prov:type",
+					"@function": "lookup-type",
+					"@arg1": "noun_phrase",
+					"@arg2": "sk"
+				},
+				"features": {
+					"tense": "past",
+					"passive": "true"
+				}
+			},
+			{
+				"type": "clause",
+				"object": {
+					"type": "noun_phrase",
+					"determiner": "the",
+					"head": "level of accuracy",
+					"post-modifiers": [
+						{
+							"type": "preposition_phrase",
+							"preposition": "of",
+							"noun": {
+								"type": "@funcall",
+								"@object": "score",
+								"@property": "prov:value",
+								"@function": "percentage"
+							}
+						}
+					]
+				},
+				"verb": "has",
+				"features": {
+					"tense": "present"
+				}
+			}
+		]
+	}
+}

@@ -325,11 +325,11 @@ class Indexer (doc: Document, idsVecInit: Vector[QualifiedName]=Vector(), weakIn
     }
     
     private final def getEffect(r: Relation) = {
-      amap(r.getEffect())
+      amap(r.getEffect)
     }
     
     private final def getCause(r: Relation) = {
-    		val cause=r.getCause()
+    		val cause=r.getCause
     	  if (cause==null) -1 else { amap(cause) }
     }
        

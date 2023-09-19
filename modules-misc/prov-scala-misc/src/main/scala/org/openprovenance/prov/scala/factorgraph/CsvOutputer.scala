@@ -127,7 +127,7 @@ class CsvOutputer extends Outputer {
     def toCSV(d:Document, out:Writer, params:Map[String,String]) = {
       val statements=d.statements.toSet
       
-      val attrs=statements.flatMap(x => x.getAttributes())
+      val attrs=statements.flatMap(x => x.getAttributes)
       
       Namespace.withThreadNamespace(d.namespace)
       
@@ -159,9 +159,9 @@ class CsvOutputer extends Outputer {
         
         statement match {
           case rel:Relation =>  {
-            if (rel.getEffect()!=null) out.write(rel.getEffect().toString)
+            if (rel.getEffect!=null) out.write(rel.getEffect.toString)
             out.write(", ")
-            if (rel.getCause()!=null)  out.write(rel.getCause().toString)
+            if (rel.getCause!=null)  out.write(rel.getCause.toString)
             out.write(", ")
             val cause2=getCause2(rel)
             if (cause2!=null) out.write(cause2.toString)

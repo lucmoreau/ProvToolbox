@@ -43,7 +43,7 @@ class TermExpander (allUpdatedRequired: Boolean, addOrderp: Boolean, index: java
   def expandAttributes(s:Statement, env: util.Hashtable[QualifiedName, java.util.List[TypedValue]]): (Boolean,Set[Attribute],TemplateAttributeValues) = {
     s match {
       case s: HasAttributes => { val ta=TemplateAttributeValues(None,None,None,None)
-                            val expansions=s.getAttributes().map { attr =>  expandAttribute(attr,env,s,ta) }
+                            val expansions=s.getAttributes.map { attr =>  expandAttribute(attr,env,s,ta) }
         
                             val attrs:Set[Attribute]=expansions.flatMap(_._2)
                               
@@ -1017,7 +1017,7 @@ import TermExpander.pu
 
     def expander(docIn: Document, out: String, bindings: Bindings):Document= {
 
-        val bun= docIn.getStatementOrBundle().get(0).asInstanceOf[Bundle]
+        val bun= docIn.getStatementOrBundle.get(0).asInstanceOf[Bundle]
 
         val grp1 = Groupings.fromDocument(docIn)
 

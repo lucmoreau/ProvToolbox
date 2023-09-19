@@ -71,7 +71,7 @@ object Animator {
   
   def keepRelation(s: StatementOrBundle, pred: QualifiedName=> Boolean) = {
     s match {
-       case r: Relation => pred(r.getCause()) && pred(r.getEffect()) 
+       case r: Relation => pred(r.getCause) && pred(r.getEffect)
        case _ => false
     }
   }

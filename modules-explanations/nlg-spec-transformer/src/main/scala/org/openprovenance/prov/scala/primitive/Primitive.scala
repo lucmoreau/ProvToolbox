@@ -547,7 +547,7 @@ object Primitive {
   }
 
    def getNonProvAttributes(value: Statement): Seq[Attribute] = {
-    value.getAttributes().filterNot(a => a.elementName.namespaceURI.contentEquals(provns) || a.elementName.localPart.contentEquals("created_at"))
+    value.getAttributes.filterNot(a => a.elementName.namespaceURI.contentEquals(provns) || a.elementName.localPart.contentEquals("created_at"))
       .toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
   }
 
@@ -556,12 +556,12 @@ object Primitive {
     val prefix=strings(0)
     val local=strings(1)
     val uri=getPrefixValue(environment, prefix) + local
-    val attributes: Seq[Attribute] =value.getAttributes().toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
+    val attributes: Seq[Attribute] =value.getAttributes.toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
     attributes.filter(attr => attr.elementName.getUri()==uri).map(attr => attr.value)
 
   }
 
-  private def getPrefixValue(environment: Environment, prefix: String) = {
+  private def getPrefixValue(environment: Environment, prefix: String): String = {
     if ("prov".equals(prefix)) {
       provns
     } else {
@@ -669,7 +669,7 @@ object Primitive {
         val arr=fieldString.split(":")
         val pre=arr(0)
         val post=arr(1)
-        val attributes =value.getAttributes().toSeq
+        val attributes =value.getAttributes.toSeq
         //print(attributes)
         val selected: Option[Attribute] =attributes.find(attr => {
           val elem=attr.elementName

@@ -80,7 +80,7 @@ object TypeMap {
 
     val s_acc_indexed_by_depth: Map[Int, mutable.Set[Set[ProvType]]] =s_acc.groupBy(ss => ss.map(s=>s.depth()).max)
 
-    val st: Map[Int, Seq[Seq[Int]]] =s_acc_indexed_by_depth.mapValues(vv => vv.map(s => s.toSeq.map(rtm).sorted).toSeq.sortWith{case (l1,l2) => l1.size < l2.size}).toMap
+    val st: Map[Int, Seq[Seq[Int]]] =s_acc_indexed_by_depth.view.mapValues(vv => vv.map(s => s.toSeq.map(rtm).sorted).toSeq.sortWith{case (l1,l2) => l1.size < l2.size}).toMap
 
     TypePropagator.om.writeValue(new File(tmap), Export(tm,ctsm, gm,ctm, st, sb.toString))
 
@@ -200,7 +200,7 @@ final class TypeMapProcessing {
               accumulator: scala.collection.mutable.Map[Int, Set[ProvType]],
               ground: scala.collection.mutable.ListBuffer[String],
               set_accumulator: scala.collection.mutable.Set[Set[ProvType]],
-              recurse: Boolean=false) {
+              recurse: Boolean=false): Unit = {
 
     val desc: SummaryDescriptionJson = TypePropagator.om.readValue(new FileInputStream(path), classOf[SummaryDescriptionJson])
 
@@ -216,7 +216,7 @@ final class TypeMapProcessing {
       provType.foreach(accumulateProvType)
     }
 
-    def accumulateProvType(pt: ProvType) {
+    def accumulateProvType(pt: ProvType): Unit = {
       val depth = pt.depth()
       val set = accumulator.getOrElseUpdate(depth, Set())
       accumulator.put(depth, set + pt)

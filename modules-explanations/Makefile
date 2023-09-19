@@ -1,5 +1,5 @@
 
-WHERE=../modules-executable
+WHERE=../modules-executable-provman
 PROVMAN=$(WHERE)/target/appassembler/bin/provmanagement
 
 EXPLANATIONS_DIR=prov-explanations

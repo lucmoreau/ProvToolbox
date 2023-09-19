@@ -15,6 +15,7 @@
         <module name="prov-service-translation" />
         <module name="prov-n" />
         <module name="docker-service-translator" />
+        <module name="prov-service-xplain" />
         <module name="benchmarks" />
         <module name="prov-model" />
         <module name="modules-executable-provman" />

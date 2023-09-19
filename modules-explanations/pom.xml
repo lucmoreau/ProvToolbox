@@ -16,7 +16,7 @@
         <module>nlg-spec-transformer</module>
         <module>prov-query</module>
         <module>prov-explanations</module>
-
+        <module>prov-service-xplain</module>
     </modules>
 
 

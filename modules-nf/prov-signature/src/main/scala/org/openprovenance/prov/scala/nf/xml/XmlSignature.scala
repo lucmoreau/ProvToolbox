@@ -38,7 +38,7 @@ object  XmlSignature {
                      namesToSign: List[QName],
                      algorithm: String,
                      signingKey: Key,
-                     signingCert: X509Certificate)   = {
+                     signingCert: X509Certificate): Unit = {
 
     // Set up the Configuration
     val properties = new XMLSecurityProperties();
@@ -64,7 +64,7 @@ object  XmlSignature {
     xmlStreamWriter.close();
   }
 
-  def toStreamReader(in: InputStream) = {
+  def toStreamReader(in: InputStream): XMLStreamReader = {
     val xmlStreamReader = Transformer.xmlInputFactory.createXMLStreamReader(in)
     xmlStreamReader
   }

@@ -10,8 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/ExtendedDerivations.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/ExtendedDerivations.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlBean.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlBean.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlSignature.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlSignature.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -765,7 +764,7 @@
       <workItem from="1694938514558" duration="93000" />
       <workItem from="1694938635656" duration="15467000" />
       <workItem from="1695023224064" duration="55000" />
-      <workItem from="1695023287797" duration="24962000" />
+      <workItem from="1695023287797" duration="25078000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

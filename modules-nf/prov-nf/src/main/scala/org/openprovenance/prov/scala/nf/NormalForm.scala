@@ -1766,7 +1766,7 @@ class WasInfluencedBy(val id: Set[QualifiedName],
 
   def toTerms(): List[immutable.WasInfluencedBy] = {
     val ll1: MX_List[Set[QualifiedName], Set[XMLGregorianCalendar]] = MX_Cons1(influencee, MX_Cons1(influencer, MX_NIL[Set[QualifiedName], Set[XMLGregorianCalendar]]()))
-    val attr: Set[Attribute] = (label.map(_.toLabel()) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
+    val attr: Set[Attribute] = (label.map(_.toLabel) ++ typex ++ other.values.flatten).asInstanceOf[Set[Attribute]]
     (if (id.isEmpty) List(null) else id.toList).flatMap(id1 => addToFirst(someCombinations(id1, elements_args_list(ll1)).map(createWasInfluencedBy(id1, _)), attr))
   }
 

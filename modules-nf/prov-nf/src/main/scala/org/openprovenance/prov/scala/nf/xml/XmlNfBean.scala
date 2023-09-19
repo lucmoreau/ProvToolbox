@@ -407,7 +407,7 @@ object XmlNfBean {
     val attrs=if (attrList==null) Seq() else { attrList.asScala.toSeq }
     val attrSet=ifNull(attrs).map{attr => makeAttribute(attr.element,attr.value,attr.`type`,ns)}
     val (l,t,v,loc,r,m)=split3(attrSet)  //(Set[Label],Set[Type],Set[Value],Set[Location],Set[Role],Map[QualifiedName,Set[Other]])
-    val langStrings=LangString(l.map(_.getLangString()))
+    val langStrings=LangString(l.map(_.getLangString))
     (langStrings,t,v,loc,r,m)
   }
   

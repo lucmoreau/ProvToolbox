@@ -5,20 +5,22 @@ import org.openprovenance.prov.scala.immutable.Kind.Kind
 import org.openprovenance.prov.scala.immutable._
 import Utils.fourNullable
 
+import scala.annotation.unused
+
 
 
 class WasDerivedFromPlus(val id: QualifiedName,
                          val generatedEntity: QualifiedName,
                          val usedEntity: QualifiedName,
                          val activity: QualifiedName,
-                         val generation: QualifiedName,
-                         val usage: QualifiedName,
+                         @unused val generation: QualifiedName,
+                         @unused val usage: QualifiedName,
                          val label: Set[LangString],
                          val typex: Set[Type],
                          val other: Map[QualifiedName,Set[Other]]) extends Statement with ExtensionStatement with Relation with org.openprovenance.prov.model.Relation {
 
 
-  def addAttributes (attr: Set[Attribute]) = {
+  def addAttributes (attr: Set[Attribute]): WasDerivedFromPlus = {
     this
   }
 
@@ -33,12 +35,12 @@ class WasDerivedFromPlus(val id: QualifiedName,
   }
 
 
-  def getCause() = usedEntity
-  def getEffect() = generatedEntity
+  def getCause: QualifiedName = usedEntity
+  def getEffect: QualifiedName = generatedEntity
 
 
 
-  override def getAttributes(): Set[Attribute] = Set()
+  override def getAttributes: Set[Attribute] = Set()
 
   override val enumType: Kind = Kind.winfl  // TODO
 
@@ -53,14 +55,14 @@ class WasDerivedFromStar(val id: QualifiedName,
                          val generatedEntity: QualifiedName,
                          val usedEntity: QualifiedName,
                          val activity: QualifiedName,
-                         val generation: QualifiedName,
-                         val usage: QualifiedName,
+                         @unused val generation: QualifiedName,
+                         @unused val usage: QualifiedName,
                          val label: Set[LangString],
                          val typex: Set[Type],
                          val other: Map[QualifiedName,Set[Other]]) extends Statement with ExtensionStatement with Relation with org.openprovenance.prov.model.Relation {
 
 
-  def addAttributes (attr: Set[Attribute]) = {
+  def addAttributes (attr: Set[Attribute]): WasDerivedFromStar = {
     this
   }
 
@@ -75,12 +77,12 @@ class WasDerivedFromStar(val id: QualifiedName,
   }
 
 
-  def getCause() = usedEntity
-  def getEffect() = generatedEntity
+  def getCause: QualifiedName = usedEntity
+  def getEffect: QualifiedName = generatedEntity
 
 
 
-  override def getAttributes(): Set[Attribute] = Set()
+  override def getAttributes: Set[Attribute] = Set()
 
   override val enumType: Kind = Kind.winfl  // TODO
 

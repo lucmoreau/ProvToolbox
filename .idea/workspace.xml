@@ -10,11 +10,8 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/factorgraph/CsvOutputer.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/factorgraph/CsvOutputer.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/immutable/Indexer.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/immutable/Indexer.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/template/TermExpander.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/template/TermExpander.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/viz/Animator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/viz/Animator.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/viz/Graphics.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/viz/Graphics.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/Summary.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/Summary.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/TypePropagator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-scala-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/TypePropagator.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -768,7 +765,7 @@
       <workItem from="1694938514558" duration="93000" />
       <workItem from="1694938635656" duration="15467000" />
       <workItem from="1695023224064" duration="55000" />
-      <workItem from="1695023287797" duration="24070000" />
+      <workItem from="1695023287797" duration="24472000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

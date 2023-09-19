@@ -32,7 +32,7 @@ object TypePropagator {
       
   def highlightStatement (s: Statement, allIds: Set[QualifiedName]): Statement = {
     s match {
-      case rel:Relation => if (allIds.contains(rel.getCause()) && allIds.contains(rel.getEffect())) {
+      case rel:Relation => if (allIds.contains(rel.getCause) && allIds.contains(rel.getEffect)) {
     	                       s
                            } else {
                         	   s.addAttributes(attr())

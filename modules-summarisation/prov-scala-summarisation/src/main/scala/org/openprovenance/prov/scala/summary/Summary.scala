@@ -443,11 +443,11 @@ class SummaryConstructor (val ind: Indexing,
   lazy val prettyNames: Map[Int, String] =makePrettyNames(mapToBaseUri,provTypeIndex,prettyMethod)
 
   private final def getEffect(r: Relation): Int = {
-    sumInt(r.getEffect())
+    sumInt(r.getEffect)
   }
 
   private final def getCause(r: Relation): Int = {
-    val cause=r.getCause()
+    val cause=r.getCause
     if (cause==null) -1 else { sumInt(cause) }
   }
 

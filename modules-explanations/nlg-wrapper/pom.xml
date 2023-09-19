@@ -99,7 +99,8 @@
 
     <properties>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <dictionary.folder>${basedir}/dictionary</dictionary.folder>
+        <cached.dictionary.folder>${basedir}/dictionary</cached.dictionary.folder>
+        <deployed.dictionary.folder>${project.build.directory}/dictionary</deployed.dictionary.folder>
     </properties>
 
 
@@ -193,11 +194,11 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <target>
-                                <mkdir dir="${project.build.directory}/dictionary" />
-                                <copy file="${dictionary.folder}/lexAccess2013.data.zip" todir="${project.build.directory}/dictionary" />
-                                <copy file="${dictionary.folder}/lexAccess2013.script" todir="${project.build.directory}/dictionary" />
-                                <copy file="${dictionary.folder}/lexAccess2013.properties" todir="${project.build.directory}/dictionary" />
-                                <unzip src="${project.build.directory}/dictionary/lexAccess2013.data.zip" dest="${project.build.directory}/dictionary" />
+                                <mkdir dir="${deployed.dictionary.folder}" />
+                                <copy file="${cached.dictionary.folder}/lexAccess2013.data.zip"   todir="${deployed.dictionary.folder}" />
+                                <copy file="${cached.dictionary.folder}/lexAccess2013.script"     todir="${deployed.dictionary.folder}" />
+                                <copy file="${cached.dictionary.folder}/lexAccess2013.properties" todir="${deployed.dictionary.folder}" />
+                                <unzip src="${deployed.dictionary.folder}/lexAccess2013.data.zip"  dest="${deployed.dictionary.folder}" />
                             </target>
                         </configuration>
                         <goals>
@@ -216,7 +217,7 @@
             <id>flex</id>
             <activation>
                 <file>
-                    <missing>${dictionary.folder}/lexAccess2013.data.zip</missing>
+                    <missing>${cached.dictionary.folder}/lexAccess2013.data.zip</missing>
                 </file>
             </activation>
 
@@ -258,9 +259,9 @@
                                         <zip destfile="${project.build.directory}/lexAccess2013.data.zip"
                                              basedir="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/"
                                              includes="lexAccess2013.data"/>
-                                        <copy file="${project.build.directory}/lexAccess2013.data.zip" todir="${dictionary.folder}" />
-                                        <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.properties" todir="${dictionary.folder}" />
-                                        <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.script"     todir="${dictionary.folder}" />
+                                        <copy file="${project.build.directory}/lexAccess2013.data.zip" todir="${cached.dictionary.folder}" />
+                                        <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.properties" todir="${cached.dictionary.folder}" />
+                                        <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.script"     todir="${cached.dictionary.folder}" />
                                     </target>
                                 </configuration>
                                 <goals>

@@ -130,8 +130,8 @@ object Narrator {
   }
 
   def narrate(doc:Document, config:Config): (Map[String,Narrative] , Document, EventMatrix, EventsDescription) = {
-    import scala.collection.JavaConverters._
 
+    import scala.jdk.CollectionConverters._
     val doc1=Document(doc,gensym,NLG_PREFIX,NLG_URI)
     val newEntities=EventOrganiser.addEntitiesToAgents(doc1.statements())
 

@@ -6,10 +6,10 @@ import org.openprovenance.prov.nlg.ValidationObjectMaker
 import org.openprovenance.prov.scala.factorgraph.{CsvOutputer, MatlabOutputer}
 import org.openprovenance.prov.scala.immutable.Format.Format
 import org.openprovenance.prov.scala.immutable._
-import org.openprovenance.prov.scala.interop.stubs.Narrator
 import org.openprovenance.prov.scala.nf.xml.{XmlNfBean, XmlSignature}
 import org.openprovenance.prov.scala.nf.{DocumentProxyFromStatements, Normalizer}
-import org.openprovenance.prov.scala.nlg.{Environment, EventsDescription, Narrative, RealiserFactory}
+import org.openprovenance.prov.scala.nlg.{EventsDescription, Narrative, Narrator, RealiserFactory}
+import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.{Processor, StatementAccessor, SummaryQueryGenerator}
 import org.openprovenance.prov.scala.streaming._
 import org.openprovenance.prov.scala.summary._
@@ -99,7 +99,7 @@ case class Config(outfiles: Seq[Output] = Seq(),
                   language: Seq[String]=Seq(),
                   summary_queries: File = null,
                   withLevel0Description:Boolean=false,
-                  languageAsFilep: Boolean=true)   {
+                  languageAsFilep: Boolean=true)  extends org.openprovenance.prov.scala.nlg.Config    {
 
 
   def this (os: java.io.OutputStream, mediaType: String) {
@@ -494,11 +494,11 @@ object CommandLine {
   }
 
 
-  def narrate1(doc:Document, config: org.openprovenance.prov.scala.interop.Config): String = {
+  def narrate1(doc:Document, config: org.openprovenance.prov.scala.nlg.Config): String = {
     Narrator.narrate1(doc,config).mkString("","\n","")
   }
 
-  def narrate2(doc:Document, config: org.openprovenance.prov.scala.interop.Config): Map[String, List[String]] = {
+  def narrate2(doc:Document, config: org.openprovenance.prov.scala.nlg.Config): Map[String, List[String]] = {
     Narrator.narrate1(doc,config).map{case (x,y) =>  (x -> y.sentences)}
   }
 

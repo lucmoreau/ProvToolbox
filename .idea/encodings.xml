@@ -61,8 +61,8 @@
     <file url="file://$PROJECT_DIR$/modules-misc/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-nf/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-nf/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-signature/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/prov-signature/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules-nf/service-signature/src/main/config" charset="UTF-8" />

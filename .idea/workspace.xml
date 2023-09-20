@@ -9,8 +9,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlSignature.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-signature/src/main/scala/org/openprovenance/prov/scala/nf/xml/XmlSignature.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NlgService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NlgService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/NormalForm.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-nf/src/main/scala/org/openprovenance/prov/scala/nf/NormalForm.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/ActionCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/ActionCheck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/ActionNormalForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/ActionNormalForm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/ActionSign.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/ActionSign.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/ActionSignature.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/ActionSignature.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/SignatureCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/SignatureCheck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/SignatureService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/SignatureService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/SignedDocumentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/SignedDocumentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/prov-service-sign/src/main/java/org/openprovenance/prov/service/signature/SignedDocumentResourceInMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/prov-service-signature/src/main/java/org/openprovenance/prov/service/signature/SignedDocumentResourceInMemory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,6 +130,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.scala.settings.ScalaProjectSettingsConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -764,7 +779,8 @@
       <workItem from="1694938514558" duration="93000" />
       <workItem from="1694938635656" duration="15467000" />
       <workItem from="1695023224064" duration="55000" />
-      <workItem from="1695023287797" duration="25078000" />
+      <workItem from="1695023287797" duration="30105000" />
+      <workItem from="1695190967915" duration="1669000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

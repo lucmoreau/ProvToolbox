@@ -466,8 +466,7 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
     @Tag(name= NLG)
     @Consumes({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_JSONLD,
                 MEDIA_APPLICATION_JSON})
-    @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION,
-                MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,
+    @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,
                 MEDIA_IMAGE_SVG_XML, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG, MEDIA_APPLICATION_PDF })
 
     public Response conversion(@Context HttpServletResponse ignoredResponse,

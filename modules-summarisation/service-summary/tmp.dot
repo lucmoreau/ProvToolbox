@@ -1,169 +1,35 @@
 digraph "PROV" { size="16,12"; rankdir="BT";
-7 -> 9	[ color="#000000",
+2 -> 0	[ color="#000000",
 	  penwidth="10.0"]
 
-4 -> 6	[ color="#000000",
+0 -> 1	[ color="#000000",
 	  penwidth="1.0"]
 
-9 -> 1	[ color="#000000",
-	  penwidth="10.0"]
-
-7	[ side="4",
-	  fontcolor="#0000FF",
-	  style="filled",
-	  URL="T4",
-	  label="review_recommendation_4",
-	  color="#0000FF",
-	  fillcolor="#9FB1FC",
-	  tooltip="T4",
-	  shape="polygon",
-	  width="1.0"]
-9	[ fontcolor="#808080",
-	  style="filled",
-	  URL="T10",
-	  label="example.org_10",
-	  color="#808080",
-	  fillcolor="#FFFC87",
-	  tooltip="T10",
-	  shape="ellipse",
-	  width="1.0"]
-8 -> 7	[ color="#000000",
-	  penwidth="1.0"]
-
-0 -> 6	[ color="#000000",
-	  penwidth="1.0"]
-
-5	[ fontcolor="#808080",
+1	[ fontcolor="#808080",
 	  style="filled",
 	  URL="T0",
-	  label="dt_pipeline.pickled_0",
+	  label="e1_0",
 	  color="#808080",
 	  fillcolor="#FFFC87",
 	  tooltip="T0",
 	  shape="ellipse",
 	  width="1.0"]
-bn3 -> 3	[ color="#000000",
-	  penwidth="1.0"]
-
-8 -> 2	[ color="#000000",
-	  penwidth="1.0"]
-
-6 -> 5	[ color="#000000",
-	  penwidth="1.0"]
-
-2 -> 9	[ color="#000000",
-	  penwidth="1.0"]
-
-8	[ fontcolor="#808080",
+0	[ fontcolor="#808080",
 	  style="filled",
-	  URL="T6",
-	  label="decision_6",
+	  URL="T1",
+	  label="e_1",
 	  color="#808080",
 	  fillcolor="#FFFC87",
-	  tooltip="T6",
+	  tooltip="T1",
 	  shape="ellipse",
 	  width="1.0"]
-bn4 -> 10	[ color="#000000",
-	  penwidth="1.0"]
-
-8 -> 10	[ color="#000000",
-	  penwidth="1.0"]
-
-6	[ fontcolor="#808080",
-	  style="filled",
-	  URL="T9",
-	  label="var_9",
-	  color="#808080",
-	  fillcolor="#FFFC87",
-	  tooltip="T9",
-	  shape="ellipse",
-	  width="1.0"]
-0	[ side="4",
-	  fontcolor="#0000FF",
-	  style="filled",
-	  URL="T7",
-	  label="classify_loans_7",
-	  color="#0000FF",
-	  fillcolor="#9FB1FC",
-	  tooltip="T7",
-	  shape="polygon",
-	  width="1.0"]
-8 -> 9	[ color="#000000",
-	  penwidth="10.0"]
-
-7 -> bn3	[ arrowhead="none",
-	  color="#000000",
-	  penwidth="1.0"]
-
-4 -> 0	[ color="#000000",
-	  penwidth="1.0"]
-
-2 -> 1	[ color="#000000",
-	  penwidth="1.0"]
-
-6 -> 9	[ color="#000000",
-	  penwidth="10.0"]
-
-bn4	[ label="",
-	  shape="point",
-	  color="#000000"]
-4	[ fontcolor="#808080",
-	  style="filled",
-	  URL="T5",
-	  label="recommendation_5",
-	  color="#808080",
-	  fillcolor="#FFFC87",
-	  tooltip="T5",
-	  shape="ellipse",
-	  width="1.0"]
-10 -> 1	[ color="#000000",
-	  penwidth="5.5"]
-
-bn3 -> 10	[ color="#000000",
-	  penwidth="1.0"]
-
-bn4 -> 6	[ color="#000000",
-	  penwidth="1.0"]
-
-0 -> bn4	[ arrowhead="none",
-	  color="#000000",
-	  penwidth="1.0"]
-
-2	[ side="4",
-	  fontcolor="#0000FF",
-	  style="filled",
-	  URL="T8",
-	  label="process_application_8",
-	  color="#0000FF",
-	  fillcolor="#9FB1FC",
-	  tooltip="T8",
-	  shape="polygon",
-	  width="1.0"]
-8 -> 4	[ color="#000000",
-	  penwidth="1.0"]
-
-bn3	[ label="",
-	  shape="point",
-	  color="#000000"]
-1	[ fontcolor="#000000",
+2	[ fontcolor="#808080",
 	  style="filled",
 	  URL="T2",
-	  label="example.org_2",
-	  color="#000000",
-	  fillcolor="#FDB266",
+	  label="e_2",
+	  color="#808080",
+	  fillcolor="#FFFC87",
 	  tooltip="T2",
-	  shape="house",
+	  shape="ellipse",
 	  width="1.0"]
-10	[ fontcolor="#000000",
-	  style="filled",
-	  URL="T3",
-	  label="example.org_3",
-	  color="#000000",
-	  fillcolor="#FDB266",
-	  tooltip="T3",
-	  shape="house",
-	  width="1.0"]
-7 -> 4	[ color="#000000",
-	  penwidth="1.0"]
-
 }

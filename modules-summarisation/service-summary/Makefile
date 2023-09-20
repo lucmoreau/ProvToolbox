@@ -6,9 +6,10 @@ build.docker:
 	mvn clean install -Ptomcat,hsqldb,docker
 
 
-# will run on port 7070 as per root pom.xml
+# will run on port 7075 as per root pom.xml
 jetty:
-	 mvn jetty:run
+	 mvn jetty:run-war -Pjetty
+
 
 jetty.post:
 	 mvn -Ppostgres jetty:run

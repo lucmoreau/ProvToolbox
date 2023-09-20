@@ -233,7 +233,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
         DocumentResource vr = null;
         List<InputPart> inputParts = formData.get("file");
         if ((inputParts != null)) {
-
             vr = utils.doProcessFileForm(inputParts);
         }
         return vr;

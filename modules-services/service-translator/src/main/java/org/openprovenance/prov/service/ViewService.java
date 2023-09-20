@@ -26,12 +26,6 @@ import java.io.IOException;
 public class ViewService implements SwaggerTags {
     static Logger logger = LogManager.getLogger(ViewService.class);
 
-
-
-
-
-
-
     @GET
     @Path("/view/documents/{docId}/validation/report.html")
     @Produces("text/html")
@@ -42,8 +36,6 @@ public class ViewService implements SwaggerTags {
                                           @Context HttpServletRequest request,
                                           @PathParam("docId") String visibleId)
             throws ServletException, IOException {
-        //logger.info("getValidationReportAsHtml: " + visibleId +  ", url:" + request.getRequestURL());
-        //request.getRequestDispatcher("../../../../validationReport.html").forward(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/validationReport.html");
         requestDispatcher.forward(request, response);
     }

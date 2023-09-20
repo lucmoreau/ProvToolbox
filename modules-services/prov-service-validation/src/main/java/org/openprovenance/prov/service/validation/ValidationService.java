@@ -218,82 +218,6 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
         }
     }
 
-    /*
-    @GET
-    @Path("/documents/{docId}/validation/report/{part}")
-    @Produces({ "text/xml", MEDIA_APPLICATION_JSON })
-    @Mapped(namespaceMap = { @XmlNsMap(namespace = PROV_NS, jsonName = PROV_PREFIX) })
-    @Tag(name="validation")
-    @Operation(summary = "Validation Report Component",
-	       description = "",
-	       responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
-    public Response getValidationReportComponent(@PathParam("docId") String msg,
-    		                                     @PathParam("part") String what)
-    				throws IOException {
-
-    	DocumentResource vr = utils.getValidationResourceIndex().get(msg);
-
-    	if (vr == null) {
-    		return utils.composeResponseNotFoundResource(msg);
-    	}
-    	
-    	if (!(vr instanceof ValidationResource) ){
-    		return utils.composeResponseNotFoundType(msg);
-    	}
-
-    	ValidationResource vr2=(ValidationResource)vr;
-
-
-    	if (vr2.getConstraints() == null) {
-    		return utils.composeResponseNotFOUND("Not found constraints resource for : " + msg);
-    	}
-
-    	Document doc=utils.getDocumentFromCacheOrStore(vr2.getStorageId());
-
-    	return returnDocumentReponse(packageValidationComponent(what, vr2),
-    			doc.getNamespace());
-
-    }
-*/
-
-    /*
-    public Response returnDocumentReponse(Object doc, Namespace ns) {
-		ProvSerialiser serial = ProvSerialiser.getThreadProvSerialiser(); // initialize
-    	Namespace.withThreadNamespace(ns);
-    	return utils.composeResponseOK(doc).build();
-    }
-
-     */
-
-    /*
-    public Object packageValidationComponent(String what, ValidationResource vr) {
-    	if ("cycle".equals(what)) {
-    		ValidationReport res = new ValidationReport();
-    		res.getCycle().addAll(vr.getValidate().getReport().getCycle());
-    		return res;
-    	} else if ("failedMerge".equals(what)) {
-    		ValidationReport res = new ValidationReport();
-    		res.getFailedMerge().addAll(vr.getValidate().getReport()
-    				.getFailedMerge());
-    		return res;
-    	} else if ("successfulMerge".equals(what)) {
-    		ValidationReport res = new ValidationReport();
-    		res.getSuccessfulMerge().addAll(vr.getValidate().getReport()
-    				.getSuccessfulMerge());
-    		return res;
-    	} else if ("qualifiedNameMismatch".equals(what)) {
-    		ValidationReport res = new ValidationReport();
-    		res.getQualifiedNameMismatch()
-    		.addAll(vr.getValidate().getReport().getQualifiedNameMismatch());
-    		return res;
-    	} else {
-    		return vr.getValidate().getReport();
-    	}
-    }
-
-     */
-
-
     public String stackTraceToString(Throwable thrown) {
         String result = "";
         while (thrown != null) {
@@ -408,38 +332,6 @@ public class ValidationService  implements Constants,InteropMediaType, SwaggerTa
     }
 
 
-    /*
-    @GET
-    @Path("/documents/{docId}/validation/matrix/diagonal")
-    @Produces(MEDIA_TEXT_PLAIN)
-    @Tag(name="validation")
-    @Operation(summary = "Event Matrix Diagonal",
-	           description = "This method displays the diagonal of the matrix. No content negotiation applies here.",
-	           responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
-    public Response getMatrixDiagonal(@PathParam("docId") String msg) {
-
-    	ValidationResource vr = utils.getValidationResourceIndex().get(msg);
-
-
-    	if (vr == null) {
-    		return utils.composeResponseNotFoundResource(msg);
-    	}
-
-    	if (!(vr instanceof ValidationResource) ){
-    		return utils.composeResponseNotFoundType(msg);
-    	}
-
-
-
-    	if (!vr.getCompleted()) {
-    		return utils.composeResponseNotFoundConstraintResource(msg);
-    	}
-
-    	String result = "" + vr2.getConstraints().getMatrix().diagonal();
-    	return utils.composeResponseOK(result).build();
-    }
-
-     */
 
 
 }

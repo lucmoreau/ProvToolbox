@@ -7,4 +7,7 @@ public interface SwaggerTags {
     String RANDOM="random";
     String VIEW="view";
     String RESOURCES ="resources";
+    String NLG ="nlg";
+    String NARRATIVE = "narrative";
 }
+

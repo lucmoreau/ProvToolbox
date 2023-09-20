@@ -40,9 +40,6 @@ public class NodeMessageBodyWriter implements MessageBodyWriter<ObjectNode> {
     		Annotation[] annotations, MediaType mediaType) {
     	return true;
     }
-    
-    
-    
 
     @Override
     public long getSize(ObjectNode t, Class<?> type, Type genericType,

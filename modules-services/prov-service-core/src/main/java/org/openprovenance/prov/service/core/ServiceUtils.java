@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -38,7 +39,7 @@ public class ServiceUtils {
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
     public static final String HEADER_PARAM_ACCEPT = "Accept";
 
-    private static final String CONFIG_PROPERTIES = "config.properties";
+    public static final String CONFIG_PROPERTIES = "config.properties";
 
     public static final String UPLOADED_FILE_PATH = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("upload.directory");
     public static final String containerVersion = getPropertiesFromClasspath(CONFIG_PROPERTIES).getProperty("container.version");
@@ -66,11 +67,11 @@ public class ServiceUtils {
 
     private final ServiceUtilsConfig config;
 
-    private static Properties getPropertiesFromClasspath(String propFileName) {
+    public static Properties getPropertiesFromClasspath(String propFileName) {
         return Configuration.getPropertiesFromClasspath(ServiceUtils.class, propFileName);
     }
 
-    private static Logger logger = LogManager.getLogger(ServiceUtils.class);
+    final private static Logger logger = LogManager.getLogger(ServiceUtils.class);
 
 
 
@@ -217,7 +218,7 @@ public class ServiceUtils {
     public String getFormDataValue(Map<String, List<InputPart>> formData,
                                    String name) throws IOException {
         List<InputPart> furtherInputParts = formData.get(name);
-        if ((furtherInputParts != null) && (furtherInputParts.size() > 0)) {
+        if ((furtherInputParts != null) && (!furtherInputParts.isEmpty())) {
             return furtherInputParts.get(0).getBodyAsString();
         } else {
             return null;
@@ -776,6 +777,18 @@ public class ServiceUtils {
                 return composeResponseNotFoundResource("not found type for " + path);
             }
         }
+    }
+
+    static public Map<String,String> loadConfigFromEnvironment(Map<String,String> defaultConfiguration) {
+        Map<String,String> config=new HashMap<>();
+        for (String variable: defaultConfiguration.keySet()) {
+            String value=System.getProperty(variable,null);
+            if (value!=null) {
+                config.put(variable,value);
+                logger.info("Configuration: system properties --- " + variable + " " + value);
+            }
+        }
+        return config;
     }
 
 

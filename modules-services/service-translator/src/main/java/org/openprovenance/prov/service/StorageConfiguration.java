@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
+import static org.openprovenance.prov.service.core.ServiceUtils.loadConfigFromEnvironment;
 
 public class StorageConfiguration implements EnvironmentVariables{
 
@@ -54,17 +55,6 @@ public class StorageConfiguration implements EnvironmentVariables{
         return config;
     }
 
-    public Map<String,String> loadConfigFromEnvironment(Map<String,String> defaultConfiguration) {
-        Map<String,String> config=new HashMap<>();
-        for (String variable: defaultConfiguration.keySet()) {
-            String value=System.getProperty(variable,null);
-            if (value!=null) {
-                config.put(variable,value);
-                logger.info("Configuration: system properties --- " + variable + " " + value);
-            }
-        }
-        return config;
-    }
 
     public ServiceUtilsConfig makeConfig(ProvFactory factory) {
         Map<String,String> config=new HashMap<>();

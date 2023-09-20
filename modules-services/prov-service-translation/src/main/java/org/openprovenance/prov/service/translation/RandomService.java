@@ -14,7 +14,6 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.model.ProvUtilities;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
@@ -30,10 +29,8 @@ import java.util.Optional;
 public class RandomService implements Constants, InteropMediaType {
 
     private final ServiceUtils utils;
-    ProvUtilities u = new ProvUtilities();
 
-    static Logger logger = LogManager.getLogger(RandomService.class);
-
+    public static final Logger logger = LogManager.getLogger(RandomService.class);
 
 
     final ProvFactory f;
@@ -44,7 +41,7 @@ public class RandomService implements Constants, InteropMediaType {
 		this(postService, new LinkedList<>(),Optional.empty());
 	}
 
-    public RandomService(PostService postService, List<ActionPerformer> performers, Optional<OtherActionPerformer> otherPerformer) {
+    public RandomService(PostService postService, List<ActionPerformer> ignoredPerformers, Optional<OtherActionPerformer> otherPerformer) {
 		utils=postService.getServiceUtils();
 
 		postService.addOtherPerformer(Optional.of((otherPerformer.orElse(new EmptyOtherActionPerformer()))));
@@ -56,19 +53,19 @@ public class RandomService implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/random/{nodes}/{degree}")
-    @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-        MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-        MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
+    @Produces({  MEDIA_TEXT_PROVENANCE_NOTATION,
+        MEDIA_APPLICATION_PROVENANCE_XML,
+            MEDIA_APPLICATION_JSON,
+            MEDIA_APPLICATION_JSONLD,
+            MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF, MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
     @Tag(name="random")
     @Operation(summary = "Randomly generated Document",
 	       description = "Random generation of PROV document, with a set number of nodes and a maximum degree",
 	       responses = { @ApiResponse(responseCode = "200", 
-	                                  content={@Content(mediaType=MEDIA_TEXT_TURTLE),
-	    		                               @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
+	                                  content={@Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
 	    		                               @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
-	    		                               @Content(mediaType=MEDIA_APPLICATION_TRIG),	
-	    		                               @Content(mediaType=MEDIA_APPLICATION_RDF_XML),
-	    		                               @Content(mediaType=MEDIA_APPLICATION_JSON),
+                                               @Content(mediaType=MEDIA_APPLICATION_JSON),
+                                               @Content(mediaType=MEDIA_APPLICATION_JSONLD),
 	    		                               @Content(mediaType=MEDIA_IMAGE_SVG_XML),
 	    		                               @Content(mediaType=MEDIA_IMAGE_PNG),
 	    		                               @Content(mediaType=MEDIA_IMAGE_JPEG),
@@ -84,18 +81,16 @@ public class RandomService implements Constants, InteropMediaType {
 
     @GET
     @Path("/documents/random/{nodes}/{degree}/{seed}")
-    @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
-	    MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
-	    MEDIA_APPLICATION_RDF_XML, MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
+    @Produces({  MEDIA_TEXT_PROVENANCE_NOTATION,
+	    MEDIA_APPLICATION_PROVENANCE_XML,
+	    MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,
+            MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
     @Tag(name="random")
     @Operation(summary = "Randomly generated Document",
 	       description = "andom generation of PROV document, with a set number of nodes,  a maximum degree and a set seed for the random generato",
 	    		   responses = { @ApiResponse(responseCode = "200", 
-                   content={@Content(mediaType=MEDIA_TEXT_TURTLE),
-                            @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
+                   content={@Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
                             @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
-                            @Content(mediaType=MEDIA_APPLICATION_TRIG),	
-                            @Content(mediaType=MEDIA_APPLICATION_RDF_XML),
                             @Content(mediaType=MEDIA_APPLICATION_JSON),
                             @Content(mediaType=MEDIA_IMAGE_SVG_XML),
                             @Content(mediaType=MEDIA_IMAGE_PNG),

@@ -53,7 +53,7 @@ import static org.openprovenance.prov.service.core.SwaggerTags.NLG;
 @Path("")
 @Tag(name= NLG)
 public class NlgService implements Constants, InteropMediaType, SwaggerTags {
-
+    static final Logger logger = LogManager.getLogger(NlgService.class);
     private final ServiceUtils utils;
     private final String client_id;
     private final String client_secret;
@@ -72,7 +72,11 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
         this.utils=new ServiceUtils(ps,ps.getServiceUtils().getConfig());
         Map<String,String> config=new HashMap<>();
         config.putAll(defaultConfiguration);
+        config.putAll(loadConfigFromSystem(defaultConfiguration));
         config.putAll(loadConfigFromEnvironment(defaultConfiguration));
+        logger.info("Configuration: " + config);
+        System.out.println("Configuration: " + config);
+        System.out.println("Configuration: " + GITHUB_CLIENT_SECRET);
         this.config=config;
         this.client_id=config.get(GITHUB_CLIENT_ID);
         this.client_secret=config.get(GITHUB_CLIENT_SECRET);
@@ -135,7 +139,6 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
             "}";
 
 
-    static Logger logger = LogManager.getLogger(NlgService.class);
 
 
     static final Realiser realiserWithMarkups = defs.withMarkupFormatter();
@@ -413,6 +416,7 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
         final String requestBody = objectMapper.writeValueAsString(m);
 
         logger.debug("Getting access token: "+ requestBody);
+        System.out.println("Getting access token: "+ requestBody);
 
         Map<?,?> result=doPost("https://github.com/login/oauth/access_token", requestBody);
 

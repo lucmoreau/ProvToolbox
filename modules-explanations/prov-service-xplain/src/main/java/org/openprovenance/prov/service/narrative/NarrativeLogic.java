@@ -29,7 +29,7 @@ public class NarrativeLogic {
     final LRUHashMap<String, Document> scalaDocumentCache;
     int format_option = 1;
     public String the_template_library = PLEAD_CS_TEMPLATE_LIBRARY_JSON;
-    static final Logger logger = LogManager.getLogger(NarrativeService.class);
+    static final Logger logger = LogManager.getLogger(NarrativeLogic.class);
     ProvFactory pFactoryS = ProvFactory.pf();
     final List<Variant> narrativeVariants;
     ObjectMapper mapper = TypePropagator.om();

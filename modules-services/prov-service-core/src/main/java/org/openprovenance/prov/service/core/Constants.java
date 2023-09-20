@@ -21,6 +21,6 @@ public interface Constants {
     String SUMMARISATION = "summarisation";
 
 
-    String GITHUB_CLIENT_SECRET = "github.client.secret";
-    String GITHUB_CLIENT_ID = "github.client.id";
+    String GITHUB_CLIENT_SECRET = "GITHUB_CLIENT_SECRET";
+    String GITHUB_CLIENT_ID = "GITHUB_CLIENT_ID";
 }

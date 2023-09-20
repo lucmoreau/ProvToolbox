@@ -779,13 +779,25 @@ public class ServiceUtils {
         }
     }
 
-    static public Map<String,String> loadConfigFromEnvironment(Map<String,String> defaultConfiguration) {
+    static public Map<String,String> loadConfigFromSystem(Map<String,String> defaultConfiguration) {
         Map<String,String> config=new HashMap<>();
         for (String variable: defaultConfiguration.keySet()) {
             String value=System.getProperty(variable,null);
             if (value!=null) {
                 config.put(variable,value);
                 logger.info("Configuration: system properties --- " + variable + " " + value);
+            }
+        }
+        return config;
+    }
+
+    static public Map<String,String> loadConfigFromEnvironment(Map<String,String> defaultConfiguration) {
+        Map<String,String> config=new HashMap<>();
+        for (String variable: defaultConfiguration.keySet()) {
+            String value=System.getenv(variable);
+            if (value!=null) {
+                config.put(variable,value);
+                logger.info("Configuration: environment --- " + variable + " " + value);
             }
         }
         return config;

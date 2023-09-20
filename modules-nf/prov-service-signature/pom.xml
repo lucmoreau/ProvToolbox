@@ -9,7 +9,7 @@
     </parent>
 
     <name>|---- PROV-SERVICE-SIGN</name>
-    <artifactId>prov-service-sign</artifactId>
+    <artifactId>prov-service-signature</artifactId>
 
 
     <dependencies>

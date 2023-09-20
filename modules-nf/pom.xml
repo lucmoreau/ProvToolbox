@@ -13,7 +13,7 @@
     <modules>
         <module>prov-nf</module>
         <module>prov-signature</module>
-        <module>prov-service-sign</module>
+        <module>prov-service-signature</module>
     </modules>
 
 

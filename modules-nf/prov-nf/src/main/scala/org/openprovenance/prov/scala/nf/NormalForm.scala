@@ -1249,7 +1249,7 @@ trait Serial[TYPE <: org.openprovenance.prov.scala.immutable.Statement] {
   def addToFirst(ll: List[TYPE], attr: Set[Attribute]): List[TYPE] = {
     ll match {
       case (first :: rest) => addAttributes(first, attr) :: rest
-      case _ => throw new IllegalStateExceptio
+      case _ => throw new IllegalStateException
     }
   }
 

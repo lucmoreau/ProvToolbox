@@ -9,20 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/META-INF/context.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/WEB-INF/tomcat-web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NlgService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NlgService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/simple.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/files/simple.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/summary.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/files/summary.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/w3c-publication1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/files/w3c-publication1.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/files/w3c-publication2.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/files/w3c-publication2.provn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -778,7 +766,7 @@
       <workItem from="1694938635656" duration="15467000" />
       <workItem from="1695023224064" duration="55000" />
       <workItem from="1695023287797" duration="30105000" />
-      <workItem from="1695190967915" duration="17049000" />
+      <workItem from="1695190967915" duration="17353000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

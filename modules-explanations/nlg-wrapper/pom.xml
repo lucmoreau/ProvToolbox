@@ -195,10 +195,9 @@
                         <configuration>
                             <target>
                                 <mkdir dir="${deployed.dictionary.folder}" />
-                                <copy file="${cached.dictionary.folder}/lexAccess2013.data.zip"   todir="${deployed.dictionary.folder}" />
                                 <copy file="${cached.dictionary.folder}/lexAccess2013.script"     todir="${deployed.dictionary.folder}" />
                                 <copy file="${cached.dictionary.folder}/lexAccess2013.properties" todir="${deployed.dictionary.folder}" />
-                                <unzip src="${deployed.dictionary.folder}/lexAccess2013.data.zip"  dest="${deployed.dictionary.folder}" />
+                                <unzip src="${cached.dictionary.folder}/lexAccess2013.data.zip"    dest="${deployed.dictionary.folder}" />
                             </target>
                         </configuration>
                         <goals>
@@ -255,11 +254,9 @@
                                 <phase>process-sources</phase>
                                 <configuration>
                                     <target>
-                                        <mkdir dir="target" />
-                                        <zip destfile="${project.build.directory}/lexAccess2013.data.zip"
+                                        <zip destfile="${cached.dictionary.folder}/lexAccess2013.data.zip"
                                              basedir="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/"
                                              includes="lexAccess2013.data"/>
-                                        <copy file="${project.build.directory}/lexAccess2013.data.zip" todir="${cached.dictionary.folder}" />
                                         <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.properties" todir="${cached.dictionary.folder}" />
                                         <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.script"     todir="${cached.dictionary.folder}" />
                                     </target>

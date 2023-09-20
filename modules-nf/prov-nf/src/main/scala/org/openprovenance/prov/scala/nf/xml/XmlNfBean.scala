@@ -1,5 +1,7 @@
 package org.openprovenance.prov.scala.nf.xml
 
+import com.fasterxml.jackson.databind.`type`.TypeFactory
+
 import java.io._
 import java.util
 import java.util.{Collections, LinkedList}
@@ -162,7 +164,7 @@ object XmlNfBean {
   }
       
   def convert(ent: Entity):org.openprovenance.prov.nf.xml.Entity  ={
-    val attr=ent.getAttributes()
+    val attr=ent.getAttributes
     val res=new org.openprovenance.prov.nf.xml.Entity
     res.id=orderUris(uriIfNotNull(ent.id))
     res.attr=createAttr(attr)  
@@ -172,7 +174,7 @@ object XmlNfBean {
   
         
   def convert(ag: Agent):org.openprovenance.prov.nf.xml.Agent  ={
-    val attr=ag.getAttributes()
+    val attr=ag.getAttributes
     val res=new org.openprovenance.prov.nf.xml.Agent
     res.id=orderUris(uriIfNotNull(ag.id))
     res.attr=createAttr(attr)  
@@ -182,7 +184,7 @@ object XmlNfBean {
   
         
   def convert(act: Activity):org.openprovenance.prov.nf.xml.Activity  ={
-    val attr=act.getAttributes()
+    val attr=act.getAttributes
     val res=new org.openprovenance.prov.nf.xml.Activity
     res.startTime=orderTimes(timeOrNull(act.startTime))
     res.endTime=orderTimes(timeOrNull(act.endTime))
@@ -193,7 +195,7 @@ object XmlNfBean {
   
   
   def convert(wdf: WasDerivedFrom):org.openprovenance.prov.nf.xml.WasDerivedFrom  ={
-    val attr=wdf.getAttributes()
+    val attr=wdf.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasDerivedFrom
     res.id=orderUris(uriIfNotNull(wdf.id))
     res.generatedEntity=orderUris(uriIfNotNull(wdf.generatedEntity))
@@ -206,7 +208,7 @@ object XmlNfBean {
   }
       
   def convert(wgb: WasGeneratedBy):org.openprovenance.prov.nf.xml.WasGeneratedBy  ={
-    val attr=wgb.getAttributes()
+    val attr=wgb.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasGeneratedBy
     res.id=orderUris(uriIfNotNull(wgb.id))
     res.entity=orderUris(uriIfNotNull(wgb.entity))
@@ -218,7 +220,7 @@ object XmlNfBean {
   
       
   def convert(wgb: WasInvalidatedBy):org.openprovenance.prov.nf.xml.WasInvalidatedBy  ={
-    val attr=wgb.getAttributes()
+    val attr=wgb.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasInvalidatedBy
     res.id=orderUris(uriIfNotNull(wgb.id))
     res.entity=orderUris(uriIfNotNull(wgb.entity))
@@ -229,7 +231,7 @@ object XmlNfBean {
   }
   
   def convert(usd: Used):org.openprovenance.prov.nf.xml.Used  ={
-    val attr=usd.getAttributes()
+    val attr=usd.getAttributes
     val res=new org.openprovenance.prov.nf.xml.Used
     res.id=orderUris(uriIfNotNull(usd.id))
     res.activity=orderUris(uriIfNotNull(usd.activity))
@@ -240,7 +242,7 @@ object XmlNfBean {
   }
   
   def convert(wsb: WasStartedBy):org.openprovenance.prov.nf.xml.WasStartedBy  ={
-    val attr=wsb.getAttributes()
+    val attr=wsb.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasStartedBy
     res.id=orderUris(uriIfNotNull(wsb.id))
     res.activity=orderUris(uriIfNotNull(wsb.activity))
@@ -252,7 +254,7 @@ object XmlNfBean {
   }
   
   def convert(wgb: WasEndedBy):org.openprovenance.prov.nf.xml.WasEndedBy  ={
-    val attr=wgb.getAttributes()
+    val attr=wgb.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasEndedBy
     res.id=orderUris(uriIfNotNull(wgb.id))
     res.activity=orderUris(uriIfNotNull(wgb.activity))
@@ -264,7 +266,7 @@ object XmlNfBean {
   }
     
   def convert(waw: WasAssociatedWith):org.openprovenance.prov.nf.xml.WasAssociatedWith  ={
-    val attr=waw.getAttributes()
+    val attr=waw.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasAssociatedWith
     res.id=orderUris(uriIfNotNull(waw.id))
     res.activity=orderUris(uriIfNotNull(waw.activity))
@@ -275,7 +277,7 @@ object XmlNfBean {
   }
   
   def convert(aob: ActedOnBehalfOf):org.openprovenance.prov.nf.xml.ActedOnBehalfOf  ={
-    val attr=aob.getAttributes()
+    val attr=aob.getAttributes
     val res=new org.openprovenance.prov.nf.xml.ActedOnBehalfOf
     res.id=orderUris(uriIfNotNull(aob.id))
     res.delegate=orderUris(uriIfNotNull(aob.delegate))
@@ -286,7 +288,7 @@ object XmlNfBean {
   }
 
   def convert(wat: WasAttributedTo):org.openprovenance.prov.nf.xml.WasAttributedTo  ={
-    val attr=wat.getAttributes()
+    val attr=wat.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasAttributedTo
     res.id=orderUris(uriIfNotNull(wat.id))
     res.entity=orderUris(uriIfNotNull(wat.entity))
@@ -296,7 +298,7 @@ object XmlNfBean {
   }
 
   def convert(wat: WasInformedBy):org.openprovenance.prov.nf.xml.WasInformedBy  ={
-    val attr=wat.getAttributes()
+    val attr=wat.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasInformedBy
     res.id=orderUris(uriIfNotNull(wat.id))
     res.informed=orderUris(uriIfNotNull(wat.informed))
@@ -306,7 +308,7 @@ object XmlNfBean {
   }
 
   def convert(winflb: WasInfluencedBy):org.openprovenance.prov.nf.xml.WasInfluencedBy  ={
-    val attr=winflb.getAttributes()
+    val attr=winflb.getAttributes
     val res=new org.openprovenance.prov.nf.xml.WasInfluencedBy
     res.id=orderUris(uriIfNotNull(winflb.id))
     res.influencee=orderUris(uriIfNotNull(winflb.influencee))
@@ -316,7 +318,7 @@ object XmlNfBean {
   }
 
   def convert(spe: SpecializationOf):org.openprovenance.prov.nf.xml.SpecializationOf  ={
-    val attr=spe.getAttributes()
+    val attr=spe.getAttributes
     val res=new org.openprovenance.prov.nf.xml.SpecializationOf
     res.id=orderUris(uriIfNotNull(spe.id))
     res.specificEntity=orderUris(uriIfNotNull(spe.specificEntity))
@@ -326,7 +328,7 @@ object XmlNfBean {
   }
   
   def convert(spe: AlternateOf):org.openprovenance.prov.nf.xml.AlternateOf  ={
-    val attr=spe.getAttributes()
+    val attr=spe.getAttributes
     val res=new org.openprovenance.prov.nf.xml.AlternateOf
     res.id=orderUris(uriIfNotNull(spe.id))
     res.alternate1=orderUris(uriIfNotNull(spe.alternate1))
@@ -336,7 +338,7 @@ object XmlNfBean {
   }
   
   def convert(spe: HadMember):org.openprovenance.prov.nf.xml.HadMember  ={
-    val attr=spe.getAttributes()
+    val attr=spe.getAttributes
     val res=new org.openprovenance.prov.nf.xml.HadMember
     res.id=orderUris(uriIfNotNull(spe.id))
     res.collection=orderUris(uriIfNotNull(spe.collection))
@@ -559,7 +561,7 @@ object XmlNfBean {
     ll2
   }
   
-  def toXMLWithStream(sw: XMLStreamWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]) = {
+  def toXMLWithStream(sw: XMLStreamWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]): Unit = {
     val beans=statements.map(toBean).toList
     val module=new JacksonXmlModule()
     // and then configure, for example:
@@ -571,7 +573,7 @@ object XmlNfBean {
     ll.iterator().asScala.foreach(xmlMapper.writeValue(sw, _))
   }
   
-  def toXMLWithStream(sw: XMLStreamWriter, doc:  org.openprovenance.prov.nf.xml.Document) = {
+  def toXMLWithStream(sw: XMLStreamWriter, doc:  org.openprovenance.prov.nf.xml.Document): Unit = {
     val module=new JacksonXmlModule()
     // and then configure, for example:
     module.setDefaultUseWrapper(false)
@@ -579,14 +581,14 @@ object XmlNfBean {
     
        
     val primary = new JacksonAnnotationIntrospector()
-    val secondary = new JakartaXmlBindAnnotationIntrospector()
+    val secondary = new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance())
     val pair = new AnnotationIntrospectorPair(primary, secondary)
 
 
     val xmlMapper = new XmlMapper(module)
 
     logger.info("sorting statements list (2)")
-    val ll=new LinkedList[org.openprovenance.prov.nf.xml.Statement]
+    val ll=new util.LinkedList[org.openprovenance.prov.nf.xml.Statement]
     ll.addAll(doc.statements)
     Collections.sort(ll)
     doc.statements=ll

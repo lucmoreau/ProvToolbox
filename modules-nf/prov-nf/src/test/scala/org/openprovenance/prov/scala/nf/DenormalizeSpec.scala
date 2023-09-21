@@ -2,7 +2,7 @@
 package org.openprovenance.prov.scala.nf
 
 import org.openprovenance.prov.model.Namespace
-import org.openprovenance.prov.scala.immutable.{MyActions, MyActions2, MyParser, QualifiedName}
+import org.openprovenance.prov.scala.immutable.{Document, MyActions, MyActions2, MyParser, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
@@ -15,7 +15,7 @@ import scala.util.{Failure, Success}
 class DenormalizeSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
-	def q(local: String) = {
+	def q(local: String): QualifiedName = {
    new QualifiedName("ex",local,EX_NS)
   }
 	
@@ -23,7 +23,7 @@ class DenormalizeSpec extends AnyFlatSpec with Matchers {
 	"Entity ent1" should "round trip" in {
     val doc=nf("src/test/resources/nf/ent1.provn")
     val doc2=roundTrip(doc)
-    println(doc2.toDocument())
+    println(doc2.toDocument)
     doc2 should be (doc)
   }
 		
@@ -126,17 +126,17 @@ class DenormalizeSpec extends AnyFlatSpec with Matchers {
   
   
   
-  def nf(f: String) = {
+  def nf(f: String): DocumentProxy = {
     val in:Input=new FileInput(new File(f))
 	  val doc=CommandLine.parseDocumentToNormalForm(in)
 	  doc
   }
   
-  def roundTrip (d: org.openprovenance.prov.scala.nf.DocumentProxy) = {
-    d.toDocument().toNormalForm(d).asInstanceOf[DocumentProxy]
+  def roundTrip (d: org.openprovenance.prov.scala.nf.DocumentProxy): DocumentProxy = {
+    d.toDocument.toNormalForm(d).asInstanceOf[DocumentProxy]
   }
 
-  def parse(f: String) = {
+  def parse(f: String): Document = {
     val in:Input=new FileInput(new File(f))
 	  val doc=CommandLine.parseDocument(in)
 	  doc
@@ -168,13 +168,10 @@ class RoundTripFromStatement extends AnyFlatSpec with Matchers {
     val p=new MyParser(s,actions2,actions)
 
       p.statement.run() match {
-        case Success(result) => { val d1=new org.openprovenance.prov.scala.immutable.Document(Set(result),ns)
-                                  //println(d1)
-                                  val nf1=d1.toNormalForm(new DocumentProxy(new Namespace())).asInstanceOf[DocumentProxy]
-                                  //println(nf1)
-                                  //println(nf1.toDocument)
-                                  nf1.toDocument().statementOrBundle.seq.head == result
-        }
+        case Success(result) =>
+          val d1=new org.openprovenance.prov.scala.immutable.Document(Set(result),ns)
+          val nf1=d1.toNormalForm(new DocumentProxy(new Namespace())).asInstanceOf[DocumentProxy]
+          nf1.toDocument.statementOrBundle.head == result
         case Failure(e: ParseError) => println("Error " + p.formatError(e)); false
         case Failure(e) =>println("Error " + e); false
       }

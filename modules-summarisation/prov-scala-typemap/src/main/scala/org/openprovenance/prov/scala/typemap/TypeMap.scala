@@ -141,7 +141,7 @@ object TypeMap {
   }
 
   def prettyPrintConciseTypeMap(ctm: Map[Int, PT], s: StringBuffer): Unit = {
-    ctm.keys.toSeq.sorted.foreach(k => s.append((k + " -> " + ctm(k) + "\n")))
+    ctm.keys.toSeq.sorted.foreach(k => s.append(k + " -> " + ctm(k) + "\n"))
   }
 
   def depthSet(ss: Set[ProvType]): Int = {

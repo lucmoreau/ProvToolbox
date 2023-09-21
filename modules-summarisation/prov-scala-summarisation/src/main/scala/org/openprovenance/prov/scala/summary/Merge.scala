@@ -24,7 +24,7 @@ object Merge {
 	 	val uniqueProvTypesQNamesVec2=uniqueProvTypesQNames2.toVector
 
 
-		val uniqueRemappedIndex2=(uniqueProvTypesQNamesVec2 zip (Stream from ind1size+11)).toMap
+		val uniqueRemappedIndex2=(uniqueProvTypesQNamesVec2 zip (LazyList from ind1size+11)).toMap
 
 	  val convertPreparation=uniqueRemappedIndex2.map{case (q,i) => (q,SummaryConstructor.typeQualifiedName(i,ind2.nsBase),i)}
 	  val newAmapForUnique=convertPreparation.map{case (q1,q2,i) => (q2,i)}.toMap

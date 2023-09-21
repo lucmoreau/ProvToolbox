@@ -1,32 +1,30 @@
 package org.openprovenance.prov.scala.nf.xml
 
 import com.fasterxml.jackson.databind.`type`.TypeFactory
-
-import java.io._
-import java.util
-import java.util.{Collections, LinkedList}
 import com.fasterxml.jackson.databind.introspect.{AnnotationIntrospectorPair, JacksonAnnotationIntrospector}
 import com.fasterxml.jackson.dataformat.xml.{JacksonXmlModule, XmlMapper}
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector
 import jakarta.xml.bind.DatatypeConverter
-
-import javax.xml.datatype.XMLGregorianCalendar
-import javax.xml.stream.{XMLInputFactory, XMLOutputFactory, XMLStreamReader, XMLStreamWriter}
-import javax.xml.transform.stax.{StAXResult, StAXSource}
-import javax.xml.transform.stream.{StreamResult, StreamSource}
-import javax.xml.transform.{Transformer, TransformerConfigurationException, TransformerFactory}
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.apache.commons.lang.StringEscapeUtils
 import org.openprovenance.prov.model
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.nf.xml
 import org.openprovenance.prov.nf.xml.Attr
-import org.openprovenance.prov.scala.immutable.Attribute.{split2, split3}
+import org.openprovenance.prov.scala.immutable.Attribute.split3
 import org.openprovenance.prov.scala.immutable.{Attribute, LangString, Location, Other, QualifiedName, Role, Type, Value}
 import org.openprovenance.prov.scala.nf._
 
-import scala.jdk.CollectionConverters._
+import java.io._
+import java.util
+import java.util.Collections
+import javax.xml.datatype.XMLGregorianCalendar
+import javax.xml.stream.{XMLInputFactory, XMLOutputFactory, XMLStreamReader, XMLStreamWriter}
+import javax.xml.transform.stax.{StAXResult, StAXSource}
+import javax.xml.transform.stream.{StreamResult, StreamSource}
+import javax.xml.transform.{TransformerConfigurationException, TransformerFactory}
 import scala.collection.immutable
+import scala.jdk.CollectionConverters._
 
 object Transformer {
   val factory: TransformerFactory = TransformerFactory.newInstance()
@@ -42,10 +40,10 @@ object Transformer {
         } catch {
           case e: TransformerConfigurationException => e.printStackTrace()
         }
-        return transformer
+        transformer
   }
   
-  val transformer: Transformer =getTransformer("removewrapper.xslt")
+  val transformer: javax.xml.transform.Transformer =getTransformer("removewrapper.xslt")
     
 }
 
@@ -64,10 +62,10 @@ object XmlNfBean {
                                              res.`type`=x.`type`.getUri()
                                              res.value= x.value match {
                                                            case qn:QualifiedName => qn.getUri()
-                                                           case d:XMLGregorianCalendar => d.toXMLFormat()
-                                                           case qn:model.QualifiedName => qn.getUri()
+                                                           case d:XMLGregorianCalendar => d.toXMLFormat
+                                                           case qn:model.QualifiedName => qn.getUri
                                                            case ls:org.openprovenance.prov.model.LangString => ls.getValue + "@" + ls.getLang
-                                                           case o => StringEscapeUtils.escapeXml(o.toString())  }
+                                                           case o => StringEscapeUtils.escapeXml(o.toString)  }
                                              res }).toList
     sortAttributes(l)
   }
@@ -133,10 +131,10 @@ object XmlNfBean {
     if (q==null) Seq[T]() else q
   } 
 
-  def uriIfNotNull(q: QualifiedName) = {
+  def uriIfNotNull(q: QualifiedName): String = {
     if (q==null) null else q.getUri()
   }
-   def uriIfNotNull(q: Set[QualifiedName]) = {
+   def uriIfNotNull(q: Set[QualifiedName]): Set[String] = {
     if (q==null) Set[String]() else q.map(_.getUri())
   } 
    
@@ -147,7 +145,7 @@ object XmlNfBean {
   }
   def timeOrNull(time: Option[XMLGregorianCalendar]): String = {
     time match { 
-      case Some(t) => t.toXMLFormat() 
+      case Some(t) => t.toXMLFormat
       case None => null }
   }
   
@@ -349,24 +347,22 @@ object XmlNfBean {
   
   
   /////////////
-  import org.openprovenance.prov.scala.immutable.Attribute.split
   import org.openprovenance.prov.scala.immutable.ProvFactory.pf
 
   
   var count=0
   
-  def q(uri: String,ns: Namespace) = {
+  def q(uri: String,ns: Namespace): QualifiedName = {
     val map=ns.getPrefixes.asScala
     val x=map.map{case (p,u) => if (uri.startsWith(u)) Some(p,u,uri.substring(u.length())) else None}.flatten
     x.headOption match {
       case Some((p,u,local)) => new QualifiedName(p,local,u)
-      case None => {
-    	  val mycount=count
-    			  count=count+1
-    			  val pre="_pre"+count
-    			  ns.register(pre, uri)
-    			  new QualifiedName(pre,"",uri)
-      }
+      case None =>
+        val mycount=count
+        count=count+1
+        val pre="_pre"+count
+        ns.register(pre, uri)
+        new QualifiedName(pre,"",uri)
     }
   }
 
@@ -610,7 +606,7 @@ object XmlNfBean {
 	  out.toString()
   }
   
-  def toXMLStringWriter(out: StringWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxy, id: String) {
+  def toXMLStringWriter(out: StringWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxy, id: String): Unit = {
     val xmlOutputFactory = XMLOutputFactory.newFactory()
     val sw = xmlOutputFactory.createXMLStreamWriter(out)
     toXMLWithRoot(sw,doc, id)
@@ -618,7 +614,7 @@ object XmlNfBean {
   
   
    
-  def toXMLWithRoot(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxy, id: String) {
+  def toXMLWithRoot(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxy, id: String): Unit = {
     sw.writeStartDocument()
     sw.writeStartElement(ROOT_TAG)
     sw.writeStartElement(DOCUMENT_TAG)
@@ -630,7 +626,7 @@ object XmlNfBean {
   }
   
   
-  def toXMLFile(out: String, doc: org.openprovenance.prov.scala.nf.DocumentProxy, id: String) {
+  def toXMLFile(out: String, doc: org.openprovenance.prov.scala.nf.DocumentProxy, id: String): Unit = {
         
     val fos=new FileOutputStream(out)
         
@@ -643,7 +639,7 @@ object XmlNfBean {
     
   }
   
-  def toXMLOutputStream(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String) {
+  def toXMLOutputStream(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String): Unit = {
                 
     val xmlOutputFactory = XMLOutputFactory.newFactory()
     val sw = xmlOutputFactory.createXMLStreamWriter(System.out)
@@ -654,7 +650,7 @@ object XmlNfBean {
   }
 
     
-  def toXMLFile(out: String, doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String) {
+  def toXMLFile(out: String, doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String): Unit = {
         
     val fos=new FileOutputStream(out)
         
@@ -666,27 +662,27 @@ object XmlNfBean {
     
   }
     
-  def toXML(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.ProxyWithStatements, id: String) {  // why with nf.Document and below with nf.Document2
+  def toXML(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.ProxyWithStatements, id: String): Unit = {  // why with nf.Document and below with nf.Document2
 	  sw.writeStartDocument()
 	  if (id!=null) sw.writeAttribute(ID_TAG, id)
 	  
-	  serializeIntoReadyStream(sw,doc,true)
+	  serializeIntoReadyStream(sw,doc,prefixes = true)
   
     sw.writeEndDocument()
   }
   
-  def toXMLOutputStream(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, out:java.io.OutputStream, id: String) {
-    documentProxySerialiser(out,doc,true,id,true,wrapInDocument)
+  def toXMLOutputStream(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, out:java.io.OutputStream, id: String): Unit = {
+    documentProxySerialiser(out,doc,prefixes = true,id,flatten = true,wrapInDocument)
   }
-  def toXMLOutputStreamForSignature(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, out:java.io.OutputStream, id: String) {
-    documentProxySerialiser(out,doc,false,id,true,wrapInDocumentForSignature) // note prefixes not include in serialization
+  def toXMLOutputStreamForSignature(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, out:java.io.OutputStream, id: String): Unit = {
+    documentProxySerialiser(out,doc,prefixes = false,id,flatten = true,wrapInDocumentForSignature) // note prefixes not include in serialization
   }  
   def documentProxySerialiser(out: java.io.OutputStream, 
                               nfDoc: org.openprovenance.prov.scala.nf.ProxyWithStatements,  
                               prefixes: Boolean, 
                               id: String,
                               flatten: Boolean=true,
-                              toXMLWithStream: ((XMLStreamWriter,org.openprovenance.prov.scala.nf.ProxyWithStatements,Boolean, String) => Unit) ){
+                              toXMLWithStream: (XMLStreamWriter,org.openprovenance.prov.scala.nf.ProxyWithStatements,Boolean, String) => Unit ): Unit = {
     if (flatten) {
     	val (pipe_in,pipe_out)=pipe()
       val sw_out = Transformer.xmlOutputFactory.createXMLStreamWriter(pipe_out)
@@ -694,7 +690,7 @@ object XmlNfBean {
       val stream_out=new StreamResult(out)    
       var sourceException:Option[Throwable]=None
       val thread = new Thread {
-    	  override def run() {
+    	  override def run(): Unit = {
     		  try {
     			  System.err.println("documentProxySerialiser.Thread: start")
     			  toXMLWithStream(sw_out,nfDoc,prefixes,id)
@@ -740,7 +736,7 @@ object XmlNfBean {
   
   
   
-  def wrapInDocument(sw: XMLStreamWriter, doc:  org.openprovenance.prov.scala.nf.ProxyWithStatements, prefixes: Boolean, id: String) = {
+  private def wrapInDocument(sw: XMLStreamWriter, doc:  org.openprovenance.prov.scala.nf.ProxyWithStatements, prefixes: Boolean, id: String) = {
   	  sw.writeStartDocument()
   	  sw.writeStartElement(DOCUMENT_TAG)
   	  if (id!=null) sw.writeAttribute(ID_TAG, id)
@@ -749,7 +745,7 @@ object XmlNfBean {
   	  sw.writeEndDocument()
   }
   
-  def wrapInDocumentForSignature(sw: XMLStreamWriter, doc:  org.openprovenance.prov.scala.nf.ProxyWithStatements, prefixes: Boolean, id: String) = {
+  private def wrapInDocumentForSignature(sw: XMLStreamWriter, doc:  org.openprovenance.prov.scala.nf.ProxyWithStatements, prefixes: Boolean, id: String) = {
   	  sw.writeStartDocument()
   	  sw.writeStartElement(ROOT_TAG)
   	  sw.writeStartElement(DOCUMENT_TAG)
@@ -760,7 +756,7 @@ object XmlNfBean {
       sw.writeEndDocument()
   }
   
-  def serializeIntoReadyStream(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.ProxyWithStatements,  prefixes: Boolean) {
+  def serializeIntoReadyStream(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.ProxyWithStatements,  prefixes: Boolean): Unit = {
     val nfDoc=new org.openprovenance.prov.nf.xml.Document()    
     val statements=doc.getStatements // TODO: what about bundles
     val beanList: Set[xml.Statement] =statements.map(toBean)
@@ -777,16 +773,16 @@ object XmlNfBean {
   } 
 
  
-  def toXML(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String) {
+  def toXML(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String): Unit = {
     sw.writeStartDocument()
-    serializeIntoReadyStream(sw,doc,true) // note: prefixes include
+    serializeIntoReadyStream(sw,doc,prefixes = true) // note: prefixes include
     sw.writeEndDocument()
   }
   
-  def serializeToPipe (d: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String) = {
+  def serializeToPipe (d: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String): PipedInputStream = {
 	  val (in,out)=pipe()
     val thread = new Thread {
-        override def run {
+        override def run(): Unit = {
             println("serializeToPipe: in thread")
             toXMLOutputStreamForSignature(d,out,id)
             println("serializeToPipe: finished thread")
@@ -800,13 +796,13 @@ object XmlNfBean {
 
     
 
-  def toXML2(out: StringWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]) {
+  def toXML2(out: StringWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]): Unit = {
     val xmlOutputFactory = XMLOutputFactory.newFactory()
     val sw = xmlOutputFactory.createXMLStreamWriter(out)
     toXML(sw,statements)
   }
   
-  def toXML(sw: XMLStreamWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]) {
+  def toXML(sw: XMLStreamWriter, statements: Set[org.openprovenance.prov.scala.nf.Statement]): Unit = {
     println("toXML (1)")
     sw.writeStartDocument()
     println("toXML (2)")
@@ -841,7 +837,7 @@ object XmlNfBean {
     module.setDefaultUseWrapper(false)
     
     val primary = new JacksonAnnotationIntrospector()
-    val secondary =  new JakartaXmlBindAnnotationIntrospector()
+    val secondary =  new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance)
     val pair = new AnnotationIntrospectorPair(primary, secondary)
 
 
@@ -864,7 +860,7 @@ object XmlNfBean {
   }
   
   def compose(xmlStreamReader: XMLStreamReader,
-              xmlStreamWriter: XMLStreamWriter) = {
+              xmlStreamWriter: XMLStreamWriter): Unit = {
     val tf = TransformerFactory.newInstance()
     val t:javax.xml.transform.Transformer = tf.newTransformer()
     val source = new StAXSource(xmlStreamReader)
@@ -877,7 +873,7 @@ object XmlNfBean {
   //////////////  TODELETE
 
     
-  def toXMLOutputStream_DELETE(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, out:java.io.OutputStream, id: String) {
+  def toXMLOutputStream_DELETE(doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, out:java.io.OutputStream, id: String): Unit = {
                 
     val xmlOutputFactory = XMLOutputFactory.newFactory()
     val sw = xmlOutputFactory.createXMLStreamWriter(out)
@@ -889,13 +885,13 @@ object XmlNfBean {
 
 
 
-  def toXMLForSignature_DELETE(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String) {
+  def toXMLForSignature_DELETE(sw: XMLStreamWriter, doc: org.openprovenance.prov.scala.nf.DocumentProxyFromStatements, id: String): Unit = {
     sw.writeStartDocument()
     sw.writeStartElement(ROOT_TAG)
     sw.writeStartElement(DOCUMENT_TAG)
     if (id!=null) sw.writeAttribute(ID_TAG, id)
     
-    serializeIntoReadyStream(sw,doc,false) // note no prefix
+    serializeIntoReadyStream(sw,doc,prefixes = false) // note no prefix
 
     sw.writeEndElement()
     sw.writeEndElement()

@@ -8,6 +8,7 @@ import org.scalatest.matchers.should.Matchers
 
 import java.io.{File, PrintWriter}
 import scala.annotation.unused
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class Canonical2Spec extends AnyFlatSpec with Matchers {
@@ -66,12 +67,12 @@ class Canonical2Spec extends AnyFlatSpec with Matchers {
   
   def plotFile(name:String, times: ArrayBuffer[(String,Long,Long, Long)]): Unit = {
 
-    val read_times=times.filter{case (s,_,_,_) => s=="read"}.map(x=>x._4).takeRight(200)
-    val norm_times=times.filter{case (s,_,_,_) => s=="normalize"}.map(x=>x._4/normalize_count).takeRight(200)
-    val seri_times=times.filter{case (s,_,_,_) => s=="serializeToFile"}.map(x=>x._4).takeRight(200)
-    val sign_times=times.filter{case (s,_,_,_) => s=="serializeToSign"}.map(x=>x._4).takeRight(200)
-    val veri_times=times.filter{case (s,_,_,_) => s=="verifySignature"}.map(x=>x._4).takeRight(200)
-    val noth_times=times.filter{case (s,_,_,_) => s=="serializeToNothing"}.map(x=>x._4).takeRight(200)
+    val read_times: mutable.Seq[Long] =times.filter{case (s,_,_,_) => s=="read"}.map(x=>x._4).takeRight(200)
+    val norm_times: mutable.Seq[Long] =times.filter{case (s,_,_,_) => s=="normalize"}.map(x=>x._4/normalize_count).takeRight(200)
+    val seri_times: mutable.Seq[Long] =times.filter{case (s,_,_,_) => s=="serializeToFile"}.map(x=>x._4).takeRight(200)
+    val sign_times: mutable.Seq[Long] =times.filter{case (s,_,_,_) => s=="serializeToSign"}.map(x=>x._4).takeRight(200)
+    val veri_times: mutable.Seq[Long] =times.filter{case (s,_,_,_) => s=="verifySignature"}.map(x=>x._4).takeRight(200)
+    val noth_times: mutable.Seq[Long] =times.filter{case (s,_,_,_) => s=="serializeToNothing"}.map(x=>x._4).takeRight(200)
     
     
     println(read_times)

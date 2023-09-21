@@ -1,13 +1,16 @@
 package org.openprovenance.prov.scala.nf
 
+import scala.annotation.tailrec
+
 object TransitiveClosure {
     //one transitive step
-	def addTransitive[A](s: Set[(A,A)]) = {
+	def addTransitive[A](s: Set[(A,A)]): Set[(A, A)] = {
 		s ++ (for ((x1, y1) <- s; (x2, y2) <- s if y1 == x2) yield (x1, y2))
   }
 
   //	repeat until we don't get a bigger set
-	def transitiveClosure[A <: Ordered[A]](s:Set[(A,A)]):Set[(A,A)] = {
+  @tailrec
+  def transitiveClosure[A <: Ordered[A]](s:Set[(A,A)]):Set[(A,A)] = {
 		val t = addTransitive(s)
 		if (t.size == s.size) s else transitiveClosure(t)
   }
@@ -21,7 +24,7 @@ class TransitiveClosure[A <: Ordered[A]] {
   var computed=false
   var symmetric=true;
 
-  def add2(x1:A,x2:A) {
+  def add2(x1:A,x2:A): Unit = {
     if (symmetric) {
       set += ((x2, x1))
     }
@@ -29,8 +32,8 @@ class TransitiveClosure[A <: Ordered[A]] {
     computed=false
   }
   
-  def add2(ss: Set[A]) {
-    if (!ss.isEmpty) {
+  def add2(ss: Set[A]): Unit = {
+    if (ss.nonEmpty) {
     	ss match {
     	  case SetExtractor(x, xs @ _*) => {
     		  xs match {
@@ -44,7 +47,7 @@ class TransitiveClosure[A <: Ordered[A]] {
 
   var closure:Set[(A,A)]=Set()
   
-  def transitiveClosure() = {
+  def transitiveClosure(): Set[(A, A)] = {
     if (!computed) {
       closure=TransitiveClosure.transitiveClosure(set)
       computed=true

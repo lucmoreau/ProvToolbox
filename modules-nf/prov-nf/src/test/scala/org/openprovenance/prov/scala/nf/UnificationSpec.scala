@@ -14,7 +14,7 @@ import java.io.File
 class UnificationSpec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
-	def q(local: String) = {
+	def q(local: String): QualifiedName = {
    new QualifiedName("ex",local,EX_NS)
   }
 
@@ -60,8 +60,8 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
   }
 
   
-  def nf(f: String) = {
-    val in:Input=new FileInput(new File(f))
+  def nf(f: String): DocumentProxy = {
+    val in:Input=FileInput(new File(f))
 	  val doc=CommandLine.parseDocumentToNormalForm(in)
 	  doc
   }
@@ -71,7 +71,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
   "Entity ent1" should "src/test/resources/unify" in {
     val doc=nf("src/test/resources/unify/ent1.provn")
     val u=doc.unify()
-    val d=u.toDocument()
+    val d=u.toDocument
 
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
@@ -86,7 +86,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
   "Activity act1" should "src/test/resources/unify" in {
     val doc=nf("src/test/resources/unify/act1.provn")
     val u=doc.unify()
-    val d=u.toDocument()
+    val d=u.toDocument
     
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
@@ -100,7 +100,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
   "Activity act2" should "src/test/resources/unify" in {
     val doc=nf("src/test/resources/unify/act2.provn")
     val u=doc.unify()
-    val d=u.toDocument()
+    val d=u.toDocument
     
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
@@ -116,7 +116,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
   "Entity ent10" should "src/test/resources/unify" in {
     val doc=nf("src/test/resources/unify/ent10.provn")
     val u=doc.unify()
-    val d=u.toDocument()
+    val d=u.toDocument
 
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
@@ -132,7 +132,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
   "Entity ent10b" should "unify" in {
     val doc=nf("src/test/resources/unify/ent10b.provn")
     val u=doc.unify()
-    val d=u.toDocument()
+    val d=u.toDocument
 
     u.indexer.entity.size should be (2)
     u.indexer.activity.size should be (0)
@@ -149,7 +149,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
     "Activity act20b" should "src/test/resources/unify" in {
     val doc=nf("src/test/resources/unify/act20b.provn")
     val u=doc.unify()
-    val d=u.toDocument()
+    val d=u.toDocument
 
     u.indexer.entity.size should be (0)
     u.indexer.activity.size should be (2)
@@ -172,7 +172,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
     val sol=nf("src/test/resources/unify/" + name + "-sol.provn")
     
     if (test1) {
-      doc1 should not be (sol)
+      doc1 should not be sol
       }
 
     doc2 should be (sol)
@@ -246,7 +246,7 @@ class UnificationSpec extends AnyFlatSpec with Matchers {
 */
       
   "File unify-wdf0" should "unify with key constraints" in {
-     checkfile("unify-wdf0", false)
+     checkfile("unify-wdf0", test1 = false)
    }
 
   

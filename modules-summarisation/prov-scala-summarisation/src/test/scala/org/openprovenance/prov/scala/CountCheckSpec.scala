@@ -27,7 +27,7 @@ class CountCheckSpec extends AnyFlatSpec with Matchers {
   def doCheckDocument (s: String, doc: Document): Boolean = {
       val p=new MyParser(s,null)
       p.document.run() match {
-        case Success(result) => p.getNext().asInstanceOf[DocBuilder].document==doc
+        case Success(result) => p.getNext().asInstanceOf[DocBuilder].document()==doc
         case Failure(_: ParseError) => false
         case Failure(_) =>false
       }
@@ -67,7 +67,7 @@ class CountCheckSpec extends AnyFlatSpec with Matchers {
 
     val p=new MyParser(d,actions2,actions)
     val doc =p.document.run() match {
-          case Success(result) => db.document
+          case Success(result) => db.document()
           case _ => ???
     }
     val ind=new Indexer(doc)

@@ -56,9 +56,9 @@ trait HasOther {
 trait HasValue {
   val value: Set[Value]
 
-  def getValue() = value
+  def getValue(): Set[Value] = value
 
-  def setValue(x: org.openprovenance.prov.model.Value) {
+  def setValue(x: org.openprovenance.prov.model.Value): Unit = {
     throw new UnsupportedOperationException
   }
 }
@@ -1301,7 +1301,7 @@ class Entity(val id: Set[QualifiedName],
              val location: Set[Location],
              val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[Entity] with ImmutableEntity with Serial[org.openprovenance.prov.scala.immutable.Entity] {
 
-  def this(ent: org.openprovenance.prov.scala.immutable.Entity) {
+  def this(ent: org.openprovenance.prov.scala.immutable.Entity) = {
     this(Set(ent.id), ent.label, ent.typex, Set(ent.value).flatten, ent.location, ent.other)
   }
 
@@ -1333,7 +1333,7 @@ class Agent(val id: Set[QualifiedName],
             val location: Set[Location],
             val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[Agent] with ImmutableAgent with Serial[org.openprovenance.prov.scala.immutable.Agent] {
 
-  def this(ag: org.openprovenance.prov.scala.immutable.Agent) {
+  def this(ag: org.openprovenance.prov.scala.immutable.Agent) = {
     this(Set(ag.id), ag.label, ag.typex, Set(ag.value).flatten, ag.location, ag.other)
   }
 
@@ -1369,7 +1369,7 @@ class Activity(val id: Set[QualifiedName],
   val kind = PROV_ACTIVITY
   val enumType: Kind.Value = Kind.act
 
-  def this(act: org.openprovenance.prov.scala.immutable.Activity) {
+  def this(act: org.openprovenance.prov.scala.immutable.Activity) = {
     this(Set(act.id), Set(act.startTime).flatten, Set(act.endTime).flatten, act.label, act.typex, act.location, act.other)
   }
 
@@ -1400,7 +1400,7 @@ class WasDerivedFrom(val id: Set[QualifiedName],
                      val typex: Set[Type],
                      val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasDerivedFrom] with ImmutableWasDerivedFrom with Serial[org.openprovenance.prov.scala.immutable.WasDerivedFrom] {
 
-  def this(wdf: org.openprovenance.prov.scala.immutable.WasDerivedFrom) {
+  def this(wdf: org.openprovenance.prov.scala.immutable.WasDerivedFrom) = {
     this(nullOption(wdf.id), Set(wdf.generatedEntity), Set(wdf.usedEntity), nullOption(wdf.activity), nullOption(wdf.generation), nullOption(wdf.usage), wdf.label, wdf.typex, wdf.other)
   }
 
@@ -1430,11 +1430,11 @@ class WasGeneratedBy(val id: Set[QualifiedName],
                      val role: Set[Role],
                      val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasGeneratedBy] with ImmutableWasGeneratedBy with Serial[org.openprovenance.prov.scala.immutable.WasGeneratedBy] {
 
-  def this() {
+  def this() = {
     this(Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Map())
   }
 
-  def this(wgb: org.openprovenance.prov.scala.immutable.WasGeneratedBy) {
+  def this(wgb: org.openprovenance.prov.scala.immutable.WasGeneratedBy) = {
     this(nullOption(wgb.id), Set(wgb.entity), nullOption(wgb.activity), Set(wgb.time).flatten, wgb.label, wgb.typex, wgb.location, wgb.role, wgb.other)
   }
 
@@ -1463,11 +1463,11 @@ class Used(val id: Set[QualifiedName],
            val role: Set[Role],
            val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[Used] with ImmutableUsed with Serial[org.openprovenance.prov.scala.immutable.Used] {
 
-  def this() {
+  def this() = {
     this(Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Map())
   }
 
-  def this(usd: org.openprovenance.prov.scala.immutable.Used) {
+  def this(usd: org.openprovenance.prov.scala.immutable.Used) = {
     this(nullOption(usd.id), Set(usd.activity), nullOption(usd.entity), Set(usd.time).flatten, usd.label, usd.typex, usd.location, usd.role, usd.other)
   }
 
@@ -1496,11 +1496,11 @@ class WasInvalidatedBy(val id: Set[QualifiedName],
                        val role: Set[Role],
                        val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasInvalidatedBy] with ImmutableWasInvalidatedBy with Serial[org.openprovenance.prov.scala.immutable.WasInvalidatedBy] {
 
-  def this() {
+  def this() = {
     this(Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Map())
   }
 
-  def this(wib: org.openprovenance.prov.scala.immutable.WasInvalidatedBy) {
+  def this(wib: org.openprovenance.prov.scala.immutable.WasInvalidatedBy) = {
     this(nullOption(wib.id), Set(wib.entity), nullOption(wib.activity), Set(wib.time).flatten, wib.label, wib.typex, wib.location, wib.role, wib.other)
   }
 
@@ -1531,11 +1531,11 @@ class WasStartedBy(val id: Set[QualifiedName],
                    val role: Set[Role],
                    val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasStartedBy] with ImmutableWasStartedBy with Serial[org.openprovenance.prov.scala.immutable.WasStartedBy] {
 
-  def this() {
+  def this() = {
     this(Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Map())
   }
 
-  def this(wsb: org.openprovenance.prov.scala.immutable.WasStartedBy) {
+  def this(wsb: org.openprovenance.prov.scala.immutable.WasStartedBy) = {
     this(nullOption(wsb.id), Set(wsb.activity), nullOption(wsb.trigger), nullOption(wsb.starter), Set(wsb.time).flatten, wsb.label, wsb.typex, wsb.location, wsb.role, wsb.other)
   }
 
@@ -1566,11 +1566,11 @@ class WasEndedBy(val id: Set[QualifiedName],
                  val role: Set[Role],
                  val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasEndedBy] with ImmutableWasEndedBy with Serial[org.openprovenance.prov.scala.immutable.WasEndedBy] {
 
-  def this() {
+  def this() = {
     this(Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Set(), Map())
   }
 
-  def this(web: org.openprovenance.prov.scala.immutable.WasEndedBy) {
+  def this(web: org.openprovenance.prov.scala.immutable.WasEndedBy) = {
     this(nullOption(web.id), Set(web.activity), nullOption(web.trigger), nullOption(web.ender), Set(web.time).flatten, web.label, web.typex, web.location, web.role, web.other)
   }
 
@@ -1598,7 +1598,7 @@ class ActedOnBehalfOf(val id: Set[QualifiedName],
                       val typex: Set[Type],
                       val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[ActedOnBehalfOf] with ImmutableActedOnBehalfOf with Serial[org.openprovenance.prov.scala.immutable.ActedOnBehalfOf] {
 
-  def this(aobo: org.openprovenance.prov.scala.immutable.ActedOnBehalfOf) {
+  def this(aobo: org.openprovenance.prov.scala.immutable.ActedOnBehalfOf) = {
     this(nullOption(aobo.id), Set(aobo.delegate), Set(aobo.responsible), nullOption(aobo.activity), aobo.label, aobo.typex, aobo.other)
   }
 
@@ -1626,7 +1626,7 @@ class WasAssociatedWith(val id: Set[QualifiedName],
                         val role: Set[Role],
                         val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasAssociatedWith] with ImmutableWasAssociatedWith with Serial[org.openprovenance.prov.scala.immutable.WasAssociatedWith] {
 
-  def this(waw: org.openprovenance.prov.scala.immutable.WasAssociatedWith) {
+  def this(waw: org.openprovenance.prov.scala.immutable.WasAssociatedWith) = {
     this(nullOption(waw.id), Set(waw.activity), nullOption(waw.agent), nullOption(waw.plan), waw.label, waw.typex, waw.role, waw.other)
   }
 
@@ -1652,7 +1652,7 @@ class WasAttributedTo(val id: Set[QualifiedName],
                       val typex: Set[Type],
                       val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasAttributedTo] with ImmutableWasAttributedTo with Serial[org.openprovenance.prov.scala.immutable.WasAttributedTo] {
 
-  def this(wat: org.openprovenance.prov.scala.immutable.WasAttributedTo) {
+  def this(wat: org.openprovenance.prov.scala.immutable.WasAttributedTo) = {
     this(nullOption(wat.id), Set(wat.entity), Set(wat.agent), wat.label, wat.typex, wat.other)
   }
 
@@ -1678,7 +1678,7 @@ class SpecializationOf(val id: Set[QualifiedName],
                        val typex: Set[Type],
                        val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[SpecializationOf] with ImmutableSpecializationOf with Serial[org.openprovenance.prov.scala.immutable.SpecializationOf] {
 
-  def this(spec: org.openprovenance.prov.scala.immutable.SpecializationOf) {
+  def this(spec: org.openprovenance.prov.scala.immutable.SpecializationOf) = {
     this(nullOption(spec.id), Set(spec.specificEntity), Set(spec.generalEntity), spec.label, spec.typex, spec.other)
   }
 
@@ -1705,7 +1705,7 @@ class AlternateOf(val id: Set[QualifiedName],
                   val typex: Set[Type],
                   val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[AlternateOf] with ImmutableAlternateOf with Serial[org.openprovenance.prov.scala.immutable.AlternateOf] {
 
-  def this(alt: org.openprovenance.prov.scala.immutable.AlternateOf) {
+  def this(alt: org.openprovenance.prov.scala.immutable.AlternateOf) = {
     this(nullOption(alt.id), Set(alt.alternate1), Set(alt.alternate2), alt.label, alt.typex, alt.other)
   }
 
@@ -1732,7 +1732,7 @@ class WasInformedBy(val id: Set[QualifiedName],
                     val typex: Set[Type],
                     val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasInformedBy] with ImmutableWasInformedBy with Serial[org.openprovenance.prov.scala.immutable.WasInformedBy] {
 
-  def this(winfb: org.openprovenance.prov.scala.immutable.WasInformedBy) {
+  def this(winfb: org.openprovenance.prov.scala.immutable.WasInformedBy) = {
     this(nullOption(winfb.id), Set(winfb.informed), Set(winfb.informant), winfb.label, winfb.typex, winfb.other)
   }
 
@@ -1758,7 +1758,7 @@ class WasInfluencedBy(val id: Set[QualifiedName],
                       val typex: Set[Type],
                       val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[WasInfluencedBy] with ImmutableWasInfluencedBy with Serial[org.openprovenance.prov.scala.immutable.WasInfluencedBy] {
 
-  def this(winflb: org.openprovenance.prov.scala.immutable.WasInfluencedBy) {
+  def this(winflb: org.openprovenance.prov.scala.immutable.WasInfluencedBy) = {
     this(nullOption(winflb.id), Set(winflb.influencee), Set(winflb.influencer), winflb.label, winflb.typex, winflb.other)
   }
 
@@ -1785,7 +1785,7 @@ class HadMember(val id: Set[QualifiedName],
                 val typex: Set[Type],
                 val other: Map[QualifiedName, Set[Other]]) extends Statement with Mergeable[HadMember] with ImmutableHadMember with Serial[org.openprovenance.prov.scala.immutable.HadMember] {
 
-  def this(mem: org.openprovenance.prov.scala.immutable.HadMember) {
+  def this(mem: org.openprovenance.prov.scala.immutable.HadMember) = {
     this(nullOption(mem.id), Set(mem.collection), mem.entity, mem.label, mem.typex, mem.other)
   }
 
@@ -1868,7 +1868,7 @@ class Bundle(val id: Set[QualifiedName],
     var first = true
 
     b append start
-    for (x <- set) {
+    set.iterator.foreach (x => {
       if (first) {
         x.toNotation(b)
         first = false
@@ -1876,7 +1876,7 @@ class Bundle(val id: Set[QualifiedName],
         b append sep
         x.toNotation(b)
       }
-    }
+    })
     b append end
     b
   }
@@ -2115,7 +2115,7 @@ object Normalizer {
   }
 
   def fusionBundles(bs: Set[Bundle]): Set[Bundle] = {
-    val bs2=bs.groupBy { b => b.id}.mapValues{ ll => ll.reduce{(b1,b2)=>mergeBundles(b1,b2)}}.values.toSet
+    val bs2: Set[Bundle] =bs.groupBy { b => b.id}.view.mapValues{ ll => ll.reduce{ (b1, b2)=>mergeBundles(b1,b2)}}.values.toSet
     bs2.map(fusion)
   }
 
@@ -2247,160 +2247,160 @@ class StatementIndexer(
   def addString[T <: Statement](b: StringBuilder, set: IterableOnce[T], start: String, sep: String, end: String): StringBuilder = {
     var first = true
 
-    b append start
-    for (x <- set) {
+    b.append(start)
+    set.iterator.foreach (x => {
       if (first) {
         x.toNotation(b)
         first = false
       } else {
-        b append sep
+        b.append(sep)
         x.toNotation(b)
       }
-    }
-    b append end
+    })
+    b.append(end)
     b
   }
 
-  def this() {
+  def this() = {
     this(Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map(), Map())
   }
-  def this(si: StatementIndexer, e: org.openprovenance.prov.scala.immutable.Entity) {
+  def this(si: StatementIndexer, e: org.openprovenance.prov.scala.immutable.Entity) = {
     this(add(si.entity, e), si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.Activity) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.Activity) = {
     this(si.entity, add(si.activity, a), si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.Agent) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.Agent) = {
     this(si.entity, si.activity, add(si.agent, a), si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasDerivedFrom) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasDerivedFrom) = {
     this(si.entity, si.activity, si.agent, add(si.wasDerivedFrom, a), si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasGeneratedBy) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasGeneratedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, add(si.wasGeneratedBy, a), si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.Used) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.Used) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, add(si.used, a), si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasInvalidatedBy) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasInvalidatedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, add(si.wasInvalidatedBy, a), si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasStartedBy) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasStartedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, add(si.wasStartedBy, a), si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasEndedBy) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasEndedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, add(si.wasEndedBy, a), si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.ActedOnBehalfOf) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.ActedOnBehalfOf) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, add(si.actedOnBehalfOf, a), si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasAssociatedWith) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasAssociatedWith) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, add(si.wasAssociatedWith, a), si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasAttributedTo) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasAttributedTo) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, add(si.wasAttributedTo, a), si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasInfluencedBy) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasInfluencedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, add(si.wasInfluencedBy, a), si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasInformedBy) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.WasInformedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, add(si.wasInformedBy, a), si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.SpecializationOf) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.SpecializationOf) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, add(si.specializationOf, a), si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.AlternateOf) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.AlternateOf) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, add(si.alternateOf, a), si.hadMember)
   }
 
-  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.HadMember) {
+  def this(si: StatementIndexer, a: org.openprovenance.prov.scala.immutable.HadMember) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, add(si.hadMember, a))
   }
 
-  def this(si: StatementIndexer, id: QualifiedName, e: Entity) {
+  def this(si: StatementIndexer, id: QualifiedName, e: Entity) = {
     this(extend(si.entity, id, e), si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: Activity) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: Activity) = {
     this(si.entity, extend(si.activity, id, a), si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: Agent) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: Agent) = {
     this(si.entity, si.activity, extend(si.agent, id, a), si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasDerivedFrom) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasDerivedFrom) = {
     this(si.entity, si.activity, si.agent, extend(si.wasDerivedFrom, id, a), si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasGeneratedBy) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasGeneratedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, extend(si.wasGeneratedBy, id, a), si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: Used) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: Used) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, extend(si.used, id, a), si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasInvalidatedBy) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasInvalidatedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, extend(si.wasInvalidatedBy, id, a), si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasStartedBy) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasStartedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, extend(si.wasStartedBy, id, a), si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasEndedBy) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasEndedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, extend(si.wasEndedBy, id, a), si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: ActedOnBehalfOf) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: ActedOnBehalfOf) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, extend(si.actedOnBehalfOf, id, a), si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasAssociatedWith) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasAssociatedWith) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, extend(si.wasAssociatedWith, id, a), si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasAttributedTo) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasAttributedTo) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, extend(si.wasAttributedTo, id, a), si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasInfluencedBy) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasInfluencedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, extend(si.wasInfluencedBy, id, a), si.wasInformedBy, si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: WasInformedBy) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: WasInformedBy) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, extend(si.wasInformedBy, id, a), si.specializationOf, si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: SpecializationOf) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: SpecializationOf) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, extend(si.specializationOf, id, a), si.alternateOf, si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: AlternateOf) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: AlternateOf) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, extend(si.alternateOf, id, a), si.hadMember)
   }
 
-  def this(si: StatementIndexer, id: QualifiedName,  a: HadMember) {
+  def this(si: StatementIndexer, id: QualifiedName,  a: HadMember) = {
     this(si.entity, si.activity, si.agent, si.wasDerivedFrom, si.wasGeneratedBy, si.used, si.wasInvalidatedBy, si.wasStartedBy, si.wasEndedBy, si.actedOnBehalfOf, si.wasAssociatedWith, si.wasAttributedTo, si.wasInfluencedBy, si.wasInformedBy, si.specializationOf, si.alternateOf, extend(si.hadMember, id, a))
   }
 
-  def add2(s: org.openprovenance.prov.scala.immutable.Statement) = {
+  def add2(s: org.openprovenance.prov.scala.immutable.Statement): StatementIndexer = {
     s match {
       case a: org.openprovenance.prov.scala.immutable.Entity            => new StatementIndexer(this, a)
       case a: org.openprovenance.prov.scala.immutable.Activity          => new StatementIndexer(this, a)
@@ -2552,7 +2552,7 @@ class StatementIndexer(
 
 class NoIdStatementIndexer(val statements: Set[Statement]) {
 
-  def this() {
+  def this() = {
     this(Set())
   }
 
@@ -2620,13 +2620,13 @@ object KeyIndexer {
     }
   }
 
-  val notKeyable: Statement => Boolean = { x:Statement => x match {
-    case s:WasGeneratedBy => false
-    case s:WasInvalidatedBy => false
-    case s:Used => false
-    case s:WasStartedBy => false
-    case s:WasEndedBy => false
-    case _ => true }
+  val notKeyable: Statement => Boolean = {
+    case s: WasGeneratedBy => false
+    case s: WasInvalidatedBy => false
+    case s: Used => false
+    case s: WasStartedBy => false
+    case s: WasEndedBy => false
+    case _ => true
   }
 }
 
@@ -2647,7 +2647,7 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
       }}}}
 
 
-  def this(nisi:NoIdStatementIndexer, si:StatementIndexer, namespace:Namespace) {
+  def this(nisi:NoIdStatementIndexer, si:StatementIndexer, namespace:Namespace) = {
     this(nisi,
       si,
       (nisi.wasGeneratedBy++si.wasGeneratedBy.values).groupBy(ComplexKey(_)),   // TODO: no need to index those of nisi, since we know that they don't have keys.
@@ -2751,7 +2751,7 @@ class KeyIndexer (val nisi: NoIdStatementIndexer,
   }
 
   def toDocument(): Document = {
-    val ll1 = si.values.filter{x => notKeyable(x)}.map(_.toTerms).flatMap { x => x }
+    val ll1 = si.values().filter{ x => notKeyable(x)}.map(_.toTerms).flatMap { x => x }
     val ll2 = nisi.statements.flatMap(_.toTerms)
     val ll3=wasGeneratedBy.values.flatMap( x=>x ).map(_.toTerms).flatMap { x => x } ++
       wasInvalidatedBy.values.flatMap( x=>x ).map(_.toTerms).flatMap { x => x } ++
@@ -2773,7 +2773,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
                                   @BeanProperty val namespace: Namespace) extends HasNamespace with Hashable with ProxyWithStatements {
   private def canEqual(a: Any): Boolean = a.isInstanceOf[DocumentProxyFromStatements]
 
-  def getStatements (): Set[Statement] = {
+  def getStatements: Set[Statement] = {
     statements
   }
 
@@ -2793,7 +2793,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
     var first = true
 
     b append start
-    for (x <- set) {
+    set.iterator.foreach(x => {
       if (first) {
         x.toNotation(b)
         first = false
@@ -2801,7 +2801,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
         b append sep
         x.toNotation(b)
       }
-    }
+    })
     b append end
     b
   }
@@ -2809,7 +2809,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
     var first = true
 
     b append start
-    for (x <- set) {
+    set.iterator.foreach(x => {
       if (first) {
         x.toNotation(b)
         first = false
@@ -2817,7 +2817,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
         b append sep
         x.toNotation(b)
       }
-    }
+    })
     b append end
     b
   }
@@ -2837,7 +2837,7 @@ class DocumentProxyFromStatements(val statements: Set[Statement],
     sb ++= "endNormalForm\n"
   }
 
-  override def toString(): String = {
+  override def toString: String = {
     val sb = new StringBuilder
     toNotation(sb)
     sb.toString()
@@ -2860,7 +2860,7 @@ class DocumentProxy(val statement: NoIdStatementIndexer, //Set[Statement],
 
   def canEqual(a: Any): Boolean = a.isInstanceOf[DocumentProxy]
 
-  def this(namespace: Namespace) {
+  def this(namespace: Namespace) = {
     this(new NoIdStatementIndexer,new StatementIndexer,namespace)
   }
 
@@ -2881,12 +2881,12 @@ class DocumentProxy(val statement: NoIdStatementIndexer, //Set[Statement],
   }
 
   def idSets(): Iterable[Set[QualifiedName]] = {
-    val s = indexer.idSets()++statement.statements.flatMap(_.idSets)
+    val s = indexer.idSets()++statement.statements.flatMap(_.idSets())
     s
   }
 
   def unify(): DocumentProxy = {
-    val sets1 = idSets
+    val sets1 = idSets()
     //println(sets1)
 
     val tc = new TransitiveClosure[QualifiedName]
@@ -2948,8 +2948,8 @@ class DocumentProxy(val statement: NoIdStatementIndexer, //Set[Statement],
     }
   }
 
-  def toDocument(): org.openprovenance.prov.scala.immutable.Document = {
-    val ll1 = indexer.values.map(_.toTerms).flatMap { x => x }
+  def toDocument: org.openprovenance.prov.scala.immutable.Document = {
+    val ll1 = indexer.values().map(_.toTerms).flatMap { x => x }
     val ll2 = statement.statements.flatMap(_.toTerms)
 
     val ss: Set[org.openprovenance.prov.scala.immutable.StatementOrBundle] = (ll2 ++ ll1).asInstanceOf[Set[org.openprovenance.prov.scala.immutable.StatementOrBundle]]

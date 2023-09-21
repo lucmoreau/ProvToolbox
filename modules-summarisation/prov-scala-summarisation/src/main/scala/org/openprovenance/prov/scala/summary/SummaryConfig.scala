@@ -28,24 +28,22 @@ case class SummaryConfig(kernel: Boolean=false,
                          defaultFormat: Format.Format=null)
 {
 
-  def this(os: java.io.OutputStream, mediaType: String) {
+  def this(os: java.io.OutputStream, mediaType: String) = {
     this(outfiles = Seq(StreamOutput(os)), defaultFormat = Format.fromMediatype(mediaType))
   }
   def this(value: Int) =
     this(to = value)
 
-  def this(value: Int, kernel: Boolean, aggregatep: Boolean) {
+  def this(value: Int, kernel: Boolean, aggregatep: Boolean) = {
     this(to = value, kernel = kernel, aggregatep = aggregatep)
   }
 
   def theOutputFormats(): Seq[Format] = {
     if (outformats.isEmpty) {
-      outfiles.map { o: Output =>
-        o match {
-          case StandardOutput() => defaultFormat
-          case StreamOutput(_) => defaultFormat
-          case FileOutput(f: File) => Format.withName(extension(f.getPath))
-        }
+      outfiles.map {
+        case StandardOutput() => defaultFormat
+        case StreamOutput(_) => defaultFormat
+        case FileOutput(f: File) => Format.withName(extension(f.getPath))
       }
     } else {
       outformats

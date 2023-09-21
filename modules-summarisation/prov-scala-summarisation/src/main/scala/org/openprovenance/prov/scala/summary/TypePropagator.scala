@@ -1,9 +1,7 @@
 package org.openprovenance.prov.scala.summary
 import java.io.InputStream
-
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
 import org.openprovenance.prov.immutable.Utils
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
@@ -64,7 +62,7 @@ object TypePropagator {
         ns.register("dot",Graphics.DOT_NS)
         val allIds=desc.names.keySet.map(s => ns.stringToQualifiedName(s, pf).asInstanceOf[QualifiedName])
 
-        val newStatements=doc.orderedStatements.map(highlightStatement(_, allIds))       
+        val newStatements=doc.orderedStatements().map(highlightStatement(_, allIds))
         new OrderedDocument(newStatements, ns)
     }
     
@@ -225,7 +223,7 @@ class CommonTypePropagator(ind:Indexing, level0: Level0, primitivep:Boolean) {
   import org.openprovenance.prov.scala.immutable.Indexer.{PROV_ACTIVITY, PROV_AGENT, PROV_ENTITY}
   import org.openprovenance.prov.scala.summary.types._
   
-  def this(doc:Document, level0: Level0 = new DefaultLevel0, primitivep:Boolean) {
+  def this(doc:Document, level0: Level0 = new DefaultLevel0, primitivep:Boolean) = {
     this(new Indexer(doc),level0, primitivep)
   }
   
@@ -746,8 +744,8 @@ class BackwardPropagator(ind: Indexing, common: CommonTypePropagator, fwd: Forwa
       // at that point, a Seq[Int,Set[ProvType]]
       .groupBy(_._1)
       // at that point, a Map[Int,Seq[Int,Set[ProvType]]]
-      .mapValues(x=>x.flatMap(_._2).toSet)
-  }.toMap
+      .view.mapValues(x=>x.flatMap(_._2).toSet).toMap
+  }
 
   def computeBackwardTriangles(allRelations: Map[Int, Map[Int, Iterable[Relation]]]): Seq[(Int, Int, Int)] = {
     allRelations.toSeq.flatMap { case (src, m) =>
@@ -817,7 +815,7 @@ class BackwardPropagator(ind: Indexing, common: CommonTypePropagator, fwd: Forwa
 
 class TypePropagator(ind: Indexing, level0: Level0, primitivep: Boolean, triangle: Boolean, always_with_type_0:Boolean) {
    
-	def this(doc:Document, triangle: Boolean, always_with_type_0:Boolean, weakInference:Boolean, primitivep:Boolean=true, level0: Level0 = new DefaultLevel0 ) {
+	def this(doc:Document, triangle: Boolean, always_with_type_0:Boolean, weakInference:Boolean, primitivep:Boolean=true, level0: Level0 = new DefaultLevel0) = {
 		this(new Indexer(doc,Vector(),weakInference),level0,primitivep,triangle, always_with_type_0)  // TODO: weakinf
 	}
    

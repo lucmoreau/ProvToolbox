@@ -162,7 +162,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
     
   "Entity ent1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/ent1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
         x
@@ -171,7 +171,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
       
   "Activity act1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/act1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
         x
@@ -181,7 +181,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
       
   "Agent ag1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/ag1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
         x
@@ -190,7 +190,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
   
   "Association waw1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/waw1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
         x
@@ -199,7 +199,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
     
   "Attribution wat1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/wat1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
         x    
@@ -208,7 +208,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
   
   "Delegation aobo1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/aob1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
         x    
@@ -216,7 +216,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
 
    "Derivation wdf1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/wdf1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -224,7 +224,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
     
   "Generation wgb1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/wgb1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -232,7 +232,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
 
   "Usage usd1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/usd1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -241,7 +241,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
   
   "Invalidation wib1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/wib1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -250,7 +250,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
   
   "Start wsb1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/wsb1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -259,7 +259,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
     
   "End web1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/web1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -268,7 +268,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
     
   "Influence winflb1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/winflb1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -277,7 +277,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
       
   "Communication winfb1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/winfb1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -286,7 +286,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
         
   "Specialization spe1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/spe1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -295,7 +295,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
         
   "Alternate alt1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/alt1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    
@@ -304,7 +304,7 @@ class NormalFormSpec extends AnyFlatSpec with Matchers {
         
   "Membership mem1" should "have a normal form in XML" in {
     val doc=nf("src/test/resources/nf/mem1.provn")
-    val d=doc.toDocument()
+    val d=doc.toDocument
     val x=XmlBean.toXML(d)
     println(x)
     x    

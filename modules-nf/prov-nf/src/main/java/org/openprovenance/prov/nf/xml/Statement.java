@@ -23,7 +23,7 @@ public interface Statement extends Comparable<Statement> {
 			int comp=l1.get(i).compareTo(l2.get(i));
 			if (comp!=0) return comp;	
 		}
-		return new Integer(len2).compareTo(new Integer(len1));
+		return Integer.compare(len2, len1);
 	}
 	
 	default <T extends Comparable<T>> int compareListsOfLists (LinkedList<List<T>> l1, LinkedList<List<T>> l2) {

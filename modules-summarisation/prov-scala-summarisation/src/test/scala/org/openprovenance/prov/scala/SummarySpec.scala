@@ -1,7 +1,6 @@
 
 package org.openprovenance.prov.scala
 
-import java.io.{BufferedWriter, File, FileWriter}
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.FileOutput
@@ -12,18 +11,19 @@ import org.openprovenance.prov.scala.summary.types._
 import org.openprovenance.prov.scala.viz.{Graphics, SVGOutputer}
 import org.parboiled2.ParseError
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.must.Matchers.be
 import org.scalatest.matchers.should.Matchers
 
+import java.io.{BufferedWriter, File, FileWriter}
+import scala.annotation.unused
 import scala.util.{Failure, Success}
 
 class SummarySpec extends AnyFlatSpec with Matchers {
-  val EX_NS="http://example.org/"
+  val EX_NS="https://example.org/"
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
   val xsd_string: QualifiedName =QualifiedName(ipf.xsd_string)
   val prov_qualified_name: QualifiedName =QualifiedName(ipf.prov_qualified_name)
   
-  val nsBase="http://example.org/summary#"
+  val nsBase="https://example.org/summary#"
 
   def q(local: String): QualifiedName = {
    new QualifiedName("ex",local,EX_NS)
@@ -32,9 +32,9 @@ class SummarySpec extends AnyFlatSpec with Matchers {
   def doCheckDocument (s: String, doc: Document): Boolean = {
       val p=new MyParser(s,null)
       p.document.run() match {
-        case Success(result) => p.getNext().asInstanceOf[DocBuilder].document==doc
-        case Failure(e: ParseError) => false
-        case Failure(e) =>false
+        case Success(_) => p.getNext().asInstanceOf[DocBuilder].document()==doc
+        case Failure(_: ParseError) => false
+        case Failure(_) => false
       }
   }
 
@@ -72,8 +72,8 @@ class SummarySpec extends AnyFlatSpec with Matchers {
 
     val p=new MyParser(d,actions2,actions)
     val doc: Document =p.document.run() match {
-          case Success(result) => db.document
-          case _ => ???
+          case Success(_) => db.document()
+          case _ => throw new IllegalStateException("Parsing failed")
     }
     val ind=new Indexer(doc)
     val s=new TypePropagator(doc,triangle, always_with_type_0, false, true,level0)
@@ -89,7 +89,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e)
                     activity(ex:a)
                     wasGeneratedBy(ex:e,ex:a,-)
@@ -118,7 +118,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e)
                     activity(ex:a)
                     wasInvalidatedBy(ex:e,ex:a,-)
@@ -148,7 +148,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e)
                     activity(ex:a)
                     used(ex:a,ex:e,-)
@@ -177,7 +177,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     wasDerivedFrom(ex:e2,ex:e1)
@@ -207,7 +207,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     activity(ex:a)
@@ -239,7 +239,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e)
                     agent(ex:ag)
                     wasAttributedTo(ex:e,ex:ag)
@@ -267,7 +267,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     activity(ex:a)
                     agent(ex:ag)
                     wasAssociatedWith(ex:a,ex:ag,-)
@@ -295,7 +295,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     activity(ex:a)
                     agent(ex:ag)
                     entity(ex:pl)
@@ -328,7 +328,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     agent(ex:ag1)
                     agent(ex:ag2)
                     actedOnBehalfOf(ex:ag2,ex:ag1,-)
@@ -358,7 +358,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     agent(ex:ag1)
                     agent(ex:ag2)
                     activity(ex:a)
@@ -392,7 +392,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     specializationOf(ex:e2,ex:e1)
@@ -421,7 +421,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     alternateOf(ex:e2,ex:e1)
@@ -451,7 +451,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     wasInfluencedBy(ex:e2,ex:e1)  //Note, test is about entities here
@@ -480,7 +480,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     activity(ex:a2)
                     activity(ex:a1)
                     wasInformedBy(ex:a2,ex:a1)  //Note, test is about entities here
@@ -509,7 +509,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     activity(ex:a)
@@ -540,7 +540,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
 
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
 
                     entity(ex:e1)
                     entity(ex:e0)
@@ -553,7 +553,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
                     endDocument
                     """)
 
-    var withTriangles = false;
+    val withTriangles = false;
 
     println(ind.amap)
     s.type0(ind.amap(q("e0"))) should be (Set(Ent()))
@@ -591,7 +591,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
 
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
 
                     entity(ex:e1)
                     entity(ex:e0)
@@ -603,9 +603,9 @@ class SummarySpec extends AnyFlatSpec with Matchers {
                     used(ex:a2,ex:e0,-)
                     endDocument
                     """,
-      true)  // triangle true!
+      triangle = true)  // triangle true!
 
-    var withTriangles = true;
+    val withTriangles = true;
 
     println(ind.amap)
     s.type0(ind.amap(q("e0"))) should be (Set(Ent()))
@@ -644,7 +644,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     entity(ex:e0)
@@ -693,7 +693,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     entity(ex:e0a)
@@ -710,6 +710,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
                     endDocument
                     """)
                     
+    @unused
     val agg_provtypes_0_1=s.aggregateProvTypesToLevel(1)
     val agg_provtypes_0_2=s.aggregateProvTypesToLevel(2)
    
@@ -733,7 +734,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
 
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     activity(ex:a, [prov:type='ex:Act'])
                     agent(ex:ag, [prov:type='ex:Ag'])
                     entity(ex:pl, [prov:type='ex:Pl'])
@@ -764,18 +765,18 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     ns.addKnownNamespaces()
     ns.register("ex", EX_NS)
 
-    val level0=Level0Mapper(""" {"mapper":{},"ignore":["http://example.org/Ag"]} """)
+    val level0=Level0Mapper(""" {"mapper":{},"ignore":["https://example.org/Ag"]} """)
 
 
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     activity(ex:a, [prov:type='ex:Act'])
                     agent(ex:ag, [prov:type='ex:Ag'])
                     entity(ex:pl, [prov:type='ex:Pl'])
                     wasAssociatedWith(ex:a,ex:ag,ex:pl, [prov:type='ex:Assoc'])
                     endDocument
-                    """,false, level0)
+                    """,triangle = false, level0)
 
 
     s.type0(ind.amap(q("a"))) should be (Set(Act(), Prim("ex:Act")))
@@ -801,18 +802,18 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     ns.addKnownNamespaces()
     ns.register("ex", EX_NS)
 
-    val level0=Level0Mapper(""" {"mapper":{},"ignore":["http://example.org/Pl", "http://example.org/Ag"]} """)
+    val level0=Level0Mapper(""" {"mapper":{},"ignore":["https://example.org/Pl", "https://example.org/Ag"]} """)
 
 
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     activity(ex:a, [prov:type='ex:Act'])
                     agent(ex:ag, [prov:type='ex:Ag'])
                     entity(ex:pl, [prov:type='ex:Pl'])
                     wasAssociatedWith(ex:a,ex:ag,ex:pl, [prov:type='ex:Assoc'])
                     endDocument
-                    """,false, level0)
+                    """,triangle = false, level0)
 
 
     s.type0(ind.amap(q("a"))) should be (Set(Act(), Prim("ex:Act")))
@@ -839,6 +840,7 @@ class SummarySpec extends AnyFlatSpec with Matchers {
     ns.addKnownNamespaces()
     ns.register("ex", EX_NS)
     
+    @unused
     val level0b=new Level0Mapper(Map("http://openprovenance.org/primitives#File" -> "File"), Set(), Set())
     
     
@@ -1011,11 +1013,8 @@ class SummarySpec extends AnyFlatSpec with Matchers {
   wasAssociatedWith(pc1:waw1;pc1:a1,pc1:ag1,-)
 endDocument
                     """,
-      false, level0)
-                    
-    def prim(s: String) = {
-      new QualifiedName("prim",s,"http://openprovenance.org/primitives#")
-    }
+      triangle = false, level0)
+
     def pc1(s: String) = {
       new QualifiedName("pc1",s,"http://www.ipaw.info/pc1/")
     }
@@ -1062,7 +1061,7 @@ endDocument
   
   }
  
-  def ex(s: String) = {
+  def ex(s: String): QualifiedName = {
       new QualifiedName("ex",s,EX_NS)
   }
 
@@ -1074,7 +1073,7 @@ endDocument
  
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     wasGeneratedBy(ex:e,ex:a,-)
                     endDocument
                     """)
@@ -1121,7 +1120,7 @@ endDocument
  
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     wasInfluencedBy(ex:e,ex:a)
                     endDocument
                     """)
@@ -1150,10 +1149,10 @@ endDocument
     
     val idx1=summary1.provTypeIndex( agg_provtypes_0_1(ind.amap(ex("e"))) )  
     
-    summary1.nodes.get(idx1) shouldBe (None)
+    summary1.nodes.get(idx1) shouldBe None
   
     val idx2=summary1.provTypeIndex( agg_provtypes_0_1(ind.amap(ex("a"))) )                      
-    summary1.nodes.get(idx2) shouldBe (None)
+    summary1.nodes.get(idx2) shouldBe None
     
     summary1.absentNodes.size should be (0)
 
@@ -1167,7 +1166,7 @@ endDocument
  
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e)
                     wasInfluencedBy(ex:e,ex:a)
                     endDocument
@@ -1200,7 +1199,7 @@ endDocument
     summary1.nodes(idx1).asInstanceOf[Entity].other(new QualifiedName("sum","size",SUM_NS)).head.value should be ("1")
   
     val idx2=summary1.provTypeIndex( agg_provtypes_0_1(ind.amap(ex("a"))) )                      
-    summary1.nodes.get(idx2) shouldBe (None)
+    summary1.nodes.get(idx2) shouldBe None
     
     summary1.absentNodes.size should be (0)
 
@@ -1214,7 +1213,7 @@ endDocument
  
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     wasGeneratedBy(ex:e,-,2014-05-19T10:30:00.000+01:00)
                     endDocument
                     """)
@@ -1256,7 +1255,7 @@ endDocument
  
     val (ind,s)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     
                     mentionOf(ex:e1,ex:e2, ex:e3)
                     endDocument
@@ -1292,9 +1291,9 @@ endDocument
     ns.addKnownNamespaces()
     ns.register("ex", EX_NS)
     
-    val (ind1,s1)=sum("""
+    val (_,s1)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     entity(ex:e0)
@@ -1308,15 +1307,12 @@ endDocument
                     
       
 
-    
-    //val agg_provtypes_0_2=s1.aggregateProvTypesToLevel(2)
-    //val index1=new SummaryIndexes(s1, ind1.succ,agg_provtypes_0_2).makeIndex()
-    val index1=s1.getConstructorForLevel(2,nsBase,PrettyMethod.Name,true,true,false).makeIndex()
+    val index1=s1.getConstructorForLevel(2,nsBase,PrettyMethod.Name,aggregatep = true,aggregate0p = true,withLevel0Description = false).makeIndex()
 
        
-    val (ind2,s2)=sum("""
+    val (_,s2)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     activity(ex:a)
                     wasGeneratedBy(ex:e2,ex:a,-)
@@ -1330,11 +1326,8 @@ endDocument
                     
       
 
-    
-    //val agg_provtypes_0_2_b=s2.aggregateProvTypesToLevel(2)
-    //val index2=new SummaryIndexes(s2, ind2.succ,agg_provtypes_0_2_b).makeIndex()
  
-    val index2=s2.getConstructorForLevel(2,nsBase,PrettyMethod.Name,true,true, false).makeIndex()
+    val index2=s2.getConstructorForLevel(2,nsBase,PrettyMethod.Name,aggregatep = true,aggregate0p = true, withLevel0Description = false).makeIndex()
 
     val (meOnly,meCommon,otherOnly,otherCommon) = index1.diff(index2)  //TODO: typing of SummaryIndexes as a subclass of instance doesn't allow idx1.diff(idx2)
 
@@ -1352,11 +1345,12 @@ endDocument
     SummaryIndex.exporToJsonDescription(outw3, otherOnly)
     SummaryIndex.exporToJsonDescription(outw4, otherCommon)
     
+    @unused
     val descriptions=Seq(meOnly, meCommon, otherOnly, otherCommon)
     
     //val unionDoc=ind1.document().union(ind2.document())
-    val oDoc1=new OrderedDocument(index1.document)
-    val oDoc2=new OrderedDocument(index2.document)
+    val oDoc1=new OrderedDocument(index1.document())
+    val oDoc2=new OrderedDocument(index2.document())
     val doc1=TypePropagator.highlight(oDoc1,meOnly)
     val doc2=TypePropagator.highlight(oDoc1,meCommon)
     val doc3=TypePropagator.highlight(oDoc2,otherOnly)
@@ -1387,9 +1381,9 @@ endDocument
     ns.addKnownNamespaces()
     ns.register("ex", EX_NS)
     
-    val (ind1,s1)=sum("""
+    val (_,s1)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     entity(ex:e1)
                     entity(ex:e0)
@@ -1402,12 +1396,12 @@ endDocument
                     """)
                     
       
-    val index1=s1.getConstructorForLevel(2,nsBase, PrettyMethod.Name,true,true,false).makeIndex()
+    val index1=s1.getConstructorForLevel(2,nsBase, PrettyMethod.Name,aggregatep = true,aggregate0p = true,withLevel0Description = false).makeIndex()
 
        
-    val (ind2,s2)=sum("""
+    val (_,s2)=sum("""
                     document
-                    prefix ex <http://example.org/>
+                    prefix ex <https://example.org/>
                     entity(ex:e2)
                     activity(ex:a)
                     wasGeneratedBy(ex:e2,ex:a,-)
@@ -1421,13 +1415,13 @@ endDocument
 
 
 
-     val index2=s2.getConstructorForLevel(2,nsBase, PrettyMethod.Name,true,true,false).makeIndex()
+     val index2=s2.getConstructorForLevel(2,nsBase, PrettyMethod.Name,aggregatep = true,aggregate0p = true,withLevel0Description = false).makeIndex()
 
      val index3=Merge.renameOther(index1,index2, PrettyMethod.Name)
 
-     new ProvNOutputer().output(index3,new FileOutput(new File("target/index3.provn")),Map[String,String]())
+     new ProvNOutputer().output(index3, FileOutput(new File("target/index3.provn")),Map[String,String]())
 
-     new SVGOutputer().output(index3,new FileOutput(new File("target/index3.svg")),Map[String,String]())
+     new SVGOutputer().output(index3,FileOutput(new File("target/index3.svg")),Map[String,String]())
 
      val outw=new BufferedWriter(new FileWriter("target/index3.json"))
 

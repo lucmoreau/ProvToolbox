@@ -1,7 +1,7 @@
 
 package org.openprovenance.prov.scala.nf
 
-import org.openprovenance.prov.scala.immutable.{ProvNInputer, QualifiedName}
+import org.openprovenance.prov.scala.immutable.{Document, ProvNInputer, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -11,22 +11,22 @@ import java.io.File
 class Unification2Spec extends AnyFlatSpec with Matchers {
 	val EX_NS="http://example/"
 
-	def q(local: String) = {
+	def q(local: String): QualifiedName = {
    new QualifiedName("ex",local,EX_NS)
   }
 
 
 
 
-  def readDoc(f: String) = {
-    val in:Input=new FileInput(new File(f))
+  def readDoc(f: String): Document = {
+    val in:Input=FileInput(new File(f))
     val doc=new ProvNInputer().input(in,Map())
     doc
   }
 
     
 
-  def checkfile (name: String, test1: Boolean=true) {
+  def checkfile (name: String, test1: Boolean=true): Unit = {
 	  val doc1=readDoc("src/test/resources/unify/" + name + ".provn")
   
 	  
@@ -91,7 +91,7 @@ class Unification2Spec extends AnyFlatSpec with Matchers {
 
     
   "File unify-usd0" should "unify with key constraints" in {
-     checkfile("unify-usd0",false)
+     checkfile("unify-usd0",test1 = false)
    }
 
  
@@ -110,11 +110,11 @@ class Unification2Spec extends AnyFlatSpec with Matchers {
  */
       
   "File unify-wdf0" should "unify with key constraints" in {
-     checkfile("unify-wdf0", false)
+     checkfile("unify-wdf0", test1 = false)
    }
 
   "File unify-wdf1" should "unify with key constraints" in {
-     checkfile("unify-wdf1", false)
+     checkfile("unify-wdf1", test1 = false)
   }
 
 }

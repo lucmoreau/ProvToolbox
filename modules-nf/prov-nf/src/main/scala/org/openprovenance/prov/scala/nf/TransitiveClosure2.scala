@@ -71,7 +71,7 @@ def allPairsShortestPath(nodes: Set[Int], links: Map[Int, Set[Int]]): Map[Int, M
 object FloydWarshall {
   
 
-	def computeTransitiveClosure(n: Int, ds: Array[Array[Boolean]]) {
+	def computeTransitiveClosure(n: Int, ds: Array[Array[Boolean]]): Unit = {
 		// Here goes the magic!
 		for (k <- 0 until n; i <- 0 until n) {
 		  if (!(i==k)) {  // we know it's reflexive, no need to update the array, we add it at the end in computeMembershipo
@@ -90,7 +90,7 @@ object FloydWarshall {
 		}
 	}
 	
-	@inline def symmetricCheck(ds: Array[Array[Boolean]], k: Int, j: Int, ds_k: Array[Boolean]) = {
+	@inline def symmetricCheck(ds: Array[Array[Boolean]], k: Int, j: Int, ds_k: Array[Boolean]): Boolean = {
 	  if (j < k) {
 	    ds_k(j)
 	  } else {
@@ -99,7 +99,7 @@ object FloydWarshall {
 	}
 
 	
-	def computeTransitiveClosureSymmetric(n: Int, ds: Array[Array[Boolean]]) {
+	def computeTransitiveClosureSymmetric(n: Int, ds: Array[Array[Boolean]]): Unit = {
 		// Here goes the magic!
 		for (k <- 0 until n; i <- 0 until n) { 
 		  if (!(i==k)) {  // we know it's reflexive, no need to update the array, we add it at the end in computeMembershipo
@@ -120,7 +120,7 @@ object FloydWarshall {
 		}
 	}
 
-	def computeTransitiveClosureOriginal(n: Int, ds: Array[Array[Boolean]]) {
+	def computeTransitiveClosureOriginal(n: Int, ds: Array[Array[Boolean]]): Unit = {
 		// Here goes the magic!
 		for (k <- 0 until n; i <- 0 until n) {
 			if ( ds(i)(k) ) {
@@ -217,7 +217,7 @@ class TransitiveClosure2[A <: Ordered[A]] {
     memb.toMap
   }
   
-  @inline def symmetricCheck(ds: Array[Array[Boolean]], i: Int, j: Int, ds_i: Array[Boolean]) = {
+  @inline def symmetricCheck(ds: Array[Array[Boolean]], i: Int, j: Int, ds_i: Array[Boolean]): Boolean = {
 	  if (j < i) {
 	    ds_i(j)
 	  } else {
@@ -248,7 +248,7 @@ class TransitiveClosure2[A <: Ordered[A]] {
 		  
   var ds: Array[Array[Boolean]]=null
   
-  def transitiveClosure(optimized: Boolean=true) = {
+  def transitiveClosure(optimized: Boolean=true): Map[A, Set[A]] = {
     if (!computed) {
       val ids=set.flatten
       val idsVec=ids.toVector 

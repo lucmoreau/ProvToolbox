@@ -11,6 +11,7 @@ import org.openprovenance.prov.scala.summary.TypePropagator.QN_NBR
 import org.openprovenance.prov.scala.summary.types.{FlatType, NumberedFlatType, Prim, ProvType}
 
 import java.io.{File, InputStream, OutputStream, StringWriter}
+import scala.annotation.unused
 import scala.jdk.CollectionConverters._
 import scala.collection.mutable
 
@@ -119,6 +120,7 @@ case class SummaryDescriptionJson  (@JsonDeserialize(keyAs = classOf[java.lang.I
     val allKeys = typeStrings.keys
     allKeys.map(k => (typeStrings(k),base(k).size)).toMap
   }
+  @unused
   def setFeatures(in: Map[String,Int]): Unit = {}
 
   private var myFlatTypes:Map[Int, Set[FlatType]]=null
@@ -157,7 +159,7 @@ object Level0Mapper {
 
 class Level0Mapper (mapper: Map[String,String], ignore: Set[String], override val properties: Set[String]) extends DefaultLevel0 {
   import TypePropagator.om
-  def this(l0: Level0MapperJson) {
+  def this(l0: Level0MapperJson) = {
     this(l0.mapper,l0.ignore, l0.properties)
   }
   import org.openprovenance.prov.scala.summary.types._
@@ -207,7 +209,6 @@ object NamespaceHelper {
   }
   def toNamespace(prefixes: Map[String,String]): Namespace = {
     prefixes
-      .seq
       .foldLeft(new Namespace){ case (old:Namespace,(pref:String, value:String)) =>
         old.register(pref, value)
         old }
@@ -437,8 +438,8 @@ class SummaryConstructor (val ind: Indexing,
 
   //TODO: why map to String? space efficiency to think about?  merge map and groupby
 
-  lazy val mapToBaseUriOLD:Map[Int,Set[String]]=provtypes.map{ case (i,set) => (provTypeIndex(set),ind.idsFun(i).getUri) }.groupBy(_._1).mapValues( s => s.map(_._2).toSet ).toMap
-  lazy val mapToBaseUri:Map[Int,Set[String]]= toSummary0.toSeq.map{ case(i,j) => (j,i) }.groupBy(_._1).mapValues( s => s.map(i => ind.idsFun(i._2).getUri).toSet).toMap
+  lazy val mapToBaseUriOLD:Map[Int,Set[String]]=provtypes.map{ case (i,set) => (provTypeIndex(set),ind.idsFun(i).getUri) }.groupBy(_._1).view.mapValues( s => s.map(_._2).toSet ).toMap
+  lazy val mapToBaseUri:Map[Int,Set[String]]= toSummary0.toSeq.map{ case(i,j) => (j,i) }.groupBy(_._1).view.mapValues( s => s.map(i => ind.idsFun(i._2).getUri).toSet).toMap
 
   lazy val prettyNames: Map[Int, String] =makePrettyNames(mapToBaseUri,provTypeIndex,prettyMethod)
 
@@ -536,7 +537,7 @@ class SummaryIndex(val provTypeIndex: Map[Set[ProvType],Int],
   import Indexer.swap
   import TypePropagator.QN_SIZE
 
-  def this(desc: SummaryDescriptionJson, ind: Indexing) {
+  def this(desc: SummaryDescriptionJson, ind: Indexing) = {
     this(Indexer.swap(desc.types),
       ind.idsVec,
       ind.idsFun,
@@ -636,10 +637,10 @@ class SummaryIndex(val provTypeIndex: Map[Set[ProvType],Int],
     val commonProvTypes=meProvTypes.intersect(otherProvTypes)
     val onlyOtherProvTypes=otherProvTypes.diff(meProvTypes)
 
-    val onlyMeProvTypeIndex     = this.provTypeIndex.filterKeys(k => onlyMeProvTypes.contains(k))
-    val meCommonProvTypeIndex   = this.provTypeIndex.filterKeys(k => commonProvTypes.contains(k))
-    val onlyOtherProvTypeIndex  =other.provTypeIndex.filterKeys(k => onlyOtherProvTypes.contains(k))
-    val otherCommonProvTypeIndex=other.provTypeIndex.filterKeys(k => commonProvTypes.contains(k))
+    val onlyMeProvTypeIndex     = this.provTypeIndex.view.filterKeys(k => onlyMeProvTypes.contains(k))
+    val meCommonProvTypeIndex   = this.provTypeIndex.view.filterKeys(k => commonProvTypes.contains(k))
+    val onlyOtherProvTypeIndex  =other.provTypeIndex.view.filterKeys(k => onlyOtherProvTypes.contains(k))
+    val otherCommonProvTypeIndex=other.provTypeIndex.view.filterKeys(k => commonProvTypes.contains(k))
 
     val onlyMeIndexes     =onlyMeProvTypeIndex.values.toSet
     val meCommonIndexes   =meCommonProvTypeIndex.values.toSet

@@ -278,7 +278,7 @@ object XmlBean {
   }
   
   def toXMLWithStream(sw: XMLStreamWriter, statements: Set[Statement]): Unit = {
-    val beans: Set[xml.Statement] =statements.map(toBean(_))
+    val beans: Set[xml.Statement] =statements.map(toBean)
     val module=new JacksonXmlModule()
     // and then configure, for example:
     module.setDefaultUseWrapper(false)
@@ -290,7 +290,7 @@ object XmlBean {
   def toXML2(statements: Set[Statement]):String = {
 	  val out = new StringWriter();
 	  toXML2(out,statements)
-	  out.toString()
+	  out.toString
   }
   
   def toXML(doc: Document, id: String=null):String = {
@@ -299,13 +299,13 @@ object XmlBean {
 	  out.toString()
   }
   
-  def toXMLStringWriter(out: StringWriter, doc: Document, id: String) {
+  def toXMLStringWriter(out: StringWriter, doc: Document, id: String): Unit = {
     val xmlOutputFactory = XMLOutputFactory.newFactory();
     val sw = xmlOutputFactory.createXMLStreamWriter(out);
     toXML(sw,doc, id)
   }
    
-  def toXML(sw: XMLStreamWriter, doc: Document, id: String) {
+  def toXML(sw: XMLStreamWriter, doc: Document, id: String): Unit = {
     sw.writeStartDocument();
     sw.writeStartElement("root")
     sw.writeStartElement("document")
@@ -316,13 +316,13 @@ object XmlBean {
     sw.writeEndDocument();
   }
 
-  def toXML2(out: StringWriter, statements: Set[Statement]) {
+  def toXML2(out: StringWriter, statements: Set[Statement]): Unit = {
     val xmlOutputFactory = XMLOutputFactory.newFactory();
     val sw = xmlOutputFactory.createXMLStreamWriter(out);
     toXML(sw,statements)
   }
   
-  def toXML(sw: XMLStreamWriter, statements: Set[Statement]) {
+  def toXML(sw: XMLStreamWriter, statements: Set[Statement]): Unit = {
     println("toXML (1)")
     sw.writeStartDocument();
     println("toXML (2)")
@@ -355,7 +355,7 @@ object XmlBean {
   
 
   
-  def pipe () = {
+  def pipe (): (PipedInputStream, PipedOutputStream) = {
     val out=new PipedOutputStream
     val in= new PipedInputStream
     out.connect(in)
@@ -363,7 +363,7 @@ object XmlBean {
   }
   
   def compose(xmlStreamReader: XMLStreamReader,
-              xmlStreamWriter: XMLStreamWriter) = {
+              xmlStreamWriter: XMLStreamWriter): Unit = {
     val tf = TransformerFactory.newInstance();
     val t:javax.xml.transform.Transformer = tf.newTransformer();
     val source = new StAXSource(xmlStreamReader);

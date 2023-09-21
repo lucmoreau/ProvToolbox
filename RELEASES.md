@@ -1,11 +1,11 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-==2.0.2-SNAPSHOT==
+==2.0.2==
 * summarisation code
 * type library code
 * summarisation demonstrator service
 * upgrade of scala code to scala library 2.13
-* explanation code imported
+* explanations code imported
 * provman code imported
 
 ==2.0.1==

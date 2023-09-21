@@ -233,8 +233,7 @@
                 </file>
             </activation>
             <properties>
-                <!-- for some reason i don't understand, the first time, there is a problem with the lexicon the first time it is used. -->
-                <test.failure.ignore>true</test.failure.ignore>
+                <test.failure.ignore>false</test.failure.ignore>
             </properties>
             <build>
                 <plugins>
@@ -273,8 +272,8 @@
                                         <zip destfile="${cached.dictionary.folder}/lexAccess2013.data.zip"
                                              basedir="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/"
                                              includes="lexAccess2013.data"/>
-                                      <!--  <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.properties" todir="${cached.dictionary.folder}" /> -->
-                                        <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.script"     todir="${cached.dictionary.folder}" />
+                                       <!--  <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.properties" todir="${cached.dictionary.folder}" /> -->
+                                       <!--  <copy file="${project.build.directory}/lexAccess/lexAccess2013/data/HSqlDb/lexAccess2013.script"     todir="${cached.dictionary.folder}" /> -->
                                     </target>
                                 </configuration>
                                 <goals>

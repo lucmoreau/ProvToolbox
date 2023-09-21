@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <profile name="Maven 1" modules="benchmarks,prov-scala" />
-    <profile name="Maven 2" modules="modules-executable-provman,nlg-spec-transformer,nlg-wrapper,prov-explanations,prov-model-scala,prov-nf,prov-query,prov-scala-misc,prov-scala-summarisation,prov-scala-typemap,prov-signature">
+    <profile name="Maven 2" modules="modules-executable-provman,nlg-spec-transformer,nlg-wrapper,prov-explanations,prov-model-scala,prov-nf,prov-query,prov-scala-misc,prov-scala-summarisation,prov-scala-typemap,prov-signature,prov-summarisation,prov-typemap">
       <option name="deprecationWarnings" value="true" />
       <option name="featureWarnings" value="true" />
     </profile>

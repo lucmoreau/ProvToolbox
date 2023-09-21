@@ -41,7 +41,7 @@
         <!-- to access ProvFlatTypes -->
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-scala-summarisation</artifactId>
+            <artifactId>prov-summarisation</artifactId>
             <version>2.0.3-SNAPSHOT</version>
         </dependency>
 

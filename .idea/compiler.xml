@@ -6,7 +6,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="prov-scala-summarisation" />
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-nf" />
         <module name="prov-storage-api" />
@@ -28,10 +27,10 @@
         <module name="prov-template-compiler" />
         <module name="prov-service-core" />
         <module name="prov-storage-filesystem" />
-        <module name="prov-scala-typemap" />
         <module name="demo" />
         <module name="prov-jsonld-xml" />
         <module name="templates_cli" />
+        <module name="prov-typemap" />
         <module name="prov-validation" />
         <module name="prov-storage-index-redis" />
         <module name="prov-jsweet-candy-js" />
@@ -43,6 +42,7 @@
         <module name="provconvert" />
         <module name="service-translator" />
         <module name="nlg-spec-transformer" />
+        <module name="prov-summarisation" />
         <module name="prov-service-validation" />
         <module name="prov-interop" />
         <module name="prov-interop-light" />

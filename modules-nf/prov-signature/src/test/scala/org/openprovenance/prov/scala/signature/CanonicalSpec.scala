@@ -38,7 +38,7 @@ abstract class CanonicalSpec extends AnyFlatSpec with Matchers {
 
   val normalize_count=10 
 
-  val (cryptoKey,cert)= XmlSignature.getKeyAndCert()
+  val (cryptoKey,cert)= XmlSignature.getKeyAndCert
 
   /*
   val keyStore = KeyStore.getInstance("JKS");

@@ -7,8 +7,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>|---- PROV-SCALA-SUMMARISATION</name>
-    <artifactId>prov-scala-summarisation</artifactId>
+    <name>|---- PROV-SUMMARISATION</name>
+    <artifactId>prov-summarisation</artifactId>
 
     <properties>
         <maven.javadoc.skip>true</maven.javadoc.skip>

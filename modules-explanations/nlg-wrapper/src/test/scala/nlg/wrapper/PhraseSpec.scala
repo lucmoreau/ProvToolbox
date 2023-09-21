@@ -43,7 +43,7 @@ object Tester {
 }
 
 
-class PhraseSpec extends AnyFlatSpec with Matchers {
+class BPhraseSpec extends AnyFlatSpec with Matchers {
 
   "A Phrase with an object" should "be serializable" in {
 

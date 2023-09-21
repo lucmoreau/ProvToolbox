@@ -276,7 +276,7 @@ trait Engine extends QueryProcessor with SQLParser {
   def evalString: String = {
     val source = new java.io.ByteArrayOutputStream()
     Utils.withOutputFull(new java.io.PrintStream(source)) {
-      eval
+      eval()
     }
     source.toString
   }
@@ -288,8 +288,8 @@ object Run {
   var fn: String = _
 
   trait MainEngine extends Engine {
-    override def query = qu
-    override def filename =  fn
+    override def query: String = qu
+    override def filename: String =  fn
   }
 
 

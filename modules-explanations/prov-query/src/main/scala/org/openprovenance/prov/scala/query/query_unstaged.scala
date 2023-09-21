@@ -290,7 +290,7 @@ object query_unstaged {
         table(kvs) = (aggregate, rec(agg).map(f => Seq(f))).zipped.map(aggregateFun)
       }
 
-      def valueToSort(statement: Statement) = {
+      def valueToSort(statement: Statement): Object = {
         sorter match {
           case Field(_, field) => throw new UnsupportedOperationException("sorter with field " + field)
           case Property(_, property) => Primitive.applyProperty1(property, statement, environment).head

@@ -3,7 +3,7 @@ package org.openprovenance.prov.scala.query
 import com.fasterxml.jackson.databind.ObjectMapper
 
 
-object Json {
+object JsonSupport {
   val om: ObjectMapper =new ObjectMapper()
 
   def toJsonSentence(s: Map[String,Object]): String = {

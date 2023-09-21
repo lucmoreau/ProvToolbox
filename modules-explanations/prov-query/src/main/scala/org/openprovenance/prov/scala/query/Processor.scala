@@ -9,6 +9,7 @@ import org.openprovenance.prov.scala.query.Run.MainEngine
 import org.openprovenance.prov.scala.query.query_unstaged.QueryInterpreter
 import org.parboiled2.ParseError
 
+import scala.annotation.unused
 import scala.collection.mutable
 
 trait StatementAccessor {
@@ -30,7 +31,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
   override def liftTable(n: Table): String = n
 
-  override def eval: Unit = run
+  override def eval(): Unit = run()
 
   override val statementFinder: Option[String]=>StatementAccessor = finder
 
@@ -39,6 +40,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
   val primitive = new EngineProcessFunction(this)
 
 
+  @unused
   def evalPrint(q: String): Unit = {
     //val op: Operator =parseSql(q)
     val op: Operator =parseSql2(q).get
@@ -52,8 +54,8 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
   def accumulateInto(where: Option[mutable.Set[Record]]): Record => Unit = {
     where match {
-      case None => { _: Record => }
-      case Some(set) => { x: Record => set += x }
+      case None => _: Record =>
+      case Some(set) => x: Record => set += x
     }
   }
 
@@ -74,9 +76,10 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     this
   }
 
-  def toStatements (set: mutable.Set[Record]): Set[Statement] = {
+  @unused
+  def toStatements(set: mutable.Set[Record]): Set[Statement] = {
     val res1 =set.map(rec => {
-      val f: Set[Statement] =rec.apply(rec.schema).map(toStatement(_)).toSet
+      val f: Set[Statement] =rec.apply(rec.schema).map(toStatement).toSet
       f
     }).toSet.flatten
 
@@ -95,7 +98,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
   def toMap(rec: Record): Map[String, Statement] = {
     val schema: Schema =rec.schema
-    val values: Vector[Statement] =rec(schema).map(toStatement(_))
+    val values: Vector[Statement] =rec(schema).map(toStatement)
     schema.zip(values).toMap
   }
 
@@ -124,7 +127,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
   }
 
   def exportToJson(out: Output, set: mutable.Set[Record]): Unit = {
-    Json.om.writeValue(out.asInstanceOf[FileOutput].f,set)
+    JsonSupport.om.writeValue(out.asInstanceOf[FileOutput].f,set)
   }
 
 

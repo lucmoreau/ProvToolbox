@@ -14,7 +14,7 @@ import org.openprovenance.prov.scala.query.query_unstaged.QueryInterpreter
 class EngineProcessFunction(engine:Engine with MainEngine with QueryInterpreter) {
 
 
-  def isFunction(amap: Map[String, Object]): Boolean = amap exists { case (s, _o) => s == "@object" }
+  def isFunction(amap: Map[String, Object]): Boolean = amap exists { case (s, _) => s == "@object" }
 
 
   def processFunction(objects: Map[String, engine.RField],

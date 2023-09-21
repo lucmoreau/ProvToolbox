@@ -1,6 +1,6 @@
 package org.openprovenance.prov.service.narrative;
 
-import org.openprovenance.prov.scala.query.Json;
+import org.openprovenance.prov.scala.query.JsonSupport;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -20,6 +20,6 @@ public class TemplateAndProfileReader implements MessageBodyReader<TemplateAndPr
 
     @Override
     public TemplateAndProfile readFrom(Class<TemplateAndProfile> aClass, Type type, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> multivaluedMap, InputStream inputStream) throws IOException, WebApplicationException {
-        return Json.om().readValue(inputStream,TemplateAndProfile.class);
+        return JsonSupport.om().readValue(inputStream,TemplateAndProfile.class);
     }
 }

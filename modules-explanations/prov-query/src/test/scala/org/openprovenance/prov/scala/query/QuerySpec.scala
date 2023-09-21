@@ -14,8 +14,12 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import java.io.File
+import scala.annotation.unused
 import scala.util.Success
 
+trait HasLuc {
+  def luc (): Unit
+}
 
 class QuerySpec extends AnyFlatSpec with Matchers  {
   val EX_NS="http://example.org/"
@@ -28,7 +32,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
   def readDoc(f: String): Document = {
-    val in:Input=new FileInput(new File(f))
+    val in:Input=FileInput(new File(f))
     val doc=CommandLine.parseDocument(in)
     doc
   }
@@ -50,8 +54,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
     val p=new MyParser(d,actions2,actions)
     val doc =p.document.run() match {
-      case Success(result) => db.document
-      case x => ???
+      case Success(_) => db.document()
+      case x => throw new IllegalStateException("Parsing failed: " + x)
     }
     doc
   }
@@ -93,14 +97,13 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc1=Document(doc,QuerySetup.gensym,QuerySetup.NLG_PREFIX,QuerySetup.NLG_URI)
 
     val si=new StatementIndexer(doc1)
-    val doc_realiser=(x:Option[String]) => si
+    val doc_realiser=(_:Option[String]) => si
 
 
-    def engine =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter  {
-        override def liftTable(n: Table) = n
-        override def eval = run
-        //override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
+    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
+      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+        override def liftTable(n: Table): String = n
+        override def eval(): Unit = run()
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -125,7 +128,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         =Filter(Eq("includesQualifiedName",Property("ag","prov:type"),Value("prov:Person")),Scan("prov:Agent", Schema("ag"), None))
 
 
-        def luc () = {
+        def luc (): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
           execQuery(Print(t1))
           execQuery(Print(t2))
@@ -147,16 +150,14 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc1=Document(doc,QuerySetup.gensym,QuerySetup.NLG_PREFIX,QuerySetup.NLG_URI)
 
 
-    //val doc_realiser=new StatementIndexer(doc1)
     val si=new StatementIndexer(doc1)
-    val doc_realiser=(x:Option[String]) => si
+    val doc_realiser=(_:Option[String]) => si
 
 
-    def engine =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter  {
-        override def liftTable(n: Table) = n
-        override def eval = run
-        //override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
+    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
+      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+        override def liftTable(n: Table): String = n
+        override def eval(): Unit = run()
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -168,7 +169,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
 
-        val automation2query = {
+        val automation2query: Join = {
 
         val (_decision, _application, _fico, _reco, _credit, _officer, _reviewing, _assoc, _der1, _der2, _der3, _der4)
         =(Filter(Eq("includesQualifiedName",Property("decision","prov:type"),   Value("ln:HumanDecision")),               Scan("prov:Entity",   Schema("decision"), None)),
@@ -189,6 +190,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         val j2:Operator
           =Join(Join(_assoc, "assoc", "agent",  /* == */       _officer, "officer",  "id"), "assoc", "activity", _reviewing, "reviewing",    "id")
 
+        @unused
         val j3=Join(_der1, "der1", "usedEntity",       /* == */       _application, "application",  "id")
 
         val j4:Operator
@@ -223,7 +225,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
 
-          def luc () = {
+          def luc (): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
          /* execQuery(Print(_reviewing))
 
@@ -262,13 +264,13 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
     //val doc_realiser=new StatementIndexer(doc1)
     val si=new StatementIndexer(doc1)
-    val doc_realiser=(x:Option[String]) => si
+    val doc_realiser=(_:Option[String]) => si
 
 
-    def engine =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter  {
-        override def liftTable(n: Table) = n
-        override def eval = run
+    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
+      new Engine with MainEngine with query_unstaged.QueryInterpreter  with HasLuc {
+        override def liftTable(n: Table): String = n
+        override def eval(): Unit = run()
        // override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
@@ -307,7 +309,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         }
 
 
-        def luc () = {
+        def luc (): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
 
 
@@ -334,15 +336,14 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc1=Document(doc,QuerySetup.gensym,QuerySetup.NLG_PREFIX,QuerySetup.NLG_URI)
 
 
-    //val doc_realiser=new StatementIndexer(doc1)
     val si=new StatementIndexer(doc1)
-    val doc_realiser=(x:Option[String]) => si
+    val doc_realiser=(_:Option[String]) => si
 
 
-    def engine =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter  {
-        override def liftTable(n: Table) = n
-        override def eval = run
+    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
+      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+        override def liftTable(n: Table): String = n
+        override def eval(): Unit = run()
         //override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
@@ -354,7 +355,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
           "prov" -> "http://www.w3.org/ns/prov#"),null,null,new Array[String](0), List())
 
 
-        val responsibility1_query= {
+        val responsibility1_query: Project = {
 
           val (_recommendation, _pipeline, _actor, _do, _wdf, _wgb, _waw, _pipeline2, _actor2, _do2, _wdf2, _wgb2, _waw2)
           =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   Schema("recommendation"), None)),
@@ -397,7 +398,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         }
 
 
-        def luc () = {
+        def luc (): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
 
 
@@ -422,15 +423,14 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc1=Document(doc,QuerySetup.gensym,QuerySetup.NLG_PREFIX,QuerySetup.NLG_URI)
 
 
-    //val doc_realiser=new StatementIndexer(doc1)
     val si=new StatementIndexer(doc1)
-    val doc_realiser=(x:Option[String]) => si
+    val doc_realiser=(_:Option[String]) => si
 
 
-    def engine =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter  {
-        override def liftTable(n: Table) = n
-        override def eval = run
+    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
+      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+        override def liftTable(n: Table): String = n
+        override def eval(): Unit = run()
 
        // override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
 
@@ -443,7 +443,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
           "prov" -> "http://www.w3.org/ns/prov#"),null,null,new Array[String](0), List())
 
 
-        val responsibility1_query= {
+        @unused
+        val responsibility1_query: Join = {
 
           val (_recommendation, _pipeline, _actor, _do, _wdf, _wgb, _waw)
           =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   Schema("recommendation"), None)),
@@ -469,13 +470,13 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
           q
         }
 
-        val t1=parseSql("select * from ent a prov:Entity")
-        val t2=parseSql("select ent as renamed from ent a prov:Entity")
-        val t3=parseSql("select * from ent a prov:Entity where ent[prov:type] >= 'pd:DataFrame'")
-        val t4=parseSql("select * from DUMMY waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id")
-        val t5=parseSql("select * from DUMMY waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id  where actor[prov:type] >= 'prov:Person'")
+        val t1: Operator =parseSql("select * from ent a prov:Entity")
+        val t2: Operator =parseSql("select ent as renamed from ent a prov:Entity")
+        val t3: Operator =parseSql("select * from ent a prov:Entity where ent[prov:type] >= 'pd:DataFrame'")
+        val t4: Operator =parseSql("select * from DUMMY waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id")
+        val t5: Operator =parseSql("select * from DUMMY waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id  where actor[prov:type] >= 'prov:Person'")
 
-        val t6=parseSql(
+        val t6: Operator =parseSql(
           """
 
             select * from DUMMY waw a prov:WasAssociatedWith
@@ -498,17 +499,17 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
           """.stripMargin)
 
-        val ast1=Scan("prov:Entity",Schema("ent"), None)
-        val ast2=Project(Schema("renamed"), Schema("ent"), Scan("prov:Entity",Schema("ent"), None))
-        val ast3=Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("pd:DataFrame")),Scan("prov:Entity",Schema("ent"), None))
-        val ast4=Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None),"actor","id")
-        val ast5=Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None),"actor","id"))
-        val ast6=Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),Value("sk:pipeline.Pipeline")),Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),Value("ln:AutomatedLoanRecommendation")),Filter(Eq("includesQualifiedName",Property("do","prov:type"),Value("ln:PipelineApproval")),
+        val ast1: Scan =Scan("prov:Entity",Schema("ent"), None)
+        val ast2: Project =Project(Schema("renamed"), Schema("ent"), Scan("prov:Entity",Schema("ent"), None))
+        val ast3: Filter =Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("pd:DataFrame")),Scan("prov:Entity",Schema("ent"), None))
+        val ast4: Join =Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None),"actor","id")
+        val ast5: Filter =Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None),"actor","id"))
+        val ast6: Filter =Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),Value("sk:pipeline.Pipeline")),Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),Value("ln:AutomatedLoanRecommendation")),Filter(Eq("includesQualifiedName",Property("do","prov:type"),Value("ln:PipelineApproval")),
           Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Join(Join(Join(Join(Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None), "actor","id"),"waw","activity",Scan("prov:Activity",Schema("do"), None),"do","id"),"do","id",
             Scan("prov:WasGeneratedBy",Schema("wgb"), None),"wgb","activity"),"wgb","entity",Scan("prov:Entity",Schema("pipeline"), None),"pipeline","id"),"pipeline","id",Scan("prov:WasDerivedFrom",Schema("wdf"), None),
             "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",Schema("recommendation"), None),"recommendation","id")))))
 
-        def luc () = {
+        def luc (): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
 
           t1 should be (ast1)

@@ -39,7 +39,7 @@ object StatementIndexer {
   }
 
   def splitByStatementType (d: Document): Map[Kind.Value, List[Statement]] = {
-    splitByStatementType(d.statements.toList)
+    splitByStatementType(d.statements().toList)
   }
 
   def splitByStatementType (ss: Seq[Statement]): Map[Kind.Value, List[Statement]] = {

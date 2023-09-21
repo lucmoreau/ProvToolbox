@@ -1,9 +1,11 @@
 package org.openprovenance.prov.scala.utilities
 
-case class OrType[A,B](val a: Option[A], val b: Option[B]) {
+case class OrType[A,B](a: Option[A], b: Option[B]) {
 }
 
 object OrType {
+  import scala.language.implicitConversions
+
   // namespace pollution?  Maybe use "||" or "OrType"
   type or[A,B] = OrType[A,B]
 
@@ -37,9 +39,10 @@ object OrType {
 
 import org.openprovenance.prov.scala.utilities.OrType.or
 
+
 class Foo {
 
-  def bar[T <% Int or String or Double](t: Option[T]) = {
+  def bar[T <% Int or String or Double](t: Option[T]): Unit = {
     t match {
       case Some(x: Int) => println("processing Int: " + x)
       case Some(x: String) => println("processing String: " + x)
@@ -49,16 +52,16 @@ class Foo {
     }
   }
 
-  def foo[T <% Int or String or Double](t: T) = {
+  def foo[T <% Int or String or Double](t: T): Unit = {
     t match {
-      case (x: Int) => println("processing Int: " + x)
-      case (x: String) => println("processing String: " + x)
-      case (x: Double) => println("processing Double: " + x)
+      case x: Int => println("processing Int: " + x)
+      case x: String => println("processing String: " + x)
+      case x: Double => println("processing Double: " + x)
       case  _ => println("empty and I don't care the type")
     }
   }
 
-  def baz[T <% String or Int](t: List[T]) = {
+  def baz[T <% String or Int](t: List[T]): Unit = {
     for (x <- t) x match {
       case x: String => println("String list item: " + x)
       case x: Int => println("Int list item: " + x)

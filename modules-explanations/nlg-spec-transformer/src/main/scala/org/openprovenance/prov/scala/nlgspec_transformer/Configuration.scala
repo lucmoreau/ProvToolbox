@@ -81,7 +81,7 @@ object Language {
 
   def readDescriptorFromResource(resourcePath:String): Language = {
     val resource: BufferedSource =Source.fromResource(resourcePath)
-    val lang = SpecLoader.mapper.readValue(resource.bufferedReader, classOf[Language])
+    val lang = SpecLoader.mapper.readValue(resource.bufferedReader(), classOf[Language])
     lang
   }
 
@@ -227,11 +227,10 @@ object ConfigurationLoader {
     if (s.startsWith("{")) fromJson(s) else s
   }
   def extractPotentialJSon(m: Array[Object]): Array[Object] = {
-    m.map(value =>
-      value match {
-        case s:String => if (s.startsWith("{")) fromJson(s) else s
-        case _ => value
-      })
+    m.map {
+      case s: String => if (s.startsWith("{")) fromJson(s) else s
+      case value => value
+    }
   }
 
   def extractPotentialJSon(m: Map[String, Object]): Map[String, Object] = {

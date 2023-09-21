@@ -65,24 +65,24 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
   import RealiserFactory._
 
 
-  def this(template:Template, dictionary: Dictionary, profiles:Map[String,Object]) {
+  def this(template:Template, dictionary: Dictionary, profiles:Map[String,Object]) = {
     this(Seq(template), Seq(dictionary), profiles, null)
   }
 
-  def this(triple: (Seq[Template],Seq[Dictionary], Map[String, Object]), infiles:String) {
+  def this(triple: (Seq[Template],Seq[Dictionary], Map[String, Object]), infiles:String) ={
     this(triple._1,triple._2,triple._3, infiles)
   }
 
-  def this(config:Config) {
+  def this(config:Config) = {
     this(Language.read(config.language,config.languageAsFilep), config.infiles)
   }
 
-  def this(s:String, filep:Boolean) {
-    this(new AConfig(language=Seq(s),languageAsFilep = filep))
+  def this(s:String, filep:Boolean) = {
+    this(AConfig(language=Seq(s),languageAsFilep = filep))
   }
 
-  def this(seq:Seq[String], filep:Boolean) {
-    this(new AConfig(language=seq,languageAsFilep = filep))
+  def this(seq:Seq[String], filep:Boolean) = {
+    this(AConfig(language=seq,languageAsFilep = filep))
   }
 
 

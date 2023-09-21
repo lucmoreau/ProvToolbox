@@ -102,32 +102,34 @@ case class Config(outfiles: Seq[Output] = Seq(),
                   languageAsFilep: Boolean=true)  extends org.openprovenance.prov.scala.nlg.Config    {
 
 
-  def this (os: java.io.OutputStream, mediaType: String) {
+  def this (os: java.io.OutputStream, mediaType: String) = {
         this(outfiles=Seq(new StreamOutput(os)), defaultFormat=Format.fromMediatype(mediaType))
      }
-     def this (is: java.io.InputStream, mediaType: String) {
+     def this (is: java.io.InputStream, mediaType: String) = {
         this(infile=new StreamInput(is), defaultInputFormat=Format.fromMediatype(mediaType))
      }
-     def this (value: Int) {
+     def this (value: Int) = {
        this(to=value)
      }
-     def this (value: Int, kernel: Boolean, aggregatep: Boolean) {
+     def this (value: Int, kernel: Boolean, aggregatep: Boolean) = {
        this(to=value,kernel=kernel, aggregatep=aggregatep)
      }
 
-     def this (value: Int, uri: String) {
+     def this (value: Int, uri: String) = {
        this(to=value,nsBase=uri)
      }
-     def this (value: Int, uri: String, pretty: String) {
+     def this (value: Int, uri: String, pretty: String) = {
        this(to=value,nsBase=uri, prettyMethod=PrettyMethod.withName(pretty))
      }
 
 
      def theOutputFormats (): Seq[Format] = {
        if (outformats.isEmpty) {
-           outfiles.map{ o:Output => o match { case StandardOutput() => defaultFormat
-	                                             case StreamOutput(s) => defaultFormat
-                                               case FileOutput(f:File) => Format.withName(extension(f.getPath)) } }
+           outfiles.map {
+             case StandardOutput() => defaultFormat
+             case StreamOutput(s) => defaultFormat
+             case FileOutput(f: File) => Format.withName(extension(f.getPath))
+           }
        } else {
            outformats
        }
@@ -961,9 +963,9 @@ object CommandLine {
 
 	  if (!same) {
 	    println("doc1 - doc2")
-	    println(doc1.toDocument().statementOrBundle.toSet -- doc2.toDocument().statementOrBundle.toSet)
+	    println(doc1.toDocument.statementOrBundle.toSet -- doc2.toDocument.statementOrBundle.toSet)
 	    println("doc2 - doc2")
-	    println(doc2.toDocument().statementOrBundle.toSet -- doc1.toDocument().statementOrBundle.toSet)
+	    println(doc2.toDocument.statementOrBundle.toSet -- doc1.toDocument.statementOrBundle.toSet)
 	  }
 
   }
@@ -985,8 +987,8 @@ object CommandLine {
     val params=nowParam()
 
 
-    val source1= toBufferedSource(descriptionFile).bufferedReader
-    val source2= toBufferedSource(withSummaryDescription).bufferedReader
+    val source1= toBufferedSource(descriptionFile).bufferedReader()
+    val source2= toBufferedSource(withSummaryDescription).bufferedReader()
 
     val desca=TypePropagator.om.readValue(source1, classOf[SummaryDescriptionJson])
     val descb=TypePropagator.om.readValue(source2, classOf[SummaryDescriptionJson])

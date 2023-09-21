@@ -16,16 +16,16 @@ case class Triple (subject: QualifiedName,
 }
 
 case class Result private (string: Option[String], phrase:Option[Phrase], map:Option[Map[String,Object]], set:Option[Seq[Object]]) {
-  def this(s:String) {
+  def this(s:String) = {
     this(Option(s),None,None,None)
   }
-  def this (map:Phrase) {
+  def this (map:Phrase) = {
     this(None, Option(map), None, None)
   }
-  def this (set:Seq[Object]) {
+  def this (set:Seq[Object]) = {
     this(None, None,None,  Option(set))
   }
-  def this (map:Map[String,Object]) {
+  def this (map:Map[String,Object]) = {
     this(None,None,  Option(map), None)
   }
 }

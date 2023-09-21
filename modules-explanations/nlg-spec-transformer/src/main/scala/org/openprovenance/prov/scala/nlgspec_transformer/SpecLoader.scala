@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import com.fasterxml.jackson.module.scala.ScalaObjectMapper
 import nlg.wrapper._
 import org.openprovenance.prov.model.Bundle
 import org.openprovenance.prov.scala.immutable.{ProvFactory, Statement}
@@ -29,6 +29,7 @@ import scala.jdk.CollectionConverters._
 import java.io._
 import java.util
 import scala.collection.immutable
+import scala.collection.immutable.ArraySeq
 import scala.reflect.ClassTag
 
 
@@ -876,7 +877,7 @@ object defs  {
 
       val values_indexed: Array[Array[(String, Statement)]] = all_indices.map(i => variables.zip(statementSequences.map(seq => if (i > seq.size) seq.last: Statement else seq(i): Statement)))
 
-      val phrases: Seq[F] = values_indexed.flatMap(bindings => {
+      val phrases: Seq[F] = ArraySeq.unsafeWrapArray(values_indexed).flatMap(bindings => {
         val newTe = new TransformEnvironment {
           override val environment: Environment = e.environment
           override val statements: Map[String, Statement] = e.statements ++ bindings
@@ -899,7 +900,7 @@ object defs  {
 
       val all_indices: Array[Int] = (0 until num_attributes).toArray
 
-      val phrases: Seq[F] = all_indices.flatMap(index => {
+      val phrases: Seq[F] = ArraySeq.unsafeWrapArray(all_indices).flatMap(index => {
         val funcall = updateFuncallIndex(element, index)
         funcall.transform[F](e)
       })

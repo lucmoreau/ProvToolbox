@@ -778,7 +778,7 @@ class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
 
     val p=new MyParser(bufferedSource.mkString, actions2, actions)
     p.document.run() match {
-      case Success(result) => docBuilder.document
+      case Success(result) => docBuilder.document()
       case Failure(e: ParseError) => { println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException("Expression is not valid") }
       case Failure(e) => { println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException("Unexpected error during parsing run") }
     }
@@ -839,21 +839,9 @@ object AParser  {
   }
 
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
         lazy val inputfile : ParserInput = io.Source.fromFile(args(0)).mkString
-/*
-        println( "parsing " + new MyParser2("foo").pn_local.run())
-        println( "parsing " + new MyParser2("-foo").pn_local.run())
-        println( "parsing " + new MyParser2("foo").pn_prefix.run())
-        println( "parsing " + new MyParser2("8foo").pn_prefix.run())
-        println( "parsing " + new MyParser2("foo:var").qualified_name.run())
-        println( "parsing " + new MyParser2("var").qualified_name.run())
-        println( "parsing " + new MyParser2("var:").qualified_name.run())
-        println( "parsing " + new MyParser2(":var").qualified_name.run())
-        println( "parsing " + new MyParser2(":").qualified_name.run())
 
-
- */
 
         doCheckDoc( """
 document

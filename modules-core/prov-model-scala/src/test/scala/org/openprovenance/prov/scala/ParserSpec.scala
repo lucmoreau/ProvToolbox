@@ -34,7 +34,7 @@ class ParserSpec extends AnyFlatSpec with Matchers {
     actions2.next=docBuilder
     val p=new MyParser(s,null)
     p.document.run() match {
-      case Success(result) => p.getNext().asInstanceOf[DocBuilder].document==doc
+      case Success(result) => p.getNext().asInstanceOf[DocBuilder].document()==doc
       case Failure(e: ParseError) => false
       case Failure(e) =>false
     }

@@ -95,7 +95,7 @@ trait Identifiable extends org.openprovenance.prov.model.Identifiable {
     }
     
     def timeOrMarker(time: XMLGregorianCalendar,sb: StringBuilder): Unit = {
-        if (time == null) { sb+='-' } else { sb++= time.toString};
+        if (time == null) { sb+='-' } else { sb++= time.toString}
     }
     def timeOrMarker(time: Option[XMLGregorianCalendar],sb: StringBuilder):  Unit = {
        time match { case None => sb+='-'; case Some(time) => sb++= time.toString }
@@ -133,10 +133,9 @@ trait Hashable {
       @inline final def h(x: AnyRef): Int = {
           if (x==null) 0 else {
             x match {
-              case xs:Iterable[_] =>  {
+              case xs:Iterable[_] =>
                 val set: Set[_] =xs.toSet
                 set.hashCode
-              }
               case _ => x.hashCode
             }
           }
@@ -192,7 +191,7 @@ trait ImmutableEntity extends org.openprovenance.prov.model.HasLabel
 
     
     def getAttributes: Set[Attribute]= {
-      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++valueSet++other.values.flatten
+      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++valueSet()++other.values.flatten
     }
     
     
@@ -252,7 +251,7 @@ trait ImmutableAgent extends org.openprovenance.prov.model.HasLabel
 
     
     def getAttributes :Set[Attribute]= {
-      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++valueSet++other.values.flatten
+      label.map(l =>new Label(ProvFactory.pf.prov_label,l).asInstanceOf[Attribute])++typex++location++valueSet()++other.values.flatten
     }
         
     def toNotation (sb:StringBuilder): Unit = {
@@ -2514,7 +2513,7 @@ class Bundle(val id: QualifiedName,
       val currentNS=new Namespace(Namespace.getThreadNamespace)
       Namespace.withThreadNamespace(namespace)
       addString(sb,statement, "    ", "\n    ", "\n")
-      Namespace.withThreadNamespace(currentNS);
+      Namespace.withThreadNamespace(currentNS)
 
       sb++="  endBundle"
     }
@@ -2544,18 +2543,18 @@ trait HasNamespace {
     def addString[T <: StatementOrBundle](b: StringBuilder, set: IterableOnce[T], start: String, sep: String, end: String): StringBuilder = {
        var first = true
 
-       b append start
-       for (x <- set) {
+       b.append(start)
+       set.iterator.foreach (x => {
            if (first) {
                x.toNotation(b)
                first = false
            }
            else {
-               b append sep
+               b.append(sep)
                x.toNotation(b)
            }
-       }
-       b append end
+       })
+       b.append(end)
        b
     }
 
@@ -2574,7 +2573,7 @@ object Document {
 class Document(val statementOrBundle: Iterable[StatementOrBundle],
                @BeanProperty val namespace: Namespace) extends org.openprovenance.prov.model.Document with HasStatementsOrBundle with Hashable  with HasNamespace {
 
-	  def this() {
+	  def this() = {
 	    this(List(),new Namespace)
 	  }
 
@@ -2630,10 +2629,9 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
       val statements2=doc2.statementOrBundle
       val statements3=if (flatten) {
     	  statements2.flatMap(sb => sb match {
-    	                              case b:Bundle => {  b.namespace.getNamespaces.asScala.foreach{case (namespaceuri:String, prefix:String) => ns.register(prefix, namespaceuri)}
-    	                                                  b.statement
-    	                                                }
-    	                              case s:Statement => Seq(s)
+    	                              case b:Bundle => b.namespace.getNamespaces.asScala.foreach{case (namespaceuri:String, prefix:String) => ns.register(prefix, namespaceuri)}
+                                      b.statement
+                                    case s:Statement => Seq(s)
     	                       })
       } else {
         statements2
@@ -2649,7 +2647,7 @@ class Document(val statementOrBundle: Iterable[StatementOrBundle],
 
 class OrderedDocument( val orderedStatementOrBundle: Seq[StatementOrBundle],
 		                   @BeanProperty override val namespace: Namespace) extends Document(orderedStatementOrBundle.toSet,namespace) {
-  def this (doc: Document) {
+  def this (doc: Document) = {
     this(doc.statementOrBundle.toSeq,doc.namespace)
   }
 
@@ -2673,17 +2671,17 @@ class TypedValue protected (val `type`:  QualifiedName,
 
 
   def this(t: QualifiedName,
-           v: String) {
+           v: String) = {
         this (t,{val o:Object=v;o})
   }
 
   def this(t: QualifiedName,
-           v: QualifiedName) {
+           v: QualifiedName) = {
         this (t,{val o:Object=v;o})
   }
 
   def this(t: QualifiedName,
-           v: LangString) {
+           v: LangString) = {
         this (t,{val o:Object=v;o})
   }
 
@@ -2850,17 +2848,17 @@ class Type protected (override val `type`: QualifiedName,
 
 
     def this(t: QualifiedName,
-             v: String) {
+             v: String) = {
         this (t,{val o:Object=v;o})
     }
 
     def this(t: QualifiedName,
-             v: QualifiedName) {
+             v: QualifiedName) = {
         this (t,{val o:Object=v;o})
     }
 
     def this(t: QualifiedName,
-             v: LangString) {
+             v: LangString) = {
         this (t,{val o:Object=v;o})
     }
 
@@ -2919,17 +2917,17 @@ class Role protected (override val `type`: QualifiedName,
 
 
     def this(t: QualifiedName,
-             v: String) {
+             v: String) = {
         this (t,{val o:Object=v;o})
     }
 
     def this(t: QualifiedName,
-             v: QualifiedName) {
+             v: QualifiedName) = {
         this (t,{val o:Object=v;o})
     }
 
     def this(t: QualifiedName,
-             v: LangString) {
+             v: LangString) = {
         this (t,{val o:Object=v;o})
     }
 
@@ -2985,17 +2983,17 @@ class Location protected (override val `type`: QualifiedName,
 
 
     def this(t: QualifiedName,
-             v: String) {
+             v: String) = {
         this (t, {val o:Object=v; o})
     }
 
     def this(t: QualifiedName,
-             v: QualifiedName) {
+             v: QualifiedName) = {
         this (t, {val o:Object=v;o})
     }
 
     def this(t: QualifiedName,
-             v: LangString) {
+             v: LangString) = {
         this (t, {val o:Object=v;o})
     }
 
@@ -3047,17 +3045,17 @@ class Value protected (override val `type`:QualifiedName,
 
 
     def this(t: QualifiedName,
-             v: String) {
+             v: String) = {
         this (t, {val o:Object=v; o})
     }
 
     def this(t: QualifiedName,
-             v: QualifiedName) {
+             v: QualifiedName) = {
         this (t, {val o:Object=v; o})
     }
 
     def this(t: QualifiedName,
-             v: LangString) {
+             v: LangString) = {
         this (t, {val o:Object=v; o})
     }
 
@@ -3144,7 +3142,9 @@ class LangString (@BeanProperty val value: String,
     override val hashCode:Int = pr(h(lang),h(value))
     
     override def toString: String = {
-      lang match { case Some(l) => '"' + value + '"' + "@" + l; case None => '"' + value + '"' } 
+      lang match {
+        case Some(l) => "\"" + value + "\"" + "@" + l
+        case None => "\"" + value + "\"" }
     }
     
     def toLabel: Label = {
@@ -3196,7 +3196,7 @@ class Label protected (override val `type`: QualifiedName,
        
     
     def this(t: QualifiedName,
-             v: LangString) {
+             v: LangString) = {
         this (t,{val o:Object=v;o})
     }
     
@@ -3247,7 +3247,7 @@ object Other {
       def apply(others: java.util.Collection[org.openprovenance.prov.model.Other]): Map[QualifiedName,Set[Other]] = {
           val others2=others.asScala.toSet
           val group=    others2.map(s => {
-                       val o=Other(s);
+                       val o=Other(s)
                        o.elementName -> o
                       }).groupBy(_._1)
           val group2=group.view.mapValues(_.map(_._2)).toMap
@@ -3273,19 +3273,19 @@ class Other protected (val elementName : QualifiedName,
   
     def this(el: QualifiedName,
              t:  QualifiedName,
-             v:  String) {
+             v:  String) = {
         this (el,t,{val o:Object=v;o})
     }
     
     def this(el: QualifiedName,
              t:  QualifiedName,
-             v:  QualifiedName) {
+             v:  QualifiedName) = {
         this (el,t,{val o:Object=v;o})
     }
     
     def this(el: QualifiedName,
              t:  QualifiedName,
-             v:  LangString) {
+             v:  LangString) = {
         this (el,t,{val o:Object=v;o})
     }
      
@@ -3316,7 +3316,7 @@ class Other protected (val elementName : QualifiedName,
 }
 
 object QualifiedName {
-    val qnU=new QualifiedNameUtils;
+    val qnU=new QualifiedNameUtils
     
     def apply(name: org.openprovenance.prov.model.QualifiedName): QualifiedName = {
         if (name==null) return null
@@ -3382,7 +3382,7 @@ class QualifiedName (val prefix: String,
         case _ => false
     }
     
-    def compare(that: QualifiedName): Int = (this.getUri()) compare (that.getUri())
+    def compare(that: QualifiedName): Int = this.getUri() compare that.getUri()
 
 
 }
@@ -3977,7 +3977,7 @@ trait ImmutableConstructor extends ImmutableConstructorInterface {
 
 class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.openprovenance.prov.model.AtomConstructor with org.openprovenance.prov.model.ModelConstructor with ImmutableConstructorDelegator  {
 
-  override def delegate = adelegate
+  override def delegate: ImmutableConstructorInterface = adelegate
 
   override def newQualifiedName(x1: String, x2:String, x3: String, x4:org.openprovenance.prov.model.ProvUtilities.BuildFlag) = throw new UnsupportedOperationException
 

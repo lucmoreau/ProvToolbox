@@ -10,14 +10,6 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/EngineProcessFunction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/EngineProcessFunction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/JsonSupport.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/JsonSupport.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/query.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/query.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/query_unstaged.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/query_unstaged.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/TemplateAndProfileReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/TemplateAndProfileReader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,33 +179,7 @@
       <recent name="org.openprovenance.prov.model.exception" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.Canonical2Spec.File pc1-with-id should do stats">
-    <configuration name="RoundTripFromJavaJSONLD11Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.RoundTripFromJavaJSONLD11Test" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="ScalaTest.QuerySpec.A query should work on a simple document">
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -350,6 +316,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="QuerySpec.A query should work on a simple document" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-query" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Test name" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.query.QuerySpec" />
+      <option name="testName" value="A query should work on a simple document" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <option name="allowRunningInParallel" value="false" />
       <option name="projectPathOnTarget" />
@@ -377,19 +358,19 @@
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.TranslateIT.testBundle5" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testEntity0" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="ScalaTest.QuerySpec.A query should work on a simple document" />
       <item itemvalue="ScalaTest.Canonical2Spec.File pc1-with-id should do stats" />
       <item itemvalue="ScalaTest.ModelSpec.An entity should have an identifier" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="ScalaTest.QuerySpec.A query should work on a simple document" />
         <item itemvalue="ScalaTest.Canonical2Spec.File pc1-with-id should do stats" />
         <item itemvalue="ScalaTest.ModelSpec.An entity should have an identifier" />
         <item itemvalue="JUnit.TranslateIT.testBundle5" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testEntity0" />
-        <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test" />
       </list>
     </recent_temporary>
   </component>
@@ -774,6 +755,7 @@
       <workItem from="1695023224064" duration="55000" />
       <workItem from="1695023287797" duration="30105000" />
       <workItem from="1695190967915" duration="21095000" />
+      <workItem from="1695355590282" duration="739000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

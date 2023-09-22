@@ -9,88 +9,87 @@ import org.openprovenance.prov.scala.nf.DocumentProxyInterface
 import scala.collection.immutable.Queue
 
 class SimpleStreamStats(var threshold:Int=10000) extends ProvStream {
-    var count=0;
-    var times: Queue[LocalDateTime]=Queue()
-    
-    def processTime(count: Int, time: LocalDateTime): Unit = {
-        times = times.enqueue(LocalDateTime.now())
-    }
+  var count=0;
+  var times: Queue[LocalDateTime]=Queue()
 
-    val postStatement: Statement => Unit = (s: Statement) => {
-        count=count+1
-        if (count == threshold) {
-            processTime(count, LocalDateTime.now())
-          
-          count=0;
-        }
+  def processTime(count: Int, time: LocalDateTime): Unit = {
+    times = times.enqueue(LocalDateTime.now())
+  }
+
+  val postStatement: Statement => Unit = (s: Statement) => {
+    count=count+1
+    if (count == threshold) {
+      processTime(count, LocalDateTime.now())
+      count=0;
     }
-    
-    val postStartDocument: Namespace => Unit = (ns: Namespace) => {
-      
-    }
-    val postEndDocument: () => Unit = () => {
-        processTime(count, LocalDateTime.now())
-        times.foreach { println(_) }
-    }
-    
-    val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
-      
-    }
-    val postEndBundle: () => Unit = () => {
-      
-    }
+  }
+
+  val postStartDocument: Namespace => Unit = (ns: Namespace) => {
+
+  }
+  val postEndDocument: () => Unit = () => {
+    processTime(count, LocalDateTime.now())
+    times.foreach { println(_) }
+  }
+
+  val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
+
+  }
+  val postEndBundle: () => Unit = () => {
+
+  }
 }
 
 class SimpleStreamStatsPrint(thresh:Int, out: PrintWriter) extends SimpleStreamStats(thresh) {
-    override def processTime(count: Int, time: LocalDateTime): Unit = {
-      out.println(time.toString())
-      out.flush()
-    }
-    override val postEndDocument: () => Unit = () => {
-        processTime(count, LocalDateTime.now())
-        out.close()
-    }
-    
+  override def processTime(count: Int, time: LocalDateTime): Unit = {
+    out.println(time.toString())
+    out.flush()
+  }
+  override val postEndDocument: () => Unit = () => {
+    processTime(count, LocalDateTime.now())
+    out.close()
+  }
+
 
 }
 
 
 class Tee (val s1: ProvStream, val s2: ProvStream) extends ProvStream {
 
-    val postStatement: Statement => Unit = (s: Statement) => {
-        s1.postStatement(s)
-        s2.postStatement(s)
-    }
-    
-    val postStartDocument: Namespace => Unit = (ns: Namespace) => {
-      s1.postStartDocument(ns)
-      s2.postStartDocument(ns)
-    }
-    
-    val postEndDocument: () => Unit = () => {
-       s1.postEndDocument()
-       s2.postEndDocument()      
-    }
-    
-    val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
-      s1.postStartBundle(qn,ns)
-      s2.postStartBundle(qn,ns)       
-    }
-    
-    val postEndBundle: () => Unit = () => {
-        s1.postEndBundle()
-        s2.postEndBundle()
-    }
+  val postStatement: Statement => Unit = (s: Statement) => {
+    s1.postStatement(s)
+    s2.postStatement(s)
+  }
+
+  val postStartDocument: Namespace => Unit = (ns: Namespace) => {
+    s1.postStartDocument(ns)
+    s2.postStartDocument(ns)
+  }
+
+  val postEndDocument: () => Unit = () => {
+    s1.postEndDocument()
+    s2.postEndDocument()
+  }
+
+  val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
+    s1.postStartBundle(qn,ns)
+    s2.postStartBundle(qn,ns)
+  }
+
+  val postEndBundle: () => Unit = () => {
+    s1.postEndBundle()
+    s2.postEndBundle()
+  }
 }
 
 
 final class DocBuilderFunctions (
-  var doc_statementOrBundles:Seq[StatementOrBundle] = Seq(),
-  var doc_ns:Option[Namespace]=None,
+                                  var doc_statementOrBundles:Seq[StatementOrBundle] = Seq(),
+                                  var doc_ns:Option[Namespace]=None,
 
-  var bun_ns:Option[Namespace]=None,
-  var bun_id:Option[QualifiedName]=None,
-  var bun_statements:Option[Seq[Statement]]=None) {
+                                  var bun_ns:Option[Namespace]=None,
+                                  var bun_id:Option[QualifiedName]=None,
+                                  var bun_statements:Option[Seq[Statement]]=None) {
 
   def reset(): Unit = {
     doc_statementOrBundles=Seq()
@@ -171,7 +170,7 @@ final class DocBuilder(val funs:DocBuilderFunctions) extends ProvStream {
   val postStartBundle: (QualifiedName, Namespace) => Unit = funs.postStartBundle
 
   val postEndBundle: () => Unit = funs.postEndBundle
-  
+
   def document (): Document = funs.document()
 
 }
@@ -185,22 +184,22 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
   var bun_id:Option[QualifiedName]=None
   var bun_statements:Option[Set[Statement]]=None
 
-  
-  
+
+
   val postStatement: Statement => Unit = (s: Statement) => {
     (bun_id,bun_statements) match {
       case (None,None) =>  nf_doc= nf_doc.add(s)
       case (Some(_),Some(statements))=>  bun_statements = Some(statements + s)
       case _ => ???
-   }
+    }
   }
   def postBundle: Bundle => Int = (b: Bundle) => {
-     (bun_id,bun_statements) match {
+    (bun_id,bun_statements) match {
       case (None,None) =>  0 // TODO what do do?
       case (Some(_),Some(_))=>  throw new BundleNotClosedException
       case _ => ???
-  }
-   
+    }
+
   }
   val postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
     doc_ns=Some(anamespace)
@@ -209,10 +208,10 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
 
   val postEndDocument: () => Unit = () => {
   }
-  
+
 
   val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
-  //  println("start bundle " + qn.toString() + " " + bun_id)
+    //  println("start bundle " + qn.toString() + " " + bun_id)
     //println("start bundle " + ns)
     bun_id match {
       case Some(_) => throw new NestedBundleException
@@ -222,11 +221,11 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
     ns.setParent(doc_ns.get)
     bun_id=Some(qn)
     bun_statements=Some(Set())
-    
+
   }
 
   val postEndBundle: () => Unit = () => {
-//    println ("end bundle " + bun_id)
+    //    println ("end bundle " + bun_id)
     val bun= (bun_id,bun_ns,bun_statements) match {
       case (Some(id),Some(ns),Some(statements)) => new Bundle(id,statements,ns)
       case _ => throw new BundleNotStartedException
@@ -236,7 +235,7 @@ final class NFBuilder(documentProxyFactory: org.openprovenance.prov.scala.nf.Doc
     bun_statements=None
     postBundle(bun)
   }
-  
+
   def document (): DocumentProxyInterface = doc_ns match {
     case Some(ns) => nf_doc
     case None => throw new DocumentNotStartedException
@@ -250,7 +249,7 @@ class NestedBundleException extends Exception
 class BundleNotClosedException extends Exception
 
 class NamespaceWrapper(val namespace:Namespace) extends HasNamespace {
-  
+
 }
 
 class FileStreamer (pw: PrintWriter, b: Boolean) extends ProvStream {
@@ -259,41 +258,41 @@ class FileStreamer (pw: PrintWriter, b: Boolean) extends ProvStream {
   }
 
   override val postStatement: Statement => Unit = (s: Statement) => {
-      pw.println(s.toString())
+    pw.println(s.toString())
   }
   val postBundle: Bundle => Unit = (b: Bundle) => {
-      pw.println("endBundle")
+    pw.println("endBundle")
   }
 
   override val postStartDocument: Namespace => Unit = (anamespace: Namespace) => {
-      pw.println("document")
-      Namespace.withThreadNamespace(anamespace)
+    pw.println("document")
+    Namespace.withThreadNamespace(anamespace)
 
-      val sb=new StringBuilder
-      new NamespaceWrapper(anamespace).printNamespace(sb)  // FIXME: currently, setting the namespace here, so that they can be used later
-                                                           // but this is not  satisfactory, since each stream may need to have its own namespace.
-      pw.println(sb)
-      
+    val sb=new StringBuilder
+    new NamespaceWrapper(anamespace).printNamespace(sb)  // FIXME: currently, setting the namespace here, so that they can be used later
+    // but this is not  satisfactory, since each stream may need to have its own namespace.
+    pw.println(sb)
+
   }
 
   override val postEndDocument: () => Unit = () => {
-      pw.println("endDocument")
-      if (b) pw.close()
+    pw.println("endDocument")
+    if (b) pw.close()
   }
 
 
   override val postStartBundle: (QualifiedName, Namespace) => Unit = (qn: QualifiedName, ns: Namespace) => {
-      pw.println("bundle " + qn.toString())
-      
-      val sb=new StringBuilder
-      new NamespaceWrapper(ns).printNamespace(sb)
-      pw.println(sb)
+    pw.println("bundle " + qn.toString())
+
+    val sb=new StringBuilder
+    new NamespaceWrapper(ns).printNamespace(sb)
+    pw.println(sb)
   }
 
   override val postEndBundle: () => Unit = () => {
     pw.println ("endBundle")
   }
-  
+
 
 
 }

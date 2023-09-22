@@ -1,18 +1,18 @@
 package org.openprovenance.prov.scala.immutable
 
 import java.io.{InputStream, OutputStream}
-
-import org.parboiled2.{Rule1, _}
+import org.parboiled2.*
+import org.parboiled2.support.hlist.HNil
 
 import scala.util.{Failure, Success}
 import org.openprovenance.prov.model.Namespace
-import ProvFactory.pf
+
 import javax.xml.datatype.XMLGregorianCalendar
-import org.openprovenance.prov.model
+import ProvFactory.pf
+//import org.openprovenance.prov.model
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}
-import shapeless.HNil
 
 import scala.io.BufferedSource
 
@@ -122,263 +122,264 @@ trait ProvnNamespaces extends Parser with ProvnCore {
 trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
 
-    def entity:Rule1[Entity] = rule {  "entity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeEntity ~ WS }
+  def entity:Rule1[Entity] = rule {  "entity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeEntity ~ WS }
 
-    def agent:Rule1[Agent] = rule {  "agent" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeAgent ~ WS }
+  def agent:Rule1[Agent] = rule {  "agent" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~ optionalAttributeValuePairs ~ ')' ~> makeAgent ~ WS }
 
-    def activity:Rule1[Activity] = rule {  "activity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~  ( ',' ~ WS ~ optional_datetime  ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')'  ~ WS  ~> makeActivity | optionalAttributeValuePairs ~ ')'  ~ WS   ~> makeActivityNoTime ) }
+  def activity:Rule1[Activity] = rule {  "activity" ~ WS ~ '(' ~ WS ~ identifier ~ WS ~  ( ',' ~ WS ~ optional_datetime  ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')'  ~ WS  ~> makeActivity | optionalAttributeValuePairs ~ ')'  ~ WS   ~> makeActivityNoTime ) }
 
-    def wasGeneratedBy:Rule1[WasGeneratedBy] = rule {  "wasGeneratedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS |
-                                                                                                                                                                                optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId2 ~ WS ) |
-                                                                     identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByWithId ~ WS | 
-                                                                                                                                                                                optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByWithId2 ~ WS ) |
-                                                                                    ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS |
-                                                                                                                                                                                optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId2 ~ WS ))) }
+  def wasGeneratedBy:Rule1[WasGeneratedBy] = rule {  "wasGeneratedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByWithId2 ~ WS ) |
+      ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeWasGeneratedByNoId2 ~ WS ))) }
 
-    def wasInvalidatedBy:Rule1[WasInvalidatedBy] = rule {  "wasInvalidatedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId ~ WS |
-                                                                                                                                                                                    optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId2 ~ WS ) |
-                                                                         identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByWithId ~ WS | 
-                                                                                                                                                                                    optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByWithId2 ~ WS ) |
-                                                                                        ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId ~ WS |
-                                                                                                                                                                                    optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId2 ~ WS ))) }
-
-
-    def used:Rule1[Used] = rule {  "used" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS |
-                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeUsedNoId2 ~ WS ) |
-                                                 identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedWithId ~ WS | 
-                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeUsedWithId2 ~ WS ) |
-                                                                ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS |
-                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeUsedNoId2 ~ WS ))) }
-
-    def wasStartedBy:Rule1[WasStartedBy] = rule {  "wasStartedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId ~ WS |
-                                                                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId2 ~ WS ) |
-                                                                 identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByWithId ~ WS | 
-                                                                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeWasStartedByWithId2 ~ WS ) |
-                                                                                ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId ~ WS |
-                                                                                                                                                                                                            optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId2 ~ WS ))) }
+  def wasInvalidatedBy:Rule1[WasInvalidatedBy] = rule {  "wasInvalidatedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByWithId2 ~ WS ) |
+      ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeWasInvalidatedByNoId2 ~ WS ))) }
 
 
-    def wasEndedBy:Rule1[WasEndedBy] = rule {  "wasEndedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId ~ WS |
-                                                                                                                                                                                                        optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId2 ~ WS ) |
-                                                             identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByWithId ~ WS | 
-                                                                                                                                                                                                        optionalAttributeValuePairs ~ ')' ~> makeWasEndedByWithId2 ~ WS ) |
-                                                                            ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId ~ WS |
-                                                                                                                                                                                                        optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId2 ~ WS ))) }
+  def used:Rule1[Used] = rule {  "used" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeUsedNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeUsedWithId2 ~ WS ) |
+      ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeUsedNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeUsedNoId2 ~ WS ))) }
+
+  def wasStartedBy:Rule1[WasStartedBy] = rule {  "wasStartedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeWasStartedByWithId2 ~ WS ) |
+      ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeWasStartedByNoId2 ~ WS ))) }
 
 
-    def wasAssociatedWith:Rule1[WasAssociatedWith] = rule {  "wasAssociatedWith" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId ~ WS |
-                                                                                                                                                                                       optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId2 ~ WS ) |
-                                                                           identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithWithId ~ WS | 
-                                                                                                                                                                                       optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithWithId2 ~ WS ) |
-                                                                                          ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId ~ WS |
-                                                                                                                                                                                       optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId2 ~ WS ))) }
+  def wasEndedBy:Rule1[WasEndedBy] = rule {  "wasEndedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeWasEndedByWithId2 ~ WS ) |
+      ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ optional_datetime ~ optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeWasEndedByNoId2 ~ WS ))) }
 
 
-    
-    def actedOnBehalfOf:Rule1[ActedOnBehalfOf] = rule {  "actedOnBehalfOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS |
-                                                                                                                                                                           optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId2 ~ WS ) |
-                                                                       identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfWithId ~ WS | 
-                                                                                                                                                                           optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfWithId2 ~ WS ) |
-                                                                                        ',' ~ WS                          ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS |
-                                                                                                                                                                           optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId2 ~ WS ))) }
-
-    def wasAttributedTo:Rule1[WasAttributedTo] = rule {  "wasAttributedTo" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS |
-                                                                       identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToWithId ~ WS | 
-                                                                                        ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS )) }
-
-    def wasInfluencedBy:Rule1[WasInfluencedBy] = rule {  "wasInfluencedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS |
-                                                                       identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByWithId ~ WS | 
-                                                                                        ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS )) }
-
-
-    def wasInformedBy:Rule1[WasInformedBy] = rule {  "wasInformedBy" ~ WS ~ '(' ~ WS ~ ('-'     ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS |
-                                                                       identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByWithId ~ WS | 
-                                                                                        ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS )) }
-
-
-    def wasDerivedFrom:Rule1[WasDerivedFrom] = rule {  "wasDerivedFrom" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
-                                                                                                                                                                                                                                         optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ) |
-                                                                     identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId ~ WS | 
-                                                                                                                                                                                                                                         optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId2 ~ WS ) |
-                                                                                      ',' ~ WS                          ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
-                                                                                                                                                                                                                                        optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ))) }
-
-    
-
-    def specializationOf:Rule1[SpecializationOf] = rule { "specializationOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeSpecializationOf ~ WS }
-
-    def alternateOf:Rule1[AlternateOf] = rule { "alternateOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeAlternateOf ~ WS }
-
-    def hadMember:Rule1[HadMember] = rule { "hadMember" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeHadMember ~ WS }
-
-    def mentionOf:Rule1[MentionOf] = rule { "mentionOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeMentionOf ~ WS }
-
-
-    def qualifiedSpecializationOf:Rule1[SpecializationOf] = rule {  "provext:specializationOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS |
-                                                                                          identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfWithId ~ WS | 
-                                                                                                           ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS )) }
+  def wasAssociatedWith:Rule1[WasAssociatedWith] = rule {  "wasAssociatedWith" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithWithId2 ~ WS ) |
+      ( ',' ~ WS                            ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeWasAssociatedWithNoId2 ~ WS ))) }
 
 
 
-    def qualifiedAlternateOf:Rule1[AlternateOf] = rule {  "provext:alternateOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS |
-                                                                                identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfWithId ~ WS | 
-                                                                                                 ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS )) }
+  def actedOnBehalfOf:Rule1[ActedOnBehalfOf] = rule {  "actedOnBehalfOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfWithId2 ~ WS ) |
+      ',' ~ WS                          ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeActedOnBehalfOfNoId2 ~ WS ))) }
+
+  def wasAttributedTo:Rule1[WasAttributedTo] = rule {  "wasAttributedTo" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToWithId ~ WS |
+      ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasAttributedToNoId ~ WS )) }
+
+  def wasInfluencedBy:Rule1[WasInfluencedBy] = rule {  "wasInfluencedBy" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByWithId ~ WS |
+      ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInfluencedByNoId ~ WS )) }
 
 
-    def qualifiedHadMemberOf:Rule1[HadMember] = rule {  "provext:hadMember" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS |
-                                                                                identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfWithId ~ WS | 
-                                                                                                 ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS )) }
+  def wasInformedBy:Rule1[WasInformedBy] = rule {  "wasInformedBy" ~ WS ~ '(' ~ WS ~ ('-'     ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByWithId ~ WS |
+      ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS )) }
 
 
-    def identifier: Rule1[QualifiedName] = qualified_name
-
-    def identifierOrMarker = rule { (  '-' ~ WS ~> makeNoIdentifier | qualified_name ~> makeOptionalIdentifier ) }
-
-    def statement: Rule1[Statement] = rule { entity | agent | activity |  wasGeneratedBy | wasDerivedFrom | wasInvalidatedBy | used | wasAssociatedWith | actedOnBehalfOf | wasAttributedTo | specializationOf | alternateOf | hadMember | wasInformedBy | wasStartedBy | wasEndedBy | qualifiedSpecializationOf | mentionOf | qualifiedAlternateOf | qualifiedHadMemberOf | wasInfluencedBy }
-
-    def statementOrBundle = rule { statement | bundle }
-
-    def optionalAttributeValuePairs: Rule1[Seq[Attribute]] = rule { optional ( ',' ~ WS ~ '[' ~ WS ~ ( attributeValuePairs ~ WS ~ ']' ~ WS  |
-                                                                                                                                  ']' ~ WS ~> makeEmptyAttributeSet )  )  ~> makeAttributeSetFromOption }
-
-    def attributeValuePairs: Rule1[Seq[Attribute]] = rule {	 attributeValuePair ~ zeroOrMore( ',' ~ WS ~ attributeValuePair ) ~> makeAttributeSet }
-
-    def	attributeValuePair: Rule1[Attribute] = rule {  attribute ~ WS ~ '=' ~ WS ~ literal ~ WS   }
-
-    def attribute: Rule1[QualifiedName] = qualified_name
-  
-    def literal = rule { typedLiteral  ~> makeAttribute | convenienceNotation }
-
-    def typedLiteral: Rule2[String,QualifiedName] = rule { string_literal ~ WS ~ "%%" ~ WS ~ datatype }
-
-    def datatype = rule { qualified_name }
-
-    def convenienceNotation = rule { (string_literal ~ optional (langtag) ~> makeStringAttribute ) | int_literal  ~> makeIntAttribute | qualified_name_literal  ~> makeQualifiedNameAttribute }
-
-    def qualified_name_literal = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
-
-    def int_literal = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> makeText ~ WS }
-
-    private val marker: CharPredicate = CharPredicate('-')
-
-     def string_literal: Rule1[String] = rule { string_literal_long2 | string_literal2 }
-
-    def string_literal2 = rule { '"' ~ capture (zeroOrMore(noneOf("\"\\\n") | echar )) ~> makeText ~ '"' ~ WS } // TODO: get proper grammar
- 
-    def string_literal_long2 =  rule { "\"\"\"" ~ capture (zeroOrMore(optional(ch('"') | "\"\"") ~ ( noneOf("\"\\") | echar ))) ~> makeText ~ "\"\"\"" ~ WS }
-
-    val string_escape_chars = CharPredicate("tbnrf\\\"\'")
-    private def echar = rule { '\\' ~ string_escape_chars }
-
-    //http://www.w3.org/TR/rdf-sparql-query/#rLANGTAG
-    //def langtag = rule { '@' ~ capture (oneOrMore( CharPredicate.Alpha ) ~ zeroOrMore ( '-' ~ oneOrMore ( CharPredicate.Alpha ++ CharPredicate.Digit ) ))  ~> makeText ~ WS }
-    
-    def langtag = rule { '@' ~ capture (oneOrMore( CharPredicate.Alpha ) ~ zeroOrMore ( marker ~ oneOrMore ( CharPredicate.Alpha ++ CharPredicate.Digit ) ))  ~> makeText ~ WS }
+  def wasDerivedFrom:Rule1[WasDerivedFrom] = rule {  "wasDerivedFrom" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
+    optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ) |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId ~ WS |
+      optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId2 ~ WS ) |
+      ',' ~ WS                          ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
+        optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ))) }
 
 
-    // TODO: http://www.w3.org/TR/xmlschema11-2/#nt-dateTimeRep
-    def datetime = rule { capture (CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ 'T' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ optional ('.' ~ CharPredicate.Digit  ~ zeroOrMore(CharPredicate.Digit)) ~  optional('Z' | TimeZoneOffset) ) ~ WS ~> makeTime }
 
-    def optional_datetime:Rule1[Option[XMLGregorianCalendar]] = rule { datetime ~> makeOptionalTime | '-' ~ WS ~> makeNoTime }
+  def specializationOf:Rule1[SpecializationOf] = rule { "specializationOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeSpecializationOf ~ WS }
 
-    def TimeZoneOffset = rule { SIGN ~  CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit }
+  def alternateOf:Rule1[AlternateOf] = rule { "alternateOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeAlternateOf ~ WS }
 
-    private val SIGN: CharPredicate = CharPredicate("+-")
+  def hadMember:Rule1[HadMember] = rule { "hadMember" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeHadMember ~ WS }
+
+  def mentionOf:Rule1[MentionOf] = rule { "mentionOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeMentionOf ~ WS }
+
+
+  def qualifiedSpecializationOf:Rule1[SpecializationOf] = rule {  "provext:specializationOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfWithId ~ WS |
+      ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedSpecializationOfNoId ~ WS )) }
+
+
+
+  def qualifiedAlternateOf:Rule1[AlternateOf] = rule {  "provext:alternateOf" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfWithId ~ WS |
+      ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedAlternateOfNoId ~ WS )) }
+
+
+  def qualifiedHadMemberOf:Rule1[HadMember] = rule {  "provext:hadMember" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS |
+    identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfWithId ~ WS |
+      ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeQualifiedHadMemberOfNoId ~ WS )) }
+
+
+  def identifier: Rule1[QualifiedName] = qualified_name
+
+  def identifierOrMarker = rule { (  '-' ~ WS ~> makeNoIdentifier | qualified_name ~> makeOptionalIdentifier ) }
+
+  def statement: Rule1[Statement] = rule { entity | agent | activity |  wasGeneratedBy | wasDerivedFrom | wasInvalidatedBy | used | wasAssociatedWith | actedOnBehalfOf | wasAttributedTo | specializationOf | alternateOf | hadMember | wasInformedBy | wasStartedBy | wasEndedBy | qualifiedSpecializationOf | mentionOf | qualifiedAlternateOf | qualifiedHadMemberOf | wasInfluencedBy }
+
+  def statementOrBundle = rule { statement | bundle }
+
+  def optionalAttributeValuePairs: Rule1[Seq[Attribute]] = rule { optional ( ',' ~ WS ~ '[' ~ WS ~ ( attributeValuePairs ~ WS ~ ']' ~ WS  |
+    ']' ~ WS ~> makeEmptyAttributeSet )  )  ~> makeAttributeSetFromOption }
+
+  def attributeValuePairs: Rule1[Seq[Attribute]] = rule {	 attributeValuePair ~ zeroOrMore( ',' ~ WS ~ attributeValuePair ) ~> makeAttributeSet }
+
+  def	attributeValuePair: Rule1[Attribute] = rule {  attribute ~ WS ~ '=' ~ WS ~ literal ~ WS   }
+
+  def attribute: Rule1[QualifiedName] = qualified_name
+
+  def literal = rule { typedLiteral  ~> makeAttribute | convenienceNotation }
+
+  def typedLiteral: Rule2[String,QualifiedName] = rule { string_literal ~ WS ~ "%%" ~ WS ~ datatype }
+
+  def datatype = rule { qualified_name }
+
+  def convenienceNotation = rule { (string_literal ~ optional (langtag) ~> makeStringAttribute ) | int_literal  ~> makeIntAttribute | qualified_name_literal  ~> makeQualifiedNameAttribute }
+
+  def qualified_name_literal = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
+
+  def int_literal = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> makeText ~ WS }
+
+  private val marker: CharPredicate = CharPredicate('-')
+
+  def string_literal: Rule1[String] = rule { string_literal_long2 | string_literal2 }
+
+  def string_literal2 = rule { '"' ~ capture (zeroOrMore(noneOf("\"\\\n") | echar )) ~> makeText ~ '"' ~ WS } // TODO: get proper grammar
+
+  def string_literal_long2 =  rule { "\"\"\"" ~ capture (zeroOrMore(optional(ch('"') | "\"\"") ~ ( noneOf("\"\\") | echar ))) ~> makeText ~ "\"\"\"" ~ WS }
+
+  val string_escape_chars = CharPredicate("tbnrf\\\"\'")
+  private def echar = rule { '\\' ~ string_escape_chars }
+
+  //http://www.w3.org/TR/rdf-sparql-query/#rLANGTAG
+  //def langtag = rule { '@' ~ capture (oneOrMore( CharPredicate.Alpha ) ~ zeroOrMore ( '-' ~ oneOrMore ( CharPredicate.Alpha ++ CharPredicate.Digit ) ))  ~> makeText ~ WS }
+
+  def langtag = rule { '@' ~ capture (oneOrMore( CharPredicate.Alpha ) ~ zeroOrMore ( marker ~ oneOrMore ( CharPredicate.Alpha ++ CharPredicate.Digit ) ))  ~> makeText ~ WS }
+
+
+  // TODO: http://www.w3.org/TR/xmlschema11-2/#nt-dateTimeRep
+  def datetime = rule { capture (CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ 'T' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ optional ('.' ~ CharPredicate.Digit  ~ zeroOrMore(CharPredicate.Digit)) ~  optional('Z' | TimeZoneOffset) ) ~ WS ~> makeTime }
+
+  def optional_datetime:Rule1[Option[XMLGregorianCalendar]] = rule { datetime ~> makeOptionalTime | '-' ~ WS ~> makeNoTime }
+
+  def TimeZoneOffset = rule { SIGN ~  CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit }
+
+  private val SIGN: CharPredicate = CharPredicate("+-")
   //   def dateTimeLexicalRep = rule { yearFrag ~ '-' ~ monthFrag ~ '-' ~ dayFrag ~ 'T' ~ ( (hourFrag ~ ':' ~ minuteFrag ~ ':' ~ secondFrag) |  endOfDayFrag) ~ optional (timezoneFrag) }
 
 
-    
-
-    def document = rule { WS ~ "document" ~ WS ~ optional(namespaceDeclarations) ~> postStartDocument ~  zeroOrMore (statement ~> postStatement | bundle ) ~ WS ~ "endDocument"  ~> postEndDocument ~ WS  }
 
 
+  def document = rule { WS ~ "document" ~ WS ~ optional(namespaceDeclarations) ~> postStartDocument ~  zeroOrMore (statement ~> postStatement | bundle ) ~ WS ~ "endDocument"  ~> postEndDocument ~ WS  }
 
-    def bundle = rule { WS ~ "bundle" ~> openBundle ~ WS ~ qualified_nameAsString ~ WS  ~ optional(namespaceDeclarations) ~> postStartBundle ~ zeroOrMore (statement ~> postStatement) ~ WS ~ "endBundle" ~> postEndBundle ~ WS }
 
-    
+
+  def bundle = rule { WS ~ "bundle" ~> openBundle ~ WS ~ qualified_nameAsString ~ WS  ~ optional(namespaceDeclarations) ~> postStartBundle ~ zeroOrMore (statement ~> postStatement) ~ WS ~ "endBundle" ~> postEndBundle ~ WS }
+
+
 
   /* parser action */
-    val makeEntity: (QualifiedName,Seq[Attribute]) => Entity
-    val makeAgent: (QualifiedName,Seq[Attribute]) => Agent
-    val makeActivity: (QualifiedName,Option[XMLGregorianCalendar], Option[XMLGregorianCalendar], Seq[Attribute]) => Activity
-    val makeWasGeneratedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasGeneratedBy
-    val makeWasGeneratedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasGeneratedBy
-    val makeWasGeneratedByNoId: (QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasGeneratedBy
-    val makeWasGeneratedByNoId2: (QualifiedName, Seq[Attribute]) => WasGeneratedBy
-    val makeWasInvalidatedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasInvalidatedBy
-    val makeWasInvalidatedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasInvalidatedBy
-    val makeWasInvalidatedByNoId: (QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasInvalidatedBy
-    val makeWasInvalidatedByNoId2: (QualifiedName, Seq[Attribute]) => WasInvalidatedBy
-    val makeWasAssociatedWithWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasAssociatedWith
-    val makeWasAssociatedWithWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasAssociatedWith
-    val makeWasAssociatedWithNoId: (QualifiedName,Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasAssociatedWith
-    val makeWasAssociatedWithNoId2: (QualifiedName, Seq[Attribute]) => WasAssociatedWith
-    val makeActedOnBehalfOfWithId: (QualifiedName,QualifiedName,QualifiedName,Option[QualifiedName], Seq[Attribute]) => ActedOnBehalfOf
-    val makeActedOnBehalfOfWithId2: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => ActedOnBehalfOf
-    val makeActedOnBehalfOfNoId: (QualifiedName,QualifiedName,Option[QualifiedName], Seq[Attribute]) => ActedOnBehalfOf
-    val makeActedOnBehalfOfNoId2: (QualifiedName, QualifiedName, Seq[Attribute]) => ActedOnBehalfOf
-    val makeWasDerivedFromWithId: (QualifiedName,QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasDerivedFrom
-    val makeWasDerivedFromWithId2: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasDerivedFrom
-    val makeWasDerivedFromNoId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasDerivedFrom
-    val makeWasDerivedFromNoId2: (QualifiedName, QualifiedName, Seq[Attribute]) => WasDerivedFrom
-    val makeWasAttributedToWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasAttributedTo
-    val makeWasAttributedToNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => WasAttributedTo
-    val makeWasInfluencedByWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasInfluencedBy
-    val makeWasInfluencedByNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => WasInfluencedBy
-    val makeWasInformedByWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasInformedBy
-    val makeWasInformedByNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => WasInformedBy
-    val makeUsedWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => Used
-    val makeUsedWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => Used
-    val makeUsedNoId: (QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => Used
-    val makeUsedNoId2: (QualifiedName, Seq[Attribute]) => Used
-    val makeWasStartedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy
-    val makeWasStartedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasStartedBy
-    val makeWasStartedByNoId: (QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy
-    val makeWasStartedByNoId2: (QualifiedName, Seq[Attribute]) => WasStartedBy
-    val makeWasEndedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy
-    val makeWasEndedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasEndedBy
-    val makeWasEndedByNoId: (QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy
-    val makeWasEndedByNoId2: (QualifiedName, Seq[Attribute]) => WasEndedBy
-    val makeSpecializationOf: (QualifiedName,QualifiedName) => SpecializationOf
-    val makeQualifiedSpecializationOfWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => SpecializationOf
-    val makeQualifiedSpecializationOfNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => SpecializationOf
-    val makeAlternateOf: (QualifiedName,QualifiedName) => AlternateOf
-    val makeMentionOf: (QualifiedName,QualifiedName,QualifiedName) => MentionOf
-    val makeQualifiedAlternateOfWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => AlternateOf
-    val makeQualifiedAlternateOfNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => AlternateOf
-    val makeHadMember: (QualifiedName,QualifiedName) => HadMember
-    val makeQualifiedHadMemberOfWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => HadMember
-    val makeQualifiedHadMemberOfNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => HadMember
-    val makeActivityNoTime: (QualifiedName, Seq[Attribute]) => Activity
-    val makeAttribute: (QualifiedName, String, QualifiedName) => Attribute
-    val makeStringAttribute: (QualifiedName, String, Option[String]) => Attribute
-    val makeIntAttribute: (QualifiedName, String) => Attribute
-    val makeQualifiedNameAttribute: (QualifiedName, QualifiedName) => Attribute
+  val makeEntity: (QualifiedName,Seq[Attribute]) => Entity
+  val makeAgent: (QualifiedName,Seq[Attribute]) => Agent
+  val makeActivity: (QualifiedName,Option[XMLGregorianCalendar], Option[XMLGregorianCalendar], Seq[Attribute]) => Activity
+  val makeWasGeneratedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasGeneratedBy
+  val makeWasGeneratedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasGeneratedBy
+  val makeWasGeneratedByNoId: (QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasGeneratedBy
+  val makeWasGeneratedByNoId2: (QualifiedName, Seq[Attribute]) => WasGeneratedBy
+  val makeWasInvalidatedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasInvalidatedBy
+  val makeWasInvalidatedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasInvalidatedBy
+  val makeWasInvalidatedByNoId: (QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasInvalidatedBy
+  val makeWasInvalidatedByNoId2: (QualifiedName, Seq[Attribute]) => WasInvalidatedBy
+  val makeWasAssociatedWithWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasAssociatedWith
+  val makeWasAssociatedWithWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasAssociatedWith
+  val makeWasAssociatedWithNoId: (QualifiedName,Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasAssociatedWith
+  val makeWasAssociatedWithNoId2: (QualifiedName, Seq[Attribute]) => WasAssociatedWith
+  val makeActedOnBehalfOfWithId: (QualifiedName,QualifiedName,QualifiedName,Option[QualifiedName], Seq[Attribute]) => ActedOnBehalfOf
+  val makeActedOnBehalfOfWithId2: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => ActedOnBehalfOf
+  val makeActedOnBehalfOfNoId: (QualifiedName,QualifiedName,Option[QualifiedName], Seq[Attribute]) => ActedOnBehalfOf
+  val makeActedOnBehalfOfNoId2: (QualifiedName, QualifiedName, Seq[Attribute]) => ActedOnBehalfOf
+  val makeWasDerivedFromWithId: (QualifiedName,QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasDerivedFrom
+  val makeWasDerivedFromWithId2: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasDerivedFrom
+  val makeWasDerivedFromNoId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[QualifiedName], Seq[Attribute]) => WasDerivedFrom
+  val makeWasDerivedFromNoId2: (QualifiedName, QualifiedName, Seq[Attribute]) => WasDerivedFrom
+  val makeWasAttributedToWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasAttributedTo
+  val makeWasAttributedToNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => WasAttributedTo
+  val makeWasInfluencedByWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasInfluencedBy
+  val makeWasInfluencedByNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => WasInfluencedBy
+  val makeWasInformedByWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => WasInformedBy
+  val makeWasInformedByNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => WasInformedBy
+  val makeUsedWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => Used
+  val makeUsedWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => Used
+  val makeUsedNoId: (QualifiedName,Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => Used
+  val makeUsedNoId2: (QualifiedName, Seq[Attribute]) => Used
+  val makeWasStartedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy
+  val makeWasStartedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasStartedBy
+  val makeWasStartedByNoId: (QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasStartedBy
+  val makeWasStartedByNoId2: (QualifiedName, Seq[Attribute]) => WasStartedBy
+  val makeWasEndedByWithId: (QualifiedName,QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy
+  val makeWasEndedByWithId2: (QualifiedName,QualifiedName, Seq[Attribute]) => WasEndedBy
+  val makeWasEndedByNoId: (QualifiedName,Option[QualifiedName],Option[QualifiedName],Option[XMLGregorianCalendar], Seq[Attribute]) => WasEndedBy
+  val makeWasEndedByNoId2: (QualifiedName, Seq[Attribute]) => WasEndedBy
+  val makeSpecializationOf: (QualifiedName,QualifiedName) => SpecializationOf
+  val makeQualifiedSpecializationOfWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => SpecializationOf
+  val makeQualifiedSpecializationOfNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => SpecializationOf
+  val makeAlternateOf: (QualifiedName,QualifiedName) => AlternateOf
+  val makeMentionOf: (QualifiedName,QualifiedName,QualifiedName) => MentionOf
+  val makeQualifiedAlternateOfWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => AlternateOf
+  val makeQualifiedAlternateOfNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => AlternateOf
+  val makeHadMember: (QualifiedName,QualifiedName) => HadMember
+  val makeQualifiedHadMemberOfWithId: (QualifiedName,QualifiedName,QualifiedName, Seq[Attribute]) => HadMember
+  val makeQualifiedHadMemberOfNoId: (QualifiedName,QualifiedName, Seq[Attribute]) => HadMember
+  val makeActivityNoTime: (QualifiedName, Seq[Attribute]) => Activity
+  val makeAttribute: (QualifiedName, String, QualifiedName) => Attribute
+  val makeStringAttribute: (QualifiedName, String, Option[String]) => Attribute
+  val makeIntAttribute: (QualifiedName, String) => Attribute
+  val makeQualifiedNameAttribute: (QualifiedName, QualifiedName) => Attribute
 
-    val makeBundle: (String, Seq[Statement]) => Bundle = (name: String, r: Seq[Statement]) => {
-      val ns=theNamespace()
-      val qn=makeQualifiedName(name)
-      closeBundle()
-      new Bundle(qn, r,ns)
-    }
-    val openBundle: () => Unit
-    def closeBundle: () => Unit
+  val makeBundle: (String, Seq[Statement]) => Bundle = (name: String, r: Seq[Statement]) => {
+    val ns=theNamespace()
+    val qn=makeQualifiedName(name)
+    closeBundle()
+    import scala.jdk.CollectionConverters.SeqHasAsJava
+    pf.newNamedBundle(qn, ns, SeqHasAsJava(r).asJava).asInstanceOf[Bundle]
+  }
+  val openBundle: () => Unit
+  def closeBundle: () => Unit
 
-    val makeEmptyAttributeSet: () => Seq[Attribute] = () => Seq() :Seq[Attribute]
-    val makeAttributeSet: (Attribute, Seq[Attribute]) => Seq[Attribute] = (a: Attribute, r: Seq[Attribute]) => (r :+ a) :Seq[Attribute]
-    val makeAttributeSetFromOption: Option[Seq[Attribute]] => Seq[Attribute] = (s: Option[Seq[Attribute]]) =>  (s match { case Some(s) => s; case _ => Seq() } ) :Seq[Attribute]
-    val makeTime: (String) => XMLGregorianCalendar
-    val makeOptionalTime: (XMLGregorianCalendar) => Option[XMLGregorianCalendar]
-    val makeNoTime: () => Option[XMLGregorianCalendar] = () => None: Option[XMLGregorianCalendar]
-    val makeOptionalIdentifier: QualifiedName => Option[QualifiedName] = (q: QualifiedName) => Some(q): Option[QualifiedName]
-    val makeNoIdentifier: () => Option[QualifiedName] = () => None: Option[QualifiedName]
+  val makeEmptyAttributeSet: () => Seq[Attribute] = () => Seq() :Seq[Attribute]
+  val makeAttributeSet: (Attribute, Seq[Attribute]) => Seq[Attribute] = (a: Attribute, r: Seq[Attribute]) => (r :+ a) :Seq[Attribute]
+  val makeAttributeSetFromOption: Option[Seq[Attribute]] => Seq[Attribute] = (s: Option[Seq[Attribute]]) =>  (s match { case Some(s) => s; case _ => Seq() } ) :Seq[Attribute]
+  val makeTime: (String) => XMLGregorianCalendar
+  val makeOptionalTime: (XMLGregorianCalendar) => Option[XMLGregorianCalendar]
+  val makeNoTime: () => Option[XMLGregorianCalendar] = () => None: Option[XMLGregorianCalendar]
+  val makeOptionalIdentifier: QualifiedName => Option[QualifiedName] = (q: QualifiedName) => Some(q): Option[QualifiedName]
+  val makeNoIdentifier: () => Option[QualifiedName] = () => None: Option[QualifiedName]
 
- /* Streaming support */  
-    val postStatement: Statement => Unit
-    val postStartDocument: () => Unit
-    val postStartBundle: String => Unit
-    val postEndBundle: () => Unit
-    val postEndDocument: () => Unit
+  /* Streaming support */
+  val postStatement: Statement => Unit
+  val postStartDocument: () => Unit
+  val postStartBundle: String => Unit
+  val postEndBundle: () => Unit
+  val postEndDocument: () => Unit
 }
 
 trait ProvStream {
@@ -410,12 +411,12 @@ final class MyActions  {
 
   val makeAgent: (QualifiedName, Seq[Attribute]) => Agent = (n: QualifiedName, attr: Seq[Attribute]) => pf.newAgent(n, attr)
 
-  val makeActivity: (QualifiedName, Option[XMLGregorianCalendar], Option[XMLGregorianCalendar], Seq[Attribute]) => Activity = (n: QualifiedName, start: Option[XMLGregorianCalendar], end: Option[XMLGregorianCalendar], attr: Seq[Attribute]) => Activity {
+  val makeActivity: (QualifiedName, Option[XMLGregorianCalendar], Option[XMLGregorianCalendar], Seq[Attribute]) => Activity = (n: QualifiedName, start: Option[XMLGregorianCalendar], end: Option[XMLGregorianCalendar], attr: Seq[Attribute]) => {
     pf.newActivity(n, start, end, attr)
   }
 
 
-  val makeActivityNoTime: (QualifiedName, Seq[Attribute]) => Activity = (n: QualifiedName, attr: Seq[Attribute]) => Activity {
+  val makeActivityNoTime: (QualifiedName, Seq[Attribute]) => Activity = (n: QualifiedName, attr: Seq[Attribute]) => {
     pf.newActivity(n, None, None, attr)
   }
 
@@ -517,27 +518,27 @@ final class MyActions  {
   val makeQualifiedHadMemberOfNoId: (QualifiedName, QualifiedName, Seq[Attribute]) => HadMember = (e2:QualifiedName, e1:QualifiedName, attr:Seq[Attribute]) => pf.newHadMember(null,e2,Set(e1),attr)
 
 
-  val makeAttribute: (QualifiedName, String, QualifiedName) => Attribute = (attr: QualifiedName, literal: String, datatype: QualifiedName) => Attribute {
+  val makeAttribute: (QualifiedName, String, QualifiedName) => Attribute = (attr: QualifiedName, literal: String, datatype: QualifiedName) => {
     //println("creating attr for " ++ attr.toString ++ " " ++  literal ++ " " ++ datatype.toString)
-    pf.newAttribute(attr, literal, datatype)
+    pf.newAttribute(attr, literal, datatype).asInstanceOf[Attribute]
   }
 
-  val makeStringAttribute: (QualifiedName, String, Option[String]) => Attribute = (attr: QualifiedName, literal: String, lang: Option[String]) => Attribute {
+  val makeStringAttribute: (QualifiedName, String, Option[String]) => Attribute = (attr: QualifiedName, literal: String, lang: Option[String]) => {
     //println("creating attr (str) for " ++ attr.toString ++ " " ++  literal ++ " " + lang)
     lang match {
-      case None    => pf.newAttribute(attr, literal, pf.xsd_string)
-      case Some(l) => pf.newAttribute(attr, pf.newInternationalizedString(literal,l), pf.xsd_string)
+      case None    => pf.newAttribute(attr, literal, pf.xsd_string).asInstanceOf[Attribute]
+      case Some(l) => pf.newAttribute(attr, pf.newInternationalizedString(literal,l), pf.xsd_string).asInstanceOf[Attribute]
     }
 
   }
-  val makeIntAttribute: (QualifiedName, String) => Attribute = (attr: QualifiedName, literal: String) => Attribute {
+  val makeIntAttribute: (QualifiedName, String) => Attribute = (attr: QualifiedName, literal: String) => {
     //println("creating attr (int) for " ++ attr.toString ++ " " ++  literal)
-    pf.newAttribute(attr, literal, pf.xsd_int)
+    pf.newAttribute(attr, literal, pf.xsd_int).asInstanceOf[Attribute]
   }
 
-  val makeQualifiedNameAttribute: (QualifiedName, QualifiedName) => Attribute = (attr: QualifiedName, literal: QualifiedName) => Attribute {
+  val makeQualifiedNameAttribute: (QualifiedName, QualifiedName) => Attribute = (attr: QualifiedName, literal: QualifiedName) => {
     //println("creating attr (qn) for " ++ attr.toString ++ " " ++  literal.toString)
-    pf.newAttribute(attr, literal, pf.prov_qualified_name)
+    pf.newAttribute(attr, literal, pf.prov_qualified_name).asInstanceOf[Attribute]
   }
 
   val makeTime: String => XMLGregorianCalendar = (s: String) => pf.newISOTime(s): XMLGregorianCalendar
@@ -550,9 +551,9 @@ final class MyActions  {
 
 final class MyActions2 {
 
-   var docns: Namespace=null
-   var bun_ns: Option[Namespace]=None
-   var next: ProvStream=null
+  var docns: Namespace=null
+  var bun_ns: Option[Namespace]=None
+  var next: ProvStream=null
 
 
 
@@ -561,7 +562,7 @@ final class MyActions2 {
     case None => docns
   }
 
-  val makeQualifiedName: String => QualifiedName = (s:String) => QualifiedName {
+  val makeQualifiedName: String => QualifiedName = (s:String) =>  {
     //println("creating qn for " ++ s ++ " with ns " ++ ns.toString())
     theNamespace().stringToQualifiedName(s,pf).asInstanceOf[QualifiedName]
   }
@@ -762,7 +763,7 @@ class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
   val actions2=new MyActions2()
   val funs=new DocBuilderFunctions()
 
-  override def deserialiseDocument(in: InputStream): model.Document = {
+  override def deserialiseDocument(in: InputStream): org.openprovenance.prov.model.Document = {
     funs.reset()
     val docBuilder: DocBuilder =new DocBuilder(funs)
     val ns=new Namespace
@@ -779,15 +780,15 @@ class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
     val p=new MyParser(bufferedSource.mkString, actions2, actions)
     p.document.run() match {
       case Success(result) => docBuilder.document()
-      case Failure(e: ParseError) => { println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException("Expression is not valid") }
-      case Failure(e) => { println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException("Unexpected error during parsing run") }
+      case Failure(e: ParseError) => println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException("Expression is not valid")
+      case Failure(e) => println("Unexpected error during parsing run: " + e.printStackTrace); throw new RuntimeException("Unexpected error during parsing run")
     }
   }
 }
 
 object Parser {
 
-  def readDocument (s: String): Document = {
+  def readDocument (s: String): org.openprovenance.prov.model.Document = {
     val actions=new MyActions()
     val actions2=new MyActions2()
     val funs=new DocBuilderFunctions()
@@ -840,10 +841,10 @@ object AParser  {
 
 
   def main(args: Array[String]): Unit = {
-        lazy val inputfile : ParserInput = io.Source.fromFile(args(0)).mkString
+    lazy val inputfile : ParserInput = io.Source.fromFile(args(0)).mkString
 
 
-        doCheckDoc( """
+    doCheckDoc( """
 document
 prefix ex <http://example.org/>
 entity(ex:a)
@@ -972,7 +973,7 @@ endDocument
 """ )   /// problem with prov prefix, again, it's same | operator on pn_prefix
 
 
-          doCheckDoc( """
+    doCheckDoc( """
 document
 prefix ex <http://example.org/> 
 prefix e....x <http://example.org/dot/dot/dot/>
@@ -985,10 +986,10 @@ entity(e....x:b.....b)
 endDocument
 """ )   // ex:b.. not valid, add extra test!
 
-          doCheckDoc (inputfile)
-          
+    doCheckDoc (inputfile)
 
-	}
+
+  }
 }
 
 

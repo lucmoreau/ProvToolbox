@@ -48,7 +48,7 @@
 
         <dependency>
             <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
+            <artifactId>${scala-library}_${scala.binary.version}</artifactId>
             <version>${scala.library.version}</version> <!-- 2.12.18, 2.12.10, 2.12.1 -->
         </dependency>
 
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.parboiled</groupId>
             <artifactId>parboiled_${scala.binary.version}</artifactId>
-            <version>2.3.0</version>  <!--2.2.0, 2.1.8 -->
+            <version>2.5.0</version>  <!--2.3.0, 2.2.0, 2.1.8 -->
         </dependency>
 
         <!-- testing -->

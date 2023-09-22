@@ -3,7 +3,6 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model
 
 trait ImmutableConstructorInterface {
-
   def newEntity(id: model.QualifiedName,
                 attributes: Set[Attribute]): Entity
 

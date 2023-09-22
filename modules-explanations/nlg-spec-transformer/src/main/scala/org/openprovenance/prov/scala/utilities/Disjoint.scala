@@ -42,17 +42,17 @@ import org.openprovenance.prov.scala.utilities.OrType.or
 
 class Foo {
 
-  def bar[T <% Int or String or Double](t: Option[T]): Unit = {
+  def bar[T](t: Option[T])(implicit ev: T => Int or String or Double): Unit = {
     t match {
       case Some(x: Int) => println("processing Int: " + x)
       case Some(x: String) => println("processing String: " + x)
       case Some(x: Double) => println("processing Double: " + x)
       case None => println("empty and I don't care the type")
-      case Some(other) => throw new UnsupportedOperationException
+      case Some(_) => throw new UnsupportedOperationException
     }
   }
 
-  def foo[T <% Int or String or Double](t: T): Unit = {
+  def foo[T](t: T)(implicit ev: T => Int or String or Double): Unit = {
     t match {
       case x: Int => println("processing Int: " + x)
       case x: String => println("processing String: " + x)
@@ -61,7 +61,7 @@ class Foo {
     }
   }
 
-  def baz[T <% String or Int](t: List[T]): Unit = {
+  def baz[T ](t: List[T])(implicit ev: T => String or Int): Unit = {
     for (x <- t) x match {
       case x: String => println("String list item: " + x)
       case x: Int => println("Int list item: " + x)

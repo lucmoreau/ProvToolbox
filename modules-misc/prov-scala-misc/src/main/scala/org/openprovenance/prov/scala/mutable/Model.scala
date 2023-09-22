@@ -31,9 +31,12 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf
 import org.openprovenance.prov.model.extension.QualifiedHadMember
 import org.openprovenance.prov.model.QualifiedNameUtils
 import org.openprovenance.prov.model.exception.QualifiedNameException
+
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model
 import org.openprovenance.prov.model.Attribute.AttributeKind
+
+import java.util
 
 
 trait HasLocation {
@@ -53,10 +56,10 @@ trait HasLabel {
 
 
 trait HasOther {
-    def setOther(others: java.util.List[org.openprovenance.prov.model.Other]) {
+    def setOther(others: java.util.List[org.openprovenance.prov.model.Other]): Unit = {
       other=others
     }
-    def getOther() = {
+    def getOther(): util.List[model.Other] = {
       if (other==null) {
         other=new java.util.LinkedList()
       }
@@ -74,7 +77,7 @@ trait HasValue {
 trait HasType {
      //@BeanProperty
     var typex: java.util.List[org.openprovenance.prov.model.Type]=new java.util.LinkedList()
-    def getType() = { typex }
+    def getType(): util.List[model.Type] = { typex }
     
 }
 
@@ -85,11 +88,11 @@ trait Identifiable {
 
 trait Hashable {
       
-      @inline final def h(x: AnyRef) = {
+      @inline final def h(x: AnyRef): Int = {
           if (x==null) 0 else x.hashCode
       }
       
-      @inline final def pr(v0: Int,v1:Int) = {
+      @inline final def pr(v0: Int,v1:Int): Int = {
           prime*v0+v1
       }
     
@@ -102,7 +105,7 @@ class Entity extends  org.openprovenance.prov.model.Entity with Identifiable wit
     @BeanProperty
     val kind: Kind=PROV_ENTITY
     
-    def canEqual(a: Any) = a.isInstanceOf[Entity]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Entity]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -173,7 +176,7 @@ class Agent extends org.openprovenance.prov.model.Agent with Identifiable with H
     @BeanProperty
     val kind: Kind=PROV_AGENT
     
-    def canEqual(a: Any) = a.isInstanceOf[Agent]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Agent]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -209,7 +212,7 @@ class Used extends org.openprovenance.prov.model.Used with Identifiable with Has
     @BeanProperty
     val kind: Kind=PROV_USAGE
     
-    def canEqual(a: Any) = a.isInstanceOf[Used]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Used]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -332,7 +335,7 @@ class WasStartedBy extends org.openprovenance.prov.model.WasStartedBy with Ident
     
         
     
-    def canEqual(a: Any) = a.isInstanceOf[WasStartedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasStartedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -376,7 +379,7 @@ class WasEndedBy extends org.openprovenance.prov.model.WasEndedBy with Identifia
     
         
     
-    def canEqual(a: Any) = a.isInstanceOf[WasEndedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasEndedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -422,7 +425,7 @@ class WasDerivedFrom extends org.openprovenance.prov.model.WasDerivedFrom with I
     val kind: Kind=PROV_DERIVATION
     
     
-    def canEqual(a: Any) = a.isInstanceOf[WasDerivedFrom]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasDerivedFrom]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -458,7 +461,7 @@ class SpecializationOf extends org.openprovenance.prov.model.SpecializationOf wi
     @BeanProperty
     val kind: Kind=PROV_SPECIALIZATION
     
-    def canEqual(a: Any) = a.isInstanceOf[SpecializationOf]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[SpecializationOf]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -491,7 +494,7 @@ class AlternateOf extends org.openprovenance.prov.model.AlternateOf with Qualifi
     @BeanProperty
     val kind: Kind=PROV_ALTERNATE
     
-    def canEqual(a: Any) = a.isInstanceOf[AlternateOf]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[AlternateOf]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -528,7 +531,7 @@ class HadMember extends org.openprovenance.prov.model.HadMember with QualifiedHa
     val kind: Kind=PROV_MEMBERSHIP
     
     
-    def canEqual(a: Any) = a.isInstanceOf[HadMember]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[HadMember]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -564,7 +567,7 @@ class WasInfluencedBy extends org.openprovenance.prov.model.WasInfluencedBy with
     val kind: Kind=PROV_INFLUENCE
     
     
-    def canEqual(a: Any) = a.isInstanceOf[WasInfluencedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasInfluencedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -598,7 +601,7 @@ class WasInformedBy extends org.openprovenance.prov.model.WasInformedBy with Ide
     @BeanProperty
     val kind: Kind=PROV_COMMUNICATION
     
-    def canEqual(a: Any) = a.isInstanceOf[WasInformedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasInformedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -633,7 +636,7 @@ class WasAttributedTo extends org.openprovenance.prov.model.WasAttributedTo with
     @BeanProperty
     val kind: Kind=PROV_ATTRIBUTION
     
-    def canEqual(a: Any) = a.isInstanceOf[WasAttributedTo]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasAttributedTo]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -672,7 +675,7 @@ class WasAssociatedWith extends org.openprovenance.prov.model.WasAssociatedWith 
     
     
          
-    def canEqual(a: Any) = a.isInstanceOf[WasAssociatedWith]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasAssociatedWith]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -711,7 +714,7 @@ class ActedOnBehalfOf extends org.openprovenance.prov.model.ActedOnBehalfOf with
     val kind: Kind=PROV_DELEGATION
     
         
-    def canEqual(a: Any) = a.isInstanceOf[ActedOnBehalfOf]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[ActedOnBehalfOf]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -745,7 +748,7 @@ class Bundle extends org.openprovenance.prov.model.Bundle with StatementOrBundle
     @BeanProperty
     var statement: java.util.List[Statement]=new java.util.LinkedList()
     
-    def canEqual(a: Any) = a.isInstanceOf[Bundle]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Bundle]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -769,7 +772,7 @@ class Document extends org.openprovenance.prov.model.Document with Hashable {
     @BeanProperty
     var statementOrBundle: java.util.List[StatementOrBundle]=new java.util.LinkedList()
       
-    def canEqual(a: Any) = a.isInstanceOf[Document]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Document]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -819,7 +822,7 @@ trait ToNotationString {
 }
 
 object Type {
-      val myName=(new ProvFactory).getName.PROV_TYPE
+      val myName: model.QualifiedName =(new ProvFactory).getName.PROV_TYPE
 }
 
 class Type() extends TypedValue with org.openprovenance.prov.model.Type  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
@@ -830,7 +833,7 @@ class Type() extends TypedValue with org.openprovenance.prov.model.Type  with or
     
  
     def this(value: Any, 
-             atyp: org.openprovenance.prov.model.QualifiedName) {
+             atyp: org.openprovenance.prov.model.QualifiedName) = {
       this()
       typ=atyp;
       setValueFromObject(value)
@@ -862,7 +865,7 @@ class Type() extends TypedValue with org.openprovenance.prov.model.Type  with or
 }
 
 object Role {
-      val myName=(new ProvFactory).getName.PROV_ROLE
+      val myName: model.QualifiedName =(new ProvFactory).getName.PROV_ROLE
 }
 class Role() extends TypedValue with org.openprovenance.prov.model.Role  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Role.myName
@@ -871,7 +874,7 @@ class Role() extends TypedValue with org.openprovenance.prov.model.Role  with or
     
  
     def this(value: Any, 
-             atyp: org.openprovenance.prov.model.QualifiedName) {
+             atyp: org.openprovenance.prov.model.QualifiedName) = {
       this()
       typ=atyp;
       setValueFromObject(value)
@@ -884,7 +887,7 @@ class Role() extends TypedValue with org.openprovenance.prov.model.Role  with or
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
-    def canEqual(a: Any) = a.isInstanceOf[Role]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Role]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -901,7 +904,7 @@ class Role() extends TypedValue with org.openprovenance.prov.model.Role  with or
     
 }
 object Location {
-      val myName=(new ProvFactory).getName.PROV_LOCATION  //TODO: move this to the ProvFactory companion!
+      val myName: model.QualifiedName =(new ProvFactory).getName.PROV_LOCATION  //TODO: move this to the ProvFactory companion!
 }
 class Location() extends TypedValue with org.openprovenance.prov.model.Location  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
     import Location.myName
@@ -910,7 +913,7 @@ class Location() extends TypedValue with org.openprovenance.prov.model.Location 
     
  
     def this(value: Any, 
-             atyp: org.openprovenance.prov.model.QualifiedName) {
+             atyp: org.openprovenance.prov.model.QualifiedName) = {
       this()
       typ=atyp;
       setValueFromObject(value)
@@ -923,7 +926,7 @@ class Location() extends TypedValue with org.openprovenance.prov.model.Location 
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
-    def canEqual(a: Any) = a.isInstanceOf[Location]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Location]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -939,7 +942,7 @@ class Location() extends TypedValue with org.openprovenance.prov.model.Location 
 }
 
 object Value {
-      val myName=(new ProvFactory).getName.PROV_LOCATION  //TODO: move this to the ProvFactory companion!
+      val myName: model.QualifiedName =(new ProvFactory).getName.PROV_LOCATION  //TODO: move this to the ProvFactory companion!
 }
 
 class Value() extends TypedValue with org.openprovenance.prov.model.Value  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
@@ -949,7 +952,7 @@ class Value() extends TypedValue with org.openprovenance.prov.model.Value  with 
     
  
     def this(value: Any, 
-             atyp: org.openprovenance.prov.model.QualifiedName) {
+             atyp: org.openprovenance.prov.model.QualifiedName) = {
       this()
       typ=atyp;
       setValueFromObject(value)
@@ -963,7 +966,7 @@ class Value() extends TypedValue with org.openprovenance.prov.model.Value  with 
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
     
-    def canEqual(a: Any) = a.isInstanceOf[Value]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Value]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -979,7 +982,7 @@ class Value() extends TypedValue with org.openprovenance.prov.model.Value  with 
 }
 
 object Label {
-      val myName=(new ProvFactory).getName.PROV_LABEL //TODO: move this to the ProvFactory companion!
+      val myName: model.QualifiedName =(new ProvFactory).getName.PROV_LABEL //TODO: move this to the ProvFactory companion!
 }
 
 class Label() extends TypedValue with org.openprovenance.prov.model.Label  with org.openprovenance.prov.model.Attribute with ToNotationString with Hashable {
@@ -989,7 +992,7 @@ class Label() extends TypedValue with org.openprovenance.prov.model.Label  with 
     
  
     def this(value: Any, 
-             atyp: org.openprovenance.prov.model.QualifiedName) {
+             atyp: org.openprovenance.prov.model.QualifiedName) = {
       this()
       typ=atyp;
       setValueFromObject(value)
@@ -1003,7 +1006,7 @@ class Label() extends TypedValue with org.openprovenance.prov.model.Label  with 
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
     
     
-    def canEqual(a: Any) = a.isInstanceOf[Label]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Label]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1026,7 +1029,7 @@ class Other() extends TypedValue with org.openprovenance.prov.model.Other  with 
  
     def this(qualifiedName: org.openprovenance.prov.model.QualifiedName,
              value: Any, 
-             atyp: org.openprovenance.prov.model.QualifiedName) {
+             atyp: org.openprovenance.prov.model.QualifiedName) = {
       this()
       elementName=qualifiedName
       typ=atyp;
@@ -1040,7 +1043,7 @@ class Other() extends TypedValue with org.openprovenance.prov.model.Other  with 
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
  
-    def canEqual(a: Any) = a.isInstanceOf[Other]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Other]
 
   
     override def equals(that: Any): Boolean =
@@ -1064,7 +1067,7 @@ class LangString () extends org.openprovenance.prov.model.LangString with Hashab
 	   @BeanProperty var value: String=null
 	   @BeanProperty var lang: String=null
   
-    def canEqual(a: Any) = a.isInstanceOf[LangString]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[LangString]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1086,7 +1089,7 @@ class QualifiedName () extends org.openprovenance.prov.model.QualifiedName {
     @BeanProperty
     var namespaceURI: String=null
     
-    def this(namespace: String, local: String, pref: String) {
+    def this(namespace: String, local: String, pref: String) = {
         this()
         namespaceURI=namespace
         localPart=local
@@ -1094,17 +1097,17 @@ class QualifiedName () extends org.openprovenance.prov.model.QualifiedName {
     }
 
     var uri: String=null
-    override def getUri() = {
+    override def getUri(): String = {
         getNamespaceURI() + getUnescapedLocalPart();
     } 
-    override def setUri(discard: String) = {}
+    override def setUri(discard: String): Unit = {}
 
     val qnU=new QualifiedNameUtils;
     
     
-    def getUnescapedLocalPart () = { qnU.unescapeProvLocalName(localPart)}
+    def getUnescapedLocalPart (): String = { qnU.unescapeProvLocalName(localPart)}
    
-    override def toString() ={
+    override def toString(): String = {
       //"<" + prefix + ":" + namespaceURI + ":" + localPart + ">"
        prefix + ":" + localPart
     }
@@ -1127,7 +1130,7 @@ class QualifiedName () extends org.openprovenance.prov.model.QualifiedName {
         case _ => false
     }
     
-    override def hashCode = this.namespaceURI.hashCode ^ this.localPart.hashCode()
+    override def hashCode: Int = this.namespaceURI.hashCode ^ this.localPart.hashCode()
 
 
 }

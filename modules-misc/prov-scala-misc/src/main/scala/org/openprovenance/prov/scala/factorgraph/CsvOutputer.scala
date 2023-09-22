@@ -7,21 +7,21 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object CsvOutputer {
-  val pf=ProvFactory.pf
-  val prov_time       =pf.getName.newProvQualifiedName("time").asInstanceOf[QualifiedName]
-  val prov_endTime    =pf.getName.newProvQualifiedName("endTime").asInstanceOf[QualifiedName]
-  val prov_generation =pf.getName.newProvQualifiedName("generation").asInstanceOf[QualifiedName]
-  val prov_usage      =pf.getName.newProvQualifiedName("usage").asInstanceOf[QualifiedName]
+  val pf: ProvFactory =ProvFactory.pf
+  val prov_time: QualifiedName       = pf.getName.newProvQualifiedName("time").asInstanceOf[QualifiedName]
+  val prov_endTime: QualifiedName    = pf.getName.newProvQualifiedName("endTime").asInstanceOf[QualifiedName]
+  val prov_generation: QualifiedName = pf.getName.newProvQualifiedName("generation").asInstanceOf[QualifiedName]
+  val prov_usage: QualifiedName      = pf.getName.newProvQualifiedName("usage").asInstanceOf[QualifiedName]
   
 }
 
 class CsvOutputer extends Outputer {
   import CsvOutputer._
   
-    def output(d:Document, out: Output, params: Map[String,String]) = {
+    def output(d:Document, out: Output, params: Map[String,String]): Unit = {
       out match {
         case StandardOutput() => {
         	throw new UnsupportedOperationException
@@ -49,71 +49,69 @@ class CsvOutputer extends Outputer {
     
 
     
-    def processAttributes(statement: Statement, columns: Seq[QualifiedName], out:Writer) = {
+    def processAttributes(statement: Statement, columns: Seq[QualifiedName], out:Writer): Unit = {
         	val attrs=statement.getAttributes
         	val others=statement.asInstanceOf[HasOther].other
-          columns.foreach{ column => 
-             column match {
-               case ProvFactory.pf.prov_label => {
-                 val labels=statement.asInstanceOf[HasLabel].label
-                 if (labels.isEmpty) {
-                   out.write(", ")
-                 } else {
-               	   out.write(", " + escapeCsv(labels.map(l => l.toString).mkString("[", ", ", "]")))
-                 }
-               }
-               case ProvFactory.pf.prov_type  => out.write(", " + escapeCsv(statement.asInstanceOf[HasType].typex.map(t => t.valueToNotationString()).mkString("[", ", ", "]")))
-               case `prov_time` => {
-                 statement match {
-                   case act : Activity => act.startTime match {
-                                            case None    => out.write(", ")
-                                            case Some(t) => out.write(", " + escapeCsv(t.toString))
-                                          }
-                   case ht : HasTime => ht.time match {
-                                            case None    => out.write(", ")
-                                            case Some(t) => out.write(", " + escapeCsv(t.toString))                                        
-                                        }
-                   case _ => out.write(", ")
-                 }
-               }
-               case `prov_endTime` => {
-                 statement match {
-                   case act : Activity => act.endTime match {
-                                            case None    => out.write(", ")
-                                            case Some(t) => out.write(", " + escapeCsv(t.toString))
-                                          } 
-                   case _ => out.write(", ")
-                 }
-               }    
-               case `prov_generation` => {
-                 statement match {
-                   case der : WasDerivedFrom => if (der.generation!=null) {
-                	                                out.write(", " + escapeCsv(der.generation.toString))
-                                               } else {
-                                            	    out.write(",")
-                                               }
-                   case _ => out.write(", ")
-                 }
-               } 
-               case `prov_usage` => {
-                 statement match {
-                   case der : WasDerivedFrom => if (der.usage!=null) {
-                	                                out.write(", " + escapeCsv(der.usage.toString))
-                                                } else {
-                                            	    out.write(",")
-                                                }
-                   case _ => out.write(", ")
-                 }
-               } 
-               case _ =>  others.get(column) match {
-                            case Some(values) => out.write(", " + escapeCsv(values.map(o => o.valueToNotationString()).mkString("[", ", ", "]")))
-                            case None => out.write(", ")
-               }
-             }
+          columns.foreach {
+            case ProvFactory.pf.prov_label => {
+              val labels = statement.asInstanceOf[HasLabel].label
+              if (labels.isEmpty) {
+                out.write(", ")
+              } else {
+                out.write(", " + escapeCsv(labels.map(l => l.toString).mkString("[", ", ", "]")))
+              }
+            }
+            case ProvFactory.pf.prov_type => out.write(", " + escapeCsv(statement.asInstanceOf[HasType].typex.map(t => t.valueToNotationString()).mkString("[", ", ", "]")))
+            case `prov_time` => {
+              statement match {
+                case act: Activity => act.startTime match {
+                  case None => out.write(", ")
+                  case Some(t) => out.write(", " + escapeCsv(t.toString))
+                }
+                case ht: HasTime => ht.time match {
+                  case None => out.write(", ")
+                  case Some(t) => out.write(", " + escapeCsv(t.toString))
+                }
+                case _ => out.write(", ")
+              }
+            }
+            case `prov_endTime` => {
+              statement match {
+                case act: Activity => act.endTime match {
+                  case None => out.write(", ")
+                  case Some(t) => out.write(", " + escapeCsv(t.toString))
+                }
+                case _ => out.write(", ")
+              }
+            }
+            case `prov_generation` => {
+              statement match {
+                case der: WasDerivedFrom => if (der.generation != null) {
+                  out.write(", " + escapeCsv(der.generation.toString))
+                } else {
+                  out.write(",")
+                }
+                case _ => out.write(", ")
+              }
+            }
+            case `prov_usage` => {
+              statement match {
+                case der: WasDerivedFrom => if (der.usage != null) {
+                  out.write(", " + escapeCsv(der.usage.toString))
+                } else {
+                  out.write(",")
+                }
+                case _ => out.write(", ")
+              }
+            }
+            case column => others.get(column) match {
+              case Some(values) => out.write(", " + escapeCsv(values.map(o => o.valueToNotationString()).mkString("[", ", ", "]")))
+              case None => out.write(", ")
+            }
           }
         }
     
-    def getCause2(r: Relation) = {
+    def getCause2(r: Relation): QualifiedName = {
     		r match {
     		case r:WasAssociatedWith => r.plan
     		case r:WasStartedBy      => r.starter
@@ -124,8 +122,8 @@ class CsvOutputer extends Outputer {
     		}
     }
     
-    def toCSV(d:Document, out:Writer, params:Map[String,String]) = {
-      val statements=d.statements.toSet
+    def toCSV(d:Document, out:Writer, params:Map[String,String]): Unit = {
+      val statements=d.statements().toSet
       
       val attrs=statements.flatMap(x => x.getAttributes)
       
@@ -172,7 +170,7 @@ class CsvOutputer extends Outputer {
         processAttributes(statement, columns, out)
         
         out.write("\n")}
-        out.close     
+        out.close()
       
     }
     

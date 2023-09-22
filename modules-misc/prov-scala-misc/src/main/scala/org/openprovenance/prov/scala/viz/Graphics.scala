@@ -9,11 +9,11 @@ import org.openprovenance.prov.scala.interop.{FileOutput, Output, Outputer, Stan
 import org.openprovenance.prov.model.ProvUtilities
 
 sealed abstract class GraphElement (id: String, properties: Map[String,String]) {
-  def toDot(outw: Writer)
+  def toDot(outw: Writer): Unit
 }
 
 case class Vertex (id: String, properties: Map[String,String]) extends GraphElement(id,properties) {
-    def toDot(outw: Writer) = {
+    def toDot(outw: Writer): Unit = {
         outw.append(id)
         outw.append("\t[")
         outw.write(properties.map{ case (p,v) => p + "=\"" + v + "\""}.mkString(" ",",\n\t  ",""))
@@ -22,7 +22,7 @@ case class Vertex (id: String, properties: Map[String,String]) extends GraphElem
 
 }
 case class Edge (id: String, from: String, to: String, properties: Map[String,String]) extends GraphElement(id,properties) {
-    def toDot(outw: Writer) = {
+    def toDot(outw: Writer): Unit = {
         outw.append(from)
         outw.append(" -> ")
         outw.append(to)
@@ -34,7 +34,7 @@ case class Edge (id: String, from: String, to: String, properties: Map[String,St
 }
 
 case class SubGraph (id: String, properties: Map[String,String], elements: Iterable[GraphElement]) extends GraphElement(id,properties) {
-   def toDot(outw: Writer) = {
+   def toDot(outw: Writer): Unit = {
        outw.append("subgraph cluster" + id + " { \n")
        elements.foreach { x => x.toDot(outw) }
        outw.append("}\n")
@@ -127,7 +127,7 @@ object Graphics {
           Set(SubGraph(idmap(s.id),Map(label -> s.id.localPart, url -> s.id.getUri),s.statement.flatMap{ s => toElements(s,idmap,r) }))
   }
   
-  def getSize(s:Statement) = {
+  def getSize(s:Statement): Option[Int] = {
     s.asInstanceOf[HasOther].other.get(QN_SIZE) match {
                                                   case Some(set) => set.headOption match {
                                                                                   case Some(s) => Some(s.value.toString.toInt)
@@ -172,7 +172,7 @@ object Graphics {
   }
   var bncounter=0
   
-  def usefulAttributes(attrs: Set[Attribute]) = {
+  def usefulAttributes(attrs: Set[Attribute]): Set[Attribute] = {
     attrs.filterNot(attr => (attr.isInstanceOf[Other]
       && {
       val ns = attr.asInstanceOf[Other].elementName.namespaceURI
@@ -217,14 +217,14 @@ object Graphics {
   }
     
   def toElements(doc: Document, idmap: QualifiedName=>String, r: SizeRange): Set[GraphElement] = {
-      doc.statements.flatMap { s => toElements(s,idmap,r) }.toSet ++ doc.bundles.flatMap { s => toElements(s,idmap,r) }
+      doc.statements().flatMap { s => toElements(s,idmap,r) }.toSet ++ doc.bundles().flatMap { s => toElements(s,idmap,r) }
   }
   
   def toElements(doc: OrderedDocument, idmap: QualifiedName=>String, r: SizeRange): Seq[GraphElement] = {
-      doc.orderedStatements.flatMap { s => toElements(s,idmap,r) } ++ doc.orderedBundles.flatMap { s => toElements(s,idmap,r) }
+      doc.orderedStatements().flatMap { s => toElements(s,idmap,r) } ++ doc.orderedBundles().flatMap { s => toElements(s,idmap,r) }
   }
   
-  def toDot(doc: Document, idmap: QualifiedName=>String, r: SizeRange, outw: Writer) = {
+  def toDot(doc: Document, idmap: QualifiedName=>String, r: SizeRange, outw: Writer): Unit = {
     outw.write("digraph \"PROV\" { size=\"16,12\"; rankdir=\"BT\";\n")
     
     toElements(doc, idmap, r)
@@ -235,7 +235,7 @@ object Graphics {
                
   }
   
-  def toDot(doc: OrderedDocument, idmap: QualifiedName=>String, r: SizeRange, outw: Writer) = {
+  def toDot(doc: OrderedDocument, idmap: QualifiedName=>String, r: SizeRange, outw: Writer): Unit = {
     outw.write("digraph \"PROV\" { size=\"16,12\"; rankdir=\"BT\";\n")
     
     toElements(doc, idmap, r)
@@ -260,13 +260,13 @@ object Graphics {
 
     
   def dotConvert(dot: String, svg:String, t: String): Unit = {
-		  val runtime = Runtime.getRuntime()
+		  val runtime = Runtime.getRuntime
 		  val proc = runtime.exec("dot -o " + svg + " -T" + t + " " + dot)
   }
   def dotConvert(dot: String, os: OutputStream, t: String): Unit = {
-		  val runtime = Runtime.getRuntime()
+		  val runtime = Runtime.getRuntime
 		  val proc = runtime.exec("dot -T" + t + " " + dot)
-		  val in=proc.getInputStream()
+		  val in=proc.getInputStream
 		  org.apache.commons.io.IOUtils.copy(in, os)
   }
 
@@ -274,10 +274,10 @@ object Graphics {
   val edgeMaxWidth=9.0
 
    
-  def edgeVisualSizeAttribute(size: Int, min: Int, max: Int) = {
+  def edgeVisualSizeAttribute(size: Int, min: Int, max: Int): Double = {
 		  if (min==max) 1.0 else { 1.0 + edgeMaxWidth.toDouble * (size-min).toDouble / (max-min).toDouble }
   }
-  def nodeVisualSizeAttribute(size: Int, min: Int, max: Int) = {
+  def nodeVisualSizeAttribute(size: Int, min: Int, max: Int): Double = {
 		  if (min==max) 1.0 else { 1.0 + nodeMaxWidth.toDouble * (size-min).toDouble / (max-min).toDouble }
   }
 
@@ -286,12 +286,12 @@ object Graphics {
 }
 
 class SVGOutputer(otype:String="svg", dir:String="") extends Outputer {
-    def output(d:Document, out: Output, params: Map[String,String]) = {
+    def output(d:Document, out: Output, params: Map[String,String]): Unit = {
         val ind=new Indexer(d)
         output(ind,out,params)
     }
     
-    def output(d:Indexing, out: Output, params: Map[String,String]) = {
+    def output(d:Indexing, out: Output, params: Map[String,String]): Unit = {
      
       out match {
         case StandardOutput() => throw new UnsupportedOperationException

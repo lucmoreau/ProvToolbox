@@ -16,7 +16,7 @@ import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.Success
 
 
@@ -25,13 +25,13 @@ class NlgSpec extends AnyFlatSpec with Matchers {
   val pf=new ProvFactory
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
 
-  def q(local: String) = {
+  def q(local: String): QualifiedName = {
     new QualifiedName("ex",local,EX_NS)
   }
 
 
-  def readDoc(f: String) = {
-    val in:Input=new FileInput(new File(f))
+  def readDoc(f: String): Document = {
+    val in:Input=FileInput(new File(f))
     val doc=CommandLine.parseDocument(in)
     doc
   }
@@ -52,8 +52,8 @@ class NlgSpec extends AnyFlatSpec with Matchers {
 
     val p=new MyParser(d,actions2,actions)
     val doc =p.document.run() match {
-      case Success(result) => db.document
-      case x => ???
+      case Success(_) => db.document()
+      case x => throw new IllegalStateException("Parsing failed: " + x)
     }
     doc
   }

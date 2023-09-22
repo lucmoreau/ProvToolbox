@@ -57,7 +57,7 @@ case class AConfig(snlg: Output=null,
                    infile:Input=null,
                    infiles:String=null,
                    format_option:Int=0) extends Config {
-  def this(c: Config) {
+  def this(c: Config) = {
     this(c.snlg, c.languageAsFilep, c.selected_templates, c.profile, c.batch_templates, c.language, c.linear, c.infile, c.infiles, c.format_option)
   }
 
@@ -90,7 +90,7 @@ object Narrator {
     val doc1 = Document(doc, gensym, NLG_PREFIX, NLG_URI)
     val newEntities = EventOrganiser.addEntitiesToAgents(doc1.statements())
 
-    val newStatements: Iterable[StatementOrBundle] = doc1.statements ++ newEntities
+    val newStatements: Iterable[StatementOrBundle] = doc1.statements() ++ newEntities
 
     val namespace: Namespace = doc1.namespace
     val doc2: Document = new Document(newStatements, namespace)
@@ -135,7 +135,7 @@ object Narrator {
     val doc1=Document(doc,gensym,NLG_PREFIX,NLG_URI)
     val newEntities=EventOrganiser.addEntitiesToAgents(doc1.statements())
 
-    val newStatements: Iterable[StatementOrBundle] =doc1.statements ++ newEntities
+    val newStatements: Iterable[StatementOrBundle] =doc1.statements() ++ newEntities
 
     val namespace: Namespace = doc1.namespace
     val doc2:Document=new Document(newStatements,namespace)

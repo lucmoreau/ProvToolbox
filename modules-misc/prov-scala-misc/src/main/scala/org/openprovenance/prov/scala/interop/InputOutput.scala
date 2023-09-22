@@ -19,8 +19,8 @@ case class StreamInput(is: java.io.InputStream) extends Input
 
 
 trait Outputer {
-  def output(d: Document, out: Output, params:Map[String,String])
-  def output(d: Indexing, out: Output, params:Map[String,String])
+  def output(d: Document, out: Output, params:Map[String,String]): Unit
+  def output(d: Indexing, out: Output, params:Map[String,String]): Unit
 }
 
 trait Inputer {

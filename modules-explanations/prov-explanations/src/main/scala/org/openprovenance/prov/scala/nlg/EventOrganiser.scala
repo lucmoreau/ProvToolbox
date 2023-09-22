@@ -60,7 +60,7 @@ object EventOrganiser {
   }
 
   def splitByStatementType (d: Document): Map[Kind.Value, List[Statement]] = {
-    splitByStatementType(d.statements.toList)
+    splitByStatementType(d.statements().toList)
   }
 
   def splitByStatementType (ss: Seq[Statement]): Map[Kind.Value, List[Statement]] = {
@@ -158,13 +158,10 @@ class EventOrganiser(mat: EventMatrix) extends EventPrecedence {
   }
 
   def orderPrecedes(x: Integer): EventOrder => Boolean = {
-    order =>
-      order match {
-        case NoEvent() => false
-        case Synchronized(seq, past) => seq.exists(precedes(x))      || orderPrecedes(x)(past)
-        case Follows(seq, past)      => seq.exists(precedes(x))      || orderPrecedes(x)(past)
-        case Parallel(seq, past)     => seq.exists(orderPrecedes(x)) || orderPrecedes(x)(past)
-      }
+    case NoEvent() => false
+    case Synchronized(seq, past) => seq.exists(precedes(x)) || orderPrecedes(x)(past)
+    case Follows(seq, past) => seq.exists(precedes(x)) || orderPrecedes(x)(past)
+    case Parallel(seq, past) => seq.exists(orderPrecedes(x)) || orderPrecedes(x)(past)
   }
 
   def findEventsWithoutPredecessors(events: Set[Integer]): Set[Integer] = {

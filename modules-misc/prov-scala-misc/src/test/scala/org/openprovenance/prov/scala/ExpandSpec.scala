@@ -68,7 +68,7 @@ abstract class ExpandSpec extends AnyFlatSpec with Matchers {
 
     val p=new MyParser(d,actions2,actions)
     val doc =p.document.run() match {
-          case Success(result) => db.document
+          case Success(result) => db.document()
           case _ => ???
     }
     doc

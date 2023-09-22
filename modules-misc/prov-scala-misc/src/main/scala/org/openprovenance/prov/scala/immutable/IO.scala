@@ -1,13 +1,13 @@
 package org.openprovenance.prov.scala.immutable
 
 
-import java.io.{BufferedWriter, File, FileWriter, OutputStreamWriter}
 import org.openprovenance.prov.model.Namespace
-import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.interop._
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
 
+import java.io.{BufferedWriter, File, FileWriter, OutputStreamWriter}
+import scala.io.BufferedSource
 import scala.util.{Failure, Success}
 
 object NS {
@@ -67,11 +67,11 @@ class ProvNInputer extends Inputer {
         val funs=new DocBuilderFunctions()
         funs.reset()
         val db=new DocBuilder(funs)
-    	  parseDocument(in,db).asInstanceOf[DocBuilder].document
+    	  parseDocument(in, db).asInstanceOf[DocBuilder].document()
     }
 
 
-    def toBufferedSource(in:Input) = {
+    def toBufferedSource(in:Input): BufferedSource = {
     		in match {
     		case StandardInput() => io.Source.fromInputStream(System.in)
     		case FileInput(f:File) => io.Source.fromFile(f)
@@ -80,7 +80,7 @@ class ProvNInputer extends Inputer {
     }
     
     def parseDocument (in:Input, str: ProvStream): ProvStream = {
-    		parseDocument(in,str,true)
+    		parseDocument(in,str,nsFlag = true)
     }
 
     def parseDocument (in:Input, str: ProvStream, nsFlag: Boolean): ProvStream = {
@@ -90,7 +90,7 @@ class ProvNInputer extends Inputer {
         ns.register("t", "http://openprovenance.org/summary/types#")
         ns.register("sum",  "http://openprovenance.org/summary/ns#")  // TODO: QUICK HACK
       }
-      ns.register("provext", "http://openprovenance.org/prov/extension#");
+      ns.register("provext", "http://openprovenance.org/prov/extension#")
 
 
       val actions=new MyActions()
@@ -105,7 +105,7 @@ class ProvNInputer extends Inputer {
 
       val p=new MyParser(bufferedSource.mkString,actions2,actions)
       val doc =p.document.run() match {
-        case Success(result) => str
+        case Success(_) => str
         case Failure(e: ParseError) => println("Expression is not valid: " + p.formatError(e)); throw new RuntimeException
         case Failure(e) => println("Unexpected error during parsing run: " + e.printStackTrace); throw e
       }
@@ -118,32 +118,29 @@ class ProvNInputer extends Inputer {
 
 }
 class ProvNOutputer extends Outputer {
-    def output(d:Indexing, out: Output, params: Map[String,String]) = {
-      output(d.document,out, params)
+    def output(d:Indexing, out: Output, params: Map[String,String]): Unit = {
+      output(d.document(),out, params)
     }
         
-    def output(d:Document, out: Output, params: Map[String,String]) = {
+    def output(d:Document, out: Output, params: Map[String,String]): Unit = {
       out match {
-        case StandardOutput() => {
-            val sb=new StringBuilder
-            d.toNotation(sb)
-            println(sb)
-        }
-        case StreamOutput(os) => {
-            val sb=new StringBuilder
-            val bw=new BufferedWriter(new OutputStreamWriter(os))
-            d.toNotation(sb)
-            bw.append(sb)
-            bw.close()
-        }
-        case FileOutput(f:File) => {
-            val newFileName=Format.substParams(f.toString,params)
-            val bw=new BufferedWriter(new FileWriter(newFileName))
-            val sb=new StringBuilder
-            d.toNotation(sb)
-            bw.append(sb)
-            bw.close()
-        }
+        case StandardOutput() =>
+          val sb=new StringBuilder
+          d.toNotation(sb)
+          println(sb)
+        case StreamOutput(os) =>
+          val sb=new StringBuilder
+          val bw=new BufferedWriter(new OutputStreamWriter(os))
+          d.toNotation(sb)
+          bw.append(sb)
+          bw.close()
+        case FileOutput(f:File) =>
+          val newFileName=Format.substParams(f.toString,params)
+          val bw=new BufferedWriter(new FileWriter(newFileName))
+          val sb=new StringBuilder
+          d.toNotation(sb)
+          bw.append(sb)
+          bw.close()
       }
     }
 }

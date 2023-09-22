@@ -3,22 +3,21 @@ package org.openprovenance.prov.scala.viz
 import java.io.File
 
 import org.openprovenance.prov.scala.interop.FileOutput
-import org.openprovenance.prov.scala.immutable.{Activity, Agent, Document, Entity, Format, HasLabel, HasOther, HasType, Indexer, LangString, OrderedDocument, Other, ProvFactory, QualifiedName, Relation, StatementOrBundle, Type, Used, WasAssociatedWith, WasDerivedFrom, WasGeneratedBy, WasInformedBy, WasInvalidatedBy}
+import org.openprovenance.prov.scala.immutable.{Activity, Agent, Document, Entity,  HasType, Indexer, LangString, OrderedDocument, Other, ProvFactory, QualifiedName, Relation, StatementOrBundle, Type, Used, WasAssociatedWith, WasDerivedFrom, WasGeneratedBy, WasInformedBy, WasInvalidatedBy}
 import org.openprovenance.prov.scala.viz.Graphics.colorQN
 import org.openprovenance.prov.scala.viz.Graphics.fillcolorQN
 import org.openprovenance.prov.scala.viz.Graphics.fontcolorQN
 
 object Animator {
-  val pf=ProvFactory.pf
+  val pf: ProvFactory =ProvFactory.pf
   
-  def main (args: Array[String]) {
+  def main (args: Array[String]): Unit = {
     val filename = args(0)
     val out = args(1)
 
- //   val doc = CommandLine.parseDocument(new FileInput(new File(filename)))
   }
 
-  def process(doc:Document, out: String) {
+  def process(doc:Document, out: String): Unit = {
 
     val odoc=new OrderedDocument(doc)
     
@@ -43,40 +42,41 @@ object Animator {
     
   }
   
-  def addLabel(ss:Set[LangString], s:String) = {
+  def addLabel(ss:Set[LangString], s:String): Set[LangString] = {
     ss+new LangString(s,None)    
   }
   
   val color_transparent=new Other(colorQN,pf.xsd_string,"transparent")
   val fillcolor_transparent=new Other(fillcolorQN,pf.xsd_string,"transparent")
   val fontcolor_transparent=new Other(fontcolorQN,pf.xsd_string,"transparent")
-  
-  val transparentColorMap=Map(colorQN -> Set(color_transparent), 
-                             fillcolorQN -> Set(fillcolor_transparent),
-                             fontcolorQN -> Set(fontcolor_transparent) )
-                             
-  def hasType(s:StatementOrBundle, typ: Type)={
+
+  val transparentColorMap: Map[QualifiedName, Set[Other]] =
+    Map(colorQN -> Set(color_transparent),
+      fillcolorQN -> Set(fillcolor_transparent),
+      fontcolorQN -> Set(fontcolor_transparent) )
+
+  def hasType(s:StatementOrBundle, typ: Type): Boolean ={
     s match {
       case st: HasType => st.typex.contains(typ)
       case _ => false
     }
   }
   
-  def hasTypeIn(s:StatementOrBundle, typ: Set[Type])={
+  def hasTypeIn(s:StatementOrBundle, typ: Set[Type]): Boolean ={
     s match {
       case st: HasType => st.typex.intersect(typ).nonEmpty
       case _ => false
     }
   }
   
-  def keepRelation(s: StatementOrBundle, pred: QualifiedName=> Boolean) = {
+  def keepRelation(s: StatementOrBundle, pred: QualifiedName=> Boolean): Boolean = {
     s match {
        case r: Relation => pred(r.getCause) && pred(r.getEffect)
        case _ => false
     }
   }
   
-  def keepStatement(s: StatementOrBundle, nodeKeep: scala.collection.mutable.Map[org.openprovenance.prov.model.QualifiedName,Boolean]) = {
+  def keepStatement(s: StatementOrBundle, nodeKeep: scala.collection.mutable.Map[org.openprovenance.prov.model.QualifiedName,Boolean]): Boolean = {
     nodeKeep.getOrElse(s.getId(), false) ||
     keepRelation(s, q=>nodeKeep.getOrElse(q,false))
   }
@@ -104,16 +104,16 @@ object Animator {
   }
   
   def transformerId(doc: Document): Document = {
-    doc.map(s => s match {
-      case e: Entity => new Entity(e.id,addLabel(e.label,e.id.getLocalPart),e.typex,e.value,e.location,e.other)
-      case e: Activity => new Activity(e.id,e.startTime, e.endTime, addLabel(e.label,e.id.getLocalPart),e.typex,e.location,e.other)
-      case e: Agent => new Agent(e.id,addLabel(e.label,e.id.getLocalPart),e.typex,e.value,e.location,e.other)
-      case _ => s
-    })
+    doc.map {
+      case e: Entity => new Entity(e.id, addLabel(e.label, e.id.getLocalPart), e.typex, e.value, e.location, e.other)
+      case e: Activity => new Activity(e.id, e.startTime, e.endTime, addLabel(e.label, e.id.getLocalPart), e.typex, e.location, e.other)
+      case e: Agent => new Agent(e.id, addLabel(e.label, e.id.getLocalPart), e.typex, e.value, e.location, e.other)
+      case s => s
+    }
   }
   def merge(other1: Map[QualifiedName,Set[Other]],other2: Map[QualifiedName,Set[Other]]): Map[QualifiedName, Set[Other]] = {
     val set=other1.toSet ++ other2.toSet
-    val x=set.groupBy{case(q,s) => q }.mapValues(x => x.flatMap{case (q,s) => s})
+    val x=set.groupBy{case(q,s) => q }.view.mapValues(x => x.flatMap{case (q,s) => s})
     x.toMap
   }
   def transformerOther(doc: Document,  pred: StatementOrBundle=>Boolean, other: Map[QualifiedName,Set[Other]]): Document = {

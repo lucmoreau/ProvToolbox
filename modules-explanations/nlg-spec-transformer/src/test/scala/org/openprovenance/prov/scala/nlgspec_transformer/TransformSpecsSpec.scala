@@ -32,7 +32,7 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
     ns.addKnownNamespaces()
     val p=new MyParser(d,actions2,actions)
     val doc =p.document.run() match {
-      case Success(result) => db.document
+      case Success(_) => db.document()
       case x => println(x)
         throw new UnsupportedOperationException()
     }
@@ -42,7 +42,7 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
   val path = "src/test/resources/nlg/templates/loan/"
 
 
-  val (templates,dictionaries,profiles): (Seq[Template], Seq[Dictionary], Map[String, Object]) = Language.read(Seq(path + "template-library.json"),true)
+  val (templates,dictionaries,profiles): (Seq[Template], Seq[Dictionary], Map[String, Object]) = Language.read(Seq(path + "template-library.json"),filep = true)
 
  // println(dictionaries)
   //println(profiles)
@@ -61,7 +61,7 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
     val te=new TransformEnvironment {
       override val environment: Environment = Environment(context,dictionaries,profiles,profile)
       override val statements: Map[String, Statement] = m
-      override val seqStatements = ms
+      override val seqStatements: Map[String, Seq[Statement]] = ms
     }
 
     val phraseSpec2 = phraseSpec.transform[Phrase](te)

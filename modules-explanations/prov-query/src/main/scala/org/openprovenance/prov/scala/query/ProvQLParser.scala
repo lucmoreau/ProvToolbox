@@ -168,12 +168,14 @@ class ProvQLParser (override val proc: Processor, override val input: ParserInpu
       case (field1:proc.Property, field2:proc.Field) => proc.Join(op1,field1.name,field1.property, op2,  field2.name,field2.field)
       case (field1:proc.Field, field2:proc.Property) => proc.Join(op1,field1.name,field1.field, op2,  field2.name,field2.property)
       case (field1:proc.Property, field2:proc.Property) => proc.Join(op1,field1.name,field1.property, op2,  field2.name,field2.property)
+      case _ => throw new IllegalStateException("illegal case")
     }
 
 
   override def makeTableLJoin: (proc.Operator, proc.Operator,(proc.Ref,proc.Ref)) => proc.Operator =
     (op1,op2,pair) => pair match {
       case (field1:proc.Field, field2:proc.Field) => proc.LeftJoin(op1,field1.name,field1.field, op2,  field2.name,field2.field)
+      case _ => throw new IllegalStateException("illegal case")
     }
 
   override def makeJoin1:(proc.Operator, Seq[proc.Operator]) => proc.Operator =

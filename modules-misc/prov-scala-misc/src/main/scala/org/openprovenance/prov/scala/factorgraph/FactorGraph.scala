@@ -22,18 +22,18 @@ import org.openprovenance.prov.scala.interop._
 
 
 sealed abstract class GraphElement (id: String, properties: Map[String,String]) {
-  def toMatlab(outw: Writer)
+  def toMatlab(outw: Writer): Unit
 }
 
 case class Vertex (id: String, properties: Map[String,String]) extends GraphElement(id,properties) {
     	
-	 @tailrec private def iterateArray(i: Int, xs: Array[String], fun: (Int,String) => Any ) {
+	 @tailrec private def iterateArray(i: Int, xs: Array[String], fun: (Int,String) => Any ): Unit = {
 	  	if (i < xs.length) {
 	  		fun(i,xs(i))
 	  		iterateArray(i+1, xs, fun)
 	  	}
 	 }
-    def toMatlab(outw: Writer) {
+    def toMatlab(outw: Writer): Unit = {
         if (false) {
         	outw.write("% id: ")
         	outw.write(properties(FactorGraph.label))
@@ -78,7 +78,7 @@ case class Vertex (id: String, properties: Map[String,String]) extends GraphElem
 
 }
 case class Edge (id: String, from: String, to: String, properties: Map[String,String]) extends GraphElement(id,properties) {
-    def toMatlab(outw: Writer) = {
+    def toMatlab(outw: Writer): Unit = {
         outw.append(from)
         outw.append(" -> ")
         outw.append(to)
@@ -229,8 +229,8 @@ object FactorGraph {
     val foundEntities   =ind.entities.map(_.id).toSet
     val foundActivities =ind.activities.map(_.id).toSet
     val order=ind.sortQualifiedNames(ind.pred)
-    val entities_vec  =order.seq.flatMap(x => x.filter(p => foundEntities  .contains(p)).toSeq)
-    val activities_vec=order.seq.flatMap(x => x.filter(p => foundActivities.contains(p)).toSeq)
+    val entities_vec  =order.flatMap(x => x.filter(p => foundEntities  .contains(p)).toSeq)
+    val activities_vec=order.flatMap(x => x.filter(p => foundActivities.contains(p)).toSeq)
     //val entities_vec=doc.statements().filter(_.isInstanceOf[Entity]).map(_.id).toSeq
    
     val entities=entities_vec.zipWithIndex.toMap
@@ -239,12 +239,12 @@ object FactorGraph {
     val activities_names=activities_vec.map(_.localPart)
 
     //val activities_vec=doc.statements().filter(_.isInstanceOf[Activity]).map(_.id).toSeq
-    val activities=activities_vec.zipWithIndex.toMap.mapValues(x=>x+1)
+    val activities=activities_vec.zipWithIndex.toMap.view.mapValues(x=>x+1)
 
     (entities, entities_names, activities.toMap, activities_names)
   }
   
-  def variableDeclaration(names: Seq[String], outw: Writer) {
+  def variableDeclaration(names: Seq[String], outw: Writer): Unit = {
     outw.write("variables=1:")
     outw.write(names.length.toString)
     outw.write(";\n")
@@ -254,7 +254,7 @@ object FactorGraph {
     outw.write("\n")
   }
   
-  def create(doc: Document, idmap: QualifiedName=>String, r: Indexer, outw: Writer) = {
+  def create(doc: Document, idmap: QualifiedName=>String, r: Indexer, outw: Writer): Unit = {
     outw.write("import qillBRML.*\n")
     outw.write("% factor graph start\n")
     
@@ -269,7 +269,7 @@ object FactorGraph {
                
   }
   
-  def create(doc: OrderedDocument, idmap: QualifiedName=>String, r: Indexer, outw: Writer) = {
+  def create(doc: OrderedDocument, idmap: QualifiedName=>String, r: Indexer, outw: Writer): Unit = {
     outw.write("import qillBRML.*\n")
 		outw.write("% factor graph start\n")
     

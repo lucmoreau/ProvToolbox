@@ -332,6 +332,7 @@
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
 		<scala.binary.version>2.13</scala.binary.version>
 		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
+		<parboiled.version>2.5.0</parboiled.version>
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 

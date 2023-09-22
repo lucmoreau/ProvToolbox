@@ -58,9 +58,8 @@
         <dependency>
             <groupId>org.parboiled</groupId>
             <artifactId>parboiled_${scala.binary.version}</artifactId>
-            <version>2.1.8</version>
+            <version>${parboiled.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

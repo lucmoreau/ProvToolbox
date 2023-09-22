@@ -21,7 +21,7 @@ import scala.collection.mutable
 // See https://github.com/coheigea/testcases/blob/master/apache/santuario/santuario-xml-signature/src/test/java/org/apache/coheigea/santuario/xmlsignature/SignatureUtils.java
 // http://coheigea.blogspot.com/2014/03/apache-santuario-xml-security-for-java.html
 object  XmlSignature {
-  val x=Init.init()
+  val x: Unit =Init.init()
 
   def signUsingStAX  (xmlStreamReader:XMLStreamReader,
                       namesToSign: List[QName],
@@ -170,7 +170,7 @@ object  XmlSignature {
 
   def extractSignature(eventListener: TestSecurityEventListener, namesToSign: List[QName]): (String, X509SecurityToken, mutable.Buffer[AlgorithmSuiteSecurityEvent], mutable.Buffer[SignedElementSecurityEvent]) = {
 
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
 
 
     val sigValueEvent      =eventListener.getSecurityEvents(SecurityEventConstants.SignatureValue).asInstanceOf[java.util.List[SignatureValueSecurityEvent]].asScala

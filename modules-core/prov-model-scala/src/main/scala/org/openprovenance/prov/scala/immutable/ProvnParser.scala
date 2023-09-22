@@ -3,6 +3,8 @@ package org.openprovenance.prov.scala.immutable
 import java.io.{InputStream, OutputStream}
 
 import org.parboiled2.{Rule1, _}
+import org.parboiled2.support.hlist._
+
 
 import scala.util.{Failure, Success}
 import org.openprovenance.prov.model.Namespace
@@ -12,7 +14,6 @@ import org.openprovenance.prov.model
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}
-import shapeless.HNil
 
 import scala.io.BufferedSource
 
@@ -110,7 +111,7 @@ trait ProvnNamespaces extends Parser with ProvnCore {
 
   def namespace =  rule { '<' ~ capture( oneOrMore(noneOf("<>")) )  ~ '>' ~ WS }   // TO REFINE, see IRI_REF def
 
-  def namespaceDeclarations = rule  {	( defaultNamespaceDeclaration | namespaceDeclaration  ) ~ WS ~ zeroOrMore (namespaceDeclaration) }
+  def namespaceDeclarations: Rule[HNil, HNil] = rule  {	( defaultNamespaceDeclaration | namespaceDeclaration  ) ~ WS ~ zeroOrMore (namespaceDeclaration) }
 
   def theNamespace: () => Namespace
 
@@ -232,11 +233,11 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
     def identifier: Rule1[QualifiedName] = qualified_name
 
-    def identifierOrMarker = rule { (  '-' ~ WS ~> makeNoIdentifier | qualified_name ~> makeOptionalIdentifier ) }
+    def identifierOrMarker: Rule[HNil, Option[QualifiedName] :: HNil] = rule { (  '-' ~ WS ~> makeNoIdentifier | qualified_name ~> makeOptionalIdentifier ) }
 
     def statement: Rule1[Statement] = rule { entity | agent | activity |  wasGeneratedBy | wasDerivedFrom | wasInvalidatedBy | used | wasAssociatedWith | actedOnBehalfOf | wasAttributedTo | specializationOf | alternateOf | hadMember | wasInformedBy | wasStartedBy | wasEndedBy | qualifiedSpecializationOf | mentionOf | qualifiedAlternateOf | qualifiedHadMemberOf | wasInfluencedBy }
 
-    def statementOrBundle = rule { statement | bundle }
+    def statementOrBundle: Rule[HNil, HList] = rule { statement | bundle }
 
     def optionalAttributeValuePairs: Rule1[Seq[Attribute]] = rule { optional ( ',' ~ WS ~ '[' ~ WS ~ ( attributeValuePairs ~ WS ~ ']' ~ WS  |
                                                                                                                                   ']' ~ WS ~> makeEmptyAttributeSet )  )  ~> makeAttributeSetFromOption }
@@ -251,11 +252,11 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
     def typedLiteral: Rule2[String,QualifiedName] = rule { string_literal ~ WS ~ "%%" ~ WS ~ datatype }
 
-    def datatype = rule { qualified_name }
+    def datatype: Rule[HNil, QualifiedName :: HNil] = rule { qualified_name }
 
     def convenienceNotation = rule { (string_literal ~ optional (langtag) ~> makeStringAttribute ) | int_literal  ~> makeIntAttribute | qualified_name_literal  ~> makeQualifiedNameAttribute }
 
-    def qualified_name_literal = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
+    def qualified_name_literal: Rule[HNil, QualifiedName :: HNil] = rule { '\'' ~ qualified_name ~ '\'' ~ WS }
 
     def int_literal = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> makeText ~ WS }
 
@@ -267,7 +268,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
  
     def string_literal_long2 =  rule { "\"\"\"" ~ capture (zeroOrMore(optional(ch('"') | "\"\"") ~ ( noneOf("\"\\") | echar ))) ~> makeText ~ "\"\"\"" ~ WS }
 
-    val string_escape_chars = CharPredicate("tbnrf\\\"\'")
+    val string_escape_chars: CharPredicate = CharPredicate("tbnrf\\\"\'")
     private def echar = rule { '\\' ~ string_escape_chars }
 
     //http://www.w3.org/TR/rdf-sparql-query/#rLANGTAG
@@ -277,11 +278,11 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
 
 
     // TODO: http://www.w3.org/TR/xmlschema11-2/#nt-dateTimeRep
-    def datetime = rule { capture (CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ 'T' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ optional ('.' ~ CharPredicate.Digit  ~ zeroOrMore(CharPredicate.Digit)) ~  optional('Z' | TimeZoneOffset) ) ~ WS ~> makeTime }
+    def datetime: Rule[HNil, XMLGregorianCalendar :: HNil] = rule { capture (CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ '-' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ 'T' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit ~ optional ('.' ~ CharPredicate.Digit  ~ zeroOrMore(CharPredicate.Digit)) ~  optional('Z' | TimeZoneOffset) ) ~ WS ~> makeTime }
 
     def optional_datetime:Rule1[Option[XMLGregorianCalendar]] = rule { datetime ~> makeOptionalTime | '-' ~ WS ~> makeNoTime }
 
-    def TimeZoneOffset = rule { SIGN ~  CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit }
+    def TimeZoneOffset: Rule[HNil, HNil] = rule { SIGN ~  CharPredicate.Digit ~ CharPredicate.Digit ~ ':' ~ CharPredicate.Digit ~ CharPredicate.Digit }
 
     private val SIGN: CharPredicate = CharPredicate("+-")
   //   def dateTimeLexicalRep = rule { yearFrag ~ '-' ~ monthFrag ~ '-' ~ dayFrag ~ 'T' ~ ( (hourFrag ~ ':' ~ minuteFrag ~ ':' ~ secondFrag) |  endOfDayFrag) ~ optional (timezoneFrag) }

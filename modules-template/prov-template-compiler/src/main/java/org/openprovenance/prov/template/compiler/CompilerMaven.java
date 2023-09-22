@@ -152,7 +152,7 @@ public class CompilerMaven {
 
         StringBuilder configString = new StringBuilder()
                 .append("<configuration>")
-                .append("<verbose>true</verbose>")
+                .append("<verbose>false</verbose>")
                 .append("<outDir>target/js</outDir>")
                 .append("<tsOut>target/ts</tsOut>")
                 .append("<candiesJsOut>webapp/candies</candiesJsOut>")

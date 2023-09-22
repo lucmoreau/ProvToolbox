@@ -49,7 +49,7 @@
 				<artifactId>jsweet-maven-plugin</artifactId>
 				<version>${jsweet.transpiler.version}</version>
 				<configuration>
-					<verbose>true</verbose>
+					<verbose>false</verbose>
 					<bundle>true</bundle>
 					<declaration>true</declaration>
 					<!-- <module>commonjs</module> -->

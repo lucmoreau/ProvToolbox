@@ -748,9 +748,21 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return res;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTime(java.lang.String)
+	 */
 	public XMLGregorianCalendar newISOTime(String time) {
 		return newTime(DatatypeConverter.parseDateTime(time)
 				.getTime());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTimeTZ(java.lang.String)
+	 */
+
+	public XMLGregorianCalendar newISOTimeTZ(String time) {
+		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
+		return newTime(parsedDateTime.getTime(), parsedDateTime.getTimeZone());
 	}
 	/*ValueConverter vconv=new ValueConverter(this);
 
@@ -932,6 +944,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return newXMLGregorianCalendar(gc);
 	}
 
+	public XMLGregorianCalendar newTime(Date date, TimeZone timeZone) {
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(date);
+		gc.setTimeZone(timeZone);
+		return newXMLGregorianCalendar(gc);
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.openprovenance.prov.model.LiteralConstructor#newTimeNow()

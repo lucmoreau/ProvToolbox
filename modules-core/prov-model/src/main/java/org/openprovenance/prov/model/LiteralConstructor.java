@@ -58,11 +58,22 @@ public interface LiteralConstructor {
      *     A string containing lexical representation of
      *     xsd:datetime.
      * 
-     * @return an instance of {@link XMLGregorianCalendar}
+     * @return an instance of {@link XMLGregorianCalendar} expressed in the system default timezone
      * 
      */
 
     Object newISOTime(String lexicalXSDDateTime);
+
+    /** Factory method for a <a href="http://www.w3.org/TR/xmlschema-2/#dateTime">dateTime</a>.
+     * @param lexicalXSDDateTime
+     *     A string containing lexical representation of
+     *     xsd:datetime.
+     *
+     * @return an instance of {@link XMLGregorianCalendar}
+     *
+     */
+
+    Object newISOTimeTZ(String lexicalXSDDateTime);
 
     /** Factory method for a <a href="http://www.w3.org/TR/xmlschema-2/#duration">duration</a>.
      * @param lexicalRepresentation <code>String</code> representation of a <code>Duration</code>.

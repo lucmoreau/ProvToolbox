@@ -764,21 +764,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
 		return newTime(parsedDateTime.getTime(), parsedDateTime.getTimeZone());
 	}
-	/*ValueConverter vconv=new ValueConverter(this);
-
-    public Key newKey(Object o, QualifiedName type) {
-        
-        if (getName().RDF_LITERAL.equals(type)&& (o instanceof String)) {
-            o=vconv.convertToJava(type,(String)o);
-        }
-            
-        Key res=of.createKey();
-        res.setType(type);
-        res.setValueFromObject(o);
-        return res;
-       }
-
-*/
+	
 	public abstract Key newKey(Object o, QualifiedName type);
 
 	public Location newLocation(Object value, QualifiedName type) {

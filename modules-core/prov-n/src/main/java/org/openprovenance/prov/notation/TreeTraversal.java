@@ -130,7 +130,7 @@ public class TreeTraversal {
             case PROV_NParser.TIME:
                 if (ast.getChildCount()==0) return null;
                 if (ast.getChild(0)==null) return null;
-                return pFactory.newISOTime(getTokenString(ast.getChild(0)));
+                return pFactory.newISOTimeUTC(getTokenString(ast.getChild(0)));
 
             case PROV_NParser.WINVB:
                 uidTree=ast.getChild(0);

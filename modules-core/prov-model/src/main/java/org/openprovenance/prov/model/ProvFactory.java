@@ -24,6 +24,7 @@ import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 public abstract class ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension {
 
 	public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
+	public static final TimeZone UTC_TIMEZONE = TimeZone.getTimeZone("UTC");
 
 	private static String fileName = "toolbox.properties";
 
@@ -764,7 +765,15 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
 		return newTime(parsedDateTime.getTime(), parsedDateTime.getTimeZone());
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTimeUTC(java.lang.String)
+	 */
+	public XMLGregorianCalendar newISOTimeUTC(String time) {
+		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
+		return newTime(parsedDateTime.getTime(), UTC_TIMEZONE);
+	}
+
 	public abstract Key newKey(Object o, QualifiedName type);
 
 	public Location newLocation(Object value, QualifiedName type) {

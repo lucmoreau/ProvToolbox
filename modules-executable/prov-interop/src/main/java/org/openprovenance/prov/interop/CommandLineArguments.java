@@ -12,6 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.DateTimeOption;
 
+import java.util.TimeZone;
+
 public class CommandLineArguments implements ErrorCodes {
 	
 	static Logger logger= LogManager.getLogger(CommandLineArguments.class);
@@ -50,6 +52,7 @@ public class CommandLineArguments implements ErrorCodes {
     public static final String LOG2KERNEL = "log2kernel";
     public static final String CONFIG = "config";
     public static final String DATE_TIME = "dateTime";
+    public static final String TIMEZONE = "timeZone";
 
     // see http://commons.apache.org/cli/usage.html
     static Options buildOptions() {
@@ -214,6 +217,14 @@ public class CommandLineArguments implements ErrorCodes {
                 .longOpt(DATE_TIME)
                 .build();
 
+        Option timeZone = Option.builder(TIMEZONE)
+                .argName("timeZone")
+                .hasArg()
+                .desc("a timezone")
+                .longOpt(TIMEZONE)
+                .build();
+
+
 
         Option log2kernel = new Option(LOG2KERNEL, LOG2KERNEL, false, "generating provenance types");
 
@@ -254,6 +265,7 @@ public class CommandLineArguments implements ErrorCodes {
         options.addOption(log2kernel);
         options.addOption(config);
         options.addOption(dateTime);
+        options.addOption(timeZone);
 
         return options;
 
@@ -305,6 +317,7 @@ public class CommandLineArguments implements ErrorCodes {
         boolean log2kernel=false;
         boolean config=false;
         DateTimeOption dateTime=DateTimeOption.UTC;
+        TimeZone timeZone=null;
 
 
         try {
@@ -339,7 +352,7 @@ public class CommandLineArguments implements ErrorCodes {
             if (line.hasOption(BINDINGS_VERSION))   {
                 String tmp= line.getOptionValue(BINDINGS_VERSION);
                 try {
-                    bindingsVersion    =new Integer(tmp);
+                    bindingsVersion  = Integer.valueOf(tmp);
                 } catch (Exception e){
                     System.err.println("bindings version not an integer (using 1) " + tmp);
                     bindingsVersion=1;
@@ -369,6 +382,16 @@ public class CommandLineArguments implements ErrorCodes {
             }
 
             if (line.hasOption(DATE_TIME)) dateTime = DateTimeOption.valueOf(line.getOptionValue(DATE_TIME));
+
+            if (line.hasOption(TIMEZONE)) {
+                try {
+                    timeZone = TimeZone.getTimeZone(line.getOptionValue(TIMEZONE));
+                } catch (Throwable e) {
+                    System.err.println("timeZone not recognised " + line.getOptionValue(TIMEZONE));
+                    logger.warn("timeZone not recognised " + line.getOptionValue(TIMEZONE));
+                    logger.throwing(e);
+                }
+            }
 
 
             final CommandLineArguments commandLineArguments
@@ -401,7 +424,8 @@ public class CommandLineArguments implements ErrorCodes {
                                                 log2prov,
                                                 log2kernel,
                                                 config,
-                                                dateTime);
+                                                dateTime,
+                                                timeZone);
             InteropFramework interop=new InteropFramework(commandLineArguments,
                                                           InteropFramework.getDefaultFactory());
             if (listFormatsp) {
@@ -456,11 +480,12 @@ public class CommandLineArguments implements ErrorCodes {
     public final  boolean log2kernel;
     public final  boolean config;
     public final DateTimeOption dateTime;
+    public final TimeZone timeZone;
 
     public CommandLineArguments(String verbose, String debug, String logfile,
                                 String infile, String informat, String outfile, String outformat, String namespaces, String title,
                                 String layout, String bindings, String bindingformat, int bindingsVersion, boolean addOrderp, boolean allExpanded, String template, boolean builder, String template_builder, String packge, String location, String generator,
-                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime) {
+                                String index, String merge, String flatten, String compare, String compareOut, String log2prov, boolean log2kernel, boolean config, DateTimeOption dateTime, TimeZone timeZone) {
         this.verbose=verbose;
         this.debug=debug;
         this.logfile=logfile;
@@ -491,6 +516,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.log2kernel=log2kernel;
         this.config=config;
         this.dateTime=dateTime;
+        this.timeZone=timeZone;
         
     }
     public CommandLineArguments() {
@@ -524,6 +550,7 @@ public class CommandLineArguments implements ErrorCodes {
         this.log2kernel=false;
         this.config=false;
         this.dateTime=DateTimeOption.PRESERVE;
+        this.timeZone=null;
 
     }
     

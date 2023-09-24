@@ -515,7 +515,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
 
             case JSONLD: {
-                org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime);
+                org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone);
                 return deserial.deserialiseDocument(is);
             }
 
@@ -561,8 +561,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 if (end < 0) {
                     end = content_type.length();
                 }
-                String actual_content_type = content_type.substring(0, end)
-                        .trim();
+                String actual_content_type = content_type.substring(0, end).trim();
                 logger.debug("Found Content-type: " + actual_content_type);
                 // TODO: might be worth skipping if text/plain as that seems
                 // to be the
@@ -681,8 +680,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    private Document doReadDocument(String filename, String format)
-    {
+    private Document doReadDocument(String filename, String format) throws IOException {
         Document doc;
         ProvFormat informat;
         if (format != null) {
@@ -705,7 +703,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             doc = readDocument(System.in, informat,"file://stdin/");
         } else {
-            doc = readDocumentFromFile(filename, informat);
+            doc=deserialiseDocument(Files.newInputStream(Paths.get(filename)), informat);
         }
 
         return doc;
@@ -863,7 +861,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         Document doc;
         if (config.infile != null && config.log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
-            doc = doReadDocument(config.infile, config.informat);
+            try {
+                doc = doReadDocument(config.infile, config.informat);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else if (config.merge != null) {
             IndexedDocument iDoc = new IndexedDocument(pFactory,
                                                        pFactory.newDocument(),
@@ -984,7 +986,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
 
         if (config.compare!=null) {
-            return doCompare(doc,doReadDocument(config.compare, config.informat));
+            try {
+                return doCompare(doc,doReadDocument(config.compare, config.informat));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } 
         
         if (config.template!=null  && !config.builder) {
@@ -1221,7 +1227,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
                         XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
-                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, null),
+                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvDeserialiser::new));
 
         return serializer;

@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
@@ -14,7 +15,7 @@ import org.openprovenance.prov.notation.Utility;
 public class FileExampleTest extends TestCase {
 
     public void fileToDot(String asnFile, String xmlFile, String dotFile, String pdfFile, String title) throws IOException {
-        Utility u=new Utility();
+        Utility u=new Utility(DateTimeOption.PRESERVE,null);
         ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 
         Document o= (Document) u.convertSyntaxTreeToJavaBean(asnFile,pFactory);

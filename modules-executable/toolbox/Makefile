@@ -154,13 +154,13 @@ issue.209:
 mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn
 
 test.issue.209.jsonld:
-	@echo "jsonld input: testing dateTime PRESERVE"
+	@echo "- jsonld input: testing dateTime PRESERVE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].startTime=="2023-09-08T20:12:45.109-04:00"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T20:35:06.793-02:00"' > /dev/null
-	@echo "jsonld input: testing dateTime UTC"
+	@echo "- jsonld input: testing dateTime UTC"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T00:12:45.109Z"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"' > /dev/null
-	@echo "jsonld input: testing dateTime TIMEZONE"
+	@echo "- jsonld input: testing dateTime TIMEZONE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Japan               | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T09:12:45.109+09:00"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Morocco             | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"'        > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Europe/Rome         | jq --exit-status '.["@graph"][0].endTime=="2023-10-16T00:35:06.793+02:00"'   > /dev/null
@@ -169,13 +169,15 @@ test.issue.209.jsonld:
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.jsonld -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Asia/Shanghai       | jq --exit-status '.["@graph"][0].endTime=="2023-10-16T06:35:06.793+08:00"'   > /dev/null
 
 test.issue.209.json:
-	@echo "json input: testing dateTime PRESERVE"
+	@echo "- json input: testing dateTime PRESERVE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime PRESERVE | jq --exit-status '.activity["ex:a"]["prov:startTime"]=="2023-09-08T20:12:45.109-04:00"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime PRESERVE | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-15T20:35:06.793-02:00"' > /dev/null
-	@echo "json input: testing dateTime UTC"
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].startTime=="2023-09-08T20:12:45.109-04:00"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T20:35:06.793-02:00"' > /dev/null
+	@echo "- json input: testing dateTime UTC"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime UTC | jq --exit-status '.activity["ex:a"]["prov:startTime"]=="2023-09-09T00:12:45.109Z"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime UTC | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-15T22:35:06.793Z"' > /dev/null
-	@echo "json input: testing dateTime TIMEZONE"
+	@echo "- json input: testing dateTime TIMEZONE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime TIMEZONE -timeZone Japan               | jq --exit-status '.activity["ex:a"]["prov:startTime"]=="2023-09-09T09:12:45.109+09:00"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime TIMEZONE -timeZone Morocco             | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-15T22:35:06.793Z"'        > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime TIMEZONE -timeZone Europe/Rome         | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-16T00:35:06.793+02:00"'   > /dev/null
@@ -184,15 +186,23 @@ test.issue.209.json:
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime TIMEZONE -timeZone Asia/Shanghai       | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-16T06:35:06.793+08:00"'   > /dev/null
 
 test.issue.209.provx:
-	@echo "provx input: testing dateTime PRESERVE"
+	@echo "- provx input: testing dateTime PRESERVE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].startTime=="2023-09-08T20:12:45.109-04:00"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T20:35:06.793-02:00"' > /dev/null
-	@echo "jsonld input: testing dateTime UTC"
+	@echo "- jsonld input: testing dateTime UTC"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T00:12:45.109Z"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"' > /dev/null
-	@echo "jsonld input: testing dateTime TIMEZONE"
+	@echo "- jsonld input: testing dateTime TIMEZONE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Japan               | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T09:12:45.109+09:00"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Morocco             | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"'        > /dev/null
 
 test.issue.209.provn:
 	@echo "TODO provn input: testing dateTime PRESERVE"
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].startTime=="2023-09-08T20:12:45.109-04:00"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T20:35:06.793-02:00"' > /dev/null
+	@echo "- jsonld input: testing dateTime UTC"
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T00:12:45.109Z"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"' > /dev/null
+	@echo "- jsonld input: testing dateTime TIMEZONE"
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Japan               | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T09:12:45.109+09:00"' > /dev/null
+	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Morocco             | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"'        > /dev/null

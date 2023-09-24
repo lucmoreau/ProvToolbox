@@ -435,7 +435,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public Object loadProvUnknownGraph(String filename) {
 
         try {
-            Utility u = new Utility();
+            Utility u = new Utility(config.dateTime, config.timeZone);
             Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
             if (o != null) {
                 return o;
@@ -506,7 +506,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 // from these
                 // formats
             case PROVN: {
-                Utility u = new Utility();
+                Utility u = new Utility(config.dateTime, config.timeZone);
                 Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
@@ -625,7 +625,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                                            // formats
 
             case PROVN: {
-                Utility u = new Utility();
+                Utility u = new Utility(config.dateTime, config.timeZone);
                 Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
                 // Namespace ns=Namespace.gatherNamespaces(doc);
                 // doc.setNamespace(ns);
@@ -1129,7 +1129,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             setNamespaces(document);
             switch (format) {
             case PROVN: {
-                new Utility().writeDocument(document, os, pFactory);
+                new Utility(config.dateTime, config.timeZone).writeDocument(document, os, pFactory);
                 break;
             }
             case XML: {
@@ -1227,7 +1227,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         //NOTE: Syntax restricted to 10 entries
         Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
         serializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,config.dateTime, config.timeZone),
                         XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
                         JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
@@ -1283,7 +1283,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             setNamespaces(document);
             switch (format) {
             case PROVN: {
-                new Utility().writeDocument(document, filename, pFactory);
+                new Utility(config.dateTime, config.timeZone).writeDocument(document, filename, pFactory);
                 break;
             }
             case XML: {

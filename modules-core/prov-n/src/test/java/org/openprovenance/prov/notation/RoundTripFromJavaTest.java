@@ -3,7 +3,7 @@ package org.openprovenance.prov.notation;
 import org.openprovenance.prov.model.*;
 
 public class RoundTripFromJavaTest extends org.openprovenance.prov.model.RoundTripFromJavaTest {
-	final Utility u = new Utility();
+	final Utility u = new Utility(DateTimeOption.PRESERVE, null);
 
 	public String extension() {
 		return ".provn";

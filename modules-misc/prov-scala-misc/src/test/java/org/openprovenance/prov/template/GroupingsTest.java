@@ -2,6 +2,7 @@ package org.openprovenance.prov.template;
 
 import java.io.IOException;
 
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
@@ -30,7 +31,7 @@ public class GroupingsTest extends TestCase {
 
 
     public Groupings getGroupings(String filename)  {
-        Document doc=(Document) new Utility().readDocument(filename, pf);
+        Document doc=(Document) new Utility(DateTimeOption.PRESERVE,null).readDocument(filename, pf);
 
         Groupings grps=Groupings.fromDocument(doc);
 

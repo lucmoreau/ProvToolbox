@@ -518,6 +518,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone);
                 return deserial.deserialiseDocument(is);
             }
+            case JSON: {
+                org.openprovenance.prov.core.json.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone);
+                return deserial.deserialiseDocument(is);
+            }
 
             case XML: {
                 org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
@@ -1228,7 +1232,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
                         XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
-                        JSON,    org.openprovenance.prov.core.json.serialization.ProvDeserialiser::new));
+                        JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
+        );
 
         return serializer;
     }

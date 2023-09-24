@@ -67,9 +67,6 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         return mapper;
     }
 
-    public org.openprovenance.prov.model.Document deserialiseDocument (File serialised) throws IOException {
-        return deserialiseDocument(new FileInputStream(serialised));
-    }
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
         getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         try {

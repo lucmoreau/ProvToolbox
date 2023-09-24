@@ -13,7 +13,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     public Document readDocumentFromFile(String file) throws IOException {
         readingMessage(file);
         ProvDeserialiser deserial=new ProvDeserialiser();
-        return deserial.deserialiseDocument(new File(file));
+        return deserial.deserialiseDocument(new FileInputStream(file));
 
     }
     public void readingMessage(String file) {

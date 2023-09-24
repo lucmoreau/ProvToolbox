@@ -9,27 +9,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/resources/dates/date_with_tz_offset.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/TreeTraversal.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/TreeTraversal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/Utility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/AttributeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/AttributeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/ExtensionRoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/ExtensionRoundTripFromJavaTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/InternationalizationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/InternationalizationTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/ParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/ParserTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PubTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/PubTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromJavaTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromProvnTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromProvnTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/ASNTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/FileExampleTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/test/java/org/openprovenance/prov/dot/SculptureTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-generator/src/test/java/org/openprovenance/prov/generator/GeneratorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-generator/src/test/java/org/openprovenance/prov/generator/GeneratorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/test/java/org/openprovenance/prov/template/BindingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/test/java/org/openprovenance/prov/template/BindingTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/test/java/org/openprovenance/prov/template/ExpandTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/test/java/org/openprovenance/prov/template/ExpandTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/test/java/org/openprovenance/prov/template/GroupingsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/test/java/org/openprovenance/prov/template/GroupingsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org/openprovenance/prov/scala/ParserSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org/openprovenance/prov/scala/ParserSpec.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +110,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "209-timezone-information-lost-during-deserialization",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable/toolbox/src/test/resources/dates",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model-scala/src/test/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -152,11 +135,11 @@
       <recent name="org.openprovenance.prov.template.compiler.configuration" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/dictionary" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper" />
       <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter" />
-      <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter/WEB-INF" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
@@ -201,7 +184,7 @@
       <recent name="org.openprovenance.prov.service" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.test.issue.209.provx">
+  <component name="RunManager" selected="ScalaTest.ParserSpec.Deserialization with default should preserve dates">
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -240,26 +223,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="issue.209" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="issue.209" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="mvn.test" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="mvn.test" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
-    <configuration name="test.issue.209" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.issue.209" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
-    <configuration name="test.issue.209.json" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.issue.209.json" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -282,6 +247,60 @@
       <option name="shortenClasspath" value="NONE" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
       <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ParserSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-model-scala" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.ParserSpec" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ParserSpec.Dates should be preserved" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-model-scala" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="allowRunningInParallel" value="false" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Test name" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.ParserSpec" />
+      <option name="testName" value="Dates should be preserved" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ParserSpec.Deserialization with default should preserve dates" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-model-scala" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Test name" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.ParserSpec" />
+      <option name="testName" value="Deserialization with default should preserve dates" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -312,20 +331,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="Makefile Target.issue.209" />
       <item itemvalue="Makefile Target.mvn.test" />
-      <item itemvalue="Makefile Target.test.issue.209" />
-      <item itemvalue="Makefile Target.test.issue.209.json" />
       <item itemvalue="Makefile Target.test.issue.209.provx" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="ScalaTest.ParserSpec.Deserialization with default should preserve dates" />
+      <item itemvalue="ScalaTest.ParserSpec" />
+      <item itemvalue="ScalaTest.ParserSpec.Dates should be preserved" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="ScalaTest.ParserSpec.Deserialization with default should preserve dates" />
+        <item itemvalue="ScalaTest.ParserSpec.Dates should be preserved" />
+        <item itemvalue="ScalaTest.ParserSpec" />
         <item itemvalue="Makefile Target.test.issue.209.provx" />
         <item itemvalue="Makefile Target.mvn.test" />
-        <item itemvalue="Makefile Target.test.issue.209.json" />
-        <item itemvalue="Makefile Target.test.issue.209" />
-        <item itemvalue="Makefile Target.issue.209" />
       </list>
     </recent_temporary>
   </component>

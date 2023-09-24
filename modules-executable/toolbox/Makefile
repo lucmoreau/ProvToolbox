@@ -142,5 +142,12 @@ test.attributes:
 	cat target/merged-activity.provn
 
 issue.209:
+	echo "=== from provn ==="
 	curl --silent https://gist.githubusercontent.com/lucmoreau/588fdaeca5eb271cc6d0cd86816bea00/raw/ff621ab4bbb07d20585331be2c434e4bd575a8c8/date_with_tz_offset.provn | $(PROVCONVERT) -infile - -informat provn -outfile - -outformat provn
 	curl --silent https://gist.githubusercontent.com/lucmoreau/588fdaeca5eb271cc6d0cd86816bea00/raw/ff621ab4bbb07d20585331be2c434e4bd575a8c8/date_with_tz_offset.provn | $(PROVCONVERT) -infile - -informat provn -outfile - -outformat jsonld
+	echo "=== from jsonld ==="
+	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn
+	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime PRESERVE
+	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime UTC
+	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime SYSTEM
+

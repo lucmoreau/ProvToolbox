@@ -79,7 +79,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             Method method=clazz.getMethod("getFactory");
             return (ProvFactory) method.invoke(new Object[0]);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            logger.throwing(e);
         }
         return null;
     }
@@ -93,12 +93,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
     public final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
-
     public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
-
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
-
-    
     final private CommandLineArguments config;
     final private Map<ProvFormat, SerializerFunction> serializerMap;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
@@ -503,35 +499,40 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                  String baseuri) {
 
         switch (format) {
-        case DOT:
-        case JPEG:
-        case PNG:
-        case SVG:
-            throw new UnsupportedOperationException(); // we don't load PROV
-            // from these
-            // formats
-        case PROVN: {
-            Utility u = new Utility();
-            Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
-            // Namespace ns=Namespace.gatherNamespaces(doc);
-            // doc.setNamespace(ns);
-            return (Document) o;
-        }
-
-        case XML: {
-            org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-            Document doc = null;
-            try {
-                doc = deserial.deserialiseDocument(is);
-            } catch (IOException e) {
-                throw new InteropException(e);
+            case DOT:
+            case JPEG:
+            case PNG:
+            case SVG:
+                throw new UnsupportedOperationException(); // we don't load PROV
+                // from these
+                // formats
+            case PROVN: {
+                Utility u = new Utility();
+                Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
+                // Namespace ns=Namespace.gatherNamespaces(doc);
+                // doc.setNamespace(ns);
+                return (Document) o;
             }
-            return doc;
-        }
-        default: {
-            System.out.println("Unknown format " + format);
-            throw new UnsupportedOperationException();
-        }
+
+            case JSONLD: {
+                org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime);
+                return deserial.deserialiseDocument(is);
+            }
+
+            case XML: {
+                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
+                Document doc = null;
+                try {
+                    doc = deserial.deserialiseDocument(is);
+                } catch (IOException e) {
+                    throw new InteropException(e);
+                }
+                return doc;
+            }
+            default: {
+                System.out.println("Unknown format " + format);
+                throw new UnsupportedOperationException();
+            }
         }
 
     }
@@ -1220,7 +1221,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
                         XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
-                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
+                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, null),
                         JSON,    org.openprovenance.prov.core.json.serialization.ProvDeserialiser::new));
 
         return serializer;

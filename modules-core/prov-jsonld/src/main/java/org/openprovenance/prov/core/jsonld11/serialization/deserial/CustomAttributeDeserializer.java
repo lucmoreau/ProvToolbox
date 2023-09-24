@@ -18,7 +18,7 @@ import static org.openprovenance.prov.core.jsonld11.serialization.deserial.Custo
 
 public class CustomAttributeDeserializer extends StdDeserializer<Attribute> implements Constants {
 
-    static final ProvFactory pf=new ProvFactory();
+    static final ProvFactory pf=ProvFactory.getFactory();
 
     static final QualifiedName XSD_STRING=pf.getName().XSD_STRING;
 

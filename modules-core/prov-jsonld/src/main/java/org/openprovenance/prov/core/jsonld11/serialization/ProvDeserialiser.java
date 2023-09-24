@@ -7,33 +7,54 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomAttributeDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomBundleDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
+import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomXMLGregorianCalendarDeserializer;
 import org.openprovenance.prov.model.Attribute;
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.Document;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.*;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
 
 
-public class ProvDeserialiser extends org.openprovenance.prov.core.json.serialization.ProvDeserialiser {
+public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeserialiser {
+    private static final Logger logger = LogManager.getLogger(ProvDeserialiser.class);
     final ObjectMapper mapper ;
+    private final DateTimeOption dateTimeOption;
+    private final TimeZone optionalTimeZone;
 
     public ProvDeserialiser() {
         this(new ObjectMapper());
     }
 
     public ProvDeserialiser(ObjectMapper mapper) {
-        this.mapper= mapper;
+        this.mapper = mapper;
+        this.dateTimeOption = DateTimeOption.PRESERVE;
+        this.optionalTimeZone = null;
+        customize(mapper);
+    }
+    public ProvDeserialiser(ObjectMapper mapper, DateTimeOption dateTimeOption) {
+        this.mapper = mapper;
+        this.dateTimeOption = dateTimeOption;
+        this.optionalTimeZone = null;
+        customize(mapper);
+    }
+    public ProvDeserialiser(ObjectMapper mapper, DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
+        this.mapper = mapper;
+        this.dateTimeOption = dateTimeOption;
+        this.optionalTimeZone = optionalTimeZone;
         customize(mapper);
     }
 
@@ -46,12 +67,15 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         return mapper;
     }
 
+    public org.openprovenance.prov.model.Document deserialiseDocument (File serialised) throws IOException {
+        return deserialiseDocument(new FileInputStream(serialised));
+    }
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in)  {
         getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.throwing(e);
             throw new UncheckedException(e);
         }
     }
@@ -61,7 +85,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         try {
             return mapper.readValue(in, Document.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.throwing(e);
             throw new UncheckedException(e);
         }
     }
@@ -85,6 +109,7 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
         module.addDeserializer(Namespace.class, newCustomNamespaceDeserializer(arrayType));
         module.addDeserializer(Bundle.class, new CustomBundleDeserializer());
         module.addDeserializer(Attribute.class, new CustomAttributeDeserializer());
+        module.addDeserializer(XMLGregorianCalendar.class, new CustomXMLGregorianCalendarDeserializer(dateTimeOption,optionalTimeZone));
 
         provMixin().addProvMixin(mapper);
 

@@ -444,9 +444,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             // OK, we failed, let's try next format.
         }
         try {
-            File in = new File(filename);
             org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-            Document c = deserial.deserialiseDocument(in);
+            Document c = deserial.deserialiseDocument(Files.newInputStream(Paths.get(filename)));
             if (c != null) {
                 return c;
             }
@@ -524,7 +523,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
 
             case XML: {
-                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
+                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone);
                 Document doc = null;
                 try {
                     doc = deserial.deserialiseDocument(is);
@@ -637,9 +636,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case JSONLD:
 
             case XML: {
-                File in = new File(filename);
-                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-                Document doc = deserial.deserialiseDocument(in);
+                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone);
+                Document doc = deserial.deserialiseDocument(Files.newInputStream(Paths.get(filename)));
                 return doc;
             }
             default: {
@@ -1230,7 +1228,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
-                        XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
+                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
                         JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
         );

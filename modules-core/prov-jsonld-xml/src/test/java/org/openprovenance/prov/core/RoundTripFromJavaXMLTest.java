@@ -6,6 +6,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.RoundTripFromJavaTest;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ public class RoundTripFromJavaXMLTest extends RoundTripFromJavaTest {
     public Document readDocumentFromFile(String file) throws IOException {
         System.out.println(" reading from " + file);
         ProvDeserialiser deserial=new ProvDeserialiser();
-        return deserial.deserialiseDocument(new File(file));
+        return deserial.deserialiseDocument(new FileInputStream(file));
     }
 
 

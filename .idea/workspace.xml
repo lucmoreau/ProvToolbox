@@ -9,17 +9,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomXMLGregorianCalendarDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/foo.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.provx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/CustomXMLGregorianCalendarDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvDeserialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.provx" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates/date_with_tz_offset.provx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaXMLViaLegacyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/roundtrip/src/test/java/org/openprovenance/prov/core/roundtrip/RoundTripFromJavaXMLViaLegacyTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +117,9 @@
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala",
     "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable/toolbox/src/test/resources/dates",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Libraries",
@@ -127,7 +127,7 @@
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "scala.compiler",
+    "settings.editor.selected.configurable": "preferences.externalResources",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -182,66 +182,14 @@
       <recent name="org.openprovenance.prov.service.core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
       <recent name="org.openprovenance.prov.core.json.serialization.deserial" />
       <recent name="org.openprovenance.prov.model.exception" />
       <recent name="org.openprovenance.prov.core.jsonld11" />
       <recent name="org.openprovenance.prov.service" />
-      <recent name="org.openprovenance.prov.service.translator" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.test.issue.209.json">
-    <configuration name="DateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.DateTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DateTest.testDateJsonldUTC" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.DateTest" />
-      <option name="METHOD_NAME" value="testDateJsonldUTC" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Makefile Target.mvn.test">
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -286,6 +234,12 @@
       </makefile>
       <method v="2" />
     </configuration>
+    <configuration name="mvn.test" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="mvn.test" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <configuration name="test.issue.209" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.issue.209" workingDirectory="" arguments="">
         <envs />
@@ -294,6 +248,12 @@
     </configuration>
     <configuration name="test.issue.209.json" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.issue.209.json" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="test.issue.209.provx" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.issue.209.provx" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -340,20 +300,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.DateTest" />
-      <item itemvalue="JUnit.DateTest.testDateJsonldUTC" />
       <item itemvalue="Makefile Target.issue.209" />
+      <item itemvalue="Makefile Target.mvn.test" />
       <item itemvalue="Makefile Target.test.issue.209" />
       <item itemvalue="Makefile Target.test.issue.209.json" />
+      <item itemvalue="Makefile Target.test.issue.209.provx" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.mvn.test" />
+        <item itemvalue="Makefile Target.test.issue.209.provx" />
         <item itemvalue="Makefile Target.test.issue.209.json" />
         <item itemvalue="Makefile Target.test.issue.209" />
         <item itemvalue="Makefile Target.issue.209" />
-        <item itemvalue="JUnit.DateTest.testDateJsonldUTC" />
-        <item itemvalue="JUnit.DateTest" />
       </list>
     </recent_temporary>
   </component>
@@ -1038,7 +998,12 @@
     </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
+    <expand>
+      <path>
+        <item name="ProvToolbox" type="b2602c69:ProjectViewProjectNode" />
+        <item name="dir{file:///Users/luc/IdeaProjects/ProvToolbox}" type="462c0819:PsiDirectoryNode" />
+      </path>
+    </expand>
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">

@@ -9,10 +9,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/resources/dates/date_with_tz_offset.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/DeserializerFunction2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/dates/date_with_tz_offset.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/dates/date_with_tz_offset.jsonld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/dates/date_with_tz_offset.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/dates/date_with_tz_offset.provx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ProvnParser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org/openprovenance/prov/scala/ParserSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/scala/org/openprovenance/prov/scala/ParserSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/Formats.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/Formats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/ResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-api/src/main/java/org/openprovenance/prov/storage/api/ResourceStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/DocumentResourceStorageFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/DocumentResourceStorageFileSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-mongodb/src/main/java/org/openprovenance/prov/storage/mongodb/MongoDocumentResourceStorage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,14 +126,14 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "209-timezone-information-lost-during-deserialization",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model-scala/src/test/resources",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
+    "project.structure.last.edited": "Problems",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
@@ -135,11 +151,11 @@
       <recent name="org.openprovenance.prov.template.compiler.configuration" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/dictionary" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper" />
-      <recent name="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/webapp.filter" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
@@ -177,14 +193,40 @@
       <recent name="org.openprovenance.prov.service.core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translator" />
+      <recent name="org.openprovenance.prov.interop" />
       <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
       <recent name="org.openprovenance.prov.core.json.serialization.deserial" />
       <recent name="org.openprovenance.prov.model.exception" />
-      <recent name="org.openprovenance.prov.core.jsonld11" />
-      <recent name="org.openprovenance.prov.service" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.ParserSpec.Deserialization with default should preserve dates">
+  <component name="RunManager" selected="JUnit.DateIT.testTranslationWithDate1">
+    <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.DateIT" />
+      <option name="METHOD_NAME" value="testTranslationWithDate1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -222,12 +264,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration name="mvn.test" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="mvn.test" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
     </configuration>
     <configuration name="test.issue.209.provx" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.issue.209.provx" workingDirectory="" arguments="">
@@ -331,7 +367,7 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="Makefile Target.mvn.test" />
+      <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
       <item itemvalue="Makefile Target.test.issue.209.provx" />
       <item itemvalue="ScalaTest.ModelSpec" />
       <item itemvalue="ScalaTest.ParserSpec.Deserialization with default should preserve dates" />
@@ -340,11 +376,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
         <item itemvalue="ScalaTest.ParserSpec.Deserialization with default should preserve dates" />
         <item itemvalue="ScalaTest.ParserSpec.Dates should be preserved" />
         <item itemvalue="ScalaTest.ParserSpec" />
         <item itemvalue="Makefile Target.test.issue.209.provx" />
-        <item itemvalue="Makefile Target.mvn.test" />
       </list>
     </recent_temporary>
   </component>

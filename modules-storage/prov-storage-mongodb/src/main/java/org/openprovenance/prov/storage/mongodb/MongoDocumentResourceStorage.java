@@ -15,6 +15,7 @@ import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.storage.api.ResourceStorage;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -22,6 +23,7 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.TimeZone;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
@@ -106,6 +108,14 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
             return null;
         }
         return wrapper.document;
+    }
+
+    @Override
+    public Document readDocument(String id, boolean known, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+        logger.warn("No support fro dateTimeOption and timeZone");
+        System.out.println("No support for dateTimeOption and timeZone");
+        logger.warn("No support for dateTimeOption and timeZone");
+        return readDocument(id, known);
     }
 
     @Override

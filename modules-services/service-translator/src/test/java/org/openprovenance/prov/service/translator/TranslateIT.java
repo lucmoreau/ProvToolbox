@@ -116,7 +116,7 @@ public class TranslateIT extends RoundTripFromJavaTest {
         @SuppressWarnings("unused")
         Object o1=readObject(location, MEDIA_IMAGE_SVG_XML);
         List<Pair> ll= new LinkedList<>();
-        ll.add(new Pair(doc1, ProvFormat.XML));
+        ll.add(new Pair(doc1, ProvFormat.PROVX));
         ll.add(new Pair(doc2, ProvFormat.JSON));
         ll.add(new Pair(doc3, ProvFormat.PROVN));
         //ll.add(new Pair(doc4, ProvFormat.TRIG));

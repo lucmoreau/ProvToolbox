@@ -98,6 +98,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     final private CommandLineArguments config;
     final private Map<ProvFormat, SerializerFunction> serializerMap;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
+    final private Map<ProvFormat, DeserializerFunction2> deserializerMap2;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses the factory declared in the configuration file as its default factory.
@@ -127,6 +128,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         serializerMap = createSerializerMap();
         deserializerMap = createDeserializerMap();
+        deserializerMap2 = createDeserializerMap2();
     }
 
     /**
@@ -385,15 +387,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 mimeTypeRevMap.put(MEDIA_APPLICATION_JSONLD, ProvFormat.JSONLD);
                 provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
                 break;
-            case XML:
-                extensionMap.put(XML, EXTENSION_PROVX);
-                extensionRevMap.put(EXTENSION_PROVX, XML);
-                extensionRevMap.put(EXTENSION_XML, XML);
-                mimeTypeMap.put(XML,
-                                MEDIA_APPLICATION_PROVENANCE_XML);
-                mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML,
-                                   XML);
-                provTypeMap.put(XML, ProvFormatType.INPUTOUTPUT);
+            case PROVX:
+                extensionMap.put(ProvFormat.PROVX, EXTENSION_PROVX);
+                extensionRevMap.put(EXTENSION_PROVX, ProvFormat.PROVX);
+                extensionRevMap.put(EXTENSION_XML, ProvFormat.PROVX);
+                mimeTypeMap.put(ProvFormat.PROVX, MEDIA_APPLICATION_PROVENANCE_XML);
+                mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.PROVX);
+                provTypeMap.put(ProvFormat.PROVX, ProvFormatType.INPUTOUTPUT);
                 break;
             default:
                 break;
@@ -522,7 +522,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 return deserial.deserialiseDocument(is);
             }
 
-            case XML: {
+            case PROVX: {
                 org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone);
                 Document doc = null;
                 try {
@@ -593,11 +593,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a Document
      */
     public Document readDocumentFromFile(String filename) {
-
-            ProvFormat format = getTypeForFile(filename);
-            if (format == null) {
-                throw new InteropException("Unknown output file format: " + filename);
-            }
+        ProvFormat format = getTypeForFile(filename);
+        if (format == null) {
+            throw new InteropException("Unknown output file format: " + filename);
+        }
         try {
             return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format);
         } catch (IOException e) {
@@ -635,7 +634,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             case TRIG:
             case JSONLD:
 
-            case XML: {
+            case PROVX: {
                 org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone);
                 Document doc = deserial.deserialiseDocument(Files.newInputStream(Paths.get(filename)));
                 return doc;
@@ -769,10 +768,30 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         logger.debug("deserializer " + format + " " + deserializer);
         return deserializer.apply().deserialiseDocument(is);
     }
-
+    public Document deserialiseDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+        DeserializerFunction2 deserializer=deserializerMap2.get(format);
+        logger.debug("deserializer " + format + " " + deserializer);
+        return deserializer.apply(dateTimeOption, timeZone).deserialiseDocument(is);
+    }
     @Override
     public Collection<String> mediaTypes() {
         return mimeTypeRevMap.keySet();
+    }
+
+    public Object readDocumentFromFile(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        ProvFormat format = getTypeForFile(filename);
+        if (format == null) {
+            throw new InteropException("Unknown output file format: " + filename);
+        }
+        try {
+            return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format, dateTimeOption, timeZone);
+        } catch (IOException e) {
+            throw new InteropException(e);
+        }
+    }
+
+    public Object loadProvUnknownGraph(String id, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        throw new UnsupportedOperationException();
     }
 
     enum FileKind { FILE , URL }
@@ -1132,7 +1151,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 new Utility(config.dateTime, config.timeZone).writeDocument(document, os, pFactory);
                 break;
             }
-            case XML: {
+            case PROVX: {
                 org.openprovenance.prov.model.ProvSerialiser serial = pFactory
                         .getSerializer();
                 logger.debug("namespaces " + document.getNamespace());
@@ -1204,7 +1223,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
-                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
+                        PROVX,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
                         TURTLE,  () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");}, //new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
                          TRIG,   () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");},  //() -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
@@ -1222,20 +1241,33 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return serializer;
     }
 
-    final public Map<ProvFormat, DeserializerFunction> createLightDeserializerMap() {
+    final public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
 
         //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
-        serializer.putAll(
+        Map<ProvFormat, DeserializerFunction> deserializer=new HashMap<>();
+        deserializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,config.dateTime, config.timeZone),
-                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
+                        PROVX,     () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
                         JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
         );
 
-        return serializer;
+        return deserializer;
     }
 
+    final public Map<ProvFormat, DeserializerFunction2> createDeserializerMap2() {
+
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, DeserializerFunction2> deserializer=new HashMap<>();
+        deserializer.putAll(
+                Map.of(PROVN,    (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,dateTime, timeZone),
+                        PROVX,     (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(dateTime, timeZone),
+                        JSONLD,  (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone),
+                        JSON,    (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone))
+        );
+
+        return deserializer;
+    }
 
 
 
@@ -1248,15 +1280,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
     }
 
-
-    public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
-        switch (configuration) {
-
-            case "light":        return createLightDeserializerMap();
-            default:
-                throw new IllegalStateException("Unexpected configuration value: " + configuration);
-        }
-    }
 
     private Integer maxStringLength=100;
 
@@ -1286,7 +1309,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 new Utility(config.dateTime, config.timeZone).writeDocument(document, filename, pFactory);
                 break;
             }
-            case XML: {
+                case PROVX: {
                 org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser();
                 logger.debug("namespaces " + document.getNamespace());
                 serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);

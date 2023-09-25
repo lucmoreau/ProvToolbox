@@ -433,35 +433,30 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a document
      */
     public Object loadProvUnknownGraph(String filename) {
-
-        try {
-            Utility u = new Utility(config.dateTime, config.timeZone);
-            Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
-            if (o != null) {
-                return o;
+        for (ProvFormat format: preferredOrder) {
+            try {
+                return deserializerMap.get(format).apply().deserialiseDocument(Files.newInputStream(Paths.get(filename)));
+            } catch (IOException ignored) {
+                // we fail, let's continue with the next one
             }
-        } catch (RuntimeException t1) {
-            // OK, we failed, let's try next format.
         }
-        try {
-            org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-            Document c = deserial.deserialiseDocument(Files.newInputStream(Paths.get(filename)));
-            if (c != null) {
-                return c;
-            }
-
-            // OK, we failed, let's try next format.
-        } catch (IOException ignored) {
-
-        }
-
 
         System.out.println("Unparseable format " + filename);
-        throw new UnsupportedOperationException();
-
+        throw new UnsupportedOperationException("Unparseable format " + filename);
     }
 
-    
+
+    public Object loadProvUnknownGraph(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        for (ProvFormat format: preferredOrder) {
+            try {
+                return deserializerMap2.get(format).apply(dateTimeOption, timeZone).deserialiseDocument(Files.newInputStream(Paths.get(filename)));
+            } catch (IOException ignored) {
+                // we fail, let's continue with the next one
+            }
+        }
+        System.out.println("Unparseable format " + filename);
+        throw new UnsupportedOperationException("Unparseable format " + filename);
+    }
 
     /**
      * Reads a document from a URL. Uses the Content-type header field to determine the 
@@ -667,9 +662,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
     }
 
-    public Object loadProvUnknownGraph(String id, DateTimeOption dateTimeOption, TimeZone timeZone) {
-        throw new UnsupportedOperationException();
-    }
 
     enum FileKind { FILE , URL }
 
@@ -1082,6 +1074,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         return deserializer;
     }
+
+    List<ProvFormat> preferredOrder=List.of(PROVN, JSONLD, JSON,PROVX);
 
 
 

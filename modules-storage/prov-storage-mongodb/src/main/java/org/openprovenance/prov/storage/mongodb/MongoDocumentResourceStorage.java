@@ -83,7 +83,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     @Override
     public void copyInputStreamToStore(InputStream inputStream, Formats.ProvFormat format, String id) throws IOException {
         logger.debug("copyStrcopyInputStreamToStore  " + id);
-        Document doc=interop.readDocument(inputStream, format, "");  //TODO: can we improve?
+        Document doc=interop.deserialiseDocument(inputStream, format);  //TODO: can we improve?
         if (!(doc instanceof org.openprovenance.prov.vanilla.Document)) {
             // if it was constructed with a different factory, convert to vanilla
             BeanTraversal bc=new BeanTraversal(factory, factory);

@@ -462,85 +462,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     }
 
     
-    /**
-     * Reads a Document from an input stream, using the parser specified by the format argument.
-     * @param is an input stream
-     * @param format one of the input formats supported by ProvToolbox
-     * @param baseuri a base uri for the input stream document	
-     * @return a Document
-     */
-
-    public Document readDocument(InputStream is, ProvFormat format, String baseuri) throws IOException {
-        return readDocument(is, format, pFactory, baseuri);
-    }
-
-    /**
-     * Reads a Document from an input stream, using the parser specified by the format argument.
-     * @param is an input stream
-     * @param format one of the input formats supported by ProvToolbox
-     * @param pFactory a provenance factory used to construct the Document
-     * @param baseuri a base uri for the input stream document
-     * @return a Document
-     */
-
-  
-    public Document readDocument(InputStream is, 
-                                 ProvFormat format,
-                                 ProvFactory pFactory,
-                                 String baseuri) throws IOException {
-
-        switch (format) {
-            /*
-            case DOT:
-            case JPEG:
-            case PNG:
-            case SVG:
-                // we don't load PROV documents from these formats
-                throw new UnsupportedOperationException();
-
-             */
-            case PROVN:
-            case PROVX:
-            case JSONLD:
-            case JSON:
-                deserializerMap2.get(format).apply(config.dateTime, config.timeZone).deserialiseDocument(is);
-                /*
-            case PROVN: {
-                Utility u = new Utility(config.dateTime, config.timeZone);
-                Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
-                // Namespace ns=Namespace.gatherNamespaces(doc);
-                // doc.setNamespace(ns);
-                return (Document) o;
-            }
-
-            case JSONLD: {
-                org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone);
-                return deserial.deserialiseDocument(is);
-            }
-            case JSON: {
-                org.openprovenance.prov.core.json.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone);
-                return deserial.deserialiseDocument(is);
-            }
-
-            case PROVX: {
-                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone);
-                Document doc = null;
-                try {
-                    doc = deserial.deserialiseDocument(is);
-                } catch (IOException e) {
-                    throw new InteropException(e);
-                }
-                return doc;
-            }
-            */
-
-            default: {
-                System.out.println("Unknown deserialization format " + format);
-                throw new UnsupportedOperationException();
-            }
-        }
-
-    }
 
     /**
      * Reads a document from a URL. Uses the Content-type header field to determine the 
@@ -582,7 +503,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             InputStream content_stream = conn.getInputStream();
 
-            return readDocument(content_stream, format,url);
+            return deserialiseDocument(content_stream, format);
         } catch (IOException e) {
             throw new InteropException(e);
         }
@@ -658,7 +579,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             if (informat == null) {
                 throw new InteropException("File format for standard input not specified");
             }
-            doc = readDocument(System.in, informat,"file://stdin/");
+            doc = deserialiseDocument(System.in, informat);
         } else {
             doc=deserialiseDocument(Files.newInputStream(Paths.get(filename)), informat);
         }

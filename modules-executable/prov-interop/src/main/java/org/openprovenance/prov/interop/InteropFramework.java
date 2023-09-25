@@ -470,7 +470,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a Document
      */
 
-    public Document readDocument(InputStream is, ProvFormat format, String baseuri) {
+    public Document readDocument(InputStream is, ProvFormat format, String baseuri) throws IOException {
         return readDocument(is, format, pFactory, baseuri);
     }
 
@@ -487,16 +487,24 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public Document readDocument(InputStream is, 
                                  ProvFormat format,
                                  ProvFactory pFactory,
-                                 String baseuri) {
+                                 String baseuri) throws IOException {
 
         switch (format) {
+            /*
             case DOT:
             case JPEG:
             case PNG:
             case SVG:
-                throw new UnsupportedOperationException(); // we don't load PROV
-                // from these
-                // formats
+                // we don't load PROV documents from these formats
+                throw new UnsupportedOperationException();
+
+             */
+            case PROVN:
+            case PROVX:
+            case JSONLD:
+            case JSON:
+                deserializerMap2.get(format).apply(config.dateTime, config.timeZone).deserialiseDocument(is);
+                /*
             case PROVN: {
                 Utility u = new Utility(config.dateTime, config.timeZone);
                 Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
@@ -524,8 +532,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 }
                 return doc;
             }
+            */
+
             default: {
-                System.out.println("Unknown format " + format);
+                System.out.println("Unknown deserialization format " + format);
                 throw new UnsupportedOperationException();
             }
         }
@@ -538,7 +548,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @param url a URL
      * @return a Document
      */
-    public Document readDocument(String url) {
+    public Document readDocumentFromURL(String url) {
         try {
             URL theURL = new URL(url);
             URLConnection conn = connectWithRedirect(theURL);
@@ -596,60 +606,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
     }
 
-    /**
-     * Reads a document from a file, using the format to decide which parser to read the file with.
-     * @param filename the file to read a document from
-     * @param format the format of the file
-     * @return a Document
-     * @deprecated Use instead deserialiseDocument
-     */
 
-        /*    public Document readDocumentFromFile(String filename, ProvFormat format) {
-
-
-        try {
-            switch (format) {
-            case DOT:
-            case JPEG:
-            case PNG:
-            case SVG:
-                throw new UnsupportedOperationException(); // we don't load PROV
-                                                           // from these
-                                                           // formats
-
-            case PROVN: {
-                Utility u = new Utility(config.dateTime, config.timeZone);
-                Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
-                // Namespace ns=Namespace.gatherNamespaces(doc);
-                // doc.setNamespace(ns);
-                return (Document) o;
-            }
-            case RDFXML:
-            case TRIG:
-            case JSONLD:
-
-            case PROVX: {
-                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone);
-                Document doc = deserial.deserialiseDocument(Files.newInputStream(Paths.get(filename)));
-                return doc;
-            }
-            default: {
-                System.out.println("Unknown format " + filename);
-                throw new UnsupportedOperationException();
-            }
-            }
-        } catch (RuntimeException | IOException e) {
-            throw new InteropException(e);
-        }
-
-
-
-    } */
-    public java.util.List<java.util.Map<String, String>>getSupportedFormats() {
-        java.util.List<java.util.Map<String, String>> tripleList = new java.util.ArrayList<>();
-        java.util.Map<String, String>trip;
-        for (ProvFormat pt:  provTypeMap.keySet()) {
-            for (String mt:  mimeTypeRevMap.keySet()) {
+    public List<Map<String, String>>getSupportedFormats() {
+        List<Map<String, String>> tripleList = new ArrayList<>();
+        Map<String, String> trip;
+        for (ProvFormat pt: provTypeMap.keySet()) {
+            for (String mt: mimeTypeRevMap.keySet()) {
                 if (mimeTypeRevMap.get(mt) == pt) {
                     for (String ext: extensionRevMap.keySet()) {
                         if (extensionRevMap.get(ext) == pt) {
@@ -683,14 +645,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (format != null) {
             informat = getTypeForFormat(format);
             if (informat == null) {
-                throw new InteropException("Unknown format: "
-                        + format);
+                throw new InteropException("Unknown format: " + format);
             }
         } else {
             informat = getTypeForFile(filename);
             if (informat == null) {
-                throw new InteropException("Unknown file format for: "
-                        + filename);
+                throw new InteropException("Unknown file format for: " + filename);
             }
         }
 
@@ -816,7 +776,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             doc=deserialiseDocument(Files.newInputStream(Paths.get(something.url)), something.format);
 			break;
 		case URL:
-			doc=readDocument(something.url);// note: ignore format?
+			doc= readDocumentFromURL(something.url);// note: ignore format?
 			break;
     	}
     	return doc;

@@ -16,7 +16,6 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
     private static final ProvFactory pf= ProvDeserialiser.pf;
 
-    static final QualifiedName PROV_TYPE=pf.getName().PROV_TYPE;
 
     public CustomQualifiedNameDeserializerAsXmlAttribute() {
         super();

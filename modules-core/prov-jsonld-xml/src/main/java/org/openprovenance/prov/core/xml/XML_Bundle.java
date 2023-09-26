@@ -11,7 +11,7 @@ import org.openprovenance.prov.vanilla.*;
 
 import java.util.List;
 
-//@JsonPropertyOrder({  "id"})
+
 @JacksonXmlRootElement(localName="bundleContent", namespace="http://www.w3.org/ns/prov#")
 public interface XML_Bundle extends Identifiable, HasKind {
 

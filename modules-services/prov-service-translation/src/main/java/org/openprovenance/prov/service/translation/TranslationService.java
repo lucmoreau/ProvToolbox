@@ -116,7 +116,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                                           @HeaderParam(HTTP_HEADER_PROVENANCE_ACCEPT_TIMEZONE) String timeZone)
                                                   throws IOException {
         logger.debug("translate to " + extension + " with datetimeOption " + datetimeOption + " and timezone " + timeZone);
-        System.out.println("translate to " + extension + " with datetimeOption " + datetimeOption + " and timezone " + timeZone);
+        //System.out.println("translate to " + extension + " with datetimeOption " + datetimeOption + " and timezone " + timeZone);
 
 
         if ((extension == null) || (!translationExtensions.contains(extension))) {

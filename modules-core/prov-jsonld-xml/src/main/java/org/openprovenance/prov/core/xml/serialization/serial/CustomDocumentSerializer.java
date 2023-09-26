@@ -30,15 +30,12 @@ public class CustomDocumentSerializer extends JsonSerializer<Document> {
             StaxStreamWriterUtil.writeNamespace(xmlGenerator, prefix, ns.getPrefixes().get(prefix));
         }
 
-
-
+        /* It's difficult to work with jackson to generate xml compatible to provx.
+        The easiest and quickest solution i found was to create this dummy, which will
+        be removed in a post phase using the stax streaming package.
+         */
 
         xmlGenerator.writeObjectField(TO_DELETE, new WrapperDocument(doc));
-
-        //serializerProvider.defaultSerializeValue(new WrapperDocument(doc), jsonGenerator);
-
-        //xmlGenerator.setNextIsUnwrapped(true);
-        //xmlGenerator.writeObject(new WrapperDocument(doc));
 
 
 

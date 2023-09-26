@@ -45,9 +45,6 @@ public interface Document {
     })
     @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
     @JacksonXmlElementWrapper(useWrapping = false)
-   // @JsonUnwrapped
-   // @JsonValue
-   // @JsonRawValue
     @JsonDeserialize(as=List.class)
     List<StatementOrBundle> getStatementOrBundle();
 }

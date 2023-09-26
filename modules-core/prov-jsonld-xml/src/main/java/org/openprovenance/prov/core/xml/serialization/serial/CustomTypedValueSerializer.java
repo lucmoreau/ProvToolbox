@@ -16,8 +16,6 @@ import java.io.IOException;
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
 
-    static final QualifiedName QUALIFIED_NAME_XSD_STRING = ProvSerialiser.QUALIFIED_NAME_XSD_STRING;
-
     public static final String NAMESPACE_XSI = NamespacePrefixMapper.XSI_NS;
     public static final String NAMESPACE_XML = NamespacePrefixMapper.XML_NS;
     public static final String PREFIX_XSI = "xsi";

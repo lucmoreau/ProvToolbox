@@ -1,0 +1,10 @@
+<document xmlns="http://www.w3.org/ns/prov#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:prov="http://www.w3.org/ns/prov#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+    
+      <activity xmlns:ex="https://example.org/" prov:id="ex:a">
+        <startTime>2023-09-09T00:12:45.109Z</startTime>
+        <endTime>2023-10-15T22:35:06.793Z</endTime>
+      </activity>
+    
+  
+</document>

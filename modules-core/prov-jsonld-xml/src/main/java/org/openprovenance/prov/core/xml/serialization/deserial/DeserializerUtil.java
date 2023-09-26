@@ -8,20 +8,21 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QualifiedNameUtils;
 
+import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.PROVX_CONTEXT_KEY_NAMESPACE;
+import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.getAttributes;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class DeserializerUtil {
-    public static final String CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
 
     private final static ProvFactory pf= ProvDeserialiser.pf;
     private final static QualifiedNameUtils qnU=new QualifiedNameUtils();
 
     public static Namespace getNamespace(DeserializationContext deserializationContext) {
-        Namespace ns = (Namespace) deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
+        Namespace ns= getAttributes().get().get(PROVX_CONTEXT_KEY_NAMESPACE);
         if (ns == null) {
             ns = new Namespace();
             ns.addKnownNamespaces();
-            deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE, ns);
+            getAttributes().get().put(PROVX_CONTEXT_KEY_NAMESPACE,ns);
         }
         return ns;
     }
@@ -38,7 +39,6 @@ public class DeserializerUtil {
 
 
     static public QualifiedName unescapeQualifiedName(QualifiedName id) {
-
         String namespace=id.getNamespaceURI();
         String local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
         String prefix=id.getPrefix();

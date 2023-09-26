@@ -582,20 +582,17 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return doc;
     }
 
-    private void doWriteDocument(String filename, String format, Document doc)
-    {
+    private void doWriteDocument(String filename, String format, Document doc) throws IOException {
         ProvFormat outformat;
         if (format != null) {
             outformat = getTypeForFormat(format);
             if (outformat == null) {
-                throw new InteropException("Unknown format: "
-                        + format);
+                throw new InteropException("Unknown format: " + format);
             }
         } else {
             outformat = getTypeForFile(filename);
             if (outformat == null) {
-                throw new InteropException("Unknown file format for: "
-                        + filename);
+                throw new InteropException("Unknown file format for: " + filename);
             }
         }
 
@@ -605,7 +602,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             writeDocument(System.out, outformat, doc);
         } else {
-            writeDocument(filename, outformat, doc);
+            writeDocument(Files.newOutputStream(new File(filename).toPath()), outformat, doc);
         }
     }
     
@@ -919,29 +916,33 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (config.index != null) {
             doc = new IndexedDocument(pFactory, doc, (config.flatten != null)).toDocument();
         }
-        if (config.bindings != null) {
-            Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
-            Document expanded;
-            if (config.bindingsVersion==3) {
-                Bindings inBindings;
-                try {
-                    inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
-                } catch (IOException e) {
-                    throw new InteropException("problem parsing bindings file " + config.bindings,e);
+        try {
+            if (config.bindings != null) {
+                Expand myExpand = new Expand(pFactory, config.addOrderp, config.allExpanded);
+                Document expanded;
+                if (config.bindingsVersion == 3) {
+                    Bindings inBindings;
+                    try {
+                        inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
+                    } catch (IOException e) {
+                        throw new InteropException("problem parsing bindings file " + config.bindings, e);
+                    }
+                    expanded = myExpand.expander(doc, inBindings);
+
+                } else {
+                    throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
                 }
-                expanded = myExpand.expander(doc, inBindings);
+                boolean flag = myExpand.getAllExpanded();
+                doWriteDocument(config.outfile, config.outformat, expanded);
 
+                if (!flag) {
+                    return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
+                }
             } else {
-                throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
+                doWriteDocument(config.outfile, config.outformat, doc);
             }
-            boolean flag=myExpand.getAllExpanded();
-            doWriteDocument(config.outfile, config.outformat, expanded);
-
-            if (!flag) {
-                return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
-            }
-        } else {
-            doWriteDocument(config.outfile, config.outformat, doc);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return CommandLineArguments.STATUS_OK;
 
@@ -1053,7 +1054,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Map<ProvFormat, DeserializerFunction> deserializer=new HashMap<>();
         deserializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,config.dateTime, config.timeZone),
-                        PROVX,     () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
+                        PROVX,   () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
                         JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
         );
@@ -1104,44 +1105,44 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             logger.debug("writing " + filename);
             setNamespaces(document);
             switch (format) {
-            case PROVN: {
-                new Utility(config.dateTime, config.timeZone).writeDocument(document, filename, pFactory);
-                break;
-            }
+                case PROVN: {
+                    new Utility(config.dateTime, config.timeZone).writeDocument(document, filename, pFactory);
+                    break;
+                }
                 case PROVX: {
-                org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser();
-                logger.debug("namespaces " + document.getNamespace());
-                serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
-                break;
-            }
+                    org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true);
+                    logger.debug("namespaces " + document.getNamespace());
+                    serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
+                    break;
+                }
 
 
-            case DOT: {
-                ProvToDot toDot = new ProvToDot(pFactory);
-                toDot.setMaxStringLength(maxStringLength);
-                toDot.setLayout(config.layout);
-                toDot.convert(document, filename, config.title);
-                break;
-            }
-            case PDF:
-            case JPEG:
-            case PNG:
-            case SVG: {
-                File tmp = File.createTempFile("viz-", ".dot");
+                case DOT: {
+                    ProvToDot toDot = new ProvToDot(pFactory);
+                    toDot.setMaxStringLength(maxStringLength);
+                    toDot.setLayout(config.layout);
+                    toDot.convert(document, filename, config.title);
+                    break;
+                }
+                case PDF:
+                case JPEG:
+                case PNG:
+                case SVG: {
+                    File tmp = File.createTempFile("viz-", ".dot");
 
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot= new ProvToDot(pFactory);
-                toDot.setMaxStringLength(maxStringLength);
-                toDot.setLayout(config.layout);
-                toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
-                tmp.delete();
-                break;
-            }
+                    String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+                    // if not available
+                    // create tmp file
+                    ProvToDot toDot= new ProvToDot(pFactory);
+                    toDot.setMaxStringLength(maxStringLength);
+                    toDot.setLayout(config.layout);
+                    toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
+                    tmp.delete();
+                    break;
+                }
 
-            default:
-                break;
+                default:
+                    break;
             }
         } catch (RuntimeException | IOException e) {
             if (config.verbose != null)

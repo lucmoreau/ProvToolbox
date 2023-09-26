@@ -13,9 +13,7 @@ public class WrapperDocument {
     public List<StatementOrBundle> getStatementOrBundle() {
         return statementOrBundle;
     }
-
     private final List<StatementOrBundle> statementOrBundle;
-
     public WrapperDocument(Document doc) {
         this.statementOrBundle=doc.getStatementOrBundle();
     }

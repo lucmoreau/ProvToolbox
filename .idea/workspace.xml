@@ -9,8 +9,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/CustomDocumentSerializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/WrapperDocument.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvMixin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/stax/ElementEraserXMLStreamWriter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/stax/ElementEraserXMLStreamWriter2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/dates/date_with_tz_offset.provx" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/resources/dates/date_with_tz_offset.provx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +53,8 @@
         <option value="Package Object" />
         <option value="Interface" />
         <option value="HTML File" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -120,17 +127,17 @@
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "preferences.externalResources",
+    "settings.editor.selected.configurable": "scala.compiler",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.deserial" />
       <recent name="org.openprovenance.prov.service.translation" />
       <recent name="org.openprovenance.prov.template.json" />
-      <recent name="org.openprovenance.prov.template.compiler.configuration" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
@@ -175,11 +182,11 @@
       <recent name="org.openprovenance.prov.service.core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
       <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.interop" />
       <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
       <recent name="org.openprovenance.prov.core.json.serialization.deserial" />
-      <recent name="org.openprovenance.prov.model.exception" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.DateIT.testTranslationWithDate1">

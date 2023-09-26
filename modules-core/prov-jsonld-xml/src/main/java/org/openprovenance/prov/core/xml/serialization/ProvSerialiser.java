@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.openprovenance.prov.core.xml.serialization.serial.CustomDocumentSerializer;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.QualifiedName;
@@ -113,6 +114,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
         module.addSerializer(TypedValue.class, new CustomTypedValueSerializer());
+        module.addSerializer(org.openprovenance.prov.vanilla.Document.class, new CustomDocumentSerializer());
 
         //mapper.setDefaultUseWrapper(false); //NO, use annotation instead
 

@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
 
 	final ProvFactory pf=org.openprovenance.prov.vanilla.ProvFactory.getFactory();
+    final InteropFramework intF=new InteropFramework(pf);
 
 	public String trimCharSet(MediaType mediaType) {
 		String med=mediaType.toString();
@@ -31,10 +32,7 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,
 							  Annotation[] annotations, MediaType mediaType) {
-		InteropFramework intF=new InteropFramework(pf);
-
 		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
-		//System.out.println("*** Supported format " + format + " for type " + type + " given media type " + mediaType.toString()  + " " + intF.mimeTypeRevMap);
 		return format!=null;
 	}
 
@@ -42,13 +40,10 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
 	public Document readFrom(Class<Document> type, Type genericType,
                              Annotation[] annotations, MediaType mediaType,
                              MultivaluedMap<String, String> httpHeaders,
-                             InputStream is) throws IOException,
-			WebApplicationException {
-		InteropFramework intF=new InteropFramework(pf);
+                             InputStream is) throws IOException, WebApplicationException {
 		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
 		InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
-		Document doc=(Document)interop.deserialiseDocument(is,format);
-		return doc;
+        return (Document)interop.deserialiseDocument(is,format);
 	}
 
 

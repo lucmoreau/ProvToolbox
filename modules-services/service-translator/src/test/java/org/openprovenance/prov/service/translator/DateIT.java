@@ -18,6 +18,7 @@ import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
+
 import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.ByteArrayOutputStream;
@@ -57,25 +58,38 @@ public class DateIT extends TestCase {
 
 
     public void testTranslationWithDate1(){
-        doTestAction("src/test/resources/dates/date_with_tz_offset.provn", "provn");
+        doTestAction("src/test/resources/dates/date_with_tz_offset.provn", "provn", 1);
     }
     public void testTranslationWithDate2(){
-        doTestAction("src/test/resources/dates/date_with_tz_offset.jsonld", "jsonld");
+        doTestAction("src/test/resources/dates/date_with_tz_offset.jsonld", "jsonld", 1);
     }
     public void testTranslationWithDate3(){
-        doTestAction("src/test/resources/dates/date_with_tz_offset.json", "json");
+        doTestAction("src/test/resources/dates/date_with_tz_offset.json", "json", 1);
     }
     public void testTranslationWithDate4(){
-       doTestAction("src/test/resources/dates/date_with_tz_offset.provx", "provx");
+       doTestAction("src/test/resources/dates/date_with_tz_offset.provx", "provx", 1);
     }
 
+    public void testTranslationWithDate1b(){
+        doTestAction("src/test/resources/dates/date_with_tz_offset.provn", "provn", 2);
+    }
 
-    public void doTestAction(String file, String extension){
-        logger.info(escapeGreen("DateIt.testAction: " + file));
+    public void doTestAction(String file, String extension, int postKind) {
+        logger.info(escapeGreen("DateIt.testAction: " + file + " "  + postKind));
 
 
         logger.debug("*** action 1");
-        String location=doPostStatements(formURL, file, extension);
+        String location;
+        switch (postKind) {
+            case 1:
+                location = doPostStatementsWithForm(formURL, file, extension);
+                break;
+            case 2:
+                location = doPostStatementsInProvEncoding(postURL, file, extension);
+                break;
+            default:
+                throw new UnsupportedOperationException("postKind " + postKind + " not supported");
+        }
         assertNotNull("location", location);
         location=location.replace("."+extension,"");
         table.put("location", location);
@@ -172,7 +186,7 @@ public class DateIT extends TestCase {
     }
 
 
-    public String doPostStatements(String url, String file, String extension) {
+    public String doPostStatementsWithForm(String url, String file, String extension) {
         Document doc;
         doc = intF.readDocumentFromFile(file);
         assertNotNull(" document (" + file + ") is null", doc);
@@ -191,8 +205,25 @@ public class DateIT extends TestCase {
                 return response.getHeaderString("Location");
             }
         }
-
     }
+
+    public String doPostStatementsInProvEncoding(String url, String file, String extension) {
+        Document doc;
+        doc = intF.readDocumentFromFile(file);
+        assertNotNull(" document (" + file + ") is null", doc);
+        try (Client client = ClientBuilder.newBuilder().build()) {
+            WebTarget target = client.target(postURL);
+            target.register(new org.openprovenance.prov.service.core.DocumentMessageBodyWriter(intF));
+            Response response=target.request(MEDIA_TEXT_PROVENANCE_NOTATION).post(Entity.entity(doc, MEDIA_TEXT_PROVENANCE_NOTATION));
+            String location=response.getHeaderString("Location");
+            location=location.replace(".provn","");
+            return location;
+
+        }
+    }
+
+
+
 
     private String SerializeDocumentToProv(Document doc, ProvFormat format) {
         ByteArrayOutputStream baos=new ByteArrayOutputStream();

@@ -34,7 +34,6 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 	}
 
 	public DocumentMessageBodyWriter (ProvSerialiser serializer) {
-		System.out.println("*********** DocumentMessageBodyWriter  ************");
 		this.serializer=serializer;
 	}
 

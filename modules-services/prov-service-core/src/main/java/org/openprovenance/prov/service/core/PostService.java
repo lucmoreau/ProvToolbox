@@ -102,7 +102,6 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
                            @Context HttpHeaders headers,
                            @Context HttpServletRequest ignoredRequestContext) {
         MediaType mediaType = headers.getMediaType();
-        //logger.debug("post media type is" + mediaType);
 
         if (mediaType.toString().startsWith("multipart/form-data")) {
 

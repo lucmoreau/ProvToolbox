@@ -48,7 +48,6 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
     public TranslationService(PostService postService) {
         this(postService, new LinkedList<>(),Optional.empty());
     }
-	
 
     @GET
     @Path("/documents/{docId:  [a-zA-Z][a-zA-Z_0-9]*}")
@@ -79,7 +78,8 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
             MEDIA_IMAGE_SVG_XML,
             MEDIA_IMAGE_PNG,
             MEDIA_IMAGE_JPEG,
-            MEDIA_APPLICATION_PDF })
+            MEDIA_APPLICATION_PDF
+    })
 
     public Response actionTranslate(@Context HttpServletResponse response,
                                     @Context Request request,

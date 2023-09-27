@@ -32,8 +32,7 @@ public class StringMessageBodyReader implements MessageBodyReader<String> {
 	public String readFrom(Class<String> type, Type genericType,
 								Annotation[] annotations, MediaType mediaType,
 								MultivaluedMap<String, String> httpHeaders,
-								InputStream is) throws IOException,
-			WebApplicationException {
+								InputStream is) throws IOException, WebApplicationException {
 
 		ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		IOUtils.copy(is,baos);

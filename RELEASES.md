@@ -1,6 +1,19 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-==2.0.2==
+`2.0.3`
+* issue #209:
+  * fixing issue with timezone information preservation
+  * ability to control timezone information from provconvert
+  * ability to control timezone information from a web service client
+
+* issue #210:
+  * provx (de)serialization namespace issue
+  * refining test suite
+  * default namespace support and testing
+* further refactoring
+
+
+`2.0.2`
 * summarisation code
 * type library code
 * summarisation demonstrator service
@@ -8,13 +21,13 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * explanations code imported
 * provman code imported
 
-==2.0.1==
+`2.0.1`
 * validator code (satisfied w3c interoperability tests)
 * validator service
 * updated docker container
 
 
-==2.0.0==
+`2.0.0`
 * made the vanilla beans (in org.openprovenance.prov.vanilla) the default implementation of the prov data model (org.openprovenance.prov.model) instead of the xml-oriented beans
 * dropped prov-xml, as it relied on jaxb, which is not supported in Java 11
 * dropped prov-sql, as it relied on jaxb, and was never properly tested. Is also totally supersed by the sql support through the prov-template-compiler
@@ -42,78 +55,78 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * docker image with tomcat 10 and docker compose
 
 
-==1.0.0==
+`1.0.0`
 * Bumped up versions for many dependencies
 * Final distribution of ProvToolbox with all its modules
 * No intention to keep on maintaining all these modules as some are outdated and not properly tested.
 * Future development will be on 2.0.0 ....
 
-==0.9.25 to 0.9.31==
+`0.9.25 to 0.9.31`
 * prov-template-compiler: mostly bug fixes and minor improvement
 * fix a few issues in tracker
 
-==0.9.25==
+`0.9.25`
 * prov-template-compiler: allow for instance data to be gathered with provenance types (idata field in structured representation)
 
-==0.9.24==
+`0.9.24`
 * prov-template-compiler: refactored type propagation
 * prov-template-compiler: fixed issue with relation indexing (no transitive closure)
 
 
-==0.9.23==
+`0.9.23`
 * prov-template-compiler:  added type numbers to structured type description
 * prov-template-compiler: allowing for relation filtering when computing provenance types
 
-==0.9.22==
+`0.9.22`
 * prov-template-compiler:  structured provenance types
 
-==0.9.21==
+`0.9.21`
 * prov-template-compiler:  avoid emitting code for `tmpl:activity` attribute
 * upgraded to log4j 2.17.1
 
-==0.9.20==
+`0.9.20`
 * prov-template-compiler:  allow for collections of level0 application specific types
 
-==0.9.19==
+`0.9.19`
 * further upgrade to log4j 2.17.0 (following log4shell vulnerability)
 * prov-template-compiler: allows for level0 type to be added to all levels (option -addLevel0)
 * prov-tempalte-compiler: allows for domain specific types to be added from properties (option -propertyConverters)
 
 
-==0.9.18==
+`0.9.18`
 * further upgrade to log4j 2.16.0 (following log4shell vulnerability)
 * prov-template-compiler: -levelNumber option to determine type inference level
 * prov-template-compiler: traversal of further relations (specialization and membership)
 
 
-==0.9.17==
+`0.9.17`
 * upgraded to log4j 2.15.0 (following log4shell vulnerability)
 * prov-template-compiler: support for type inference (variation of provenance kernel approach for templates)
 
 
-==0.9.16==
+`0.9.16`
 * prov-n: support for qualified specialization/alternate/membership in prov-n parser with provext: namespace prefix
 * prov-template-compiler: conditional link tmpl:if='var:xxx' (support for hadMember)
 * prov-template-compiler: fixed script generation (class path definition)
 * removed dependency CamelCase (apache common text instead of google guava, as it was already present)
 
-==0.9.15==
+`0.9.15`
 * support for qualified specialization/alternate/membership in prov-json
 * prov-template-compiler: conditional link tmpl:if='var:xxx' (currently for invalidation only)
 
-==0.9.5==
+`0.9.5`
 * TODO: changelog
 
-==0.9.4==
+`0.9.4`
 * TODO: changelog
 
-==0.9.3==
+`0.9.3`
 * TODO: changelog
 
-==0.9.2==
+`0.9.2`
 * multi-threading issue with jedis
 
-==0.9.1==
+`0.9.1`
 * prov-model now contains a vanilla implementation of prov interfaces
 * new serialization (using jackson) to prov-json, prov-jsonld, prov-xml
 * prov-model-scala: alternate implementation of the prov data model in scala
@@ -122,7 +135,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * indexing of documents: in memory or using redis
 
 
-==0.8.0 ==
+`0.8.0 `
 
 * port to JDK 12
 * restructuring of prov-template
@@ -133,7 +146,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-n, prov-xml, prov-json: Escaping in qualified names: a couple of corner cases handled, and in particular, after gaining a better understanding of qualified name in prov-json
 * prov-n, prov-xml, prov-json: Escaping in strings.
 
-==0.7.3==
+`0.7.3`
 
 * prov-model: in extension namespace, support for Qualified versions of alternate, specialization, membership, to allow summariser to annotate these relations with weight information. Serialization to xml and provn is work in progress, not supported in prov-json and prov-sql yet. No parsing yet.
 * prov-template: support for JSON bindings, bindings bean generator, new tutorials partial template extension. Support functionality in paper submission.
@@ -141,7 +154,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   ** #149: dependency update
   ** printing to html
 
-==0.7.2==
+`0.7.2`
 
 * prov-json: fixed prov:InternationalizedString and refactoring
 * test suite generation for SSI interoperability harness
@@ -151,14 +164,14 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * changed name of artifact: toolbox -> provconvert
 * installer for `provconvert` on macosx
 
-==0.7.1==
+`0.7.1`
 
 * Debian package .deb binary release
 * prov-dot: update of visualization to support summaries size of nodes/edges
 * prov-dot: updated provtoolbox namespace
 * prov-xml: updated sql persistence, xml local name encoding
 
-==0.7.0==
+`0.7.0`
 
 * comparator function exposed in provconvert
 * better support for syntax checking of qualified names and QNames
@@ -178,7 +191,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   ** visualisation of prov:value  https://github.com/lucmoreau/ProvToolbox/issues/71
   ** conversion to dot https://github.com/lucmoreau/ProvToolbox/issues/67
 
-==0.6.2==
+`0.6.2`
 * tutorial2 and tutorial3
 * toolbox: provconvert -version option now showing version!
 * toolbox: provconvert now supports merging (and optional flattening) of multiple documents, with options -merge (and -flatten)
@@ -198,14 +211,14 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-xml: introduced non-standard convention to serialize local names starting with digit tmpl:2dvalue -> tmpl:_2dvalue
 * refreshed some maven dependencies
 
-==0.6.1==
+`0.6.1`
 
 * support for maven central (Sonatype OSS)
 * updated tutorial (removed repository declaration)
 * removed dependency on jaxb2_common
 * renamed NamedBundle to Bundle (fairly unused Bundle was renamed to BundleEntity)
 
-==0.6.0==
+`0.6.0`
 
 * First tutorial
 * Fixed collection of issues #61, #86, #88, #89, #90, #91, #94, #95, 96, #99, #101.
@@ -220,7 +233,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * Testing through validator and translator at https://provenance.ecs.soton.ac.uk/validator/
 
 
-==0.5.0==
+`0.5.0`
 
 * Continued refactorization of Beans
   ** Introduced class QualifiedName
@@ -234,7 +247,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * Systematic Testing of Keys in dictionary insertions
 * Updated JSON Schema (thanks Dong!) to support compact version of dictionaries
 
-==0.4.0==
+`0.4.0`
 * Extensive refactorization of Beans
   ** moved away from default jaxb serialization of attributes since it didn't handle qnames properly. Custom serializer used instead.
   ** Introduced explicit classes for all attributes Location, Role, Value, Type, Other
@@ -265,7 +278,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 
 
-==0.3.0==
+`0.3.0`
 * significant refactoring in view of ORM based persistence
 * introduced package prov-model specifying the interface of beans, and core factory functionality
 * prov-xml (and future prov-sql) to implement these interfaces
@@ -275,44 +288,44 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * better alignment with w3c schema (though no support for extensions)
 * using IDRef instead of XXRef
 
-==0.2.3==
+`0.2.3`
 
 * display of bundles in prov-dot
 * title option in prov-dot
 
-==0.2.2==
+`0.2.2`
 
 * aligned schema for prov-dictionary
 
-==0.2.1==
+`0.2.1`
 
 * bug fix
 
-==0.2.0==
+`0.2.0`
 
 * support for latest prov-xml schema
 * support for prov-dictionary in Java, prov-n, prov-json, and prov-xml
 * conversion of prov-dictionary from Java to rdf
 * Various bug fixes
 
-==0.1.3==
+`0.1.3`
 
 * in prov-convert, support for namespace prefix declaration
 * in prov-convert, pdf output
 * prov-dot improvements
 
-==0.1.2 (CR implementation release)==
+`0.1.2 (CR implementation release)`
 
 * support for ProvValidator http://provenance.ecs.soton.ac.uk/
 
-==0.1.1 (Xmas release)==
+`0.1.1 (Xmas release)`
 
 * Refactor converters to/from Rdf
 * Aligned xml schema for specialization/alternate
 * Membership support in rdf
 
 
-==0.1.0==
+`0.1.0`
 
 * Refactored converters
 * Deprecated old traversal classes. They will be deleted in next release.

@@ -21,7 +21,7 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns = DeserializerUtil.getNamespace();
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
         // has the side effect of registering the prefix
         String av = DeserializerUtil.getAttributeValue(ns, xmlParser, "id");
@@ -31,7 +31,7 @@ public class CustomQualifiedNameDeserializer extends JsonDeserializer<QualifiedN
 
 
     public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns = DeserializerUtil.getNamespace();
 
         JsonParser jsonParser=deserializationContext.getParser();
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;

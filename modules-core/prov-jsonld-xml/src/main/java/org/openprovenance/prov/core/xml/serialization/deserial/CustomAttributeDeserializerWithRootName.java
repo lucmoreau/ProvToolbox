@@ -38,7 +38,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     }
 
     public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns = DeserializerUtil.getNamespace();
         Map.Entry<String, JsonNode> pair=node.fields().next();
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
         elementName=DeserializerUtil.unescapeQualifiedName(elementName);
@@ -49,7 +49,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
 
     public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns = DeserializerUtil.getNamespace();
         JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);
         String type = (typeRaw == null) ? null : typeRaw.textValue();
         JsonNode value = vObj.get(PROPERTY_AT_VALUE);
@@ -69,7 +69,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
 
     public Attribute deserialize(QualifiedName elementName, String type, String lang, String body, DeserializationContext deserializationContext) {
-        Namespace ns= DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns= DeserializerUtil.getNamespace();
 
         QualifiedName unescaped=DeserializerUtil.unescapeQualifiedName(elementName);
         Object valueObject=body;

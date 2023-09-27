@@ -17,13 +17,16 @@ public class DeserializerUtil {
     private final static ProvFactory pf= ProvDeserialiser.pf;
     private final static QualifiedNameUtils qnU=new QualifiedNameUtils();
 
-    public static Namespace getNamespace(DeserializationContext deserializationContext) {
+    public static Namespace getNamespace() {
         Namespace ns= getAttributes().get().get(PROVX_CONTEXT_KEY_NAMESPACE);
         if (ns == null) {
-            ns = new Namespace();
-            ns.addKnownNamespaces();
-            getAttributes().get().put(PROVX_CONTEXT_KEY_NAMESPACE,ns);
+            throw new NullPointerException("namespace is null");
         }
+        return ns;
+    }
+    public static Namespace newNamespace() {
+        Namespace ns= new Namespace();
+        getAttributes().get().put(PROVX_CONTEXT_KEY_NAMESPACE,ns);
         return ns;
     }
 
@@ -33,6 +36,9 @@ public class DeserializerUtil {
             String prefix=attributeValue.substring(0,attributeValue.indexOf(":"));
             String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
             ns.register(prefix,ans);
+        } else {
+            String ans=xmlParser.getStaxReader().getNamespaceURI();
+            ns.registerDefault(ans);
         }
         return attributeValue;
     }

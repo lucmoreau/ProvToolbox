@@ -25,7 +25,7 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns = DeserializerUtil.getNamespace();
 
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 

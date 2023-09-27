@@ -11,8 +11,12 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.model.RoundTr
 
 	public boolean checkTest(String name) {
 		// TODO: prov-n does not support hadMember with multiple entities
-		return !(name.contains("member2") || name.contains("member3")
-				|| name.contains("Membership3") || name.contains("Membership4") );
+		if (name.contains("member2") || name.contains("member3")
+				|| name.contains("Membership3") || name.contains("Membership4") ) {
+			System.out.println(escapeRed("########## Skipping  comparison for " + name + ", not supported in PROV-N"));
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -62,4 +66,6 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.model.RoundTr
 	@Override
 	public void testQualifiedHadMember1() {
 	}
+
+
 }

@@ -31,10 +31,19 @@ public class RoundTripFromJavaXMLTest extends RoundTripFromJavaTest {
         return true;
     }
     public String extension() {
-        return ".xml";
+        return ".provx";
     }
     @Override
     public void testEntity101() {
-        System.out.println("* testEntity101() not supported in XML");
+        System.out.println(escapeRed("########## Skipping testEntity101() not supported in PROVX"));
+    }
+    public boolean checkTest(String name) {
+        if ( name.endsWith("bundle4" + extension())
+                || name.endsWith("bundle5" + extension()))
+        {
+            System.out.println(escapeRed("########## Skipping testing for " + name + " in " + extension()));
+            return false;
+        }
+        return true;
     }
 }

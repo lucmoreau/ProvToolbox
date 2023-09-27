@@ -37,7 +37,7 @@ public class DateTest extends TestCase {
     XMLGregorianCalendar yesTZend= pFactory.newISOTimeTZ(endDate);
 
     public void testDateJsonldUTC() {
-        System.out.println(jsonld);
+     //   System.out.println(jsonld);
 
         ProvDeserialiser deserial = new ProvDeserialiser(new ObjectMapper(), DateTimeOption.UTC);
         InputStream inputStream = new ByteArrayInputStream(jsonld.getBytes());
@@ -58,8 +58,8 @@ public class DateTest extends TestCase {
         assertEquals(-4 * 60, yesTZstart.getTimezone());
         assertEquals(-2 * 60, yesTZend.getTimezone());
 
-        System.out.println("UTC: activity.getStartTime().toXMLFormat() = " + activity.getStartTime().toXMLFormat());
-        System.out.println("UTC: activity.getEndTime().toXMLFormat() = " + activity.getEndTime().toXMLFormat());
+   //     System.out.println("UTC: activity.getStartTime().toXMLFormat() = " + activity.getStartTime().toXMLFormat());
+  //      System.out.println("UTC: activity.getEndTime().toXMLFormat() = " + activity.getEndTime().toXMLFormat());
     }
     public void testDateJsonldPreserve() {
 
@@ -82,8 +82,8 @@ public class DateTest extends TestCase {
         assertEquals(-4 * 60, yesTZstart.getTimezone());
         assertEquals(-2 * 60, yesTZend.getTimezone());
 
-        System.out.println("PRESERVE: activity.getStartTime().toXMLFormat() = " + activity.getStartTime().toXMLFormat());
-        System.out.println("PRESERVE: activity.getEndTime().toXMLFormat() = " + activity.getEndTime().toXMLFormat());
+    //    System.out.println("PRESERVE: activity.getStartTime().toXMLFormat() = " + activity.getStartTime().toXMLFormat());
+    //    System.out.println("PRESERVE: activity.getEndTime().toXMLFormat() = " + activity.getEndTime().toXMLFormat());
     }
 
     public void testDateJsonldTZ() {
@@ -110,8 +110,8 @@ public class DateTest extends TestCase {
         assertEquals(-4 * 60, yesTZstart.getTimezone());
         assertEquals(-2 * 60, yesTZend.getTimezone());
 
-        System.out.println("TZ: activity.getStartTime().toXMLFormat() = " + activity.getStartTime().toXMLFormat());
-        System.out.println("TZ: activity.getEndTime().toXMLFormat() = " + activity.getEndTime().toXMLFormat());
+   //     System.out.println("TZ: activity.getStartTime().toXMLFormat() = " + activity.getStartTime().toXMLFormat());
+  //      System.out.println("TZ: activity.getEndTime().toXMLFormat() = " + activity.getEndTime().toXMLFormat());
     }
 
 }

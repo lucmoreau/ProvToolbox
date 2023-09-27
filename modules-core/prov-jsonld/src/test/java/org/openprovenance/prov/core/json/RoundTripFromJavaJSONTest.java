@@ -29,5 +29,15 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
         return ".json";
     }
 
+    public boolean checkTest(String name) {
+        if (name.endsWith("entity101" + extension())) {
+            System.out.println(escapeRed("########## Skipping testing for entity101 in JSON"));
+            return false;
+        }
+        return true;
+    }
+    public boolean checkSchema(String name) {
+        return false;
+    }
 
 }

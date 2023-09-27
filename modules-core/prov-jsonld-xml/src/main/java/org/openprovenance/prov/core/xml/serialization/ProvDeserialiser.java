@@ -23,6 +23,7 @@ import java.util.*;
 
 import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.PROVX_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.getAttributes;
+import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.newNamespace;
 
 public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeserialiser {
 
@@ -49,8 +50,12 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
         getAttributes().get().remove(PROVX_CONTEXT_KEY_NAMESPACE);
+        Namespace docNs = newNamespace();
+        docNs.addKnownNamespaces();
         XmlMapper mapper = getMapper();
-        return mapper.readValue(in, Document.class);
+        Document document = mapper.readValue(in, Document.class);
+        document.setNamespace(docNs);
+        return document;
     }
 
 

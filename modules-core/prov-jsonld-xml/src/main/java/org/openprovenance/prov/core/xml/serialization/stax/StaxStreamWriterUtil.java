@@ -23,7 +23,7 @@ public class StaxStreamWriterUtil implements Serializable {
         }
     }
 
-    public static void writeNamespace(JsonGenerator jsonGenerator, String prefix, String provNs) throws IOException {
+    public static void  writeNamespace(JsonGenerator jsonGenerator, String prefix, String provNs) throws IOException {
         try {
             ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
             xmlGenerator.getStaxWriter().writeNamespace(prefix, provNs);

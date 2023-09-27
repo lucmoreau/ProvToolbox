@@ -10,26 +10,10 @@ import java.util.Map;
 public class MisnamedBundle extends org.openprovenance.prov.vanilla.Bundle {
     public Bundle toBundle(ProvFactory pf) {
         QualifiedName oldId = getId();
-        //System.out.println("MisnamedBundle.toBundle " + oldId);
         Namespace namespace = getNamespace();
         String prefix = oldId.getPrefix();
-
-        String namespaceURI=null;
-
-        Map<String, String> prefixes = namespace.getPrefixes();
-        namespaceURI = prefixes.get(prefix);
-        if (namespaceURI==null) {
-            namespaceURI = namespace.getParent().getPrefixes().get(prefix);
-        }
-
+        String namespaceURI=namespace.lookupPrefix(prefix);
         QualifiedName newId = pf.newQualifiedName(namespaceURI, oldId.getLocalPart(), prefix);
-
-        Bundle bundle = pf.newNamedBundle(newId, namespace, getStatement());
-
-       // System.out.println("MisnamedBundle.toBundle " + oldId + " -> " + newId);
-
-        return bundle;
-
-
+        return pf.newNamedBundle(newId, namespace, getStatement());
     }
 }

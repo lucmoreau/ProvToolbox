@@ -66,9 +66,7 @@ public class DateIT extends TestCase {
         doTestAction("src/test/resources/dates/date_with_tz_offset.json", "json");
     }
     public void testTranslationWithDate4(){
-        logger.info(escapeRed("testTranslationWithDate4 not yet working: provx serialisation is not read back properly"));
-        // issue #210
-       //doTestAction("src/test/resources/dates/date_with_tz_offset.provx", "provx");
+       doTestAction("src/test/resources/dates/date_with_tz_offset.provx", "provx");
     }
 
 

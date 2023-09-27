@@ -87,11 +87,11 @@ public class TranslateIT extends RoundTripFromJavaTest {
     public boolean checkTest(String name, ProvFormat format)
     {
 
-        if (name.endsWith("bundle4"+extension()) && format.toString().equals("PROVX")) {
+        if (name.endsWith("bundle4"+extension()) && format.equals(ProvFormat.PROVX)) {
             System.out.println(escapeRed("########## Skipping  comparison for bundle4 and PROVX"));
             return false;
         }
-        if (name.endsWith("bundle5"+extension()) && format.toString().equals("PROVX")) {
+        if (name.endsWith("bundle5"+extension()) &&  format.equals(ProvFormat.PROVX)) {
             System.out.println(escapeRed("########## Skipping  comparison for bundle5 and PROVX"));
             return false;
         }
@@ -230,15 +230,8 @@ public class TranslateIT extends RoundTripFromJavaTest {
 
     @Override
     public void testEntity101() {
-        System.out.println("########## Skipping testEntity101 in TranslatorIT.java");
+        System.out.println(escapeRed("########## Skipping testEntity101 in TranslatorIT.java"));
     }
-    public void NOtestBundle5() {
-        //super.testBundle5();
-        System.out.println(escapeRed("########## Skipping testBundle5 in TranslatorIT.java"));
-    }
-    public void NOtestBundle4() {
-        //
-        // .testBundle5();
-        System.out.println(escapeRed("########## Skipping testBundle4 in TranslatorIT.java"));
-    }
+
+
 }

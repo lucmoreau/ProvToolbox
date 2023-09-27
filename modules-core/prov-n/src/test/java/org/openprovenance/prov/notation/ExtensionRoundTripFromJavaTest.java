@@ -23,7 +23,7 @@ public class ExtensionRoundTripFromJavaTest extends org.openprovenance.prov.mode
 
 	@Override
 	public Document readDocument(String file1) {
-		System.out.println(" reading (BUT NOT COMPARING) " + file1);
+		System.out.println(escapeRed(" reading (BUT NOT COMPARING) " + file1));
 		try {
 			return (Document) u.convertSyntaxTreeToJavaBean(file1,pFactory);
 		} catch (Throwable e) {

@@ -36,9 +36,9 @@ public class Namespace  {
 
     private Namespace set(Namespace ns) {
         if (ns==null) return null;
-        Hashtable<String, String> tmp1=new Hashtable<String, String>();
+        Hashtable<String, String> tmp1= new Hashtable<>();
         tmp1.putAll(ns.prefixes);
-        Hashtable<String, String> tmp2=new Hashtable<String, String>();
+        Hashtable<String, String> tmp2= new Hashtable<>();
         tmp2.putAll(ns.namespaces);
         this.prefixes=tmp1;
         this.namespaces=tmp2;
@@ -62,8 +62,8 @@ public class Namespace  {
     }
 
 
-    protected Map<String, String> prefixes=new Hashtable<String, String>();
-    protected Map<String, String> namespaces=new Hashtable<String, String>();
+    protected Map<String, String> prefixes= new Hashtable<>();
+    protected Map<String, String> namespaces= new Hashtable<>();
     private String defaultNamespace=null;
 
     private Namespace parent=null;
@@ -132,10 +132,8 @@ public class Namespace  {
             String old = prefixes.get(prefix);
             if (old == null) {
                 prefixes.put(prefix, namespace);
-                if (namespaces.get(namespace)==null) {
-                    // make sure we don't overwrite an existing namespace
-                    namespaces.put(namespace,prefix);
-                }
+                // make sure we don't overwrite an existing namespace
+                namespaces.putIfAbsent(namespace, prefix);
             } else {
                 newPrefix(namespace);
             }
@@ -156,11 +154,8 @@ public class Namespace  {
             if (oldPrefix == null) {
                 prefixes.put(newPrefix, namespace);
                 success = true;
-
-                if (namespaces.get(namespace)==null) {
-                    // make sure we don't overwrite namespace
-                    namespaces.put(namespace, newPrefix);
-                }
+                // make sure we don't overwrite namespace
+                namespaces.putIfAbsent(namespace, newPrefix);
             }
         }
     }
@@ -376,6 +371,14 @@ public class Namespace  {
         return "[Namespace (" + defaultNamespace + ") " + prefixes + ", parent: " + parent + "]";
     }
 
+    public String lookupPrefix(String prefix) {
+        Map<String, String> prefixes = getPrefixes();
+        String namespaceURI = prefixes.get(prefix);
+        if (namespaceURI==null) {
+            namespaceURI = getParent().getPrefixes().get(prefix);
+        }
+        return namespaceURI;
+    }
 
 
 

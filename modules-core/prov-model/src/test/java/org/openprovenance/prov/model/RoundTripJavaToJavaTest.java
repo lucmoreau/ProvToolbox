@@ -24,6 +24,9 @@ public class RoundTripJavaToJavaTest extends RoundTripFromJavaTest {
         System.out.println("copying " + file);
     }
 
-
+    public boolean checkTest(String name) {
+        // checking required, ensuring the clone is equal to the original
+        return true;
+    }
 
 }

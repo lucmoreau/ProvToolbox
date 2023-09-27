@@ -7,14 +7,15 @@ import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.notation.ProvSerialiser;
-import org.openprovenance.prov.service.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.translator.TranslateIT;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -32,15 +33,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSONLD;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION;
 
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ExpandIT extends TestCase {
+public class ExpandIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(ExpandIT.class);
+    final static ClientConfig config=new ClientConfig(TranslateIT.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
@@ -59,21 +61,6 @@ public class ExpandIT extends TestCase {
 
 
 
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
-    final static String port= properties.getProperty("service.port");
-    final static String context= properties.getProperty("service.context");
-    final static String host= properties.getProperty("service.host");
-    final static String protocol= properties.getProperty("service.protocol");
-
-    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
-    final static String postURL=hostURLprefix + "/provapi/documents2/";
-    final static String expansionURL=hostURLprefix + "/provapi/documents/";
-    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
-    final static String validationURL=hostURLprefix + "/provapi/documents/";
-    final static String htmlURL=hostURLprefix + "/contact.html";
-
-
-
     public static Map<String, String> table= new HashMap<>();
      
 
@@ -87,7 +74,7 @@ public class ExpandIT extends TestCase {
         
         logger.debug("/////////////////////////////////// testAction");
 
-        String theTemplate= resourcesURLprefix + "templates/org/openprovenance/generic/binaryop/1.provn";
+        String theTemplate= config.resourcesURLprefix + "templates/org/openprovenance/generic/binaryop/1.provn";
 
 
         logger.debug("*** action 1");
@@ -95,7 +82,7 @@ public class ExpandIT extends TestCase {
         Response responseTemplate=getResource(theTemplate, MEDIA_TEXT_PROVENANCE_NOTATION);
         assertEquals("Response template status is NOT OK", Response.Status.OK.getStatusCode(), responseTemplate.getStatus());
 
-        String location=doPostStatements(expansionURL, theTemplate,file);
+        String location=doPostStatements(config.formURL, theTemplate,file);
         assertNotNull("location", location);
         table.put("location", location);
 

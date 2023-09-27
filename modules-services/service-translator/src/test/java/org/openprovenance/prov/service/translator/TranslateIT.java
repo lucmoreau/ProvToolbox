@@ -2,12 +2,13 @@ package org.openprovenance.prov.service.translator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.notation.ProvSerialiser;
-import org.openprovenance.prov.service.DocumentMessageBodyReader;
-import org.openprovenance.prov.service.StringMessageBodyReader;
+import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.client.StringMessageBodyReader;
+import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -20,13 +21,12 @@ import java.io.InputStream;
 import java.util.*;
 
 import static org.openprovenance.prov.interop.InteropMediaType.*;
-import static org.openprovenance.prov.service.translator.DateIT.escapeRed;
 
 
-public class TranslateIT extends RoundTripFromJavaTest {
+public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragments  {
 
-    static Logger logger = LogManager.getLogger(TranslateIT.class);
-
+    final static Logger logger = LogManager.getLogger(TranslateIT.class);
+    final static ClientConfig config=new ClientConfig(TranslateIT.class);
     private final Client client;
     private final DocumentEquality documentEquality;
     final private VanillaDocumentMessageBodyWriter bodyWriter;
@@ -44,24 +44,6 @@ public class TranslateIT extends RoundTripFromJavaTest {
         client.register(DocumentMessageBodyReader.class);
         return client;
     }
-
-
-
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
-    final static String port= properties.getProperty("service.port");
-    final static String context= properties.getProperty("service.context");
-    final static String host= properties.getProperty("service.host");
-    final static String protocol= properties.getProperty("service.protocol");
-
-    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
-    final static String postURL=hostURLprefix + "/provapi/documents2/";
-    final static String expansionURL=hostURLprefix + "/provapi/documents/";
-    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
-    final static String validationURL=hostURLprefix + "/provapi/documents/";
-    final static String htmlURL=hostURLprefix + "/contact.html";
-
-
-
 
 
     static public class Pair {
@@ -157,7 +139,7 @@ public class TranslateIT extends RoundTripFromJavaTest {
     public void writeDocument(Document doc, String file) {
         logger.info("translating: " + file);
 
-        WebTarget target = client.target(postURL);
+        WebTarget target = client.target(config.postURL);
         Response response=target.request(MEDIA_TEXT_PROVENANCE_NOTATION).post(Entity.entity(doc, MEDIA_TEXT_PROVENANCE_NOTATION));
         String location=response.getHeaderString("Location");
         location=location.replace(".provn","");

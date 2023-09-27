@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.model.exception.ParserException;
@@ -27,7 +28,7 @@ import java.io.InputStream;
 import java.util.*;
 
 @Path("")
-public class PostService implements Constants, InteropMediaType, SwaggerTags {
+public class PostService implements Constants, InteropMediaType, SwaggerTags, ApiUriFragments {
 
     static Logger logger = LogManager.getLogger(PostService.class);
 
@@ -83,7 +84,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
 
 
     @POST
-    @Path("/documents/")
+    @Path(FRAGMENT_DOCUMENTS_FORM)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Tag(name = DOCUMENTS)
 
@@ -179,7 +180,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
 
 
     @POST
-    @Path("/documents2/")
+    @Path(FRAGMENT_DOCUMENTS)
     @Tag(name = DOCUMENTS)
     @Consumes({MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})

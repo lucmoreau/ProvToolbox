@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Path("")
-public class RandomService implements Constants, InteropMediaType {
+public class RandomService implements Constants, InteropMediaType, ApiUriFragments {
 
     private final ServiceUtils utils;
 
@@ -52,7 +53,7 @@ public class RandomService implements Constants, InteropMediaType {
     }
 
     @GET
-    @Path("/documents/random/{nodes}/{degree}")
+    @Path(FRAGMENT_DOCUMENTS + "random/{nodes}/{degree}")
     @Produces({  MEDIA_TEXT_PROVENANCE_NOTATION,
         MEDIA_APPLICATION_PROVENANCE_XML,
             MEDIA_APPLICATION_JSON,
@@ -80,7 +81,7 @@ public class RandomService implements Constants, InteropMediaType {
     
 
     @GET
-    @Path("/documents/random/{nodes}/{degree}/{seed}")
+    @Path(FRAGMENT_DOCUMENTS + "random/{nodes}/{degree}/{seed}")
     @Produces({  MEDIA_TEXT_PROVENANCE_NOTATION,
 	    MEDIA_APPLICATION_PROVENANCE_XML,
 	    MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD,

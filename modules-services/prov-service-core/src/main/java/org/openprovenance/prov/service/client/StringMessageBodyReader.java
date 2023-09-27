@@ -1,21 +1,22 @@
-package org.openprovenance.prov.service.summary;
+package org.openprovenance.prov.service.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import org.apache.commons.io.IOUtils;
+import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.interop.InteropFramework;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
-
-import org.openprovenance.prov.interop.InteropFramework;
-import org.openprovenance.prov.interop.Formats.ProvFormat;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 @Provider
-public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {
+public class StringMessageBodyReader implements MessageBodyReader<String> {
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,
@@ -28,12 +29,14 @@ public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {
 	}
 
 	@Override
-	public InputStream readFrom(Class<InputStream> type, Type genericType,
+	public String readFrom(Class<String> type, Type genericType,
 								Annotation[] annotations, MediaType mediaType,
 								MultivaluedMap<String, String> httpHeaders,
-								InputStream is) throws IOException,
-			WebApplicationException {
-		return is;
+								InputStream is) throws IOException, WebApplicationException {
+
+		ByteArrayOutputStream baos=new ByteArrayOutputStream();
+		IOUtils.copy(is,baos);
+		return baos.toString();
 	}
 
 }

@@ -6,13 +6,13 @@ import org.apache.logging.log4j.LogManager;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.notation.ProvSerialiser;
+import org.openprovenance.prov.service.client.ClientConfig;
+import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
-import org.openprovenance.prov.service.summary.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.summary.MapMessageBodyReader;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -33,6 +33,7 @@ import java.util.*;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SummarizeIT extends TestCase {
     static Logger logger = LogManager.getLogger(SummarizeIT.class);
+    final static ClientConfig config=new ClientConfig(SummarizeIT.class);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
@@ -48,19 +49,6 @@ public class SummarizeIT extends TestCase {
         client.register(MapMessageBodyReader.class);
         return client;
     }
-
-
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(SummarizeIT.class, "config.properties"));
-    final static String port= properties.getProperty("service.port");
-    final static String context= properties.getProperty("service.context");
-    final static String host= properties.getProperty("service.host");
-    final static String protocol= properties.getProperty("service.protocol");
-
-    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
-    final static String postURL=hostURLprefix + "/provapi/documents/";
-    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
-    final static String validationURL=hostURLprefix + "/provapi/documents/";
-    final static String htmlURL=hostURLprefix + "/contact.html";
 
 
 
@@ -79,7 +67,7 @@ public class SummarizeIT extends TestCase {
 
 
         logger.debug("*** action 1");
-        String location= doPostStatements_upload(postURL,file);
+        String location= doPostStatements_upload(config.postURL,file);
         assertNotNull("location", location);
         table.put("location", location);
 

@@ -210,19 +210,19 @@ test.issue.209.provn:
 test.default: test.default.json test.default.jsonld
 
 test.default.jsonld:
-	@echo "- testing default: PROVN, JSONLD, JSON -> JSONLD"
+	@echo "- testing default namespace: PROVN, JSONLD, JSON -> JSONLD"
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provn  -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@vocab"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.jsonld -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@vocab"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@vocab"]=="https://www.bbc.co.uk/"' > /dev/null
-	@echo "- testing default: PROVX -> JSONLD (lost default namespace)"
+	@echo "- testing default namespace: PROVX -> JSONLD (lost default namespace)"
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provx  -outfile - -outformat=jsonld | jq --exit-status '.["@graph"][0]["@id"]=="bbc:e"' > /dev/null
 
 test.default.json:
-	@echo "- testing default: PROVN, JSONLD, JSON -> JSON"
+	@echo "- testing default namespace: PROVN, JSONLD, JSON -> JSON"
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provn  -outfile - -outformat=json | jq --exit-status '.["prefix"]["default"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provn  -outfile - -outformat=json  | jq --exit-status '.["entity"]["e"]=={}' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.jsonld -outfile - -outformat=json | jq --exit-status '.["prefix"]["default"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=json  | jq --exit-status '.["prefix"]["default"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=json  | jq --exit-status '.["entity"]["e"]=={}' > /dev/null
-	@echo "- testing default: PROVX -> JSONLD (lost default namespace)"
+	@echo "- testing default namespace: PROVX -> JSONLD (lost default namespace)"
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provx  -outfile - -outformat=json | jq --exit-status '.["entity"]["bbc:e"]=={}' > /dev/null

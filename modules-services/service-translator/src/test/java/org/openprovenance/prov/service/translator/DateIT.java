@@ -10,49 +10,32 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
 
+import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.Properties;
 
 import static org.openprovenance.prov.interop.InteropMediaType.*;
 import static org.openprovenance.prov.model.DateTimeOption.*;
 import static org.openprovenance.prov.service.core.Constants.*;
 
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DateIT extends TestCase {
+public class DateIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(DateIT.class);
-
-
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
-    final static String port= properties.getProperty("service.port");
-    final static String context= properties.getProperty("service.context");
-    final static String host= properties.getProperty("service.host");
-    final static String protocol= properties.getProperty("service.protocol");
-
-    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
-    final static String postURL=hostURLprefix + "/provapi/documents2/";
-    final static String expansionURL=hostURLprefix + "/provapi/documents/";
-    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
-    final static String formURL =hostURLprefix + "/provapi/documents/";
-    final static String htmlURL=hostURLprefix + "/contact.html";
-
-
+    final static ClientConfig config=new ClientConfig(TranslateIT.class);
     final InteropFramework intF=new InteropFramework();
-
-
 
     public static HashMap<String, String> table= new HashMap<>();
 
@@ -82,10 +65,10 @@ public class DateIT extends TestCase {
         String location;
         switch (postKind) {
             case 1:
-                location = doPostStatementsWithForm(formURL, file, extension);
+                location = doPostStatementsWithForm(config.formURL, file, extension);
                 break;
             case 2:
-                location = doPostStatementsInProvEncoding(postURL, file, extension);
+                location = doPostStatementsInProvEncoding(config.postURL, file, extension);
                 break;
             default:
                 throw new UnsupportedOperationException("postKind " + postKind + " not supported");
@@ -212,7 +195,7 @@ public class DateIT extends TestCase {
         doc = intF.readDocumentFromFile(file);
         assertNotNull(" document (" + file + ") is null", doc);
         try (Client client = ClientBuilder.newBuilder().build()) {
-            WebTarget target = client.target(postURL);
+            WebTarget target = client.target(config.postURL);
             target.register(new org.openprovenance.prov.service.core.DocumentMessageBodyWriter(intF));
             Response response=target.request(MEDIA_TEXT_PROVENANCE_NOTATION).post(Entity.entity(doc, MEDIA_TEXT_PROVENANCE_NOTATION));
             String location=response.getHeaderString("Location");

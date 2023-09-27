@@ -12,49 +12,33 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import org.openprovenance.prov.configuration.Configuration;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
+
+import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.translator.TranslateIT;
 import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.Properties;
+
 
 import static org.openprovenance.prov.interop.InteropFramework.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_APPLICATION_JSON;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ValidateIT extends TestCase {
+public class ValidateIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(ValidateIT.class);
-
-
-    final static Properties properties = Objects.requireNonNull(Configuration.getPropertiesFromClasspath(TranslateIT.class, "config.properties"));
-    final static String port= properties.getProperty("service.port");
-    final static String context= properties.getProperty("service.context");
-    final static String host= properties.getProperty("service.host");
-    final static String protocol= properties.getProperty("service.protocol");
-
-    final static String hostURLprefix= protocol + "://" + host + ":" + port + context;
-    final static String postURL=hostURLprefix + "/provapi/documents2/";
-    final static String expansionURL=hostURLprefix + "/provapi/documents/";
-    final static String resourcesURLprefix=hostURLprefix + "/provapi/resources/";
-    final static String validationURL=hostURLprefix + "/provapi/documents/";
-    final static String htmlURL=hostURLprefix + "/contact.html";
-
+    final static ClientConfig config=new ClientConfig(TranslateIT.class);
 
     final InteropFramework intF=new InteropFramework();
 
-
-
     public static HashMap<String, String> table= new HashMap<>();
-
 
     public void testValidatorAction1(){
         doTestAction("src/test/resources/test-validator/doc-tovalidate.provn");
@@ -74,7 +58,7 @@ public class ValidateIT extends TestCase {
 
 
         logger.debug("*** action 1");
-        String location=doPostStatements(validationURL,file);
+        String location=doPostStatements(config.formURL,file);
         assertNotNull("location", location);
         table.put("location", location);
         logger.info("location " + location);
@@ -103,8 +87,8 @@ public class ValidateIT extends TestCase {
         logger.info("response status " + resp_report_json.getStatus());
         assertEquals("Response report JSON status is NOT OK",Response.Status.OK.getStatusCode(),resp_report_json.getStatus());
 
-        logger.info("now dereferencing another static html page " + htmlURL);
-        Response resp_other_html=getResource2(htmlURL, MEDIA_TEXT_HTML);
+        logger.info("now dereferencing another static html page " + config.htmlURL);
+        Response resp_other_html=getResource2(config.htmlURL, MEDIA_TEXT_HTML);
         try {
             logger.info("response status " + resp_other_html.getStatus());
             assertEquals("Response HTML status is NOT OK", Response.Status.OK.getStatusCode(), resp_other_html.getStatus());

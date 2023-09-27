@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
@@ -31,8 +32,9 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 
+
 @Path("")
-public class TranslationService implements Constants, InteropMediaType, SwaggerTags {
+public class TranslationService implements Constants, InteropMediaType, SwaggerTags, ApiUriFragments {
 
     private static final Logger logger = LogManager.getLogger(TranslationService.class);
     private final ServiceUtils utils;
@@ -50,7 +52,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
     }
 
     @GET
-    @Path("/documents/{docId:  [a-zA-Z][a-zA-Z_0-9]*}")
+    @Path(FRAGMENT_DOCUMENTS + "{docId:  [a-zA-Z][a-zA-Z_0-9]*}")
     @Tag(name=DOCUMENTS)
     @Operation(summary = "Get Conceptual provenance document.  Use content negotiation to choose its representation", 
                description = "Content negotiation is expected to specify which representation to produce.  This is a non-information resource. Note that types are enumerated here for convenience: these are the types of the ProvToolbox, in addition of text/html used to access an html landing page",
@@ -92,7 +94,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
 
 
     @GET
-    @Path("/documents/{docId}.{extension}")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}.{extension}")
     @Tag(name=DOCUMENTS)
     @Operation(summary = "Representation of a document into given serialization format", 
                description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
@@ -160,7 +162,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
     }
 
     @GET
-    @Path("/documents/{docId}/original")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/original")
     @Tag(name=DOCUMENTS)
     @Operation(summary = "Original document, as posted in its original representation", 
                description = "No content negotiation allowed here. Mime type of result set to be the mime type of the original document.",

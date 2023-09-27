@@ -1,6 +1,5 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.client;
 
-import org.apache.commons.io.IOUtils;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 
@@ -9,14 +8,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-public class StringMessageBodyReader implements MessageBodyReader<String> {
+public class
+
+
+
+StreamMessageBodyReader implements MessageBodyReader<InputStream> {
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,
@@ -29,14 +31,12 @@ public class StringMessageBodyReader implements MessageBodyReader<String> {
 	}
 
 	@Override
-	public String readFrom(Class<String> type, Type genericType,
+	public InputStream readFrom(Class<InputStream> type, Type genericType,
 								Annotation[] annotations, MediaType mediaType,
 								MultivaluedMap<String, String> httpHeaders,
-								InputStream is) throws IOException, WebApplicationException {
-
-		ByteArrayOutputStream baos=new ByteArrayOutputStream();
-		IOUtils.copy(is,baos);
-		return baos.toString();
+								InputStream is) throws IOException,
+			WebApplicationException {
+		return is;
 	}
 
 }

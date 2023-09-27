@@ -1,0 +1,10 @@
+    document
+     default <https://www.bbc.co.uk/>
+     prefix bbc <https://www.bbc.co.uk/>
+     prefix ex <https://example.org>
+
+     entity(e)
+     activity(ex:ac,-,-)
+     wasGeneratedBy(ex:g;e,ex:ac,-)
+
+    endDocument

@@ -49,8 +49,13 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
         for (Iterator<String> it = prefixes.fieldNames(); it.hasNext(); ) {
             String prefix = it.next();
             String namespace=prefixes.get(prefix).textValue();
-            map.put(prefix,namespace);
-            ns.register(prefix,namespace);
+            if (prefix.equals("default")) {
+                map.put(prefix, namespace);
+                ns.registerDefault(namespace);
+            } else {
+                map.put(prefix, namespace);
+                ns.register(prefix, namespace);
+            }
         }
 
         // now context is ready with current namespace

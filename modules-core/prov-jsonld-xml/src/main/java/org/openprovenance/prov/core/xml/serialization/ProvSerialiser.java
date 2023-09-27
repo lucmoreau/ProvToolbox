@@ -14,6 +14,7 @@ import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.openprovenance.prov.core.xml.serialization.serial.*;
 import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.vanilla.TypedValue;
@@ -72,6 +73,17 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         XmlMapper mapper = getMapper(formatted);
 
         setNamespace(document.getNamespace());
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+    /* this method allows the serialization configuration to be used to save other objects (potentially containing prov objects) */
+    public void serialiseOtherObject(OutputStream out, Object document, boolean formatted, boolean ignore) {
+        XmlMapper mapper = getMapper(formatted);
+        setNamespace(new Namespace());
         try {
             mapper.writeValue(out,document);
         } catch (IOException e) {

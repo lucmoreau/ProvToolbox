@@ -17,7 +17,7 @@ import java.io.*;
 public class PC1FullTest extends org.openprovenance.prov.model.PC1FullTest {
 
 
-	String filename="target/pc1-full.jsonld11";
+	String filename="target/pc1-full.jsonld";
 
 
 	public void subtestPC1Full() throws FileNotFoundException {

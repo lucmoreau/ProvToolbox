@@ -24,7 +24,6 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
         super(t);
     }
 
-    int count=0;
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -42,13 +41,13 @@ public class CustomQualifiedNameSerializer extends StdSerializer<QualifiedName> 
 
 
             if (!Objects.equals(actualDefault, namespace.getDefaultNamespace())) {
-                // in this case, the serializer has chose a different default,
+                // in this case, the serializer has chosen a different default,
                 // so let's look for the prefix associated with the default namespaceURI, and use it.
-                // _pre[x] is generated automatically
-                String actualNS = namespace.getNamespaces().get(q.getNamespaceURI());
-                String newPrefix="_pre" + count++;
-                writeNamespace(jsonGenerator, newPrefix, actualNS);
-                str = actualNS + ":" + str;
+                String altPrefixForDefault = namespace.getNamespaces().get(q.getNamespaceURI());
+                if (altPrefixForDefault==null) {
+                    throw new ProvxSerializationException("Default namespace uri lacks a prefix declaration " + q.getNamespaceURI());
+                }
+                str = altPrefixForDefault + ":" + str;
             }
         } else {
             str = prefix + ":" + str;

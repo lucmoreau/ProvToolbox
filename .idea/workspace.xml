@@ -9,26 +9,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/ProvxSerializationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/default/default1.provn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvDeserialiser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/CustomBundleDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/CustomBundleDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/CustomThreadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/CustomThreadConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/DeserializerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/deserial/DeserializerUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/CustomDocumentSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/CustomDocumentSerializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/serial/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/stax/StaxStreamWriterUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/stax/StaxStreamWriterUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_SortedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/JSON_SortedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedBundle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/SortedDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomNamespacePrefixDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomNamespacePrefixDeserializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomQualifiedNameDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/deserial/CustomQualifiedNameDeserializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializerAsField.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/serial/CustomQualifiedNameSerializerAsField.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributeValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomAttributeValueSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomKeySerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomKeySerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomQualifiedNameSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/serial/CustomQualifiedNameSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/json/RoundTripFromJavaJSONTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/json/RoundTripFromJavaJSONTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaToJsonAndBackTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaToJsonAndBackTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripFromJavaTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/PC1FullTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/PC1FullTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/StorageConfiguration.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +193,7 @@
       <recent name="org.openprovenance.prov.interop" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.RoundTripFromJavaXMLTest.testDefault1">
+  <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONTest.testDefault1">
     <configuration name="RoundTripFromJavaJSONLD11Test.testDefault1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-jsonld" />
       <extension name="coverage">
@@ -420,10 +413,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.RoundTripFromJavaXMLTest.testDefault1" />
-        <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testDefault1" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test.testDefault1" />
+        <item itemvalue="JUnit.RoundTripFromJavaXMLTest.testDefault1" />
+        <item itemvalue="JUnit.RoundTripFromJavaXMLTest" />
         <item itemvalue="JUnit.RoundTripFromJavaTest.testDefault1" />
       </list>
     </recent_temporary>

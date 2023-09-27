@@ -64,7 +64,9 @@ public class SortedBundle {
     final boolean deferredId;
 
     public SortedBundle(Bundle bun)  {
-        this.namespace=bun.getNamespace();
+        this.namespace=new Namespace(bun.getNamespace());
+        // prov-json assumes default namespace to be listed with the "reserved" prefix "default"
+        if (namespace.getDefaultNamespace()!=null) this.namespace.register("default", namespace.getDefaultNamespace());
         this.id=bun.getId();
         this.deferredId=false;
         for (Statement s: bun.getStatement()) {

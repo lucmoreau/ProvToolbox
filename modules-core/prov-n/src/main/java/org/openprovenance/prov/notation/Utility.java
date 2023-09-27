@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -23,14 +24,25 @@ import org.antlr.runtime.tree.TreeAdaptor;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.exception.UncheckedException;
 
 
-public  class Utility {
+public class Utility {
 
     static Logger logger= LogManager.getLogger(Utility.class);
+    private final DateTimeOption dateTimeOption;
+    private final TimeZone optionalTimeZone;
+
+    public Utility() {
+        this(DateTimeOption.PRESERVE,null);
+    }
+    public Utility(DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
+        this.dateTimeOption = dateTimeOption;
+        this.optionalTimeZone = optionalTimeZone;
+    }
 
     public static void warn(String s) {
         logger.warn(s);
@@ -113,7 +125,7 @@ public  class Utility {
 
     public Object convertTreeToJavaBean(CommonTree tree, ProvFactory pFactory) {
         if (tree==null) return null;
-        return new TreeTraversal(pFactory,pFactory).convert(tree);
+        return new TreeTraversal(pFactory,pFactory, dateTimeOption, optionalTimeZone).convert(tree);
     }
 
 

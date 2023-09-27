@@ -14,7 +14,7 @@ import java.util.List;
 
 //@JsonPropertyOrder({ "context", "statements"})
 @JacksonXmlRootElement(localName="document", namespace="http://www.w3.org/ns/prov#")
-public interface Document {
+public interface XML_Document {
 
     @JsonIgnore
     Namespace getNamespace();
@@ -45,9 +45,6 @@ public interface Document {
     })
     @JacksonXmlProperty(localName="statements",namespace="http://www.w3.org/ns/prov#")
     @JacksonXmlElementWrapper(useWrapping = false)
-   // @JsonUnwrapped
-   // @JsonValue
-   // @JsonRawValue
     @JsonDeserialize(as=List.class)
     List<StatementOrBundle> getStatementOrBundle();
 }

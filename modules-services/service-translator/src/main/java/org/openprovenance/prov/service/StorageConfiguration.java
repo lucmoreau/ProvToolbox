@@ -25,6 +25,7 @@ import org.openprovenance.prov.storage.redis.RedisDocumentResourceIndex;
 import org.openprovenance.prov.storage.redis.RedisTemplateResourceIndex;
 import org.openprovenance.prov.validation.report.ValidationReport;
 import org.openprovenance.prov.validation.report.json.Mapper;
+import org.openprovenance.prov.vanilla.Document;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -121,7 +122,7 @@ public class StorageConfiguration implements EnvironmentVariables{
 
 
         ProvSerialiser serial=new ProvSerialiser();
-        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseDocument(out,document,false, false);
+        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out,document,false, false);
 
         return utilsConfig;
     }
@@ -133,7 +134,7 @@ public class StorageConfiguration implements EnvironmentVariables{
         utilsConfig.storageManager=new DocumentResourceStorageFileSystem(factory, path);
 
         ProvSerialiser serial = new ProvSerialiser();
-        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseDocument(out,document,false, false);
+        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out,document,false, false);
 
         utilsConfig.genericResourceStorageMap.put(ActionExpand.BINDINGS_KEY,new BindingsResourceStorageFileSystem(new ObjectMapper()));
         utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY,new NonDocumentGenericResourceStorageFileSystem<>(Mapper.getValidationReportMapper(), ValidationReport.class, path));

@@ -5,11 +5,9 @@ import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.ProvSerialiser;
-import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.*;
 import  org.antlr.runtime.tree.CommonTree;
+import org.openprovenance.prov.model.ProvSerialiser;
 
 /**
  * Provenance of a w3c tech report
@@ -45,7 +43,7 @@ abstract public class PubTest extends TestCase
 
     public void auxTestReadASNSaveXML(String file, String file2) throws IOException {
 
-        Utility u=new Utility();
+        Utility u=new Utility(DateTimeOption.PRESERVE, null);
         CommonTree tree = u.convertSyntaxTreeToTree(file);
 
         Object o2=u.convertTreeToJavaBean(tree,pFactory);

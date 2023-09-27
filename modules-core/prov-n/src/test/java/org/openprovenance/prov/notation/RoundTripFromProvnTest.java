@@ -5,14 +5,13 @@ import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.DocumentEquality;
-import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.ProvDeserialiser;
+import org.openprovenance.prov.model.ProvSerialiser;
 
 
 public class RoundTripFromProvnTest extends TestCase {
-	final Utility u = new Utility();
+	final Utility u = new Utility(DateTimeOption.PRESERVE, null);
 	static org.openprovenance.prov.model.ProvFactory pFactory=new org.openprovenance.prov.vanilla.ProvFactory();
 
 	public RoundTripFromProvnTest(String name) {
@@ -21,7 +20,7 @@ public class RoundTripFromProvnTest extends TestCase {
 
 	public void loadFromProvnSaveAndReload(String file, Boolean compare) throws Throwable {
 		System.out.println("-------------- File: " + file);
-		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
+		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility(DateTimeOption.PRESERVE, null);
 		DocumentEquality de = new DocumentEquality(true,null);
 
 		Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);
@@ -50,7 +49,7 @@ public class RoundTripFromProvnTest extends TestCase {
 
 	public void loadFromProvnSaveToJsonldAndReload(String file, Boolean compare) throws Throwable {
 		System.out.println("-------------- File: " + file);
-		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility();
+		org.openprovenance.prov.notation.Utility u2 = new org.openprovenance.prov.notation.Utility(DateTimeOption.PRESERVE, null);
 		DocumentEquality de = new DocumentEquality(true,null);
 
 		Document doc1 = u.readDocument("src/test/resources/" + file,pFactory);

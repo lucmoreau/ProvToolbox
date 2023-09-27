@@ -16,12 +16,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-@Produces({ InteropMediaType.MEDIA_TEXT_TURTLE, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION,
-	        InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_TRIG,
-	        InteropMediaType.MEDIA_APPLICATION_RDF_XML, InteropMediaType.MEDIA_APPLICATION_JSON,
-	        InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF,
-		    InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG,
-		    InteropMediaType.MEDIA_APPLICATION_JSONLD})
+@Produces({
+		InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION,
+		InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML,
+		InteropMediaType.MEDIA_APPLICATION_JSONLD,
+		InteropMediaType.MEDIA_APPLICATION_JSON,
+		InteropMediaType.MEDIA_IMAGE_SVG_XML,
+		InteropMediaType.MEDIA_APPLICATION_PDF,
+		InteropMediaType.MEDIA_IMAGE_JPEG,
+		InteropMediaType.MEDIA_IMAGE_PNG
+})
 public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
 	private final ProvSerialiser serializer;

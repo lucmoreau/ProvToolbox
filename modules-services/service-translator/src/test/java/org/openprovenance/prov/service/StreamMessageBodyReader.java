@@ -14,7 +14,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {
+public class
+
+
+
+StreamMessageBodyReader implements MessageBodyReader<InputStream> {
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,

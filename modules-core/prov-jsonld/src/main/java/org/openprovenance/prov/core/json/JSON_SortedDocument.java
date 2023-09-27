@@ -11,7 +11,7 @@ import org.openprovenance.prov.vanilla.*;
 
 import java.util.Map;
 
-@JsonPropertyOrder({ "prefix", "defaultNamespace"})
+@JsonPropertyOrder({ "prefix"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface JSON_SortedDocument {
     // @JsonFilter("nsFilter")
@@ -20,7 +20,10 @@ public interface JSON_SortedDocument {
 
     @JsonProperty("prefix")
     @JsonDeserialize(using = CustomNamespacePrefixDeserializer.class)
-    public Map<String,String> getPrefix();
+    Map<String,String> getPrefix();
+
+    @JsonIgnore
+    String getDefaultNamespace();
 
 
     @JsonSerialize(keyUsing = CustomQualifiedNameSerializerAsField.class, contentAs = Entity.class)

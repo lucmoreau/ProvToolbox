@@ -4,13 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.scala.template.Expander;
 
@@ -42,8 +36,8 @@ public class ExpandTest extends TestCase {
     public  void expander(String in, String inBindings, String out) {
         System.err.println("expander ==========================================> " + in);
 
-        Document doc= new Utility().readDocument(in, pf);
-        Document docBindings= new Utility().readDocument(inBindings,pf);
+        Document doc= new Utility(DateTimeOption.PRESERVE,null).readDocument(in, pf);
+        Document docBindings= new Utility(DateTimeOption.PRESERVE,null).readDocument(inBindings,pf);
         Bindings bindings1=Bindings.fromDocument(docBindings,pf);
 
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
@@ -62,7 +56,7 @@ public class ExpandTest extends TestCase {
         //doc1.setNamespace(bun1.getNamespace());
         //doc1.setNamespace(new Namespace());
 
-        new Utility().writeDocument(doc1, out, pf);
+        new Utility(DateTimeOption.PRESERVE,null).writeDocument(doc1, out, pf);
         //InteropFramework inf=new InteropFramework();
         //inf.writeDocument(out, doc1);
 
@@ -77,7 +71,7 @@ public class ExpandTest extends TestCase {
                           String outBindings) {
         System.err.println("expander ==========================================> " + in);
 
-        Document doc= new Utility().readDocument(in, pf);
+        Document doc= new Utility(DateTimeOption.PRESERVE,null).readDocument(in, pf);
 
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
 
@@ -102,10 +96,10 @@ public class ExpandTest extends TestCase {
 
 
         Namespace.withThreadNamespace(doc1.getNamespace());
-        new Utility().writeDocument(doc1, out, pf);
+        new Utility(DateTimeOption.PRESERVE,null).writeDocument(doc1, out, pf);
         Document doc2=bindings1.toDocument();
         Namespace.withThreadNamespace(doc2.getNamespace());
-        new Utility().writeDocument(doc2,outBindings,pf);
+        new Utility(DateTimeOption.PRESERVE,null).writeDocument(doc2,outBindings,pf);
 
         System.err.println("expander ==========================================> ");
 

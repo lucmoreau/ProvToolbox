@@ -79,7 +79,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             Method method=clazz.getMethod("getFactory");
             return (ProvFactory) method.invoke(new Object[0]);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            logger.throwing(e);
         }
         return null;
     }
@@ -93,15 +93,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
     public final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
-
     public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
-
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
-
-    
     final private CommandLineArguments config;
     final private Map<ProvFormat, SerializerFunction> serializerMap;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
+    final private Map<ProvFormat, DeserializerFunction2> deserializerMap2;
 
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses the factory declared in the configuration file as its default factory.
@@ -131,6 +128,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         serializerMap = createSerializerMap();
         deserializerMap = createDeserializerMap();
+        deserializerMap2 = createDeserializerMap2();
     }
 
     /**
@@ -389,15 +387,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 mimeTypeRevMap.put(MEDIA_APPLICATION_JSONLD, ProvFormat.JSONLD);
                 provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
                 break;
-            case XML:
-                extensionMap.put(XML, EXTENSION_PROVX);
-                extensionRevMap.put(EXTENSION_PROVX, XML);
-                extensionRevMap.put(EXTENSION_XML, XML);
-                mimeTypeMap.put(XML,
-                                MEDIA_APPLICATION_PROVENANCE_XML);
-                mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML,
-                                   XML);
-                provTypeMap.put(XML, ProvFormatType.INPUTOUTPUT);
+            case PROVX:
+                extensionMap.put(ProvFormat.PROVX, EXTENSION_PROVX);
+                extensionRevMap.put(EXTENSION_PROVX, ProvFormat.PROVX);
+                extensionRevMap.put(EXTENSION_XML, ProvFormat.PROVX);
+                mimeTypeMap.put(ProvFormat.PROVX, MEDIA_APPLICATION_PROVENANCE_XML);
+                mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.PROVX);
+                provTypeMap.put(ProvFormat.PROVX, ProvFormatType.INPUTOUTPUT);
                 break;
             default:
                 break;
@@ -437,103 +433,29 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a document
      */
     public Object loadProvUnknownGraph(String filename) {
-
-        try {
-            Utility u = new Utility();
-            Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
-            if (o != null) {
-                return o;
+        for (ProvFormat format: preferredOrder) {
+            try {
+                return deserializerMap.get(format).apply().deserialiseDocument(Files.newInputStream(Paths.get(filename)));
+            } catch (IOException ignored) {
+                // we fail, let's continue with the next one
             }
-        } catch (RuntimeException t1) {
-            // OK, we failed, let's try next format.
         }
-        try {
-            File in = new File(filename);
-            org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-            Document c = deserial.deserialiseDocument(in);
-            if (c != null) {
-                return c;
-            }
-
-            // OK, we failed, let's try next format.
-        } catch (IOException ignored) {
-
-        }
-
 
         System.out.println("Unparseable format " + filename);
-        throw new UnsupportedOperationException();
-
+        throw new UnsupportedOperationException("Unparseable format " + filename);
     }
 
-    /*
-    public void provn2html(String file, String file2)  {
-        Document doc = (Document) u.convertASNToJavaBean(file, pFactory);
-        String s = u.convertBeanToHTML(doc, pFactory);
-        u.writeTextToFile(s, file2);
-    }
 
-     */
-    
-    /**
-     * Reads a Document from an input stream, using the parser specified by the format argument.
-     * @param is an input stream
-     * @param format one of the input formats supported by ProvToolbox
-     * @param baseuri a base uri for the input stream document	
-     * @return a Document
-     */
-
-    public Document readDocument(InputStream is, ProvFormat format, String baseuri) {
-        return readDocument(is, format, pFactory, baseuri);
-    }
-
-    /**
-     * Reads a Document from an input stream, using the parser specified by the format argument.
-     * @param is an input stream
-     * @param format one of the input formats supported by ProvToolbox
-     * @param pFactory a provenance factory used to construct the Document
-     * @param baseuri a base uri for the input stream document
-     * @return a Document
-     */
-
-  
-    public Document readDocument(InputStream is, 
-                                 ProvFormat format,
-                                 ProvFactory pFactory,
-                                 String baseuri) {
-
-        switch (format) {
-        case DOT:
-        case JPEG:
-        case PNG:
-        case SVG:
-            throw new UnsupportedOperationException(); // we don't load PROV
-            // from these
-            // formats
-        case PROVN: {
-            Utility u = new Utility();
-            Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(is), pFactory);
-            // Namespace ns=Namespace.gatherNamespaces(doc);
-            // doc.setNamespace(ns);
-            return (Document) o;
-        }
-
-        case XML: {
-            org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-            Document doc = null;
+    public Object loadProvUnknownGraph(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        for (ProvFormat format: preferredOrder) {
             try {
-                doc = deserial.deserialiseDocument(is);
-            } catch (IOException e) {
-                throw new InteropException(e);
+                return deserializerMap2.get(format).apply(dateTimeOption, timeZone).deserialiseDocument(Files.newInputStream(Paths.get(filename)));
+            } catch (IOException ignored) {
+                // we fail, let's continue with the next one
             }
-            return doc;
         }
-        default: {
-            System.out.println("Unknown format " + format);
-            throw new UnsupportedOperationException();
-        }
-        }
-
+        System.out.println("Unparseable format " + filename);
+        throw new UnsupportedOperationException("Unparseable format " + filename);
     }
 
     /**
@@ -542,7 +464,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @param url a URL
      * @return a Document
      */
-    public Document readDocument(String url) {
+    public Document readDocumentFromURL(String url) {
         try {
             URL theURL = new URL(url);
             URLConnection conn = connectWithRedirect(theURL);
@@ -560,8 +482,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 if (end < 0) {
                     end = content_type.length();
                 }
-                String actual_content_type = content_type.substring(0, end)
-                        .trim();
+                String actual_content_type = content_type.substring(0, end).trim();
                 logger.debug("Found Content-type: " + actual_content_type);
                 // TODO: might be worth skipping if text/plain as that seems
                 // to be the
@@ -577,7 +498,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
             InputStream content_stream = conn.getInputStream();
 
-            return readDocument(content_stream, format,url);
+            return deserialiseDocument(content_stream, format);
         } catch (IOException e) {
             throw new InteropException(e);
         }
@@ -590,11 +511,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a Document
      */
     public Document readDocumentFromFile(String filename) {
-
-            ProvFormat format = getTypeForFile(filename);
-            if (format == null) {
-                throw new InteropException("Unknown output file format: " + filename);
-            }
+        ProvFormat format = getTypeForFile(filename);
+        if (format == null) {
+            throw new InteropException("Unknown output file format: " + filename);
+        }
         try {
             return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format);
         } catch (IOException e) {
@@ -602,57 +522,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
     }
 
-    /**
-     * Reads a document from a file, using the format to decide which parser to read the file with.
-     * @param filename the file to read a document from
-     * @param format the format of the file
-     * @return a Document
-     * @deprecated Use instead deserialiseDocument
-     */
-    public Document readDocumentFromFile(String filename, ProvFormat format) {
 
-        try {
-            switch (format) {
-            case DOT:
-            case JPEG:
-            case PNG:
-            case SVG:
-                throw new UnsupportedOperationException(); // we don't load PROV
-                                                           // from these
-                                                           // formats
-
-            case PROVN: {
-                Utility u = new Utility();
-                Object o = u.convertTreeToJavaBean(u.convertSyntaxTreeToTree(filename), pFactory);
-                // Namespace ns=Namespace.gatherNamespaces(doc);
-                // doc.setNamespace(ns);
-                return (Document) o;
-            }
-            case RDFXML:
-            case TRIG:
-            case JSONLD:
-
-            case XML: {
-                File in = new File(filename);
-                org.openprovenance.prov.core.xml.serialization.ProvDeserialiser deserial = new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser();
-                Document doc = deserial.deserialiseDocument(in);
-                return doc;
-            }
-            default: {
-                System.out.println("Unknown format " + filename);
-                throw new UnsupportedOperationException();
-            }
-            }
-        } catch (RuntimeException | IOException e) {
-            throw new InteropException(e);
-        }
-
-    }
-    public java.util.List<java.util.Map<String, String>>getSupportedFormats() {
-        java.util.List<java.util.Map<String, String>> tripleList = new java.util.ArrayList<>();
-        java.util.Map<String, String>trip;
-        for (ProvFormat pt:  provTypeMap.keySet()) {
-            for (String mt:  mimeTypeRevMap.keySet()) {
+    public List<Map<String, String>>getSupportedFormats() {
+        List<Map<String, String>> tripleList = new ArrayList<>();
+        Map<String, String> trip;
+        for (ProvFormat pt: provTypeMap.keySet()) {
+            for (String mt: mimeTypeRevMap.keySet()) {
                 if (mimeTypeRevMap.get(mt) == pt) {
                     for (String ext: extensionRevMap.keySet()) {
                         if (extensionRevMap.get(ext) == pt) {
@@ -680,21 +555,18 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    private Document doReadDocument(String filename, String format)
-    {
+    private Document doReadDocument(String filename, String format) throws IOException {
         Document doc;
         ProvFormat informat;
         if (format != null) {
             informat = getTypeForFormat(format);
             if (informat == null) {
-                throw new InteropException("Unknown format: "
-                        + format);
+                throw new InteropException("Unknown format: " + format);
             }
         } else {
             informat = getTypeForFile(filename);
             if (informat == null) {
-                throw new InteropException("Unknown file format for: "
-                        + filename);
+                throw new InteropException("Unknown file format for: " + filename);
             }
         }
 
@@ -702,28 +574,25 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             if (informat == null) {
                 throw new InteropException("File format for standard input not specified");
             }
-            doc = readDocument(System.in, informat,"file://stdin/");
+            doc = deserialiseDocument(System.in, informat);
         } else {
-            doc = readDocumentFromFile(filename, informat);
+            doc=deserialiseDocument(Files.newInputStream(Paths.get(filename)), informat);
         }
 
         return doc;
     }
 
-    private void doWriteDocument(String filename, String format, Document doc)
-    {
+    private void doWriteDocument(String filename, String format, Document doc) throws IOException {
         ProvFormat outformat;
         if (format != null) {
             outformat = getTypeForFormat(format);
             if (outformat == null) {
-                throw new InteropException("Unknown format: "
-                        + format);
+                throw new InteropException("Unknown format: " + format);
             }
         } else {
             outformat = getTypeForFile(filename);
             if (outformat == null) {
-                throw new InteropException("Unknown file format for: "
-                        + filename);
+                throw new InteropException("Unknown file format for: " + filename);
             }
         }
 
@@ -733,7 +602,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
             writeDocument(System.out, outformat, doc);
         } else {
-            writeDocument(filename, outformat, doc);
+            writeDocument(Files.newOutputStream(new File(filename).toPath()), outformat, doc);
         }
     }
     
@@ -768,11 +637,28 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         logger.debug("deserializer " + format + " " + deserializer);
         return deserializer.apply().deserialiseDocument(is);
     }
-
+    public Document deserialiseDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+        DeserializerFunction2 deserializer=deserializerMap2.get(format);
+        logger.debug("deserializer " + format + " " + deserializer);
+        return deserializer.apply(dateTimeOption, timeZone).deserialiseDocument(is);
+    }
     @Override
     public Collection<String> mediaTypes() {
         return mimeTypeRevMap.keySet();
     }
+
+    public Object readDocumentFromFile(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        ProvFormat format = getTypeForFile(filename);
+        if (format == null) {
+            throw new InteropException("Unknown output file format: " + filename);
+        }
+        try {
+            return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format, dateTimeOption, timeZone);
+        } catch (IOException e) {
+            throw new InteropException(e);
+        }
+    }
+
 
     enum FileKind { FILE , URL }
 
@@ -792,14 +678,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     	}
     }
     
-    public Document readDocument(ToRead something) {
+    public Document readDocument(ToRead something) throws IOException {
     	Document doc=null;
     	switch (something.kind) {
 		case FILE:
-			doc=readDocumentFromFile(something.url, something.format);
+			//doc=readDocumentFromFile(something.url, something.format);
+            doc=deserialiseDocument(Files.newInputStream(Paths.get(something.url)), something.format);
 			break;
 		case URL:
-			doc=readDocument(something.url);// note: ignore format?
+			doc= readDocumentFromURL(something.url);// note: ignore format?
 			break;
     	}
     	return doc;
@@ -862,7 +749,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         Document doc;
         if (config.infile != null && config.log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
-            doc = doReadDocument(config.infile, config.informat);
+            try {
+                doc = doReadDocument(config.infile, config.informat);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else if (config.merge != null) {
             IndexedDocument iDoc = new IndexedDocument(pFactory,
                                                        pFactory.newDocument(),
@@ -983,7 +874,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         }
 
         if (config.compare!=null) {
-            return doCompare(doc,doReadDocument(config.compare, config.informat));
+            try {
+                return doCompare(doc,doReadDocument(config.compare, config.informat));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } 
         
         if (config.template!=null  && !config.builder) {
@@ -1021,29 +916,33 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         if (config.index != null) {
             doc = new IndexedDocument(pFactory, doc, (config.flatten != null)).toDocument();
         }
-        if (config.bindings != null) {
-            Expand myExpand=new Expand(pFactory, config.addOrderp,config.allExpanded);
-            Document expanded;
-            if (config.bindingsVersion==3) {
-                Bindings inBindings;
-                try {
-                    inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
-                } catch (IOException e) {
-                    throw new InteropException("problem parsing bindings file " + config.bindings,e);
+        try {
+            if (config.bindings != null) {
+                Expand myExpand = new Expand(pFactory, config.addOrderp, config.allExpanded);
+                Document expanded;
+                if (config.bindingsVersion == 3) {
+                    Bindings inBindings;
+                    try {
+                        inBindings = new ObjectMapper().readValue(new File(config.bindings), Bindings.class);
+                    } catch (IOException e) {
+                        throw new InteropException("problem parsing bindings file " + config.bindings, e);
+                    }
+                    expanded = myExpand.expander(doc, inBindings);
+
+                } else {
+                    throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
                 }
-                expanded = myExpand.expander(doc, inBindings);
+                boolean flag = myExpand.getAllExpanded();
+                doWriteDocument(config.outfile, config.outformat, expanded);
 
+                if (!flag) {
+                    return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
+                }
             } else {
-                throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
+                doWriteDocument(config.outfile, config.outformat, doc);
             }
-            boolean flag=myExpand.getAllExpanded();
-            doWriteDocument(config.outfile, config.outformat, expanded);
-
-            if (!flag) {
-                return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
-            }
-        } else {
-            doWriteDocument(config.outfile, config.outformat, doc);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return CommandLineArguments.STATUS_OK;
 
@@ -1107,70 +1006,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         serialiseDocument(os,document,mimeTypeMap.get(format),true);
     }
 
-    /* TO BE DELETED */
-        public void writeDocumentOLD(OutputStream os, ProvFormat format, Document document) {
-            Namespace.withThreadNamespace(document.getNamespace());
-
-        try {
-            if (format == null) {
-                System.err.println("Unknown output format: " + format);
-                return;
-            }
-            logger.debug("writing " + format);
-            setNamespaces(document);
-            switch (format) {
-            case PROVN: {
-                new Utility().writeDocument(document, os, pFactory);
-                break;
-            }
-            case XML: {
-                org.openprovenance.prov.model.ProvSerialiser serial = pFactory
-                        .getSerializer();
-                logger.debug("namespaces " + document.getNamespace());
-                serial.serialiseDocument(os, document, true);
-                break;
-            }
-
-
-            case DOT: {
-                ProvToDot toDot = new ProvToDot(pFactory);
-                toDot.setMaxStringLength(maxStringLength);
-                toDot.convert(document, os, config.title);
-                break;
-            }
-            case PDF:
-            case JPEG:
-            case PNG:
-            case SVG: {
-                File tmp = File.createTempFile("viz-", ".dot");
-
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot= new ProvToDot(pFactory);
-                toDot.setMaxStringLength(maxStringLength);
-                toDot.convert(document, dotFileOut, os, extensionMap.get(format), config.title);
-                tmp.delete();
-                break;
-            }
-
-            default:
-                break;
-            }
-        } catch (RuntimeException e) {
-            if (config.verbose != null)
-                e.printStackTrace();
-            throw new InteropException(e);
-
-        } catch (Exception e) {
-            if (config.verbose != null)
-                e.printStackTrace();
-            throw new InteropException(e);
-        }
-
-    }
-
-    
     /**
      * Write a {@link Document} to file, serialized according to the file extension
      * @param filename path of the file to write the Document to
@@ -1189,13 +1024,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    final public Map<ProvFormat, SerializerFunction> createLightSerializerMap() {
+    final public Map<ProvFormat, SerializerFunction> createSerializerMap() {
 
         //NOTE: Syntax restricted to 10 entries
         Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
         serializer.putAll(
                 Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
-                        XML,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
+                        PROVX,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
                         TURTLE,  () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");}, //new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
                         JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
                          TRIG,   () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");},  //() -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
@@ -1213,40 +1048,38 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return serializer;
     }
 
-    final public Map<ProvFormat, DeserializerFunction> createLightDeserializerMap() {
+    final public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
 
         //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, DeserializerFunction> serializer=new HashMap<>();
-        serializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory),
-                        XML,     org.openprovenance.prov.core.xml.serialization.ProvDeserialiser::new,
-                        JSONLD,  org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser::new,
-                        JSON,    org.openprovenance.prov.core.json.serialization.ProvDeserialiser::new));
+        Map<ProvFormat, DeserializerFunction> deserializer=new HashMap<>();
+        deserializer.putAll(
+                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,config.dateTime, config.timeZone),
+                        PROVX,   () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
+                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
+                        JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
+        );
 
-        return serializer;
+        return deserializer;
     }
 
+    final public Map<ProvFormat, DeserializerFunction2> createDeserializerMap2() {
 
+        //NOTE: Syntax restricted to 10 entries
+        Map<ProvFormat, DeserializerFunction2> deserializer=new HashMap<>();
+        deserializer.putAll(
+                Map.of(PROVN,    (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,dateTime, timeZone),
+                        PROVX,     (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(dateTime, timeZone),
+                        JSONLD,  (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone),
+                        JSON,    (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone))
+        );
 
-
-    public Map<ProvFormat, SerializerFunction> createSerializerMap() {
-        switch (configuration) {
-
-            case "light":        return createLightSerializerMap();
-            default:
-                throw new IllegalStateException("Unexpected configuration value: " + configuration);
-        }
+        return deserializer;
     }
 
+    List<ProvFormat> preferredOrder=List.of(PROVN, JSONLD, JSON,PROVX);
 
-    public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
-        switch (configuration) {
 
-            case "light":        return createLightDeserializerMap();
-            default:
-                throw new IllegalStateException("Unexpected configuration value: " + configuration);
-        }
-    }
+
 
     private Integer maxStringLength=100;
 
@@ -1272,44 +1105,44 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             logger.debug("writing " + filename);
             setNamespaces(document);
             switch (format) {
-            case PROVN: {
-                new Utility().writeDocument(document, filename, pFactory);
-                break;
-            }
-            case XML: {
-                org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser();
-                logger.debug("namespaces " + document.getNamespace());
-                serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
-                break;
-            }
+                case PROVN: {
+                    new Utility(config.dateTime, config.timeZone).writeDocument(document, filename, pFactory);
+                    break;
+                }
+                case PROVX: {
+                    org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true);
+                    logger.debug("namespaces " + document.getNamespace());
+                    serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
+                    break;
+                }
 
 
-            case DOT: {
-                ProvToDot toDot = new ProvToDot(pFactory);
-                toDot.setMaxStringLength(maxStringLength);
-                toDot.setLayout(config.layout);
-                toDot.convert(document, filename, config.title);
-                break;
-            }
-            case PDF:
-            case JPEG:
-            case PNG:
-            case SVG: {
-                File tmp = File.createTempFile("viz-", ".dot");
+                case DOT: {
+                    ProvToDot toDot = new ProvToDot(pFactory);
+                    toDot.setMaxStringLength(maxStringLength);
+                    toDot.setLayout(config.layout);
+                    toDot.convert(document, filename, config.title);
+                    break;
+                }
+                case PDF:
+                case JPEG:
+                case PNG:
+                case SVG: {
+                    File tmp = File.createTempFile("viz-", ".dot");
 
-                String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                                                           // if not available
-                                                           // create tmp file
-                ProvToDot toDot= new ProvToDot(pFactory);
-                toDot.setMaxStringLength(maxStringLength);
-                toDot.setLayout(config.layout);
-                toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
-                tmp.delete();
-                break;
-            }
+                    String dotFileOut = tmp.getAbsolutePath(); // give it as option,
+                    // if not available
+                    // create tmp file
+                    ProvToDot toDot= new ProvToDot(pFactory);
+                    toDot.setMaxStringLength(maxStringLength);
+                    toDot.setLayout(config.layout);
+                    toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
+                    tmp.delete();
+                    break;
+                }
 
-            default:
-                break;
+                default:
+                    break;
             }
         } catch (RuntimeException | IOException e) {
             if (config.verbose != null)

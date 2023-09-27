@@ -168,7 +168,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         InteropFramework interop = new InteropFramework();
 
-        Document document= interop.readDocument(the_template);
+        Document document= interop.readDocumentFromURL(the_template);
 
         Bindings bindings = BindingsJson.importBindings(bindings_schema);
 

@@ -46,8 +46,6 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
 			WebApplicationException {
 		InteropFramework intF=new InteropFramework(pf);
 		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
-		//System.out.println("--->>>> Found " + format);
-
 		InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
 		Document doc=(Document)interop.deserialiseDocument(is,format);
 		return doc;

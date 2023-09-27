@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
+    public static final String JSONLD_DEFAULT_NAMESPACE = "@vocab";
     private final boolean embedContext;
 
     public CustomNamespaceSerializer(boolean embedContext) {
@@ -50,7 +51,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
         prefixes.putAll(namespace.getPrefixes());
         String defaultNS=namespace.getDefaultNamespace();
         if (defaultNS!=null) {
-            prefixes.put("@namespace",defaultNS);
+            prefixes.put(JSONLD_DEFAULT_NAMESPACE,defaultNS);
         }
         Object [] theContext=new Object[2];
         theContext[0]=prefixes;

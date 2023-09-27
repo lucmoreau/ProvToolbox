@@ -5,6 +5,8 @@ import org.codehaus.stax2.XMLStreamWriter2;
 import javax.xml.stream.XMLStreamException;
 import java.util.Stack;
 
+import static org.openprovenance.prov.core.xml.serialization.serial.CustomDocumentSerializer.TO_DELETE;
+
 public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
 
     public ElementEraserXMLStreamWriter2(XMLStreamWriter2 delegate) {
@@ -12,7 +14,7 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
     }
 
     int count = 0;
-    Stack<Integer> ignore = new Stack<Integer>();
+    Stack<Integer> ignore = new Stack<>();
 
 
     @Override
@@ -30,7 +32,7 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
     @Override
     public void writeStartElement(String localName) throws XMLStreamException {
         count++;
-        if (localName.equals("statements")) {
+        if (elementToBeDeleted(localName)) {
             //    System.out.println(" * writeStartElement " + localName + " " + count);
             ignore.push(count);
         } else {
@@ -39,10 +41,14 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
         }
     }
 
+    private boolean elementToBeDeleted(String localName) {
+        return localName.equals("statements") || localName.equals(TO_DELETE);
+    }
+
     @Override
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         count++;
-        if (localName.equals("statements")) {
+        if (elementToBeDeleted(localName)) {
             //      System.out.println(" * writeStartElement " + localName + " " + namespaceURI + " " + count);
             ignore.push(count);
         } else {
@@ -54,7 +60,7 @@ public class ElementEraserXMLStreamWriter2 extends NamespaceXMLStreamWriter2 {
     @Override
     public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         count++;
-        if (localName.equals("statements")) {
+        if (elementToBeDeleted(localName)) {
             //       System.out.println(" * writeStartElement " + localName + " " + namespaceURI + " (pre " + prefix + " " + count);
             ignore.push(count);
         } else {

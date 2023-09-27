@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
+import static org.openprovenance.prov.core.jsonld11.serialization.serial.CustomNamespaceSerializer.JSONLD_DEFAULT_NAMESPACE;
 
 
 public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
@@ -74,7 +75,7 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
                     final String valueString = (String) value;
                     final String key = entry.getKey();
                     switch (key) {
-                        case "@namespace":
+                        case JSONLD_DEFAULT_NAMESPACE:
                             ns.setDefaultNamespace(valueString);
                             break;
                         case "@version":

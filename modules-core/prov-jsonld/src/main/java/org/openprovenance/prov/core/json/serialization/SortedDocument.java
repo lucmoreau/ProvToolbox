@@ -16,7 +16,9 @@ public class SortedDocument extends SortedBundle {
     private SortedDocument() {}
 
     public SortedDocument (org.openprovenance.prov.model.Document doc)  {
-        this.namespace=doc.getNamespace();
+        this.namespace=new Namespace(doc.getNamespace());
+        // prov-json assumes default namespace to be listed with the "reserved" prefix "default"
+        if (namespace.getDefaultNamespace()!=null) this.namespace.register("default", namespace.getDefaultNamespace());
         for (StatementOrBundle s: doc.getStatementOrBundle()) {
             switch (s.getKind()) {
                 case PROV_ENTITY:
@@ -136,6 +138,12 @@ public class SortedDocument extends SortedBundle {
 
 
 
+
+        String defaultJsonStyle=namespace.getPrefixes().get("default");
+        if (defaultJsonStyle!=null) {
+            namespace.unregister("default", defaultJsonStyle);
+        }
+        namespace.setDefaultNamespace(defaultJsonStyle);
         // return provFactory.newDocument(namespace,ss, reassignId(theBundles).values());
         // NO reassignement here, as it was done in the SortedBundle
         return provFactory.newDocument(namespace,ss,theBundles.values());

@@ -7,6 +7,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.exception.ParserException;
@@ -26,10 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 
 public class ServiceUtils {
@@ -456,18 +454,10 @@ public class ServiceUtils {
 
     public boolean doProcessFile(DocumentResource dr, boolean known) {
         try {
-
-            Document doc;
-
             logger.debug("doProcessFile for " + dr.getVisibleId() + " " + dr.getStorageId());
-
-            doc=getDocumentFromCacheOrStore(dr.getStorageId());
-
-
+            Document doc=getDocumentFromCacheOrStore(dr.getStorageId());
             if (doc == null)
                 throw new NullPointerException("read document returned null for " + dr.getStorageId());
-
-
             return true;
         } catch (Throwable e) {
             e.printStackTrace();
@@ -498,12 +488,16 @@ public class ServiceUtils {
         }
         return doc;
     }
+    public Document getDocumentFromStore(String storageId, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+        logger.debug("Retrieving document from store: " + storageId);
+        return storageManager.readDocument(storageId,true, dateTimeOption, timeZone);
+    }
 
 
     public boolean deleteFromCache(String storageId) {
         Object o;
         synchronized (this) {
-            o= documentCache.remove(this) ;
+            o= documentCache.remove(storageId) ;
         }
         return o!=null;
     }
@@ -769,7 +763,7 @@ public class ServiceUtils {
                 type = "html";
             } else {
                 String mt = v.getMediaType().toString();
-                type = interop.getExtension((Formats.ProvFormat) interop.mimeTypeRevMap.get(mt));
+                type = interop.getExtension(interop.mimeTypeRevMap.get(mt));
             }
             if (type != null) {
                 return composeResponseSeeOther(path + type).build();

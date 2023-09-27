@@ -127,13 +127,10 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
                     String result = "Failed to parse provenance";
                     return utils.composeResponseBadRequest(result, vr.getThrown());
                 }
-
-
                 if (/*vr.bundle == null && */  !utils.documentCache.containsKey(vr.getStorageId())) {  //TODO: what about bundle?
                     String result = "No provenance was found (empty document), and therefore failed to create resource for validation service";
                     return utils.composeResponseNotFOUND(result);
                 }
-
 
                 Date date = autoDelete ? jobManager.scheduleJob(vr.getVisibleId()) : null;
                 vr.setExpires(date);
@@ -253,9 +250,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags {
         List<InputPart> inputParts = formData.get("statements");
         List<InputPart> type = formData.get("type");
         if (inputParts != null) {
-
-            vr = utils.doProcessStatementsForm(inputParts,
-                    type);
+            vr = utils.doProcessStatementsForm(inputParts, type);
         }
         return vr;
     }

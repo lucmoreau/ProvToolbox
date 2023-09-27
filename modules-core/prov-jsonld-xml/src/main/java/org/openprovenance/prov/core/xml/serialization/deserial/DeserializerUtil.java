@@ -1,6 +1,5 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
@@ -8,22 +7,33 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.QualifiedNameUtils;
 
+import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.getAttributes;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
 
 public class DeserializerUtil {
-    public static final String CONTEXT_KEY_NAMESPACE = "CONTEXT_KEY_NAMESPACE";
+    private static final String PROVX_CONTEXT_KEY_NAMESPACE = "PROVX_CONTEXT_KEY_NAMESPACE";
 
     private final static ProvFactory pf= ProvDeserialiser.pf;
     private final static QualifiedNameUtils qnU=new QualifiedNameUtils();
 
-    public static Namespace getNamespace(DeserializationContext deserializationContext) {
-        Namespace ns = (Namespace) deserializationContext.getAttribute(CONTEXT_KEY_NAMESPACE);
+    public static Namespace getNamespace() {
+        Namespace ns= getAttributes().get().get(PROVX_CONTEXT_KEY_NAMESPACE);
         if (ns == null) {
-            ns = new Namespace();
-            ns.addKnownNamespaces();
-            deserializationContext.setAttribute(CONTEXT_KEY_NAMESPACE, ns);
+            System.out.println("=============> ns is null");
         }
         return ns;
+    }
+    public static Namespace newNamespace() {
+        Namespace ns= new Namespace();
+        getAttributes().get().put(PROVX_CONTEXT_KEY_NAMESPACE,ns);
+        return ns;
+    }
+
+    public static Namespace removeNamespace() {
+        return getAttributes().get().remove(PROVX_CONTEXT_KEY_NAMESPACE);
+    }
+    public static void setNamespace(Namespace namespace) {
+        getAttributes().get().put(PROVX_CONTEXT_KEY_NAMESPACE, namespace);
     }
 
     public static String getAttributeValue(Namespace ns, FromXmlParser xmlParser, String name) {
@@ -32,13 +42,15 @@ public class DeserializerUtil {
             String prefix=attributeValue.substring(0,attributeValue.indexOf(":"));
             String ans=xmlParser.getStaxReader().getNamespaceURI(prefix);
             ns.register(prefix,ans);
+        } else {
+            String ans=xmlParser.getStaxReader().getNamespaceURI();
+            ns.registerDefault(ans);
         }
         return attributeValue;
     }
 
 
     static public QualifiedName unescapeQualifiedName(QualifiedName id) {
-
         String namespace=id.getNamespaceURI();
         String local=qnU.escapeProvLocalName(qnU.unescapeFromXsdLocalName(id.getLocalPart()));
         String prefix=id.getPrefix();

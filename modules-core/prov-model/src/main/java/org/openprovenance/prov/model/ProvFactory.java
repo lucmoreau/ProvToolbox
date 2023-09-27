@@ -16,8 +16,6 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
-
-
 /** A stateless factory for PROV objects. */
 
 
@@ -753,8 +751,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTime(java.lang.String)
 	 */
 	public XMLGregorianCalendar newISOTime(String time) {
-		return newTime(DatatypeConverter.parseDateTime(time)
-				.getTime());
+		return newTime(DatatypeConverter.parseDateTime(time).getTime());
 	}
 
 	/* (non-Javadoc)
@@ -770,8 +767,22 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTimeUTC(java.lang.String)
 	 */
 	public XMLGregorianCalendar newISOTimeUTC(String time) {
+		return newISOTime(time, UTC_TIMEZONE);
+	}
+
+	public XMLGregorianCalendar newISOTime(String time, TimeZone timeZone) {
 		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
-		return newTime(parsedDateTime.getTime(), UTC_TIMEZONE);
+		return newTime(parsedDateTime.getTime(), timeZone);
+	}
+
+	public XMLGregorianCalendar newISOTime(String time, DateTimeOption option, TimeZone optionalTimeZone) {
+		switch (option) {
+			case TIMEZONE:  return newISOTime(time, optionalTimeZone);
+			case PRESERVE: return newISOTimeTZ(time);
+			case UTC: return newISOTimeUTC(time);
+			case SYSTEM: return newISOTime(time);
+			default: throw new UnsupportedOperationException("Unknown option: " + option);
+		}
 	}
 
 	public abstract Key newKey(Object o, QualifiedName type);

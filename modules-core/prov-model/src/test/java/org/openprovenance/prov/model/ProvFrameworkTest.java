@@ -132,7 +132,7 @@ public class ProvFrameworkTest extends TestCase {
     }
 
     public boolean checkTest(String name) {
-        return false;
+        return true;
     }
 
     public boolean mergeDuplicateProperties() {
@@ -283,4 +283,14 @@ public class ProvFrameworkTest extends TestCase {
     public void testAlwaysSuccessful() {
         assertTrue(true);
     }
+
+
+    public String escapeRed(String str) {
+        return "\u001B[31m" + str + "\u001B[0m";
+    }
+
+    public String escapeGreen(String str) {
+        return "\u001B[32m" + str + "\u001B[0m";
+    }
+
 }

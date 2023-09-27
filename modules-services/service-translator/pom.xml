@@ -62,14 +62,6 @@
             <version>2.0.3-SNAPSHOT</version>
         </dependency>
 
-
-        <!--
-                <dependency>
-                    <groupId>javax.json</groupId>
-                    <artifactId>javax.json-api</artifactId>
-                    <version>1.1.2</version>
-                </dependency>
-        -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
@@ -444,7 +436,7 @@
                                         </property>
                                         <property>
                                             <name>PSERVICE_DEL_PERIOD</name>
-                                            <value>60</value>
+                                            <value>600</value>
                                         </property>
                                         <property>
                                             <name>PSERVICE_STORAGE</name>

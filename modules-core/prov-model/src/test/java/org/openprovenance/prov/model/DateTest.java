@@ -18,8 +18,8 @@ public class DateTest extends TestCase {
         XMLGregorianCalendar noTZtime = pFactory.newISOTime(date);
         XMLGregorianCalendar yesTZtime = pFactory.newISOTimeTZ(date);
 
-        System.out.println("time zone (no):  " + noTZtime);
-        System.out.println("time zone (yes): " + yesTZtime);
+  //      System.out.println("time zone (no):  " + noTZtime);
+    //    System.out.println("time zone (yes): " + yesTZtime);
 
         assertEquals("original time format, with offset, not preserved", yesTZtime.toXMLFormat(), date);
         assertEquals("transformed format is not expressed in default timezone", noTZtime.getTimezone(),pFactory.newTimeNow().getTimezone());
@@ -33,8 +33,8 @@ public class DateTest extends TestCase {
         XMLGregorianCalendar noTZtime = pFactory.newISOTime(date);
         XMLGregorianCalendar yesTZtime = pFactory.newISOTimeTZ(date);
 
-        System.out.println("time zone (no):  " + noTZtime);
-        System.out.println("time zone (yes): " + yesTZtime);
+    //    System.out.println("time zone (no):  " + noTZtime);
+    //    System.out.println("time zone (yes): " + yesTZtime);
 
         assertEquals(noTZtime,yesTZtime);
     }
@@ -87,11 +87,11 @@ public class DateTest extends TestCase {
 
         assertEquals(noTZtime3,noTZtime2);
 
-        System.out.println("noTZtime1.toXMLFormat() = " + noTZtime1.toXMLFormat());
-        System.out.println("noTZtime2.toXMLFormat() = " + noTZtime2.toXMLFormat());
+    //    System.out.println("noTZtime1.toXMLFormat() = " + noTZtime1.toXMLFormat());
+   //     System.out.println("noTZtime2.toXMLFormat() = " + noTZtime2.toXMLFormat());
         assertNotSame(noTZtime1.toXMLFormat(),yesTZtime1.toXMLFormat());
         assertNotSame(noTZtime2.toXMLFormat(),yesTZtime2.toXMLFormat());
-        System.out.println("normalizedTZtime1.toXMLFormat() = " + normalizedTZtime1.toXMLFormat());
+   //     System.out.println("normalizedTZtime1.toXMLFormat() = " + normalizedTZtime1.toXMLFormat());
 
 
         //noTZtime1 and noTZtime3 lexical representations are equal

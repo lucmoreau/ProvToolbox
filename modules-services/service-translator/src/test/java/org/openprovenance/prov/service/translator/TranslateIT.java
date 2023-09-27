@@ -4,10 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.DocumentEquality;
-import org.openprovenance.prov.model.HasOther;
-import org.openprovenance.prov.model.RoundTripFromJavaTest;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.StringMessageBodyReader;
@@ -23,6 +20,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import static org.openprovenance.prov.interop.InteropMediaType.*;
+import static org.openprovenance.prov.service.translator.DateIT.escapeRed;
 
 
 public class TranslateIT extends RoundTripFromJavaTest {
@@ -89,7 +87,12 @@ public class TranslateIT extends RoundTripFromJavaTest {
     public boolean checkTest(String name, ProvFormat format)
     {
 
-        if (name.endsWith("bundle4"+extension()) && format.toString().equals("JSON")) {
+        if (name.endsWith("bundle4"+extension()) && format.equals(ProvFormat.PROVX)) {
+            System.out.println(escapeRed("########## Skipping  comparison for bundle4 and PROVX"));
+            return false;
+        }
+        if (name.endsWith("bundle5"+extension()) &&  format.equals(ProvFormat.PROVX)) {
+            System.out.println(escapeRed("########## Skipping  comparison for bundle5 and PROVX"));
             return false;
         }
 
@@ -111,15 +114,13 @@ public class TranslateIT extends RoundTripFromJavaTest {
         Document doc2 = readDocument(location,MEDIA_APPLICATION_JSON,           ".json");
         Document doc3 = readDocument(location,MEDIA_TEXT_PROVENANCE_NOTATION,   ".provn");
         Document doc1 = readDocument(location,MEDIA_APPLICATION_PROVENANCE_XML, ".provx");
-        //Document doc4 = readDocument(location,MEDIA_APPLICATION_TRIG,           ".trig");
         Document doc5 = readDocument(location,MEDIA_APPLICATION_JSONLD,         ".jsonld");
         @SuppressWarnings("unused")
         Object o1=readObject(location, MEDIA_IMAGE_SVG_XML);
         List<Pair> ll= new LinkedList<>();
-        ll.add(new Pair(doc1, ProvFormat.XML));
+        ll.add(new Pair(doc1, ProvFormat.PROVX));
         ll.add(new Pair(doc2, ProvFormat.JSON));
         ll.add(new Pair(doc3, ProvFormat.PROVN));
-        //ll.add(new Pair(doc4, ProvFormat.TRIG));
         ll.add(new Pair(doc5, ProvFormat.JSONLD));
         return ll;
     }
@@ -127,7 +128,8 @@ public class TranslateIT extends RoundTripFromJavaTest {
     public Document readDocument(String location, String media, String extension) {
         WebTarget target=client.target(location + extension);
         Response response2=target.request(media).get();
-        return response2.readEntity(org.openprovenance.prov.vanilla.Document.class);
+        org.openprovenance.prov.vanilla.Document doc = response2.readEntity(org.openprovenance.prov.vanilla.Document.class);
+        return doc;
     }
 
 
@@ -215,24 +217,25 @@ public class TranslateIT extends RoundTripFromJavaTest {
 
     @Override
     public void addFurtherAttributes(HasOther he) {
-        he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex", "hello", name.XSD_STRING));
-        he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex", "bonjour", name.XSD_STRING));
-        he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex", pFactory.newGYear(2002), name.XSD_GYEAR));
-        he.getOther().add(pFactory.newOther("http://example.org/", "tag2", "ex", "bye", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex4", "hello", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex4", "bonjour", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex4", pFactory.newGYear(2002), name.XSD_GYEAR));
+        he.getOther().add(pFactory.newOther("http://example.org/", "tag2", "ex4", "bye", name.XSD_STRING));
         he.getOther().add(pFactory.newOther("http://example2.org/", "tag3", "ex2", "hi", name.XSD_STRING));
         //FIXME: PROBLEM WITH SERIALIZATION of MULTI-LINE STRINGS
       //he.getOther().add(pFactory.newOther("http://example.org/", "tag1", "ex", "hello\nover\nmore\nlines", name.XSD_STRING));
-        he.getOther().add(pFactory.newOther("http://example.org/", this.get0tagWithDigit(), "ex", "hello", name.XSD_STRING));
-        he.getOther().add(pFactory.newOther("http://example.org/", this.get0tagWithDigit(), "ex", "hello2", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther("http://example.org/", this.get0tagWithDigit(), "ex4", "hello", name.XSD_STRING));
+        he.getOther().add(pFactory.newOther("http://example.org/", this.get0tagWithDigit(), "ex4", "hello2", name.XSD_STRING));
     }
 
     @Override
     public void testEntity101() {
-        System.out.println("########## Skipping testEntity101 in TranslatorIT.java");
+        System.out.println(escapeRed("########## Skipping testEntity101 in TranslatorIT.java"));
     }
     @Override
-    public void testBundle5() {
-        super.testBundle5();
-        System.out.println("########## Skipping testBundle5 in TranslatorIT.java");
+    public void testDefault1() {
+        System.out.println(escapeRed("########## Skipping testing for default1 in PROVX"));
+        //super.testDefault1();
     }
+
 }

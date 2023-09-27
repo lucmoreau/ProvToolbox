@@ -13,7 +13,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     private final ProvFactory pFactory;
 
-    private final Utility u=new Utility();
+    private final Utility u=new Utility(null,null);
 
     public ProvSerialiser (ProvFactory pFactory) {
         this.pFactory=pFactory;

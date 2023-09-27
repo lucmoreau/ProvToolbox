@@ -80,7 +80,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void registerFilter(ObjectMapper mapper) {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter("nsFilter",
-                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
+                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes"));
         mapper.setFilterProvider(filterProvider);
     }
 

@@ -1,11 +1,12 @@
 package org.openprovenance.prov.notation;
 
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.UncheckedTestException;
 
 public class AttributeTest extends org.openprovenance.prov.model.AttributeTest {
-	final Utility u = new Utility();
+	final Utility u = new Utility(DateTimeOption.PRESERVE, null);
 
 	@Override
 	public String extension() {

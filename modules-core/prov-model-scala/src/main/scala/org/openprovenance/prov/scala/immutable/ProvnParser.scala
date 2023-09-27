@@ -1,20 +1,20 @@
 package org.openprovenance.prov.scala.immutable
 
 import java.io.{InputStream, OutputStream}
-
 import org.parboiled2.{Rule1, _}
 import org.parboiled2.support.hlist._
 
-
 import scala.util.{Failure, Success}
-import org.openprovenance.prov.model.Namespace
+import org.openprovenance.prov.model.{DateTimeOption, Namespace}
 import ProvFactory.pf
+
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model
 
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}
 
+import java.util.TimeZone
 import scala.io.BufferedSource
 
 trait ProvnCore extends Parser {
@@ -368,7 +368,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
     val makeEmptyAttributeSet: () => Seq[Attribute] = () => Seq() :Seq[Attribute]
     val makeAttributeSet: (Attribute, Seq[Attribute]) => Seq[Attribute] = (a: Attribute, r: Seq[Attribute]) => (r :+ a) :Seq[Attribute]
     val makeAttributeSetFromOption: Option[Seq[Attribute]] => Seq[Attribute] = (s: Option[Seq[Attribute]]) =>  (s match { case Some(s) => s; case _ => Seq() } ) :Seq[Attribute]
-    val makeTime: (String) => XMLGregorianCalendar
+    val makeTime: String => XMLGregorianCalendar
     val makeOptionalTime: (XMLGregorianCalendar) => Option[XMLGregorianCalendar]
     val makeNoTime: () => Option[XMLGregorianCalendar] = () => None: Option[XMLGregorianCalendar]
     val makeOptionalIdentifier: QualifiedName => Option[QualifiedName] = (q: QualifiedName) => Some(q): Option[QualifiedName]
@@ -400,7 +400,7 @@ class MyParser2(override val input: ParserInput) extends MyParser(input,new Name
 }
  */
 
-final class MyActions  {
+final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESERVE, val timeZone: TimeZone = null)  {
 
   def nullable [T >: Null](x:Option[T]):T = x match { case Some(s) => s; case None => null:T }
 
@@ -541,7 +541,8 @@ final class MyActions  {
     pf.newAttribute(attr, literal, pf.prov_qualified_name)
   }
 
-  val makeTime: String => XMLGregorianCalendar = (s: String) => pf.newISOTime(s): XMLGregorianCalendar
+
+  val makeTime: String => XMLGregorianCalendar = (s: String) => pf.newISOTime(s, dateTimeOption, timeZone): XMLGregorianCalendar
 
   val makeOptionalTime: XMLGregorianCalendar => Option[XMLGregorianCalendar] = (t:XMLGregorianCalendar) => Option(t): Option[XMLGregorianCalendar]
 
@@ -605,7 +606,11 @@ final class MyActions2 {
 
 }
 
-final class MyParser(val input: ParserInput, val actions2:MyActions2, val actions:MyActions =new MyActions) extends ProvnParser {
+final class MyParser(val input: ParserInput, val actions2: MyActions2, val actions:MyActions = new MyActions) extends ProvnParser {
+
+  def this (input: ParserInput, dateTimeOption: DateTimeOption, timeZone: TimeZone, actions2:MyActions2) = {
+    this(input, actions2, new MyActions(dateTimeOption,timeZone))
+  }
 
 
   def getNext(): ProvStream = actions2.next
@@ -757,9 +762,12 @@ final class MyParser(val input: ParserInput, val actions2:MyActions2, val action
 }
 
 
-class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
+class ProvDeserialiser(val dateTimeOption: DateTimeOption, val timeZone: TimeZone) extends org.openprovenance.prov.model.ProvDeserialiser {
+  def this() = {
+    this(DateTimeOption.PRESERVE, null)
+  }
 
-  val actions=new MyActions()
+  val actions=new MyActions(dateTimeOption, timeZone)
   val actions2=new MyActions2()
   val funs=new DocBuilderFunctions()
 

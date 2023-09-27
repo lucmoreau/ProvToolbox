@@ -191,12 +191,9 @@
                                     <arg value=".\&quot; Manpage for provconvert." />
                                 </exec>
 
-
                                 <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
                                     <arg value=".TH man 1 &quot;${maven.build.timestamp}&quot; &quot;${project.version}&quot; &quot;provconvert man page&quot;" />
                                 </exec>
-
-
 
                                 <exec executable="echo" dir="${project.build.directory}" output="${project.build.directory}/provconvert.1" append="true">
                                     <arg value=".SH NAME" />
@@ -370,7 +367,27 @@
             </plugin>
 
 
-
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>Makefile Tests</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>make</executable>
+                    <workingDirectory>${project.basedir}</workingDirectory>
+                    <arguments>
+                        <argument>mvn.test</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
 
         </plugins>
 

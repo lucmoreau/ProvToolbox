@@ -143,6 +143,7 @@ public class SortedDocument extends SortedBundle {
         if (defaultJsonStyle!=null) {
             namespace.unregister("default", defaultJsonStyle);
         }
+        namespace.setDefaultNamespace(defaultJsonStyle);
         // return provFactory.newDocument(namespace,ss, reassignId(theBundles).values());
         // NO reassignement here, as it was done in the SortedBundle
         return provFactory.newDocument(namespace,ss,theBundles.values());

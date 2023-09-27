@@ -1,0 +1,13 @@
+<document xmlns="http://www.w3.org/ns/prov#"
+          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          xmlns:prov="http://www.w3.org/ns/prov#"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:bbc="https://www.bbc.co.uk/"
+          xmlns:ex="https://example.org">
+    <entity prov:id="bbc:e"/>
+    <activity prov:id="ex:ac"/>
+    <wasGeneratedBy prov:id="ex:g">
+        <entity prov:ref="bbc:e"/>
+        <activity prov:ref="ex:ac"/>
+    </wasGeneratedBy>
+</document>

@@ -14,7 +14,7 @@ import java.util.List;
 
 //@JsonPropertyOrder({ "context", "statements"})
 @JacksonXmlRootElement(localName="document", namespace="http://www.w3.org/ns/prov#")
-public interface Document {
+public interface XML_Document {
 
     @JsonIgnore
     Namespace getNamespace();

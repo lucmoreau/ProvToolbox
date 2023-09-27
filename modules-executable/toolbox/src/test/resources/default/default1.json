@@ -1,0 +1,21 @@
+{
+    "prefix" : {
+        "xsd" : "http://www.w3.org/2001/XMLSchema#",
+        "bbc" : "https://www.bbc.co.uk/",
+        "default" : "https://www.bbc.co.uk/",
+        "ex" : "https://example.org",
+        "prov" : "http://www.w3.org/ns/prov#"
+    },
+    "entity" : {
+        "e" : { }
+    },
+    "activity" : {
+        "ex:ac" : { }
+    },
+    "wasGeneratedBy" : {
+        "ex:g" : {
+            "prov:entity" : "e",
+            "prov:activity" : "ex:ac"
+        }
+    }
+}

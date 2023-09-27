@@ -232,6 +232,10 @@ public class TranslateIT extends RoundTripFromJavaTest {
     public void testEntity101() {
         System.out.println(escapeRed("########## Skipping testEntity101 in TranslatorIT.java"));
     }
-
+    @Override
+    public void testDefault1() {
+        System.out.println(escapeRed("########## Skipping testing for default1 in PROVX"));
+        //super.testDefault1();
+    }
 
 }

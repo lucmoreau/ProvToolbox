@@ -16,6 +16,7 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     public static final String EX2_NS = "http://example2.org/";
     public static final String EX2_PREFIX = "ex2";
     public static final String EX3_NS = "http://example3.org/";
+    public static final String NS_DEFAULT = EX_NS + "test/";
 
     public boolean checkTest(String name) {
         return false;
@@ -39,10 +40,13 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     }
     public org.openprovenance.prov.model.QualifiedName qInner(String n) {
         return pFactory.newQualifiedName(EX_NS+"inner/", n, INNER_PREFIX);
-    }public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
+    }
+    public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
         return pFactory.newQualifiedName(EX_NS+"outer/", n, OUTER_PREFIX);
     }
-
+    public org.openprovenance.prov.model.QualifiedName qDefault(String n) {
+        return pFactory.newQualifiedName(NS_DEFAULT, n, null);
+    }
 
 
     // /////////////////////////////////////////////////////////////////////
@@ -1699,6 +1703,31 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     }
 
 
+    public void testDefault1() {
+        QualifiedName q1 = qDefault("a1");
+        Activity a1 = pFactory.newActivity(q1);
+        List<Statement> statements = new LinkedList<>();
+        statements.add(a1);
+
+
+        QualifiedName q2 = qOuter("e2");
+        Entity e2 = pFactory.newEntity(q2);
+        statements.add(e2);
+
+
+        Namespace ns=new Namespace();
+        ns.register(q2.getPrefix(), q2.getNamespaceURI());
+        ns.registerDefault(q1.getNamespaceURI());
+        ns.register("bar", q1.getNamespaceURI());  // the default namespace also needs to be registered with a prefix, to facilitate provx serialisation as it seems to have prov ns as default
+
+
+        Document doc=pFactory.newDocument(ns, statements, new LinkedList<>());
+
+
+
+        doTest(doc, "target/default1", null, true);
+    }
+
     /*
     public void testDictionaryInsertion1() {
         DerivedByInsertionFrom d1 = pFactory.newDerivedByInsertionFrom(null,
@@ -2029,5 +2058,6 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         makeDocAndTest(gen, "target/qualified-member2");
 
     }
+
 
 }

@@ -29,6 +29,9 @@ public class CustomDocumentSerializer extends JsonSerializer<Document> {
             if ("xsd".equals(prefix)) continue;
             StaxStreamWriterUtil.writeNamespace(xmlGenerator, prefix, ns.getPrefixes().get(prefix));
         }
+        if (ns.getDefaultNamespace()!=null) {
+           // StaxStreamWriterUtil.writeDefaultNamespace(xmlGenerator, ns.getDefaultNamespace());
+        }
 
         /* It's difficult to work with jackson to generate xml compatible to provx.
         The easiest and quickest solution i found was to create this dummy, which will

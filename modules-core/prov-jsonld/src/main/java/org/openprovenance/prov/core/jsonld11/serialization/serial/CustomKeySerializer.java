@@ -22,7 +22,12 @@ final public class CustomKeySerializer extends StdSerializer<QualifiedName> {
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        String s=q.getPrefix() + ":" + q.getLocalPart();
+        String s;
+        if (q.getPrefix()==null) {
+            s = q.getLocalPart();
+        } else {
+            s = q.getPrefix() + ":" + q.getLocalPart();
+        }
         jsonGenerator.writeFieldName(s);
     }
 }

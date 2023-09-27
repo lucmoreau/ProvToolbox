@@ -44,7 +44,6 @@ public class CustomQualifiedNameDeserializer extends StdDeserializer<QualifiedNa
     public QualifiedName deserialize(String s, DeserializationContext deserializationContext) throws IOException {
         //Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.JSON_CONTEXT_KEY_NAMESPACE);
         final Namespace ns = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
-
         if (Constants.PROPERTY_AT_TYPE.equals(s)) return PROV_TYPE;
         return ns.stringToQualifiedName(s, pf, false);
     }

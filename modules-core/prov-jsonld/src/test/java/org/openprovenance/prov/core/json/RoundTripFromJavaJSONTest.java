@@ -40,4 +40,11 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
         return false;
     }
 
+    @Override
+    public void testDefault1() {
+        System.out.println(escapeRed("########## Skipping testing for default1 in JSON"));
+        super.testDefault1();
+    }
+
+
 }

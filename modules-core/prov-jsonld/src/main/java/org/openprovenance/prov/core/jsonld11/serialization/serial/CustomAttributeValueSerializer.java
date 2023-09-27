@@ -27,6 +27,9 @@ final public class CustomAttributeValueSerializer extends StdSerializer<Object> 
     }
 
     static final  String prnt(QualifiedName qn) {
+        if (qn.getPrefix()==null) {
+            return qn.getLocalPart();
+        }
         return qn.getPrefix() + ":" + qn.getLocalPart();
     }
 

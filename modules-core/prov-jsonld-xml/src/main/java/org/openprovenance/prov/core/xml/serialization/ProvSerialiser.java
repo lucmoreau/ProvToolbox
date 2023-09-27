@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
 
+import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.setNamespace;
+
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_XML);
@@ -66,9 +68,10 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         serialiseDocument(out,document,formatted,false);
     }
 
-    public void serialiseDocument(OutputStream out, Object document, boolean formatted, boolean ignore) {
+    public void serialiseDocument(OutputStream out, Document document, boolean formatted, boolean ignore) {
         XmlMapper mapper = getMapper(formatted);
 
+        setNamespace(document.getNamespace());
         try {
             mapper.writeValue(out,document);
         } catch (IOException e) {
@@ -120,7 +123,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
             public XMLStreamWriter createXMLStreamWriter(OutputStream w, String enco) throws XMLStreamException {
                 XMLStreamWriter2 result = (XMLStreamWriter2) super.createXMLStreamWriter(w, enco);
                 result.setPrefix("prov", "http://www.w3.org/ns/prov#");
-                result.setDefaultNamespace("http://www.w3.org/ns/prov#");
+                //result.setDefaultNamespace("http://www.w3.org/ns/prov#");
                 if (WRAP_ERASE) {
                     return new ElementEraserXMLStreamWriter2(result);
                 } else {

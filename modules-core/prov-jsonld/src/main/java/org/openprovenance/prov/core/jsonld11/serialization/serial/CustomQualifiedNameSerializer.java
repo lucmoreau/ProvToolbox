@@ -20,7 +20,11 @@ final public class CustomQualifiedNameSerializer extends StdSerializer<Qualified
 
     @Override
     public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        String s=q.getPrefix() + ":" + q.getLocalPart();
-        jsonGenerator.writeString(s);
+        if (q.getPrefix()==null) {
+            jsonGenerator.writeString(q.getLocalPart());
+        } else {
+            String s = q.getPrefix() + ":" + q.getLocalPart();
+            jsonGenerator.writeString(s);
+        }
     }
 }

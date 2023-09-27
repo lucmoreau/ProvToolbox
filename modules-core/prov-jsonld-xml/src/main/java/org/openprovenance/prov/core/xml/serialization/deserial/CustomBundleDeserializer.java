@@ -12,10 +12,9 @@ import org.openprovenance.prov.vanilla.Bundle;
 
 import java.io.IOException;
 
-import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.PROVX_CONTEXT_KEY_NAMESPACE;
-import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.getAttributes;
 import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.getNamespace;
 import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.newNamespace;
+import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.setNamespace;
 
 public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
     static final ProvFactory pf = org.openprovenance.prov.vanilla.ProvFactory.getFactory();
@@ -38,7 +37,7 @@ public class CustomBundleDeserializer extends JsonDeserializer<Bundle> {
         mbun.setNamespace(bunNs);
 
         // restore document namespace
-        getAttributes().get().put(PROVX_CONTEXT_KEY_NAMESPACE,docNs);
+        setNamespace(docNs);
 
         // do the conversion, fixing the bundle id
         org.openprovenance.prov.model.Bundle theBun = mbun.toBundle(pf);

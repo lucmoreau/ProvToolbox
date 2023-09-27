@@ -32,6 +32,21 @@ public class StaxStreamWriterUtil implements Serializable {
             throw new IOException(e);
         }
     }
+    public static void  writeDefaultNamespace(JsonGenerator jsonGenerator, String provNs) throws IOException {
+        try {
+            ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
+            xmlGenerator.getStaxWriter().setDefaultNamespace(provNs);
+            xmlGenerator.getStaxWriter().writeDefaultNamespace(provNs);
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        }
+    }
+
+    public static String  getDefaultNamespace(JsonGenerator jsonGenerator) throws IOException {
+        ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;
+        return xmlGenerator.getStaxWriter().getNamespaceContext().getNamespaceURI("");
+    }
 
     public static void writeAttribute(JsonGenerator jsonGenerator, String prefix, String namespace, String property, QualifiedName qn) {
         ToXmlGenerator xmlGenerator=(ToXmlGenerator)jsonGenerator;

@@ -11,8 +11,6 @@ import org.openprovenance.prov.core.xml.serialization.deserial.CustomXMLGregoria
 import org.openprovenance.prov.core.xml.serialization.deserial.StatementsHandler;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.vanilla.Bundle;
 import org.openprovenance.prov.vanilla.Document;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -21,9 +19,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.*;
 import java.util.*;
 
-import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.PROVX_CONTEXT_KEY_NAMESPACE;
-import static org.openprovenance.prov.core.xml.serialization.deserial.CustomThreadConfig.getAttributes;
+
 import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.newNamespace;
+import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.removeNamespace;
 
 public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeserialiser {
 
@@ -43,13 +41,13 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
         this.dateTimeOption = dateTimeOption;
         this.optionalTimeZone = null;
     }
-    public ProvDeserialiser( DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
+    public ProvDeserialiser(DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
         this.dateTimeOption = dateTimeOption;
         this.optionalTimeZone = optionalTimeZone;
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) throws IOException {
-        getAttributes().get().remove(PROVX_CONTEXT_KEY_NAMESPACE);
+        removeNamespace();
         Namespace docNs = newNamespace();
         docNs.addKnownNamespaces();
         XmlMapper mapper = getMapper();

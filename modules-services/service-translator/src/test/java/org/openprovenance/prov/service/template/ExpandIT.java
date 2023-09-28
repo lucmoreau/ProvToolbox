@@ -96,7 +96,7 @@ public class ExpandIT extends TestCase implements ApiUriFragments {
 
         Document doc=readDocument(location);
 
-        Document doc2=new InteropFramework().deserialiseDocument(new FileInputStream(expectedFile), Formats.ProvFormat.PROVN);
+        Document doc2=new InteropFramework().readDocument(new FileInputStream(expectedFile), Formats.ProvFormat.PROVN);
 
         logger.debug("+++ ready to test");
         final Bundle bundle1 = (Bundle)doc.getStatementOrBundle().get(0);

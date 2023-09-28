@@ -43,7 +43,7 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
                              InputStream is) throws IOException, WebApplicationException {
 		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
 		InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
-        return (Document)interop.deserialiseDocument(is,format);
+        return (Document)interop.readDocument(is,format);
 	}
 
 

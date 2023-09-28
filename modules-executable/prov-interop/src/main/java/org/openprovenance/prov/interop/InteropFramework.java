@@ -125,9 +125,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         this.outputer = new Outputer(this, pFactory);
         this.inputer = new Inputer(this, pFactory);
+        this.deserializerMap=this.inputer.deserializerMap;
+        this.deserializerMap2=this.inputer.deserializerMap2;
 
-        deserializerMap = inputer.createDeserializerMap();
-        deserializerMap2 = inputer.createDeserializerMap2();
+
     }
 
     public CommandLineArguments getConfig() {
@@ -490,7 +491,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Document doc;
         if (config.infile != null && config.log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
             try {
-                doc = inputer.doReadDocument(config.infile, config.informat);
+                doc = inputer.readDocument(config.infile, config.informat);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -615,7 +616,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         if (config.compare!=null) {
             try {
-                return doCompare(doc, inputer.doReadDocument(config.compare, config.informat));
+                return doCompare(doc, inputer.readDocument(config.compare, config.informat));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -791,14 +792,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
       */
 
 
-    final public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
-        return inputer.createDeserializerMap();
-    }
-
-    final public Map<ProvFormat, DeserializerFunction2> createDeserializerMap2() {
-        return inputer.createDeserializerMap2();
-    }
-
 
     /**
      * Reads a document from an input stream, using the specified format. Uses configuration's dateTimeOption and timeZone.
@@ -808,7 +801,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @throws IOException if the input stream cannot be read
      */
 
-    public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException{
+    public Document readDocument(InputStream is, ProvFormat format) throws IOException{
         return inputer.deserialiseDocument(is, format);
     }
 
@@ -821,7 +814,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @return a {@link Document}
      * @throws IOException if the input stream cannot be read
      */
-    public Document deserialiseDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+    public Document readDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
         return inputer.deserialiseDocument(is, format, dateTimeOption, timeZone);
     }
 

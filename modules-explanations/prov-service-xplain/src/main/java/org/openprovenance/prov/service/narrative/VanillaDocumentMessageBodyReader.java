@@ -54,7 +54,7 @@ public class VanillaDocumentMessageBodyReader implements MessageBodyReader<Docum
 			WebApplicationException {
 		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
 		//System.out.println("--->>>> Found " + format);
-		Document doc=(Document)intF.deserialiseDocument(is,format);
+		Document doc=(Document)intF.readDocument(is,format);
 		return doc;
 	}
 

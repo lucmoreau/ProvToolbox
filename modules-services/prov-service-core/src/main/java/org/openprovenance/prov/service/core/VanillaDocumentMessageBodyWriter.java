@@ -61,7 +61,7 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 						OutputStream entityStream) throws IOException, WebApplicationException {
 
 		String media=trimCharSet(mediaType);
-		documentWriter.serialiseDocument(entityStream, doc, media, true);
+		documentWriter.writeDocument(entityStream, doc, media, true);
 	}
 
 }

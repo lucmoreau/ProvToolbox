@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface ProvDocumentWriter {
 
 
-    void serialiseDocument (OutputStream out, Document document, String mediaType, boolean formatted);
+    void writeDocument(OutputStream out, Document document, String mediaType, boolean formatted);
 
 
     Collection<String> mediaTypes();

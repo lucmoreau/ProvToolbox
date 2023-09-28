@@ -59,7 +59,7 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
 	//	System.out.println(" ---- writeTo doc " + media);
 
-		documentWriter.serialiseDocument(entityStream, doc, media, true);
+		documentWriter.writeDocument(entityStream, doc, media, true);
 	}
 
 }

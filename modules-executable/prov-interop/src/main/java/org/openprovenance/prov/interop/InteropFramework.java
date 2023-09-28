@@ -712,18 +712,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
-    /**
-     * Write a {@link Document} to output stream, according to specified Internet Media Type
-     * @param os an {@link OutputStream} to write the Document to
-     * @param mt a {@link MediaType}
-     * @param document a {@link Document} to serialize
-
-    public void writeDocument(OutputStream os, MediaType mt, Document document) {
-        ProvFormat format = mimeTypeRevMap.get(mt.toString());
-        writeDocument(os, format, document);
-    }
-     */
-
     
     /**
      * Write a {@link Document} to output stream, according to specified {@link ProvFormat}
@@ -763,7 +751,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
     @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+    public void writeDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
         outputer.writeDocument(out, document, mediaType, formatted);
     }
 

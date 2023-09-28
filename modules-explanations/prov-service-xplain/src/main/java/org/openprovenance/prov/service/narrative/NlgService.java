@@ -488,7 +488,7 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
             return utils.composeResponseNotAcceptable(vs);
         } else {
             String mediaType = v.getMediaType().toString();
-            StreamingOutput promise = (out) -> interop.serialiseDocument(out,document,mediaType,true);
+            StreamingOutput promise = (out) -> interop.writeDocument(out,document,mediaType,true);
             return ServiceUtils.composeResponseOK(promise).type(mediaType).build();
         }
     }

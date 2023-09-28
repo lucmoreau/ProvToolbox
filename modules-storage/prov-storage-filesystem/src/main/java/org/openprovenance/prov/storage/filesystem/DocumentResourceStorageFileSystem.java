@@ -52,9 +52,9 @@ public class DocumentResourceStorageFileSystem implements ResourceStorage {
     public Document readDocument(String id, boolean known) throws IOException {
         Document doc;
         if (known) {
-            doc = (Document) interop.readDocumentFromFile(id);
+            doc = interop.readDocumentFromFile(id);
         } else {
-            doc = (Document) interop.loadProvUnknownGraph(id);
+            doc = interop.readDocumentFromFileWithUnknownType(id);
         }
         return doc;
     }
@@ -63,9 +63,9 @@ public class DocumentResourceStorageFileSystem implements ResourceStorage {
     public Document readDocument(String id, boolean known, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
         Document doc;
         if (known) {
-            doc = (Document) interop.readDocumentFromFile(id, dateTimeOption, timeZone);
+            doc = interop.readDocumentFromFile(id, dateTimeOption, timeZone);
         } else {
-            doc = (Document) interop.loadProvUnknownGraph(id, dateTimeOption, timeZone);
+            doc = interop.readDocumentFromFileWithUnknownType(id, dateTimeOption, timeZone);
         }
         return doc;
     }

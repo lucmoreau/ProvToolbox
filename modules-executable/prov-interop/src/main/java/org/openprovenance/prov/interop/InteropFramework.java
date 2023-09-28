@@ -6,8 +6,6 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -21,7 +19,6 @@ import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.Formats.ProvFormatType;
 import org.openprovenance.prov.model.exception.DocumentedUnsupportedCaseException;
-import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.BindingsBeanGenerator;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
@@ -29,8 +26,6 @@ import org.openprovenance.prov.template.compiler.configuration.TemplatesCompiler
 import org.openprovenance.prov.template.expander.Expand;
 
 
-
-import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.generator.GeneratorDetails;
 import org.openprovenance.prov.generator.GraphGenerator;
 import org.openprovenance.prov.template.json.Bindings;
@@ -62,6 +57,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     }
 
 
+    private final Outputer outputer;
+    private final Inputer inputer;
+
+
     public static Properties getPropertiesFromClasspath(String propFileName) {
         return Configuration.getPropertiesFromClasspath(InteropFramework.class, propFileName);
     }
@@ -69,7 +68,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     static public ProvFactory getDefaultFactory(){
         return defaultFactory;
     }
-
 
 
     static public ProvFactory dynamicallyLoadFactory(String factory) {
@@ -126,10 +124,19 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         initializeExtensionMap(extensionMap, extensionRevMap);
 
-        serializerMap = createSerializerMap();
-        deserializerMap = createDeserializerMap();
-        deserializerMap2 = createDeserializerMap2();
+        this.outputer = new Outputer(this, pFactory);
+        this.inputer = new Inputer(this, pFactory);
+
+        serializerMap = outputer.createSerializerMap();
+        deserializerMap = inputer.createDeserializerMap();
+        deserializerMap2 = inputer.createDeserializerMap2();
     }
+
+    public CommandLineArguments getConfig() {
+        return config;
+    }
+
+
 
     /**
      * Create a list of mime types supported by ProvToolbox in view of constructing an Accept Header. 
@@ -217,7 +224,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return conn;
     }
 
-  
+
 
     
     /**Maps an file extension to a Media type
@@ -426,101 +433,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 t.equals(ProvFormatType.INPUTOUTPUT));
     }
 
-    
-    /** Experimental code, trying to load a document without knowing its serialization format. 
-     * First parser that succeeds returns a results. Not a robust method!
-     * @param filename a file to load the provenance document from
-     * @return a document
-     */
-    public Object loadProvUnknownGraph(String filename) {
-        for (ProvFormat format: preferredOrder) {
-            try {
-                return deserializerMap.get(format).apply().deserialiseDocument(Files.newInputStream(Paths.get(filename)));
-            } catch (IOException ignored) {
-                // we fail, let's continue with the next one
-            }
-        }
-
-        System.out.println("Unparseable format " + filename);
-        throw new UnsupportedOperationException("Unparseable format " + filename);
-    }
-
-
-    public Object loadProvUnknownGraph(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
-        for (ProvFormat format: preferredOrder) {
-            try {
-                return deserializerMap2.get(format).apply(dateTimeOption, timeZone).deserialiseDocument(Files.newInputStream(Paths.get(filename)));
-            } catch (IOException ignored) {
-                // we fail, let's continue with the next one
-            }
-        }
-        System.out.println("Unparseable format " + filename);
-        throw new UnsupportedOperationException("Unparseable format " + filename);
-    }
-
-    /**
-     * Reads a document from a URL. Uses the Content-type header field to determine the 
-     * mime-type of the resource, and therefore the parser to read the document. 
-     * @param url a URL
-     * @return a Document
-     */
-    public Document readDocumentFromURL(String url) {
-        try {
-            URL theURL = new URL(url);
-            URLConnection conn = connectWithRedirect(theURL);
-            if (conn == null)
-                return null;
-
-            ProvFormat format = null;
-            String content_type = conn.getContentType();
-
-            logger.debug("Content-type: " + content_type);
-            if (content_type != null) {
-                // Need to trim optional parameters
-                // Content-Type: text/plain; charset=UTF-8
-                int end = content_type.indexOf(";");
-                if (end < 0) {
-                    end = content_type.length();
-                }
-                String actual_content_type = content_type.substring(0, end).trim();
-                logger.debug("Found Content-type: " + actual_content_type);
-                // TODO: might be worth skipping if text/plain as that seems
-                // to be the
-                // default returned by unconfigured web servers
-                format = mimeTypeRevMap.get(actual_content_type);
-            }
-            logger.debug("Format after Content-type: " + format);
-
-            if (format == null) {
-                format = getTypeForFile(theURL.toString());
-            }
-            logger.debug("Format after extension: " + format);
-
-            InputStream content_stream = conn.getInputStream();
-
-            return deserialiseDocument(content_stream, format);
-        } catch (IOException e) {
-            throw new InteropException(e);
-        }
-    }
-    
-
-    /**
-     * Reads a document from a file, using the file extension to decide which parser to read the file with.
-     * @param filename the file to read a document from
-     * @return a Document
-     */
-    public Document readDocumentFromFile(String filename) {
-        ProvFormat format = getTypeForFile(filename);
-        if (format == null) {
-            throw new InteropException("Unknown output file format: " + filename);
-        }
-        try {
-            return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format);
-        } catch (IOException e) {
-            throw new InteropException(e);
-        }
-    }
 
 
     public List<Map<String, String>>getSupportedFormats() {
@@ -554,176 +466,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     }
 
 
-
-    private Document doReadDocument(String filename, String format) throws IOException {
-        Document doc;
-        ProvFormat informat;
-        if (format != null) {
-            informat = getTypeForFormat(format);
-            if (informat == null) {
-                throw new InteropException("Unknown format: " + format);
-            }
-        } else {
-            informat = getTypeForFile(filename);
-            if (informat == null) {
-                throw new InteropException("Unknown file format for: " + filename);
-            }
-        }
-
-        if (Objects.equals(filename, "-")) {
-            if (informat == null) {
-                throw new InteropException("File format for standard input not specified");
-            }
-            doc = deserialiseDocument(System.in, informat);
-        } else {
-            doc=deserialiseDocument(Files.newInputStream(Paths.get(filename)), informat);
-        }
-
-        return doc;
-    }
-
-    private void doWriteDocument(String filename, String format, Document doc) throws IOException {
-        ProvFormat outformat;
-        if (format != null) {
-            outformat = getTypeForFormat(format);
-            if (outformat == null) {
-                throw new InteropException("Unknown format: " + format);
-            }
-        } else {
-            outformat = getTypeForFile(filename);
-            if (outformat == null) {
-                throw new InteropException("Unknown file format for: " + filename);
-            }
-        }
-
-        if (Objects.equals(filename, "-")) {
-            if (outformat == null) {
-                throw new InteropException("File format for standard output not specified");
-            }
-            writeDocument(System.out, outformat, doc);
-        } else {
-            writeDocument(Files.newOutputStream(new File(filename).toPath()), outformat, doc);
-        }
-    }
-    
-    static String SEPARATOR=",";
-
-    /**
-     * Serializes a document to a stream
-     *
-     * @param out       an {@link OutputStream}
-     * @param document  a {@link Document}
-     * @param formatted a boolean indicating whether the output should be pretty-printed
-     */
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        throw new UnsupportedOperationException("InteropFramework()  serialize Document requires a media type");
-    }
-
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        ProvFormat format=mimeTypeRevMap.get(mediaType);
-        if (format==null) {
-            throw new UnsupportedOperationException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
-        }
-        SerializerFunction serializerMaker=serializerMap.get(format);
-        logger.debug("serializer " + format + " " + serializerMaker);
-        serializerMaker.apply().serialiseDocument(out,document,mediaType,formatted);
-    }
-
-
-    public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException {
-        DeserializerFunction deserializer=deserializerMap.get(format);
-        logger.debug("deserializer " + format + " " + deserializer);
-        return deserializer.apply().deserialiseDocument(is);
-    }
-    public Document deserialiseDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
-        DeserializerFunction2 deserializer=deserializerMap2.get(format);
-        logger.debug("deserializer " + format + " " + deserializer);
-        return deserializer.apply(dateTimeOption, timeZone).deserialiseDocument(is);
-    }
-    @Override
-    public Collection<String> mediaTypes() {
-        return mimeTypeRevMap.keySet();
-    }
-
-    public Object readDocumentFromFile(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
-        ProvFormat format = getTypeForFile(filename);
-        if (format == null) {
-            throw new InteropException("Unknown output file format: " + filename);
-        }
-        try {
-            return deserialiseDocument(Files.newInputStream(Paths.get(filename)), format, dateTimeOption, timeZone);
-        } catch (IOException e) {
-            throw new InteropException(e);
-        }
-    }
-
-
-    enum FileKind { FILE , URL }
-
-    static class ToRead {
-    	FileKind kind;
-    	String url;
-    	ProvFormat format;
-
-    	public String toString () {
-    		return "[" + kind + "," + url + "," + format + "]"; 
-    	}
-    	
-		ToRead(FileKind kind, String url, ProvFormat format) {
-    		this.kind=kind;
-    		this.url=url;
-    		this.format=format;
-    	}
-    }
-    
-    public Document readDocument(ToRead something) throws IOException {
-    	Document doc=null;
-    	switch (something.kind) {
-		case FILE:
-			//doc=readDocumentFromFile(something.url, something.format);
-            doc=deserialiseDocument(Files.newInputStream(Paths.get(something.url)), something.format);
-			break;
-		case URL:
-			doc= readDocumentFromURL(something.url);// note: ignore format?
-			break;
-    	}
-    	return doc;
-    }
-    
-    private List<ToRead> readIndexFile(File fin) throws IOException {
-    	FileInputStream fis = new FileInputStream(fin);
-    	return readIndexFile(fis);
-    }
-    
-    
-    private List<ToRead> readIndexFile(InputStream is) throws IOException {
-    	List<ToRead> res= new LinkedList<>();
-     
-    	BufferedReader br = new BufferedReader(new InputStreamReader(is));
-     
-    	String line;
-    	while ((line = br.readLine()) != null) {
-    		String [] parts=line.split(SEPARATOR);
-    		if (parts.length>=3) {
-    			FileKind kind=parts[0].trim().equals("URL") ? FileKind.URL : FileKind.FILE;
-    			String path=parts[1].trim();
-    			ProvFormat format=getTypeForFormat(parts[2].trim());
-    			ToRead elem= new ToRead(kind, path, format);
-    			res.add(elem);
-    		} else if (parts.length==1) {
-    			String filename=parts[0].trim();
-    			ToRead elem= new ToRead(FileKind.FILE, filename, getTypeForFile(filename));
-    			res.add(elem);
-    		}
-    	}     
-    	br.close();
-    	return res;
-    }
-
-
-    
     /**
      * Top level entry point of this class, when called from the command line.
      * <p>
@@ -750,7 +492,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         Document doc;
         if (config.infile != null && config.log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
             try {
-                doc = doReadDocument(config.infile, config.informat);
+                doc = inputer.doReadDocument(config.infile, config.informat);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -759,15 +501,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                                        pFactory.newDocument(),
                                                        config.flatten != null);
             try {
-                List<ToRead> files;
+                List<Inputer.ToRead> files;
                 if (config.merge.equals("-")) {
-                    files = readIndexFile(System.in);
+                    files = inputer.readIndexFile(System.in);
                 } else {
-                    files = readIndexFile(new File(config.merge));
+                    files = inputer.readIndexFile(new File(config.merge));
                 }
                 //System.err.println("files to merge " + files);
-                for (ToRead something : files) {
-                    iDoc.merge(readDocument(something));
+                for (Inputer.ToRead something : files) {
+                    iDoc.merge(inputer.readDocument(something));
                 }
 
             } catch (IOException e) {
@@ -875,7 +617,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         if (config.compare!=null) {
             try {
-                return doCompare(doc,doReadDocument(config.compare, config.informat));
+                return doCompare(doc, inputer.doReadDocument(config.compare, config.informat));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -933,13 +675,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
                 }
                 boolean flag = myExpand.getAllExpanded();
-                doWriteDocument(config.outfile, config.outformat, expanded);
+                outputer.doWriteDocument(config.outfile, config.outformat, expanded);
 
                 if (!flag) {
                     return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
                 }
             } else {
-                doWriteDocument(config.outfile, config.outformat, doc);
+                outputer.doWriteDocument(config.outfile, config.outformat, doc);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -972,27 +714,17 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
-    /** Initializes a Document's namespace.
-     * @param doc a {@link Document} to initialize
-     * */
-
-    public void setNamespaces(Document doc) {
-        if (doc.getNamespace() == null)
-            doc.setNamespace(new Namespace());
-
-    }
-    
     /**
      * Write a {@link Document} to output stream, according to specified Internet Media Type
      * @param os an {@link OutputStream} to write the Document to
      * @param mt a {@link MediaType}
      * @param document a {@link Document} to serialize
-     */
 
     public void writeDocument(OutputStream os, MediaType mt, Document document) {
         ProvFormat format = mimeTypeRevMap.get(mt.toString());
         writeDocument(os, format, document);
     }
+     */
 
     
     /**
@@ -1003,7 +735,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      */
 
     public void writeDocument(OutputStream os, ProvFormat format, Document document) {
-        serialiseDocument(os,document,mimeTypeMap.get(format),true);
+        outputer.writeDocument(os, format, document);
     }
 
     /**
@@ -1013,81 +745,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      */
 
     public void writeDocument(String filename, Document document) {
-            ProvFormat format = getTypeForFile(filename);
-            if (format == null) {
-                System.err.println("Unknown output file format: " + filename);
-                return;
-            }
-        writeDocument(filename, format, document);
+        outputer.writeDocument(filename, document);
     }
 
 
-
-
-    final public Map<ProvFormat, SerializerFunction> createSerializerMap() {
-
-        //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, SerializerFunction> serializer=new HashMap<>();
-        serializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvSerialiser(pFactory),
-                        PROVX,     () -> new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true),
-                        TURTLE,  () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");}, //new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TURTLE),
-                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(), false),
-                         TRIG,   () -> { throw new UnsupportedOperationException("light turtle converter not integrated yet");},  //() -> new org.openprovenance.prov.rdf.ProvSerialiser(pFactory, TRIG),
-                        JSON,    org.openprovenance.prov.core.json.serialization.ProvSerialiser::new));
-
-        serializer.putAll(
-                Map.of(JPEG,    () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(JPEG), maxStringLength),
-                        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG), maxStringLength),
-                        PDF,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PDF), maxStringLength),
-                        PNG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(PNG), maxStringLength),
-                        DOT,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(DOT), maxStringLength)
-
-                ) );
-
-        return serializer;
-    }
-
-    final public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
-
-        //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, DeserializerFunction> deserializer=new HashMap<>();
-        deserializer.putAll(
-                Map.of(PROVN,    () -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,config.dateTime, config.timeZone),
-                        PROVX,   () -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(config.dateTime, config.timeZone),
-                        JSONLD,  () -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone),
-                        JSON,    () -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), config.dateTime, config.timeZone))
-        );
-
-        return deserializer;
-    }
-
-    final public Map<ProvFormat, DeserializerFunction2> createDeserializerMap2() {
-
-        //NOTE: Syntax restricted to 10 entries
-        Map<ProvFormat, DeserializerFunction2> deserializer=new HashMap<>();
-        deserializer.putAll(
-                Map.of(PROVN,    (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.notation.ProvDeserialiser(pFactory,dateTime, timeZone),
-                        PROVX,     (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.xml.serialization.ProvDeserialiser(dateTime, timeZone),
-                        JSONLD,  (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone),
-                        JSON,    (DateTimeOption dateTime, TimeZone timeZone) -> new org.openprovenance.prov.core.json.serialization.ProvDeserialiser(new ObjectMapper(), dateTime, timeZone))
-        );
-
-        return deserializer;
-    }
-
-    List<ProvFormat> preferredOrder=List.of(PROVN, JSONLD, JSON,PROVX);
-
-
-
-
-    private Integer maxStringLength=100;
-
-    public void setMaxStringLength(Integer maxStringLength) {
-        this.maxStringLength = maxStringLength;
-        serializerMap.put(
-        SVG,     () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory,extensionMap.get(SVG),maxStringLength));
-    }
 
 
     /**
@@ -1099,60 +760,129 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
     public void writeDocument(String filename, ProvFormat format, Document document) {
-        Namespace.withThreadNamespace(document.getNamespace());
-        try {
-            logger.debug("writing " + format);
-            logger.debug("writing " + filename);
-            setNamespaces(document);
-            switch (format) {
-                case PROVN: {
-                    new Utility(config.dateTime, config.timeZone).writeDocument(document, filename, pFactory);
-                    break;
-                }
-                case PROVX: {
-                    org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true);
-                    logger.debug("namespaces " + document.getNamespace());
-                    serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
-                    break;
-                }
 
-
-                case DOT: {
-                    ProvToDot toDot = new ProvToDot(pFactory);
-                    toDot.setMaxStringLength(maxStringLength);
-                    toDot.setLayout(config.layout);
-                    toDot.convert(document, filename, config.title);
-                    break;
-                }
-                case PDF:
-                case JPEG:
-                case PNG:
-                case SVG: {
-                    File tmp = File.createTempFile("viz-", ".dot");
-
-                    String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                    // if not available
-                    // create tmp file
-                    ProvToDot toDot= new ProvToDot(pFactory);
-                    toDot.setMaxStringLength(maxStringLength);
-                    toDot.setLayout(config.layout);
-                    toDot.convert(document, dotFileOut, filename, extensionMap.get(format), config.title);
-                    tmp.delete();
-                    break;
-                }
-
-                default:
-                    break;
-            }
-        } catch (RuntimeException | IOException e) {
-            if (config.verbose != null)
-                e.printStackTrace();
-            throw new InteropException(e);
-
-        }
-
+        outputer.writeDocument(filename, format, document);
     }
-    
+
+    /**
+     * Serializes a document to a stream
+     *
+     * @param out       an {@link OutputStream}
+     * @param document  a {@link Document}
+     * @param formatted a boolean indicating whether the output should be pretty-printed
+     */
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
+        outputer.serialiseDocument(out, document, formatted);
+    }
+
+    @Override
+    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+        outputer.serialiseDocument(out, document, mediaType, formatted);
+    }
+
+
+    @Override
+    public Collection<String> mediaTypes() {
+        return mimeTypeRevMap.keySet();
+    }
+    public Hashtable<ProvFormat, String> getExtensionMap() {
+        return extensionMap;
+    }
+
+    public Hashtable<ProvFormat, String> getMimeTypeMap() {
+        return mimeTypeMap;
+    }
+
+    public Map<ProvFormat, SerializerFunction> getSerializerMap() {
+        return serializerMap;
+    }
+
+    public Hashtable<String, ProvFormat> getMimeTypeRevMap() {
+        return mimeTypeRevMap;
+    }
+
+    public Map<ProvFormat, DeserializerFunction> getDeserializerMap() {
+        return deserializerMap;
+    }
+
+    public Map<ProvFormat, DeserializerFunction2> getDeserializerMap2() {
+        return deserializerMap2;
+    }
+
+    /*
+
+    Reading document
+
+      */
+
+
+    final public Map<ProvFormat, DeserializerFunction> createDeserializerMap() {
+        return inputer.createDeserializerMap();
+    }
+
+    final public Map<ProvFormat, DeserializerFunction2> createDeserializerMap2() {
+        return inputer.createDeserializerMap2();
+    }
+
+
+    public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException {
+        return inputer.deserialiseDocument(is, format);
+    }
+    public Document deserialiseDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+        return inputer.deserialiseDocument(is, format, dateTimeOption, timeZone);
+    }
+
+
+    public Document readDocumentFromFile(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        return inputer.readDocumentFromFile(filename, dateTimeOption, timeZone);
+    }
+
+
+    private Document doReadDocument(String filename, String format) throws IOException {
+        return inputer.doReadDocument(filename, format);
+    }
+
+    public Document readDocument(Inputer.ToRead something) throws IOException {
+        return inputer.readDocument(something);
+    }
+
+    /**
+     * Read a document without knowing its serialization format.
+     * First parser that succeeds returns a results. Not a robust method!
+     *
+     * @param filename a file to load the provenance document from
+     * @return a document
+     */
+    public Document readDocumentFromFileWithUnknownType(String filename) {
+        return inputer.readDocumentFromFileWithUnknownType(filename);
+    }
+
+
+    public Document readDocumentFromFileWithUnknownType(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        return inputer.readDocumentFromFileWithUnknownType(filename, dateTimeOption, timeZone);
+    }
+
+    /**
+     * Reads a document from a URL. Uses the Content-type header field to determine the
+     * mime-type of the resource, and therefore the parser to read the document.
+     * @param url a URL
+     * @return a Document
+     */
+    public Document readDocumentFromURL(String url) {
+        return inputer.readDocumentFromURL(url);
+    }
+
+
+    /**
+     * Reads a document from a file, using the file extension to decide which parser to read the file with.
+     * @param filename the file to read a document from
+     * @return a Document
+     */
+    public Document readDocumentFromFile(String filename) {
+        return inputer.readDocumentFromFile(filename);
+    }
+
 
 
 }

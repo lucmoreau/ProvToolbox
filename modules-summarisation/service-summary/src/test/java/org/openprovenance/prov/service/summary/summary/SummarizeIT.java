@@ -67,7 +67,7 @@ public class SummarizeIT extends TestCase {
 
 
         logger.debug("*** action 1");
-        String location= doPostStatements_upload(config.postURL,file);
+        String location= doPostStatements_upload(config.formURL,file);
         assertNotNull("location", location);
         table.put("location", location);
 

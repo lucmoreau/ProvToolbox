@@ -10,7 +10,6 @@ public class ClientConfig implements org.openprovenance.prov.interop.ApiUriFragm
 
     public final Properties properties;
     public final  String port ;
-
     public final  String context;
     public final  String host ;
     public final  String protocol;

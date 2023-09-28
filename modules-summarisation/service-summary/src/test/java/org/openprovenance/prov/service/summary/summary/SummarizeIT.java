@@ -9,7 +9,6 @@ import org.junit.runners.MethodSorters;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
@@ -38,7 +37,7 @@ public class SummarizeIT extends TestCase {
 
 
     public SummarizeIT() {
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new InteropFramework(new ProvFactory()));
     }
 
 

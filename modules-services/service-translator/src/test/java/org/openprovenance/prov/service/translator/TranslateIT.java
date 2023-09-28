@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
+import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.client.StringMessageBodyReader;
 import org.openprovenance.prov.service.client.ClientConfig;
@@ -33,7 +33,7 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
 
     public TranslateIT() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new InteropFramework(new ProvFactory()));
         this.client=getClient();
 
     }

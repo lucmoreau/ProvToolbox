@@ -12,7 +12,6 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.notation.ProvSerialiser;
 import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.client.ClientConfig;
@@ -47,8 +46,7 @@ public class ExpandIT extends TestCase implements ApiUriFragments {
 
 
     public ExpandIT() {
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new ProvSerialiser(new ProvFactory()));
-
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new InteropFramework(new ProvFactory()));
     }
 
 

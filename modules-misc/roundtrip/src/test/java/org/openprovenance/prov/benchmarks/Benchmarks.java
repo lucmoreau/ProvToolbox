@@ -25,7 +25,7 @@ public class Benchmarks {
             return null;
         }
     }
-    class JsonSerialiser implements ProvSerialiser {
+    static class JsonSerialiser implements ProvSerialiser {
         ObjectMapper om=new ObjectMapper();
         @Override
         public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
@@ -33,18 +33,10 @@ public class Benchmarks {
                 om.writeValue(out,document);
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
 
-        @Override
-        public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-            serialiseDocument(out,document,false);
-        }
-
-        @Override
-        public Collection<String> mediaTypes() {
-            return null;
-        }
     }
 
     ProvSerialiser   jsonldSerialiser   = new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(new ObjectMapper(),false);

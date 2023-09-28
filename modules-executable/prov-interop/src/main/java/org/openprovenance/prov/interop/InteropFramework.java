@@ -42,7 +42,7 @@ import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
  * @author lavm, dtm
  *
  */
-public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvSerialiser {
+public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvDocumentWriter {
 
     public final static String configFile="config.interop.properties";
     public final static String configuration;
@@ -94,7 +94,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
     public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
     final private CommandLineArguments config;
-    final private Map<ProvFormat, SerializerFunction> serializerMap;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
     final private Map<ProvFormat, DeserializerFunction2> deserializerMap2;
 
@@ -127,7 +126,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         this.outputer = new Outputer(this, pFactory);
         this.inputer = new Inputer(this, pFactory);
 
-        serializerMap = outputer.createSerializerMap();
         deserializerMap = inputer.createDeserializerMap();
         deserializerMap2 = inputer.createDeserializerMap2();
     }
@@ -675,13 +673,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
                 }
                 boolean flag = myExpand.getAllExpanded();
-                outputer.doWriteDocument(config.outfile, config.outformat, expanded);
+                outputer.writeDocumentToFileOrDefaultOutput(config.outfile, expanded, config.outformat);
 
                 if (!flag) {
                     return CommandLineArguments.STATUS_TEMPLATE_UNBOUND_VARIABLE;
                 }
             } else {
-                outputer.doWriteDocument(config.outfile, config.outformat, doc);
+                outputer.writeDocumentToFileOrDefaultOutput(config.outfile, doc, config.outformat);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -735,7 +733,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      */
 
     public void writeDocument(OutputStream os, ProvFormat format, Document document) {
-        outputer.writeDocument(os, format, document);
+        outputer.writeDocument(os, document, format);
     }
 
     /**
@@ -760,25 +758,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
     public void writeDocument(String filename, ProvFormat format, Document document) {
-
-        outputer.writeDocument(filename, format, document);
+        outputer.writeDocument(filename, document, format);
     }
 
-    /**
-     * Serializes a document to a stream
-     *
-     * @param out       an {@link OutputStream}
-     * @param document  a {@link Document}
-     * @param formatted a boolean indicating whether the output should be pretty-printed
-     */
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        outputer.serialiseDocument(out, document, formatted);
-    }
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        outputer.serialiseDocument(out, document, mediaType, formatted);
+        outputer.writeDocument(out, document, mediaType, formatted);
     }
 
 
@@ -794,9 +780,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return mimeTypeMap;
     }
 
-    public Map<ProvFormat, SerializerFunction> getSerializerMap() {
-        return serializerMap;
-    }
+
 
     public Hashtable<String, ProvFormat> getMimeTypeRevMap() {
         return mimeTypeRevMap;

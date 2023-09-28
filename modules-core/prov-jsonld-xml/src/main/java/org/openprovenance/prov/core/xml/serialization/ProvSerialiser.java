@@ -37,11 +37,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_XML);
 
-    @Override
-    public Collection<String> mediaTypes() {
-        return myMedia;
-    }
-
     static final public ProvFactory pf = ProvFactory.getFactory();
 
 
@@ -59,10 +54,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     final public boolean WRAP_ERASE;
 
 
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        serialiseDocument(out, document, formatted);
-    }
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {

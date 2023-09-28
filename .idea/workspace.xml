@@ -9,12 +9,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/Inputer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/Outputer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/client/ClientUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvDocumentWriter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/main/java/org/openprovenance/prov/core/xml/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/json/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/ProvSerialiser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/DocumentResourceStorageFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-storage/prov-storage-filesystem/src/main/java/org/openprovenance/prov/storage/filesystem/DocumentResourceStorageFileSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/Outputer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/Outputer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/benchmarks/src/main/java/org/openprovenance/prov/benchmarks/RawJsonSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/benchmarks/src/main/java/org/openprovenance/prov/benchmarks/RawJsonSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-dot/src/main/java/org/openprovenance/prov/dot/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/roundtrip/src/test/java/org/openprovenance/prov/benchmarks/Benchmarks.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/roundtrip/src/test/java/org/openprovenance/prov/benchmarks/Benchmarks.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/DocumentMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/VanillaDocumentMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/summary/SummarizeIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/summary/SummarizeIT.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,11 +190,11 @@
       <recent name="org.openprovenance.prov.service.translator.translator" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
       <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
       <recent name="org.openprovenance.prov.core.xml.serialization" />
-      <recent name="org.openprovenance.prov.service.translator" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.DateIT.testTranslationWithDate1">

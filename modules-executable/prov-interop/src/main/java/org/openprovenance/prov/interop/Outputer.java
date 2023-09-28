@@ -1,17 +1,14 @@
 package org.openprovenance.prov.interop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openprovenance.prov.dot.ProvToDot;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.notation.ProvSerialiser;
-import org.openprovenance.prov.notation.Utility;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,9 +20,13 @@ public class Outputer implements InteropMediaType {
     private final ProvFactory pFactory;
     Integer maxStringLength = 100;
 
+    final private Map<Formats.ProvFormat, SerializerFunction> serializerMap;
+
+
     public Outputer(InteropFramework interopFramework, ProvFactory pFactory) {
         this.interopFramework = interopFramework;
         this.pFactory=pFactory;
+        this.serializerMap=createSerializerMap();
     }
 
     /**
@@ -40,17 +41,8 @@ public class Outputer implements InteropMediaType {
 
     }
 
-    /**
-     * Write a {@link Document} to output stream, according to specified {@link Formats.ProvFormat}
-     *
-     * @param os       an {@link OutputStream} to write the Document to
-     * @param format   a {@link Formats.ProvFormat}
-     * @param document a {@link Document} to serialize
-     */
 
-    public void writeDocument(OutputStream os, Formats.ProvFormat format, Document document) {
-        serialiseDocument(os, document, interopFramework.getMimeTypeMap().get(format), true);
-    }
+
 
     /**
      * Write a {@link Document} to file, serialized according to the file extension
@@ -62,13 +54,12 @@ public class Outputer implements InteropMediaType {
     public void writeDocument(String filename, Document document) {
         Formats.ProvFormat format = interopFramework.getTypeForFile(filename);
         if (format == null) {
-            System.err.println("Unknown output file format: " + filename);
-            return;
+            throw new InteropException("Format could not be determined from filename extension: " + filename);
         }
-        writeDocument(filename, format, document);
+        writeDocument(filename, document, format);
     }
 
-    public void doWriteDocument(String filename, String format, Document doc) throws IOException {
+    public void writeDocumentToFileOrDefaultOutput(String filename, Document doc, String format) throws IOException {
         Formats.ProvFormat outformat;
         if (format != null) {
             outformat = interopFramework.getTypeForFormat(format);
@@ -83,12 +74,9 @@ public class Outputer implements InteropMediaType {
         }
 
         if (Objects.equals(filename, "-")) {
-            if (outformat == null) {
-                throw new InteropException("File format for standard output not specified");
-            }
-            writeDocument(System.out, outformat, doc);
+            writeDocument(System.out, doc, outformat);
         } else {
-            writeDocument(Files.newOutputStream(new File(filename).toPath()), outformat, doc);
+            writeDocument(Files.newOutputStream(new File(filename).toPath()), doc, outformat);
         }
     }
 
@@ -118,72 +106,36 @@ public class Outputer implements InteropMediaType {
 
     public void setMaxStringLength(Integer maxStringLength) {
         this.maxStringLength = maxStringLength;
-        interopFramework.getSerializerMap().put(
+        serializerMap.put(
                 SVG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(SVG), maxStringLength));
     }
 
     /**
+     * Write a {@link Document} to output stream, according to specified {@link Formats.ProvFormat}
+     *
+     * @param os       an {@link OutputStream} to write the Document to
+     * @param document a {@link Document} to serialize
+     * @param format   a {@link Formats.ProvFormat}
+     */
+
+    public void writeDocument(OutputStream os, Document document, Formats.ProvFormat format) {
+        writeDocument(os, document, interopFramework.getMimeTypeMap().get(format), true);
+    }
+    /**
      * Write a {@link Document} to file, serialized according to the file extension
      *
      * @param filename path of the file to write the Document to
-     * @param format   a {@link Formats.ProvFormat} to serialize the document to
      * @param document a {@link Document} to serialize
+     * @param format   a {@link Formats.ProvFormat} to serialize the document to
      */
 
 
-    public void writeDocument(String filename, Formats.ProvFormat format, Document document) {
-        Namespace.withThreadNamespace(document.getNamespace());
+    public void writeDocument(String filename, Document document, Formats.ProvFormat format) {
         try {
-            InteropFramework.logger.debug("writing " + format);
-            InteropFramework.logger.debug("writing " + filename);
-            setNamespaces(document);
-            switch (format) {
-                case PROVN: {
-                    new Utility(interopFramework.getConfig().dateTime, interopFramework.getConfig().timeZone).writeDocument(document, filename, pFactory);
-                    break;
-                }
-                case PROVX: {
-                    org.openprovenance.prov.core.xml.serialization.ProvSerialiser serial = new org.openprovenance.prov.core.xml.serialization.ProvSerialiser(true);
-                    InteropFramework.logger.debug("namespaces " + document.getNamespace());
-                    serial.serialiseDocument(Files.newOutputStream(new File(filename).toPath()), document, true);
-                    break;
-                }
-
-
-                case DOT: {
-                    ProvToDot toDot = new ProvToDot(pFactory);
-                    toDot.setMaxStringLength(maxStringLength);
-                    toDot.setLayout(interopFramework.getConfig().layout);
-                    toDot.convert(document, filename, interopFramework.getConfig().title);
-                    break;
-                }
-                case PDF:
-                case JPEG:
-                case PNG:
-                case SVG: {
-                    File tmp = File.createTempFile("viz-", ".dot");
-
-                    String dotFileOut = tmp.getAbsolutePath(); // give it as option,
-                    // if not available
-                    // create tmp file
-                    ProvToDot toDot = new ProvToDot(pFactory);
-                    toDot.setMaxStringLength(maxStringLength);
-                    toDot.setLayout(interopFramework.getConfig().layout);
-                    toDot.convert(document, dotFileOut, filename, interopFramework.getExtensionMap().get(format), interopFramework.getConfig().title);
-                    tmp.delete();
-                    break;
-                }
-
-                default:
-                    break;
-            }
-        } catch (RuntimeException | IOException e) {
-            if (interopFramework.getConfig().verbose != null)
-                e.printStackTrace();
+            writeDocument(Files.newOutputStream(Paths.get(filename)), document, format);
+        } catch (IOException e) {
             throw new InteropException(e);
-
         }
-
     }
 
     /**
@@ -191,21 +143,19 @@ public class Outputer implements InteropMediaType {
      *
      * @param out       an {@link OutputStream}
      * @param document  a {@link Document}
+     * @param mediaType a {@link String} representing the media type
      * @param formatted a boolean indicating whether the output should be pretty-printed
      */
 
-    public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        throw new UnsupportedOperationException("InteropFramework()  serialize Document requires a media type");
-    }
 
 
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
+    public void writeDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
         Formats.ProvFormat format = interopFramework.getMimeTypeRevMap().get(mediaType);
         if (format == null) {
-            throw new UnsupportedOperationException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
+            throw new InteropException("InteropFramework(): serialisedDocument unknown mediatype " + mediaType);
         }
-        SerializerFunction serializerMaker = interopFramework.getSerializerMap().get(format);
+        SerializerFunction serializerMaker = serializerMap.get(format);
         InteropFramework.logger.debug("serializer " + format + " " + serializerMaker);
-        serializerMaker.apply().serialiseDocument(out, document, mediaType, formatted);
+        serializerMaker.apply().serialiseDocument(out, document, formatted);
     }
 }

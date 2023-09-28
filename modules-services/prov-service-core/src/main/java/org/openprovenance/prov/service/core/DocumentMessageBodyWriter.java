@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Provider;
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.ProvDocumentWriter;
 import org.openprovenance.prov.vanilla.Document;
 
 @Provider
@@ -24,7 +24,7 @@ import org.openprovenance.prov.vanilla.Document;
 		    InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG })
 public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
-	private final ProvSerialiser serializer;
+	private final ProvDocumentWriter documentWriter;
 
 	public String trimCharSet(MediaType mediaType) {
 		String med=mediaType.toString();
@@ -33,14 +33,14 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 		return med;
 	}
 
-	public DocumentMessageBodyWriter (ProvSerialiser serializer) {
-		this.serializer=serializer;
+	public DocumentMessageBodyWriter (ProvDocumentWriter documentWriter) {
+		this.documentWriter = documentWriter;
 	}
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType,
     		Annotation[] annotations, MediaType mediaType) {
-		return serializer.mediaTypes().contains(trimCharSet(mediaType));
+		return documentWriter.mediaTypes().contains(trimCharSet(mediaType));
 	}
 
     @Override
@@ -59,7 +59,7 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
 	//	System.out.println(" ---- writeTo doc " + media);
 
-		serializer.serialiseDocument(entityStream, doc, media, true);
+		documentWriter.serialiseDocument(entityStream, doc, media, true);
 	}
 
 }

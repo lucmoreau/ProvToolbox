@@ -1,5 +1,6 @@
 package org.openprovenance.prov.service.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -81,6 +82,17 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
     public void addOtherPerformer(Optional<OtherActionPerformer> newOtherPerformer) {
         otherPerformer = newOtherPerformer;
     }
+
+    public Map<String, Object> addToConfiguration(String property, Object value) {
+        this.configuration.put(property, value);
+        return this.configuration;
+    }
+
+    public Map<String, Object> getConfiguration() {
+        return configuration;
+    }
+
+    private final Map<String,Object> configuration=new HashMap<>();
 
 
     @POST
@@ -182,20 +194,27 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
     @POST
     @Path(FRAGMENT_DOCUMENTS)
     @Tag(name = DOCUMENTS)
-    @Consumes({MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
+    @Consumes({
+            MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON})
-    @Operation(summary = "Post a document, directly, creates a resource, supports content negotiation, redirects to URL providing serialization for the resource",
+    @Operation(
+            summary = "Post a document, directly, creates a resource, supports content negotiation, redirects to URL providing serialization for the resource",
             description = "It supports the direct posting of documents using a prov serialization.",
-            responses = {@ApiResponse(responseCode = "200",
-                    //headers=@Header(name="location",description="Location of posted document"),
-                    content = {@Content(mediaType = MEDIA_TEXT_TURTLE),
-                            @Content(mediaType = MEDIA_TEXT_PROVENANCE_NOTATION),
-                            @Content(mediaType = MEDIA_APPLICATION_PROVENANCE_XML),
-                            @Content(mediaType = MEDIA_APPLICATION_JSON)}),
-                    @ApiResponse(responseCode = "303",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            //headers=@Header(name="location",description="Location of posted document"),
+                            content = {
+                                    @Content(mediaType = MEDIA_TEXT_TURTLE),
+                                    @Content(mediaType = MEDIA_TEXT_PROVENANCE_NOTATION),
+                                    @Content(mediaType = MEDIA_APPLICATION_PROVENANCE_XML),
+                                    @Content(mediaType = MEDIA_APPLICATION_JSON)}),
+                    @ApiResponse(
+                            responseCode = "303",
                             headers = @Header(name = "location", description = "Location of posted document"),
                             description = "See other url for serialization of posted resource as requested by accept header."),
-                    @ApiResponse(responseCode = "404", description = "Provenance not found")})
+                    @ApiResponse(
+                            responseCode = "404", description = "Provenance not found")})
     public Response submit2(@Parameter(name = "input",
             description = "input file in a prov serialization",
             example = "document\n prefix ex <http://foo>\n entity(ex:e)\nendDocument") InputStream input,
@@ -224,6 +243,24 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
 
         return utils.composeResponseSeeOther("documents/" + vr.getVisibleId()).header("Expires", date).build();
     }
+
+    @GET
+    @Path(FRAGMENT_CONFIGURATION)
+    @Tag(name = "configuration")
+    @Operation(
+            summary = "Get configuration",
+            description = "Get configuration",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = MEDIA_APPLICATION_JSON)})})
+    public Response getConfiguration(@Context HttpHeaders headers) {
+        StreamingOutput promise= out -> new ObjectMapper().writeValue(out, configuration);
+
+        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+    }
+
 
 
     private DocumentResource processFileInForm(Map<String, List<InputPart>> formData) {
@@ -261,7 +298,7 @@ public class PostService implements Constants, InteropMediaType, SwaggerTags, Ap
 
     private void doLog(String action, DocumentResource vr) {
         logger.log(ProvLevel.PROV,
-                "" + action + ","
+                action + ","
                         + vr.getVisibleId() + ","
                         + vr.getStorageId());
     }

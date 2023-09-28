@@ -83,13 +83,9 @@ public class TemplateService  implements Constants, InteropMediaType, ApiUriFrag
                                 @Context UriInfo info) throws IOException {
 
         final MultivaluedMap<String, String> valueMap = info.getQueryParameters();
-
         String bindingsUrl="https://nms.kcl.ac.uk/luc.moreau/dev/bindings/" + name + ".json";
-
         JsonNode bindings_schema = mapper.readTree(new URL(bindingsUrl));
-
         expandBindingsSchema(bindings_schema, valueMap);
-
         return ServiceUtils.composeResponseOK(bindings_schema).build();
     }
 

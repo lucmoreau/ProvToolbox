@@ -70,7 +70,7 @@ public class StorageConfiguration implements EnvironmentVariables{
 
 
     public ServiceUtilsConfig makeConfig(ProvFactory factory, Map<String,String> configuration) {
-        ServiceUtilsConfig utilsConfig = new ServiceUtilsConfig();
+        ServiceUtilsConfig utilsConfig = new ServiceUtilsConfig(configuration);
         utilsConfig.pFactory=factory;
         logger.info("Configuration --- " + configuration);
         switch (configuration.get(PSERVICE_INDEX)) {

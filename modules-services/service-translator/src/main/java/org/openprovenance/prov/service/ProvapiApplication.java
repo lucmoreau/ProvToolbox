@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
+import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
@@ -83,12 +84,19 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	public final StorageConfiguration sc = new StorageConfiguration();
 
 	public ProvapiApplication() {
+		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
 		ServiceUtilsConfig config= sc.makeConfig(factory);
 
-
 		PostService ps=new PostService(config);
+
+		ps.addToConfiguration("storage.config", config.configuration);
+		ps.addToConfiguration("cli.config", intF.getConfig());
+		ps.addToConfiguration("version", Configuration.toolboxVersion);
+		ps.addToConfiguration("long.version", Configuration.longToolboxVersion);
+
+
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
 		singletons.add(new TemplateService(ps));
@@ -109,6 +117,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
         corsFilter.getAllowedOrigins().add("*");
         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
         singletons.add(corsFilter);
+
+
 
 
 

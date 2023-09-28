@@ -40,12 +40,12 @@
         <option value="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" />
         <option value="$PROJECT_DIR$/modules-executable-provman/pom.xml" />
         <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
       </set>
     </option>

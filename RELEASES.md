@@ -10,7 +10,11 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
   * provx (de)serialization namespace issue
   * refining test suite
   * default namespace support and testing
+* refactoring of InteropFramework with
+  * readDocument methods
+  * writeDocument methods
 * further refactoring
+* provapi configuration information /provapi/configuration
 
 
 `2.0.2`

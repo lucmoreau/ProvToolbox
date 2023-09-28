@@ -6,4 +6,7 @@ public interface ApiUriFragments {
 
     String FRAGMENT_PROVAPI = "/provapi";
     String FRAGMENT_RESOURCES = "/resources/";
+
+    String FRAGMENT_CONFIGURATION = "/configuration";
+
 }

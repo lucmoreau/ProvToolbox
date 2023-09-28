@@ -57,7 +57,7 @@ public class ResourcesService implements SwaggerTags {
         if (!interopFramework.extensionRevMap.containsKey(type)) {
             mediaType="text/plain";
         } else {
-            mediaType=interopFramework.mimeTypeMap.get(interopFramework.extensionRevMap.get(type));
+            mediaType=interopFramework.getMimeTypeMap().get(interopFramework.extensionRevMap.get(type));
             if (mediaType == null) mediaType = "text/plain";
         }
 

@@ -29,7 +29,7 @@ public class RoundTripFromJavaMongoTest extends RoundTripFromJavaJSONLD11Test {
         String loc=docS.newStore(Formats.ProvFormat.JSONLD);
         m.put(file,loc);
 
-        docS.writeDocument(loc, Formats.ProvFormat.JSONLD,doc);
+        docS.writeDocument(loc, doc, Formats.ProvFormat.JSONLD);
     }
 
     @Override

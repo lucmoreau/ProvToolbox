@@ -88,11 +88,11 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
     final ProvFactory pFactory;
 
-    public final Hashtable<ProvFormat, String> extensionMap;
+    private final Hashtable<ProvFormat, String> extensionMap;
     public final Hashtable<String, Formats.ProvFormat> extensionRevMap;
-    public final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
+    private final Hashtable<Formats.ProvFormat, String> mimeTypeMap;
     public final Hashtable<String, Formats.ProvFormat> mimeTypeRevMap;
-    public final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
+    private final Hashtable<ProvFormat, ProvFormatType> provTypeMap;
     final private CommandLineArguments config;
     final private Map<ProvFormat, DeserializerFunction> deserializerMap;
     final private Map<ProvFormat, DeserializerFunction2> deserializerMap2;
@@ -712,22 +712,12 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
-    
-    /**
-     * Write a {@link Document} to output stream, according to specified {@link ProvFormat}
-     * @param os an {@link OutputStream} to write the Document to
-     * @param format a {@link ProvFormat}
-     * @param document a {@link Document} to serialize
-     */
-
-    public void writeDocument(OutputStream os, ProvFormat format, Document document) {
-        outputer.writeDocument(os, document, format);
-    }
 
     /**
-     * Write a {@link Document} to file, serialized according to the file extension
+     * Write a {@link Document} to file, serialized according to the file extension. If extension is not known, throws an exception.
      * @param filename path of the file to write the Document to
      * @param document a {@link Document} to serialize
+     * @throws InteropException if the extension of the file is not known
      */
 
     public void writeDocument(String filename, Document document) {
@@ -735,21 +725,35 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     }
 
 
-
-
     /**
-         * Write a {@link Document} to file, serialized according to the file extension
-         * @param filename path of the file to write the Document to
-         * @param format a {@link ProvFormat} to serialize the document to
-         * @param document a {@link Document} to serialize
-         */
+     * Write a {@link Document} to file, serialized according to format {@link ProvFormat}
+     *
+     * @param filename path of the file to write the Document to
+     * @param document a {@link Document} to serialize
+     * @param format   a {@link ProvFormat} to serialize the document to
+     */
 
-
-    public void writeDocument(String filename, ProvFormat format, Document document) {
+    public void writeDocument(String filename, Document document, ProvFormat format) {
         outputer.writeDocument(filename, document, format);
     }
 
 
+    /**
+     * Write a {@link Document} to output stream, according to specified {@link ProvFormat}
+     *
+     * @param os       an {@link OutputStream} to write the Document to
+     * @param document a {@link Document} to serialize
+     * @param format   a {@link ProvFormat}
+     */
+
+    public void writeDocument(OutputStream os, Document document, ProvFormat format) {
+        outputer.writeDocument(os, document, format);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.openprovenance.prov.model.ProvDocumentWriter#writeDocument(java.io.OutputStream, org.openprovenance.prov.model.Document, java.lang.String, boolean)
+     */
     @Override
     public void writeDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
         outputer.writeDocument(out, document, mediaType, formatted);
@@ -767,8 +771,6 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public Hashtable<ProvFormat, String> getMimeTypeMap() {
         return mimeTypeMap;
     }
-
-
 
     public Hashtable<String, ProvFormat> getMimeTypeRevMap() {
         return mimeTypeRevMap;
@@ -798,38 +800,64 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     }
 
 
-    public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException {
+    /**
+     * Reads a document from an input stream, using the specified format. Uses configuration's dateTimeOption and timeZone.
+     * @param is an {@link InputStream}
+     * @param format a {@link ProvFormat}
+     * @return a {@link Document}
+     * @throws IOException if the input stream cannot be read
+     */
+
+    public Document deserialiseDocument(InputStream is, ProvFormat format) throws IOException{
         return inputer.deserialiseDocument(is, format);
     }
+
+    /**
+     * Reads a document from an input stream, using the specified format.
+     * @param is an {@link InputStream}
+     * @param format a {@link ProvFormat}
+     * @param dateTimeOption a {@link DateTimeOption}
+     * @param timeZone a {@link TimeZone}
+     * @return a {@link Document}
+     * @throws IOException if the input stream cannot be read
+     */
     public Document deserialiseDocument(InputStream is, ProvFormat format, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
         return inputer.deserialiseDocument(is, format, dateTimeOption, timeZone);
     }
 
-
+    /**
+     * Reads a document from a file,  using the filename extension as an indicator of the serialization type.
+     * @param filename a file to load the provenance document from
+     * @param dateTimeOption a {@link DateTimeOption}
+     * @param timeZone a {@link TimeZone}
+     * @return a {@link Document}
+     * @throws InteropException if the file extension is not known or file cannot be read
+     */
     public Document readDocumentFromFile(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
         return inputer.readDocumentFromFile(filename, dateTimeOption, timeZone);
     }
 
-
-    private Document doReadDocument(String filename, String format) throws IOException {
-        return inputer.doReadDocument(filename, format);
-    }
-
-    public Document readDocument(Inputer.ToRead something) throws IOException {
-        return inputer.readDocument(something);
-    }
-
     /**
      * Read a document without knowing its serialization format.
-     * First parser that succeeds returns a results. Not a robust method!
+     * First parser that succeeds returns a result.
      *
      * @param filename a file to load the provenance document from
-     * @return a document
+     * @return a {@link Document}
      */
     public Document readDocumentFromFileWithUnknownType(String filename) {
         return inputer.readDocumentFromFileWithUnknownType(filename);
     }
 
+
+    /**
+     * Read a document without knowing its serialization format.
+     * First parser that succeeds returns a result.
+     *
+     * @param filename a file to load the provenance document from
+     * @param dateTimeOption a {@link DateTimeOption}
+     * @param timeZone a {@link TimeZone}
+     * @return a {@link Document}
+     */
 
     public Document readDocumentFromFileWithUnknownType(String filename, DateTimeOption dateTimeOption, TimeZone timeZone) {
         return inputer.readDocumentFromFileWithUnknownType(filename, dateTimeOption, timeZone);

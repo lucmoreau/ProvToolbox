@@ -128,7 +128,7 @@ public class SummarizeIT extends TestCase {
         assertNotNull(" document (" + file + ") is not null", doc);
 
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        intF.writeDocument(baos, Formats.ProvFormat.PROVN, doc);
+        intF.writeDocument(baos, doc, Formats.ProvFormat.PROVN);
         String s=baos.toString();
 
         Client client = ClientBuilder.newBuilder().build();

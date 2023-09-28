@@ -71,8 +71,8 @@ public class DocumentResourceStorageFileSystem implements ResourceStorage {
     }
 
     @Override
-    public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
-        interop.writeDocument(id,format,doc);
+    public void writeDocument(String id, Document doc, Formats.ProvFormat format) {
+        interop.writeDocument(id, doc, format);
     }
 
     @Override

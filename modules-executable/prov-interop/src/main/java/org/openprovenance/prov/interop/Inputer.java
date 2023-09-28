@@ -54,7 +54,8 @@ public class Inputer implements InteropMediaType {
         return deserializer;
     }
 
-    public Document deserialiseDocument(InputStream is, Formats.ProvFormat format) throws IOException {
+
+    Document deserialiseDocument(InputStream is, Formats.ProvFormat format) throws IOException {
         DeserializerFunction deserializer = interopFramework.getDeserializerMap().get(format);
         InteropFramework.logger.debug("deserializer " + format + " " + deserializer);
         return deserializer.apply().deserialiseDocument(is);

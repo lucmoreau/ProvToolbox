@@ -134,7 +134,7 @@ public class SummaryService implements Constants, InteropMediaType {
         String storageId = storageManager.newStore(Formats.ProvFormat.PROVN);
         final Document summaryDocument = ndx.document();
         utils.documentCache.put(storageId, summaryDocument);
-        storageManager.writeDocument(storageId, Formats.ProvFormat.PROVN, summaryDocument);
+        storageManager.writeDocument(storageId, summaryDocument, Formats.ProvFormat.PROVN);
         return storageId;
     }
 

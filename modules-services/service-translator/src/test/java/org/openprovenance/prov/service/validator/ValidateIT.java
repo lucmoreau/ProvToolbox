@@ -171,7 +171,7 @@ public class ValidateIT extends TestCase implements ApiUriFragments {
 
     private String SerializeDocumentToProvn(Document doc) {
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        this.intF.writeDocument(baos, ProvFormat.PROVN, doc);
+        this.intF.writeDocument(baos, doc, ProvFormat.PROVN);
         return baos.toString();
     }
 

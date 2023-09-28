@@ -189,7 +189,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
 
 
 
-        String mimeType = intF.mimeTypeMap.get(Formats.ProvFormat.valueOf(format));
+        String mimeType = intF.getMimeTypeMap().get(Formats.ProvFormat.valueOf(format));
 
         File f = new File(dr.getStorageId());
 

@@ -36,7 +36,7 @@ public class MongoJLDDocumentDbTest extends TestCase {
         ns.getPrefixes().put(EX_PREFIX, EX_NS);
         doc.setNamespace(ns);
 
-        ds.writeDocument(id, Formats.ProvFormat.JSONLD, doc);
+        ds.writeDocument(id, doc, Formats.ProvFormat.JSONLD);
 
 
         Document doc2=ds.readDocument(id);
@@ -66,7 +66,7 @@ public class MongoJLDDocumentDbTest extends TestCase {
 
 
         String id1=ds.newStore(Formats.ProvFormat.JSONLD);
-        ds.writeDocument(id1, Formats.ProvFormat.JSONLD, doc1);
+        ds.writeDocument(id1, doc1, Formats.ProvFormat.JSONLD);
 
 
         Document doc3=ds.readDocument(id1);
@@ -83,7 +83,7 @@ public class MongoJLDDocumentDbTest extends TestCase {
 
 
         String id5=ds.newStore(Formats.ProvFormat.JSONLD);
-        ds.writeDocument(id5, Formats.ProvFormat.JSONLD, graph1);
+        ds.writeDocument(id5, graph1, Formats.ProvFormat.JSONLD);
 
 
         Document graph2=ds.readDocument(id5);

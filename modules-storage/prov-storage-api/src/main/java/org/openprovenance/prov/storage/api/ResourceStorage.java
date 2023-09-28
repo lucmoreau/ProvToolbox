@@ -15,6 +15,6 @@ public interface ResourceStorage {
     Document readDocument(String id, boolean known) throws IOException;
     Document readDocument(String id, boolean known, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException;
     Document readDocument(String id) throws IOException;
-    void writeDocument(String id, ProvFormat format, Document doc) throws IOException;
+    void writeDocument(String id, Document doc, ProvFormat format) ;
     boolean delete(String storageId);
 }

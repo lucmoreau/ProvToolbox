@@ -210,7 +210,7 @@ public class DateIT extends TestCase implements ApiUriFragments {
 
     private String SerializeDocumentToProv(Document doc, ProvFormat format) {
         ByteArrayOutputStream baos=new ByteArrayOutputStream();
-        this.intF.writeDocument(baos, format, doc);
+        this.intF.writeDocument(baos, doc, format);
         return baos.toString();
     }
 

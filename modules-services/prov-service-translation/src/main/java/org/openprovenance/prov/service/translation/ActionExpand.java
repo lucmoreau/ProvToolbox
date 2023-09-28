@@ -154,7 +154,7 @@ public class ActionExpand implements ActionPerformer {
         synchronized (utils.documentCache) {
             utils.documentCache.put(storeId,doc);
         }
-        utils.getStorageManager().writeDocument(storeId, Formats.ProvFormat.PROVN,doc);
+        utils.getStorageManager().writeDocument(storeId, doc, Formats.ProvFormat.PROVN);
         return storeId;
     }
 

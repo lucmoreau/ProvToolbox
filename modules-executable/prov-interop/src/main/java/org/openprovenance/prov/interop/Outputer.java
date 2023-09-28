@@ -42,8 +42,6 @@ public class Outputer implements InteropMediaType {
     }
 
 
-
-
     /**
      * Write a {@link Document} to file, serialized according to the file extension
      *

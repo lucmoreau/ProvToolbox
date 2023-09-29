@@ -58,16 +58,6 @@ import java.io.IOException;
 
 @Tag(name="view")
 public class ViewService {
-    static Logger logger = LogManager.getLogger(ViewService.class);
-
-
-    public static final String longVersion = ServiceUtils.longContainerVersion;
-
-
-
-    public ViewService() {
-     }
-
 
 
     @GET

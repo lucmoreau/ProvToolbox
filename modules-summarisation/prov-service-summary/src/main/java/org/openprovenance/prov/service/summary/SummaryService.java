@@ -463,7 +463,7 @@ public class SummaryService implements Constants, InteropMediaType {
         StreamingOutput promise2=(out) -> TypePropagator.om().writeValue(out,sc);
 
 
-        return utils.composeResponseOK(promise2).type(MediaType.APPLICATION_JSON_TYPE).build();
+        return ServiceUtils.composeResponseOK(promise2).type(MediaType.APPLICATION_JSON_TYPE).build();
 
 
     }

@@ -21,6 +21,8 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
+import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translation.RandomService;
 import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
@@ -112,7 +114,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		
 
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
-		singletons.add(new NodeMessageBodyWriter());			
+		singletons.add(new NodeMessageBodyWriter());
 		
 	    CorsFilter corsFilter = new CorsFilter();
         corsFilter.getAllowedOrigins().add("*");

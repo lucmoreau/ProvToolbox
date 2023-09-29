@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.service.core.rest;
 
 import java.io.IOException;
 

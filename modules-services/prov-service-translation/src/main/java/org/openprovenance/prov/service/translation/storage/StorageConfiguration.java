@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.*;
 
@@ -38,7 +37,7 @@ public class StorageConfiguration implements EnvironmentVariables{
     public Map<String,String> theDefaultConfiguration() {
         Map<String,String> config=new HashMap<>();
         config.put(PSERVICE_DBNAME,     "prov");
-        config.put(PSERVICE_INDEX,      "redis");  // not ready for redis, as extension field is being used
+        config.put(PSERVICE_INDEX,      "redis");
         config.put(PSERVICE_STORAGE,    "mongodb");
         config.put(PSERVICE_CACHE,      "200");
         config.put(PSERVICE_AUTODELETE, "true");
@@ -109,7 +108,7 @@ public class StorageConfiguration implements EnvironmentVariables{
 
 
         ProvSerialiser serial=new ProvSerialiser();
-        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseDocument(out, (Document) document,false, false);
+        utilsConfig.serialiser=(OutputStream out, Object document, String mediaType, boolean formatted) -> serial.serialiseOtherObject(out, document,false, false);
 
         return utilsConfig;
     }

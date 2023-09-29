@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.summary;
+package org.openprovenance.prov.service.core.readers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;

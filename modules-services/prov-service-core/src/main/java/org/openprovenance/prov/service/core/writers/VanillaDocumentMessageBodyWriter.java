@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.service.core.writers;
 
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.ProvDocumentWriter;

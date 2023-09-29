@@ -6,10 +6,10 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.readers.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.client.StringMessageBodyReader;
 import org.openprovenance.prov.service.client.ClientConfig;
-import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;

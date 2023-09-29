@@ -16,10 +16,11 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.readers.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
 
 import org.openprovenance.prov.service.client.ClientConfig;
+import org.openprovenance.prov.service.core.writers.DocumentMessageBodyWriter;
 import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.ByteArrayOutputStream;
@@ -196,7 +197,7 @@ public class DateIT extends TestCase implements ApiUriFragments {
         assertNotNull(" document (" + file + ") is null", doc);
         try (Client client = ClientBuilder.newBuilder().build()) {
             WebTarget target = client.target(config.postURL);
-            target.register(new org.openprovenance.prov.service.core.DocumentMessageBodyWriter(intF));
+            target.register(new DocumentMessageBodyWriter(intF));
             Response response=target.request(MEDIA_TEXT_PROVENANCE_NOTATION).post(Entity.entity(doc, MEDIA_TEXT_PROVENANCE_NOTATION));
             String location=response.getHeaderString("Location");
             location=location.replace(".provn","");

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.service.core.writers;
 
 import jakarta.ws.rs.Produces;
 

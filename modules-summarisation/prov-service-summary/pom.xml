@@ -48,6 +48,7 @@
             <scope>compile</scope>
         </dependency>
 
+
         <!-- swagger/servlet  functionality -->
 
         <dependency>
@@ -62,6 +63,7 @@
             <artifactId>swagger-jaxrs2-jakarta</artifactId>
             <version>${swagger.version}</version>
         </dependency>
+
 
     </dependencies>
 

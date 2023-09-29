@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.service.core.writers;
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,10 +29,6 @@ public class NodeMessageBodyWriter implements MessageBodyWriter<ObjectNode> {
         int ind=med.indexOf(";");
         if (ind>0) med=med.substring(0,ind);
         return med;
-    }
-
-    public NodeMessageBodyWriter () {
-        System.out.println("*********** Node MessageBodyWriter  ************");
     }
 
     @Override

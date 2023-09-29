@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.core;
+package org.openprovenance.prov.service.core.rest;
 
 /**
  * Copyright (c) 2011-2012, ReXSL.com

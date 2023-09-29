@@ -50,20 +50,10 @@
             <version>2.0.4-SNAPSHOT</version>
         </dependency>
 
-
-        <!-- used for compilation only, so far, using memory and fs -->
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-storage-mongodb</artifactId>
-            <version>2.0.4-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
             <version>2.0.4-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -434,11 +424,11 @@
                                         </property>
                                         <property>
                                             <name>PSERVICE_INDEX</name>
-                                            <value>redis</value>
+                                            <value>memory</value>
                                         </property>
                                         <property>
                                             <name>PSERVICE_DEL_PERIOD</name>
-                                            <value>60</value>
+                                            <value>600</value>
                                         </property>
                                         <property>
                                             <name>PSERVICE_STORAGE</name>

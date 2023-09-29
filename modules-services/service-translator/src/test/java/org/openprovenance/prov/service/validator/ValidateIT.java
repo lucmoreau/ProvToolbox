@@ -16,7 +16,7 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.readers.DocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
 
 import org.openprovenance.prov.service.client.ClientConfig;

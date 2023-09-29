@@ -13,8 +13,8 @@ import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
 
 
-@ApplicationPath("view")
-public class ViewApplication extends Application {
+//@ApplicationPath("view")
+abstract public class ViewApplication extends Application {
 	private Set<Object> singletons = new HashSet<>();
  
 	public ViewApplication() {

@@ -307,10 +307,10 @@
 
     <properties>
         <service.port>7071</service.port>
-            <service.context>/service</service.context>
-            <service.host>localhost</service.host>
-            <service.protocol>http</service.protocol>
-        </properties>
+        <service.context>/service</service.context>
+        <service.host>localhost</service.host>
+        <service.protocol>http</service.protocol>
+    </properties>
 
 
     <profiles>

@@ -713,6 +713,9 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }
 
+    public void setMaxStringLength(Integer maxStringLength) {
+        outputer.setMaxStringLength(maxStringLength);
+    }
 
     /**
      * Write a {@link Document} to file, serialized according to the file extension. If extension is not known, throws an exception.

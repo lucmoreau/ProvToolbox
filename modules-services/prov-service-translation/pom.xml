@@ -40,6 +40,20 @@
         </dependency>
 
         <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-mongodb</artifactId>
+            <version>2.0.4-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-storage-index-redis</artifactId>
+            <version>2.0.4-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${jakarta.servlet.version}</version>
@@ -52,6 +66,7 @@
             <version>${swagger.version}</version>
             <scope>provided</scope>
         </dependency>
+
 
     </dependencies>
 

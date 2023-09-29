@@ -1,4 +1,4 @@
-package org.openprovenance.prov.redis.validation;
+package org.openprovenance.prov.service.validation.redis;
 
 import org.openprovenance.prov.service.validation.ValidationResource;
 import org.openprovenance.prov.storage.redis.RedisDocumentResource;

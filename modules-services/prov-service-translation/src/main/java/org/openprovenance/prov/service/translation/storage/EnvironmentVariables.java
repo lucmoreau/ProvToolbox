@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.translation.storage;
 
 public interface EnvironmentVariables {
 
@@ -12,5 +12,8 @@ public interface EnvironmentVariables {
     String PSERVICE_REDIS_PORT = "PSERVICE_REDIS_PORT";
     String PSERVICE_MONGO_HOST = "PSERVICE_MONGO_HOST";
 
+    String MONGOSERVER_HOST = "MONGOSERVER_HOST";
+    String REDISSERVER_HOST = "REDISSERVER_HOST";
+    String REDISSERVER_PORT = "REDISSERVER_PORT";
 
 }

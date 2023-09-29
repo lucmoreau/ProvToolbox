@@ -26,11 +26,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_JSONLD);
 
-    @Override
-    public Collection<String> mediaTypes() {
-        return myMedia;
-    }
-
     protected final boolean embedContext;
     // create two independent mappers, with formatting or not
     final ObjectMapper mapper;
@@ -108,11 +103,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
          */
         provMixin().addProvMixin(mapper);
         return mapper;
-    }
-
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        serialiseDocument(out, document, formatted);
     }
 
 

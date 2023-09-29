@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
@@ -39,7 +40,7 @@ import java.util.Optional;
 import static org.openprovenance.prov.service.core.SwaggerTags.TEMPLATE;
 
 @Path("")
-public class TemplateService  implements Constants, InteropMediaType {
+public class TemplateService  implements Constants, InteropMediaType, ApiUriFragments {
 
     ProvUtilities u = new ProvUtilities();
 
@@ -82,13 +83,9 @@ public class TemplateService  implements Constants, InteropMediaType {
                                 @Context UriInfo info) throws IOException {
 
         final MultivaluedMap<String, String> valueMap = info.getQueryParameters();
-
         String bindingsUrl="https://nms.kcl.ac.uk/luc.moreau/dev/bindings/" + name + ".json";
-
         JsonNode bindings_schema = mapper.readTree(new URL(bindingsUrl));
-
         expandBindingsSchema(bindings_schema, valueMap);
-
         return ServiceUtils.composeResponseOK(bindings_schema).build();
     }
 
@@ -141,7 +138,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
 
     @GET
-    @Path("/documents/bindings/{name}")
+    @Path(FRAGMENT_DOCUMENTS + "bindings/{name}")
     @Produces({ MEDIA_TEXT_TURTLE, MEDIA_TEXT_PROVENANCE_NOTATION,
             MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_TRIG,
              MEDIA_APPLICATION_JSON, MEDIA_IMAGE_SVG_XML, MEDIA_APPLICATION_PDF,MEDIA_IMAGE_PNG, MEDIA_IMAGE_JPEG})
@@ -168,7 +165,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
         InteropFramework interop = new InteropFramework();
 
-        Document document= interop.readDocument(the_template);
+        Document document= interop.readDocumentFromURL(the_template);
 
         Bindings bindings = BindingsJson.importBindings(bindings_schema);
 
@@ -182,7 +179,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
 
     @GET
-    @Path("/documents/{docId}/template.{type}")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/template.{type}")
     @Tag(name=TEMPLATE)
     @Operation(summary = "Representation of the template used to generate the current document into given serialization format",
             description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",
@@ -224,7 +221,7 @@ public class TemplateService  implements Constants, InteropMediaType {
 
 
     @GET
-    @Path("/documents/{docId}/bindings")
+    @Path(FRAGMENT_DOCUMENTS + "{docId}/bindings")
     @Tag(name=TEMPLATE)
     @Operation(summary = "Representation of the bindings used to generate the current document into given serialization format",
             description = "No content negotiation allowed here. From a deployment of the service to the next, the actual serialization may change as translator library (ProvToolbox) may change.",

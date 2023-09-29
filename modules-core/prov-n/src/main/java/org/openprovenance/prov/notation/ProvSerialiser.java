@@ -4,7 +4,6 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
@@ -13,7 +12,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     private final ProvFactory pFactory;
 
-    private final Utility u=new Utility();
+    private final Utility u=new Utility(null,null);
 
     public ProvSerialiser (ProvFactory pFactory) {
         this.pFactory=pFactory;
@@ -32,13 +31,4 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION);
 
-    @Override
-    public Collection<String> mediaTypes() {
-        return myMedia;
-    }
-
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        serialiseDocument(out, document, formatted);
-    }
 }

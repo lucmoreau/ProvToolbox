@@ -15,6 +15,7 @@ import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.storage.api.ResourceStorage;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -22,6 +23,7 @@ import org.openprovenance.prov.vanilla.ProvFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.TimeZone;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.JSONLD_CONTEXT_KEY_NAMESPACE;
 import static org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomThreadConfig.getAttributes;
@@ -81,13 +83,13 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     @Override
     public void copyInputStreamToStore(InputStream inputStream, Formats.ProvFormat format, String id) throws IOException {
         logger.debug("copyStrcopyInputStreamToStore  " + id);
-        Document doc=interop.readDocument(inputStream, format, "");  //TODO: can we improve?
+        Document doc=interop.readDocument(inputStream, format);  //TODO: can we improve?
         if (!(doc instanceof org.openprovenance.prov.vanilla.Document)) {
             // if it was constructed with a different factory, convert to vanilla
             BeanTraversal bc=new BeanTraversal(factory, factory);
             doc=bc.doAction(doc);
         }
-        writeDocument(id, Formats.ProvFormat.PROVN,doc);
+        writeDocument(id, doc, Formats.ProvFormat.PROVN);
     }
 
     @Override
@@ -109,7 +111,15 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     }
 
     @Override
-    public Document readDocument(String id) throws IOException {
+    public Document readDocument(String id, boolean known, DateTimeOption dateTimeOption, TimeZone timeZone) {
+        logger.warn("No support fro dateTimeOption and timeZone");
+        System.out.println("No support for dateTimeOption and timeZone");
+        logger.warn("No support for dateTimeOption and timeZone");
+        return readDocument(id, known);
+    }
+
+    @Override
+    public Document readDocument(String id) {
         // HACK, global variable, prevents concurrren tuse
         getAttributes().get().remove(JSONLD_CONTEXT_KEY_NAMESPACE);
         DocumentWrapper wrapper=documentCollection.findOneById(id);
@@ -117,7 +127,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     }
 
     @Override
-    public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
+    public void writeDocument(String id, Document doc, Formats.ProvFormat format) {
         logger.debug("writeDocument " + id + " " + doc);
         documentCollection.updateById(id, DBUpdate.set("document", doc));
     }

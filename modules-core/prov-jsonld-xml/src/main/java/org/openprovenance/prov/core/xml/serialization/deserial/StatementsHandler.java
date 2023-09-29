@@ -118,15 +118,13 @@ public class StatementsHandler extends SimpleModule{
                 Document doc=(Document) beanOrClass;
                 doc.getStatementOrBundle().add(s);
                 return true;
-            } else {
-                Class<? extends Statement> cl2;
-                if ((beanOrClass instanceof Bundle) && ((cl2 = statementMap.get(propertyName)) != null)) {
-                    //System.out.println("########################" + propertyName);
-                    Statement s = jp.readValueAs(cl2);
-                    Bundle bun = (Bundle) beanOrClass;
-                    bun.getStatement().add(s);
-                    return true;
-                }
+            }
+            Class<? extends Statement> cl2;
+            if ((beanOrClass instanceof Bundle) && ((cl2 = statementMap.get(propertyName)) != null)) {
+                Statement s = jp.readValueAs(cl2);
+                Bundle bun = (Bundle) beanOrClass;
+                bun.getStatement().add(s);
+                return true;
             }
             return super.handleUnknownProperty(ctxt, jp, deserializer, beanOrClass, propertyName);
         }

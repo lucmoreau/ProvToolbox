@@ -1,7 +1,7 @@
 package org.openprovenance.prov.service.core;
 
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.model.ProvSerialiser;
+import org.openprovenance.prov.model.ProvDocumentWriter;
 import org.openprovenance.prov.vanilla.Document;
 
 import jakarta.ws.rs.Produces;
@@ -16,15 +16,19 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-@Produces({ InteropMediaType.MEDIA_TEXT_TURTLE, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION,
-	        InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_TRIG,
-	        InteropMediaType.MEDIA_APPLICATION_RDF_XML, InteropMediaType.MEDIA_APPLICATION_JSON,
-	        InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF,
-		    InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG,
-		    InteropMediaType.MEDIA_APPLICATION_JSONLD})
+@Produces({
+		InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION,
+		InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML,
+		InteropMediaType.MEDIA_APPLICATION_JSONLD,
+		InteropMediaType.MEDIA_APPLICATION_JSON,
+		InteropMediaType.MEDIA_IMAGE_SVG_XML,
+		InteropMediaType.MEDIA_APPLICATION_PDF,
+		InteropMediaType.MEDIA_IMAGE_JPEG,
+		InteropMediaType.MEDIA_IMAGE_PNG
+})
 public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
-	private final ProvSerialiser serializer;
+	private final ProvDocumentWriter documentWriter;
 
 	public String trimCharSet(MediaType mediaType) {
 		String med=mediaType.toString();
@@ -33,38 +37,31 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 		return med;
 	}
 
-	public VanillaDocumentMessageBodyWriter(ProvSerialiser serializer) {
+	public VanillaDocumentMessageBodyWriter(ProvDocumentWriter documentWriter) {
 		//System.out.println("*********** VanillaDocumentMessageBodyWriter  ************");
-		this.serializer=serializer;
+		this.documentWriter = documentWriter;
 	}
 
-    @Override
-    public boolean isWriteable(Class<?> type, Type genericType,
-    		Annotation[] annotations, MediaType mediaType) {
-		return serializer.mediaTypes().contains(trimCharSet(mediaType));
+	@Override
+	public boolean isWriteable(Class<?> type, Type genericType,
+							   Annotation[] annotations, MediaType mediaType) {
+		return documentWriter.mediaTypes().contains(trimCharSet(mediaType));
 	}
 
-    @Override
-    public long getSize(Document t, Class<?> type, Type genericType,
-    		Annotation[] annotations, MediaType mediaType) {
-    	return -1;
-    }
+	@Override
+	public long getSize(Document t, Class<?> type, Type genericType,
+						Annotation[] annotations, MediaType mediaType) {
+		return -1;
+	}
 
-    @Override
-    public void writeTo(Document doc, Class<?> type, Type genericType,
-    		            Annotation[] annotations, MediaType mediaType,
-    		            MultivaluedMap<String, Object> httpHeaders,
+	@Override
+	public void writeTo(Document doc, Class<?> type, Type genericType,
+						Annotation[] annotations, MediaType mediaType,
+						MultivaluedMap<String, Object> httpHeaders,
 						OutputStream entityStream) throws IOException, WebApplicationException {
 
 		String media=trimCharSet(mediaType);
-
-		//System.out.println(" ---- writeTo doc " + media);
-
-	//	if (InteropMediaType.MEDIA_APPLICATION_JSONLD.equals(media)) {
-	//		new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(entityStream,doc,false);
-	//	} else {
-			serializer.serialiseDocument(entityStream, doc, media, true);
-	//	}
+		documentWriter.writeDocument(entityStream, doc, media, true);
 	}
 
 }

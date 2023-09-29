@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.client;
 
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
@@ -14,7 +14,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-public class StreamMessageBodyReader implements MessageBodyReader<InputStream> {
+public class
+
+
+
+StreamMessageBodyReader implements MessageBodyReader<InputStream> {
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,

@@ -40,15 +40,18 @@
         <option value="$PROJECT_DIR$/modules-nf/service-signature/pom.xml" />
         <option value="$PROJECT_DIR$/modules-executable-provman/pom.xml" />
         <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/modules-legacy/pom.xml" />
-        <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
       </set>
     </option>
+  </component>
+  <component name="ProjectResources">
+    <resource url="http://www.w3.org/ns/prov#" location="$PROJECT_DIR$" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.vanilla;
 
+import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 import org.openprovenance.prov.model.QualifiedNameUtils;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
 
@@ -101,13 +102,21 @@ public class QualifiedName implements org.openprovenance.prov.model.QualifiedNam
         return false;
     }
 
+
+    public void hashCode(HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.local);
+        hashCodeBuilder.append(this.namespace);
+    }
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.QualifiedName#hashCode()
      */
     @Override
-    public final int hashCode() {
-        return namespace.hashCode() ^ local.hashCode();
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
+        hashCode(hashCodeBuilder);
+        return hashCodeBuilder.toHashCode();
     }
+
 
     public String toString() {
         return "'" + prefix + ":{{" + namespace + "}}" + local + "'";

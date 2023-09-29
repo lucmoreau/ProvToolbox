@@ -7,15 +7,19 @@ import org.openprovenance.prov.storage.api.*;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.openprovenance.prov.service.core.ServiceUtils.UPLOADED_FILE_PATH;
 
 public class ServiceUtilsConfig extends StorageConfig {
-    public ServiceUtilsConfig() {
+    public final Map<String, String> configuration;
+
+    public ServiceUtilsConfig(Map<String, String> configuration) {
         extensionMap = new HashMap<>();
         nonDocumentResourceIndex=new NonDocumentResourceIndexInMemory( 100);
         nonDocumentResourceStorage=new NonDocumentResourceStorageFileSystem(new File(UPLOADED_FILE_PATH));
         genericResourceStorageMap=new HashMap<>();
+        this.configuration=configuration;
     }
     public ResourceStorage storageManager;
     public int documentCacheSize;

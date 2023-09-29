@@ -5,7 +5,7 @@
 	<groupId>org.openprovenance.prov</groupId>
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-	<version>2.0.3-SNAPSHOT</version>
+	<version>2.0.4-SNAPSHOT</version>
 	<url>https://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -334,6 +334,7 @@
 		<scalatest.version>3.2.17</scalatest.version> <!-- 3.1.4, 3.1.0-RC3 -->
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
 		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
+		<parboiled.version>2.5.0</parboiled.version>
 
 		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 

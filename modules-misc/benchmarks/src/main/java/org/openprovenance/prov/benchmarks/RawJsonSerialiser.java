@@ -16,16 +16,7 @@ class RawJsonSerialiser implements ProvSerialiser {
             om.writeValue(out,document);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        serialiseDocument(out,document,false);
-    }
-
-    @Override
-    public Collection<String> mediaTypes() {
-        return null;
     }
 }

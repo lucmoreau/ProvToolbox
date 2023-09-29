@@ -16,6 +16,20 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     public static final String EX2_NS = "http://example2.org/";
     public static final String EX2_PREFIX = "ex2";
     public static final String EX3_NS = "http://example3.org/";
+    public static final String NS_DEFAULT = EX_NS + "test/";
+
+    public boolean checkTest(String name) {
+        return false;
+    }
+
+    public boolean checkSchema(String name) {
+        if (name.endsWith("SOME PROBLEMATIC TEST" + extension())) {
+            return false;
+        }
+
+        return true;
+    }
+    // /////////////////////////////////////////////////////////////////////
 
 
     public org.openprovenance.prov.model.QualifiedName qInnerAsEx(String n) {
@@ -26,47 +40,17 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
     }
     public org.openprovenance.prov.model.QualifiedName qInner(String n) {
         return pFactory.newQualifiedName(EX_NS+"inner/", n, INNER_PREFIX);
-    }public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
+    }
+    public org.openprovenance.prov.model.QualifiedName qOuter(String n) {
         return pFactory.newQualifiedName(EX_NS+"outer/", n, OUTER_PREFIX);
     }
-
-    public boolean checkSchema(String name) {
-        if (name.endsWith("association2" + extension())
-                || name.endsWith("entity101" + extension())  // fails on unicode
-                || name.endsWith("end1" + extension())
-                || name.endsWith("end4" + extension())
-                || name.endsWith("delegation1" + extension())
-                || name.endsWith("delegation2" + extension())
-                || name.endsWith("dictionaryRemoval1-S" + extension())
-                || name.endsWith("dictionaryRemoval1-M" + extension())
-                || name.endsWith("dictionaryRemoval2-S" + extension())
-                || name.endsWith("dictionaryRemoval2-M" + extension())
-                || name.endsWith("attribution1" + extension())
-                || name.endsWith("attribution2" + extension())
-                || name.endsWith("mention1" + extension())
-                || name.endsWith("derivation1" + extension())
-                || name.endsWith("derivation2" + extension())
-                || name.endsWith("derivation9" + extension())
-                || name.endsWith("communication1" + extension())
-                || name.endsWith("communication2" + extension())
-                || name.endsWith("influence1" + extension())
-                || name.endsWith("influence2" + extension())
-                || name.endsWith("start1" + extension())
-                || name.endsWith("start4" + extension())
-                || name.endsWith("usage1" + extension())
-                || name.endsWith("dictionaryInsertion1-S" + extension())
-                || name.endsWith("dictionaryInsertion1-M" + extension())
-                || name.endsWith("dictionaryInsertion2-S" + extension())
-                || name.endsWith("dictionaryInsertion2-M" + extension())) {
-            return false;
-        }
-
-        return true;
+    public org.openprovenance.prov.model.QualifiedName qDefault(String n) {
+        return pFactory.newQualifiedName(NS_DEFAULT, n, null);
     }
 
-    // /////////////////////////////////////////////////////////////////////
 
     // /////////////////////////////////////////////////////////////////////
+
 
     public void testRoles() {
         Role r1 = pFactory.newRole("otherRole", name.XSD_STRING);
@@ -1623,11 +1607,11 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         Used use1 = pFactory.newUsed(q("use1"), q("a1"), null, q("e1"));
         Entity e1 = pFactory.newEntity(q("e1"));
         Activity a1 = pFactory.newActivity(q("a1"));
-        List<Statement> st1 = new LinkedList<Statement>();
+        List<Statement> st1 = new LinkedList<>();
         st1.add(a1);
         st1.add(e1);
         st1.add(use1);
-        Bundle b1 = pFactory.newNamedBundle(q("bundle1"), st1);
+        Bundle b1 = pFactory.newNamedBundle(q("bundle4"), st1);
         Namespace ns1 = Namespace.gatherNamespaces(b1,pFactory);
         b1.setNamespace(ns1);
         //System.out.println("bundle 1 ns " + b1);
@@ -1636,20 +1620,20 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         Used use2 = pFactory.newUsed(another("use2"), another("aa1"), null, another("ee1"));
         Entity ee1 = pFactory.newEntity(another("ee1"));
         Activity aa1 = pFactory.newActivity(another("aa1"));
-        List<Statement> st2 = new LinkedList<Statement>();
+        List<Statement> st2 = new LinkedList<>();
         st2.add(aa1);
         st2.add(ee1);
         st2.add(use2);
-        Bundle b2 = pFactory.newNamedBundle(another("bundle2"), st2);
+        Bundle b2 = pFactory.newNamedBundle(another("bundle4_other"), st2);
         Namespace ns2 = Namespace.gatherNamespaces(b2,pFactory);
         b2.setNamespace(ns2);
         //System.out.println("bundle 2 ns " + b2);
 
 
-        Entity eb1 = pFactory.newEntity(pFactory.newQualifiedName(EX_NS, "bundle1", "foo"));
+        Entity eb1 = pFactory.newEntity(pFactory.newQualifiedName(EX_NS, "bundle4", "foo"));
         pFactory.addBundleType(eb1);
 
-        Entity eb2 = pFactory.newEntity(another("bundle2"));
+        Entity eb2 = pFactory.newEntity(another("bundle4_other"));
         pFactory.addBundleType(eb2);
 
 
@@ -1664,6 +1648,7 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         Activity a1 = pFactory.newActivity(qInnerAsEx("a1"));
         List<Statement> st1 = new LinkedList<>();
         st1.add(a1);
+
 
 
         Bundle b5 = pFactory.newNamedBundle(qInnerAsEx("bundle5"), st1);
@@ -1717,6 +1702,31 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         doTest(doc, "target/bundle6", null, true);
     }
 
+
+    public void testDefault1() {
+        QualifiedName q1 = qDefault("a1");
+        Activity a1 = pFactory.newActivity(q1);
+        List<Statement> statements = new LinkedList<>();
+        statements.add(a1);
+
+
+        QualifiedName q2 = qOuter("e2");
+        Entity e2 = pFactory.newEntity(q2);
+        statements.add(e2);
+
+
+        Namespace ns=new Namespace();
+        ns.register(q2.getPrefix(), q2.getNamespaceURI());
+        ns.registerDefault(q1.getNamespaceURI());
+        ns.register("bar", q1.getNamespaceURI());  // the default namespace also needs to be registered with a prefix, to facilitate provx serialisation as it seems to have prov ns as default
+
+
+        Document doc=pFactory.newDocument(ns, statements, new LinkedList<>());
+
+
+
+        doTest(doc, "target/default1", null, true);
+    }
 
     /*
     public void testDictionaryInsertion1() {
@@ -2048,5 +2058,6 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         makeDocAndTest(gen, "target/qualified-member2");
 
     }
+
 
 }

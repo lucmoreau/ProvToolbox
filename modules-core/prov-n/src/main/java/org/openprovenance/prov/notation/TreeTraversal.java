@@ -2,6 +2,7 @@ package org.openprovenance.prov.notation;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import  org.antlr.runtime.tree.Tree;
@@ -16,13 +17,18 @@ public class TreeTraversal {
     final private ProvFactory pFactory;
     final private Name name;
     final private ValueConverter vconv;
+    private final DateTimeOption dateTimeOption;
+    private final TimeZone optionalTimeZone;
 
-    public TreeTraversal(ModelConstructor c, ProvFactory pFactory) {
+
+    public TreeTraversal(ModelConstructor c, ProvFactory pFactory, DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
         this.c=c;
         this.pFactory=pFactory;
         this.name=pFactory.getName();
         this.namespace=pFactory.newNamespace();
         this.namespace.addKnownNamespaces();
+        this.dateTimeOption = dateTimeOption;
+        this.optionalTimeZone = optionalTimeZone;
 
         this.vconv=new ValueConverter(pFactory);
     }
@@ -130,7 +136,7 @@ public class TreeTraversal {
             case PROV_NParser.TIME:
                 if (ast.getChildCount()==0) return null;
                 if (ast.getChild(0)==null) return null;
-                return pFactory.newISOTime(getTokenString(ast.getChild(0)));
+                return pFactory.newISOTime(getTokenString(ast.getChild(0)), dateTimeOption, optionalTimeZone);
 
             case PROV_NParser.WINVB:
                 uidTree=ast.getChild(0);

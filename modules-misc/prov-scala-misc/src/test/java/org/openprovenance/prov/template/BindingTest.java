@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.TypedValue;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.BindingsJson.BindingsBean;
 
@@ -145,9 +141,9 @@ public class BindingTest extends TestCase {
     public void bindingsTest(Bindings bindings1, String filename) throws IOException, Throwable {
 	Document doc1=bindings1.toDocument();
 	Namespace.withThreadNamespace(doc1.getNamespace());
-        new Utility().writeDocument(doc1, filename, pf);        
+        new Utility(DateTimeOption.PRESERVE,null).writeDocument(doc1, filename, pf);
 
-        Bindings bindings2=Bindings.fromDocument(new Utility().readDocument(filename, pf),pf);
+        Bindings bindings2=Bindings.fromDocument(new Utility(DateTimeOption.PRESERVE,null).readDocument(filename, pf),pf);
 
         assertEquals(bindings1, bindings2);
     }
@@ -194,9 +190,9 @@ public class BindingTest extends TestCase {
     public void bindingsTest_v2(Bindings bindings1, String filename) throws IOException, Throwable {
 	Document doc1=bindings1.toDocument_v2();
 	Namespace.withThreadNamespace(doc1.getNamespace());
-        new Utility().writeDocument(doc1, filename, pf);        
+        new Utility(DateTimeOption.PRESERVE,null).writeDocument(doc1, filename, pf);
 
-        Bindings bindings2=Bindings.fromDocument_v2(new Utility().readDocument(filename, pf),pf);
+        Bindings bindings2=Bindings.fromDocument_v2(new Utility(DateTimeOption.PRESERVE,null).readDocument(filename, pf),pf);
 
         System.out.println("bindings2 --> " + bindings2);
         System.out.println("bindings1 --> " + bindings1);
@@ -210,7 +206,7 @@ public class BindingTest extends TestCase {
     public void bindingsTest_v3(Bindings bindings_v1, String filename_root) throws IOException, Throwable {
         Document doc1=bindings_v1.toDocument_v2();
         Namespace.withThreadNamespace(doc1.getNamespace());
-        new Utility().writeDocument(doc1, filename_root+"_1.provn", pf);        
+        new Utility(DateTimeOption.PRESERVE,null).writeDocument(doc1, filename_root+"_1.provn", pf);
         
          
         bindings_v1.addVariableBindingsAsAttributeBindings();

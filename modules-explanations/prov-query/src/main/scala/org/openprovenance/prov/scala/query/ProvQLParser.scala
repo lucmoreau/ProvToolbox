@@ -4,8 +4,7 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
 import org.openprovenance.prov.scala.immutable.{ProvnCore, ProvnNamespaces, QualifiedName}
 import org.parboiled2._
-import shapeless.{::, HNil}
-
+import org.parboiled2.support.hlist._
 
 
 trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
@@ -27,8 +26,9 @@ trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
   def joinClause1: Rule[proc.Operator :: HNil, proc.Operator :: HNil] = rule { "from" ~ WS ~ oneOrMore (tableJoinClause).separatedBy(WS ~ "from" ~ WS) }
 
   def tableClause: Rule[HNil, proc.Operator :: HNil] = rule {
-    ( fieldIdent ~ WS ~ "a" ~ WS ~ identifier ~ WS ~ optional ("in" ~ WS ~ "document" ~ WS ~ fieldIdent ~ WS ) ~> makeScan |
-      "(" ~ WS ~ selectClause ~ WS ~ ")" )}
+    fieldIdent ~ WS ~ "a" ~ WS ~ identifier ~ WS ~ optional ("in" ~ WS ~ "document" ~ WS ~ fieldIdent ~ WS ) ~> makeScan |
+      "(" ~ WS ~ selectClause ~ WS ~ ")"
+  }
 
 
   def groupClause: Rule[proc.Operator :: HNil, proc.Operator :: HNil] = rule {
@@ -71,7 +71,7 @@ trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
       """[0-9]+""".r ^^ (s => Value(s.toInt))*/
   }
 
-  def int_literal = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> makeText ~ WS }
+  def int_literal: Rule[HNil, String :: HNil] = rule { capture ( optional ( marker ) ~ oneOrMore ( CharPredicate.Digit ) ) ~> makeText ~ WS }
 
   private val marker: CharPredicate = CharPredicate('-')
 
@@ -85,12 +85,11 @@ trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
   val proc: Processor
 
   def makeSelect: (Seq[(String,Option[String])],proc.Operator) => proc.Operator
-  def makeScan1: (String, QualifiedName ) => proc.Operator = (s,q) => makeScan(s,q,None)
-  def makeScan2: (String, QualifiedName, String ) => proc.Operator = (s,q,d) => makeScan(s,q,Some(d))
+
   def makeScan: (String, QualifiedName,Option[String] ) => proc.Operator
   def makeProperty: (String, QualifiedName)  => proc.Ref
   def makeField: (String ,String) => proc.Ref
-  def makeValue: (QualifiedName)  => proc.Ref
+  def makeValue: QualifiedName  => proc.Ref
 
   def makeWhere:  (proc.Operator, Option[Seq[proc.Predicate]]) => proc.Operator
 
@@ -143,7 +142,7 @@ class ProvQLParser (override val proc: Processor, override val input: ParserInpu
 
   override def makeField: (String, String) => proc.Ref = (s1,s2) => proc.Field(s1,s2)
 
-  override def makeValue: (QualifiedName) => proc.Ref = q => proc.Value(q.toString())
+  override def makeValue: QualifiedName => proc.Ref = q => proc.Value(q.toString())
 
   override def makeIncludes: (proc.Ref, proc.Ref) => proc.Predicate = (ref1,ref2) => proc.Eq("includesQualifiedName",ref1,ref2)
 
@@ -159,7 +158,6 @@ class ProvQLParser (override val proc: Processor, override val input: ParserInpu
     case Some(pred) => pred.foldLeft(op)((o,p) => proc.Filter(p, o))
   }
 
-  def makeJoinPair_old: (proc.Ref,proc.Ref) => (proc.Field,proc.Field) = (a, b)=>(a.asInstanceOf[proc.Field],b.asInstanceOf[proc.Field])
   override def makeJoinPair: (proc.Ref,proc.Ref) => (proc.Ref,proc.Ref) = (a, b)=>(a,b)
 
   override def makeTableJoin: (proc.Operator, proc.Operator,(proc.Ref,proc.Ref)) => proc.Operator =
@@ -179,7 +177,7 @@ class ProvQLParser (override val proc: Processor, override val input: ParserInpu
     }
 
   override def makeJoin1:(proc.Operator, Seq[proc.Operator]) => proc.Operator =
-    (op, ops) => op
+    (op, _) => op
 
 
   override def makeGroup:(proc.Operator, Seq[String], Seq[String], String, Option[proc.Ref]) => proc.Operator = (op,keys,agg,kind,ref) => proc.Group(proc.Schema(keys:_*),proc.Schema(agg:_*),op, kind, ref)

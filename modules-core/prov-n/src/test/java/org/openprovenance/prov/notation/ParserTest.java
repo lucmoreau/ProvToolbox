@@ -1,5 +1,6 @@
 package org.openprovenance.prov.notation;
 import junit.framework.TestCase;
+import org.openprovenance.prov.model.DateTimeOption;
 
 public class ParserTest extends TestCase {
     public void testBundle0() {
@@ -25,7 +26,7 @@ public class ParserTest extends TestCase {
     
     public void dotestBundle(String file) {
         try {
-            new Utility().getParserForFile(file).document();
+            new Utility(DateTimeOption.PRESERVE, null).getParserForFile(file).document();
         } catch (Throwable t) {
             System.out.println("exception: "+t);
             t.printStackTrace();

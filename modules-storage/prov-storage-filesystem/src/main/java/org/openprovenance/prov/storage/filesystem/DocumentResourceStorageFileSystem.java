@@ -3,6 +3,7 @@ package org.openprovenance.prov.storage.filesystem;
 import org.apache.commons.io.FileUtils;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
+import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.storage.api.ResourceStorage;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.TimeZone;
 
 public class DocumentResourceStorageFileSystem implements ResourceStorage {
 
@@ -50,16 +52,27 @@ public class DocumentResourceStorageFileSystem implements ResourceStorage {
     public Document readDocument(String id, boolean known) throws IOException {
         Document doc;
         if (known) {
-            doc = (Document) interop.readDocumentFromFile(id);
+            doc = interop.readDocumentFromFile(id);
         } else {
-            doc = (Document) interop.loadProvUnknownGraph(id);
+            doc = interop.readDocumentFromFileWithUnknownType(id);
         }
         return doc;
     }
 
     @Override
-    public void writeDocument(String id, Formats.ProvFormat format, Document doc) throws IOException {
-        interop.writeDocument(id,format,doc);
+    public Document readDocument(String id, boolean known, DateTimeOption dateTimeOption, TimeZone timeZone) throws IOException {
+        Document doc;
+        if (known) {
+            doc = interop.readDocumentFromFile(id, dateTimeOption, timeZone);
+        } else {
+            doc = interop.readDocumentFromFileWithUnknownType(id, dateTimeOption, timeZone);
+        }
+        return doc;
+    }
+
+    @Override
+    public void writeDocument(String id, Document doc, Formats.ProvFormat format) {
+        interop.writeDocument(id, doc, format);
     }
 
     @Override

@@ -40,6 +40,7 @@
         <module name="nlg-wrapper" />
         <module name="ProvToolbox-Tutorial3" />
         <module name="provconvert" />
+        <module name="ProvToolbox-Tutorial1" />
         <module name="service-translator" />
         <module name="nlg-spec-transformer" />
         <module name="prov-summarisation" />

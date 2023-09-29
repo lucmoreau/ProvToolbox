@@ -16,14 +16,13 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
 
-
-
 /** A stateless factory for PROV objects. */
 
 
 public abstract class ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension {
 
 	public static final String packageList = "org.openprovenance.prov.xml:org.openprovenance.prov.xml.validation";
+	public static final TimeZone UTC_TIMEZONE = TimeZone.getTimeZone("UTC");
 
 	private static String fileName = "toolbox.properties";
 
@@ -748,25 +747,44 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return res;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTime(java.lang.String)
+	 */
 	public XMLGregorianCalendar newISOTime(String time) {
-		return newTime(DatatypeConverter.parseDateTime(time)
-				.getTime());
+		return newTime(DatatypeConverter.parseDateTime(time).getTime());
 	}
-	/*ValueConverter vconv=new ValueConverter(this);
 
-    public Key newKey(Object o, QualifiedName type) {
-        
-        if (getName().RDF_LITERAL.equals(type)&& (o instanceof String)) {
-            o=vconv.convertToJava(type,(String)o);
-        }
-            
-        Key res=of.createKey();
-        res.setType(type);
-        res.setValueFromObject(o);
-        return res;
-       }
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTimeTZ(java.lang.String)
+	 */
 
-*/
+	public XMLGregorianCalendar newISOTimeTZ(String time) {
+		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
+		return newTime(parsedDateTime.getTime(), parsedDateTime.getTimeZone());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openprovenance.prov.model.LiteralConstructor#newISOTimeUTC(java.lang.String)
+	 */
+	public XMLGregorianCalendar newISOTimeUTC(String time) {
+		return newISOTime(time, UTC_TIMEZONE);
+	}
+
+	public XMLGregorianCalendar newISOTime(String time, TimeZone timeZone) {
+		Calendar parsedDateTime = DatatypeConverter.parseDateTime(time);
+		return newTime(parsedDateTime.getTime(), timeZone);
+	}
+
+	public XMLGregorianCalendar newISOTime(String time, DateTimeOption option, TimeZone optionalTimeZone) {
+		switch (option) {
+			case TIMEZONE:  return newISOTime(time, optionalTimeZone);
+			case PRESERVE: return newISOTimeTZ(time);
+			case UTC: return newISOTimeUTC(time);
+			case SYSTEM: return newISOTime(time);
+			default: throw new UnsupportedOperationException("Unknown option: " + option);
+		}
+	}
+
 	public abstract Key newKey(Object o, QualifiedName type);
 
 	public Location newLocation(Object value, QualifiedName type) {
@@ -932,6 +950,12 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return newXMLGregorianCalendar(gc);
 	}
 
+	public XMLGregorianCalendar newTime(Date date, TimeZone timeZone) {
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(date);
+		gc.setTimeZone(timeZone);
+		return newXMLGregorianCalendar(gc);
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.openprovenance.prov.model.LiteralConstructor#newTimeNow()

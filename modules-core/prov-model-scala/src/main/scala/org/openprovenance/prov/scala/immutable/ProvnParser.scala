@@ -1,11 +1,13 @@
 package org.openprovenance.prov.scala.immutable
 
 import java.io.{InputStream, OutputStream}
+
 import org.parboiled2.*
 import org.parboiled2.support.hlist.HNil
 
 import scala.util.{Failure, Success}
 import org.openprovenance.prov.model.Namespace
+import org.openprovenance.prov.model.DateTimeOption
 
 import javax.xml.datatype.XMLGregorianCalendar
 import ProvFactory.pf
@@ -14,6 +16,7 @@ import ProvFactory.pf
 import scala.annotation.tailrec
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions, SimpleStreamStats, Tee}
 
+import java.util.TimeZone
 import scala.io.BufferedSource
 
 trait ProvnCore extends Parser {
@@ -94,8 +97,8 @@ trait ProvnCore extends Parser {
 
   /* parser action */
   val makeText: String => String
-  val makeQualifiedName: String => QualifiedName
-  val makeApproxQualifiedName: String => QualifiedName = x => makeQualifiedName(x)
+  def makeQualifiedName: (x: String)=>QualifiedName
+  def makeApproxQualifiedName: String => QualifiedName = (x) => makeQualifiedName(x)
 
 
 }
@@ -110,7 +113,7 @@ trait ProvnNamespaces extends Parser with ProvnCore {
 
   def namespace =  rule { '<' ~ capture( oneOrMore(noneOf("<>")) )  ~ '>' ~ WS }   // TO REFINE, see IRI_REF def
 
-  def namespaceDeclarations = rule  {	( defaultNamespaceDeclaration | namespaceDeclaration  ) ~ WS ~ zeroOrMore (namespaceDeclaration) }
+  def namespaceDeclarations: Rule[HNil, HNil] = rule  {	( defaultNamespaceDeclaration | namespaceDeclaration  ) ~ WS ~ zeroOrMore (namespaceDeclaration) }
 
   def theNamespace: () => Namespace
 
@@ -196,14 +199,13 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
       ',' ~ WS                          ~ identifier ~ optionalAttributeValuePairs ~ ')' ~> makeWasInformedByNoId ~ WS )) }
 
 
+
   def wasDerivedFrom:Rule1[WasDerivedFrom] = rule {  "wasDerivedFrom" ~ WS ~ '(' ~ WS ~ ('-' ~ WS   ~     ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
     optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ) |
     identifier ~ (   ';' ~ WS  ~ identifier ~ ',' ~ WS ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId ~ WS |
       optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromWithId2 ~ WS ) |
       ',' ~ WS                          ~ identifier ~ ( ',' ~ WS ~ identifierOrMarker ~ ',' ~ WS ~ identifierOrMarker ~',' ~ WS ~ identifierOrMarker ~ optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId ~ WS |
         optionalAttributeValuePairs ~ ')' ~> makeWasDerivedFromNoId2 ~ WS ))) }
-
-
 
   def specializationOf:Rule1[SpecializationOf] = rule { "specializationOf" ~ WS ~ '(' ~ WS ~ identifier ~ ',' ~ WS ~ identifier ~ ')' ~> makeSpecializationOf ~ WS }
 
@@ -365,6 +367,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
   val openBundle: () => Unit
   def closeBundle: () => Unit
 
+
   val makeEmptyAttributeSet: () => Seq[Attribute] = () => Seq() :Seq[Attribute]
   val makeAttributeSet: (Attribute, Seq[Attribute]) => Seq[Attribute] = (a: Attribute, r: Seq[Attribute]) => (r :+ a) :Seq[Attribute]
   val makeAttributeSetFromOption: Option[Seq[Attribute]] => Seq[Attribute] = (s: Option[Seq[Attribute]]) =>  (s match { case Some(s) => s; case _ => Seq() } ) :Seq[Attribute]
@@ -373,6 +376,7 @@ trait ProvnParser extends Parser with ProvnCore with ProvnNamespaces {
   val makeNoTime: () => Option[XMLGregorianCalendar] = () => None: Option[XMLGregorianCalendar]
   val makeOptionalIdentifier: QualifiedName => Option[QualifiedName] = (q: QualifiedName) => Some(q): Option[QualifiedName]
   val makeNoIdentifier: () => Option[QualifiedName] = () => None: Option[QualifiedName]
+
 
   /* Streaming support */
   val postStatement: Statement => Unit
@@ -400,7 +404,7 @@ class MyParser2(override val input: ParserInput) extends MyParser(input,new Name
 }
  */
 
-final class MyActions  {
+final class MyActions(val dateTimeOption: DateTimeOption = DateTimeOption.PRESERVE, val timeZone: TimeZone = null)  {
 
   def nullable [T >: Null](x:Option[T]):T = x match { case Some(s) => s; case None => null:T }
 
@@ -541,7 +545,8 @@ final class MyActions  {
     pf.newAttribute(attr, literal, pf.prov_qualified_name).asInstanceOf[Attribute]
   }
 
-  val makeTime: String => XMLGregorianCalendar = (s: String) => pf.newISOTime(s): XMLGregorianCalendar
+
+  val makeTime: String => XMLGregorianCalendar = (s: String) => pf.newISOTime(s, dateTimeOption, timeZone): XMLGregorianCalendar
 
   val makeOptionalTime: XMLGregorianCalendar => Option[XMLGregorianCalendar] = (t:XMLGregorianCalendar) => Option(t): Option[XMLGregorianCalendar]
 
@@ -605,7 +610,11 @@ final class MyActions2 {
 
 }
 
-final class MyParser(val input: ParserInput, val actions2:MyActions2, val actions:MyActions =new MyActions) extends ProvnParser {
+final class MyParser(val input: ParserInput, val actions2: MyActions2, val actions:MyActions = new MyActions) extends ProvnParser {
+
+  def this (input: ParserInput, dateTimeOption: DateTimeOption, timeZone: TimeZone, actions2:MyActions2) = {
+    this(input, actions2, new MyActions(dateTimeOption,timeZone))
+  }
 
 
   def getNext(): ProvStream = actions2.next
@@ -757,9 +766,12 @@ final class MyParser(val input: ParserInput, val actions2:MyActions2, val action
 }
 
 
-class ProvDeserialiser extends org.openprovenance.prov.model.ProvDeserialiser {
+class ProvDeserialiser(val dateTimeOption: DateTimeOption, val timeZone: TimeZone) extends org.openprovenance.prov.model.ProvDeserialiser {
+  def this() = {
+    this(DateTimeOption.PRESERVE, null)
+  }
 
-  val actions=new MyActions()
+  val actions=new MyActions(dateTimeOption, timeZone)
   val actions2=new MyActions2()
   val funs=new DocBuilderFunctions()
 

@@ -906,7 +906,7 @@ public class CompilerExpansionBuilder {
 
 
         builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
-        builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)"); //TODO make it load dynamically
+        builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,document,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN)"); //TODO make it load dynamically
 
 
         if (bindings_schema != null) {
@@ -928,7 +928,7 @@ public class CompilerExpansionBuilder {
 
 
             builder.addStatement("document=me.make(" + args + ")");
-            builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)");
+            builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,document,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN)");
 
 
         }

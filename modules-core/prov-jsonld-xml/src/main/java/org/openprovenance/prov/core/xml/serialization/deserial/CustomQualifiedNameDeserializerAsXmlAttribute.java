@@ -16,7 +16,6 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
     private static final ProvFactory pf= ProvDeserialiser.pf;
 
-    static final QualifiedName PROV_TYPE=pf.getName().PROV_TYPE;
 
     public CustomQualifiedNameDeserializerAsXmlAttribute() {
         super();
@@ -26,7 +25,7 @@ public class CustomQualifiedNameDeserializerAsXmlAttribute extends JsonDeseriali
 
     @Override
     public QualifiedName deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Namespace ns = DeserializerUtil.getNamespace(deserializationContext);
+        Namespace ns = DeserializerUtil.getNamespace();
 
         FromXmlParser xmlParser=(FromXmlParser)jsonParser;
 

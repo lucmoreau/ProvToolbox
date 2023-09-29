@@ -12,13 +12,12 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.openprovenance.prov.core.xml.serialization.serial.*;
 import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.vanilla.TypedValue;
-import org.openprovenance.prov.core.xml.serialization.serial.CustomDateSerializer;
-import org.openprovenance.prov.core.xml.serialization.serial.CustomQualifiedNameSerializer;
-import org.openprovenance.prov.core.xml.serialization.serial.CustomTypedValueSerializer;
 import org.openprovenance.prov.core.xml.serialization.stax.ElementEraserXMLStreamWriter2;
 import org.openprovenance.prov.core.xml.serialization.stax.NamespaceXMLStreamWriter2;
 import org.openprovenance.prov.model.Document;
@@ -32,19 +31,13 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
 
+import static org.openprovenance.prov.core.xml.serialization.deserial.DeserializerUtil.setNamespace;
+
 public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser {
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML, InteropMediaType.MEDIA_APPLICATION_XML);
 
-    @Override
-    public Collection<String> mediaTypes() {
-        return myMedia;
-    }
-
-
     static final public ProvFactory pf = ProvFactory.getFactory();
-
-    static final public org.openprovenance.prov.model.QualifiedName QUALIFIED_NAME_XSD_STRING = pf.getName().XSD_STRING;
 
 
 
@@ -61,19 +54,27 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     final public boolean WRAP_ERASE;
 
 
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        serialiseDocument(out, document, formatted);
-    }
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
         serialiseDocument(out,document,formatted,false);
     }
 
-    public void serialiseDocument(OutputStream out, Object document, boolean formatted, boolean ignore) {
+    public void serialiseDocument(OutputStream out, Document document, boolean formatted, boolean ignore) {
         XmlMapper mapper = getMapper(formatted);
 
+        setNamespace(document.getNamespace());
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+    /* this method allows the serialization configuration to be used to save other objects (potentially containing prov objects) */
+    public void serialiseOtherObject(OutputStream out, Object document, boolean formatted, boolean ignore) {
+        XmlMapper mapper = getMapper(formatted);
+        setNamespace(new Namespace());
         try {
             mapper.writeValue(out,document);
         } catch (IOException e) {
@@ -109,32 +110,23 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
                 new SimpleModule("CustomKindSerializer",
                         new Version(1, 0, 0, null, null, null));
 
-        // module.addSerializer(StatementOrBundle.Kind.class, new CustomKindSerializer());
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
         module.addSerializer(TypedValue.class, new CustomTypedValueSerializer());
+        module.addSerializer(org.openprovenance.prov.vanilla.Document.class, new CustomDocumentSerializer());
+        //module.addSerializer(org.openprovenance.prov.vanilla.Bundle.class, new CustomBundleSerializer());
 
-        //mapper.setDefaultUseWrapper(false); //NO, use annotation instead
-
-        //module.addSerializer(Attribute.class, new CustomAttributeSerializer());
         return module;
     }
 
     public XmlMapper getXmlMapper() {
         XMLInputFactory2 inputFactory2 =  new WstxInputFactory();
         XMLOutputFactory2 outputFactory2 = new WstxOutputFactory() {
-
             @Override
             public XMLStreamWriter createXMLStreamWriter(OutputStream w, String enco) throws XMLStreamException {
-                //mConfig.enableAutomaticNamespaces(true);
-                //  mConfig.setProperty(WstxInputProperties.P_RETURN_NULL_FOR_DEFAULT_NAMESPACE,  true);
                 XMLStreamWriter2 result = (XMLStreamWriter2) super.createXMLStreamWriter(w, enco);
-
                 result.setPrefix("prov", "http://www.w3.org/ns/prov#");
-                result.setPrefix("ex", "http://example.org/");
-                // result.setPrefix("", "http://www.w3.org/ns/prov#");
-                result.setDefaultNamespace("http://www.w3.org/ns/prov#");
-
+                //result.setDefaultNamespace("http://www.w3.org/ns/prov#");
                 if (WRAP_ERASE) {
                     return new ElementEraserXMLStreamWriter2(result);
                 } else {

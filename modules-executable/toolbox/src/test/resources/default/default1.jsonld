@@ -1,0 +1,21 @@
+{
+  "@context" : [ {
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    "bbc" : "https://www.bbc.co.uk/",
+    "ex" : "https://example.org",
+    "@vocab" : "https://www.bbc.co.uk/",
+    "prov" : "http://www.w3.org/ns/prov#"
+  }, "http://openprovenance.org/prov.jsonld" ],
+  "@graph" : [ {
+    "@type" : "prov:Entity",
+    "@id" : "e"
+  }, {
+    "@type" : "prov:Activity",
+    "@id" : "ex:ac"
+  }, {
+    "@type" : "prov:Generation",
+    "@id" : "ex:g",
+    "entity" : "e",
+    "activity" : "ex:ac"
+  } ]
+}

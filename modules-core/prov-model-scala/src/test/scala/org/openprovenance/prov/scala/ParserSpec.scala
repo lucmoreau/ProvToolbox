@@ -1,7 +1,7 @@
 
 package org.openprovenance.prov.scala
 
-import org.openprovenance.prov.model.Namespace
+import org.openprovenance.prov.model.{DateTimeOption, Namespace}
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
@@ -9,6 +9,8 @@ import org.scalatest._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import java.io.FileInputStream
+import java.util.TimeZone
 import scala.util.{Failure, Success}
 
 
@@ -104,7 +106,7 @@ class ParserSpec extends AnyFlatSpec with Matchers {
   }
   
 
-  "An actviity" should "parse" in {
+  "An activity" should "parse" in {
     val ns=new Namespace
     ns.addKnownNamespaces()
     ns.register("ex", EX_NS)
@@ -119,5 +121,39 @@ class ParserSpec extends AnyFlatSpec with Matchers {
                              Map((q("attr"),Set(new Other(q("attr"),xsd_string,"whatever1"), new Other(q("attr"),xsd_string,"whatever2")))))) should be (true)
 
   }
+
+  "Deserialization with PRESERVE " should "preserve dates" in {
+    val deserial = new ProvDeserialiser(DateTimeOption.PRESERVE, null)
+    val doc=deserial.deserialiseDocument(new FileInputStream("src/test/resources/dates/date_with_tz_offset.provn"))
+
+    doc should not be null
+    doc.getStatementOrBundle.get(0) should not be null
+    doc.getStatementOrBundle.get(0).asInstanceOf[Activity].getStartTime.toXMLFormat should be ("2023-09-08T20:12:45.109-04:00")
+    doc.getStatementOrBundle.get(0).asInstanceOf[Activity].getEndTime.toXMLFormat should be ("2023-10-15T20:35:06.793-02:00")
+
+  }
+
+  "Deserialization with default " should "preserve dates" in {
+    val deserial = new ProvDeserialiser()
+    val doc = deserial.deserialiseDocument(new FileInputStream("src/test/resources/dates/date_with_tz_offset.provn"))
+
+    doc should not be null
+    doc.getStatementOrBundle.get(0) should not be null
+    doc.getStatementOrBundle.get(0).asInstanceOf[Activity].getStartTime.toXMLFormat should be("2023-09-08T20:12:45.109-04:00")
+    doc.getStatementOrBundle.get(0).asInstanceOf[Activity].getEndTime.toXMLFormat should be("2023-10-15T20:35:06.793-02:00")
+
+  }
+
+  "Deserialization with timezone " should "change dates" in {
+    val deserial = new ProvDeserialiser(DateTimeOption.TIMEZONE, TimeZone.getTimeZone("Europe/Rome") )
+    val doc = deserial.deserialiseDocument(new FileInputStream("src/test/resources/dates/date_with_tz_offset.provn"))
+
+    doc should not be null
+    doc.getStatementOrBundle.get(0) should not be null
+    doc.getStatementOrBundle.get(0).asInstanceOf[Activity].getStartTime.toXMLFormat should be("2023-09-09T02:12:45.109+02:00")
+    doc.getStatementOrBundle.get(0).asInstanceOf[Activity].getEndTime.toXMLFormat should be("2023-10-16T00:35:06.793+02:00")
+
+  }
+
 
 }

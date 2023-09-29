@@ -1,0 +1,4 @@
+document
+prefix ex <https://example.org/>
+activity(ex:a,2023-09-09T00:12:45.109Z,2023-10-15T22:35:06.793Z)
+endDocument

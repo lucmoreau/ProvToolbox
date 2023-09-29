@@ -43,11 +43,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         provMixin.addProvMixin(mapper);
     }
 
-    @Override
-    public Collection<String> mediaTypes() {
-        return myMedia;
-    }
-
     private final ProvMixin provMixin = new ProvMixin();
 
     @Override
@@ -80,7 +75,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
     public void registerFilter(ObjectMapper mapper) {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         filterProvider.addFilter("nsFilter",
-                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes", "defaultNamespace"));
+                SimpleBeanPropertyFilter.filterOutAllExcept("prefixes"));
         mapper.setFilterProvider(filterProvider);
     }
 
@@ -95,12 +90,6 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
         module.addSerializer(Bundle.class, new CustomBundleSerializer());
         mapper.registerModule(module);
-    }
-
-
-    @Override
-    public void serialiseDocument(OutputStream out, Document document, String mediaType, boolean formatted) {
-        serialiseDocument(out, document, formatted);
     }
 
 

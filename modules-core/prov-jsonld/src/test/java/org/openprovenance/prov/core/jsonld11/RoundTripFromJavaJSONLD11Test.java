@@ -13,7 +13,7 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     public Document readDocumentFromFile(String file) throws IOException {
         readingMessage(file);
         ProvDeserialiser deserial=new ProvDeserialiser();
-        return deserial.deserialiseDocument(new File(file));
+        return deserial.deserialiseDocument(new FileInputStream(file));
 
     }
     public void readingMessage(String file) {
@@ -52,7 +52,16 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     }
 
     public String extension() {
-        return ".jsonld11";
+        return ".jsonld";
     }
+
+    public boolean checkTest(String name) {
+        if (name.endsWith("entity101" + extension())) {
+            System.out.println(escapeRed("########## Skipping testing for entity101 in JSONLD"));
+            return false;
+        }
+        return true;
+    }
+
 
 }

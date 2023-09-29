@@ -327,7 +327,7 @@
 		<java.version>1.8</java.version>
 
 		<scala-library>scala3-library</scala-library>   <!-- scala-library -->
-		<scala.library.version>3.3.1</scala.library.version> <!-- 2.13.12 -->
+		<scala.library.version>3.4.0-RC1-bin-20230926-6c05c36-NIGHTLY</scala.library.version> <!-- 3.3.1, 2.13.12 -->
 		<scala.binary.version>3</scala.binary.version> <!-- 2.13 -->
 
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->

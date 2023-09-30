@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain.actions;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.service.core.ActionPerformer;
@@ -11,24 +11,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ActionRandom implements ActionPerformer {
+public class ActionLinear implements ActionPerformer {
 
 
     private final ServiceUtils utils;
 
-    public ActionRandom(ServiceUtils utils) {
+    public ActionLinear(ServiceUtils utils) {
         this.utils=utils;
     }
 
     @Override
     public ServiceUtils.Action getAction() {
-        return ServiceUtils.Action.RANDOM;
+        return ServiceUtils.Action.LINEAR;
     }
 
     @Override
-    public Response doAction(Map<String, List<InputPart>> formData, DocumentResource dr, Date date) throws IOException {
-
-        return  utils.composeResponseSeeOther("documents/" + dr.getVisibleId() + "/random_narrative").header("Expires",date).build();
+    public Response doAction(Map<String, List<InputPart>> formData, DocumentResource vr, Date date) throws IOException {
+        return utils.composeResponseSeeOther("documents/" + vr.getVisibleId() + "/linear_narrative").header("Expires",date).build();
     }
 
     @Override public String toString () {

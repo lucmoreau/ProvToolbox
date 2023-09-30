@@ -21,6 +21,8 @@ import org.openprovenance.prov.scala.summary.*;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
 import org.openprovenance.prov.service.core.memory.DocumentResourceInMemory;
+import org.openprovenance.prov.service.summary.actions.ActionSummary;
+import org.openprovenance.prov.service.summary.actions.ActionUpload;
 import org.openprovenance.prov.storage.api.*;
 import scala.Tuple2;
 

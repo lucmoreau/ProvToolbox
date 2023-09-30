@@ -16,6 +16,7 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.translation.actions.ActionTranslate;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 

@@ -12,7 +12,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
-import org.openprovenance.prov.service.translation.ActionTranslate;
+import org.openprovenance.prov.service.translation.actions.ActionTranslate;
 import org.openprovenance.prov.service.core.SwaggerTags;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.ResourceIndex;

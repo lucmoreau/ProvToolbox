@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain.readers;
 
 import org.openprovenance.prov.scala.nlgspec_transformer.SpecLoader;
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes;

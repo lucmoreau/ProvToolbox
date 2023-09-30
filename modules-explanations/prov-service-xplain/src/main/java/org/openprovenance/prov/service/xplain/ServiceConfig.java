@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain;
 
 import org.openprovenance.prov.scala.interop.Input;
 import org.openprovenance.prov.scala.interop.Output;

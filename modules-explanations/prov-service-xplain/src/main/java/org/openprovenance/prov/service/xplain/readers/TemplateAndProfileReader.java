@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain.readers;
 
 import org.openprovenance.prov.scala.query.JsonSupport;
 
@@ -6,6 +6,8 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
+import org.openprovenance.prov.service.xplain.TemplateAndProfile;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;

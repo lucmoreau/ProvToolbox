@@ -9,9 +9,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/ViewApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/ViewService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/resources2/removewrapper.xslt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/ActionExplain.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/actions/ActionExplain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/ActionLinear.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/actions/ActionLinear.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/ActionRandom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/actions/ActionRandom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NarrativeLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/NarrativeLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NarrativeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/NarrativeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NarrativeServiceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/NarrativeServiceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NarrativeWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/writers/NarrativeWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/NlgService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/NlgService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/PhraseEnvironment.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/PhraseEnvironment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/PhraseEnvironmentReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/readers/PhraseEnvironmentReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/PhraseReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/readers/PhraseReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/PhraseReader2.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/readers/PhraseReader2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/ServiceConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/ServiceConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/TemplateAndProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/TemplateAndProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/TemplateAndProfileReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/readers/TemplateAndProfileReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/TransformEnvironment.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/xplain/TransformEnvironment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service/narrative/VanillaDocumentMessageBodyReader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/readers/DocumentMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/readers/VanillaDocumentMessageBodyReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/ByteArrayMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/ByteArrayMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/DocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/DocumentMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/NodeMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/NodeMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/VanillaDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/writers/VanillaDocumentMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionExpand.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionExpand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/ActionTranslate.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/actions/ActionTranslate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/JobDeleteTemplateResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/JobDeleteTemplateResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/RandomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/RandomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TranslationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/storage/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/storage/StorageConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-validation/src/main/java/org/openprovenance/prov/service/validation/ValidationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/validator/ValidateIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ActionSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/actions/ActionSummary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ActionUpload.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/actions/ActionUpload.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/Level0MessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/writers/Level0MessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/ScalaDocumentMessageBodyWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/writers/ScalaDocumentMessageBodyWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-service-summary/src/main/java/org/openprovenance/prov/service/summary/SummaryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/SummariseApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/SummariseApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/summary/SummarizeIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/test/java/org/openprovenance/prov/service/summary/summary/SummarizeIT.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,27 +144,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.General&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "development2__0",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Problems",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.General",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
@@ -183,7 +223,7 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DateIT.testTranslationWithDate1">
+  <component name="RunManager" selected="JUnit.TranslateIT.testMembership2">
     <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-translator" />
       <extension name="coverage">
@@ -205,32 +245,6 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.DateIT" />
       <option name="METHOD_NAME" value="testTranslationWithDate1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RoundTripFromJavaJSONLD11Test.testDefault1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.RoundTripFromJavaJSONLD11Test" />
-      <option name="METHOD_NAME" value="testDefault1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -277,6 +291,32 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
       <option name="METHOD_NAME" value="testDefault1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TranslateIT.testMembership2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.TranslateIT" />
+      <option name="METHOD_NAME" value="testMembership2" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -354,8 +394,8 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.TranslateIT.testMembership2" />
       <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test.testDefault1" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testDefault1" />
       <item itemvalue="Makefile Target.test.default" />
       <item itemvalue="Makefile Target.test.default.json" />
@@ -363,11 +403,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.TranslateIT.testMembership2" />
         <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
         <item itemvalue="Makefile Target.test.default" />
         <item itemvalue="Makefile Target.test.default.json" />
         <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testDefault1" />
-        <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test.testDefault1" />
       </list>
     </recent_temporary>
   </component>
@@ -754,6 +794,7 @@
       <workItem from="1695023287797" duration="30105000" />
       <workItem from="1695190967915" duration="21095000" />
       <workItem from="1695355590282" duration="6546000" />
+      <workItem from="1696016222464" duration="3563000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -15,19 +15,17 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import static org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter.trimCharSet;
+
 @Provider
-public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
+public class VanillaDocumentMessageBodyReader implements MessageBodyReader<Document> {
+	final ProvFactory pf;
+    final InteropFramework intF;
 
-	final ProvFactory pf=org.openprovenance.prov.vanilla.ProvFactory.getFactory();
-    final InteropFramework intF=new InteropFramework(pf);
-
-	public String trimCharSet(MediaType mediaType) {
-		String med=mediaType.toString();
-		int ind=med.indexOf(";");
-		if (ind>0) med=med.substring(0,ind);
-		return med;
+	public VanillaDocumentMessageBodyReader(ProvFactory pf) {
+		this.pf=pf;
+		this.intF=new InteropFramework(pf);
 	}
-
 
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType,
@@ -42,12 +40,6 @@ public class DocumentMessageBodyReader implements MessageBodyReader<Document> {
                              MultivaluedMap<String, String> httpHeaders,
                              InputStream is) throws IOException, WebApplicationException {
 		ProvFormat format=intF.mimeTypeRevMap.get(trimCharSet(mediaType));
-		InteropFramework interop=new InteropFramework(org.openprovenance.prov.vanilla.ProvFactory.getFactory());
-        return (Document)interop.readDocument(is,format);
+        return (Document)intF.readDocument(is,format);
 	}
-
-
-
-
-
 }

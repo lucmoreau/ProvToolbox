@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain.readers;
 
 import org.openprovenance.prov.scala.wrapper.IO;
 import org.openprovenance.prov.scala.wrapper.defs;

@@ -11,6 +11,8 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtilsConfig;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.summary.writers.Level0MessageBodyWriter;
+import org.openprovenance.prov.service.summary.writers.ScalaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;

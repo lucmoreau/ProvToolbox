@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.translation;
+package org.openprovenance.prov.service.translation.actions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
+import org.openprovenance.prov.service.translation.JobDeleteTemplateResource;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.NonDocumentGenericResourceStorage;
 import org.openprovenance.prov.storage.api.ResourceIndex;
@@ -39,7 +40,7 @@ public class ActionExpand implements ActionPerformer {
     private final ResourceIndex<TemplateResource> resourceIndex;
     private final ObjectMapper om;
 
-    ActionExpand(ServiceUtils utils) {
+    public ActionExpand(ServiceUtils utils) {
         this.utils= utils;
         this.om=new ObjectMapper();
 

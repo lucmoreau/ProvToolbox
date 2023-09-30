@@ -10,7 +10,7 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.client.ClientConfig;
-import org.openprovenance.prov.service.core.readers.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.core.readers.MapMessageBodyReader;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -33,6 +33,8 @@ import java.util.*;
 public class SummarizeIT extends TestCase {
     static Logger logger = LogManager.getLogger(SummarizeIT.class);
     final static ClientConfig config=new ClientConfig(SummarizeIT.class);
+    final org.openprovenance.prov.model.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
+    final InteropFramework intF=new InteropFramework(pf);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
@@ -44,7 +46,7 @@ public class SummarizeIT extends TestCase {
     public Client getClient() {
         Client client= ClientBuilder.newBuilder().build();
         client.register(bodyWriter);
-        client.register(DocumentMessageBodyReader.class);
+        client.register(new VanillaDocumentMessageBodyReader(pf));
         client.register(MapMessageBodyReader.class);
         return client;
     }

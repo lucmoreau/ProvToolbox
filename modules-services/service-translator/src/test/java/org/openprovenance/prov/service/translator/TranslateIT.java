@@ -6,7 +6,7 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.service.core.readers.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
 import org.openprovenance.prov.service.client.StringMessageBodyReader;
 import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
@@ -30,10 +30,14 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
     private final Client client;
     private final DocumentEquality documentEquality;
     final private VanillaDocumentMessageBodyWriter bodyWriter;
+    private final InteropFramework intf;
+    private final ProvFactory pf;
 
     public TranslateIT() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new InteropFramework(new ProvFactory()));
+        pf = new ProvFactory();
+        intf = new InteropFramework(pf);
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(intf);
         this.client=getClient();
 
     }
@@ -41,7 +45,7 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
     public Client getClient() {
         Client client= ClientBuilder.newBuilder().build();
         client.register(bodyWriter);
-        client.register(DocumentMessageBodyReader.class);
+        client.register(new VanillaDocumentMessageBodyReader(pf));
         return client;
     }
 

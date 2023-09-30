@@ -1,8 +1,7 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.summary.writers;
 
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.scala.nlg.Narrative;
-import org.openprovenance.prov.scala.nlgspec_transformer.SpecLoader;
+import org.openprovenance.prov.scala.summary.Level0Mapper;
 
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -15,8 +14,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-@Produces({InteropMediaType.MEDIA_APPLICATION_JSON })
-public class NarrativeWriter implements MessageBodyWriter<Narrative> {
+@Produces({
+		InteropMediaType.MEDIA_APPLICATION_JSON })
+public class Level0MessageBodyWriter implements MessageBodyWriter<Level0Mapper> {
 
 	public String trimCharSet(MediaType mediaType) {
 		String med=mediaType.toString();
@@ -25,8 +25,7 @@ public class NarrativeWriter implements MessageBodyWriter<Narrative> {
 		return med;
 	}
 
-	public NarrativeWriter() {
-		System.out.println("*********** Narrative Writer   ************");
+	public Level0MessageBodyWriter() {
 	}
 
 	@Override
@@ -36,21 +35,20 @@ public class NarrativeWriter implements MessageBodyWriter<Narrative> {
 	}
 
 	@Override
-	public long getSize(Narrative t, Class<?> type, Type genericType,
+	public long getSize(Level0Mapper t, Class<?> type, Type genericType,
 						Annotation[] annotations, MediaType mediaType) {
 		return -1;
 	}
 
 	@Override
-	public void writeTo(Narrative narrative, Class<?> type, Type genericType,
+	public void writeTo(Level0Mapper doc, Class<?> type, Type genericType,
 						Annotation[] annotations, MediaType mediaType,
 						MultivaluedMap<String, Object> httpHeaders,
 						OutputStream entityStream) throws IOException {
 
-		System.out.println(" ---- writeTo Narrative " + mediaType);
+		System.out.println(" ---- writeTo level0mapper " + mediaType);
 
-		SpecLoader.mapper().writeValue(entityStream,narrative);
-
+		doc.exportToJSon(entityStream);
 	}
 
 }

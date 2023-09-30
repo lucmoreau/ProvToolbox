@@ -24,13 +24,6 @@ public class NodeMessageBodyWriter implements MessageBodyWriter<ObjectNode> {
     private static ObjectMapper mapper = new ObjectMapper();
     private static ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
 
-    public String trimCharSet(MediaType mediaType) {
-        String med=mediaType.toString();
-        int ind=med.indexOf(";");
-        if (ind>0) med=med.substring(0,ind);
-        return med;
-    }
-
     @Override
     public boolean isWriteable(Class<?> type, Type genericType,
     		Annotation[] annotations, MediaType mediaType) {
@@ -43,7 +36,6 @@ public class NodeMessageBodyWriter implements MessageBodyWriter<ObjectNode> {
     	return -1;
     }
 
-
     @Override
     public void writeTo(ObjectNode node,
                         Class<?> arg1,
@@ -54,8 +46,6 @@ public class NodeMessageBodyWriter implements MessageBodyWriter<ObjectNode> {
                         OutputStream out) throws IOException, WebApplicationException {
 
         writer.writeValue(out,node);
-        
-        
     }
 
 }

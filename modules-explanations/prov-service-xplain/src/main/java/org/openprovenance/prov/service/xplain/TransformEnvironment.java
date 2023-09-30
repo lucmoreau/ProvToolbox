@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain;
 
 import org.openprovenance.prov.scala.immutable.Statement;
 import scala.collection.Seq;

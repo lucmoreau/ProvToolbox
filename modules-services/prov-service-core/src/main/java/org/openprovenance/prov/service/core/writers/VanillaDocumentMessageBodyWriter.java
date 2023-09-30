@@ -30,15 +30,7 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 
 	private final ProvDocumentWriter documentWriter;
 
-	public String trimCharSet(MediaType mediaType) {
-		String med=mediaType.toString();
-		int ind=med.indexOf(";");
-		if (ind>0) med=med.substring(0,ind);
-		return med;
-	}
-
 	public VanillaDocumentMessageBodyWriter(ProvDocumentWriter documentWriter) {
-		//System.out.println("*********** VanillaDocumentMessageBodyWriter  ************");
 		this.documentWriter = documentWriter;
 	}
 
@@ -62,6 +54,14 @@ public class VanillaDocumentMessageBodyWriter implements MessageBodyWriter<Docum
 
 		String media=trimCharSet(mediaType);
 		documentWriter.writeDocument(entityStream, doc, media, true);
+	}
+
+
+	static public String trimCharSet(MediaType mediaType) {
+		String med=mediaType.toString();
+		int ind=med.indexOf(";");
+		if (ind>0) med=med.substring(0,ind);
+		return med;
 	}
 
 }

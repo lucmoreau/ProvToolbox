@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.translation;
+package org.openprovenance.prov.service.translation.actions;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.service.core.ActionPerformer;

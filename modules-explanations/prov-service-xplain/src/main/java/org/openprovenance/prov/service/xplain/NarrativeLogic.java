@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.narrative;
+package org.openprovenance.prov.service.xplain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +16,10 @@ import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.scala.wrapper.IO;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.memory.LRUHashMap;
-import org.openprovenance.prov.service.summary.ActionUpload;
+import org.openprovenance.prov.service.xplain.actions.ActionExplain;
+import org.openprovenance.prov.service.xplain.actions.ActionLinear;
+import org.openprovenance.prov.service.xplain.actions.ActionRandom;
+import org.openprovenance.prov.service.summary.actions.ActionUpload;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 

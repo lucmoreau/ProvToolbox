@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.summary;
+package org.openprovenance.prov.service.summary.actions;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -6,6 +6,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.log.ProvLevel;
 import org.openprovenance.prov.service.core.ActionPerformer;
 import org.openprovenance.prov.service.core.ServiceUtils;
+import org.openprovenance.prov.service.summary.SummaryService;
 import org.openprovenance.prov.storage.api.DocumentResource;
 
 import jakarta.ws.rs.core.Response;

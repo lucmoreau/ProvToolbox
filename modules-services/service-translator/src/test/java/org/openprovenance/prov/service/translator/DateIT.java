@@ -16,7 +16,8 @@ import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.readers.DocumentMessageBodyReader;
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
 
 import org.openprovenance.prov.service.client.ClientConfig;
@@ -36,7 +37,9 @@ import static org.openprovenance.prov.service.core.Constants.*;
 public class DateIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(DateIT.class);
     final static ClientConfig config=new ClientConfig(TranslateIT.class);
-    final InteropFramework intF=new InteropFramework();
+
+    final ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
+    final InteropFramework intF=new InteropFramework(pf);
 
     public static HashMap<String, String> table= new HashMap<>();
 
@@ -151,7 +154,7 @@ public class DateIT extends TestCase implements ApiUriFragments {
     }
     public Document readDocument(String location, String media, String extension, DateTimeOption dateTimeOption, String timezone) {
         try (Client client=ClientBuilder.newBuilder().build()) {
-            client.register(DocumentMessageBodyReader.class);
+            client.register(new VanillaDocumentMessageBodyReader(pf));
             WebTarget target = client.target(location + extension);
             Invocation.Builder builder = target.request(media).header(HTTP_HEADER_PROVENANCE_ACCEPT_DATETIME_OPTION, dateTimeOption);
             if (timezone!=null) {
@@ -219,7 +222,7 @@ public class DateIT extends TestCase implements ApiUriFragments {
     @SuppressWarnings("unused")
     public Object readObject(String location, String media) {
         Client client=ClientBuilder.newBuilder().build();
-        client.register(DocumentMessageBodyReader.class);
+        client.register(VanillaDocumentMessageBodyReader.class);
         WebTarget target=client.target(location);
         Response response2=target.request(media).get();
         Object o=response2.readEntity(InputStream.class);

@@ -1,7 +1,8 @@
-package org.openprovenance.prov.service.summary;
+package org.openprovenance.prov.service.xplain.writers;
 
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.scala.summary.Level0Mapper;
+import org.openprovenance.prov.scala.nlg.Narrative;
+import org.openprovenance.prov.scala.nlgspec_transformer.SpecLoader;
 
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -14,9 +15,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-@Produces({
-		InteropMediaType.MEDIA_APPLICATION_JSON })
-public class Level0MessageBodyWriter implements MessageBodyWriter<Level0Mapper> {
+@Produces({InteropMediaType.MEDIA_APPLICATION_JSON })
+public class NarrativeWriter implements MessageBodyWriter<Narrative> {
 
 	public String trimCharSet(MediaType mediaType) {
 		String med=mediaType.toString();
@@ -25,7 +25,8 @@ public class Level0MessageBodyWriter implements MessageBodyWriter<Level0Mapper> 
 		return med;
 	}
 
-	public Level0MessageBodyWriter() {
+	public NarrativeWriter() {
+		System.out.println("*********** Narrative Writer   ************");
 	}
 
 	@Override
@@ -35,20 +36,21 @@ public class Level0MessageBodyWriter implements MessageBodyWriter<Level0Mapper> 
 	}
 
 	@Override
-	public long getSize(Level0Mapper t, Class<?> type, Type genericType,
+	public long getSize(Narrative t, Class<?> type, Type genericType,
 						Annotation[] annotations, MediaType mediaType) {
 		return -1;
 	}
 
 	@Override
-	public void writeTo(Level0Mapper doc, Class<?> type, Type genericType,
+	public void writeTo(Narrative narrative, Class<?> type, Type genericType,
 						Annotation[] annotations, MediaType mediaType,
 						MultivaluedMap<String, Object> httpHeaders,
 						OutputStream entityStream) throws IOException {
 
-		System.out.println(" ---- writeTo level0mapper " + mediaType);
+		System.out.println(" ---- writeTo Narrative " + mediaType);
 
-		doc.exportToJSon(entityStream);
+		SpecLoader.mapper().writeValue(entityStream,narrative);
+
 	}
 
 }

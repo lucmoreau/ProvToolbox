@@ -14,7 +14,7 @@ import org.quartz.SchedulerContext;
 import org.quartz.SchedulerException;
 
 import static org.openprovenance.prov.service.core.jobs.JobManagement.UTILS_KEY;
-import static org.openprovenance.prov.service.translation.ActionExpand.BINDINGS_KEY;
+import static org.openprovenance.prov.service.translation.actions.ActionExpand.BINDINGS_KEY;
 
 
 public class JobDeleteTemplateResource implements Job {

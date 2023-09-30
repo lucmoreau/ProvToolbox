@@ -16,22 +16,17 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.ProvDocumentWriter;
 import org.openprovenance.prov.vanilla.Document;
 
+import static org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter.trimCharSet;
+
 @Provider
-@Produces({ InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML,
-		    InteropMediaType.MEDIA_TEXT_TURTLE, InteropMediaType.MEDIA_APPLICATION_TRIG, //??? maybe not
-            InteropMediaType.MEDIA_APPLICATION_JSON,
-	        InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF,
-		    InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG })
+@Produces({
+		InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_APPLICATION_PROVENANCE_XML,
+		InteropMediaType.MEDIA_APPLICATION_JSON, InteropMediaType.MEDIA_APPLICATION_JSONLD,
+		InteropMediaType.MEDIA_IMAGE_SVG_XML, InteropMediaType.MEDIA_APPLICATION_PDF,
+		InteropMediaType.MEDIA_IMAGE_JPEG, InteropMediaType.MEDIA_IMAGE_PNG })
 public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 
 	private final ProvDocumentWriter documentWriter;
-
-	public String trimCharSet(MediaType mediaType) {
-		String med=mediaType.toString();
-		int ind=med.indexOf(";");
-		if (ind>0) med=med.substring(0,ind);
-		return med;
-	}
 
 	public DocumentMessageBodyWriter (ProvDocumentWriter documentWriter) {
 		this.documentWriter = documentWriter;
@@ -56,9 +51,6 @@ public class DocumentMessageBodyWriter implements MessageBodyWriter<Document> {
 						OutputStream entityStream) throws IOException, WebApplicationException {
 
 		String media=trimCharSet(mediaType);
-
-	//	System.out.println(" ---- writeTo doc " + media);
-
 		documentWriter.writeDocument(entityStream, doc, media, true);
 	}
 

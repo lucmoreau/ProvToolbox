@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.summary;
+package org.openprovenance.prov.service.summary.writers;
 
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.scala.immutable.Document;

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service.summary;
+package org.openprovenance.prov.service.summary.actions;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -14,8 +14,10 @@ import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.service.core.ActionPerformer;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
+import org.openprovenance.prov.service.summary.SummaryDocumentResource;
+import org.openprovenance.prov.service.summary.SummaryDocumentResourceInMemory;
+import org.openprovenance.prov.service.summary.SummaryService;
 import org.openprovenance.prov.storage.api.DocumentResource;
-import scala.None;
 import scala.Tuple2;
 
 import jakarta.ws.rs.core.Response;

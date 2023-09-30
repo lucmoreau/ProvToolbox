@@ -17,6 +17,7 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.translation.actions.ActionExpand;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 import org.openprovenance.prov.storage.api.TemplateResource;
 import org.openprovenance.prov.template.expander.BindingsJson;

@@ -19,13 +19,6 @@ import org.openprovenance.prov.interop.InteropMediaType;
 @Provider
 @Produces({ InteropMediaType.MEDIA_TEXT_XML})
 public class ByteArrayMessageBodyWriter implements MessageBodyWriter<ByteArrayOutputStream> {
-    
-    public String trimCharSet(MediaType mediaType) {
-        String med=mediaType.toString();
-        int ind=med.indexOf(";");
-        if (ind>0) med=med.substring(0,ind);
-        return med;
-    }
 
     public ByteArrayMessageBodyWriter () {
         System.out.println("*********** ByteArrayMessageBodyWriter  ************");

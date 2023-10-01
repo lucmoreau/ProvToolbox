@@ -2,7 +2,7 @@ package org.openprovenance.prov.scala.interop
 
 import org.openprovenance.prov.scala.immutable.Format
 import org.openprovenance.prov.scala.immutable.Format.Format
-import org.openprovenance.prov.scala.summary.PrettyMethod
+import org.openprovenance.prov.scala.summary.{PrettyMethod, SConfig}
 import org.openprovenance.prov.scala.narrator.XConfig
 
 import java.io.File
@@ -74,7 +74,7 @@ case class Config(outfiles: Seq[Output] = Seq(),
                   language: Seq[String]=Seq(),
                   summary_queries: File = null,
                   withLevel0Description:Boolean=false,
-                  languageAsFilep: Boolean=true)  extends XConfig    {
+                  languageAsFilep: Boolean=true)  extends XConfig with OutConfig with SConfig {
 
 
   def this (os: java.io.OutputStream, mediaType: String) = {
@@ -127,5 +127,10 @@ case class Config(outfiles: Seq[Output] = Seq(),
     filename.substring(count + 1);
   }
 
+}
+
+trait OutConfig {
+  def outfiles: Seq[Output]
+  def theOutputFormats (): Seq[Format]
 }
 

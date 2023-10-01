@@ -22,7 +22,7 @@ object NarratorFunctionality {
 
   val logger: Logger = LogManager.getLogger("Narrator")
 
-/*
+
   def getTextOnly(text: Map[String, Narrative]): Map[String, List[String]] = {
     text.map { case (f, n) => (f, n.sentences) }
   }
@@ -31,7 +31,7 @@ object NarratorFunctionality {
     text.map { case (f, n) => (f, n.snlgs) }
   }
 
- */
+
 
   def narrate(doc:Document, config:XConfig): (Map[String,Narrative], Document, EventMatrix, EventsDescription) = {
 
@@ -110,13 +110,13 @@ object NarratorFunctionality {
       realise_aux(config2, theOrderedStatements, config.format_option, allp)
     } else {
       logger.debug("With vocabulary " + config.language.toList)
-      realise_aux(config, theOrderedStatements,config.format_option, allp)
+      realise_aux(config, theOrderedStatements, config.format_option, allp)
     }
   }
 
-  val Bracketed: Regex = """\[.*?\]""".r
-  def extractBracketContents(s: String): Seq[String] =
-    (Bracketed findAllIn s).map(s => s.substring(1,s.length-1)).toSeq
+  private val bracketed: Regex = """\[.*?\]""".r
+  private def extractBracketContents(s: String): Seq[String] =
+    (bracketed findAllIn s).map(s => s.substring(1,s.length-1)).toSeq
 
   private def realise_aux(config: XConfig, theOrderedStatements: Seq[Statement], format_option: Int, allp: Boolean): Map[String, Narrative] = {
     val factory=new RealiserFactory(config)
@@ -132,7 +132,6 @@ object NarratorFunctionality {
         case _ => throw new UnsupportedOperationException // never here
       }
     } else {
-
       val compactNarrative: Narrative = realiser.realise(config.profile, config.selected_templates, format_option, allp)
       Map(config.selected_templates.mkString(",") ->  compactNarrative.copy(sentences=compactNarrative.sentences.reverse))
     }

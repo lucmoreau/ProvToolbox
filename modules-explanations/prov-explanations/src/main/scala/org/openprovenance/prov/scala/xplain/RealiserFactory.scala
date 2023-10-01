@@ -81,7 +81,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
     narrative
   }
 
-  def provContext(context: Map[String, String]): Map[String, String] = {
+  private def provContext(context: Map[String, String]): Map[String, String] = {
     val context2 = context + ("prov" -> "http://www.w3.org/ns/prov#")
     context2
   }
@@ -93,7 +93,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   */
 
 
-  def processQuery(template: Plan, s: Statement, engine: Processor): List[Map[String, engine.RField]] = {
+  private def processQuery(template: Plan, s: Statement, engine: Processor): List[Map[String, engine.RField]] = {
 
     val headStatementId=template.select.keys.head
     val headStatementType=template.select(headStatementId)(Keywords.TYPE)
@@ -125,7 +125,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   }
 
 
-  def processQuery(template: Plan, engine: Processor): List[Map[String, engine.RField]] = {
+  private def processQuery(template: Plan, engine: Processor): List[Map[String, engine.RField]] = {
 
     val query: String = template.query match {
       case s: String => s
@@ -205,7 +205,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
       case Some(s) => accessors(s)
     }
 
-    final def realise_plan(template: Plan, the_profile: String, format_option: Int): Seq[(String, String, () => String)] = {
+    final def realisePlan(template: Plan, the_profile: String, format_option: Int): Seq[(String, String, () => String)] = {
       val context: Map[String, String] = provContext(template.context)
       val environment = Environment(context, dictionaries, profiles, the_profile)
       val engine = new Processor(statementAccessorForDocument, environment)

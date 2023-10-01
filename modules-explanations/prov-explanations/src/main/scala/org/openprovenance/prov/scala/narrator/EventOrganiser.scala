@@ -115,29 +115,14 @@ object EventOrganiser {
   }
 
   def addEntitiesToAgents (statements: Iterable[Statement]): Iterable[Entity] = {
-    val entities: Set[QualifiedName] =statements.collect{case e:Entity => e.id}.toSet
-    val activities: Set[QualifiedName] =statements.collect{case a:Activity => a.id}.toSet
-    val agents: Iterable[QualifiedName] =statements.collect{case ag:Agent => ag.id}.filterNot(q => entities.contains(q)).filterNot(q => activities.contains(q))
-    val newEntities=agents.map(id => new Entity(id.asInstanceOf[QualifiedName], Set(), Set(), None, Set(), Map()))
+    val entities: Set[QualifiedName]    = statements.collect{case e:Entity => e.id}.toSet
+    val activities: Set[QualifiedName]  = statements.collect{case a:Activity => a.id}.toSet
+    val agents: Iterable[QualifiedName] = statements.collect{case ag:Agent => ag.id}.filterNot(q => entities.contains(q)).filterNot(q => activities.contains(q))
+    val newEntities=agents.map(id => new Entity(id, Set(), Set(), None, Set(), Map()))
     logger.debug(newEntities)
     newEntities
   }
 }
-
-trait EventOrder {}
-trait LinearOrder extends EventOrder{}
-
-case class NoEvent () extends LinearOrder
-case class Synchronized(seq: Set[Integer], past: EventOrder) extends LinearOrder
-case class Follows (last: Set[Integer], past: EventOrder)  extends LinearOrder
-case class Parallel (seq: Seq[EventOrder], past: EventOrder) extends EventOrder
-case class Join (seq: Seq[Integer], past: Parallel) extends EventOrder
-
-
-trait EventsSeq{}
-case class ACycle (set: Set[Integer])     extends EventsSeq
-case class Path (seq: Seq[Integer])      extends EventsSeq
-case class ToProcess (seq: Seq[Integer]) extends EventsSeq
 
 trait EventPrecedence {
   def precedes(x: Integer): Integer => Boolean

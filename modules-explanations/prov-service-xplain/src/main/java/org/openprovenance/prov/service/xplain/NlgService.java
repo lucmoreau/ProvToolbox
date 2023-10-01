@@ -343,7 +343,7 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
 
 
         Seq<Tuple3<String, String, Function0<String>>> realisations
-                =realiser.realise_plan(planFromRequest, the_request_the_profile,the_request_format);
+                =realiser.realisePlan(planFromRequest, the_request_the_profile,the_request_format);
 
         //logger.debug("realisations " + realisations);
 

@@ -8,8 +8,9 @@ import org.openprovenance.prov.summary.FileNameWithoutExtensionException
 
 import java.io.File
 
+
 case class SummaryConfig(kernel: Boolean=false,
-                         aggregated: Boolean=false,
+                      //   aggregated: Boolean=false,
                          level0: File = null,
                          triangle: Boolean = false,
                          always_with_type_0: Boolean = false,
@@ -25,7 +26,7 @@ case class SummaryConfig(kernel: Boolean=false,
                          to: Int = -1,
                          outfiles: Seq[Output] = Seq(),
                          outformats: Seq[Format.Format] = Seq(),
-                         defaultFormat: Format.Format=null)
+                         defaultFormat: Format.Format=null) extends SConfig
 {
 
   def this(os: java.io.OutputStream, mediaType: String) = {

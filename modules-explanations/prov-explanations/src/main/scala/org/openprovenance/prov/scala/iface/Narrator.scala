@@ -16,4 +16,6 @@ trait Narrator {
 
   def getTextOnly(text: Map[String, Narrative]): Map[String, List[String]]
 
+  def getSnlgOnly(text: Map[String, Narrative]): Map[String, List[String]]
+
 }

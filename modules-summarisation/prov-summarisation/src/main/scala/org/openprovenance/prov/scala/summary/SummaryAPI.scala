@@ -7,7 +7,7 @@ import scala.collection.parallel.CollectionConverters._
 
 object SummaryAPI {
 
-  def sum(doc: Document, config: SummaryConfig): (Indexer, TypePropagator) = {
+  def sum(doc: Document, config: SConfig): (Indexer, TypePropagator) = {
     Namespace.withThreadNamespace(doc.namespace)
     val ind: Indexer = new Indexer(doc, Vector(), true) // TODO LUC Weak Inference flag, make it a cmd line flag
 
@@ -21,7 +21,7 @@ object SummaryAPI {
     }
   }
 
-  def sum(doc: Document, config: SummaryConfig, level0: Level0Mapper): (Indexer, TypePropagator) = {
+  def sum(doc: Document, config: SConfig, level0: Level0Mapper): (Indexer, TypePropagator) = {
     Namespace.withThreadNamespace(doc.namespace)
     val ind = new Indexer(doc)
     if (level0 != null) {
@@ -33,7 +33,7 @@ object SummaryAPI {
     }
   }
 
-  def makeSummaryIndex(config: SummaryConfig,
+  def makeSummaryIndex(config: SConfig,
                        s: TypePropagator,
                        ind: Indexer,
                        level: Int,

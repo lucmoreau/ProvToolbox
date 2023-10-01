@@ -59,9 +59,7 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
 
   def explain(f:String, template:String, profile:String, format_option:Int=0): Map[String, List[String]] = {
     val doc=readDoc(f)
-
     val (text:Map[String, Narrative], _, _, _) = narrator.narrate(doc,makeConfig(template,profile,format_option))
-
     narrator.getTextOnly(text)
   }
 
@@ -98,7 +96,7 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
     "128350251.provn",
     "data.sources2",
     "The data sources were the borrower's FICO score (fico_score/128350251) provided by credit referencing agency (fico) at <2019-03-10T11:00:00>, the borrower's loan application (applications/128350251) provided by the loan applicant (applicants/128350251) and the borrower's credit reference (credit_history/128350251) provided by credit referencing agency (credit_agency) at <2019-01-10T14:10:16>.",
-    false
+    testp = false
   )
 
 
@@ -107,6 +105,6 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
     "training-1.provn",
     "responsibility6",
     "Responsibilities for the AI pipeline were that a data engineer (staff/259) fit data for the company pipeline (1558649326/5011959424), that a data engineer (staff/259) split file (loans_train.xz), that manager (staff/37) approved pipeline (pipeline/1) and that a data engineer (staff/259) selected file (loans_filtered.xz).",
-    false) //non determinism
+    testp = false) //non determinism
 
 }

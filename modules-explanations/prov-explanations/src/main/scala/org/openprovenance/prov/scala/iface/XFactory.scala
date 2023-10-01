@@ -14,21 +14,30 @@ class XFactory {
         org.openprovenance.prov.scala.narrator.NarratorFunctionality.narrate(doc, config)
       }
 
+      @Override
       def narrate1(doc: Document, config: XConfig): Map[String, Narrative] = {
         val (text, _, _, _) = narrate(doc, config)
         text
       }
 
+      @Override
       def narrate2(doc: Document, config: XConfig): Map[String, List[String]] = {
         getTextOnly(narrate1(doc, config))
       }
 
+      @Override
       def narrate2string(doc: Document, config: XConfig): Map[String, String] = {
         narrate2(doc, config).map { case (k, v) => (k, v.mkString("\n")) }
       }
 
+      @Override
       def getTextOnly(text: Map[String, Narrative]): Map[String, List[String]] = {
         text.map { case (f, n) => (f, n.sentences) }
+      }
+
+      @Override
+      def getSnlgOnly(text: Map[String, Narrative]): Map[String, List[String]] = {
+        text.map { case (f, n) => (f, n.snlgs) }
       }
 
     }

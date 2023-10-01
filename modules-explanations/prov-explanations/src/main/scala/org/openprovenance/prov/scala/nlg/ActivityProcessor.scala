@@ -1,9 +1,8 @@
 package org.openprovenance.prov.scala.nlg
 
 import java.util
-
 import org.openprovenance.prov.scala.immutable._
-
+import org.openprovenance.prov.scala.narrator.{EventOrganiser, Follows, LinearOrder, NoEvent, Synchronized}
 import org.openprovenance.prov.validation.{EventMatrix, Gensym}
 
 import scala.collection.mutable

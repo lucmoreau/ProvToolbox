@@ -2,6 +2,7 @@ package org.openprovenance.prov.service.xplain;
 
 import org.openprovenance.prov.scala.interop.Input;
 import org.openprovenance.prov.scala.interop.Output;
+import org.openprovenance.prov.scala.narrator.XConfig;
 import scala.Option;
 import scala.collection.immutable.Seq;
 import scala.jdk.CollectionConverters;
@@ -10,7 +11,7 @@ import scala.jdk.CollectionConverters;
 import java.util.LinkedList;
 import java.util.List;
 
-public  class ServiceConfig implements org.openprovenance.prov.scala.nlg.Config {
+public  class ServiceConfig implements XConfig {
 
     private final String template;
     private final String profile0;

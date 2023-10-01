@@ -1,20 +1,17 @@
-package org.openprovenance.prov.scala.nlg
-
-import java.io.{File, PrintWriter}
-import java.util
+package org.openprovenance.prov.scala.narrator
 
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.model.BeanTraversal
 import org.openprovenance.prov.nlg.ValidationObjectMaker
-import org.openprovenance.prov.vanilla.ProvFactory
-
-import scala.collection.JavaConverters
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.validation.report.ValidationReport
 import org.openprovenance.prov.validation.{EventMatrix, Gensym, Validate}
+import org.openprovenance.prov.vanilla.ProvFactory
 
+import java.io.{File, PrintWriter}
+import java.util
 import scala.collection.JavaConverters._
-import scala.collection.mutable
+import scala.collection.{JavaConverters, mutable}
 
 // Tests require london timezone:
 //export TZ=Europe/London

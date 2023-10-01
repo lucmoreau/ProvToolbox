@@ -7,11 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.BeanTraversal;
+import org.openprovenance.prov.scala.iface.Explainer;
+import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.scala.immutable.Document;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
-import org.openprovenance.prov.scala.nlg.Config;
-import org.openprovenance.prov.scala.nlg.Narrative;
-import org.openprovenance.prov.scala.nlg.Narrator;
+import org.openprovenance.prov.scala.narrator.XConfig;
+import org.openprovenance.prov.scala.xplain.Narrative;
+import org.openprovenance.prov.scala.narrator.NarratorFunctionality;
 import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.scala.wrapper.IO;
 import org.openprovenance.prov.service.core.*;
@@ -87,43 +89,47 @@ public class NarrativeLogic {
 
     public Response explanations(HttpServletResponse ignoredResponse,
                                  Request ignoredRequest,
-                                 String msg,
+                                 String docId,
                                  String explanationId,
                                  String ignoredAccept) {
 
-        return getExplanationForId(msg, explanationId, true);
+        return getExplanationForDocument(docId, explanationId, true);
 
     }
 
 
     public Response explanationDetails(HttpServletResponse ignoredResponse,
                                        Request ignoredRequest,
-                                       String msg,
+                                       String docId,
                                        String explanationId,
                                        String ignoredAccept) {
 
 
-        return getExplanationForId(msg, explanationId, false);
+        return getExplanationForDocument(docId, explanationId, false);
 
     }
 
-    public Response getExplanationForId(String msg,
-                                        String explanationId,
-                                        boolean partial) {
+    final XFactory factory = new XFactory();
+    final Explainer explainer=factory.makeExplainer();
+    final org.openprovenance.prov.scala.iface.Narrator narrator=factory.makeNarrator();
+
+    public Response getExplanationForDocument(String docId,
+                                              String explanationId,
+                                              boolean partial) {
         final ResourceIndex<DocumentResource> index = utils.getDocumentResourceIndex().getIndex();
         try {
-            DocumentResource dr = index.get(msg);
+            DocumentResource dr = index.get(docId);
 
             if (dr == null) {
-                return utils.composeResponseNotFoundResource(msg);
+                return utils.composeResponseNotFoundResource(docId);
             }
 
-            Map<String, Map<String, String>> details = utils.getDetails(index, msg, dr);
+            Map<String, Map<String, String>> details = utils.getDetails(index, docId, dr);
 
             Map<String, String> entry = details.get(explanationId);
 
             String templates = entry.get(NarrativeServiceUtils.KEY_TEMPLATES);
-            String profiles = entry.get(NarrativeServiceUtils.KEY_PROFILES);
+            String profiles  = entry.get(NarrativeServiceUtils.KEY_PROFILES);
 
             //logger.debug("found templates: " + templates);
             //logger.debug("found profiles: " + profiles);
@@ -131,18 +137,16 @@ public class NarrativeLogic {
 
             try {
                 org.openprovenance.prov.model.Document doc = utils.getDocumentFromCacheOrStore(dr.getStorageId());
-
                 ServiceConfig config = new ServiceConfig(templates, profiles, the_template_library, format_option);
-
-                Document doc1 = getScalaDocument(msg, doc);
+                Document doc1 = getScalaDocument(docId, doc);
 
                 StreamingOutput promise;
 
                 if (partial) {
-                    scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = Narrator.getTextOnly2(Narrator.explain(doc1, config));
+                    scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.getTextOnly(explainer.explain(doc1, config));
                     promise = out -> IO.mapper().writeValue(out, result);
                 } else {
-                    scala.collection.immutable.Map<String, Narrative> result = Narrator.explain(doc1, config);
+                    scala.collection.immutable.Map<String, Narrative> result = explainer.explain(doc1, config);
                     promise = out -> IO.mapper().writeValue(out, result);
                 }
                 return ServiceUtils.composeResponseOK(promise).type(MediaType.APPLICATION_JSON).build();
@@ -303,10 +307,10 @@ public class NarrativeLogic {
                 String s;
 
                 if (partial) {
-                    scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = Narrator.getTextOnly2(Narrator.explain(doc1, config));
+                    scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.getTextOnly(explainer.explain(doc1, config));
                     s = IO.mapper().writeValueAsString(result);
                 } else {
-                    scala.collection.immutable.Map<String, Narrative> result = Narrator.explain(doc1, config);
+                    scala.collection.immutable.Map<String, Narrative> result = explainer.explain(doc1, config);
                     s = IO.mapper().writeValueAsString(result);
                 }
 
@@ -357,23 +361,23 @@ public class NarrativeLogic {
     }
 
     public Object getLinearNarrative(DocumentResource vr, MediaType variant) throws IOException {
-        return getNarrative(vr, Narrator.linearConfig(), variant);
+        return getNarrative(vr, NarratorFunctionality.linearConfig(), variant);
     }
 
     public Object getRandomNarrative(DocumentResource vr, MediaType variant) throws IOException {
-        return getNarrative(vr, Narrator.randomConfig(), variant);
+        return getNarrative(vr, NarratorFunctionality.randomConfig(), variant);
     }
 
-    public Object getNarrative(DocumentResource vr, Config config, MediaType variant) throws IOException {
+    public Object getNarrative(DocumentResource vr, XConfig config, MediaType variant) throws IOException {
         org.openprovenance.prov.model.Document doc = utils.getDocumentFromCacheOrStore(vr.getStorageId());
         Document d2 = ProvFactory.pf().newDocument(doc);
 
         logger.info("variant: " + variant);
         if (MediaType.TEXT_PLAIN_TYPE.equals(variant)) {
-            final scala.collection.immutable.Map<String, String> result = Narrator.narrate2string(d2, config);
+            final scala.collection.immutable.Map<String, String> result = narrator.narrate2string(d2, config);
             return result.mkString("", "\n", "");
         } else {
-            final scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = Narrator.narrate2(d2, config);
+            final scala.collection.immutable.Map<String, scala.collection.immutable.List<String>> result = narrator.narrate2(d2, config);
             return (StreamingOutput) (out) -> mapper.writeValue(out, result);
         }
     }

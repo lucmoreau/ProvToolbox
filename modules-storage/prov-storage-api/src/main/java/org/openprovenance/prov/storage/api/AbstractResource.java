@@ -22,8 +22,8 @@ public interface AbstractResource {
 
     void setKind(ResourceIndex.StorageKind kind) ;
 
-    public Map<String, Object> getExtension() ;
+    Map<String, Object> getExtension() ;
 
-    public void setExtension(Map<String, Object> extension) ;
+    void setExtension(Map<String, Object> extension) ;
 
 }

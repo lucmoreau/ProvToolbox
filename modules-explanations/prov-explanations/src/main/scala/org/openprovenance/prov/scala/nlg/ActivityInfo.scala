@@ -1,5 +1,7 @@
 package org.openprovenance.prov.scala.nlg
 
+import org.openprovenance.prov.scala.narrator.{EventPrecedence, Follows, LinearOrder, NoEvent, Synchronized}
+
 object ActivityInfo {
   def oldestEvent(order: LinearOrder): Set[Integer] = {
     order match {

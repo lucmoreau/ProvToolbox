@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
-import org.openprovenance.prov.scala.nlg.RealiserFactory;
+import org.openprovenance.prov.scala.xplain.RealiserFactory;
 import org.openprovenance.prov.scala.nlgspec_transformer.SpecLoader;
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes;
 import org.openprovenance.prov.scala.wrapper.BlocklySerializer;
@@ -328,12 +328,12 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
         org.openprovenance.prov.scala.immutable.Document document=pf.newDocument(the_request_document);
 
 
-        org.openprovenance.prov.scala.nlgspec_transformer.defs.Template templateFromRequest
-                = new org.openprovenance.prov.scala.nlgspec_transformer.defs.Template("internalQuery",the_request_select, the_request_query, the_request_phrase, the_request_context, null);
+        org.openprovenance.prov.scala.nlgspec_transformer.defs.Plan planFromRequest
+                = new org.openprovenance.prov.scala.nlgspec_transformer.defs.Plan("internalQuery",the_request_select, the_request_query, the_request_phrase, the_request_context, null);
         //logger.debug("templateFromQuery " + templateFromRequest);
 
 
-        RealiserFactory factory=new RealiserFactory(templateFromRequest,the_request_dictionary,the_request_profiles);
+        RealiserFactory factory=new RealiserFactory(planFromRequest,the_request_dictionary,the_request_profiles);
 
 
 
@@ -343,7 +343,7 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
 
 
         Seq<Tuple3<String, String, Function0<String>>> realisations
-                =realiser.realise_plan(templateFromRequest, the_request_the_profile,the_request_format);
+                =realiser.realise_plan(planFromRequest, the_request_the_profile,the_request_format);
 
         //logger.debug("realisations " + realisations);
 

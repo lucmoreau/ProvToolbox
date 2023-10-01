@@ -4,7 +4,7 @@ import java.io.{File, FileInputStream, InputStream}
 import org.openprovenance.prov.scala.primitive.Keywords
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{ProvFactory, QualifiedName}
-import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Template}
+import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Plan}
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.Phrase
 
 import scala.io.{BufferedSource, Source}
@@ -90,7 +90,7 @@ object Language {
     lang
   }
 
-  def read(s:String): (String,Array[Template], Array[Dictionary]) = {
+  def read(s:String): (String,Array[Plan], Array[Dictionary]) = {
     val desc: Language =readDescriptor(s)
     val prefix=s.substring(0,s.lastIndexOf('/')+1)
     val templates=desc.templates.map(templ => {
@@ -106,9 +106,9 @@ object Language {
     (desc.name, templates,dictionaries)
   }
 
-  def read(ss:Seq[String], filep:Boolean): (Seq[Template],Seq[Dictionary], Map[String, Object]) = {
+  def read(ss:Seq[String], filep:Boolean): (Seq[Plan],Seq[Dictionary], Map[String, Object]) = {
 
-    val result: (Seq[Template], Seq[Dictionary], Map[String, Object]) = (
+    val result: (Seq[Plan], Seq[Dictionary], Map[String, Object]) = (
       ss.flatMap(s => {
         val desc: Language = readDescriptor(s, filep)
         val prefix = s.substring(0, s.lastIndexOf('/') + 1)
@@ -171,12 +171,12 @@ object Language {
 object ConfigurationLoader {
 
 
-  def readTemplate(f: File): Template = {
-    val template = SpecLoader.mapper.readValue(f, classOf[Template])
+  def readTemplate(f: File): Plan = {
+    val template = SpecLoader.mapper.readValue(f, classOf[Plan])
     template
   }
-  def readTemplate(f: InputStream): Template = {
-    val template = SpecLoader.mapper.readValue(f, classOf[Template])
+  def readTemplate(f: InputStream): Plan = {
+    val template = SpecLoader.mapper.readValue(f, classOf[Plan])
     template
   }
   def readProfile(f: File): Map[String, Object] = {
@@ -192,10 +192,10 @@ object ConfigurationLoader {
     val profile: Map[String, Object] = SpecLoader.mapper.readValue(new File(f), classOf[Map[String,Object]])
     profile
   }
-  def readTemplate(resourcePath: String): Template = {
+  def readTemplate(resourcePath: String): Plan = {
     println("Reading resource from " + resourcePath)
     val x: BufferedSource = Source.fromResource(resourcePath)
-    val template = SpecLoader.mapper.readValue(x.bufferedReader(), classOf[Template])
+    val template = SpecLoader.mapper.readValue(x.bufferedReader(), classOf[Plan])
     template
   }
 

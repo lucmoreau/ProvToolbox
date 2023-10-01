@@ -48,7 +48,7 @@ public class NarrativeServiceUtils extends ServiceUtils {
 
     }
     Map<String,Map<String,String>> getDetails(ResourceIndex<DocumentResource> index, String id, DocumentResource dr) {
-        Map<String, Object> extension=getExtension(index, id,dr);
+        Map<String, Object> extension=getExtension(index, id, dr);
         Object result=extension.get(DETAILS);
         if (result==null) {
             result=new HashMap<String,String>();

@@ -67,9 +67,9 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
 
 
-  def evalAccumulate(q: String, set: mutable.Set[Record]): Processor = {
+  def evalAccumulate(queryString: String, set: mutable.Set[Record]): Processor = {
     //val op: Operator =parseSql(q)
-    val op: Operator =parseSql2(q).get
+    val op: Operator =parseSql2(queryString).get
     logger.debug(op)
     //println(op)
     execQuery(op, Some(set))

@@ -13,7 +13,7 @@ import nlg.wrapper._
 import org.openprovenance.prov.model.Bundle
 import org.openprovenance.prov.scala.immutable.{ProvFactory, Statement}
 import org.openprovenance.prov.scala.jsonld11.serialization.{ProvDeserialiser, ProvMixin2}
-import org.openprovenance.prov.scala.nlgspec_transformer.defs.{AdjectivePhrase, AdverbPhrase, Clause, CoordinatedPhrase, Dictionary, Funcall, NounPhrase, Paragraph, PhraseIterator, PrepositionPhrase, StringPhrase, Template, VerbPhrase}
+import org.openprovenance.prov.scala.nlgspec_transformer.defs.{AdjectivePhrase, AdverbPhrase, Clause, CoordinatedPhrase, Dictionary, Funcall, NounPhrase, Paragraph, PhraseIterator, PrepositionPhrase, StringPhrase, Plan, VerbPhrase}
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.Phrase
 import org.openprovenance.prov.scala.primitive
 import org.openprovenance.prov.scala.primitive.{Keywords, Primitive, Result}
@@ -365,12 +365,12 @@ object defs  {
 
   //val nlgFactory: NLGFactory =org.openprovenance.prov.scala.wrapper.defs.nlgFactory //new NLGFactory(defaultLexicon) // org.openprovenance.prov.scala.wrapper.defs.nlgFactory //new NLGFactory(lexicon)
 
-  case class Template(var name:String,
-                      select: Map[String,Map[String,String]],
-                      query: Object,
-                      sentence: Phrase,
-                      context: Map[String,String],
-                      where: Object)
+  case class Plan(var name:String,
+                  select: Map[String,Map[String,String]],
+                  query: Object,
+                  sentence: Phrase,
+                  context: Map[String,String],
+                  where: Object)
 
 
 
@@ -1324,11 +1324,11 @@ object SpecLoader {
   }
 
 
-  def templateImport (in: InputStream): Template = {
-    mapper.readValue(in, classOf[Template])
+  def templateImport (in: InputStream): Plan = {
+    mapper.readValue(in, classOf[Plan])
   }
 
-  def templateImport (in: String): Template = {
+  def templateImport (in: String): Plan = {
     templateImport(new FileInputStream(in))
   }
 

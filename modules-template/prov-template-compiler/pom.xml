@@ -89,6 +89,14 @@
       <scope>compile</scope>
     </dependency>
 
+    <!--
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>javac</artifactId>
+      <version>9+181-r4173-1</version>
+      <scope>provided</scope>
+    </dependency>
+    -->
 
     <!-- testing -->
 
@@ -114,6 +122,19 @@
           <source>1.9</source>
         </configuration>
       </plugin>
+
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
+        <configuration>
+          <verbose>true</verbose>
+          <fork>true</fork>
+          <executable>/usr/local/java/jdk-17.0.8.1+1/Contents/Home/bin/javac</executable>
+        </configuration>
+      </plugin>
+      -->
 
 
     </plugins>

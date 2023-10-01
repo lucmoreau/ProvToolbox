@@ -59,14 +59,14 @@ public class NarrativeService  implements Constants, InteropMediaType, SwaggerTa
             responses = { @ApiResponse(responseCode = "404", description = DOCUMENT_NOT_FOUND) })
     public Response explanations(@Context HttpServletResponse response,
                                  @Context Request request,
-                                 @PathParam("docId") String msg,
+                                 @PathParam("docId") String docId,
                                  @PathParam("expid") String explanationId,
                                  @Parameter(name = HEADER_PARAM_ACCEPT,
                                             description = "Accept header parameter",
                                             example = "text/plain,text/xml",
                                             required = false) @HeaderParam(HEADER_PARAM_ACCEPT) String accept) {
 
-        return narrativeLogic.explanations(response, request, msg, explanationId, accept);
+        return narrativeLogic.explanations(response, request, docId, explanationId, accept);
     }
 
     @GET

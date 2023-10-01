@@ -1,32 +1,35 @@
 package org.openprovenance.prov.scala
 
+import org.openprovenance.prov.scala.iface.{Narrator, XFactory}
+
 import java.io.File
 import org.openprovenance.prov.scala.immutable.{Document, ProvFactory, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input, Output}
 import org.openprovenance.prov.scala.nf.CommandLine
-import org.openprovenance.prov.scala.nlg.{Config, Narrative, Narrator}
+import org.openprovenance.prov.scala.narrator.XConfig
+import org.openprovenance.prov.scala.xplain.Narrative
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 
 class ExplanationSpec extends AnyFlatSpec with Matchers {
-    val EX_NS="http://example.org/"
-    val pf=new ProvFactory
-    val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
+  val EX_NS="http://example.org/"
+  val pf=new ProvFactory
+  val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory
 
-    def q(local: String): QualifiedName = {
-      new QualifiedName("ex",local,EX_NS)
-    }
+  def q(local: String): QualifiedName = {
+    new QualifiedName("ex",local,EX_NS)
+  }
 
 
-    def readDoc(f: String): Document = {
-      val in:Input=new FileInput(new File(f))
-      val doc=CommandLine.parseDocument(in)
-      doc
-    }
+  def readDoc(f: String): Document = {
+    val in:Input=FileInput(new File(f))
+    val doc=CommandLine.parseDocument(in)
+    doc
+  }
 
-  def makeConfig(template: String, profile0: String, arg_format_option: Int) = {
-    val config: Config = new Config {
+  def makeConfig(template: String, profile0: String, arg_format_option: Int): XConfig = {
+    val config: XConfig = new XConfig {
       override def snlg: Output = null
 
       override def languageAsFilep: Boolean = true
@@ -50,14 +53,16 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
     config
   }
 
+  val xFactory=new XFactory
+  val narrator: Narrator =xFactory.makeNarrator
 
 
   def explain(f:String, template:String, profile:String, format_option:Int=0): Map[String, List[String]] = {
     val doc=readDoc(f)
 
-    val text: Map[String, Narrative] =Narrator.narrate1(doc,makeConfig(template,profile,format_option))
+    val (text:Map[String, Narrative], _, _, _) = narrator.narrate(doc,makeConfig(template,profile,format_option))
 
-    Narrator.getTextOnly2(text)
+    narrator.getTextOnly(text)
   }
 
   var count=0
@@ -66,14 +71,14 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
     count = count + 1
     "Template " + template + "(" + (count) + ")" should "be processable" in {
 
-        val text = explain("src/test/resources/prov/loan/" + file, template, profile)
-        print(text)
-        if (testp) {
-          text.getOrElse(template, "") should be {
-            List(result)
-          }
+      val text = explain("src/test/resources/prov/loan/" + file, template, profile)
+      print(text)
+      if (testp) {
+        text.getOrElse(template, "") should be {
+          List(result)
         }
-        text
+      }
+      text
     }
   }
 

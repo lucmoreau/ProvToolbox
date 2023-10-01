@@ -1,22 +1,22 @@
-package org.openprovenance.prov.scala.nlg
+package org.openprovenance.prov.scala.xplain
 
-import java.io.File
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
+
 import com.fasterxml.jackson.databind.util.StdConverter
-import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.Kind.Kind
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.FileInput
+import org.openprovenance.prov.scala.narrator.{XConfig, XplainConfig}
 import org.openprovenance.prov.scala.nf.CommandLine.parseDocument
-import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Template}
+import org.openprovenance.prov.scala.nlg.SentenceMaker
+import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Plan}
 import org.openprovenance.prov.scala.nlgspec_transformer.{Environment, Language, SpecLoader, specTypes}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
 import org.openprovenance.prov.scala.query.{Processor, QuerySetup, StatementAccessor, StatementIndexer}
 import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFromStar}
 
+import java.io.File
 import scala.annotation.tailrec
 import scala.collection.mutable
 
@@ -26,74 +26,40 @@ class TreeConverter extends StdConverter[() => String, String] {
   }
 }
 
-class SNLGSerializer extends JsonSerializer[String] {
-  override def serialize(str: String, jsonGenerator: JsonGenerator, serializerProvider: SerializerProvider): Unit = {
-    jsonGenerator.writeRawValue(str)
-  }
-}
-
-case class Narrative (sentences: List[String] =List(),
-                      @JsonSerialize(contentUsing = classOf[SNLGSerializer])
-                      snlgs: List[String] =List(),
-                      @JsonSerialize(contentConverter = classOf[TreeConverter])
-                      trees: List[() => String] =List(),
-                      templates: List[Template]=List(),
-                      coverage: List[mutable.Set[Triple]]=List()) extends Ordered[Narrative] {
-  def add(sentence_material: ((String, String, () => String), Template, mutable.Set[Triple])): Narrative = {
-    val ((sentence,snlg,tree), template, triples) = sentence_material
-    Narrative(sentence :: sentences, snlg::snlgs, tree:: trees, template :: templates, triples :: coverage)
-  }
-
-  lazy val tr: Set[Triple] = coverage.map(_.toSet).fold(Set())((a1, a2) => a1 ++ a2)
-
-  override def compare(that: Narrative): Int = { //TODO: when coverage is equal, then prioritise according to number of statemetns.
-    val p1 = this.tr.subsetOf(that.tr)
-    val p2 = that.tr.subsetOf(this.tr)
-    if (p1) {
-      if (p2) 0 else -1
-    } else if (p2) 1 else 0
-  }
-}
 
 object RealiserFactory {
   val logger: Logger = LogManager.getLogger(classOf[RealiserFactory])
 
 }
 
-class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], profiles:Map[String, Object], infiles:String=null) {
+class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profiles:Map[String, Object], infiles:String=null) {
 
   import RealiserFactory._
 
 
-  def this(template:Template, dictionary: Dictionary, profiles:Map[String,Object]) = {
+  def this(template:Plan, dictionary: Dictionary, profiles:Map[String,Object]) = {
     this(Seq(template), Seq(dictionary), profiles, null)
   }
 
-  def this(triple: (Seq[Template],Seq[Dictionary], Map[String, Object]), infiles:String) ={
+  def this(triple: (Seq[Plan],Seq[Dictionary], Map[String, Object]), infiles:String) ={
     this(triple._1,triple._2,triple._3, infiles)
   }
 
-  def this(config:Config) = {
+  def this(config:XConfig) = {
     this(Language.read(config.language,config.languageAsFilep), config.infiles)
   }
 
   def this(s:String, filep:Boolean) = {
-    this(AConfig(language=Seq(s),languageAsFilep = filep))
+    this(XplainConfig(language=Seq(s),languageAsFilep = filep))
   }
 
   def this(seq:Seq[String], filep:Boolean) = {
-    this(AConfig(language=seq,languageAsFilep = filep))
+    this(XplainConfig(language=seq,languageAsFilep = filep))
   }
 
+  val names: Seq[(immutable.Kind.Value, Plan)] =templates.map(template => (QuerySetup.nameMapper(template.select(template.select.keys.head)(Keywords.TYPE)),template)).toSeq
 
- // val (templates,dictionaries,profiles):(Seq[Template],Seq[Dictionary], Map[String, Object]) = Language.read(vocabs,filep)
-
-  val namedIndex: Map[String, Template] =templates.map(t => (t.name,t)).toMap
-
-  val names: Seq[(immutable.Kind.Value, Template)] =templates.map(template => (QuerySetup.nameMapper(template.select(template.select.keys.head)(Keywords.TYPE)),template)).toSeq
-
-  val index: Map[immutable.Kind.Value, Set[Template]] =names.groupBy(_._1).view.mapValues(x => x.map(_._2).toSet).toMap
-
+  val index: Map[immutable.Kind.Value, Set[Plan]] =names.groupBy(_._1).view.mapValues(x => x.map(_._2).toSet).toMap
 
   def selectBestNarrative(narratives: Set[Narrative]): Narrative = {
     var count=1
@@ -127,7 +93,7 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
   */
 
 
-  def processQuery(template: Template, s: Statement, engine: Processor): List[Map[String, engine.RField]] = {
+  def processQuery(template: Plan, s: Statement, engine: Processor): List[Map[String, engine.RField]] = {
 
     val headStatementId=template.select.keys.head
     val headStatementType=template.select(headStatementId)(Keywords.TYPE)
@@ -159,7 +125,7 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
   }
 
 
-  def processQuery(template: Template, engine: Processor): List[Map[String, engine.RField]] = {
+  def processQuery(template: Plan, engine: Processor): List[Map[String, engine.RField]] = {
 
     val query: String = template.query match {
       case s: String => s
@@ -169,7 +135,6 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
     }
 
     val set: mutable.Set[engine.Record] = engine.newRecords()
-
 
     engine.evalAccumulate(query, set)
     val statements: List[Map[String, engine.RField]] = set.toSeq.map(engine.toMap2(_)).toList
@@ -220,8 +185,8 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
   }
 
   class Realiser(statements:Seq[immutable.Statement], documents: Map[String, Seq[immutable.Statement]])  {
-    val accessor=makeStatementAccessor(statements)
-    val accessors=documents.map{case (s:String, seq:Seq[Statement]) => (s,makeStatementAccessor(seq))}
+    val accessor: StatementAccessor = makeStatementAccessor(statements)
+    val accessors: Map[String, StatementAccessor] = documents.map{case (s:String, seq:Seq[Statement]) => (s,makeStatementAccessor(seq))}
 
     def realise(the_profile: String, templates: Seq[String] = Seq(), format_option: Int=0, allp: Boolean=true): Narrative = {
       if (allp) {
@@ -235,16 +200,12 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
       }
     }
 
-
-
-    val statementAccessorForDocument:(Option[String]=>StatementAccessor) = (s:Option[String]) => {
-      s match {
-        case None => accessor
-        case Some(s) => accessors(s)
-      }
+    val statementAccessorForDocument:(Option[String]=>StatementAccessor) = {
+      case None => accessor
+      case Some(s) => accessors(s)
     }
 
-    final def realise_plan(template: Template, the_profile: String, format_option: Int): Seq[(String, String, () => String)] = {
+    final def realise_plan(template: Plan, the_profile: String, format_option: Int): Seq[(String, String, () => String)] = {
       val context: Map[String, String] = provContext(template.context)
       val environment = Environment(context, dictionaries, profiles, the_profile)
       val engine = new Processor(statementAccessorForDocument, environment)
@@ -270,9 +231,9 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
     final def realise_one(statements: Seq[Statement],  the_profile: String, selected_templates: Seq[String], format_option: Int): Narrative = {
 
       val kinds: Set[Kind] =statements.map(_.enumType).toSet
-      val templates: Set[Template] =kinds.flatMap(kind => index.getOrElse(kind, Set[Template]())).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
+      val templates: Set[Plan] =kinds.flatMap(kind => index.getOrElse(kind, Set[Plan]())).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
 
-      val new_sentences: Set[((String, String, () => String), Template, mutable.Set[Triple])] = templates.flatMap(template => {
+      val new_sentences: Set[((String, String, () => String), Plan, mutable.Set[Triple])] = templates.flatMap(template => {
 
 
         val context: Map[String, String] = provContext(template.context)
@@ -306,7 +267,7 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
 
       })
 
-      val sentences: List[((String, String, () => String), Template, mutable.Set[Triple])] = new_sentences.toList
+      val sentences: List[((String, String, () => String), Plan, mutable.Set[Triple])] = new_sentences.toList
       Narrative(sentences.map { case ((v1, v2, v3), _, _) => v1 }, sentences.map { case ((v1, v2, v3), _, _) => v2 }, sentences.map { case ((v1, v2, v3), _, _) => v3 }, sentences.map { case (_, t, _) => t })
     }
 
@@ -325,12 +286,12 @@ class RealiserFactory(templates:Seq[Template], dictionaries:Seq[Dictionary], pro
 
         val kind: Kind = currentStatement.enumType
 
-        val templates: Set[Template] = index.getOrElse(kind, Set()).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
+        val templates: Set[Plan] = index.getOrElse(kind, Set()).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
 
         val accumulator2: Set[Narrative] =
           accumulator.flatMap((narrative_so_far: Narrative) => {
 
-            val new_sentences: Set[((String, String, () => String), Template, mutable.Set[Triple])] = templates.flatMap(template => {
+            val new_sentences: Set[((String, String, () => String), Plan, mutable.Set[Triple])] = templates.flatMap(template => {
 
 
               val context: Map[String, String] = provContext(template.context)

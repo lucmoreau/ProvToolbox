@@ -19,10 +19,10 @@ import scala.collection.parallel.CollectionConverters._
 
 
 
-object CommandLine {
+object CommandLine extends Constants {
 
 
-  val parser: OptionParser[Config] = ProvmanOptionParser.parser
+  val parser: OptionParser[Config] = new ProvmanOptionParser().parser
 
 
   val xFactory: XFactory = new XFactory()
@@ -47,11 +47,11 @@ object CommandLine {
           case "summary.compare" => summary_compare(config.infile, config.summaryDescriptionFile,
             config.withSummaryFile, config.withSummaryDescriptionFile, config)
           case "normalize.old" => normalizeOLDSTUFF(config)
-          case "normalize" => normalize(config)
+          case NORMALIZE => normalize(config)
           case "sign" => sign(config)
           case "signature" => signature(config)
-          case "translate" => translate(config.infile, config)
-          case "expand" => if (config.time == null) {
+          case TRANSLATE => translate(config.infile, config)
+          case EXPAND => if (config.time == null) {
             expandExport(config.infile, config)
           } else {
             expandTime(config.infile, config, config.time)

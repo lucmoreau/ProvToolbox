@@ -8,7 +8,7 @@ import java.io.File
 
 
 
-class ProvmanOptionParser extends Constants {
+class CommandLineOptionParser extends Constants {
   implicit val outputRead: scopt.Read[Output] =
     scopt.Read.reads { x => if (x == "-") StandardOutput() else {
       FileOutput(new File(x))

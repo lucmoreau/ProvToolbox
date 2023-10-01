@@ -22,7 +22,7 @@ import scala.collection.parallel.CollectionConverters._
 object CommandLine extends Constants {
 
 
-  val parser: OptionParser[Config] = new ProvmanOptionParser().parser
+  val parser: OptionParser[Config] = new CommandLineOptionParser().parser
 
 
   val xFactory: XFactory = new XFactory()

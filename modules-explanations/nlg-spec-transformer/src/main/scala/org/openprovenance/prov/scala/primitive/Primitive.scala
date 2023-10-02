@@ -326,7 +326,7 @@ object Primitive {
     val accessor = arg1.head.toString
     val myValue = value.head.asInstanceOf[QualifiedName]
 
-   // println("lookup-attribute " + accessor + " " + myValue)
+    // println("lookup-attribute " + accessor + " " + myValue)
 
 
     accessor match {
@@ -343,7 +343,7 @@ object Primitive {
         }
         println("Found adverb " + amap)
         amap
-     // case "self" => Json.toJsonSentence(Map[String, Object]("@splice" -> myValue.toString))
+      // case "self" => Json.toJsonSentence(Map[String, Object]("@splice" -> myValue.toString))
       case _ => throw new UnsupportedOperationException("environment lookup-attribute accessor " + accessor)
     }
   }
@@ -546,7 +546,7 @@ object Primitive {
     }
   }
 
-   def getNonProvAttributes(value: Statement): Seq[Attribute] = {
+  def getNonProvAttributes(value: Statement): Seq[Attribute] = {
     value.getAttributes.filterNot(a => a.elementName.namespaceURI.contentEquals(provns) || a.elementName.localPart.contentEquals("created_at"))
       .toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
   }
@@ -694,14 +694,11 @@ object Primitive {
   }
 
 
-    def applyPatternFun(function: String, environment: Environment, arg1: String, arg2: Option[String]): Object = {
-    //println("-> applyPatternFun " + environment + " " + arg1)
+  def applyPatternFun(function: String, environment: Environment, arg1: String, arg2: Option[String]): Object = {
     function match {
       case "profile-features" =>
         val profiles: Map[String, Map[String, Object]] =environment.profiles(arg1).asInstanceOf[Map[String,Map[String,Object]]]
-        val default: Map[String, Object] =Map("features" -> Map())
         val arr: Array[Object] =environment.theprofile.flatMap{ p:String => profiles.get(p)}.flatMap(amap => amap.get("features"))
-        //profiles.getOrElse(environment.theprofile,default)("features")
         if (arr.isEmpty) {
           Map()
         } else {
@@ -718,11 +715,6 @@ object Primitive {
         }
         val set1: Set[String] = arg1.split(",").toSet
         val result: Set[String] =set1 -- set2
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
         result
 
 
@@ -736,11 +728,6 @@ object Primitive {
         }
         val set1: Set[String] = arg1.split(",").map(_.replace("[", "").replace("]", "")).toSet
         val result: Set[String] =set1 -- set2
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
         result
 
 
@@ -767,12 +754,6 @@ object Primitive {
         }
 
         val terms: Set[Object] =result.map(res => doFun1("lookup-attribute",Seq(fun(res)),Seq("noun_phrase"),environment))
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
-        //        println("terms: " + terms)
         terms
 
       case "difference-lookup-attributeOLD" =>
@@ -798,12 +779,6 @@ object Primitive {
         }
 
         val terms: Set[Object] =result.map(res => doFun1("lookup-attribute",Seq(fun(res)),Seq("noun_phrase"),environment))
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
-        //        println("terms: " + terms)
         terms
     }
 

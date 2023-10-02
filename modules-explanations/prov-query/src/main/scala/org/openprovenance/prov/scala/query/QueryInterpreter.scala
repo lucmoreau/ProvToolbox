@@ -18,7 +18,7 @@ object QueryInterpreter {
 
 case class Record(fields: RFields, schema: Schema) {
   def apply(key: String): RField = Try(fields(schema indexOf key)).getOrElse[RField](throw new ArrayIndexOutOfBoundsException("Record.apply(key): failed to find " + key + " in " + schema))
-  def apply(keys: Schema): RFields = keys.map(k => apply(k))
+  def apply(keys: Schema): RFields = keys.map(key => apply(key))
 }
 
 trait QueryInterpreter extends SummaryTypesNames {
@@ -130,7 +130,7 @@ trait QueryInterpreter extends SummaryTypesNames {
     //case Order(f,parent,_)        => Schema()
   }
 
-  val statementFinder: Option[String] => StatementAccessor
+  val statementFinder: Option[String] => StatementAccessor[Statement]
 
 
   def execOpFollowedbyNull(o: Operator)(yld: Record => Unit): Unit = {

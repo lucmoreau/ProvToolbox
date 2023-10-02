@@ -161,14 +161,14 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   }
 
 
-  def makeStatementAccessor(statements:Seq[immutable.Statement]): StatementAccessor = {
+  def makeStatementAccessor(statements:Seq[immutable.Statement]): StatementAccessor[Statement] = {
 
     val idx: Map[immutable.Kind.Value, List[Statement]] = StatementIndexer.splitByStatementType(statements)
 
     val (allDerivationsPlus, allDerivationsStar): (List[WasDerivedFromPlus], List[WasDerivedFromStar]) = StatementIndexer.computeDerivationClosure(idx)
 
 
-    new StatementAccessor {
+    new StatementAccessor[Statement] {
       override def findStatement(type_string: String): List[Statement] = {
         val kind = QuerySetup.nameMapper(type_string)
         if (kind == Kind.winfl) {
@@ -176,7 +176,6 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
             case "provext:WasDerivedFromPlus" => allDerivationsPlus
             case "provext:WasDerivedFromStar" => allDerivationsStar
           }
-
         } else {
           idx(kind)
         }
@@ -186,8 +185,8 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   }
 
   class Realiser(statements:Seq[immutable.Statement], documents: Map[String, Seq[immutable.Statement]])  {
-    val accessor: StatementAccessor = makeStatementAccessor(statements)
-    val accessors: Map[String, StatementAccessor] = documents.map{case (s:String, seq:Seq[Statement]) => (s,makeStatementAccessor(seq))}
+    val accessor: StatementAccessor[Statement] = makeStatementAccessor(statements)
+    val accessors: Map[String, StatementAccessor[Statement]] = documents.map{case (s:String, seq:Seq[Statement]) => (s,makeStatementAccessor(seq))}
 
     def realise(the_profile: String, templates: Seq[String] = Seq(), format_option: Int=0, allp: Boolean=true): Narrative = {
       if (allp) {
@@ -201,7 +200,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
       }
     }
 
-    val statementAccessorForDocument:(Option[String]=>StatementAccessor) = {
+    val statementAccessorForDocument:(Option[String]=>StatementAccessor[Statement]) = {
       case None => accessor
       case Some(s) => accessors(s)
     }

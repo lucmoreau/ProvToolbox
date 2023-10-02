@@ -13,9 +13,10 @@ import nlg.wrapper._
 import org.openprovenance.prov.model.Bundle
 import org.openprovenance.prov.scala.immutable.{ProvFactory, Statement}
 import org.openprovenance.prov.scala.jsonld11.serialization.{ProvDeserialiser, ProvMixin2}
-import org.openprovenance.prov.scala.nlgspec_transformer.defs.{AdjectivePhrase, AdverbPhrase, Clause, CoordinatedPhrase, Dictionary, Funcall, NounPhrase, Paragraph, PhraseIterator, PrepositionPhrase, StringPhrase, Plan, VerbPhrase}
+import org.openprovenance.prov.scala.nlgspec_transformer.defs.{AdjectivePhrase, AdverbPhrase, Clause, CoordinatedPhrase, Dictionary, Funcall, NounPhrase, Paragraph, PhraseIterator, Plan, PrepositionPhrase, StringPhrase, VerbPhrase}
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.Phrase
 import org.openprovenance.prov.scala.primitive
+import org.openprovenance.prov.scala.primitive.Keywords.FUNCTION
 import org.openprovenance.prov.scala.primitive.{Keywords, Primitive, Result}
 import org.openprovenance.prov.scala.wrapper.defs.{lexicon, nlgFactory}
 import org.openprovenance.prov.scala.wrapper.{BlocklyExport, ExportableToBlockly, IO}
@@ -1194,7 +1195,7 @@ object defs  {
       case Some(_) => {
         //println("Evaluating features (1)" + m)
 
-        val fun: Option[String] = m1.get(Keywords.FUNCTION).asInstanceOf[Option[String]]
+        val fun: Option[String] = m1.get(FUNCTION).asInstanceOf[Option[String]]
         val res = fun match {
           case None => Map().asInstanceOf[Features]
           case Some(f) =>

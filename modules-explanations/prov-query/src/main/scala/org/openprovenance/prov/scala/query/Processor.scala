@@ -12,17 +12,17 @@ import org.parboiled2.ParseError
 import scala.annotation.unused
 import scala.collection.mutable
 
-trait StatementAccessor {
+trait StatementAccessor[Statement] {
   def findStatement(type_string: String): List[Statement]
 }
 
 
 
-class Processor (finder:Option[String]=>StatementAccessor, env: Environment) extends QueryInterpreter  {
+class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Environment) extends QueryInterpreter  {
 
   val logger: Logger = LogManager.getLogger(classOf[Processor])
 
-  override val statementFinder: Option[String]=>StatementAccessor = finder
+  override val statementFinder: Option[String]=>StatementAccessor[Statement] = finder
   override val environment: Environment = env
 
   @unused
@@ -55,19 +55,11 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
   @unused
   def toStatements(set: mutable.Set[Record]): Set[Statement] = {
-    val res1 =set.map(rec => {
-      val f: Set[Statement] =rec.apply(rec.schema).map(toStatement).toSet
-      f
-    }).toSet.flatten
-    res1
+    set.map(rec => rec.apply(rec.schema).map(toStatement).toSet).toSet.flatten
   }
 
   def toFields (records: mutable.Set[Record]): Set[RField] = {
-    val res1 =records.map(rec => {
-      val f: Set[RField] =rec.apply(rec.schema).toSet
-      f
-    }).toSet.flatten
-    res1
+    records.map(record => record.apply(record.schema).toSet).toSet.flatten
   }
 
   def toMap(rec: Record): Map[String, Statement] = {
@@ -76,9 +68,9 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     schema.zip(values).toMap
   }
 
-  def toMap2(rec: Record): Map[String, RField] = {
-    val schema: Schema =rec.schema
-    val values: RFields =rec(schema)
+  def toMap2(record: Record): Map[String, RField] = {
+    val schema: Schema  = record.schema
+    val values: RFields = record(schema)
     schema.zip(values).toMap
   }
 

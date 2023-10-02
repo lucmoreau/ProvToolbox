@@ -95,7 +95,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     def interpreter:  QueryInterpreter with HasGoMethod =
       new QueryInterpreter with HasGoMethod  {
 
-        override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
+        override val statementFinder:Option[String]=>StatementAccessor[Statement]=doc_realiser
 
         override val environment: Environment = Environment(Map("ex" ->"http://example.org/#",
           "foaf" -> "http://xmlns.com/foaf/0.1/",
@@ -147,7 +147,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     def interpreter: QueryInterpreter with HasGoMethod  =
       new QueryInterpreter with HasGoMethod  {
 
-        override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
+        override val statementFinder:Option[String]=>StatementAccessor[Statement]=doc_realiser
 
         override val environment: Environment = Environment(Map("ex" ->"http://example.org/#",
           "foaf" -> "http://xmlns.com/foaf/0.1/",
@@ -258,7 +258,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     def interpreter:  QueryInterpreter with HasGoMethod  =
       new QueryInterpreter with HasGoMethod {
 
-        override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
+        override val statementFinder:Option[String]=>StatementAccessor[Statement]=doc_realiser
 
         override val environment: Environment = Environment(Map("ex" ->"http://example.org/#",
           "foaf" -> "http://xmlns.com/foaf/0.1/",
@@ -329,7 +329,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
       new QueryInterpreter with HasGoMethod   {
 
 
-        override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
+        override val statementFinder:Option[String]=>StatementAccessor[Statement]=doc_realiser
 
         override val environment: Environment = Environment(Map("ex" ->"http://example.org/#",
           "foaf" -> "http://xmlns.com/foaf/0.1/",
@@ -408,7 +408,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
       new QueryInterpreter with HasGoMethod  {
 
 
-        override val statementFinder: Option[String] => StatementAccessor = doc_realiser
+        override val statementFinder: Option[String] => StatementAccessor[Statement] = doc_realiser
 
         override val environment: Environment = Environment(Map("ex" -> "http://example.org/#",
           "foaf" -> "http://xmlns.com/foaf/0.1/",

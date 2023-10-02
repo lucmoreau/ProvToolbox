@@ -258,7 +258,7 @@ class UtilsSummary (pf:ProvFactory) {
       val context: Map[String, String] = Map()
       val environment = Environment(context, null, null, new Array[String](0), List())
 
-      val statementAccessorForDocument: (Option[String] => StatementAccessor) = (s: Option[String]) => {
+      val statementAccessorForDocument: (Option[String] => StatementAccessor[Statement]) = (s: Option[String]) => {
         null
       }
       val engine = new Processor(statementAccessorForDocument, environment) with SummaryQueryGenerator

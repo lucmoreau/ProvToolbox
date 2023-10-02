@@ -1,8 +1,8 @@
 package org.openprovenance.prov.scala.interop
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine}
-import org.openprovenance.prov.scala.immutable.{Document, StatementOrBundle}
+import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine, QueryResult}
+import org.openprovenance.prov.scala.immutable.{Document, Statement, StatementOrBundle}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
@@ -14,7 +14,7 @@ import org.openprovenance.prov.validation.EventMatrix
 
 import java.io.{BufferedWriter, FileWriter}
 
-class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEngine) {
+class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEngine[Statement, RField]) {
   def narrativeExport(config: Config,
                       text: Map[String, Narrative],
                       doc2: Document,
@@ -72,10 +72,10 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
 
     val rf = new RealiserFactory(config)
 
-    val accessor: StatementAccessor = rf.makeStatementAccessor(doc.statements().toSeq)
-    val accessors: Map[String, StatementAccessor] = rf.accessors.map { case (s, ss) => (s, rf.makeStatementAccessor(ss)) } //alternate_files.map{case (s,f) => (s, rf.makeStatementAccessor(parseDocument(new FileInput(new File(f))).statements().toSeq))}
+    val accessor: StatementAccessor[Statement] = rf.makeStatementAccessor(doc.statements().toSeq)
+    val accessors: Map[String, StatementAccessor[Statement]] = rf.accessors.map { case (s, ss) => (s, rf.makeStatementAccessor(ss)) } //alternate_files.map{case (s,f) => (s, rf.makeStatementAccessor(parseDocument(new FileInput(new File(f))).statements().toSeq))}
 
-    val statementAccessorForDocument: (Option[String] => StatementAccessor) = {
+    val statementAccessorForDocument: Option[String] => StatementAccessor[Statement] = {
       case None => accessor
       case Some(s) => accessors(s)
     }
@@ -85,14 +85,16 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
     val queryContents: String = try source.mkString finally source.close()
 
 
-    processQuery(queryContents, environment, statementAccessorForDocument)
+    val result: QueryResult[RField] =processQuery(queryContents, environment, statementAccessorForDocument)
+    println("found " + result.get.size + " records (and " + result.get.headOption.getOrElse(Map()).keySet.size + " fields)")
+
 
     val statementOrBundle: Iterable[StatementOrBundle] = null
     val doc2 = new Document(statementOrBundle, doc.namespace)
     outputer(doc2, outConfig)
   }
 
-  def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor): Set[RField] = {
+  def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor[Statement]): QueryResult[RField] = {
     queryEngine.processQuery(queryContents, environment, statementAccessorForDocument)
   }
 

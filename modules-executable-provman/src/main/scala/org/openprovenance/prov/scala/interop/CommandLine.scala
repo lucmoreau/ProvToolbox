@@ -2,13 +2,14 @@ package org.openprovenance.prov.scala.interop
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QFactory, QueryEngine, XFactory}
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
-import org.openprovenance.prov.scala.immutable.{Document, Format}
+import org.openprovenance.prov.scala.immutable.{Document, Format, Statement}
 import org.openprovenance.prov.scala.interop.CommandLine.uExpand.{bindings, bindings_v2, bindings_v3, expandExport, expandTime}
 import org.openprovenance.prov.scala.interop.CommandLine.uExplain.{explanationExport, narrativeExport, processQueryAndOutput}
 import org.openprovenance.prov.scala.interop.CommandLine.uSignature.{normalize, sign, signature}
 import org.openprovenance.prov.scala.interop.CommandLine.uSummary.{normalizeOLDSTUFF, summarize, summaryDraw, summary_compare}
 import org.openprovenance.prov.scala.interop.CommandLine.uValidate.validate
 import org.openprovenance.prov.scala.nf.CommandLine.{parseDocument, toBufferedSource}
+import org.openprovenance.prov.scala.query.QueryInterpreter.RField
 import org.openprovenance.prov.scala.streaming.{FileStreamer, SimpleStreamStatsPrint, Tee}
 import scopt.OptionParser
 
@@ -30,7 +31,7 @@ object CommandLine extends Constants {
   val explainer: Explainer = xFactory.makeExplainer
 
   val qFactory: QFactory = new QFactory()
-  val queryEngine: QueryEngine = qFactory.makeQueryEnfine
+  val queryEngine: QueryEngine[Statement, RField] = qFactory.makeQueryEnfine
 
   val uExplain: UtilsXplain = new UtilsXplain(narrator, explainer, queryEngine)
   val uSignature: UtilsSignature = new UtilsSignature()

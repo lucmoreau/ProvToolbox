@@ -10,11 +10,17 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/Disjoint.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/utilities/Disjoint.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsSummary.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsSummary.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/xplain/RealiserFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/xplain/RealiserFactory.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QueryParserSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QueryParserSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -188,7 +194,7 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.ExplanationSpec">
+  <component name="RunManager" selected="ScalaTest.QuerySpec">
     <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-translator" />
       <extension name="coverage">
@@ -285,12 +291,6 @@
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="test.default.json" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.default.json" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="ExplanationSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-explanations" />
       <option name="allowRunningInParallel" value="false" />
@@ -317,6 +317,20 @@
       <option name="shortenClasspath" value="NONE" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
       <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="QuerySpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="prov-query" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="shortenClasspath" value="NONE" />
+      <option name="testClassPath" value="org.openprovenance.prov.scala.query.QuerySpec" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -350,17 +364,17 @@
       <item itemvalue="JUnit.TranslateIT.testMembership2" />
       <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
       <item itemvalue="Makefile Target.test.default" />
-      <item itemvalue="Makefile Target.test.default.json" />
       <item itemvalue="ScalaTest.ModelSpec" />
+      <item itemvalue="ScalaTest.QuerySpec" />
       <item itemvalue="ScalaTest.ExplanationSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="ScalaTest.QuerySpec" />
         <item itemvalue="ScalaTest.ExplanationSpec" />
         <item itemvalue="JUnit.TranslateIT.testMembership2" />
         <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
         <item itemvalue="Makefile Target.test.default" />
-        <item itemvalue="Makefile Target.test.default.json" />
       </list>
     </recent_temporary>
   </component>
@@ -748,7 +762,7 @@
       <workItem from="1695190967915" duration="21095000" />
       <workItem from="1695355590282" duration="6546000" />
       <workItem from="1696016222464" duration="32606000" />
-      <workItem from="1696237138764" duration="15305000" />
+      <workItem from="1696237138764" duration="19103000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

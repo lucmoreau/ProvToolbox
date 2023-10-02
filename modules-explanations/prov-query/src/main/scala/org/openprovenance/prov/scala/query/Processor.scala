@@ -7,7 +7,6 @@ import org.openprovenance.prov.scala.interop.{FileOutput, Output}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.QueryAST.Schema
 import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields}
-import org.openprovenance.prov.scala.query.Run.MainEngine
 import org.parboiled2.ParseError
 
 import scala.annotation.unused
@@ -25,12 +24,10 @@ trait QueryAble extends QueryInterpreter {
 }*/
 
 
-class Processor (finder:Option[String]=>StatementAccessor, env: Environment) extends Engine with MainEngine with QueryInterpreter  {
+class Processor (finder:Option[String]=>StatementAccessor, env: Environment) extends QueryInterpreter  {
 
   val logger: Logger = LogManager.getLogger(classOf[Processor])
-  override def liftTable(n: QueryAST.Table): QueryAST.Table = n
 
-  override def eval(): Unit = run()
   override val statementFinder: Option[String]=>StatementAccessor = finder
   override val environment: Environment = env
 

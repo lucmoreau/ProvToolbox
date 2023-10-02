@@ -9,7 +9,6 @@ import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.nf.CommandLine
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.QueryAST.toSchema
-import org.openprovenance.prov.scala.query.Run.MainEngine
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.openprovenance.prov.scala.query.Value
 import org.parboiled2.ParseError
@@ -20,8 +19,8 @@ import java.io.File
 import scala.annotation.unused
 import scala.util.{Failure, Success}
 
-trait HasLuc {
-  def luc (): Unit
+trait HasGoMethod {
+  def go(): Unit
 }
 
 class QuerySpec extends AnyFlatSpec with Matchers  {
@@ -103,10 +102,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
-      new Engine with MainEngine with QueryInterpreter with HasLuc  {
-        override def liftTable(n: QueryAST.Table): QueryAST.Table = n
-        override def eval(): Unit = run()
+    def engine:  QueryInterpreter with HasGoMethod =
+      new QueryInterpreter with HasGoMethod  {
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -131,7 +128,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         =Filter(Eq("includesQualifiedName",Property("ag","prov:type"),Value("prov:Person")),Scan("prov:Agent", toSchema("ag"), None))
 
 
-        def luc (): Unit = {
+        def go(): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
           execQuery(Print(t1))
           execQuery(Print(t2))
@@ -141,7 +138,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.luc()
+    engine.go()
 
   }
 
@@ -157,11 +154,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
-      new Engine with MainEngine with QueryInterpreter with HasLuc  {
-        override def liftTable(n: QueryAST.Table): QueryAST.Table = n
-
-        override def eval(): Unit = run()
+    def engine: QueryInterpreter with HasGoMethod  =
+      new QueryInterpreter with HasGoMethod  {
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -229,7 +223,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
 
-          def luc (): Unit = {
+          def go(): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
          /* execQuery(Print(_reviewing))
 
@@ -252,7 +246,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.luc()
+    engine.go()
 
   }
 
@@ -271,11 +265,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
-      new Engine with MainEngine with QueryInterpreter  with HasLuc {
-        override def liftTable(n: QueryAST.Table): QueryAST.Table = n
-
-        override def eval(): Unit = run()
+    def engine:  QueryInterpreter with HasGoMethod  =
+      new QueryInterpreter with HasGoMethod {
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -313,7 +304,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         }
 
 
-        def luc (): Unit = {
+        def go(): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
 
 
@@ -325,7 +316,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.luc()
+    engine.go()
 
   }
 
@@ -344,11 +335,9 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
-      new Engine with MainEngine with QueryInterpreter with HasLuc  {
-        override def liftTable(n: QueryAST.Table): QueryAST.Table = n
+    def engine: QueryInterpreter with HasGoMethod  =
+      new QueryInterpreter with HasGoMethod   {
 
-        override def eval(): Unit = run()
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -402,13 +391,13 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         }
 
 
-        def luc (): Unit = {
+        def go(): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
           execQuery(Print(responsibility1_query))
         }
       }
 
-    engine.luc()
+    engine.go()
 
   }
 
@@ -425,11 +414,9 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with QueryInterpreter with HasLuc =
-      new Engine with QueryInterpreter with HasLuc {
-        override def liftTable(n: QueryAST.Table): QueryAST.Table = n
+    def engine: QueryInterpreter with HasGoMethod =
+      new QueryInterpreter with HasGoMethod  {
 
-        override def eval(): Unit = run()
 
         override val statementFinder: Option[String] => StatementAccessor = doc_realiser
 
@@ -530,7 +517,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
             Scan("prov:WasGeneratedBy",toSchema("wgb"), None),"wgb","activity"),"wgb","entity",Scan("prov:Entity",toSchema("pipeline"), None),"pipeline","id"),"pipeline","id",Scan("prov:WasDerivedFrom",toSchema("wdf"), None),
             "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",toSchema("recommendation"), None),"recommendation","id")))))
 
-        def luc (): Unit = {
+        def go(): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
 
           t1 should be (ast1)
@@ -549,12 +536,9 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
         }
 
-        override def query: String = ???
-
-        override def filename: String = ???
       }
 
-    engine.luc()
+    engine.go()
 
   }
 

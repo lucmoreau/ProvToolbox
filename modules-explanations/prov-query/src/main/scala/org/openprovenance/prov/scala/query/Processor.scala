@@ -62,8 +62,8 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     res1
   }
 
-  def toFields (set: mutable.Set[Record]): Set[RField] = {
-    val res1 =set.map(rec => {
+  def toFields (records: mutable.Set[Record]): Set[RField] = {
+    val res1 =records.map(rec => {
       val f: Set[RField] =rec.apply(rec.schema).toSet
       f
     }).toSet.flatten
@@ -91,7 +91,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
     val p=new ProvQLParser( s, ns)
     p.query.run() match {
-      case Success(ast) => Some(ast.asInstanceOf[Operator])
+      case Success(ast) => Some(ast)
       case Failure(e: ParseError) => println(p.formatError(e)); None
       case Failure(e) =>e.printStackTrace(); None
     }

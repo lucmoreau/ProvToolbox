@@ -1,6 +1,3 @@
-
-
-
 package org.openprovenance.prov.scala.query
 
 import org.openprovenance.prov.model.Namespace
@@ -9,8 +6,8 @@ import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.nf.CommandLine
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.QueryAST.toSchema
-import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.openprovenance.prov.scala.query.Value
+import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.parboiled2.ParseError
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

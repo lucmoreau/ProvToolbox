@@ -7,14 +7,13 @@ import scala.collection.mutable
 class QFactory {
   def makeQueryEnfine: QueryEngine =
     new QueryEngine {
-      override def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor): Set[QueryInterpreter.RField] = {
-        val engine = new Processor(statementAccessorForDocument, environment)
-        val set: mutable.Set[Record] = engine.newRecords()
-        engine.evalAccumulate(queryContents, set)
-        val result: Set[QueryInterpreter.RField] = engine.toFields(set)
-        println("found " + set.size + " records (and " + result.size + " fields)")
+      override def processQuery(theQuery: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor): Set[QueryInterpreter.RField] = {
+        val queryProcessor = new Processor(statementAccessorForDocument, environment)
+        val records: mutable.Set[Record] = queryProcessor.newRecords()
+        queryProcessor.evalAccumulate(theQuery, records)
+        val result: Set[QueryInterpreter.RField] = queryProcessor.toFields(records)
+        println("found " + records.size + " records (and " + result.size + " fields)")
         result
       }
     }
-
 }

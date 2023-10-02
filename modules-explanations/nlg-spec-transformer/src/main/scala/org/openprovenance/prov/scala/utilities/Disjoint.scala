@@ -1,7 +1,8 @@
 package org.openprovenance.prov.scala.utilities
 
-case class OrType[A,B](a: Option[A], b: Option[B]) {
-}
+case class OrType[A,B](a: Option[A], b: Option[B]) {}
+case class OrType3[A,B,C](a: Option[A], b: Option[B], c: Option[C]) {}
+
 
 object OrType {
   import scala.language.implicitConversions
@@ -15,24 +16,15 @@ object OrType {
   private def na[A,B](n: Nothing): or[A,B] = { new OrType(None, None) }
 
   // implicit defs - stuttering-or
-  implicit def noneToOr2[A,B](n: Nothing): or[A,B] =
-  { na(n) }
-  implicit def aToOr2[A,B](a: A): or[A,B] =
-  { da(a) }
-  implicit def bToOr2[A,B](b: B): or[A,B] =
-  { db(b) }
-  implicit def aToOr3[A,B,C](a: A): or[or[A,B],C] =
-  { da(da(a)) }
-  implicit def bToOr3[A,B,C](b: B): or[or[A,B],C] =
-  { da(db(b)) }
-  implicit def aToOr4[A,B,C,D](a: A): or[or[or[A,B],C],D] =
-  { da(da(da(a))) }
-  implicit def bToOr4[A,B,C,D](b: B): or[or[or[A,B],C],D] =
-  { da(da(db(b))) }
-  implicit def aToOr5[A,B,C,D,E](a: A): or[or[or[or[A,B],C],D],E] =
-  { da(da(da(da(a)))) }
-  implicit def bToOr5[A,B,C,D,E](b: B): or[or[or[or[A,B],C],D],E] =
-  { da(da(da(db(b)))) }
+  implicit def noneToOr2[A,B](n: Nothing): or[A,B] = { na(n) }
+  implicit def aToOr2[A,B](a: A): or[A,B] = { da(a) }
+  implicit def bToOr2[A,B](b: B): or[A,B] = { db(b) }
+  implicit def aToOr3[A,B,C](a: A): or[or[A,B],C] = { da(da(a)) }
+  implicit def bToOr3[A,B,C](b: B): or[or[A,B],C] = { da(db(b)) }
+  implicit def aToOr4[A,B,C,D](a: A): or[or[or[A,B],C],D] = { da(da(da(a))) }
+  implicit def bToOr4[A,B,C,D](b: B): or[or[or[A,B],C],D] = { da(da(db(b))) }
+  implicit def aToOr5[A,B,C,D,E](a: A): or[or[or[or[A,B],C],D],E] = { da(da(da(da(a)))) }
+  implicit def bToOr5[A,B,C,D,E](b: B): or[or[or[or[A,B],C],D],E] = { da(da(da(db(b)))) }
   // more? ...
 
 }

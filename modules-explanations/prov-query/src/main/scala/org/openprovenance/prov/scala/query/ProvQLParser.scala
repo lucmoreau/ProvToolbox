@@ -9,7 +9,6 @@ import org.parboiled2.support.hlist._
 
 
 trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
-
   override def namespaceDeclarations: Rule[HNil, HNil] = rule  {	 zeroOrMore (namespaceDeclaration) ~ WS }
 
   def query: Rule[HNil, Operator :: HNil]  =
@@ -38,10 +37,10 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
     rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "ljoin" ~ WS ~ joinClause2 ~> makeTableLJoin)}
 
   def pred: Rule[HNil, Predicate :: HNil] = rule {
-      ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
-               "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
-               "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
-               "exists" ~ WS ~> makeExists ~ WS ) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
+    ref  ~ ( ">=" ~ WS ~ ref ~> makeIncludes ~ WS |
+      "!>=" ~ WS ~ ref ~> makeIncludesNot ~ WS |
+      "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
+      "exists" ~ WS ~> makeExists ~ WS ) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
 
   def joinClause2: Rule[HNil, (Ref, Ref) :: HNil] = rule {
     ref  ~ WS ~ "=" ~ WS ~ ref ~> makeJoinPair ~ WS }
@@ -56,8 +55,8 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
 
   def ref: Rule[HNil, Ref :: HNil] = rule {
     (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS   |
-                        "." ~ WS ~ fieldIdent ~> makeField ~ WS ) ) |
-    '\'' ~ qualified_name ~ '\'' ~> makeValue ~ WS
+      "." ~ WS ~ fieldIdent ~> makeField ~ WS ) ) |
+      '\'' ~ qualified_name ~ '\'' ~> makeValue ~ WS
     /*|
       """'[^']*'""".r ^^ (s => Value(s.drop(1).dropRight(1))) */ /* |
       """[0-9]+""".r ^^ (s => Value(s.toInt))*/
@@ -141,7 +140,6 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
       case _ => throw new IllegalStateException("illegal case")
     }
 
-
   override def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator =
     (op1,op2,pair) => pair match {
       case (field1:Field, field2:Field) => LeftJoin(op1,field1.name,field1.field, op2,  field2.name,field2.field)
@@ -151,9 +149,6 @@ class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends 
   override def makeJoin1:(Operator, Seq[Operator]) => Operator =
     (op, _) => op
 
-
   override def makeGroup:(Operator, Seq[String], Seq[String], String, Option[Ref]) => Operator = (op,keys,agg,kind,ref) => Group(toSchema(keys:_*),toSchema(agg:_*),op, kind, ref)
-
-
 
 }

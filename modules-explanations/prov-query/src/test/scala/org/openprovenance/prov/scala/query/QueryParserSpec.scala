@@ -3,10 +3,10 @@ package org.openprovenance.prov.scala.query
 
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{ProvFactory, QualifiedName}
+import org.openprovenance.prov.scala.query.QueryAST.toSchema
 import org.parboiled2.ParseError
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.openprovenance.prov.scala.query.QueryAST.{Schema, toSchema}
 
 import scala.util.{Failure, Success}
 

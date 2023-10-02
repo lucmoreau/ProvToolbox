@@ -460,10 +460,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
           "prov" -> "http://www.w3.org/ns/prov#").foreach{case (p,u) => ns2.register(p,u)}
 
 
-        val proc=new Processor(null,null)
-
         def doParse(s: String): Operator =  {
-          val p = new ProvQLParser(proc, s, ns2)
+          val p = new ProvQLParser(s, ns2)
           p.query.run() match {
             case Success(ast) => println("parse " + ast); ast
             case Failure(e: ParseError) => println(p.formatError(e)); null

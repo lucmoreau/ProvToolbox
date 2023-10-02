@@ -90,7 +90,7 @@ trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
   def makeOr: (Predicate,Predicate) => Predicate = (p,q) => OrPred(p,q)
 }
 
-class ProvQLParser (val proc: Processor, override val input: ParserInput, val ns: Namespace) extends PQLParser {
+class ProvQLParser (override val input: ParserInput, val ns: Namespace) extends PQLParser {
   override def theNamespace: () => Namespace = () => ns
 
   override val makeText: String => String =  (text: String) => text

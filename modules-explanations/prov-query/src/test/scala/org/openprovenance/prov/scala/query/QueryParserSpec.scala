@@ -26,14 +26,12 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
   val ns2=new Namespace
   ns2.addKnownNamespaces()
 
-  val proc=new Processor(null,null)
-
 
 
   def doCheckQuery(s: String): Operator = {
-    val p=new ProvQLParser(proc, s,ns2)
+    val p=new ProvQLParser(s,ns2)
     p.query.run() match {
-      case Success(ast) => println("parse " + ast); ast.asInstanceOf[Operator]
+      case Success(ast) => println("parse " + ast); ast
       case Failure(e: ParseError) => println(p.formatError(e)); null
       case Failure(e) =>e.printStackTrace(); null
     }

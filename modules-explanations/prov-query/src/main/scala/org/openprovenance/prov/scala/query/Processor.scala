@@ -89,7 +89,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     ns.addKnownNamespaces()
     ns.register("provext", "http://openprovenance.org/prov/extension#");
 
-    val p=new ProvQLParser(this, s, ns)
+    val p=new ProvQLParser( s, ns)
     p.query.run() match {
       case Success(ast) => Some(ast.asInstanceOf[Operator])
       case Failure(e: ParseError) => println(p.formatError(e)); None

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.scala.interop
 import org.openprovenance.prov.model.Namespace
-import org.openprovenance.prov.scala.iface.{Explainer, Narrator, XFactory}
+import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QFactory, QueryEngine, XFactory}
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
 import org.openprovenance.prov.scala.immutable.{Document, Format}
 import org.openprovenance.prov.scala.interop.CommandLine.uExpand.{bindings, bindings_v2, bindings_v3, expandExport, expandTime}
@@ -29,7 +29,10 @@ object CommandLine extends Constants {
   val narrator: Narrator = xFactory.makeNarrator
   val explainer: Explainer = xFactory.makeExplainer
 
-  val uExplain: UtilsXplain = new UtilsXplain(narrator, explainer)
+  val qFactory: QFactory = new QFactory()
+  val queryEngine: QueryEngine = qFactory.makeQueryEnfine
+
+  val uExplain: UtilsXplain = new UtilsXplain(narrator, explainer, queryEngine)
   val uSignature: UtilsSignature = new UtilsSignature()
   val uSummary: UtilsSummary = new UtilsSummary(pf)
   val uExpand: UtilsExpand = new UtilsExpand()

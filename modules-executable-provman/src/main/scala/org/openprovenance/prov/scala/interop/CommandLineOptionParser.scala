@@ -96,11 +96,8 @@ class CommandLineOptionParser extends Constants {
       .text("produces a signed normalized PROV representation")
       .children(
         opt[String]("id")
-
           .valueName ("<identifier>")
-
           .action { (x, c) => c.copy(id = x) }
-
           .text ("id used to identify element to sign"),
         opt[String]('s', "store")
           .required()

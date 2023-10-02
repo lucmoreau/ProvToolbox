@@ -1,20 +1,19 @@
 package org.openprovenance.prov.scala.interop
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import org.openprovenance.prov.scala.iface.{Explainer, Narrator}
+import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine}
 import org.openprovenance.prov.scala.immutable.{Document, StatementOrBundle}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
-import org.openprovenance.prov.scala.query.{Processor, StatementAccessor}
+import org.openprovenance.prov.scala.query.StatementAccessor
 import org.openprovenance.prov.scala.summary.TypePropagator
 import org.openprovenance.prov.scala.xplain.{Narrative, RealiserFactory}
 import org.openprovenance.prov.validation.EventMatrix
 
 import java.io.{BufferedWriter, FileWriter}
-import scala.collection.mutable
 
-class UtilsXplain(narrator: Narrator, explainer: Explainer) {
+class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEngine) {
   def narrativeExport(config: Config,
                       text: Map[String, Narrative],
                       doc2: Document,
@@ -73,11 +72,7 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer) {
     val rf = new RealiserFactory(config)
 
     val accessor: StatementAccessor = rf.makeStatementAccessor(doc.statements().toSeq)
-
-    //val alternate_files: Map[String, String] =if (config.infiles!=null) SpecLoader.mapper.readValue(config.infiles,classOf[Map[String,String]]) else Map[String,String]()
-
     val accessors: Map[String, StatementAccessor] = rf.accessors.map { case (s, ss) => (s, rf.makeStatementAccessor(ss)) } //alternate_files.map{case (s,f) => (s, rf.makeStatementAccessor(parseDocument(new FileInput(new File(f))).statements().toSeq))}
-
 
     val statementAccessorForDocument: (Option[String] => StatementAccessor) = {
       case None => accessor
@@ -89,14 +84,15 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer) {
     val queryContents: String = try source.mkString finally source.close()
 
 
-    val engine = new Processor(statementAccessorForDocument, environment)
-    val set: mutable.Set[engine.Record] = engine.newRecords()
-    engine.evalAccumulate(queryContents, set)
-    val result: Set[engine.RField] = engine.toFields(set)
-    println("found " + set.size + " records (and " + result.size + " fields)")
+    processQuery(queryContents, environment, statementAccessorForDocument)
+
     val statementOrBundle: Iterable[StatementOrBundle] = null
     val doc2 = new Document(statementOrBundle, doc.namespace)
     outputer(doc2, outConfig)
+  }
+
+  def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor) = {
+    queryEngine.processQuery(queryContents, environment, statementAccessorForDocument)
   }
 
   def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {

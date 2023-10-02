@@ -9,19 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/nlg/SentenceMaker.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/xplain/RealiserFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/xplain/RealiserFactory.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/NlgSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/NlgSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Engine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Engine.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/EngineProcessFunction.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/ProvQLParser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,27 +104,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "development2__0",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.stylelint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.stylelint": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.66091955",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.General",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
+    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.General&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
@@ -754,6 +743,7 @@
       <workItem from="1695190967915" duration="21095000" />
       <workItem from="1695355590282" duration="6546000" />
       <workItem from="1696016222464" duration="32606000" />
+      <workItem from="1696237138764" duration="1024000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

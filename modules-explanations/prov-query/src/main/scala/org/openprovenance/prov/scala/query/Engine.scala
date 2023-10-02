@@ -61,9 +61,14 @@ More details on running the benchmarks are available [here](https://github.com/s
 
 package org.openprovenance.prov.scala.query
 
+import org.openprovenance.prov.scala.query.QueryAST.{Schema, Table}
 import org.openprovenance.prov.scala.utilities.Utils
 
 
+object QueryAST {
+  type Table
+  type Schema = Vector[String]
+}
 /**
   * Relational Algebra AST
 *----------------------
@@ -72,8 +77,7 @@ import org.openprovenance.prov.scala.utilities.Utils
 *relational algebra operators.
 */
 trait QueryAST {
-  type Table
-  type Schema = Vector[String]
+
 
   // relational algebra ops
   sealed abstract class Operator
@@ -113,25 +117,21 @@ We add a parser that takes a SQL(-like) string and converts it to tree of operat
 */
 
 trait SQLParser extends QueryAST {
-  //import scala.util.parsing.combinator._
 
   def parseSql(input: String): Operator = Grammar.parseAll(input)
 
   object Grammar extends scala.util.parsing.combinator.JavaTokenParsers with scala.util.parsing.combinator.PackratParsers {
 
-    def stm: Parser[Operator] = 
+    def stm: Parser[Operator] =
       selectClause ~ fromClause ~ whereClause ~ groupClause ^^ {
         case p ~ s ~ f ~ g => g(p(f(s))) }
 
     def selectClause: Parser[Operator=>Operator] =
-      "select" ~> ("*" ^^ { _ => (op:Operator) => op } | fieldList ^^ { 
+      "select" ~> ("*" ^^ { _ => (op:Operator) => op } | fieldList ^^ {
         case (fs,fs1) => Project(fs,fs1,_:Operator) })
 
     def fromClause: Parser[Operator] =
       "from" ~> joinClause
-
-    def whereClauseOLD: Parser[Operator=>Operator] =
-      opt("where" ~> predicate ^^ { p => Filter(p, _:Operator) }) ^^ { _.getOrElse(op => op)}
 
     def whereClause: Parser[Operator=>Operator] =
       opt("where" ~> repsep(predicate,"and") ^^ { pp => (operator: Operator) => pp.foldLeft(operator)((a,b)=>Filter(b, a)) }) ^^ { _.getOrElse(op => op)}
@@ -161,22 +161,22 @@ trait SQLParser extends QueryAST {
       repsep(fieldIdent ~ opt("as" ~> fieldIdent), ",") ^^ { fs2s =>
         val (fs,fs1) = fs2s.map { case a~b => (b.getOrElse(a),a) }.unzip
         (Schema(fs:_*),Schema(fs1:_*)) }
-    def fieldIdList:  Parser[Schema] = 
+    def fieldIdList:  Parser[Schema] =
       repsep(fieldIdent,",") ^^ (fs => Schema(fs:_*))
 
-    def predicate: Parser[Predicate] = 
+    def predicate: Parser[Predicate] =
       ref ~ ">=" ~ ref ^^ { case a ~ _ ~ b => Eq("includesQualifiedName",a,b) } |
         (ref ~ "exists" ^^ { case a ~ _ => Eq("exists",a, null) })
 
     def joinClause2: Parser[(Field,Field)] =
       ref ~ "=" ~ ref ^^ { case a ~ _ ~ b => (a.asInstanceOf[Field],b.asInstanceOf[Field]) }
 
-    def ref: Parser[Ref] = 
+    def ref: Parser[Ref] =
       fieldIdent ~ "[" ~ qualifiedName ~ "]" ^^ { case f~_~q~_ =>  Property(f,q) }  |
       fieldIdent ~ "." ~ fieldIdent  ^^ { case f~_~q=>  Field(f,q) }  |
       """'[^']*'""".r ^^ (s => Value(s.drop(1).dropRight(1))) /* |
       """[0-9]+""".r ^^ (s => Value(s.toInt))*/
-  
+
     def parseAll(input: String): Operator = parseAll(stm,input) match {
       case Success(res,_)  => res
       case res => throw new Exception(res.toString)
@@ -192,7 +192,7 @@ Iterative Development of a Query Processor
 
 We develop our SQL engine in multiple steps. Each steps leads to a
 working processor, and each successive step either adds a feature or
-optimization. 
+optimization.
 
 ### Step 1: A (Plain) Query Interpreter
 
@@ -204,7 +204,7 @@ We start with a plain query processor: an interpreter.
 ### Step 2: A Staged Query Interpreter (= Compiler)
 
 Staging our query interpreter yields a query compiler.
-In the first iteration we generate Scala code but we disregard 
+In the first iteration we generate Scala code but we disregard
 operators that require internal data structures:
 
 - [query_staged0](query_staged0.html)
@@ -213,7 +213,7 @@ operators that require internal data structures:
 ### Step 3: Specializing Data Structures
 
 The next iteration adds optimized data structure implementations
-that follow a column-store layout. This includes specialized hash 
+that follow a column-store layout. This includes specialized hash
 tables for groupBy and join operators:
 
 - [query_staged](query_staged.html)
@@ -221,7 +221,7 @@ tables for groupBy and join operators:
 
 ### Step 4: Switching to C and Optimizing IO
 
-For additional low-level optimizations we switch to generating C 
+For additional low-level optimizations we switch to generating C
 code:
 
 - [query_optc](query_optc.html)
@@ -236,7 +236,7 @@ Plumbing
 --------
 
 To actually run queries and test the different implementations side
-by side, a little bit of plumbing is necessary. We define a common 
+by side, a little bit of plumbing is necessary. We define a common
 interface for all query processors (plain or staged, Scala or C).
 
 */
@@ -247,10 +247,6 @@ trait QueryProcessor extends QueryAST {
   def filePath(table: String): String = table
 
   def execQuery(q: Operator): Unit
-}
-
-trait PlainQueryProcessor extends QueryProcessor {
-  type Table = String
 }
 
 
@@ -267,7 +263,7 @@ Examples:
 trait Engine extends QueryProcessor with SQLParser {
   def query: String
   def filename: String
-  def liftTable(n: String): Table
+  def liftTable(n: Table): Table
   def eval(): Unit
   def prepare(): Unit = {}
   def run(): Unit = execQuery(Print(parseSql(query)))

@@ -13,7 +13,8 @@ import org.openprovenance.prov.scala.nlg.SentenceMaker
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Plan}
 import org.openprovenance.prov.scala.nlgspec_transformer.{Environment, Language, SpecLoader, specTypes}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
-import org.openprovenance.prov.scala.query.{Processor, QuerySetup, StatementAccessor, StatementIndexer}
+import org.openprovenance.prov.scala.query.QueryInterpreter.RField
+import org.openprovenance.prov.scala.query.{Processor, QuerySetup, StatementAccessor, StatementIndexer, Record}
 import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFromStar}
 
 import java.io.File
@@ -93,7 +94,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   */
 
 
-  private def processQuery(template: Plan, s: Statement, engine: Processor): List[Map[String, engine.RField]] = {
+  private def processQuery(template: Plan, s: Statement, engine: Processor): List[Map[String, RField]] = {
 
     val headStatementId=template.select.keys.head
     val headStatementType=template.select(headStatementId)(Keywords.TYPE)
@@ -110,13 +111,13 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
       }
 
 
-      val set: mutable.Set[engine.Record] = engine.newRecords()
+      val set: mutable.Set[Record] = engine.newRecords()
 
       if (query=="None") {
         List(Map())
       } else {
         engine.evalAccumulate(query, set)
-        val statements: List[Map[String, engine.RField]] = set.toSeq.map(engine.toMap2).filter(m => engine.toStatement(m(headStatementId)) == s).toList
+        val statements: List[Map[String, RField]] = set.toSeq.map(engine.toMap2).filter(m => engine.toStatement(m(headStatementId)) == s).toList
         statements
       }
     } else {
@@ -125,7 +126,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   }
 
 
-  private def processQuery(template: Plan, engine: Processor): List[Map[String, engine.RField]] = {
+  private def processQuery(template: Plan, engine: Processor): List[Map[String, RField]] = {
 
     val query: String = template.query match {
       case s: String => s
@@ -134,10 +135,10 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
       case _ => println(template.name); println(template); throw new UnsupportedOperationException("incorrect query for " + template.name)
     }
 
-    val set: mutable.Set[engine.Record] = engine.newRecords()
+    val set: mutable.Set[Record] = engine.newRecords()
 
     engine.evalAccumulate(query, set)
-    val statements: List[Map[String, engine.RField]] = set.toSeq.map(engine.toMap2(_)).toList
+    val statements: List[Map[String, RField]] = set.toSeq.map(engine.toMap2(_)).toList
 
     statements
 
@@ -209,8 +210,8 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
       val context: Map[String, String] = provContext(template.context)
       val environment = Environment(context, dictionaries, profiles, the_profile)
       val engine = new Processor(statementAccessorForDocument, environment)
-      val all_matching_objects: Seq[Map[String, engine.RField]] = processQuery(template, engine)
-      all_matching_objects.flatMap((selected_objects: Map[String, engine.RField]) => {
+      val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, engine)
+      all_matching_objects.flatMap((selected_objects: Map[String, RField]) => {
 
         val triples = scala.collection.mutable.Set[Triple]()
 
@@ -243,7 +244,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
 
         val engine = new Processor(statementAccessorForDocument, environment)
 
-        val all_matching_objects: Seq[Map[String, engine.RField]] = processQuery(template, engine)
+        val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, engine)
 
 
         logger.debug("realise_one: found objects_ok " + all_matching_objects.size + "  for " + template.name)
@@ -300,7 +301,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
 
               val engine = new Processor(statementAccessorForDocument, environment)
 
-              val all_matching_objects: Seq[Map[String, engine.RField]] = processQuery(template, currentStatement, engine)
+              val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, currentStatement, engine)
 
 
               logger.debug("realise_all: found objects_ok " + all_matching_objects.size + "  for " + template.name)

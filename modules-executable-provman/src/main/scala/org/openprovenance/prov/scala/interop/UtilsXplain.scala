@@ -6,6 +6,7 @@ import org.openprovenance.prov.scala.immutable.{Document, StatementOrBundle}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
+import org.openprovenance.prov.scala.query.QueryInterpreter.RField
 import org.openprovenance.prov.scala.query.StatementAccessor
 import org.openprovenance.prov.scala.summary.TypePropagator
 import org.openprovenance.prov.scala.xplain.{Narrative, RealiserFactory}
@@ -91,7 +92,7 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
     outputer(doc2, outConfig)
   }
 
-  def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor) = {
+  def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor): Set[RField] = {
     queryEngine.processQuery(queryContents, environment, statementAccessorForDocument)
   }
 

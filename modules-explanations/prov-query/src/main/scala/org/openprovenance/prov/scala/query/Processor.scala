@@ -5,6 +5,8 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.Statement
 import org.openprovenance.prov.scala.interop.{FileOutput, Output}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
+import org.openprovenance.prov.scala.query.QueryAST.Schema
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields}
 import org.openprovenance.prov.scala.query.Run.MainEngine
 import org.parboiled2.ParseError
 
@@ -26,22 +28,15 @@ trait QueryAble extends QueryInterpreter {
 class Processor (finder:Option[String]=>StatementAccessor, env: Environment) extends Engine with MainEngine with QueryInterpreter  {
 
   val logger: Logger = LogManager.getLogger(classOf[Processor])
-
-
-  override def liftTable(n: Table): String = n
+  override def liftTable(n: QueryAST.Table): QueryAST.Table = n
 
   override def eval(): Unit = run()
-
   override val statementFinder: Option[String]=>StatementAccessor = finder
-
   override val environment: Environment = env
-
-  //val primitive = new EngineProcessFunction(this)
-
 
   @unused
   def evalPrint(q: String): Unit = {
-    val op: Operator =parseSql2(q).get
+    val op: Operator = parsePQL(q).get
     execQuery(Print(op), None)
   }
 
@@ -58,14 +53,10 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
   def execQuery(q: Operator, recs: Option[mutable.Set[Record]]): Unit = {
     execOp(q) (accumulateInto (recs))
-
-//    println("Processor " + recs)
   }
 
-
-
   def evalAccumulate(queryString: String, set: mutable.Set[Record]): Processor = {
-    val op: Operator =parseSql2(queryString).get
+    val op: Operator =parsePQL(queryString).get
     logger.debug(op)
     execQuery(op, Some(set))
     this
@@ -88,7 +79,6 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     res1
   }
 
-
   def toMap(rec: Record): Map[String, Statement] = {
     val schema: Schema =rec.schema
     val values: Vector[Statement] =rec(schema).map(toStatement)
@@ -101,8 +91,7 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     schema.zip(values).toMap
   }
 
-
-  def parseSql2 (s: String): Option[Operator] = {
+  def parsePQL(s: String): Option[Operator] = {
     import scala.util.{Failure, Success}
 
     val ns=new Namespace
@@ -120,6 +109,5 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
   def exportToJson(out: Output, set: mutable.Set[Record]): Unit = {
     JsonSupport.om.writeValue(out.asInstanceOf[FileOutput].f,set)
   }
-
 
 }

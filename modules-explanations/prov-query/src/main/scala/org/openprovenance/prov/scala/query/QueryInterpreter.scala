@@ -1,17 +1,28 @@
 package org.openprovenance.prov.scala.query
 
-import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.scala.immutable.{Statement, TypedValue}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.primitive.{Primitive, Result, Triple}
+import org.openprovenance.prov.scala.query.QueryAST.Schema
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields}
 import org.openprovenance.prov.scala.summary.types._
 import org.openprovenance.prov.scala.utilities.OrType._
 
 import scala.collection.mutable
 import scala.util.Try
 
+object QueryInterpreter {
+  type RField = Statement or Seq[Statement] or Seq[TypedValue]
+  type RFields = Vector[RField]
+}
 
-trait QueryInterpreter extends PlainQueryProcessor with SummaryTypesNames {
+case class Record(fields: RFields, schema: Schema) {
+  def apply(key: String): RField = Try(fields(schema indexOf key)).getOrElse[RField](throw new ArrayIndexOutOfBoundsException("Record.apply(key): failed to find " + key + " in " + schema))
+
+  def apply(keys: Schema): RFields = keys.map(k => apply(k))
+}
+
+trait QueryInterpreter extends QueryProcessor with SummaryTypesNames {
   override def version = "query_unstaged"
 
   val environment: Environment
@@ -20,8 +31,7 @@ trait QueryInterpreter extends PlainQueryProcessor with SummaryTypesNames {
    * Low-Level Processing Logic
    * --------------------------
    */
-  type RField = Statement or Seq[Statement] or Seq[TypedValue]
-  type RFields = Vector[RField]
+
 
   def toStatement(f: RField): Statement = Try(f.a.get.a.get).getOrElse[Statement](throw new UnsupportedOperationException("toStatement for " + f))
 
@@ -49,14 +59,6 @@ trait QueryInterpreter extends PlainQueryProcessor with SummaryTypesNames {
         case Some(a) => Seq(a)
       }
     }
-  }
-
-  //val primitive: EngineProcessFunction
-
-  case class Record(fields: RFields, schema: Schema) {
-    def apply(key: String): RField = Try(fields(schema indexOf key)).getOrElse[RField](throw new ArrayIndexOutOfBoundsException("Record.apply(key): failed to find " + key + " in " + schema))
-
-    def apply(keys: Schema): RFields = keys.map(k => apply(k))
   }
 
   def processDocument(document: List[Statement], schema: Schema)(yld: Record => Unit): Unit = {

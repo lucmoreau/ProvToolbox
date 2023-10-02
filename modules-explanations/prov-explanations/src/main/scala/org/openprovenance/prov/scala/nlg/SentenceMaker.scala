@@ -9,7 +9,8 @@ import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
-import org.openprovenance.prov.scala.query.{EngineProcessFunction, Processor}
+import org.openprovenance.prov.scala.query.Processor
+import org.openprovenance.prov.scala.query.QueryInterpreter.RField
 import org.openprovenance.prov.scala.summary.TypePropagator
 
 
@@ -51,11 +52,10 @@ object SentenceMaker {
 }
 
 class SentenceMaker (val engine:Processor) {
- // val primitive: EngineProcessFunction =engine.primitive
 
 
 
-  def transform(selected_objects: Map[String,engine.RField],
+  def transform(selected_objects: Map[String,RField],
                 phrase:Phrase,
                 environment0: Environment,
                 triples: scala.collection.mutable.Set[Triple],

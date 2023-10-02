@@ -7,7 +7,7 @@ import org.parboiled2._
 import org.parboiled2.support.hlist._
 
 
-trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
+trait PQLParser   extends Parser with ProvnCore with ProvnNamespaces  {
 
   override def namespaceDeclarations: Rule[HNil, HNil] = rule  {	 zeroOrMore (namespaceDeclaration) ~ WS }
 
@@ -62,7 +62,7 @@ trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
 
   def fieldIdList: Rule[HNil, Seq[String] :: HNil] = rule { oneOrMore(fieldIdent).separatedBy(WS ~ "," ~ WS)}
 
-  def ref: Rule[HNil, pqlParser.this.proc.Ref :: HNil] = rule {
+  def ref: Rule[HNil, PQLParser.this.proc.Ref :: HNil] = rule {
     (fieldIdent ~ WS ~ ( "[" ~ WS ~ identifier ~> makeProperty ~ WS ~ "]" ~ WS   |
                         "." ~ WS ~ fieldIdent ~> makeField ~ WS ) ) |
     '\'' ~ qualified_name ~ '\'' ~> makeValue ~ WS
@@ -118,7 +118,7 @@ trait pqlParser   extends Parser with ProvnCore with ProvnNamespaces  {
 
 }
 
-class ProvQLParser (override val proc: Processor, override val input: ParserInput, val ns: Namespace) extends  pqlParser {
+class ProvQLParser (override val proc: Processor, override val input: ParserInput, val ns: Namespace) extends  PQLParser {
   override def theNamespace: () => Namespace = () => ns
 
   override val makeText: String => String =  (text: String) => text

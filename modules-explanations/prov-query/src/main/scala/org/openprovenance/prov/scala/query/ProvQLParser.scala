@@ -8,10 +8,9 @@ import org.parboiled2._
 import org.parboiled2.support.hlist._
 
 
-trait PQLParser   extends Parser with ProvnCore with ProvnNamespaces  {
+trait PQLParser extends Parser with ProvnCore with ProvnNamespaces  {
 
   override def namespaceDeclarations: Rule[HNil, HNil] = rule  {	 zeroOrMore (namespaceDeclaration) ~ WS }
-
 
   def query: Rule[HNil, Operator :: HNil]  =
     rule { WS ~ namespaceDeclarations ~ WS ~ selectClause }
@@ -20,7 +19,6 @@ trait PQLParser   extends Parser with ProvnCore with ProvnNamespaces  {
     rule { "select" ~ WS ~ ( "*" ~ WS ~> makeEmptyList | fieldList) ~ WS ~ fromClause ~ whereClause ~ groupClause ~> makeSelect }
 
   def whereClause: Rule[Operator :: HNil, Operator :: HNil]  = rule { optional( "where" ~ WS ~ oneOrMore (pred).separatedBy(WS ~ "and" ~ WS) ~ WS) ~> makeWhere  }
-
 
   def fromClause: Rule[HNil, Operator :: HNil] = rule { "from" ~ WS ~ tableClause ~ WS ~ optional(joinClause1)}
 
@@ -31,15 +29,10 @@ trait PQLParser   extends Parser with ProvnCore with ProvnNamespaces  {
       "(" ~ WS ~ selectClause ~ WS ~ ")"
   }
 
-
   def groupClause: Rule[Operator :: HNil, Operator :: HNil] = rule {
     optional("group" ~ WS ~ "by" ~ WS ~ fieldIdList ~ WS ~ "aggregate" ~ WS ~ fieldIdList
       ~ WS ~ "with" ~ WS ~ (capture("Seq")  | capture("Count") )~ WS ~ optional("order" ~ WS ~ "by" ~ WS ~ ref ~ WS ) ~> makeGroup)
   }
-
-//  def orderClause: Rule[Operator :: HNil, Operator :: HNil] = rule {
- //   optional("order" ~ WS ~ "by" ~ WS ~ ref ~ WS ~> makeOrder)
- // }
 
   def tableJoinClause: Rule[Operator :: HNil, Operator :: HNil] =
     rule { tableClause ~ WS ~ ("join" ~ WS ~ joinClause2 ~> makeTableJoin | "ljoin" ~ WS ~ joinClause2 ~> makeTableLJoin)}
@@ -50,10 +43,8 @@ trait PQLParser   extends Parser with ProvnCore with ProvnNamespaces  {
                "="  ~ WS ~ ( ref  ~> makeEq | int_literal  ~> makeEqL)  ~ WS |
                "exists" ~ WS ~> makeExists ~ WS ) ~ optional ( "or" ~ WS ~ pred ~> makeOr )}
 
-
   def joinClause2: Rule[HNil, (Ref, Ref) :: HNil] = rule {
     ref  ~ WS ~ "=" ~ WS ~ ref ~> makeJoinPair ~ WS }
-
 
   def identifier: Rule[HNil, QualifiedName :: HNil] = qualified_name
 
@@ -77,49 +68,29 @@ trait PQLParser   extends Parser with ProvnCore with ProvnNamespaces  {
   private val marker: CharPredicate = CharPredicate('-')
 
 
-  //def pn_local_no_dot = rule { ( pn_chars_u | CharPredicate.Digit | pn_chars_others ) ~
-  //  zeroOrMore ( pn_chars |  pn_chars_others )     }
-
   def makeFieldIdentPair: (String, Option[String]) => (String, Option[String]) = (s1,s2) => (s1,s2)
   def makeEmptyList: () => Seq[(String,Option[String])] = () => Seq()
 
-  val proc: Processor
-
   def makeSelect: (Seq[(String,Option[String])],Operator) => Operator
-
   def makeScan: (String, QualifiedName,Option[String] ) => Operator
   def makeProperty: (String, QualifiedName)  => Ref
   def makeField: (String ,String) => Ref
   def makeValue: QualifiedName  => Ref
-
   def makeWhere:  (Operator, Option[Seq[Predicate]]) => Operator
-
   def makeEq: (Ref, Ref) => Predicate
   def makeEqL: (Ref, String) => Predicate
-
   def makeIncludes: (Ref, Ref) => Predicate
   def makeIncludesNot: (Ref, Ref) => Predicate
-
   def makeExists: Ref  => Predicate
-
   def makeJoinPair: (Ref,Ref) => (Ref,Ref)
-
   def makeTableJoin: (Operator, Operator,(Ref,Ref)) => Operator
-
   def makeTableLJoin: (Operator, Operator,(Ref,Ref)) => Operator
-
   def makeJoin1:(Operator, Seq[Operator]) => Operator
-
   def makeGroup:(Operator, Seq[String], Seq[String], String, Option[Ref]) => Operator
-
-  //def makeOrder:(Operator, Ref) => Operator
-
   def makeOr: (Predicate,Predicate) => Predicate = (p,q) => OrPred(p,q)
-
-
 }
 
-class ProvQLParser (override val proc: Processor, override val input: ParserInput, val ns: Namespace) extends  PQLParser {
+class ProvQLParser (val proc: Processor, override val input: ParserInput, val ns: Namespace) extends PQLParser {
   override def theNamespace: () => Namespace = () => ns
 
   override val makeText: String => String =  (text: String) => text

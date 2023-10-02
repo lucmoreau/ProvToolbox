@@ -18,12 +18,11 @@ object QueryInterpreter {
 
 case class Record(fields: RFields, schema: Schema) {
   def apply(key: String): RField = Try(fields(schema indexOf key)).getOrElse[RField](throw new ArrayIndexOutOfBoundsException("Record.apply(key): failed to find " + key + " in " + schema))
-
   def apply(keys: Schema): RFields = keys.map(k => apply(k))
 }
 
-trait QueryInterpreter extends QueryProcessor with SummaryTypesNames {
-  override def version = "query_unstaged"
+trait QueryInterpreter extends SummaryTypesNames {
+  val defaultFieldDelimiter = ','
 
   val environment: Environment
 

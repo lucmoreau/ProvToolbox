@@ -16,12 +16,6 @@ trait StatementAccessor {
   def findStatement(type_string: String): List[Statement]
 }
 
-/*
-trait QueryAble extends QueryInterpreter {
-  def evalPrint(q: String): Unit
-  def evalAccumulate(q: String, set: mutable.Set[Record]): QueryAble
-  def toStatements (set: mutable.Set[Record]): Set[Statement]
-}*/
 
 
 class Processor (finder:Option[String]=>StatementAccessor, env: Environment) extends QueryInterpreter  {

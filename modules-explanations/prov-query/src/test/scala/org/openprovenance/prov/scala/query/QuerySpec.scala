@@ -66,13 +66,6 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
 
 
-  trait ToTest extends QueryAST  {
-    val tests: Map[String, Operator] = Map(
-      "t1" -> Scan("prov:Entity", toSchema("dummy"), None),
-      "t2" -> Project(toSchema("Name"), toSchema("Name"), Scan("prov:Entity", toSchema("e"), None))
-    )
-
-  }
 
 
   "A query" should "work on a simple document " in {
@@ -102,7 +95,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine:  QueryInterpreter with HasGoMethod =
+    def interpreter:  QueryInterpreter with HasGoMethod =
       new QueryInterpreter with HasGoMethod  {
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
@@ -138,7 +131,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.go()
+    interpreter.go()
 
   }
 
@@ -154,7 +147,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: QueryInterpreter with HasGoMethod  =
+    def interpreter: QueryInterpreter with HasGoMethod  =
       new QueryInterpreter with HasGoMethod  {
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
@@ -246,7 +239,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.go()
+    interpreter.go()
 
   }
 
@@ -265,7 +258,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine:  QueryInterpreter with HasGoMethod  =
+    def interpreter:  QueryInterpreter with HasGoMethod  =
       new QueryInterpreter with HasGoMethod {
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
@@ -316,7 +309,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.go()
+    interpreter.go()
 
   }
 
@@ -335,7 +328,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: QueryInterpreter with HasGoMethod  =
+    def interpreter: QueryInterpreter with HasGoMethod  =
       new QueryInterpreter with HasGoMethod   {
 
 
@@ -397,7 +390,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         }
       }
 
-    engine.go()
+    interpreter.go()
 
   }
 
@@ -414,7 +407,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: QueryInterpreter with HasGoMethod =
+    def interpreter: QueryInterpreter with HasGoMethod =
       new QueryInterpreter with HasGoMethod  {
 
 
@@ -538,7 +531,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
       }
 
-    engine.go()
+    interpreter.go()
 
   }
 

@@ -3,7 +3,7 @@ package org.openprovenance.prov.scala.query
 import org.openprovenance.prov.scala.immutable.{Statement, TypedValue}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.primitive.{Primitive, Result, Triple}
-import org.openprovenance.prov.scala.query.QueryAST.Schema
+import org.openprovenance.prov.scala.query.QueryAST.{Schema, toSchema}
 import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields}
 import org.openprovenance.prov.scala.summary.types._
 import org.openprovenance.prov.scala.utilities.OrType._
@@ -127,7 +127,7 @@ trait QueryInterpreter extends QueryProcessor with SummaryTypesNames {
     case LeftJoin(left, _, _, right, _, _) => resultSchema(left) ++ resultSchema(right)
     case Group(keys, agg, _, _, _) => keys ++ agg
     case HashJoin(left, right) => resultSchema(left) ++ resultSchema(right)
-    case Print(parent) => Schema()
+    case Print(parent) => toSchema()
     //case Order(f,parent,_)        => Schema()
   }
 

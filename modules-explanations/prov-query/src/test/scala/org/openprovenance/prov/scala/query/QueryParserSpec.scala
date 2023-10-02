@@ -6,6 +6,7 @@ import org.openprovenance.prov.scala.immutable.{ProvFactory, QualifiedName}
 import org.parboiled2.ParseError
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.openprovenance.prov.scala.query.QueryAST.{Schema, toSchema}
 
 import scala.util.{Failure, Success}
 
@@ -29,10 +30,10 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
 
 
 
-  def doCheckQuery(s: String): proc.Operator = {
+  def doCheckQuery(s: String): Operator = {
     val p=new ProvQLParser(proc, s,ns2)
     p.query.run() match {
-      case Success(ast) => println("parse " + ast); ast.asInstanceOf[proc.Operator]
+      case Success(ast) => println("parse " + ast); ast.asInstanceOf[Operator]
       case Failure(e: ParseError) => println(p.formatError(e)); null
       case Failure(e) =>e.printStackTrace(); null
     }
@@ -48,7 +49,7 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         select * from  ent a prov:Entity
 
       """.stripMargin) should be (
-        proc.Scan("prov:Entity",proc.Schema("ent"), None))
+        Scan("prov:Entity", toSchema("ent"), None))
 
 
     doCheckQuery(
@@ -56,8 +57,8 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         select * from  ent a prov:Entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Scan("prov:Entity",proc.Schema("ent"), None)))
+      Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Scan("prov:Entity",toSchema("ent"), None)))
 
 
     doCheckQuery(
@@ -67,8 +68,8 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         join ent.id = wgb.entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), None),"ent","id", proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), None), "wgb", "entity")))
+      Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Join(Scan("prov:Entity",toSchema("ent"), None),"ent","id", Scan("prov:WasGeneratedBy", toSchema("wgb"), None), "wgb", "entity")))
 
 
     doCheckQuery(
@@ -78,8 +79,8 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         join ent.id = wgb.entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Project(proc.Schema("ent"),proc.Schema("ent"),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), None),"ent","id", proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), None), "wgb", "entity"))))
+      Project(toSchema("ent"),toSchema("ent"),Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Join(Scan("prov:Entity",toSchema("ent"), None),"ent","id", Scan("prov:WasGeneratedBy", toSchema("wgb"), None), "wgb", "entity"))))
 
 
     doCheckQuery(
@@ -89,8 +90,8 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         join ent.id = wgb.entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Project(proc.Schema("foo"),proc.Schema("ent"),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), None),"ent","id", proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), None), "wgb", "entity"))))
+      Project(toSchema("foo"),toSchema("ent"),Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Join(Scan("prov:Entity",toSchema("ent"), None),"ent","id", Scan("prov:WasGeneratedBy", toSchema("wgb"), None), "wgb", "entity"))))
 
 
     doCheckQuery(
@@ -100,8 +101,8 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         join ent.id = wgb.entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Project(proc.Schema("foo", "gen"),proc.Schema("ent", "wgb"),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), None),"ent","id", proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), None), "wgb", "entity"))))
+      Project(toSchema("foo", "gen"),toSchema("ent", "wgb"),Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Join(Scan("prov:Entity",toSchema("ent"), None),"ent","id", Scan("prov:WasGeneratedBy", toSchema("wgb"), None), "wgb", "entity"))))
 
 
     doCheckQuery(
@@ -114,10 +115,10 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         where ent[prov:type] >= 'prov:Person'
         and ent[foaf:Name] exists
       """.stripMargin) should be (
-      proc.Filter(proc.Eq("exists",proc.Property("ent","foaf:Name"),null),
-        proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-          proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), None),"ent","id",
-            proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), None), "wgb", "entity")))
+      Filter(Eq("exists",Property("ent","foaf:Name"),null),
+        Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+          Join(Scan("prov:Entity",toSchema("ent"), None),"ent","id",
+            Scan("prov:WasGeneratedBy", toSchema("wgb"), None), "wgb", "entity")))
     )
 
     doCheckQuery(
@@ -146,10 +147,10 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
               and recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'
               and pipeline[prov:type] >= 'sk:pipeline.Pipeline'
 
-          """.stripMargin) should be (proc.Filter(proc.Eq("includesQualifiedName",proc.Property("pipeline","prov:type"),proc.Value("sk:pipeline.Pipeline")),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("recommendation","prov:type"),proc.Value("ln:AutomatedLoanRecommendation")),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("do","prov:type"),proc.Value("ln:PipelineApproval")),
-      proc.Filter(proc.Eq("includesQualifiedName",proc.Property("actor","prov:type"),proc.Value("prov:Person")),proc.Join(proc.Join(proc.Join(proc.Join(proc.Join(proc.Join(proc.Scan("prov:WasAssociatedWith",proc.Schema("waw"), None),"waw","agent",proc.Scan("prov:Agent",proc.Schema("actor"), None),"actor","id"),"waw","activity",proc.Scan("prov:Activity",proc.Schema("do"), None),"do","id"),"do","id",
-        proc.Scan("prov:WasGeneratedBy",proc.Schema("wgb"), None),"wgb","activity"),"wgb","entity",proc.Scan("prov:Entity",proc.Schema("pipeline"), None),"pipeline","id"),"pipeline","id",proc.Scan("prov:WasDerivedFrom",proc.Schema("wdf"), None),
-        "wdf","usedEntity"),"wdf","generatedEntity",proc.Scan("prov:Entity",proc.Schema("recommendation"), None),"recommendation","id")))))
+          """.stripMargin) should be (Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),Value("sk:pipeline.Pipeline")),Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),Value("ln:AutomatedLoanRecommendation")),Filter(Eq("includesQualifiedName",Property("do","prov:type"),Value("ln:PipelineApproval")),
+      Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Join(Join(Join(Join(Join(Scan("prov:WasAssociatedWith",toSchema("waw"), None),"waw","agent",Scan("prov:Agent",toSchema("actor"), None),"actor","id"),"waw","activity",Scan("prov:Activity",toSchema("do"), None),"do","id"),"do","id",
+        Scan("prov:WasGeneratedBy",toSchema("wgb"), None),"wgb","activity"),"wgb","entity",Scan("prov:Entity",toSchema("pipeline"), None),"pipeline","id"),"pipeline","id",Scan("prov:WasDerivedFrom",toSchema("wdf"), None),
+        "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",toSchema("recommendation"), None),"recommendation","id")))))
     )
 
 
@@ -179,10 +180,10 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
               and recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'
               and pipeline[prov:type] >= 'sk:pipeline.Pipeline'
 
-          """.stripMargin) should be (proc.Filter(proc.Eq("includesQualifiedName",proc.Property("pipeline","prov:type"),proc.Value("sk:pipeline.Pipeline")),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("recommendation","prov:type"),proc.Value("ln:AutomatedLoanRecommendation")),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("do","prov:type"),proc.Value("ln:PipelineApproval")),
-      proc.Filter(proc.Eq("includesQualifiedName",proc.Property("actor","prov:type"),proc.Value("prov:Person")),proc.Join(proc.Join(proc.Join(proc.Join(proc.Join(proc.Join(proc.Scan("prov:WasAssociatedWith",proc.Schema("waw"), None),"waw","agent",proc.Scan("prov:Agent",proc.Schema("actor"), None),"actor","id"),"waw","activity",proc.Scan("prov:Activity",proc.Schema("do"), None),"do","id"),"do","id",
-        proc.Scan("prov:WasGeneratedBy",proc.Schema("wgb"), None),"wgb","activity"),"wgb","entity",proc.Scan("prov:Entity",proc.Schema("pipeline"), None),"pipeline","id"),"pipeline","id",proc.Scan("prov:WasDerivedFrom",proc.Schema("wdf"), None),
-        "wdf","usedEntity"),"wdf","generatedEntity",proc.Scan("prov:Entity",proc.Schema("recommendation"), None),"recommendation","id")))))
+          """.stripMargin) should be (Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),Value("sk:pipeline.Pipeline")),Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),Value("ln:AutomatedLoanRecommendation")),Filter(Eq("includesQualifiedName",Property("do","prov:type"),Value("ln:PipelineApproval")),
+      Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Join(Join(Join(Join(Join(Scan("prov:WasAssociatedWith",toSchema("waw"), None),"waw","agent",Scan("prov:Agent",toSchema("actor"), None),"actor","id"),"waw","activity",Scan("prov:Activity",toSchema("do"), None),"do","id"),"do","id",
+        Scan("prov:WasGeneratedBy",toSchema("wgb"), None),"wgb","activity"),"wgb","entity",Scan("prov:Entity",toSchema("pipeline"), None),"pipeline","id"),"pipeline","id",Scan("prov:WasDerivedFrom",toSchema("wdf"), None),
+        "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",toSchema("recommendation"), None),"recommendation","id")))))
     )
 
 
@@ -193,8 +194,8 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         join ent.id = wgb.entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Project(proc.Schema("foo1", "gen"),proc.Schema("ent", "wgb"),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), Some("my_doc")),"ent","id", proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), None), "wgb", "entity"))))
+      Project(toSchema("foo1", "gen"),toSchema("ent", "wgb"),Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Join(Scan("prov:Entity",toSchema("ent"), Some("my_doc")),"ent","id", Scan("prov:WasGeneratedBy", toSchema("wgb"), None), "wgb", "entity"))))
 
 
     doCheckQuery(
@@ -204,8 +205,11 @@ class QueryParserSpec extends AnyFlatSpec with Matchers {
         join ent.id = wgb.entity
         where ent[prov:type] >= 'prov:Person'
       """.stripMargin) should be (
-      proc.Project(proc.Schema("foo1", "gen"),proc.Schema("ent", "wgb"),proc.Filter(proc.Eq("includesQualifiedName",proc.Property("ent","prov:type"),proc.Value("prov:Person")),
-        proc.Join(proc.Scan("prov:Entity",proc.Schema("ent"), Some("my_doc3")),"ent","id", proc.Scan("prov:WasGeneratedBy", proc.Schema("wgb"), Some("my_doc2")), "wgb", "entity"))))
+      Project(
+        toSchema("foo1", "gen"),
+        toSchema("ent", "wgb"),
+        Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("prov:Person")),
+        Join(Scan("prov:Entity",toSchema("ent"), Some("my_doc3")),"ent","id", Scan("prov:WasGeneratedBy", toSchema("wgb"), Some("my_doc2")), "wgb", "entity"))))
 
   }
 

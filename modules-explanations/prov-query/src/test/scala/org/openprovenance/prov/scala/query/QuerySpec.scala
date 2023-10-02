@@ -8,14 +8,17 @@ import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
 import org.openprovenance.prov.scala.nf.CommandLine
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
+import org.openprovenance.prov.scala.query.QueryAST.toSchema
 import org.openprovenance.prov.scala.query.Run.MainEngine
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
+import org.openprovenance.prov.scala.query.Value
+import org.parboiled2.ParseError
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import java.io.File
 import scala.annotation.unused
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 trait HasLuc {
   def luc (): Unit
@@ -66,8 +69,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
   trait ToTest extends QueryAST  {
     val tests: Map[String, Operator] = Map(
-      "t1" -> Scan("prov:Entity", Schema("dummy"), None),
-      "t2" -> Project(Schema("Name"), Schema("Name"), Scan("prov:Entity", Schema("e"), None))
+      "t1" -> Scan("prov:Entity", toSchema("dummy"), None),
+      "t2" -> Project(toSchema("Name"), toSchema("Name"), Scan("prov:Entity", toSchema("e"), None))
     )
 
   }
@@ -114,18 +117,18 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
          "prov" -> "http://www.w3.org/ns/prov#"),null,null,new Array[String](0), List())
 
 
-        val t1:Operator=Scan("prov:WasGeneratedBy", Schema("dummy"), None)
+        val t1:Operator=Scan("prov:WasGeneratedBy", toSchema("dummy"), None)
 
         val t2:Operator
-        =Join(Scan("prov:WasGeneratedBy", Schema("wgb"), None),
+        =Join(Scan("prov:WasGeneratedBy", toSchema("wgb"), None),
           "wgb",
           "activity",
-          Scan("prov:Activity", Schema("act"), None),
+          Scan("prov:Activity", toSchema("act"), None),
           "act",
           "id")
 
         val t3:Operator
-        =Filter(Eq("includesQualifiedName",Property("ag","prov:type"),Value("prov:Person")),Scan("prov:Agent", Schema("ag"), None))
+        =Filter(Eq("includesQualifiedName",Property("ag","prov:type"),Value("prov:Person")),Scan("prov:Agent", toSchema("ag"), None))
 
 
         def luc (): Unit = {
@@ -173,18 +176,18 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         val automation2query: Join = {
 
         val (_decision, _application, _fico, _reco, _credit, _officer, _reviewing, _assoc, _der1, _der2, _der3, _der4)
-        =(Filter(Eq("includesQualifiedName",Property("decision","prov:type"),   Value("ln:HumanDecision")),               Scan("prov:Entity",   Schema("decision"), None)),
-          Filter(Eq("includesQualifiedName",Property("application","prov:type"),Value("ln:LoanApplication")),             Scan("prov:Entity",   Schema("application"), None)),
-          Filter(Eq("includesQualifiedName",Property("fico","prov:type"),       Value("ln:FICOScore")),                   Scan("prov:Entity",   Schema("fico"), None)),
-          Filter(Eq("includesQualifiedName",Property("reco","prov:type"),       Value("ln:AutomatedLoanRecommendation")), Scan("prov:Entity",   Schema("reco"), None)),
-          Filter(Eq("includesQualifiedName",Property("credit","prov:type"),     Value("ln:CreditReference")),             Scan("prov:Entity",   Schema("credit"), None)),
-          Filter(Eq("includesQualifiedName",Property("officer","prov:type"),    Value("ln:CreditOfficer")),               Scan("prov:Agent",    Schema("officer"), None)),
-          Filter(Eq("includesQualifiedName",Property("reviewing","prov:type"),  Value("ln:LoanAssessment")),              Scan("prov:Activity", Schema("reviewing"), None)),
-          Scan("prov:WasAssociatedWith", Schema("assoc"), None),
-          Scan("prov:WasDerivedFrom",    Schema("der1"), None),
-          Scan("prov:WasDerivedFrom",    Schema("der2"), None),
-          Scan("prov:WasDerivedFrom",    Schema("der3"), None),
-          Scan("prov:WasDerivedFrom",    Schema("der4"), None))
+        =(Filter(Eq("includesQualifiedName",Property("decision","prov:type"),   Value("ln:HumanDecision")),               Scan("prov:Entity",   toSchema("decision"), None)),
+          Filter(Eq("includesQualifiedName",Property("application","prov:type"),Value("ln:LoanApplication")),             Scan("prov:Entity",   toSchema("application"), None)),
+          Filter(Eq("includesQualifiedName",Property("fico","prov:type"),       Value("ln:FICOScore")),                   Scan("prov:Entity",   toSchema("fico"), None)),
+          Filter(Eq("includesQualifiedName",Property("reco","prov:type"),       Value("ln:AutomatedLoanRecommendation")), Scan("prov:Entity",   toSchema("reco"), None)),
+          Filter(Eq("includesQualifiedName",Property("credit","prov:type"),     Value("ln:CreditReference")),             Scan("prov:Entity",   toSchema("credit"), None)),
+          Filter(Eq("includesQualifiedName",Property("officer","prov:type"),    Value("ln:CreditOfficer")),               Scan("prov:Agent",    toSchema("officer"), None)),
+          Filter(Eq("includesQualifiedName",Property("reviewing","prov:type"),  Value("ln:LoanAssessment")),              Scan("prov:Activity", toSchema("reviewing"), None)),
+          Scan("prov:WasAssociatedWith", toSchema("assoc"), None),
+          Scan("prov:WasDerivedFrom",    toSchema("der1"), None),
+          Scan("prov:WasDerivedFrom",    toSchema("der2"), None),
+          Scan("prov:WasDerivedFrom",    toSchema("der3"), None),
+          Scan("prov:WasDerivedFrom",    toSchema("der4"), None))
 
 
 
@@ -273,7 +276,6 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         override def liftTable(n: QueryAST.Table): QueryAST.Table = n
 
         override def eval(): Unit = run()
-       // override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
 
         override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
 
@@ -287,13 +289,13 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         val responsibility1_query: Join = {
 
           val (_recommendation, _pipeline, _actor, _do, _wdf, _wgb, _waw)
-          =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   Schema("recommendation"), None)),
-            Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   Schema("pipeline"), None)),
-            Filter(Eq("includesQualifiedName",Property("actor","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    Schema("actor"), None)),
-            Filter(Eq("includesQualifiedName",Property("do","prov:type"),              Value("ln:PipelineApproval")),             Scan("prov:Activity", Schema("do"), None)),
-            Scan("prov:WasDerivedFrom",    Schema("wdf"), None),
-            Scan("prov:WasGeneratedBy",    Schema("wgb"), None),
-            Scan("prov:WasAssociatedWith", Schema("waw"), None))
+          =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   toSchema("recommendation"), None)),
+            Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   toSchema("pipeline"), None)),
+            Filter(Eq("includesQualifiedName",Property("actor","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    toSchema("actor"), None)),
+            Filter(Eq("includesQualifiedName",Property("do","prov:type"),              Value("ln:PipelineApproval")),             Scan("prov:Activity", toSchema("do"), None)),
+            Scan("prov:WasDerivedFrom",    toSchema("wdf"), None),
+            Scan("prov:WasGeneratedBy",    toSchema("wgb"), None),
+            Scan("prov:WasAssociatedWith", toSchema("waw"), None))
 
 
           val q=
@@ -360,22 +362,22 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
         val responsibility1_query: Project = {
 
           val (_recommendation, _pipeline, _actor, _do, _wdf, _wgb, _waw, _pipeline2, _actor2, _do2, _wdf2, _wgb2, _waw2)
-          =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   Schema("recommendation"), None)),
+          =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   toSchema("recommendation"), None)),
 
-            Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   Schema("pipeline"), None)),
-            Filter(Eq("includesQualifiedName",Property("actor","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    Schema("actor"), None)),
-            Filter(Eq("includesQualifiedName",Property("do","prov:type"),              Value("ln:PipelineApproval")),             Scan("prov:Activity", Schema("do"), None)),
-            Scan("provext:WasDerivedFromPlus",    Schema("wdf"), None),
-            Scan("prov:WasGeneratedBy",           Schema("wgb"), None),
-            Scan("prov:WasAssociatedWith",        Schema("waw"), None),
+            Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   toSchema("pipeline"), None)),
+            Filter(Eq("includesQualifiedName",Property("actor","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    toSchema("actor"), None)),
+            Filter(Eq("includesQualifiedName",Property("do","prov:type"),              Value("ln:PipelineApproval")),             Scan("prov:Activity", toSchema("do"), None)),
+            Scan("provext:WasDerivedFromPlus",    toSchema("wdf"), None),
+            Scan("prov:WasGeneratedBy",           toSchema("wgb"), None),
+            Scan("prov:WasAssociatedWith",        toSchema("waw"), None),
 
 
-            Filter(Eq("includesQualifiedName",Property("pipeline2","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   Schema("pipeline2"), None)),
-            Filter(Eq("includesQualifiedName",Property("actor2","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    Schema("actor2"), None)),
-            Filter(Eq("includesQualifiedName",Property("do2","prov:type"),              Value("ex:DataFitting")),                  Scan("prov:Activity", Schema("do2"), None)),
-            Scan("provext:WasDerivedFromPlus",    Schema("wdf2"), None),
-            Scan("prov:WasGeneratedBy",           Schema("wgb2"), None),
-            Scan("prov:WasAssociatedWith",        Schema("waw2"), None))
+            Filter(Eq("includesQualifiedName",Property("pipeline2","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   toSchema("pipeline2"), None)),
+            Filter(Eq("includesQualifiedName",Property("actor2","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    toSchema("actor2"), None)),
+            Filter(Eq("includesQualifiedName",Property("do2","prov:type"),              Value("ex:DataFitting")),                  Scan("prov:Activity", toSchema("do2"), None)),
+            Scan("provext:WasDerivedFromPlus",    toSchema("wdf2"), None),
+            Scan("prov:WasGeneratedBy",           toSchema("wgb2"), None),
+            Scan("prov:WasAssociatedWith",        toSchema("waw2"), None))
 
 
           val q=
@@ -396,7 +398,7 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
               _wdf2, "wdf2", "usedEntity"), "wdf2", "generatedEntity",
               _recommendation, "recommendation", "id")
 
-          Project(Schema("a","b"), Schema("actor","actor2"), Join(q,"recommendation","id",q2,"recommendation","id"))
+          Project(toSchema("a","b"), toSchema("actor","actor2"), Join(q,"recommendation","id",q2,"recommendation","id"))
         }
 
 
@@ -423,32 +425,33 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with QueryInterpreter with SQLParser with HasLuc =
-      new Engine with MainEngine with QueryInterpreter with HasLuc  {
+    def engine: Engine with QueryInterpreter with HasLuc =
+      new Engine with QueryInterpreter with HasLuc {
         override def liftTable(n: QueryAST.Table): QueryAST.Table = n
 
         override def eval(): Unit = run()
 
-        override val statementFinder:Option[String]=>StatementAccessor=doc_realiser
+        override val statementFinder: Option[String] => StatementAccessor = doc_realiser
 
-        override val environment: Environment = Environment(Map("ex" ->"http://example.org/#",
+        override val environment: Environment = Environment(Map("ex" -> "http://example.org/#",
           "foaf" -> "http://xmlns.com/foaf/0.1/",
           "ln" -> "https://plead-project.org/ns/loan#",
           "pd" -> "https://pandas.pydata.org/#",
-          "prov" -> "http://www.w3.org/ns/prov#"),null,null,new Array[String](0), List())
+          "prov" -> "http://www.w3.org/ns/prov#"), null, null, new Array[String](0), List())
+
 
 
         @unused
         val responsibility1_query: Join = {
 
           val (_recommendation, _pipeline, _actor, _do, _wdf, _wgb, _waw)
-          =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   Schema("recommendation"), None)),
-            Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   Schema("pipeline"), None)),
-            Filter(Eq("includesQualifiedName",Property("actor","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    Schema("actor"), None)),
-            Filter(Eq("includesQualifiedName",Property("do","prov:type"),              Value("ln:PipelineApproval")),             Scan("prov:Activity", Schema("do"), None)),
-            Scan("prov:WasDerivedFrom",    Schema("wdf"), None),
-            Scan("prov:WasGeneratedBy",    Schema("wgb"), None),
-            Scan("prov:WasAssociatedWith", Schema("waw"), None))
+          =(Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),  Value("ln:AutomatedLoanRecommendation")),  Scan("prov:Entity",   toSchema("recommendation"), None)),
+            Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),        Value("sk:pipeline.Pipeline")),            Scan("prov:Entity",   toSchema("pipeline"), None)),
+            Filter(Eq("includesQualifiedName",Property("actor","prov:type"),           Value("prov:Person")),                     Scan("prov:Agent",    toSchema("actor"), None)),
+            Filter(Eq("includesQualifiedName",Property("do","prov:type"),              Value("ln:PipelineApproval")),             Scan("prov:Activity", toSchema("do"), None)),
+            Scan("prov:WasDerivedFrom",    toSchema("wdf"), None),
+            Scan("prov:WasGeneratedBy",    toSchema("wgb"), None),
+            Scan("prov:WasAssociatedWith", toSchema("waw"), None))
 
 
           val q=
@@ -465,16 +468,39 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
           q
         }
 
-        val t1: Operator =parseSql("select * from ent a prov:Entity")
-        val t2: Operator =parseSql("select ent as renamed from ent a prov:Entity")
-        val t3: Operator =parseSql("select * from ent a prov:Entity where ent[prov:type] >= 'pd:DataFrame'")
-        val t4: Operator =parseSql("select * from DUMMY waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id")
-        val t5: Operator =parseSql("select * from DUMMY waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id  where actor[prov:type] >= 'prov:Person'")
 
-        val t6: Operator =parseSql(
+        val ns2 = new Namespace
+        ns2.addKnownNamespaces()
+        Map(
+          "ex" -> "http://example.org/#",
+          "foaf" -> "http://xmlns.com/foaf/0.1/",
+          "ln" -> "https://plead-project.org/ns/loan#",
+          "sk" -> "https://scikit-learn.org/stable/modules/generated/sklearn.",
+          "pd" -> "https://pandas.pydata.org/#",
+          "prov" -> "http://www.w3.org/ns/prov#").foreach{case (p,u) => ns2.register(p,u)}
+
+
+        val proc=new Processor(null,null)
+
+        def doParse(s: String): Operator =  {
+          val p = new ProvQLParser(proc, s, ns2)
+          p.query.run() match {
+            case Success(ast) => println("parse " + ast); ast
+            case Failure(e: ParseError) => println(p.formatError(e)); null
+            case Failure(e) => e.printStackTrace(); null
+          }
+        }
+
+        val t1: Operator =doParse("select * from ent a prov:Entity")
+        val t2: Operator =doParse("select ent as renamed from ent a prov:Entity")
+        val t3: Operator =doParse("select * from ent a prov:Entity where ent[prov:type] >= 'pd:DataFrame'")
+        val t4: Operator =doParse("select * from waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id")
+        val t5: Operator =doParse("select * from waw a prov:WasAssociatedWith from actor a prov:Agent join waw.agent = actor.id  where actor[prov:type] >= 'prov:Person'")
+
+        val t6: Operator =doParse(
           """
 
-            select * from DUMMY waw a prov:WasAssociatedWith
+            select * from waw a prov:WasAssociatedWith
             from actor a prov:Agent
              join waw.agent = actor.id
             from do a prov:Activity
@@ -494,15 +520,15 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
           """.stripMargin)
 
-        val ast1: Scan =Scan("prov:Entity",Schema("ent"), None)
-        val ast2: Project =Project(Schema("renamed"), Schema("ent"), Scan("prov:Entity",Schema("ent"), None))
-        val ast3: Filter =Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("pd:DataFrame")),Scan("prov:Entity",Schema("ent"), None))
-        val ast4: Join =Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None),"actor","id")
-        val ast5: Filter =Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None),"actor","id"))
-        val ast6: Filter =Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),Value("sk:pipeline.Pipeline")),Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),Value("ln:AutomatedLoanRecommendation")),Filter(Eq("includesQualifiedName",Property("do","prov:type"),Value("ln:PipelineApproval")),
-          Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Join(Join(Join(Join(Join(Scan("prov:WasAssociatedWith",Schema("waw"), None),"waw","agent",Scan("prov:Agent",Schema("actor"), None), "actor","id"),"waw","activity",Scan("prov:Activity",Schema("do"), None),"do","id"),"do","id",
-            Scan("prov:WasGeneratedBy",Schema("wgb"), None),"wgb","activity"),"wgb","entity",Scan("prov:Entity",Schema("pipeline"), None),"pipeline","id"),"pipeline","id",Scan("prov:WasDerivedFrom",Schema("wdf"), None),
-            "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",Schema("recommendation"), None),"recommendation","id")))))
+        val ast1: Scan    = Scan("prov:Entity",toSchema("ent"), None)
+        val ast2: Project = Project(toSchema("renamed"), toSchema("ent"), Scan("prov:Entity",toSchema("ent"), None))
+        val ast3: Filter  = Filter(Eq("includesQualifiedName",Property("ent","prov:type"),Value("pd:DataFrame")),Scan("prov:Entity",toSchema("ent"), None))
+        val ast4: Join    = Join(Scan("prov:WasAssociatedWith",toSchema("waw"), None),"waw","agent",Scan("prov:Agent",toSchema("actor"), None),"actor","id")
+        val ast5: Filter  = Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Scan("prov:WasAssociatedWith",toSchema("waw"), None),"waw","agent",Scan("prov:Agent",toSchema("actor"), None),"actor","id"))
+        val ast6: Filter  = Filter(Eq("includesQualifiedName",Property("pipeline","prov:type"),Value("sk:pipeline.Pipeline")),Filter(Eq("includesQualifiedName",Property("recommendation","prov:type"),Value("ln:AutomatedLoanRecommendation")),Filter(Eq("includesQualifiedName",Property("do","prov:type"),Value("ln:PipelineApproval")),
+          Filter(Eq("includesQualifiedName",Property("actor","prov:type"),Value("prov:Person")),Join(Join(Join(Join(Join(Join(Scan("prov:WasAssociatedWith",toSchema("waw"), None),"waw","agent",Scan("prov:Agent",toSchema("actor"), None), "actor","id"),"waw","activity",Scan("prov:Activity",toSchema("do"), None),"do","id"),"do","id",
+            Scan("prov:WasGeneratedBy",toSchema("wgb"), None),"wgb","activity"),"wgb","entity",Scan("prov:Entity",toSchema("pipeline"), None),"pipeline","id"),"pipeline","id",Scan("prov:WasDerivedFrom",toSchema("wdf"), None),
+            "wdf","usedEntity"),"wdf","generatedEntity",Scan("prov:Entity",toSchema("recommendation"), None),"recommendation","id")))))
 
         def luc (): Unit = {
           Namespace.withThreadNamespace(doc1.getNamespace)
@@ -517,12 +543,15 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
 
           println(t6)
 
-          execQuery(Print(t6))
+         // execQuery(Print(t6))
 
 
 
         }
 
+        override def query: String = ???
+
+        override def filename: String = ???
       }
 
     engine.luc()

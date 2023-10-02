@@ -1,6 +1,5 @@
 package org.openprovenance.prov.scala.query
 
-import org.openprovenance.prov.scala.query.query_unstaged.QueryInterpreter
 import org.openprovenance.prov.scala.summary.types.{Act, Ag, BasicFlatType, CompositeFlatType, Ent, FlatType, NumberedFlatType, Prim, SummaryTypesNames}
 
 import scala.collection.mutable

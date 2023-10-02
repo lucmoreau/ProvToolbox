@@ -198,7 +198,7 @@ optimization.
 
 We start with a plain query processor: an interpreter.
 
-- [query_unstaged.scala](query_unstaged.html)
+- [QueryInterpreter.scala](query_unstaged.html)
 
 
 ### Step 2: A Staged Query Interpreter (= Compiler)

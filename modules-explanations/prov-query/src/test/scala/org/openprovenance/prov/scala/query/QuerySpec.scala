@@ -100,8 +100,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
+      new Engine with MainEngine with QueryInterpreter with HasLuc  {
         override def liftTable(n: Table): String = n
         override def eval(): Unit = run()
 
@@ -154,8 +154,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
+      new Engine with MainEngine with QueryInterpreter with HasLuc  {
         override def liftTable(n: Table): String = n
         override def eval(): Unit = run()
 
@@ -267,8 +267,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter  with HasLuc {
+    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
+      new Engine with MainEngine with QueryInterpreter  with HasLuc {
         override def liftTable(n: Table): String = n
         override def eval(): Unit = run()
        // override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
@@ -340,8 +340,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
+      new Engine with MainEngine with QueryInterpreter with HasLuc  {
         override def liftTable(n: Table): String = n
         override def eval(): Unit = run()
         //override val primitive: EngineProcessFunction = new EngineProcessFunction(this)
@@ -427,8 +427,8 @@ class QuerySpec extends AnyFlatSpec with Matchers  {
     val doc_realiser=(_:Option[String]) => si
 
 
-    def engine: Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc =
-      new Engine with MainEngine with query_unstaged.QueryInterpreter with HasLuc  {
+    def engine: Engine with MainEngine with QueryInterpreter with HasLuc =
+      new Engine with MainEngine with QueryInterpreter with HasLuc  {
         override def liftTable(n: Table): String = n
         override def eval(): Unit = run()
 

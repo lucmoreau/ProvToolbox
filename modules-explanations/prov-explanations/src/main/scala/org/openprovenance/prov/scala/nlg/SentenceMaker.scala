@@ -51,7 +51,7 @@ object SentenceMaker {
 }
 
 class SentenceMaker (val engine:Processor) {
-  val primitive: EngineProcessFunction =engine.primitive
+ // val primitive: EngineProcessFunction =engine.primitive
 
 
 

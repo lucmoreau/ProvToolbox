@@ -6,7 +6,6 @@ import org.openprovenance.prov.scala.immutable.Statement
 import org.openprovenance.prov.scala.interop.{FileOutput, Output}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.Run.MainEngine
-import org.openprovenance.prov.scala.query.query_unstaged.QueryInterpreter
 import org.parboiled2.ParseError
 
 import scala.annotation.unused
@@ -37,14 +36,12 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
   override val environment: Environment = env
 
-  val primitive = new EngineProcessFunction(this)
+  //val primitive = new EngineProcessFunction(this)
 
 
   @unused
   def evalPrint(q: String): Unit = {
-    //val op: Operator =parseSql(q)
     val op: Operator =parseSql2(q).get
-    //println(op)
     execQuery(Print(op), None)
   }
 
@@ -68,10 +65,8 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
 
 
   def evalAccumulate(queryString: String, set: mutable.Set[Record]): Processor = {
-    //val op: Operator =parseSql(q)
     val op: Operator =parseSql2(queryString).get
     logger.debug(op)
-    //println(op)
     execQuery(op, Some(set))
     this
   }
@@ -82,7 +77,6 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
       val f: Set[Statement] =rec.apply(rec.schema).map(toStatement).toSet
       f
     }).toSet.flatten
-
     res1
   }
 
@@ -91,7 +85,6 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
       val f: Set[RField] =rec.apply(rec.schema).toSet
       f
     }).toSet.flatten
-
     res1
   }
 
@@ -115,8 +108,6 @@ class Processor (finder:Option[String]=>StatementAccessor, env: Environment) ext
     val ns=new Namespace
     ns.addKnownNamespaces()
     ns.register("provext", "http://openprovenance.org/prov/extension#");
-
-
 
     val p=new ProvQLParser(this, s, ns)
     p.query.run() match {

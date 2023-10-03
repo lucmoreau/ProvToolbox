@@ -80,8 +80,6 @@ object CommandLine extends Constants {
           case "compare" => uSummary.compare(config.infile, config.withfile, config.nf, config)
           case "config" => configuration()
           case "blockly" => toBlockly(config.withfile, config.blockly, config.xplan)
-
-
         }
 
 

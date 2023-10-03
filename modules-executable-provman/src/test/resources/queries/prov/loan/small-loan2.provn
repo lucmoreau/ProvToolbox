@@ -1,0 +1,36 @@
+document
+prefix localfile <file:///Users/me/mlpipeline/>
+prefix lendingclub <https://www.lendingclub.com/info/download-data.action>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix schema <https://schema.org/>
+prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+prefix pypi <https://pypi.org/project/>
+prefix ln <https://plead-project.org/ns/loan#>
+prefix ex <http://example/org>
+prefix pd <https://pandas.pydata.org/#>
+prefix py <urn:python:var:>
+prefix kaggle <https://www.kaggle.com/>
+
+entity(ex:recommendation/253,[prov:type = 'ln:AutomatedLoanRecommendation', ln:recommendation = 'ex:approved', ln:probability_chargeoff = "0.19" %% xsd:double])
+entity(py:loan_features/253,[prov:type = 'pd:Series', ln:amount_in_USD = "15000" %% xsd:int, ln:purpose = "Wedding" %% xsd:string, ln:fico_range_high = "750" %% xsd:int, ln:fico_range_low = "689" %% xsd:int, ln:xtra_attr = "..." %% xsd:string])
+entity(ex:applications/253,[prov:type = 'ln:LoanApplication', ln:amount_in_USD = "15000" %% xsd:int, ln:purpose = "Wedding" %% xsd:string, ln:xtra_attr = "..." %% xsd:string])
+entity(ex:credit_scores/253,[prov:type = 'ln:FICOScore', prov:type = 'ex:FICOScore', ln:fico_range_high = "750" %% xsd:int, ln:fico_range_low = "687" %% xsd:int])
+activity(ex:credit_check/253,-,-,[prov:type = 'ln:CreditReferencing', prov:type = 'ex:CreditReferencing'])
+activity(ex:classify_loans/253,-,-,[prov:type = 'ln:LoanAssessment', prov:type = 'pl:AutomatedActivity'])
+agent(ex:applicants/253,[prov:type = 'prov:Person', prov:type = 'ln:LoanApplicant'])
+used(ex:credit_check/253,ex:applications/253,-)
+used(ex:classify_loans/253,py:loan_features/253,-)
+wasGeneratedBy(ex:credit_scores/253,ex:credit_check/253,-)
+wasGeneratedBy(ex:recommendation/253,ex:classify_loans/253,-)
+wasDerivedFrom(ex:credit_scores/253, ex:applications/253, ex:credit_check/253, -, -)
+wasDerivedFrom(py:loan_features/253, ex:applications/253)
+wasDerivedFrom(py:loan_features/253, ex:credit_scores/253)
+wasDerivedFrom(ex:recommendation/253, py:loan_features/253)
+entity(py:pipeline_approved,[prov:type = 'sk:pipeline.Pipeline', prov:type = 'ln:LoanAssessmentPipeline', ln:status = 'ln:approved', ln:approval = 'ex:approval_record', ex:status = 'ex:approved'])
+wasAssociatedWith(ex:credit_check/253,ex:credit_agency,-)
+wasAssociatedWith(ex:classify_loans/253,ex:loan_processor/2,py:pipeline_approved)
+wasAttributedTo(ex:applications/253, ex:applicants/253)
+wasAttributedTo(ex:credit_scores/253, ex:credit_agency)
+agent(ex:credit_agency)
+agent(ex:loan_processor/2,[prov:type = 'prov:SoftwareAgent'])
+endDocument

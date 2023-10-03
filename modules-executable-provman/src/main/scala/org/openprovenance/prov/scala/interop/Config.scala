@@ -132,5 +132,6 @@ case class Config(outfiles: Seq[Output] = Seq(),
 trait OutConfig {
   def outfiles: Seq[Output]
   def theOutputFormats (): Seq[Format]
+  def queryResult ():Output
 }
 

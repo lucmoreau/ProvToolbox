@@ -25,14 +25,28 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
 
     private final boolean embedContext;
 
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
+    final ObjectMapper mapper ;
+
 
     public ProvSerialiser () {
       embedContext=true;
+      mapper=new ObjectMapper();
     }
 
     public ProvSerialiser (boolean embedContext) {
         this.embedContext=embedContext;
+        mapper=new ObjectMapper();
     }
+
+    public ProvSerialiser (ObjectMapper mapper, boolean embedContext) {
+        this.embedContext=embedContext;
+        this.mapper=mapper;
+    }
+
 
     public ProvMixin provMixin() {
         return new ProvMixin();
@@ -42,9 +56,20 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
 
     @Override
     public void serialiseDocument(OutputStream out, Document document, boolean formatted) {
-        ObjectMapper mapper = new ObjectMapper();
         if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
+        customize2(mapper);
+
+
+        try {
+            mapper.writeValue(out,document);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UncheckedException(e);
+        }
+    }
+
+    public ObjectMapper customize2(ObjectMapper mapper) {
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer",
                         new Version(1, 0, 0, null, null, null));
@@ -61,14 +86,7 @@ public class ProvSerialiser extends org.openprovenance.prov.core.json.serializat
         mapper.setFilterProvider(filterProvider);
 
         provMixin().addProvMixin(mapper);
-
-
-        try {
-            mapper.writeValue(out,document);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UncheckedException(e);
-        }
+        return mapper;
     }
 
 }

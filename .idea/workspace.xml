@@ -9,19 +9,74 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/128350251.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/128350251.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/130910225-modified.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/130910225.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/130910225.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/16.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/16.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/7.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/7.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_ad.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_ad.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_hd.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_hd.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan1.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan2-modified.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/small-loan2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/small-loan2.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training-1.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training-1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/tester.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automatic.decision1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automatic.decision2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automatic.decision3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automation1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automation2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automation3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.counterfactual1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.datasource1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.datasource2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.exclusion1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.inclusion1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.inclusion3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.performance1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.relevancy1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.relevancy2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility4.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility6.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-plead/q-128350251-4.2-accept.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-alt-choice.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-alt-choice2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-first-choice.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-first-choice2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice2a.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice2b.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomTypedValueSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsSummary.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsSummary.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/Config.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/Config.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/xplain/RealiserFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/scala/org/openprovenance/prov/scala/xplain/RealiserFactory.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/StatementIndexer.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/test/scala/org/openprovenance/prov/scala/query/QuerySpec.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,27 +170,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.General&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "public",
+    "git-widget-placeholder": "development2__0",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-explanations/prov-service-xplain/src/main/java/org/openprovenance/prov/service",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable-provman/src/test/resources/queries",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Problems",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.General",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
@@ -145,18 +201,18 @@
       <recent name="org.openprovenance.prov.template.json" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/dictionary" />
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources" />
       <recent name="$PROJECT_DIR$/modules-explanations" />
       <recent name="$PROJECT_DIR$/modules-explanations/prov-explanations" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -194,7 +250,7 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.QuerySpec">
+  <component name="RunManager" selected="Makefile Target.q.responsibility1">
     <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-translator" />
       <extension name="coverage">
@@ -285,8 +341,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test.default" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.default" workingDirectory="" arguments="">
+    <configuration name="q.responsibility1" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable-provman/Makefile" target="q.responsibility1" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -363,18 +419,18 @@
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.TranslateIT.testMembership2" />
       <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
-      <item itemvalue="Makefile Target.test.default" />
+      <item itemvalue="Makefile Target.q.responsibility1" />
       <item itemvalue="ScalaTest.ModelSpec" />
       <item itemvalue="ScalaTest.QuerySpec" />
       <item itemvalue="ScalaTest.ExplanationSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.q.responsibility1" />
         <item itemvalue="ScalaTest.QuerySpec" />
         <item itemvalue="ScalaTest.ExplanationSpec" />
         <item itemvalue="JUnit.TranslateIT.testMembership2" />
         <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
-        <item itemvalue="Makefile Target.test.default" />
       </list>
     </recent_temporary>
   </component>
@@ -762,7 +818,8 @@
       <workItem from="1695190967915" duration="21095000" />
       <workItem from="1695355590282" duration="6546000" />
       <workItem from="1696016222464" duration="32606000" />
-      <workItem from="1696237138764" duration="19103000" />
+      <workItem from="1696237138764" duration="20889000" />
+      <workItem from="1696348385334" duration="10101000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

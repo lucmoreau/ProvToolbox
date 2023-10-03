@@ -1,9 +1,11 @@
 package org.openprovenance.prov.scala.interop
 
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
+import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
 import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine, QueryResult}
 import org.openprovenance.prov.scala.immutable.{Document, Statement, StatementOrBundle}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
+import org.openprovenance.prov.scala.jsonld11.serialization.{ProvDeserialiser, ProvSerialiser}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
@@ -85,22 +87,31 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
     val queryContents: String = try source.mkString finally source.close()
 
 
-    val result: QueryResult[RField] =processQuery(queryContents, environment, statementAccessorForDocument)
-    println("found " + result.get.size + " records (and " + result.get.headOption.getOrElse(Map()).keySet.size + " fields)")
+    val result: QueryResult[RField] =processQuery(queryContents, doc, environment, statementAccessorForDocument)
+    println("found " + result.getRecords.size + " records (and " + result.getRecords.headOption.getOrElse(Map()).keySet.size + " fields)")
 
+    if (outConfig.queryResult()!=null) exportToJson(outConfig.queryResult(),result.getRecords.asJava)
 
-    val statementOrBundle: Iterable[StatementOrBundle] = null
-    val doc2 = new Document(statementOrBundle, doc.namespace)
+    val doc2 = result.getDocument
     outputer(doc2, outConfig)
   }
 
-  def processQuery(queryContents: String, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor[Statement]): QueryResult[RField] = {
-    queryEngine.processQuery(queryContents, environment, statementAccessorForDocument)
+  def processQuery(queryContents: String, doc: Document, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor[Statement]): QueryResult[RField] = {
+    queryEngine.processQuery(queryContents, doc, environment, statementAccessorForDocument)
   }
 
   def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {
     TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT);
     TypePropagator.om.writeValue(outw, any)
+  }
+
+  def exportToJson(out: Output, records: AnyRef): Unit = {
+    val om: ObjectMapper with ScalaObjectMapper = new ObjectMapper() with ScalaObjectMapper
+    om.registerModule(DefaultScalaModule)
+    new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(om,false).getMapper.writeValue(out.asInstanceOf[FileOutput].f, records)
+    //new ProvSerialiser(om,false).customize2(om).writeValue(out.asInstanceOf[FileOutput].f, records)
+    // FIXME: which serializtion to use? None seems suitable.
+    //om.writeValue(out.asInstanceOf[FileOutput].f, records)
   }
 
 

@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
 
-public class ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser  {
+public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerialiser  {
 
     final static private Collection<String> myMedia= Set.of(InteropMediaType.MEDIA_APPLICATION_JSONLD);
 
@@ -45,6 +45,10 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         mapper.disable(SerializationFeature.INDENT_OUTPUT);
         writer=mapper.writer().withDefaultPrettyPrinter();
 
+    }
+
+    public ObjectMapper getMapper() {
+        return mapper;
     }
 
     public ProvMixin provMixin() {

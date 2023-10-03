@@ -89,8 +89,6 @@ class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Envir
     }
   }
 
-  def exportToJson(out: Output, set: mutable.Set[Record]): Unit = {
-    JsonSupport.om.writeValue(out.asInstanceOf[FileOutput].f,set)
-  }
+
 
 }

@@ -1,7 +1,7 @@
 package org.openprovenance.prov.scala.summary
 import java.io.InputStream
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
+import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
 import org.openprovenance.prov.immutable.Utils
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
@@ -15,7 +15,7 @@ object TypePropagator {
 
   // val TYPE_NS = "http://openprovenance.og/summary/types#"
   val SUM_NS: String = NS.SUM_NS
-  val om: ObjectMapper with ScalaObjectMapper = new ObjectMapper() with ScalaObjectMapper
+  val om: ObjectMapper with ClassTagExtensions = new ObjectMapper() with ClassTagExtensions
   om.registerModule(DefaultScalaModule)
   import org.openprovenance.prov.scala.immutable.ProvFactory.pf
   

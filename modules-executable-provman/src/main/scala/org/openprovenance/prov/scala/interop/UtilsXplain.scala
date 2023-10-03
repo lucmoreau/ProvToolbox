@@ -1,11 +1,10 @@
 package org.openprovenance.prov.scala.interop
 
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
-import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
+import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
 import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine, QueryResult}
-import org.openprovenance.prov.scala.immutable.{Document, Statement, StatementOrBundle}
+import org.openprovenance.prov.scala.immutable.{Document, Statement}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
-import org.openprovenance.prov.scala.jsonld11.serialization.{ProvDeserialiser, ProvSerialiser}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
@@ -106,7 +105,7 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
   }
 
   def exportToJson(out: Output, records: AnyRef): Unit = {
-    val om: ObjectMapper with ScalaObjectMapper = new ObjectMapper() with ScalaObjectMapper
+    val om: ObjectMapper with ClassTagExtensions = new ObjectMapper() with ClassTagExtensions
     om.registerModule(DefaultScalaModule)
     new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(om,false).getMapper.writeValue(out.asInstanceOf[FileOutput].f, records)
     //new ProvSerialiser(om,false).customize2(om).writeValue(out.asInstanceOf[FileOutput].f, records)

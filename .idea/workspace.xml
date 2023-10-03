@@ -9,74 +9,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/128350251.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/128350251.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/130910225-modified.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/130910225.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/130910225.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/16.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/16.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/7.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/7.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_ad.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_ad.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_hd.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/cf_merged_hd.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan2-modified.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan2.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/loan2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/small-loan2.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/small-loan2.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training-1.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/loan/training.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/prov/tester.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automatic.decision1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automatic.decision2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automatic.decision3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automation1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automation2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.automation3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.counterfactual1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.datasource1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.datasource2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.exclusion1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.inclusion1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.inclusion3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.performance1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.relevancy1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.relevancy2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility4.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility5.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-loan/q.responsibility6.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-plead/q-128350251-4.2-accept.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-alt-choice.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-alt-choice2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-first-choice.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-first-choice2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice2a.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries/queries-sa/q-on-time-third-choice2b.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/main/java/org/openprovenance/prov/core/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvSerialiser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/ProvSerialiser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomTypedValueSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/jsonld11/serialization/serial/CustomTypedValueSerializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/CommandLine.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/Config.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/Config.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/main/scala/org/openprovenance/prov/scala/interop/UtilsXplain.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QFactory.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/iface/QueryEngine.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/Processor.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-summarisation/prov-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/TypePropagator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/prov-summarisation/src/main/scala/org/openprovenance/prov/scala/summary/TypePropagator.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -819,7 +754,7 @@
       <workItem from="1695355590282" duration="6546000" />
       <workItem from="1696016222464" duration="32606000" />
       <workItem from="1696237138764" duration="20889000" />
-      <workItem from="1696348385334" duration="10101000" />
+      <workItem from="1696348385334" duration="10414000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

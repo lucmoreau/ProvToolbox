@@ -1,0 +1,131 @@
+
+{
+
+	"select": {
+		"decision":       {"@type": "prov:Entity"},
+		"request":        {"@type": "prov:Entity"},
+		"officer":        {"@type": "prov:Agent"},
+		"reviewing":      {"@type": "prov:Activity"},
+		"assoc":          {"@type": "prov:WasAssociatedWith"},
+		"der1":           {"@type": "prov:WasDerivedFrom"}},
+
+	"query": [
+
+		"prefix ln <https://plead-project.org/ns/loan#>",
+		"prefix pl <https://plead-project.org/ns/plead#>",
+
+
+		"select * from waw a prov:WasAssociatedWith",
+		"from officer a prov:Agent",
+		" join waw.agent = officer.id",
+		"from reviewing a prov:Activity",
+		" join waw.activity=reviewing.id",
+
+		"from der1 a prov:WasDerivedFrom",
+		" join reviewing.id=der1.activity",
+		"from decision a prov:Entity",
+		" join der1.generatedEntity=decision.id",
+		"from request a prov:Entity",
+		" join der1.usedEntity=request.id",
+
+
+		"where officer[prov:type]     >= 'prov:Person'",
+		"  and decision[prov:type]    >= 'pl:ReviewDecision'",
+		"  and decision[prov:type]    >= 'pl:AcceptingDecision'",
+		"  and request[prov:type]     >= 'pl:DataErasureRequest'"
+
+	],
+
+
+
+	"sentence": {
+		"type": "clause",
+		"subject": {
+			"type": "noun_phrase",
+			"determiner": "a",
+			"head": {
+				"type": "@funcall",
+				"@object": "officer",
+				"@field":  "id",
+				"@function": "noun+localname",
+				"@arg1":   "agent"
+			},
+			"complements": [
+				{
+					"type": "clause",
+					"complementiser": "whose",
+					"subject": "decision",
+					"verb": "is based on",
+					"features" : {"tense": "past"},
+					"object": {
+						"type": "noun_phrase",
+						"determiner": "your",
+						"post-modifiers": [
+							{
+							"type": "noun_phrase",
+							"head": "["
+							},
+							{
+							"type":"noun_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "request",
+								"@field":  "pl:request_reason",
+								"@function": "identity"
+							},
+							"features": {
+								"markup_element": "span",
+								"markup_attributes": {
+									"type": "@funcall",
+									"@object": "request",
+									"@function": "markup-for-id",
+									"@field":  "id",
+									"@arg1": "provelement"
+								}
+							}},
+							{
+								"type": "noun_phrase",
+								"head": "]"
+							}
+						],
+						"head": "reason"}
+
+
+				}
+			]
+		},
+		"object": {
+			"type": "noun_phrase",
+			"determiner": "the",
+			"head": "erasure request",
+			"post-modifiers": [{
+				"type":"noun_phrase",
+				"head": {
+					"type": "@funcall",
+					"@object": "request",
+					"@field":  "id",
+					"@function": "noun+localname",
+					"@arg1": ""
+				}}
+			]
+		},
+
+		"verb": "review",
+		"features" : {
+			"tense": "past",
+			"passive": "true"
+		}
+
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#"
+	}
+
+
+}

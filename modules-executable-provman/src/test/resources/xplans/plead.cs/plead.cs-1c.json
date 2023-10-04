@@ -1,0 +1,171 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query": [
+    "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+    "prefix pl <http://openprovenance.org/ns/plead#>",
+    "prefix app <https://explain.openprovenance.org/creditscoring/>",
+    "select * from decision a prov:Entity",
+    "from der1 a prov:WasDerivedFrom",
+    "join decision.id = der1.generatedEntity",
+    "from recommendation a prov:Entity",
+    "join der1.usedEntity = recommendation.id",
+    "from der2 a prov:WasDerivedFrom",
+    "join recommendation.id = der2.generatedEntity",
+    "from credit_history a prov:Entity",
+    "join der2.usedEntity = credit_history.id",
+    "where decision[prov:type] >= 'pl:RejectionDecision'",
+    "and recommendation[prov:type] >= 'pl:AutomatedRecommendation'",
+    "and credit_history[prov:type] >= 'cs:CreditHistory'"
+  ],
+  "sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "clause",
+        "subject": {
+          "type": "noun_phrase",
+          "head": "credit score",
+          "specifier": "##borrower-possessive"
+        },
+        "verb": "is",
+        "object": {
+          "type": "noun_phrase",
+          "head": {
+            "type": "@funcall",
+            "@object": "credit_history",
+            "@property": "cs:credit_score",
+            "@function": "identity"
+          },
+          "features": {
+            "head_markup_element": "span",
+            "head_markup_attributes": {
+              "type": "@funcall",
+              "@object": "credit_history",
+              "@function": "markup-for-id",
+              "@field": "id",
+              "@arg1": "provelement"
+            }
+          }
+        }
+      },
+      {
+        "type": "clause",
+        "verb": "calculate",
+        "object": {
+          "type": "noun_phrase",
+          "determiner": "this",
+          "head": "credit score"
+        },
+        "indirect_object": {
+          "type": "clause",
+          "subject": {
+            "type": "noun_phrase",
+            "head": "data",
+            "post-modifiers": [
+              {
+                "type": "preposition_phrase",
+                "preposition": "from",
+                "noun": "the categories"
+              },
+              {
+                "type": "verb_phrase",
+                "head": "described",
+                "features": {
+                  "type": "features",
+                  "tense": "past"
+                },
+                "post-modifiers": [
+                  {
+                    "type": "preposition_phrase",
+                    "preposition": "in",
+                    "noun": "this policy"
+                  }
+                ]
+              }
+            ]
+          },
+          "complementiser": "using"
+        },
+        "features": {
+          "type": "features",
+          "tense": "past",
+          "passive": "true"
+        }
+      },
+      {
+        "type": "clause",
+        "subject": {
+          "type": "noun_phrase",
+          "head": "credit score",
+          "specifier": "##borrower-possessive"
+        },
+        "verb": {
+          "type": "verb_phrase",
+          "head": "is",
+          "post-modifiers": [
+            {
+              "type": "preposition_phrase",
+              "preposition": "below",
+              "noun": {
+                "type": "noun_phrase",
+                "determiner": "the",
+                "head": "acceptance threshold",
+                "post-modifiers": [
+                  {
+                    "type": "preposition_phrase",
+                    "preposition": "of",
+                    "noun": {
+                      "type": "noun_phrase",
+                      "head": {
+                        "type": "@funcall",
+                        "@object": "recommendation",
+                        "@property": "cs:credit_score_threshold",
+                        "@function": "identity"
+                      },
+                      "features": {
+                        "head_markup_element": "span",
+                        "head_markup_attributes": {
+                          "type": "@funcall",
+                          "@object": "recommendation",
+                          "@function": "markup-for-id",
+                          "@field": "id",
+                          "@arg1": "provelement"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+    "ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

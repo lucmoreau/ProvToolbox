@@ -1,0 +1,137 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+"query": [
+    "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+    "prefix pl <http://openprovenance.org/ns/plead#>",
+    "prefix app <https://explain.openprovenance.org/creditscoring/>",
+    "select * from decision a prov:Entity",
+    "from der1 a prov:WasDerivedFrom",
+    " join decision.id = der1.generatedEntity",
+    "from application a prov:Entity",
+    " join der1.usedEntity = application.id",
+    "where decision.id >= 'app:applications/437/decision'",
+    "and decision[prov:type] >= 'pl:Decision'",
+    "and application[prov:type] >= 'cs:CreditCardApplication'"
+  ],
+"sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "clause",
+        "subject": "##company",
+        "verb": "regret",
+        "object": {
+          "type": "verb_phrase",
+          "head": "to inform",
+          "object": {
+            "type": "noun_phrase",
+            "head": "you"
+          },
+          "complements": [
+            {
+              "type": "clause",
+              "verb": "decline",
+              "object": {
+                                "type": "@funcall",
+                                "@object": "application",
+                                "@property": "prov:type",
+                                "@function": "lookup-type",
+                                "@arg1": "noun_phrase",
+                                "@arg2": "cs",
+                                "post-modifiers": [
+                                    {
+                                        "type": "adjective_phrase",
+                                        "head": {
+                                            "type": "@funcall",
+                                            "@object": "application",
+                                            "@field":  "id",
+                                            "@function": "noun+localname",
+                                            "@arg1": ""
+                                        },
+                                        "features": {
+                                            "markup_element": "span",
+                                            "markup_attributes": {
+                                                "type": "@funcall",
+                                                "@object": "application",
+                                                "@function": "markup-for-id",
+                                                "@field":  "id",
+                                                "@arg1": "provelement"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "features": {
+                                    "head_markup_element": "span",
+                                    "head_markup_attributes": {
+                                        "type": "@funcall",
+                                        "@object": "application",
+                                        "@function": "markup-for-id",
+                                        "@field":  "id",
+                                        "@arg1": "provelement"
+                                    }
+                                }
+                            },
+              "features": {
+                "type": "features",
+                "tense": "past",
+                "passive": "true"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "clause",
+        "subject": "That",
+        "verb": "is",
+        "object": {
+          "type": "clause",
+          "subject": {
+                          "type": "@funcall",
+                          "@object": "decision",
+                          "@property": "pl:reason",
+                          "@function": "lookup-type",
+                          "@arg1": "noun_phrase",
+                          "features": {
+                              "head_markup_element": "span",
+                              "head_markup_attributes": {
+                                  "type": "@funcall",
+                                  "@object": "decision",
+                                  "@function": "markup-for-id",
+                                  "@field":  "id",
+                                  "@arg1": "provelement"
+                              }
+                          }
+                        },
+          "complementiser": "because of"
+        }
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+"ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

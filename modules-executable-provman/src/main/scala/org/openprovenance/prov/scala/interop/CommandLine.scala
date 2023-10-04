@@ -182,8 +182,8 @@ object CommandLine extends Constants {
   }
 
   private def process_item(line: String): Unit = {
-    val args = line.split(" ")
-    // println("processing: " + args.mkString("[", ",", "]"))
+    val args = line.split("\\s+")
+    //println("processing: " + args.mkString("[", ",", "]"))
     CommandLine.main(args.drop(1))
   }
 

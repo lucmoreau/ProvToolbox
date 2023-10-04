@@ -86,8 +86,8 @@ class UtilsExpand {
           val exp = new Expander(config.allexpanded, config.genorder)
           val expansion = exp.expander(doc, "ignore", bindings)
         }
-        val after = System.nanoTime
-        val duration: Float = (after - before) / config.averageNum
+        val after: Long = System.nanoTime
+        val duration: Long = (after - before) / config.averageNum
         duration
       }
 

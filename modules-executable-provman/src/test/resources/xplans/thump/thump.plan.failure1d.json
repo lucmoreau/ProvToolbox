@@ -1,0 +1,176 @@
+
+{
+
+	"select": {
+		"plan1":        {"@type": "prov:Entity"},
+		"plan2":        {"@type": "prov:Entity"},
+		"ag":           {"@type": "prov:Agent"}
+		},
+	"query": [
+		"prefix ros <https://openprovenance.org/ns/ros>",
+		"prefix rpl <http://openprovenance.org/ns/rosplan>",
+		"prefix rs <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/>",
+		"prefix rn <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/>",
+		"prefix msg <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/>",
+		"prefix ex <http://example.org/>",
+
+		"prefix pl <https://plead-project.org/ns/plead#>",
+
+		"select * from wdf a prov:WasDerivedFrom",
+		"from plan1 a prov:Entity",
+		" join wdf.usedEntity = plan1.id",
+		"from plan2 a prov:Entity",
+		" join wdf.generatedEntity=plan2.id",
+		"from usd a prov:Used",
+		" join plan1.id = usd.entity",
+		"from dispatching a prov:Activity",
+		" join usd.activity=dispatching.id",
+		"from waw a prov:WasAssociatedWith",
+		" join dispatching.id=waw.activity",
+		"from ag a prov:Agent",
+		" join waw.agent=ag.id",
+		"from mem a provext:HadMember",
+		" join plan2.id=mem.collection",
+		"from action a prov:Entity",
+		" join mem.element=action.id",
+		"from wdf2 a provext:WasDerivedFromStar",
+		" join action.id=wdf2.generatedEntity",
+		"from origin a prov:Entity",
+		" join wdf2.usedEntity=origin.id",
+		"from wdf3 a prov:WasDerivedFrom",
+		" join origin.id=wdf3.generatedEntity",
+		"from waypoint a prov:Entity",
+		" join wdf3.usedEntity=waypoint.id",
+		"from wat a prov:WasAttributedTo",
+		" join waypoint.id=wat.entity",
+		"from ag2 a prov:Agent",
+		" join wat.agent=ag2.id",
+
+
+		"where plan2[prov:type]       >= 'rpl:CancelledPlan'",
+		"  and plan1[prov:type]       >= 'rpl:EsterelPlan'",
+		"  and ag[prov:type]          >= 'rpl:ROSPlanNode'",
+		"  and dispatching[prov:type] >= 'ex:DispatchingPlan'",
+		"  and action[prov:type]      >= 'rpl:CancelledAction'",
+		"  and origin[prov:type]      >= 'rpl:Action'",
+		"  and waypoint[prov:type]    >= 'rpl:Waypoint'",
+		"  and waypoint[prov:type]    >= 'rpl:PlanData'",
+		"  and ag2[prov:type]         >= 'ros:Node'",
+
+		"group by plan1, plan2, ag aggregate action, origin, waypoint, ag2 with Seq"
+
+	],
+
+
+
+
+	"sentence": {
+		"type": "clause",
+		"object": {
+			"type": "noun_phrase",
+
+			"head": {
+				"type": "@funcall",
+				"@object": "plan2",
+				"@field":  "id",
+				"@function": "noun+localname",
+				"@arg1":   "plan"
+			}
+		},
+		"subject": {
+			"type": "coordinated_phrase",
+			"conjunction": "and",
+			"@iterator": {
+				"type": "@iterator",
+				"@variable": "action,origin,waypoint,ag2",
+				"@clause": "coordinates",
+				"@element": {
+					"type": "noun_phrase",
+					"head": {
+						"type": "@funcall",
+						"@object": "action",
+						"@field":  "id",
+						"@function": "noun+localname",
+						"@arg1":   "action"
+					},
+					"post-modifiers": [{
+						"type": "adjective_phrase",
+						"head": "derived",
+						"post-modifiers": [
+							{
+								"type": "preposition_phrase",
+								"preposition": "from",
+								"noun": {
+									"type": "noun_phrase",
+									"head": {
+										"type": "@funcall",
+										"@object": "origin",
+										"@field": "id",
+										"@function": "noun+localname",
+										"@arg1": ""
+									},
+									"post-modifiers": [
+										{
+											"type": "preposition_phrase",
+											"preposition": "with",
+											"noun": {
+												"type": "@funcall",
+												"@object": "waypoint",
+												"@field": "id",
+												"@function": "noun+localname",
+												"@arg1": "waypoint"
+											}
+										},
+										{
+											"type": "adjective_phrase",
+											"head": "created",
+											"post-modifiers": [
+												{
+													"type": "preposition_phrase",
+													"preposition": "by",
+													"noun": {
+														"type": "@funcall",
+														"@object": "ag2",
+														"@field": "id",
+														"@function": "noun+localname",
+														"@arg1": "ROS Node"
+													}
+												}
+											]
+										}
+									]
+								}
+							}
+						]
+					}]
+				}
+			}
+
+		},
+
+		"verb": "fail",
+		"features" : {
+			"tense": "past",
+			"passive": "true"
+		}
+
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#",
+		"ros": "https://openprovenance.org/ns/ros",
+		"rpl": "http://openprovenance.org/ns/rosplan",
+		"rs": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2",
+		"rn": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/",
+		"msg": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/"
+
+
+	}
+
+
+}

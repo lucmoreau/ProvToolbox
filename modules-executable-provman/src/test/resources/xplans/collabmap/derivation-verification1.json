@@ -1,0 +1,94 @@
+
+{
+	"select": {"der": {"@type": "prov:WasDerivedFrom"}},
+
+	"query": [
+		"prefix collabmap <http://www.orchid.ac.uk/ontologies/collabmap.owl#>",
+
+		"select * from der a prov:WasDerivedFrom",
+		"from vote a prov:Entity",
+		" join der.generatedEntity=vote.id",
+		"from routeset a prov:Entity",
+		" join der.usedEntity=routeset.id",
+		"from wgb a prov:WasGeneratedBy",
+		" join der.generatedEntity=wgb.entity",
+		"from activity a prov:Activity",
+		" join wgb.activity=activity.id",
+
+
+		"where der[prov:type]     >= 'collabmap:votedOn'",
+		"  and routeset[prov:type]>= 'collabmap:RouteSet'",
+		"  and vote[prov:type]    >= 'collabmap:Vote'",
+		"  and activity[prov:type]>= 'collabmap:CompletionVerification'"
+	],
+
+	"sentence": {
+		"type": "clause",
+		"object":  {
+			"type": "noun_phrase",
+			"head": "the route set",
+			"post-modifiers": [
+				{
+					"type": "noun_phrase",
+					"head": {
+						"type": "@funcall",
+						"@object": "routeset",
+						"@field":  "id",
+						"@function": "localname"
+					}
+				}
+			]
+		},
+		"verb": "vote on",
+		"post-modifiers": [
+			{
+				"type": "@funcall",
+				"@object": "vote",
+				"@property": "prov:value",
+				"@function": "lookup-attribute",
+				"@arg1": "adverb_phrase"
+			},
+			{
+				"type": "preposition_phrase",
+				"preposition": "during",
+				"noun": {
+					"type": "noun_phrase",
+					"head": "activity",
+					"post-modifiers": [
+						{
+							"type": "noun_phrase",
+							"head": {
+								"type": "@funcall",
+								"@object": "activity",
+								"@field":  "id",
+								"@function": "localname"
+							}
+						}
+					]
+				}
+			},
+			{
+				"type": "preposition_phrase",
+				"preposition": "at",
+				"noun": {
+					"type": "@funcall",
+					"@object": "wgb",
+					"@field": "time",
+					"@optional": "true",
+					"@function": "timestring"
+				}
+			}
+		],
+
+		"features" : {
+			"tense": "past",
+			"passive": "true"
+		}
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"collabmap": "http://www.orchid.ac.uk/ontologies/collabmap.owl#"
+	}
+
+}

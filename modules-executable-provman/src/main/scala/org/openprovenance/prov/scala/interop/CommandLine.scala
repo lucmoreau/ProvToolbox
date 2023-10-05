@@ -3,9 +3,7 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QFactory, QueryEngine, XFactory}
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
 import org.openprovenance.prov.scala.immutable.{Document, Format, Statement}
-import org.openprovenance.prov.scala.interop.CommandLine.uExpand.{bindings, bindings_v2, bindings_v3, expandExport, expandTime}
-import org.openprovenance.prov.scala.interop.CommandLine.uExplain.{explanationExport, narrativeExport, processQueryAndOutput}
-import org.openprovenance.prov.scala.interop.CommandLine.uSignature.{normalize, sign, signature}
+import org.openprovenance.prov.scala.interop.CommandLine.uExpand.{bindings, bindings_v2, bindings_v3, expandExport, expandTime}import org.openprovenance.prov.scala.interop.CommandLine.uSignature.{normalize, sign, signature}
 import org.openprovenance.prov.scala.interop.CommandLine.uSummary.{normalizeOLDSTUFF, summarize, summaryDraw, summary_compare}
 import org.openprovenance.prov.scala.interop.CommandLine.uValidate.validate
 import org.openprovenance.prov.scala.nf.CommandLine.{parseDocument, toBufferedSource}
@@ -31,10 +29,7 @@ object CommandLine extends Constants {
   val explainer: Explainer = xFactory.makeExplainer
 
   val qFactory: QFactory = new QFactory()
-  val queryEngine: QueryEngine[Statement, RField] = qFactory.makeQueryEnfine
-
-  val uExplain: UtilsXplain = new UtilsXplain(narrator, explainer, queryEngine)
-  val uSignature: UtilsSignature = new UtilsSignature()
+   val uSignature: UtilsSignature = new UtilsSignature()
   val uSummary: UtilsSummary = new UtilsSummary(pf)
   val uExpand: UtilsExpand = new UtilsExpand()
   val uValidate: UtilsValidator = new UtilsValidator()
@@ -43,6 +38,11 @@ object CommandLine extends Constants {
   def main(args: Array[String]): Unit = {
     parser.parse(args, Config()) match {
       case Some(config) =>
+
+        val queryEngine: QueryEngine[Statement, RField] = qFactory.makeQueryEnfine(config)
+
+        val uExplain: UtilsXplain = new UtilsXplain(narrator, explainer, queryEngine)
+
 
         config.command match {
           case "summary" => summarize(config)
@@ -54,7 +54,7 @@ object CommandLine extends Constants {
           case NORMALIZE => normalize(config)
           case "sign" => sign(config)
           case "signature" => signature(config)
-          case TRANSLATE => translate(config.infile, config)
+          case TRANSLATE => translate(config.infile, config, uExplain)
           case EXPAND => if (config.time == null) {
             expandExport(config.infile, config)
           } else {
@@ -65,13 +65,13 @@ object CommandLine extends Constants {
             val in: Input = config.infile
             val docIn = parseDocument(in)
             val (text, doc, mat, descriptor) = narrator.narrate(docIn, config)
-            narrativeExport(config, text, doc, mat, descriptor)
+            uExplain.narrativeExport(config, text, doc, mat, descriptor)
 
           case "explain" =>
             val in: Input = config.infile
             val doc = parseDocument(in)
             val text = explainer.explain(doc, config)
-            explanationExport(config, text, doc)
+            uExplain.explanationExport(config, text, doc)
 
           case "bindings" => bindings(config)
           case "bindings.v2" => bindings_v2(config)
@@ -96,21 +96,21 @@ object CommandLine extends Constants {
 
 
 
-  def translate(in: Input, config: Config): Unit = {
+  def translate(in: Input, config: Config, uExplain: UtilsXplain): Unit = {
     if (config.streaming) {
       translate_streaming(in, config)
     } else {
-      translate_non_streaming(in, config)
+      translate_non_streaming(in, config, uExplain)
     }
   }
 
-  def translate_non_streaming(in: Input, config: Config): Unit = {
+  def translate_non_streaming(in: Input, config: Config, uExplain: UtilsXplain): Unit = {
     val doc = parseDocument(in)
     Namespace.withThreadNamespace(doc.namespace)
     if (config.query == null) {
       outputer(doc, config)
     } else {
-      processQueryAndOutput(doc, config.query, config, config)
+      uExplain.processQueryAndOutput(doc, config.query, config, config)
     }
   }
 

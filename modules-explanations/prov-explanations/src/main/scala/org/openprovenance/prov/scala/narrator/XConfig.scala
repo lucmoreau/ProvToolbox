@@ -1,8 +1,9 @@
 package org.openprovenance.prov.scala.narrator
 
 import org.openprovenance.prov.scala.interop.{Input, Output}
+import org.openprovenance.prov.scala.query.QConfig
 
-trait XConfig {
+trait XConfig extends QConfig {
   def snlg: Output
 
 
@@ -22,6 +23,7 @@ trait XConfig {
 
   def format_option: Int
 
-  def infiles: String
+
+  override def infiles: String
 
 }

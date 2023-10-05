@@ -1,16 +1,15 @@
 package org.openprovenance.prov.scala.interop
 
-import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
-import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine, QueryResult}
+import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine}
 import org.openprovenance.prov.scala.immutable.{Document, Statement}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
-import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
-import org.openprovenance.prov.scala.query.StatementAccessor
 import org.openprovenance.prov.scala.summary.TypePropagator
-import org.openprovenance.prov.scala.xplain.{Narrative, RealiserFactory}
+import org.openprovenance.prov.scala.xplain.Narrative
 import org.openprovenance.prov.validation.EventMatrix
 
 import java.io.{BufferedWriter, FileWriter}
@@ -68,25 +67,12 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
 
   def processQueryAndOutput(doc: Document, query: Input, config: XConfig, outConfig: OutConfig): Unit = {
     import scala.jdk.CollectionConverters._
-    val context: Map[String, String] = doc.namespace.getPrefixes.asScala.toMap
-    val environment = Environment(context, null, null, new Array[String](0), List())
-
-    val rf = new RealiserFactory(config)
-
-    val accessor: StatementAccessor[Statement] = rf.makeStatementAccessor(doc.statements().toSeq)
-    val accessors: Map[String, StatementAccessor[Statement]] = rf.accessors.map { case (s, ss) => (s, rf.makeStatementAccessor(ss)) } //alternate_files.map{case (s,f) => (s, rf.makeStatementAccessor(parseDocument(new FileInput(new File(f))).statements().toSeq))}
-
-    val statementAccessorForDocument: Option[String] => StatementAccessor[Statement] = {
-      case None => accessor
-      case Some(s) => accessors(s)
-    }
-
 
     val source = scala.io.Source.fromFile(query.asInstanceOf[FileInput].f)
     val queryContents: String = try source.mkString finally source.close()
 
 
-    val result: QueryResult[RField] =processQuery(queryContents, doc, environment, statementAccessorForDocument)
+    val result: _root_.org.openprovenance.prov.scala.iface.QueryResult[_root_.org.openprovenance.prov.scala.query.QueryInterpreter.RField] = queryEngine.processQuery(queryContents, doc)
     println("found " + result.getRecords.size + " records (and " + result.getRecords.headOption.getOrElse(Map()).keySet.size + " fields)")
 
     if (outConfig.queryResult()!=null) exportToJson(outConfig.queryResult(),result.getRecords.asJava)
@@ -95,9 +81,8 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
     outputer(doc2, outConfig)
   }
 
-  def processQuery(queryContents: String, doc: Document, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor[Statement]): QueryResult[RField] = {
-    queryEngine.processQuery(queryContents, doc, environment, statementAccessorForDocument)
-  }
+
+
 
   def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {
     TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT);
@@ -105,8 +90,7 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
   }
 
   def exportToJson(out: Output, records: AnyRef): Unit = {
-    val om: ObjectMapper with ClassTagExtensions = new ObjectMapper() with ClassTagExtensions
-    om.registerModule(DefaultScalaModule)
+    val om=JsonMapper.builder().addModule(DefaultScalaModule).build() :: ClassTagExtensions
     new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(om,false).getMapper.writeValue(out.asInstanceOf[FileOutput].f, records)
     //new ProvSerialiser(om,false).customize2(om).writeValue(out.asInstanceOf[FileOutput].f, records)
     // FIXME: which serializtion to use? None seems suitable.

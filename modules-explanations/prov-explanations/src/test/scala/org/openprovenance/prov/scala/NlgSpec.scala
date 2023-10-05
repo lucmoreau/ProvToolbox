@@ -3,8 +3,6 @@
 
 package org.openprovenance.prov.scala
 
-import java.io.{File, StringWriter}
-import java.util
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.{FileInput, Input}
@@ -13,12 +11,14 @@ import org.openprovenance.prov.scala.nf.CommandLine
 import org.openprovenance.prov.scala.nlg._
 import org.openprovenance.prov.scala.nlgspec_transformer.{Language, SpecLoader, specTypes}
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
-import org.openprovenance.prov.scala.query.{Processor, StatementIndexer}
+import org.openprovenance.prov.scala.query.StatementIndexer
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.openprovenance.prov.scala.xplain.RealiserFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
+import java.io.{File, StringWriter}
+import java.util
 import scala.jdk.CollectionConverters._
 import scala.util.Success
 
@@ -67,8 +67,7 @@ class NlgSpec extends AnyFlatSpec with Matchers {
     val template=SpecLoader.templateImport("src/main/resources/nlg/templates/provbasic/entity1.json")
   }
 
-  val engine=new Processor(null,null)
-  val maker = new SentenceMaker(engine)
+  val maker = new SentenceMaker()
 
   "An entity" should "be describe-able by a sentence" in {
 

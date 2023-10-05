@@ -14,6 +14,17 @@ import scala.util.Try
 object QueryInterpreter {
   type RField = Statement or Seq[Statement] or Seq[TypedValue]
   type RFields = Vector[RField]
+
+  def getStatement(f: RField): Option[Statement] = f.a match {
+    case None => None
+    case Some(a) => a.a
+  }
+
+  def getSeqStatement(f: RField): Option[Seq[Statement]] = f.a match {
+    case None => None
+    case Some(a) => a.b
+  }
+
 }
 
 case class Record(fields: RFields, schema: Schema) {
@@ -40,15 +51,6 @@ trait QueryInterpreter extends SummaryTypesNames {
 
   def getValues(f: RField): Option[Seq[TypedValue]] = f.b
 
-  def getStatement(f: RField): Option[Statement] = f.a match {
-    case None => None
-    case Some(a) => a.a
-  }
-
-  def getSeqStatement(f: RField): Option[Seq[Statement]] = f.a match {
-    case None => None
-    case Some(a) => a.b
-  }
 
   def convertToSeqStatement(f: RField): Seq[Statement] = {
     f.a match {

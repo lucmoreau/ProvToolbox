@@ -9,8 +9,7 @@ import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
-import org.openprovenance.prov.scala.query.Processor
-import org.openprovenance.prov.scala.query.QueryInterpreter.RField
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, getSeqStatement, getStatement}
 import org.openprovenance.prov.scala.summary.TypePropagator
 
 
@@ -51,7 +50,7 @@ object SentenceMaker {
 
 }
 
-class SentenceMaker (val engine:Processor) {
+class SentenceMaker () {
 
 
 
@@ -66,11 +65,11 @@ class SentenceMaker (val engine:Processor) {
 
     val te=new TransformEnvironment {
       override val environment: Environment = environment0
-      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => engine.getStatement(f) match {
+      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => getStatement(f) match {
         case None => None
         case Some(m) => Some((s,m))
       }}
-      override val seqStatements: Map[String, Seq[Statement]] = selected_objects.flatMap{case (s,f) => engine.getSeqStatement(f) match {
+      override val seqStatements: Map[String, Seq[Statement]] = selected_objects.flatMap{case (s,f) => getSeqStatement(f) match {
         case None => None
         case Some(m) => Some((s,m))
       }}
@@ -123,30 +122,5 @@ class SentenceMaker (val engine:Processor) {
 
     realised.getOrElse(emptyRealisation)
   }
-
-/*
-
-  def callSimplenlgLibraryMOVED_AWAY(p: Phrase, option: Int): (String, String, () => String) = {
-    val sw=new StringWriter()
-    SpecLoader.phraseExport(sw,p)
-    val snlg: String =sw.getBuffer.toString
-
-    //println(snlg)
-
-
-    val phrase=IO.phraseImportFromString(snlg)
-
-    val realiser: Realiser =if (option==1) defs.withMarkupFormatter() else wrapper.defs.theRealiser
-    //val realiser: Realiser =nlg.wrapper.defs.theRealiser
-    val spec =phrase.expand().asInstanceOf[NLGElement]
-   // println(spec.printTree("  "))
-
-    val tree=() => spec.printTree("  ")
-
-    val result: String =realiser.realiseSentence(spec)
-    (result, snlg, tree)
-  }
-
- */
 
 }

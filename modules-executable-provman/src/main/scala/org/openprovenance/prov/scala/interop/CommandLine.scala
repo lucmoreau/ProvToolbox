@@ -3,7 +3,8 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QFactory, QueryEngine, XFactory}
 import org.openprovenance.prov.scala.immutable.ProvFactory.pf
 import org.openprovenance.prov.scala.immutable.{Document, Format, Statement}
-import org.openprovenance.prov.scala.interop.CommandLine.uExpand.{bindings, bindings_v2, bindings_v3, expandExport, expandTime}import org.openprovenance.prov.scala.interop.CommandLine.uSignature.{normalize, sign, signature}
+import org.openprovenance.prov.scala.interop.CommandLine.uExpand.{bindings, bindings_v2, bindings_v3, expandExport, expandTime}
+import org.openprovenance.prov.scala.interop.CommandLine.uSignature.{normalize, sign, signature}
 import org.openprovenance.prov.scala.interop.CommandLine.uSummary.{normalizeOLDSTUFF, summarize, summaryDraw, summary_compare}
 import org.openprovenance.prov.scala.interop.CommandLine.uValidate.validate
 import org.openprovenance.prov.scala.nf.CommandLine.{parseDocument, toBufferedSource}

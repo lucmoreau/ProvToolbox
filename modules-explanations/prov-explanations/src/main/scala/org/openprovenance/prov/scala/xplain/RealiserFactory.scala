@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.util.StdConverter
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.Kind.Kind
-import org.openprovenance.prov.scala.immutable._
+import org.openprovenance.prov.scala.immutable.{Document, Kind, Statement}
 import org.openprovenance.prov.scala.interop.FileInput
 import org.openprovenance.prov.scala.narrator.{XConfig, XplainConfig}
 import org.openprovenance.prov.scala.nf.CommandLine.parseDocument
@@ -14,8 +14,9 @@ import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Plan}
 import org.openprovenance.prov.scala.nlgspec_transformer.{Environment, Language, SpecLoader, specTypes}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
-import org.openprovenance.prov.scala.query.{Processor, QuerySetup, StatementAccessor, StatementIndexer, Record}
+import org.openprovenance.prov.scala.query.{Processor, QuerySetup, Record, StatementAccessor, StatementIndexer}
 import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFromStar}
+import org.openprovenance.prov.scala.xplain.RealiserFactory.logger
 
 import java.io.File
 import scala.annotation.tailrec
@@ -35,7 +36,6 @@ object RealiserFactory {
 
 class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profiles:Map[String, Object], infiles:String=null) {
 
-  import RealiserFactory._
 
 
   def this(template:Plan, dictionary: Dictionary, profiles:Map[String,Object]) = {
@@ -58,9 +58,9 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
     this(XplainConfig(language=seq,languageAsFilep = filep))
   }
 
-  val names: Seq[(immutable.Kind.Value, Plan)] =templates.map(template => (QuerySetup.nameMapper(template.select(template.select.keys.head)(Keywords.TYPE)),template)).toSeq
+  val names: Seq[(Kind.Value, Plan)] = templates.map(template => (QuerySetup.nameMapper(template.select(template.select.keys.head)(Keywords.TYPE)),template)).toSeq
 
-  val index: Map[immutable.Kind.Value, Set[Plan]] =names.groupBy(_._1).view.mapValues(x => x.map(_._2).toSet).toMap
+  val index: Map[Kind.Value, Set[Plan]] =names.groupBy(_._1).view.mapValues(x => x.map(_._2).toSet).toMap
 
   def selectBestNarrative(narratives: Set[Narrative]): Narrative = {
     var count=1
@@ -126,13 +126,13 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
   }
 
 
-  private def processQuery(template: Plan, engine: Processor): List[Map[String, RField]] = {
+  private def processQuery(xplan: Plan, engine: Processor): List[Map[String, RField]] = {
 
-    val query: String = template.query match {
+    val query: String = xplan.query match {
       case s: String => s
       case a: Array[String] => a.mkString(" \n")
       case a: Seq[String] @unchecked => a.mkString(" \n")
-      case _ => println(template.name); println(template); throw new UnsupportedOperationException("incorrect query for " + template.name)
+      case _ => println(xplan.name); println(xplan); throw new UnsupportedOperationException("incorrect query for " + xplan.name)
     }
 
     val set: mutable.Set[Record] = engine.newRecords()
@@ -192,7 +192,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
 
         val triples = scala.collection.mutable.Set[Triple]()
 
-        val maker = new SentenceMaker(engine)
+        val maker = new SentenceMaker()
 
         val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
 
@@ -231,7 +231,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
          // logger.debug("==> " + selected_objects)
           val triples = scala.collection.mutable.Set[Triple]()
 
-          val maker = new SentenceMaker(engine)
+          val maker = new SentenceMaker()
 
           val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
 
@@ -287,7 +287,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
 
                 val triples = scala.collection.mutable.Set[Triple]()
 
-                val maker = new SentenceMaker(engine)
+                val maker = new SentenceMaker()
 
                 val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
 

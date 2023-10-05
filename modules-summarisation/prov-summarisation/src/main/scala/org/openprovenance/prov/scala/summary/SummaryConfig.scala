@@ -26,7 +26,9 @@ case class SummaryConfig(kernel: Boolean=false,
                          to: Int = -1,
                          outfiles: Seq[Output] = Seq(),
                          outformats: Seq[Format.Format] = Seq(),
-                         defaultFormat: Format.Format=null) extends SConfig
+                         defaultFormat: Format.Format=null,
+                         summary_queries: File=null,
+                         types: File = null) extends SConfig
 {
 
   def this(os: java.io.OutputStream, mediaType: String) = {

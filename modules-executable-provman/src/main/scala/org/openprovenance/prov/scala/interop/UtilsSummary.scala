@@ -2,17 +2,14 @@ package org.openprovenance.prov.scala.interop
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.nf.CommandLine.{parseDocument, parseDocumentToNormalForm, toBufferedSource}
-import org.openprovenance.prov.scala.nlgspec_transformer.Environment
-import org.openprovenance.prov.scala.query.{Processor, StatementAccessor, SummaryQueryGenerator}
 import org.openprovenance.prov.scala.summary._
-import org.openprovenance.prov.scala.summary.types.{FlatType, ProvType}
+import org.openprovenance.prov.scala.summary.types.ProvType
 import org.openprovenance.prov.scala.viz.{Graphics, SummaryGraphics}
 
 import java.io.{BufferedWriter, File, FileWriter}
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 import scala.collection.parallel.CollectionConverters._
 
 class UtilsSummary (pf:ProvFactory) {
@@ -36,6 +33,7 @@ class UtilsSummary (pf:ProvFactory) {
     })
   }
 
+  val  utilsSummaryXplain = new org.openprovenance.prov.scala.xp_summary.UtilsSummaryXplain()
 
   def summarize(config: Config,
                 s: TypePropagator,
@@ -53,7 +51,7 @@ class UtilsSummary (pf:ProvFactory) {
       config.outfiles.zip(theformats).par foreach { case (o: Output, format: Format.Format) => Format2.outputers(format).output(summaryIndex, o, params2) }
 
       if (config.types != null) {
-        exportToJsonDescription(summaryIndex, config, params2, level, allDescriptions)
+        utilsSummaryXplain.exportToJsonDescription(summaryIndex, config, params2, level, allDescriptions)
       }
     }
 
@@ -81,7 +79,7 @@ class UtilsSummary (pf:ProvFactory) {
     config.outfiles.zip(theformats).par foreach { case (o: Output, format: Format.Format) => Format2.outputers(format).output(annotatedSummary, o, params3) }
 
     if (config.types != null) {
-      exportToJsonDescription(summaryIndex, config, params2, level, mutable.Map()) //LUC: note that here I do not include a persistent map to accumulate all descriptionns
+      utilsSummaryXplain.exportToJsonDescription(summaryIndex, config, params2, level, mutable.Map()) //LUC: note that here I do not include a persistent map to accumulate all descriptionns
     }
     if (config.features != null) {
       exportToJsonFeatures(summaryIndex, config.features, params2)
@@ -233,70 +231,6 @@ class UtilsSummary (pf:ProvFactory) {
     println(doc.toString())
   }
 
-  def exportQueriesForType(desc: SummaryDescriptionJson,
-                           config: Config,
-                           params: Map[String, String],
-                           level: Int,
-                           allDescriptions: mutable.Map[Int, SummaryDescriptionJson]): Unit = {
-
-    if (config.summary_queries != null) {
-
-      val previousLevels: collection.Set[Int] = allDescriptions.keySet - level
-
-
-      val previousFlatTypes: Map[Int, Map[Int, Set[FlatType]]] = previousLevels.map(l => l -> allDescriptions(l).getFlatTypes).toMap
-      val allTypeMaps: Map[Int, Map[Int, Set[FlatType]]] = previousFlatTypes + (level -> allDescriptions(level).getFlatTypes(level, allDescriptions))
-      val allTypeStrings: Map[Int, Map[String, Int]] = allDescriptions.map { case (level, v) => (level, v.typeStrings.map { case (k, v) => (v, k) }) }.toMap
-      val allTypeStringsR: Map[Int, Map[Int, String]] = allDescriptions.map { case (level, v) => (level, v.typeStrings) }.toMap
-      val allTypeCounts: Map[Int, Map[Int, Int]] = allDescriptions.map { case (level, v) => (level, v.getFeatures.map { case (k, v) => (allTypeStrings(level)(k), v) }) }.toMap
-
-      val typeMap: Map[Int, Set[FlatType]] = allTypeMaps(level)
-      val typeStrings: Map[String, Int] = allTypeStrings(level)
-      val typeCount: Map[Int, Int] = allTypeCounts(level)
-
-
-      val context: Map[String, String] = Map()
-      val environment = Environment(context, null, null, new Array[String](0), List())
-
-      val statementAccessorForDocument: (Option[String] => StatementAccessor[Statement]) = (s: Option[String]) => {
-        null
-      }
-      val engine = new Processor(statementAccessorForDocument, environment) with SummaryQueryGenerator
-
-      val selectedTypes: Set[Int] = typeMap.keySet
-
-      println("exportQueriesForType " + level)
-      //println(allDescriptions)
-      //println(allTypeMaps)
-      selectedTypes.foreach(selectedType => {
-        queryExporter(desc, config, params, level, allTypeMaps, allTypeStringsR, typeCount, engine, selectedType)
-      })
-
-    }
-  }
-
-  def queryExporter(desc: SummaryDescriptionJson,
-                    config: Config,
-                    params: Map[String, String],
-                    level: Int,
-                    allTypeMaps: Map[Int, Map[Int, Set[FlatType]]],
-                    allTypeStringsR: Map[Int, Map[Int, String]],
-                    typeCount: Map[Int, Int],
-                    engine: Processor with SummaryQueryGenerator,
-                    selectedType: Int): Unit = {
-    val params2 = params ++ Map(Format.typeVar -> selectedType.toString)
-    val fileName = Format.substParams(config.summary_queries.toString, params2)
-    val fw = new FileWriter(fileName)
-
-    fw.write("// query for type " + selectedType + ":\n")
-    fw.write("//  type " + selectedType + " is " + desc.typeStrings(selectedType) + "\n")
-    val queryString: ArrayBuffer[String] = engine.flatType2Query(selectedType, level, allTypeMaps, allTypeStringsR, typeCount, engine.QueryDirectiveTop())
-    fw.write(queryString.mkString)
-    fw.write("\n")
-    fw.write("//end\n\n")
-    fw.close()
-  }
-
   def exportToJsonDescription(desc: SummaryDescriptionJson, file: File, params: Map[String, String]): Unit = {
     val fileName = Format.substParams(file.toString, params)
     val bw = new BufferedWriter(new FileWriter(fileName))
@@ -315,21 +249,6 @@ class UtilsSummary (pf:ProvFactory) {
 
 
 
-  def exportToJsonDescription(index: SummaryIndex,
-                              config:Config,
-                              params: Map[String,String],
-                              level:Int,
-                              allDescriptions:mutable.Map[Int,SummaryDescriptionJson]): Unit = {
-    val file=config.types
-    val fileName=Format.substParams(file.toString,params)
-    val bw=new BufferedWriter(new FileWriter(fileName))
-    val summaryDescriptionJson: SummaryDescriptionJson =index.exportToJsonDescription(bw)
-    bw.close()
-    allDescriptions += (level -> summaryDescriptionJson)
-
-    // and now optionally export queries for all types
-    exportQueriesForType(summaryDescriptionJson, config, params, level, allDescriptions)
-  }
 
 
 

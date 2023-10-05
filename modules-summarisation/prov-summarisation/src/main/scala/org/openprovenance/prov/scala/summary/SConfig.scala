@@ -25,4 +25,6 @@ trait SConfig {
   def outfiles: Seq[Output]
   def outformats: Seq[Format]
   def defaultFormat: Format
+  def summary_queries: File
+  def types: File
 }

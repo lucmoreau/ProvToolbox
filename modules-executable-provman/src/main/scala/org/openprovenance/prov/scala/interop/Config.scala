@@ -2,8 +2,8 @@ package org.openprovenance.prov.scala.interop
 
 import org.openprovenance.prov.scala.immutable.Format
 import org.openprovenance.prov.scala.immutable.Format.Format
-import org.openprovenance.prov.scala.summary.{PrettyMethod, SConfig}
 import org.openprovenance.prov.scala.narrator.XConfig
+import org.openprovenance.prov.scala.summary.{PrettyMethod, SConfig}
 
 import java.io.File
 

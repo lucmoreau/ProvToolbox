@@ -84,12 +84,12 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
 
 
 
-  def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {
+  private def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {
     TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT);
     TypePropagator.om.writeValue(outw, any)
   }
 
-  def exportToJson(out: Output, records: AnyRef): Unit = {
+  private def exportToJson(out: Output, records: AnyRef): Unit = {
     val om=JsonMapper.builder().addModule(DefaultScalaModule).build() :: ClassTagExtensions
     new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(om,false).getMapper.writeValue(out.asInstanceOf[FileOutput].f, records)
     //new ProvSerialiser(om,false).customize2(om).writeValue(out.asInstanceOf[FileOutput].f, records)

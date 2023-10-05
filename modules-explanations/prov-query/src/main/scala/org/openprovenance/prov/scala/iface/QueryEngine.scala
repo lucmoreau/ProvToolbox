@@ -9,6 +9,7 @@ trait QueryEngine [Statement,RField] {
   def processQuery(queryContents: String, doc: Document, environment: Environment, statementAccessorForDocument: Option[String] => StatementAccessor[Statement]): QueryResult[RField]
   def processQuery(queryContents: String, doc: Document, environment: Environment): QueryResult[RField]
   def processQuery(queryContents: String, doc: Document): QueryResult[RField]
+  
 
 }
 

@@ -15,8 +15,7 @@ import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Plan}
 import org.openprovenance.prov.scala.nlgspec_transformer.{Environment, Language, SpecLoader, specTypes}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
-import org.openprovenance.prov.scala.query.{Processor, QuerySetup, Record, StatementAccessor, StatementIndexer}
-import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFromStar}
+import org.openprovenance.prov.scala.query.QuerySetup
 import org.openprovenance.prov.scala.xplain.RealiserFactory.logger
 
 import java.io.File
@@ -91,67 +90,10 @@ class RealiserFactory(plans:Seq[Plan],
     context2
   }
 
-  /*
-  val TOKEN_TYPE="@type"
-  val TOKEN_OBJECT="@object"
-  val TOKEN_OBJECT1="@object1"
-  */
 
+  private val alternate_files: Map[String, String] =if (infiles!=null) SpecLoader.mapper.readValue(infiles,classOf[Map[String,String]]) else Map[String,String]()
 
-  private def processQuery(template: Plan, s: Statement, engine: Processor): List[Map[String, RField]] = {
-
-    val headStatementId=template.select.keys.head
-    val headStatementType=template.select(headStatementId)(Keywords.TYPE)
-    val headStatementKind:   Kind.Value = QuerySetup.nameMapper(headStatementType)
-    val actualStatementKind: Kind.Value = Kind.toKind(s.getKind)
-
-    if (actualStatementKind==headStatementKind) {
-
-      val query: String = template.query match {
-        case s: String => s
-        case a: Array[String] => a.mkString(" \n")
-        case a: Seq[String] @unchecked => a.mkString(" \n")
-        case _ => println(template.name); println(template); throw new UnsupportedOperationException("incorrect query for " + template.name)
-      }
-
-
-      val set: mutable.Set[Record] = engine.newRecords()
-
-      if (query=="None") {
-        List(Map())
-      } else {
-        engine.evalAccumulate(query, set)
-        val statements: List[Map[String, RField]] = set.toSeq.map(engine.toMap2).filter(m => engine.toStatement(m(headStatementId)) == s).toList
-        statements
-      }
-    } else {
-      List()
-    }
-  }
-
-
-  private def processQuery(xplan: Plan, engine: Processor): List[Map[String, RField]] = {
-
-    val query: String = xplan.query match {
-      case s: String => s
-      case a: Array[String] => a.mkString(" \n")
-      case a: Seq[String] @unchecked => a.mkString(" \n")
-      case _ => println(xplan.name); println(xplan); throw new UnsupportedOperationException("incorrect query for " + xplan.name)
-    }
-
-    val set: mutable.Set[Record] = engine.newRecords()
-
-    engine.evalAccumulate(query, set)
-    val statements: List[Map[String, RField]] = set.toSeq.map(engine.toMap2).toList
-
-    statements
-
-  }
-
-
-  val alternate_files: Map[String, String] =if (infiles!=null) SpecLoader.mapper.readValue(infiles,classOf[Map[String,String]]) else Map[String,String]()
-
-  val accessors: Map[String,Seq[Statement]]=alternate_files.map{case (s,f) => (s, parseDocument(FileInput(new File(f))).statements().toSeq)}
+  private val accessors: Map[String,Seq[Statement]]=alternate_files.map{case (s,f) => (s, parseDocument(FileInput(new File(f))).statements().toSeq)}
 
 
 
@@ -165,78 +107,43 @@ class RealiserFactory(plans:Seq[Plan],
   }
 
 
-  class Realiser(statements:Seq[immutable.Statement], documents: Map[String, Seq[immutable.Statement]])  {
+  class Realiser(statements:Seq[immutable.Statement],
+                         documents: Map[String, Seq[immutable.Statement]])  {
 
     def realise(the_profile: String, templates: Seq[String] = Seq(), format_option: Int=0, allp: Boolean=true): Narrative = {
       if (allp) {
         val narratives: Set[Narrative] = realise_all(statements, Set(Narrative()), the_profile, templates, format_option)
         val narrative = selectBestNarrative(narratives)
-        val compactNarrative = optimiseNarrative(narrative)
-        compactNarrative
+        optimiseNarrative(narrative)
       } else {
-        val narratives: Narrative = realise_one(statements, the_profile, templates, format_option)
-        narratives
+        realise_one(statements, the_profile, templates, format_option)
       }
     }
 
-    val accessor: StatementAccessor[Statement] = makeStatementAccessor(statements)
-    val accessors: Map[String, StatementAccessor[Statement]] = documents.map { case (s: String, seq: Seq[Statement]) => (s, makeStatementAccessor(seq)) }
+    val planQuery: PlanQuery =new PlanQuery(statements, documents)
 
-    val statementAccessorForDocument:(Option[String]=>StatementAccessor[Statement]) = {
-      case None => accessor
-      case Some(s) => accessors(s)
+
+
+    final def realisePlan(plan: Plan, the_profile: String, format_option: Int): Seq[((String, String, () => String), Plan, mutable.Set[Triple])] = {
+      val context: Map[String, String] = provContext(plan.context)
+      val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = planQuery.processQuery(plan, dictionaries, profiles, the_profile, context)
+      realise(all_matching_objects, plan, environment, format_option)
     }
 
-    final def realisePlan(template: Plan, the_profile: String, format_option: Int): Seq[(String, String, () => String)] = {
-      val context: Map[String, String] = provContext(template.context)
-      val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = processQuery2(template, the_profile, context)
-      all_matching_objects.flatMap((selected_objects: Map[String, RField]) => {
-
-        val triples = scala.collection.mutable.Set[Triple]()
-
-        val maker = new SentenceMaker()
-
-        val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
-
-        val text: (String, String, () => String) = maker.realisation(result, format_option)
-
-
-        logger.debug("plan realisation: " + text)
-        Some(text)
-      })
-
-    }
-
-
-    def processQuery2(template: Plan, the_profile: String, context: Map[String, String]): (Environment, Seq[Map[String, RField]]) = {
-      val environment = Environment(context, dictionaries, profiles, the_profile)
-      val engine = new Processor(statementAccessorForDocument, environment)
-      val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, engine)
-      (environment, all_matching_objects)
-    }
 
     final def realise_one(statements: Seq[Statement], the_profile: String, selected_templates: Seq[String], format_option: Int): Narrative = {
 
-      val kinds: Set[Kind] =statements.map(_.enumType).toSet
-      val templates: Set[Plan] =kinds.flatMap(kind => index.getOrElse(kind, Set[Plan]())).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
+      val kinds: Set[Kind] = statements.map(_.enumType).toSet
+      val plans: Set[Plan] = kinds.flatMap(kind => index.getOrElse(kind, Set[Plan]())).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
 
-      val new_sentences: Set[((String, String, () => String), Plan, mutable.Set[Triple])] = templates.flatMap(template => {
+      val new_sentences: Set[((String, String, () => String), Plan, mutable.Set[Triple])] = plans.flatMap(plan => {
 
+        val context: Map[String, String] = provContext(plan.context)
+        val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = planQuery.processQuery(plan, dictionaries, profiles, the_profile, context)
 
-        val context: Map[String, String] = provContext(template.context)
-        val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = processQuery2(template, the_profile, context)
+        logger.debug("realise_one: found objects_ok " + all_matching_objects.size + "  for " + plan.name)
 
-        logger.debug("realise_one: found objects_ok " + all_matching_objects.size + "  for " + template.name)
-
-        all_matching_objects.flatMap(selected_objects => {
-          val triples = scala.collection.mutable.Set[Triple]()
-          val maker = new SentenceMaker()
-          val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
-          val text: (String, String, () => String) = maker.realisation(result, format_option)
-          Some((text, template, triples))
-        })
-
-
+        realise(all_matching_objects, plan, environment, format_option)
       })
 
       val sentences: List[((String, String, () => String), Plan, mutable.Set[Triple])] = new_sentences.toList
@@ -245,93 +152,58 @@ class RealiserFactory(plans:Seq[Plan],
 
 
     @tailrec
-    final def realise_all(statements: Seq[Statement], accumulator: Set[Narrative],  the_profile: String, selected_templates: Seq[String], format_option: Int): Set[Narrative] = {
+    final def realise_all(statements: Seq[Statement],
+                          accumulator: Set[Narrative],
+                          the_profile: String,
+                          select_plans: Seq[String],
+                          format_option: Int): Set[Narrative] = {
 
       if (statements.isEmpty) {
-
         accumulator
-
       } else {
-
         val currentStatement = statements.head
         val tail = statements.tail
-
         val kind: Kind = currentStatement.enumType
+        val plans: Set[Plan] = index.getOrElse(kind, Set()).filter(plan => if (select_plans.isEmpty) true else select_plans.contains(plan.name))
 
-        val templates: Set[Plan] = index.getOrElse(kind, Set()).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
+        val accumulator2: Set[Narrative] = accumulator.flatMap((narrative_so_far: Narrative) => {
 
-        val accumulator2: Set[Narrative] =
-          accumulator.flatMap((narrative_so_far: Narrative) => {
+          val new_sentences: Set[((String, String, () => String), Plan, mutable.Set[Triple])] = plans.flatMap(plan => {
 
-            val new_sentences: Set[((String, String, () => String), Plan, mutable.Set[Triple])] = templates.flatMap(template => {
+            val context: Map[String, String] = provContext(plan.context)
+            val environment = Environment(context, dictionaries, profiles, the_profile)
+            val all_matching_objects: Seq[Map[String, RField]] = planQuery.processQuery(plan, currentStatement, dictionaries, profiles, the_profile, context)
 
+            logger.debug("realise_all: found objects_ok " + all_matching_objects.size + "  for " + plan.name)
 
-              val context: Map[String, String] = provContext(template.context)
-              val environment = Environment(context, dictionaries, profiles, the_profile)
+            realise(all_matching_objects, plan, environment, format_option)
+          })
 
-
-              val engine = new Processor(statementAccessorForDocument, environment)
-
-              val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, currentStatement, engine)
-
-
-              logger.debug("realise_all: found objects_ok " + all_matching_objects.size + "  for " + template.name)
-
-              all_matching_objects.flatMap(selected_objects => {
-
-                val triples = scala.collection.mutable.Set[Triple]()
-
-                val maker = new SentenceMaker()
-
-                val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
-
-                val text = maker.realisation(result, format_option)
-
-                //println(triples)
-
-                Some((text, template, triples))
-              })
-
-
-            })
-
-            if (new_sentences.isEmpty) { // if cannot translate current statement, then just ignore, and move on
-              Set(narrative_so_far)
-            } else {
-              new_sentences.map(a_sentence => narrative_so_far.add(a_sentence))
-            }
-          }
-          )
-
-        realise_all(tail, accumulator2, the_profile, selected_templates, format_option)
-      }
-    }
-
-    //TODO: use the method in QueryEngine
-    private def makeStatementAccessor(statements: Seq[immutable.Statement]): StatementAccessor[Statement] = {
-
-      val idx: Map[immutable.Kind.Value, List[Statement]] = StatementIndexer.splitByStatementType(statements)
-
-      val (allDerivationsPlus, allDerivationsStar): (List[WasDerivedFromPlus], List[WasDerivedFromStar]) = StatementIndexer.computeDerivationClosure(idx)
-
-
-      new StatementAccessor[Statement] {
-        override def findStatement(type_string: String): List[Statement] = {
-          val kind = QuerySetup.nameMapper(type_string)
-          if (kind == Kind.winfl) {
-            type_string match {
-              case "provext:WasDerivedFromPlus" => allDerivationsPlus
-              case "provext:WasDerivedFromStar" => allDerivationsStar
-            }
+          if (new_sentences.isEmpty) { // if cannot translate current statement, then just ignore, and move on
+            Set(narrative_so_far)
           } else {
-            idx(kind)
+            new_sentences.map(a_sentence => narrative_so_far.add(a_sentence))
           }
         }
-      }
+        )
 
+        realise_all(tail, accumulator2, the_profile, select_plans, format_option)
+      }
     }
 
 
+    private def realise(all_matching_objects: Seq[Map[String, RField]],
+                        plan: Plan,
+                        environment: Environment,
+                        format_option: Int): Seq[((String, String, () => String), Plan, mutable.Set[Triple])] = {
+      all_matching_objects.flatMap(selected_objects => {
+        val triples = scala.collection.mutable.Set[Triple]()
+        val maker = new SentenceMaker()
+        val result: Option[specTypes.Phrase] = maker.transform(selected_objects, plan.sentence, environment, triples, "IGNORE")
+        val text: (String, String, () => String) = maker.realisation(result, format_option)
+        Some((text, plan, triples))
+      })
+    }
   }
 
 }

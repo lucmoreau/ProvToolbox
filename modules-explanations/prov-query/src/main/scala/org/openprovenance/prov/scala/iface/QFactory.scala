@@ -1,4 +1,5 @@
 package org.openprovenance.prov.scala.iface
+import org.openprovenance.prov.scala.iface.QFactory.{makeDocumentAccessor, makeStatementAccessor}
 import org.openprovenance.prov.scala.immutable._
 import org.openprovenance.prov.scala.interop.FileInput
 import org.openprovenance.prov.scala.nf.CommandLine.parseDocument
@@ -11,6 +12,38 @@ import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFr
 import java.io.File
 import scala.collection.mutable
 
+object QFactory  {
+  def makeStatementAccessor(statements: Seq[Statement]): StatementAccessor[Statement] = {
+    val idx: Map[Kind.Value, List[Statement]] = StatementIndexer.splitByStatementType(statements)
+    val (allDerivationsPlus, allDerivationsStar): (List[WasDerivedFromPlus], List[WasDerivedFromStar]) = StatementIndexer.computeDerivationClosure(idx)
+
+    (type_string: String) => {
+      val kind = QuerySetup.nameMapper(type_string)
+      if (kind == Kind.winfl) {
+        type_string match {
+          case "provext:WasDerivedFromPlus" => allDerivationsPlus
+          case "provext:WasDerivedFromStar" => allDerivationsStar
+        }
+      } else {
+        idx(kind)
+      }
+    }
+  }
+
+  def makeDocumentAccessor(statements: Seq[Statement],
+                           accessors_seq_statements: Map[String, Seq[Statement]]): Option[String] => StatementAccessor[Statement] = {
+    val accessor: StatementAccessor[Statement] = makeStatementAccessor(statements)
+    val accessors: Map[String, StatementAccessor[Statement]] = accessors_seq_statements.map { case (s, ss) => (s, makeStatementAccessor(ss)) } //alternate_files.map{case (s,f) => (s, rf.makeStatementAccessor(parseDocument(new FileInput(new File(f))).statements().toSeq))}
+    val statementAccessorForDocument: Option[String] => StatementAccessor[Statement] = {
+      case None => accessor
+      case Some(s) => accessors(s)
+    }
+    statementAccessorForDocument
+  }
+
+
+
+}
 class QFactory {
   def makeQueryEnfine(config: QConfig): QueryEngine[Statement, RField] =
     new QueryEngine[Statement, RField] {
@@ -43,7 +76,6 @@ class QFactory {
         val result: Seq[Map[String, RField]] = records.toSeq.map(queryProcessor.toMap2)
         new QueryResult[RField] {
           override def getRecords: Seq[Map[String, RField]] = result
-
           override def getDocument: Document = doc2
         }
       }
@@ -55,41 +87,11 @@ class QFactory {
         processQuery(queryContents, doc, environment)
       }
 
-
       override  def processQuery(queryContents: String, doc: Document, environment: Environment): QueryResult[RField] = {
-        val accessor: StatementAccessor[Statement] = makeStatementAccessor(doc.statements().toSeq)
-        val accessors: Map[String, StatementAccessor[Statement]] = accessors_seq_statements.map { case (s, ss) => (s, makeStatementAccessor(ss)) } //alternate_files.map{case (s,f) => (s, rf.makeStatementAccessor(parseDocument(new FileInput(new File(f))).statements().toSeq))}
-
-        val statementAccessorForDocument: Option[String] => StatementAccessor[Statement] = {
-          case None => accessor
-          case Some(s) => accessors(s)
-        }
-
-
+        val statementAccessorForDocument: Option[String] => StatementAccessor[Statement] = makeDocumentAccessor(doc.statements().toSeq, accessors_seq_statements)
         val result: QueryResult[RField] = processQuery(queryContents, doc, environment, statementAccessorForDocument)
         result
       }
-
-      def makeStatementAccessor(statements: Seq[Statement]): StatementAccessor[Statement] = {
-
-        val idx: Map[Kind.Value, List[Statement]] = StatementIndexer.splitByStatementType(statements)
-        val (allDerivationsPlus, allDerivationsStar): (List[WasDerivedFromPlus], List[WasDerivedFromStar]) = StatementIndexer.computeDerivationClosure(idx)
-
-        new StatementAccessor[Statement] {
-          override def findStatement(type_string: String): List[Statement] = {
-            val kind = QuerySetup.nameMapper(type_string)
-            if (kind == Kind.winfl) {
-              type_string match {
-                case "provext:WasDerivedFromPlus" => allDerivationsPlus
-                case "provext:WasDerivedFromStar" => allDerivationsStar
-              }
-            } else {
-              idx(kind)
-            }
-          }
-        }
-      }
-
 
       def getAccessors(infiles: String): Map[String, Seq[Statement]] = {
         val alternate_files: Map[String, String] = if (infiles != null) SpecLoader.mapper.readValue(infiles, classOf[Map[String, String]]) else Map[String, String]()
@@ -101,4 +103,6 @@ class QFactory {
       val accessors_seq_statements: Map[String,Seq[Statement]] = getAccessors(config.infiles)
 
     }
+
+
 }

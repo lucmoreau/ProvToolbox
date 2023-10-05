@@ -26,8 +26,8 @@ class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Envir
   override val environment: Environment = env
 
   @unused
-  def evalPrint(q: String): Unit = {
-    val op: Operator = parsePQL(q).get
+  def evalPrint(queryString: String): Unit = {
+    val op: Operator = parsePQL(queryString).get
     execQuery(Print(op), None)
   }
 
@@ -46,16 +46,16 @@ class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Envir
     execOp(q) (accumulateInto (recs))
   }
 
-  def evalAccumulate(queryString: String, set: mutable.Set[Record]): Processor = {
+  def evalAccumulate(queryString: String, records: mutable.Set[Record]): Processor = {
     val op: Operator =parsePQL(queryString).get
     logger.debug(op)
-    execQuery(op, Some(set))
+    execQuery(op, Some(records))
     this
   }
 
   @unused
-  def toStatements(set: mutable.Set[Record]): Set[Statement] = {
-    set.map(rec => rec.apply(rec.schema).map(toStatement).toSet).toSet.flatten
+  def toStatements(records: mutable.Set[Record]): Set[Statement] = {
+    records.map(record => record.apply(record.schema).map(toStatement).toSet).toSet.flatten
   }
 
   def toFields (records: mutable.Set[Record]): Set[RField] = {
@@ -74,14 +74,14 @@ class Processor (finder:Option[String]=>StatementAccessor[Statement], env: Envir
     schema.zip(values).toMap
   }
 
-  def parsePQL(s: String): Option[Operator] = {
+  def parsePQL(queryString: String): Option[Operator] = {
     import scala.util.{Failure, Success}
 
     val ns=new Namespace
     ns.addKnownNamespaces()
     ns.register("provext", "http://openprovenance.org/prov/extension#");
 
-    val p=new ProvQLParser( s, ns)
+    val p=new ProvQLParser(queryString, ns)
     p.query.run() match {
       case Success(ast) => Some(ast)
       case Failure(e: ParseError) => println(p.formatError(e)); None

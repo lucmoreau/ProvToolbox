@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
+import org.openprovenance.prov.scala.primitive.Triple;
 import org.openprovenance.prov.scala.xplain.RealiserFactory;
 import org.openprovenance.prov.scala.nlgspec_transformer.SpecLoader;
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes;
@@ -342,17 +343,20 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
         //logger.debug("realiser " + realiser);
 
 
-        Seq<Tuple3<String, String, Function0<String>>> realisations
+        Seq<Tuple3<String, String, Function0<String>>> realisations2;
+
+        scala.collection.immutable.Seq<Tuple3<Tuple3<String, String, Function0<String>>, org.openprovenance.prov.scala.nlgspec_transformer.defs.Plan, scala.collection.mutable.Set<Triple>>> realisations
                 =realiser.realisePlan(planFromRequest, the_request_the_profile,the_request_format);
 
         //logger.debug("realisations " + realisations);
 
-        Option<Tuple3<String, String, Function0<String>>> head=realisations.headOption();
+        //Option<Tuple3<String, String, Function0<String>>> head=realisations.headOption();
+        Option<Tuple3<Tuple3<String, String, Function0<String>>, org.openprovenance.prov.scala.nlgspec_transformer.defs.Plan, scala.collection.mutable.Set<Triple>>> head=realisations.headOption();
 
         //logger.debug("head " + head);
 
         if (head.nonEmpty()) {
-            String theString=head.get()._1();
+            String theString=head.get()._1()._1();
 
             switch (accept) {
                 case APPLICATION_JSON: {

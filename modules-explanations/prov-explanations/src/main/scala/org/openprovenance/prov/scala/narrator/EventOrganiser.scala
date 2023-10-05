@@ -10,8 +10,8 @@ import org.openprovenance.prov.vanilla.ProvFactory
 
 import java.io.{File, PrintWriter}
 import java.util
-import scala.collection.JavaConverters._
-import scala.collection.{JavaConverters, mutable}
+import scala.jdk.CollectionConverters._
+import scala.collection.mutable
 
 // Tests require london timezone:
 //export TZ=Europe/London
@@ -49,7 +49,7 @@ object EventOrganiser {
     val idx = indexer.eventIndex
     val evts: util.Map[String, org.openprovenance.prov.model.Statement] = indexer.eventTable
 
-    val evts4: mutable.Map[String,org.openprovenance.prov.model.Statement]=JavaConverters.mapAsScalaMapConverter(evts).asScala
+    val evts4: mutable.Map[String,org.openprovenance.prov.model.Statement]=evts.asScala //JavaConverters.mapAsScalaMapConverter(evts).asScala
     val evts5: Map[String,Statement]=evts4.map{ case (id,s) => (id,Statement(s))}.toMap
 
     //val matString =mat.displayMatrix2()

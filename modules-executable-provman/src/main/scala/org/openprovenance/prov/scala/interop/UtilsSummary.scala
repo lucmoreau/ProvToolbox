@@ -119,11 +119,8 @@ class UtilsSummary (pf:ProvFactory) {
       val provenance_type = toType(summary_id)
       val node: Node = ind.nodes(i)
 
-      val node2: Statement = node.addAttributes(Set(newTypeAttribute(provenance_type),
-        newFillColorAttribute(provenance_type),
-        newFontColorAttribute(provenance_type)))
+      val node2: Statement = node.addAttributes(Set(newTypeAttribute(provenance_type), newFillColorAttribute(provenance_type), newFontColorAttribute(provenance_type)))
 
-      //(q, provenance_type,node)
       node2
     }
   }

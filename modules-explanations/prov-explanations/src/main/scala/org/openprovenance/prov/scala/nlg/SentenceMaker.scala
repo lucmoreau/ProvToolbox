@@ -4,7 +4,6 @@ import org.apache.http.client.methods.{CloseableHttpResponse, HttpPost}
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
 import org.openprovenance.prov.scala.immutable._
-import org.openprovenance.prov.scala.interop.Output
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
@@ -81,7 +80,7 @@ class SentenceMaker () {
 
   }
 
-
+/*
   def surface_realiser(s:Map[String,Object], h:String, p:Integer, log: Output): String = {
 
     val snlg: String = SentenceMaker.toJsonSentence(s)
@@ -94,6 +93,7 @@ class SentenceMaker () {
     callSimplenlgServer(h, p, snlg)
 
   }
+
 
   def callSimplenlgServer(h: String, p: Integer, snlg: String): String = {
 
@@ -111,6 +111,7 @@ class SentenceMaker () {
 
     scala.io.Source.fromInputStream(response.getEntity.getContent).mkString
   }
+ */
 
   val mylib=true
 
@@ -122,5 +123,7 @@ class SentenceMaker () {
 
     realised.getOrElse(emptyRealisation)
   }
+
+
 
 }

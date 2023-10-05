@@ -3,6 +3,7 @@ package org.openprovenance.prov.scala.xplain
 
 import com.fasterxml.jackson.databind.util.StdConverter
 import org.apache.logging.log4j.{LogManager, Logger}
+import org.openprovenance.prov.scala.iface.Narrative
 import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.Kind.Kind
 import org.openprovenance.prov.scala.immutable.{Document, Kind, Statement}
@@ -34,12 +35,15 @@ object RealiserFactory {
 
 }
 
-class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profiles:Map[String, Object], infiles:String=null) {
+class RealiserFactory(plans:Seq[Plan],
+                      dictionaries:Seq[Dictionary],
+                      profiles:Map[String, Object],
+                      infiles:String=null) {
 
 
 
-  def this(template:Plan, dictionary: Dictionary, profiles:Map[String,Object]) = {
-    this(Seq(template), Seq(dictionary), profiles, null)
+  def this(plan:Plan, dictionary: Dictionary, profiles:Map[String,Object]) = {
+    this(Seq(plan), Seq(dictionary), profiles, null)
   }
 
   def this(triple: (Seq[Plan],Seq[Dictionary], Map[String, Object]), infiles:String) ={
@@ -58,7 +62,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
     this(XplainConfig(language=seq,languageAsFilep = filep))
   }
 
-  val names: Seq[(Kind.Value, Plan)] = templates.map(template => (QuerySetup.nameMapper(template.select(template.select.keys.head)(Keywords.TYPE)),template)).toSeq
+  val names: Seq[(Kind.Value, Plan)] = plans.map(plan => (QuerySetup.nameMapper(plan.select(plan.select.keys.head)(Keywords.TYPE)),plan)).toSeq
 
   val index: Map[Kind.Value, Set[Plan]] =names.groupBy(_._1).view.mapValues(x => x.map(_._2).toSet).toMap
 
@@ -138,7 +142,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
     val set: mutable.Set[Record] = engine.newRecords()
 
     engine.evalAccumulate(query, set)
-    val statements: List[Map[String, RField]] = set.toSeq.map(engine.toMap2(_)).toList
+    val statements: List[Map[String, RField]] = set.toSeq.map(engine.toMap2).toList
 
     statements
 
@@ -185,9 +189,7 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
 
     final def realisePlan(template: Plan, the_profile: String, format_option: Int): Seq[(String, String, () => String)] = {
       val context: Map[String, String] = provContext(template.context)
-      val environment = Environment(context, dictionaries, profiles, the_profile)
-      val engine = new Processor(statementAccessorForDocument, environment)
-      val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, engine)
+      val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = processQuery2(template, the_profile, context)
       all_matching_objects.flatMap((selected_objects: Map[String, RField]) => {
 
         val triples = scala.collection.mutable.Set[Triple]()
@@ -206,7 +208,14 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
     }
 
 
-    final def realise_one(statements: Seq[Statement],  the_profile: String, selected_templates: Seq[String], format_option: Int): Narrative = {
+    def processQuery2(template: Plan, the_profile: String, context: Map[String, String]): (Environment, Seq[Map[String, RField]]) = {
+      val environment = Environment(context, dictionaries, profiles, the_profile)
+      val engine = new Processor(statementAccessorForDocument, environment)
+      val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, engine)
+      (environment, all_matching_objects)
+    }
+
+    final def realise_one(statements: Seq[Statement], the_profile: String, selected_templates: Seq[String], format_option: Int): Narrative = {
 
       val kinds: Set[Kind] =statements.map(_.enumType).toSet
       val templates: Set[Plan] =kinds.flatMap(kind => index.getOrElse(kind, Set[Plan]())).filter(template => if (selected_templates.isEmpty) true else selected_templates.contains(template.name))
@@ -215,32 +224,17 @@ class RealiserFactory(templates:Seq[Plan], dictionaries:Seq[Dictionary], profile
 
 
         val context: Map[String, String] = provContext(template.context)
-        val environment = Environment(context, dictionaries, profiles, the_profile)
-
-//        println("environment " + environment)
-
-        val engine = new Processor(statementAccessorForDocument, environment)
-
-        val all_matching_objects: Seq[Map[String, RField]] = processQuery(template, engine)
-
+        val (environment: Environment, all_matching_objects: Seq[Map[String, RField]]) = processQuery2(template, the_profile, context)
 
         logger.debug("realise_one: found objects_ok " + all_matching_objects.size + "  for " + template.name)
 
         all_matching_objects.flatMap(selected_objects => {
-
-         // logger.debug("==> " + selected_objects)
           val triples = scala.collection.mutable.Set[Triple]()
-
           val maker = new SentenceMaker()
-
           val result: Option[specTypes.Phrase] = maker.transform(selected_objects, template.sentence, environment, triples, "IGNORE")
-
           val text: (String, String, () => String) = maker.realisation(result, format_option)
-
-          //println(triples)
-
           Some((text, template, triples))
-              })
+        })
 
 
       })

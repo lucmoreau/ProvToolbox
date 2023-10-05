@@ -1,7 +1,7 @@
 package org.openprovenance.prov.service.xplain.writers;
 
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.scala.xplain.Narrative;
+import org.openprovenance.prov.scala.iface.Narrative;
 import org.openprovenance.prov.scala.nlgspec_transformer.SpecLoader;
 
 import jakarta.ws.rs.Produces;

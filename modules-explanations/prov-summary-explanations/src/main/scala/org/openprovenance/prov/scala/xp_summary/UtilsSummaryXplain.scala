@@ -1,10 +1,9 @@
 package org.openprovenance.prov.scala.xp_summary
 
-import org.openprovenance.prov.scala.immutable.{Format, Statement}
-import org.openprovenance.prov.scala.nlgspec_transformer.Environment
-import org.openprovenance.prov.scala.query.{Processor, StatementAccessor, SummaryQueryGenerator}
-import org.openprovenance.prov.scala.summary.{SConfig, SummaryDescriptionJson, SummaryIndex}
+import org.openprovenance.prov.scala.immutable.Format
+import org.openprovenance.prov.scala.query.{QueryDirectiveTop, SummaryQueryGenerator}
 import org.openprovenance.prov.scala.summary.types.FlatType
+import org.openprovenance.prov.scala.summary.{SConfig, SummaryDescriptionJson, SummaryIndex}
 
 import java.io.{BufferedWriter, FileWriter}
 import scala.collection.mutable
@@ -34,21 +33,13 @@ class UtilsSummaryXplain {
       val typeCount: Map[Int, Int] = allTypeCounts(level)
 
 
-      val context: Map[String, String] = Map()
-      val environment = Environment(context, null, null, new Array[String](0), List())
-
-      val statementAccessorForDocument: (Option[String] => StatementAccessor[Statement]) = (s: Option[String]) => {
-        null
-      }
-      val engine = new Processor(statementAccessorForDocument, environment) with SummaryQueryGenerator
-
       val selectedTypes: Set[Int] = typeMap.keySet
 
       println("exportQueriesForType " + level)
       //println(allDescriptions)
       //println(allTypeMaps)
       selectedTypes.foreach(selectedType => {
-        queryExporter(desc, config, params, level, allTypeMaps, allTypeStringsR, typeCount, engine, selectedType)
+        queryExporter(desc, config, params, level, allTypeMaps, allTypeStringsR, typeCount, selectedType)
       })
 
     }
@@ -61,7 +52,6 @@ class UtilsSummaryXplain {
                     allTypeMaps: Map[Int, Map[Int, Set[FlatType]]],
                     allTypeStringsR: Map[Int, Map[Int, String]],
                     typeCount: Map[Int, Int],
-                    engine: Processor with SummaryQueryGenerator,
                     selectedType: Int): Unit = {
     val params2 = params ++ Map(Format.typeVar -> selectedType.toString)
     val fileName = Format.substParams(config.summary_queries.toString, params2)
@@ -69,7 +59,7 @@ class UtilsSummaryXplain {
 
     fw.write("// query for type " + selectedType + ":\n")
     fw.write("//  type " + selectedType + " is " + desc.typeStrings(selectedType) + "\n")
-    val queryString: ArrayBuffer[String] = engine.flatType2Query(selectedType, level, allTypeMaps, allTypeStringsR, typeCount, engine.QueryDirectiveTop())
+    val queryString: ArrayBuffer[String] = SummaryQueryGenerator.flatType2Query(selectedType, level, allTypeMaps, allTypeStringsR, typeCount, QueryDirectiveTop())
     fw.write(queryString.mkString)
     fw.write("\n")
     fw.write("//end\n\n")

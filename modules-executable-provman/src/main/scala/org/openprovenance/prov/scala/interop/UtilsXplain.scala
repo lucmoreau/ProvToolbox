@@ -3,13 +3,12 @@ package org.openprovenance.prov.scala.interop
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
-import org.openprovenance.prov.scala.iface.{Explainer, Narrator, QueryEngine}
+import org.openprovenance.prov.scala.iface.{Explainer, Narrative, Narrator, QueryEngine}
 import org.openprovenance.prov.scala.immutable.{Document, Statement}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
 import org.openprovenance.prov.scala.query.QueryInterpreter.RField
 import org.openprovenance.prov.scala.summary.TypePropagator
-import org.openprovenance.prov.scala.xplain.Narrative
 import org.openprovenance.prov.validation.EventMatrix
 
 import java.io.{BufferedWriter, FileWriter}

@@ -2,7 +2,6 @@ package org.openprovenance.prov.scala.iface
 
 import org.openprovenance.prov.scala.immutable.Document
 import org.openprovenance.prov.scala.narrator.{EventsDescription, XConfig}
-import org.openprovenance.prov.scala.xplain.Narrative
 import org.openprovenance.prov.validation.EventMatrix
 
 class XFactory {

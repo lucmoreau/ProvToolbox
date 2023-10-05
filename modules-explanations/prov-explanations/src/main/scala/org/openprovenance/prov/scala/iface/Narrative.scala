@@ -1,8 +1,9 @@
-package org.openprovenance.prov.scala.xplain
+package org.openprovenance.prov.scala.iface
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.Plan
 import org.openprovenance.prov.scala.primitive.Triple
+import org.openprovenance.prov.scala.xplain.{SNLGSerializer, TreeConverter}
 
 import scala.collection.mutable
 

@@ -1,8 +1,7 @@
 package org.openprovenance.prov.scala.nlg
 
-import java.util
 import org.openprovenance.prov.scala.immutable._
-import org.openprovenance.prov.scala.narrator.{EventOrganiser, Follows, LinearOrder, NoEvent, Synchronized}
+import org.openprovenance.prov.scala.narrator._
 import org.openprovenance.prov.validation.{EventMatrix, Gensym}
 
 import scala.collection.mutable
@@ -195,13 +194,13 @@ class ActivityProcessor(mat: EventMatrix, idx: Map[Integer,String], evts: Map[St
     val activity = usd.activity
 
 
-    if ((activity != null) && !seen.contains(activity.asInstanceOf[QualifiedName])) {
+    if ((activity != null) && !seen.contains(activity)) {
       ll = ll ++ statements.collect { case a: Activity => a }.filter(a => a.getId == activity && !seen.contains(activity))
       seen.+=(activity)
     }
 
 
-    if ((entity != null) && !seen.contains(entity.asInstanceOf[QualifiedName])) {
+    if ((entity != null) && !seen.contains(entity)) {
       ll = ll ++ statements.collect { case e: Entity => e }.filter(e => e.getId == entity && !seen.contains(entity))
       seen.+=(entity)
     }
@@ -217,13 +216,13 @@ class ActivityProcessor(mat: EventMatrix, idx: Map[Integer,String], evts: Map[St
     val activity = wib.activity
 
 
-    if ((activity != null) && !seen.contains(activity.asInstanceOf[QualifiedName])) {
+    if ((activity != null) && !seen.contains(activity)) {
       ll = ll ++ statements.collect { case a: Activity => a }.filter(a => a.getId == activity && !seen.contains(activity))
       seen.+=(activity)
     }
 
 
-    if ((entity != null) && !seen.contains(entity.asInstanceOf[QualifiedName])) {
+    if ((entity != null) && !seen.contains(entity)) {
       ll = ll ++ statements.collect { case e: Entity => e }.filter(e => e.getId == entity && !seen.contains(entity))
       seen.+=(entity)
     }
@@ -239,13 +238,13 @@ class ActivityProcessor(mat: EventMatrix, idx: Map[Integer,String], evts: Map[St
     val activity = web.activity
 
 
-    if ((activity != null) && !seen.contains(activity.asInstanceOf[QualifiedName])) {
+    if ((activity != null) && !seen.contains(activity)) {
       ll = ll ++ statements.collect { case a: Activity => a }.filter(a => a.getId == activity && !seen.contains(activity))
       seen.+=(activity)
     }
 
 
-    if ((ender != null) && !seen.contains(ender.asInstanceOf[QualifiedName])) {
+    if ((ender != null) && !seen.contains(ender)) {
       ll = ll ++ statements.collect { case e: Entity => e }.filter(e => e.getId == ender && !seen.contains(ender))
       seen.+=(ender)
     }
@@ -261,13 +260,13 @@ class ActivityProcessor(mat: EventMatrix, idx: Map[Integer,String], evts: Map[St
     val activity = wsb.activity
 
 
-    if ((starter != null) && !seen.contains(starter.asInstanceOf[QualifiedName])) {
+    if ((starter != null) && !seen.contains(starter)) {
       ll = ll ++ statements.collect { case e: Entity => e }.filter(e => e.getId.equals(starter) && !seen.contains(starter))
       seen += starter
     }
 
 
-    if ((activity != null) && !seen.contains(activity.asInstanceOf[QualifiedName])) {
+    if ((activity != null) && !seen.contains(activity)) {
       ll = ll ++ statements.collect { case a: Activity => a }.filter(a => a.getId.equals(activity) && !seen.contains(activity))
       seen.+=(activity)
     }
@@ -288,16 +287,11 @@ class ActivityProcessor(mat: EventMatrix, idx: Map[Integer,String], evts: Map[St
     val agents2: Set[QualifiedName] = ll3.map(aobo => aobo.responsible).diff(seen)
 
     val ll1= statements.collect { case ag: Agent => ag }.filter(ag => agents.contains(ag.id))
-
     val ll4 = statements.collect { case ag: Agent => ag }.filter(ag => agents2.contains(ag.id))
-
 
     seen.++=(agents2)
 
     seen.++=(ll3.map(_.id))
-
-
-
 
     ll = ll ++ ll4 ++ ll1 ++ ll2 ++ ll3
 
@@ -305,8 +299,8 @@ class ActivityProcessor(mat: EventMatrix, idx: Map[Integer,String], evts: Map[St
   }
 
 
-  def processOrder(events: Set[Integer], past: LinearOrder, statements: Set[Statement], seen: scala.collection.mutable.Set[QualifiedName]): List[Statement] = {
-    val seq2 = convertToSequence(past.asInstanceOf[LinearOrder], statements, seen)
+  private def processOrder(events: Set[Integer], past: LinearOrder, statements: Set[Statement], seen: scala.collection.mutable.Set[QualifiedName]): List[Statement] = {
+    val seq2 = convertToSequence(past, statements, seen)
     var ll: List[Statement] = List()
 
 

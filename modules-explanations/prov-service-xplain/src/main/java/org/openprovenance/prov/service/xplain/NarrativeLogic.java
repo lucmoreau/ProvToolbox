@@ -12,7 +12,7 @@ import org.openprovenance.prov.scala.iface.XFactory;
 import org.openprovenance.prov.scala.immutable.Document;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
 import org.openprovenance.prov.scala.narrator.XConfig;
-import org.openprovenance.prov.scala.xplain.Narrative;
+import org.openprovenance.prov.scala.iface.Narrative;
 import org.openprovenance.prov.scala.narrator.NarratorFunctionality;
 import org.openprovenance.prov.scala.summary.TypePropagator;
 import org.openprovenance.prov.scala.wrapper.IO;

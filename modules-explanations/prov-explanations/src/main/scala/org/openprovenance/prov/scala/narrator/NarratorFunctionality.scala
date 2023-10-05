@@ -5,8 +5,9 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{Document, QualifiedName, Statement, StatementOrBundle}
 
 import EventOrganiser.{NLG_PREFIX, NLG_URI, findOrder, gensym}
+import org.openprovenance.prov.scala.iface.Narrative
 import org.openprovenance.prov.scala.nlg._
-import org.openprovenance.prov.scala.xplain.{Narrative, RealiserFactory}
+import org.openprovenance.prov.scala.xplain.RealiserFactory
 import org.openprovenance.prov.validation.EventMatrix
 
 import java.util

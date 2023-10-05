@@ -1,13 +1,12 @@
 package org.openprovenance.prov.scala
 
-import org.openprovenance.prov.scala.iface.{Narrator, XFactory}
+import org.openprovenance.prov.scala.iface.{Narrative, Narrator, XFactory}
 
 import java.io.File
 import org.openprovenance.prov.scala.immutable.{Document, ProvFactory, QualifiedName}
 import org.openprovenance.prov.scala.interop.{FileInput, Input, Output}
 import org.openprovenance.prov.scala.nf.CommandLine
 import org.openprovenance.prov.scala.narrator.XConfig
-import org.openprovenance.prov.scala.xplain.Narrative
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

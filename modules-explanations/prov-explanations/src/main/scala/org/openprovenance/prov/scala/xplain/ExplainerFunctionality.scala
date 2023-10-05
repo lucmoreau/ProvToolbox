@@ -4,6 +4,7 @@ import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{Document, Statement, StatementOrBundle}
 import org.openprovenance.prov.scala.narrator.{EventOrganiser, XConfig}
 import EventOrganiser.{NLG_PREFIX, NLG_URI, gensym}
+import org.openprovenance.prov.scala.iface.Narrative
 import org.openprovenance.prov.scala.narrator.NarratorFunctionality.realise
 
 object ExplainerFunctionality {

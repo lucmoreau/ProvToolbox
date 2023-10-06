@@ -47,7 +47,7 @@ public class PC1FullTest extends TestCase {
 	final public static QualifiedName PRIMITIVE_RESLICE = pFactory.newQualifiedName(PRIM_NS, "reslice", PRIM_PREFIX);
 	final public static QualifiedName PRIMITIVE_SOFTMEAN = pFactory.newQualifiedName(PRIM_NS, "softmean", PRIM_PREFIX);
 	final public static QualifiedName PRIMITIVE_CONVERT = pFactory.newQualifiedName(PRIM_NS, "convert", PRIM_PREFIX);
-	final public static QualifiedName PRIMITIVE_SLICER = pFactory.newQualifiedName(PRIM_NS, "slicert", PRIM_PREFIX);
+	final public static QualifiedName PRIMITIVE_SLICER = pFactory.newQualifiedName(PRIM_NS, "slicer", PRIM_PREFIX);
 
 
 	public Entity newFile(ProvFactory pFactory, String id, String label, String file, String location) {

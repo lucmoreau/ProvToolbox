@@ -108,7 +108,7 @@ class RealiserFactory(plans:Seq[Plan],
 
 
   class Realiser(statements:Seq[immutable.Statement],
-                         documents: Map[String, Seq[immutable.Statement]])  {
+                 documents: Map[String, Seq[immutable.Statement]])  {
 
     def realise(the_profile: String, templates: Seq[String] = Seq(), format_option: Int=0, allp: Boolean=true): Narrative = {
       if (allp) {

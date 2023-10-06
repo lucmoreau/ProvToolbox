@@ -766,9 +766,9 @@ object XmlNfBean {
     	val prefixes=doc.namespace.getPrefixes
     	nfDoc.prefixes=prefixes
     }
-    System.err.println("calling toXMLWIthstream")
+    //System.err.println("calling toXMLWIthstream")
     toXMLWithStream(sw,nfDoc)
-    System.err.println("ending toXMLWIthstream")
+    //System.err.println("ending toXMLWIthstream")
 
   } 
 

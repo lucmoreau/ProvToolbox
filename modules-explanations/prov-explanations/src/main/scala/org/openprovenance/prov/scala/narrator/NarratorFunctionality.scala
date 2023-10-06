@@ -85,7 +85,7 @@ object NarratorFunctionality {
 
 
     val text: Map[String, Narrative] =if (config.linear) {
-      val text1: Map[String, Narrative] =realise(config, theOrderedStatements,allp = true)
+      val text1: Map[String, Narrative] =realise(config, theOrderedStatements, allp = true)
       val remaining2: Seq[Statement] =remaining.toSeq
       if (remaining2.isEmpty) {
         text1

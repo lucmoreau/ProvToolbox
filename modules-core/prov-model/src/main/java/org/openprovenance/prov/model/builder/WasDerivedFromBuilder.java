@@ -5,8 +5,8 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 
 public class WasDerivedFromBuilder extends GenericBuilder<WasDerivedFromBuilder>{
-    protected QualifiedName e2;
-    protected QualifiedName e1;
+    protected QualifiedName generatedEntity;
+    protected QualifiedName usedEntity;
     protected QualifiedName activity=null;
     protected QualifiedName generation=null;
     protected QualifiedName usage=null;
@@ -14,37 +14,37 @@ public class WasDerivedFromBuilder extends GenericBuilder<WasDerivedFromBuilder>
     public WasDerivedFromBuilder(Builder builder, ModelConstructor mc, ProvFactory pf) {
         super(builder,mc,pf);
     }
-    public WasDerivedFromBuilder e2(QualifiedName e2) {
-        this.e2 =e2;
+    public WasDerivedFromBuilder generatedEntity(QualifiedName generatedEntity) {
+        this.generatedEntity=generatedEntity;
         return this;
     }
-    public WasDerivedFromBuilder e2(String prefix, String local) {
-        this.e2=qn(prefix,local);
+    public WasDerivedFromBuilder generatedEntity(String prefix, String local) {
+        this.generatedEntity= qn(prefix,local);
         return this;
     }
-    public WasDerivedFromBuilder e2(String knownAs) {
-        QualifiedName qn = parent.knownAs.get(knownAs);
+    public WasDerivedFromBuilder generatedEntity(String knownAs) {
+        QualifiedName qn=parent.knownAs.get(knownAs);
         if (qn==null) throw new NullPointerException("e2 cannot find knownAs " + knownAs + " in " + parent.knownAs.keySet());
-        this.e2= qn;
+        this.generatedEntity=qn;
         return this;
     }
-    public WasDerivedFromBuilder e1(QualifiedName e1) {
-        this.e1 =e1;
+    public WasDerivedFromBuilder usedEntity(QualifiedName usedEntity) {
+        this.usedEntity=usedEntity;
         return this;
     }
-    public WasDerivedFromBuilder e1(String knownAs) {
-        QualifiedName qn = parent.knownAs.get(knownAs);
+    public WasDerivedFromBuilder usedEntity(String knownAs) {
+        QualifiedName qn=parent.knownAs.get(knownAs);
         if (qn==null) throw new NullPointerException("e1 cannot find knownAs " + knownAs + " in " + parent.knownAs);
-        this.e1=qn;
+        this.usedEntity=qn;
         return this;
     }
-    public WasDerivedFromBuilder e1(String prefix, String local) {
-        this.e1=qn(prefix,local);
+    public WasDerivedFromBuilder usedEntity(String prefix, String local) {
+        this.usedEntity= qn(prefix,local);
         return this;
     }
 
     public Builder build() {
-        parent.statements.add(mc.newWasDerivedFrom(id,e2,e1,activity,generation,usage,attrs));
+        parent.statements.add(mc.newWasDerivedFrom(id, generatedEntity, usedEntity, activity, generation, usage, attrs));
         return parent;
     }
 

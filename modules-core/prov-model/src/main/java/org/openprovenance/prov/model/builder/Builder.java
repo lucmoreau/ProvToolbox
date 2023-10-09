@@ -22,12 +22,14 @@ public class Builder {
     protected final Namespace namespace;
     protected final ProvFactory pf;
     protected final HashMap<String,QualifiedName> knownAs;
+    protected final ModelConstructorExtension mce;
 
     protected List<Statement> statements=new LinkedList<>();
     protected List<Bundle> bundles=new LinkedList<>();
 
-    public Builder(ModelConstructor mc, ProvFactory pf) {
-        this.mc = mc;
+    public Builder(ModelConstructor mc, ModelConstructorExtension mce, ProvFactory pf) {
+        this.mc=mc;
+        this.mce=mce;
         this.pf=pf;
         this.namespace=new Namespace();
         this.namespace.addKnownNamespaces();
@@ -49,15 +51,54 @@ public class Builder {
     public WasGeneratedByBuilder wasGeneratedBy() {
         return new WasGeneratedByBuilder(this,mc,pf);
     }
+    public WasInformedByBuilder wasInformedBy() {
+        return new WasInformedByBuilder(this,mc,pf);
+    }
+    public WasStartedByBuilder wasStartedBy() {
+        return new WasStartedByBuilder(this,mc,pf);
+    }
+    public WasEndedByBuilder wasEndedBy() {
+        return new WasEndedByBuilder(this,mc,pf);
+    }
+    public SpecializationOfBuilder specializationOf() {
+        return new SpecializationOfBuilder(this,mc,mce,pf);
+    }
+    public AlternateOfBuilder alternateOf() {
+        return new AlternateOfBuilder(this,mc,mce,pf);
+    }
+    public HadMemberBuilder hadMember() {
+        return new HadMemberBuilder(this,mc,mce,pf);
+    }
+    public WasInfluencedByBuilder wasInfluencedBy() {
+        return new WasInfluencedByBuilder(this,mc,pf);
+    }
+    public WasInvalidatedByBuilder wasInvalidatedByBuilder() {
+        return new WasInvalidatedByBuilder(this,mc,pf);
+    }
+    public ActedOnBehalfOfBuilder actedOnBehalfOf() {
+        return new ActedOnBehalfOfBuilder(this,mc,pf);
+    }
 
 
     public Document build() {
         return mc.newDocument(namespace,statements,bundles);
     }
 
+    public Builder prefix(Prefix prefix, String ns) {
+        namespace.register(prefix.get(),ns);
+        return this;
+    }
     public Builder prefix(String prefix, String ns) {
         namespace.register(prefix,ns);
         return this;
+    }
+
+    final public QualifiedName qn(Prefix prefix, String local) {
+        return mc.newQualifiedName(namespace.lookupPrefix(prefix.get()),local,prefix.get());
+    }
+
+    final public QualifiedName qn(String prefix, String local) {
+        return mc.newQualifiedName(namespace.lookupPrefix(prefix),local,prefix);
     }
 
     public <T> Builder forEach(Collection<T> collection, Function<T,Builder> function) {
@@ -75,4 +116,7 @@ public class Builder {
     }
 
 
+    public Prefix prefix(String pref) {
+        return new Prefix(this,pref);
+    }
 }

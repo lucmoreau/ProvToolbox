@@ -6,23 +6,23 @@ import org.openprovenance.prov.model.QualifiedName;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class WasGeneratedByBuilder extends TimeBuilder<WasGeneratedByBuilder> implements HasRole<WasGeneratedByBuilder> {
+public class WasInvalidatedByBuilder extends TimeBuilder<WasInvalidatedByBuilder> implements HasRole<WasInvalidatedByBuilder> {
     protected QualifiedName entity;
     protected QualifiedName activity;
 
-    public WasGeneratedByBuilder(Builder builder, ModelConstructor mc, ProvFactory pf) {
+    public WasInvalidatedByBuilder(Builder builder, ModelConstructor mc, ProvFactory pf) {
         super(builder,mc,pf);
     }
 
-    public WasGeneratedByBuilder entity(QualifiedName entity) {
+    public WasInvalidatedByBuilder entity(QualifiedName entity) {
         this.entity=entity;
         return this;
     }
-    public WasGeneratedByBuilder entity(String prefix, String local) {
+    public WasInvalidatedByBuilder entity(String prefix, String local) {
         this.entity= qn(prefix,local);
         return this;
     }
-    public WasGeneratedByBuilder entity(String knownAs) {
+    public WasInvalidatedByBuilder entity(String knownAs) {
         QualifiedName qn=parent.knownAs.get(knownAs);
         if (qn==null) throw new NullPointerException("entity cannot find knownAs " + knownAs + " in " + parent.knownAs.keySet());
         this.entity=qn;
@@ -30,15 +30,15 @@ public class WasGeneratedByBuilder extends TimeBuilder<WasGeneratedByBuilder> im
     }
 
 
-    public WasGeneratedByBuilder activity(QualifiedName activity) {
+    public WasInvalidatedByBuilder activity(QualifiedName activity) {
         this.activity=activity;
         return this;
     }
-    public WasGeneratedByBuilder activity(String prefix, String local) {
+    public WasInvalidatedByBuilder activity(String prefix, String local) {
         this.activity= qn(prefix,local);
         return this;
     }
-    public WasGeneratedByBuilder activity(String knownAs) {
+    public WasInvalidatedByBuilder activity(String knownAs) {
         QualifiedName qn=parent.knownAs.get(knownAs);
         if (qn==null) throw new NullPointerException("activity: cannot find knownAs " + knownAs + " in " + parent.knownAs.keySet());
         this.activity=qn;
@@ -47,7 +47,7 @@ public class WasGeneratedByBuilder extends TimeBuilder<WasGeneratedByBuilder> im
 
 
     public Builder build() {
-        parent.statements.add(mc.newWasGeneratedBy(id, entity, activity, time, attrs));
+        parent.statements.add(mc.newWasInvalidatedBy(id, entity, activity, time, attrs));
         return parent;
     }
 

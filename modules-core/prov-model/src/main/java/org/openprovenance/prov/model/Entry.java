@@ -8,8 +8,7 @@ package org.openprovenance.prov.model;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newEntry(Key,QualifiedName)}
- * <li> {@link ObjectFactory#createEntry()}
- * </ul>
+  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>
  * <p>The following schema fragment specifies the expected content contained within this class.

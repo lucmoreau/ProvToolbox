@@ -13,7 +13,6 @@ package org.openprovenance.prov.model;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newAlternateOf(QualifiedName, QualifiedName)}
- * <li> {@link ObjectFactory#createAlternateOf()}
  * </ul>
  * 
  * 

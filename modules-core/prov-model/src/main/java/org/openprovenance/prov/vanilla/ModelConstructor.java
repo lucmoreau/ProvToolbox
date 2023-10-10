@@ -82,6 +82,11 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
     }
 
     @Override
+    public org.openprovenance.prov.model.Document newDocument(Namespace namespace, List<StatementOrBundle> statementsOrBundles) {
+        return new Document(namespace,statementsOrBundles);
+    }
+
+    @Override
     public Entity newEntity(QualifiedName id, Collection<Attribute> attributes) {
         return new org.openprovenance.prov.vanilla.Entity(id,attributes);
     }

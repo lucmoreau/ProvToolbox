@@ -23,7 +23,7 @@ import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE
 
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-import org.openprovenance.prov.model.{Attribute, MentionOf, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
+import org.openprovenance.prov.model.{Attribute, DictionaryFactory, MentionOf, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf
 import org.openprovenance.prov.model.extension.QualifiedHadMember
@@ -845,7 +845,7 @@ class Type() extends TypedValue with org.openprovenance.prov.model.Type  with or
 	
     def getQualifiedName(x$1: org.openprovenance.prov.model.Attribute.AttributeKind): org.openprovenance.prov.model.QualifiedName = ???
  
-    def canEqual(a: Any) = a.isInstanceOf[Type]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Type]
 
     
     override def equals(that: Any): Boolean =
@@ -1134,50 +1134,12 @@ class QualifiedName () extends org.openprovenance.prov.model.QualifiedName {
 
 }
 
-class ObjectFactory extends org.openprovenance.prov.model.ObjectFactory {
-  override def createEntity () = new Entity
-  override def createActivity () = new Activity
-  override def createAgent () = new Agent
-  override def createDocument () = new Document
-  override def createNamedBundle () = new Bundle
-  override def createWasGeneratedBy () = new WasGeneratedBy
-  override def createWasInvalidatedBy () = new WasInvalidatedBy
-  override def createUsed() = new     Used
-  override def createWasAssociatedWith() = new     WasAssociatedWith
-  override def createWasAttributedTo() = new     WasAttributedTo
-  override def createWasDerivedFrom() = new     WasDerivedFrom
-  override def createWasEndedBy() = new     WasEndedBy
-  override def createWasInfluencedBy() = new     WasInfluencedBy
-  override def createWasInformedBy() = new     WasInformedBy
-  override def createWasStartedBy() = new     WasStartedBy
-  override def createSpecializationOf() = new     SpecializationOf
-  override def createActedOnBehalfOf() = new     ActedOnBehalfOf
-  override def createHadMember() = new     HadMember   
-  override def createAlternateOf() = new     AlternateOf
+class ObjectFactory extends DictionaryFactory {
 
-  override def createQualifiedSpecializationOf() = new SpecializationOf
-  override def createQualifiedHadMember() = new HadMember   
-  override def createQualifiedAlternateOf() = new AlternateOf
-
-  override def createLocation() = new Location
-  override def createOther():org.openprovenance.prov.model.Other = {
-   new Other
-  }
-  override def createRole() = new Role
-  override def createType() = new Type
-  
-  override def createTypedValue() = throw new UnsupportedOperationException
-  override def createValue() = new Value
-  override def createInternationalizedString() = new LangString
-
-  
   override def createDerivedByInsertionFrom() = throw new UnsupportedOperationException
   override def createDerivedByRemovalFrom() = throw new UnsupportedOperationException
   override def createDictionaryMembership() = throw new UnsupportedOperationException
   override def createEntry() = throw new UnsupportedOperationException
-  override def createKey() = throw new UnsupportedOperationException
-  override def createMentionOf() = throw new UnsupportedOperationException
-
 
 }
 
@@ -1313,7 +1275,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.activity=activity
 
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have roles")
@@ -1339,7 +1301,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.agent = agent
         a.plan = plan
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), a.getRole(), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasAssociatedWith cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasAssociatedWith cannot have locations")
         a
@@ -1359,7 +1321,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.entity = entity
         a.agent = agent
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have roles")
@@ -1380,7 +1342,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.informed = informed
         a.informant = informant
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have roles")
@@ -1404,7 +1366,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.activity = activity
         a.time=time
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasInvalidatedBy cannot have values")
         a
     }
@@ -1433,7 +1395,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.activity = activity
         a.time=time
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("Used cannot have values")
         a
 
@@ -1457,7 +1419,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.trigger = trigger
         a.time=time
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasEndedBy cannot have values")
         a
 
@@ -1481,7 +1443,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.trigger = trigger
         a.time=time
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasStartedBy cannot have values")
         a
     }
@@ -1502,7 +1464,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.activity = activity
         a.time=time
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasGeneratedBy cannot have values")
         a
     }
@@ -1525,7 +1487,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.influencer = influencer
         a.influencee = influencee
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have roles")
@@ -1538,7 +1500,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.startTime=startTime
         a.endTime=endTime
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("Activity cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("Activity cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("Activity cannot have roles")
@@ -1549,7 +1511,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         val a = new Agent
         a.id = id
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("Agent cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("Agent cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("Agent cannot have roles")
@@ -1584,7 +1546,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.generation = generation
         a.usage = usage
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have roles")
@@ -1610,7 +1572,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.alternate1 = e1
         a.alternate2 = e2
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have roles")
@@ -1622,7 +1584,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.specificEntity = e2
         a.generalEntity = e1
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have roles")
@@ -1634,7 +1596,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.collection = c
         a.entity = new util.LinkedList[model.QualifiedName](e)
         val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
-        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
         if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have values")
         if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have locations")
         if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have roles")
@@ -1653,6 +1615,100 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
 
     override def newMentionOf(e2: model.QualifiedName, e1: model.QualifiedName, b: model.QualifiedName): MentionOf = {
         throw new UnsupportedOperationException("MentionOf not supported")
+    }
+
+    /** A factory method to create an instance of a {@link Document}
+     *
+     * @param namespace  the prefix namespace mapping for the current document
+     * @param statements a collection of statements
+     * @param bundles    a collection of bundles
+     * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
+     */
+    override def newDocument(namespace: Namespace, statements: util.Collection[Statement], bundles: util.Collection[model.Bundle]): model.Document = {
+        val d = new Document
+        d.setNamespace(namespace)
+        d.getStatementOrBundle.addAll(statements)
+        d.getStatementOrBundle.addAll(bundles)
+        d
+    }
+
+    /** A factory method to create an instance of a {@link Document}
+     *
+     * @param namespace           the prefix namespace mapping for the current document
+     * @param statementsOrBundles a list of statements or bundles
+     * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
+     */
+    override def newDocument(namespace: Namespace, statementsOrBundles: util.List[StatementOrBundle]): model.Document = {
+        val d = new Document
+        d.setNamespace(namespace)
+        d.getStatementOrBundle.addAll(statementsOrBundles)
+        d
+    }
+
+    override def newEntity(id: model.QualifiedName, attributes: util.Collection[Attribute]): model.Entity = {
+        val a = new Entity
+        a.id = id
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), new util.LinkedList[model.Type](), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), new util.LinkedList[model.Other]())
+        a.label=ls.stream().map(toLabel).collect(Collectors.toList())
+        a.typex=ts
+        if (vs.isEmpty) {
+            a.setValue(null)
+        } else {
+            a.setValue(vs.get(0))
+            if (vs.size()>1) throw new UnsupportedOperationException("Entity cannot have more than one value");
+        }
+        a.setLocation(locs)
+        a.setOther(os)
+        a
+    }
+
+    private def toLabel(lab: model.Label): model.LangString = {
+        lab.getValue match {
+            case str: String => newInternationalizedString(str)
+            case lgst: model.LangString => lgst
+            case _ => throw new UnsupportedOperationException("Cannot convert label to LangString" + lab.getValue)
+        }
+    }
+
+    override def newHadMember(c: model.QualifiedName, e: util.Collection[model.QualifiedName]): model.HadMember = {
+        val a = new HadMember
+        a.id = null
+        a.collection = c
+        a.entity = new util.LinkedList[model.QualifiedName](e)
+        a
+    }
+
+    /**
+     * Factory method to create an instance of the PROV-DM prov:value attribute (see {@link Value}).
+     * Use class {@link Name} for predefined {@link QualifiedName}s for the common types.
+     *
+     * @param value an {@link Object}
+     * @param type  a {@link QualifiedName} to denote the type of value
+     * @return a new {@link Value}
+     */
+    override def newValue(value: Any, `type`: model.QualifiedName): model.Value = {
+        new Value(value,`type`)
+    }
+
+    override def newInternationalizedString(s: String): model.LangString = {
+        val a=new LangString
+        a.value=s;
+        a
+    }
+
+    override def newInternationalizedString(s: String, lang: String): model.LangString = {
+        val a = new LangString
+        a.value = s;
+        a.lang = lang
+        a
+    }
+
+    override def newNamedBundle(id: model.QualifiedName, namespace: Namespace, statements: util.Collection[Statement]): model.Bundle = {
+        val b=new Bundle
+        b.id=id
+        b.setNamespace(namespace)
+        b.setStatement(new util.LinkedList[Statement](statements));
+        b
     }
 }
 

@@ -11,7 +11,6 @@ package org.openprovenance.prov.model;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newSpecializationOf(QualifiedName, QualifiedName)}
- * <li> {@link ObjectFactory#createSpecializationOf()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

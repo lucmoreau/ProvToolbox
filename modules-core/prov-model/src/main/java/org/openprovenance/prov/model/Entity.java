@@ -19,7 +19,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newEntity(QualifiedName)}
  * <li> {@link ProvFactory#newEntity(QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createEntity()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

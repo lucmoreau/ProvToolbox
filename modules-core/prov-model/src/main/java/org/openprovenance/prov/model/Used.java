@@ -22,7 +22,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newUsed(QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
- * <li> {@link ObjectFactory#createUsed()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

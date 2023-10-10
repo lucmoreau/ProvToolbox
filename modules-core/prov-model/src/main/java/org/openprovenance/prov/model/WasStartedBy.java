@@ -23,7 +23,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasStartedBy(QualifiedName, QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasStartedBy()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

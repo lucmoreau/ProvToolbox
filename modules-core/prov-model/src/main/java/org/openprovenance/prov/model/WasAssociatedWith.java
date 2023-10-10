@@ -17,7 +17,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasAssociatedWith(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasAssociatedWith(QualifiedName, QualifiedName, QualifiedName, QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasAssociatedWith()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

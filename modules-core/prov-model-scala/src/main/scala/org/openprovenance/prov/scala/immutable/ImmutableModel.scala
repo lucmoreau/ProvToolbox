@@ -11,6 +11,7 @@ import org.openprovenance.prov.model.extension.QualifiedHadMember
 import org.openprovenance.prov.scala.immutable
 import org.openprovenance.prov.scala.immutable.Attribute.split
 import org.openprovenance.prov.scala.immutable.Kind.Kind
+import org.openprovenance.prov.scala.immutable.StatementOrBundle.forStatementOrBundle
 import org.openprovenance.prov.{model, vanilla}
 
 import scala.annotation.unused
@@ -3388,48 +3389,14 @@ class QualifiedName (val prefix: String,
 }
 
 
-class ObjectFactory extends org.openprovenance.prov.model.ObjectFactory {
-  override def createEntity () = throw new UnsupportedOperationException
-  override def createActivity () = throw new UnsupportedOperationException
-  override def createAgent () = throw new UnsupportedOperationException
-  override def createDocument () = throw new UnsupportedOperationException
-  override def createNamedBundle () = throw new UnsupportedOperationException
-  override def createWasGeneratedBy () = throw new UnsupportedOperationException
-  override def createWasInvalidatedBy () = throw new UnsupportedOperationException
-  override def createUsed() = throw new UnsupportedOperationException
-  override def createWasAssociatedWith() = throw new UnsupportedOperationException
-  override def createWasAttributedTo() = throw new UnsupportedOperationException
-  override def createWasDerivedFrom() = throw new UnsupportedOperationException
-  override def createWasEndedBy() = throw new UnsupportedOperationException
-  override def createWasInfluencedBy() = throw new UnsupportedOperationException
-  override def createWasInformedBy() = throw new UnsupportedOperationException
-  override def createWasStartedBy() =throw new UnsupportedOperationException
-  override def createSpecializationOf() = throw new UnsupportedOperationException
-  override def createActedOnBehalfOf() = throw new UnsupportedOperationException
-  override def createHadMember() =    throw new UnsupportedOperationException
-  override def createAlternateOf() = throw new UnsupportedOperationException
+class ObjectFactory extends org.openprovenance.prov.model.DictionaryFactory {
 
-  override def createQualifiedSpecializationOf() = throw new UnsupportedOperationException
-  override def createQualifiedHadMember() =    throw new UnsupportedOperationException
-  override def createQualifiedAlternateOf() = throw new UnsupportedOperationException
 
-  override def createLocation() = throw new UnsupportedOperationException
-  override def createOther() = throw new UnsupportedOperationException
-  override def createRole() = throw new UnsupportedOperationException
-  override def createType() = throw new UnsupportedOperationException
-  
-  override def createTypedValue() = throw new UnsupportedOperationException
-  override def createValue() = throw new UnsupportedOperationException
-  
-  
+
   override def createDerivedByInsertionFrom() = throw new UnsupportedOperationException
   override def createDerivedByRemovalFrom() = throw new UnsupportedOperationException
   override def createDictionaryMembership() = throw new UnsupportedOperationException
   override def createEntry() = throw new UnsupportedOperationException
-  override def createKey() = throw new UnsupportedOperationException
-  override def createMentionOf() = throw new UnsupportedOperationException
-  override def createInternationalizedString() = throw new UnsupportedOperationException
-
 
 }
 
@@ -4289,6 +4256,18 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
   override def startBundle(qualifiedName: model.QualifiedName, namespace: Namespace): Unit = ???
 
   override def startDocument(namespace: Namespace): Unit = ???
+
+
+  /** A factory method to create an instance of a {@link Document}
+   *
+   * @param namespace           the prefix namespace mapping for the current document
+   * @param statementsOrBundles a list of statements or bundles
+   * @return an instance of {@link Document}, with this prefix-namespace mapping, statements, and bundles
+   */
+  override def newDocument(namespace: Namespace, statementsOrBundles: util.List[model.StatementOrBundle]): model.Document = {
+    new Document(forStatementOrBundle(statementsOrBundles),namespace)
+  }
+
 }
 
 class ICons extends ImmutableConstructor

@@ -13,7 +13,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasInfluencedBy(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasInfluencedBy(QualifiedName, QualifiedName, QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasInfluencedBy()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

@@ -23,7 +23,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasGeneratedBy(QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasGeneratedBy()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

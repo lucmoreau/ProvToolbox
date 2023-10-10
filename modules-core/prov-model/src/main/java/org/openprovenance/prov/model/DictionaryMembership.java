@@ -14,7 +14,7 @@ import java.util.List;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newDictionaryMembership(QualifiedName, List)}
- * <li> {@link ObjectFactory#createDictionaryMembership()}
+ * <li> {@link DictionaryFactory#createDictionaryMembership()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

@@ -11,7 +11,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newAgent(QualifiedName)}
  * <li> {@link ProvFactory#newAgent(QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createAgent()}
  * </ul>
  * 
  * <p>The following schema fragment specifies the expected content contained within this type.

@@ -12,7 +12,6 @@ package org.openprovenance.prov.model;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newMentionOf(QualifiedName, QualifiedName, QualifiedName)}
- * <li> {@link ObjectFactory#createMentionOf()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span> 

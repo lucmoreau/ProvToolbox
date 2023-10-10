@@ -13,7 +13,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newActedOnBehalfOf(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newActedOnBehalfOf(QualifiedName, QualifiedName, QualifiedName, QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createActedOnBehalfOf()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

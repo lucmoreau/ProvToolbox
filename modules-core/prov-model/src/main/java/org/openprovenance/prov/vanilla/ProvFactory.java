@@ -138,8 +138,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     @Override
     public org.openprovenance.prov.model.Other newOther(org.openprovenance.prov.model.QualifiedName elementName,
-                          Object value,
-                          org.openprovenance.prov.model.QualifiedName type) {
+                                                        Object value,
+                                                        org.openprovenance.prov.model.QualifiedName type) {
         return ac.newOther(elementName, value, type);
     }
 
@@ -586,6 +586,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
             }
         }
         return new org.openprovenance.prov.vanilla.HadMember(c,ll);
+    }
+
+    @Override
+    public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b) {
+        throw new UnsupportedOperationException("newMentionOf not supported");
     }
 
 

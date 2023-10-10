@@ -765,7 +765,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 	public abstract Attribute newLabel(Object value, org.openprovenance.prov.model.QualifiedName type);
 
-	public Location newLocation(Object value, QualifiedName type) {
+	abstract public Location newLocation(Object value, QualifiedName type);
+	/*{
 		Location res =  of.createLocation();
 		res.setType(type);
 		res.setValueFromObject(value);
@@ -773,7 +774,10 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 
+	 */
 
+
+	/*
 	public MentionOf newMentionOf(QualifiedName infra,
 								  QualifiedName supra,
 								  QualifiedName bundle) {
@@ -784,13 +788,11 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return res;
 	}
 
+	 */
+
 
 	public MentionOf newMentionOf(MentionOf r) {
-		MentionOf res = of.createMentionOf();
-		res.setSpecificEntity(r.getSpecificEntity());
-		res.setBundle(r.getBundle());
-		res.setGeneralEntity(r.getGeneralEntity());
-		return res;
+		return newMentionOf(r.getSpecificEntity(), r.getGeneralEntity(), r.getBundle());
 	}
 
 
@@ -838,7 +840,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 
 
-	public Other newOther(QualifiedName elementName, Object value, QualifiedName type) {
+	abstract public Other newOther(QualifiedName elementName, Object value, QualifiedName type);
+	/*{
 		if (value==null) return null;
 		Other res =  of.createOther();
 		res.setType(type);
@@ -847,6 +850,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		res.setElementName(elementName);
 		return res;
 	}
+
+	 */
 
 	public Other newOther(String namespace, String local, String prefix,  Object value, QualifiedName type) {
 		QualifiedName elementName=newQualifiedName(namespace,local,prefix);
@@ -871,48 +876,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 
 	abstract public Role newRole(Object value, QualifiedName type) ;
 
-	/** A factory method to create an instance of a specialization {@link SpecializationOf}
-	 * @param specific an identifier ({@link QualifiedName}) for the specific {@link Entity}
-	 * @param general an identifier  ({@link QualifiedName}) for the general {@link Entity}
-	 * @return an instance of {@link SpecializationOf}
-
-	@Override
-	public SpecializationOf newSpecializationOf(QualifiedName specific, QualifiedName general) {
-		return newSpecializationOf(null, specific, general, null);
-	}
-	 */
-
-	@Override
-	public QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
-		QualifiedSpecializationOf res = of.createQualifiedSpecializationOf();
-		res.setId(id);
-		res.setSpecificEntity(specific);
-		res.setGeneralEntity(general);
-		setAttributes(res, attributes);
-		return res;
-	}
-	@Override
-	public QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName alt1, QualifiedName alt2, Collection<Attribute> attributes) {
-		QualifiedAlternateOf res=of.createQualifiedAlternateOf();
-		res.setId(id);
-		res.setAlternate1(alt1);
-		res.setAlternate2(alt2);
-		setAttributes(res, attributes);
-		return res;
-	}
-	@Override
-	public QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
-		List<QualifiedName> ll= new LinkedList<>();
-		if (e!=null) {
-			ll.addAll(e);
-		}
-		QualifiedHadMember res=of.createQualifiedHadMember();
-		res.setId(id);
-		res.setCollection(c);
-		if (e!=null) res.getEntity().addAll(e);
-		return res;
-	}
-
 
 	public XMLGregorianCalendar newTime(Date date) {
 		GregorianCalendar gc = new GregorianCalendar();
@@ -934,13 +897,17 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return newTime(new Date());
 	}
 
-	public Type newType(Object value, QualifiedName type) {
+
+	abstract public Type newType(Object value, QualifiedName type);
+	/*{
 		if (value==null) return null;
 		Type res =  of.createType();
 		res.setType(type);
 		res.setValueFromObject(value);
 		return res;
 	}
+
+	 */
 
 
 	/** A factory method to create an instance of a usage {@link Used}

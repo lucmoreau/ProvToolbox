@@ -23,7 +23,7 @@ import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE
 
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-import org.openprovenance.prov.model.{Attribute, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
+import org.openprovenance.prov.model.{Attribute, MentionOf, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf
 import org.openprovenance.prov.model.extension.QualifiedHadMember
@@ -1598,6 +1598,61 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         a.specificEntity = e2
         a.generalEntity = e1
         a
+    }
+
+    override def newRole(value: Any, `type`: model.QualifiedName): model.Role = {
+        new Role(value,`type`)
+    }
+
+    override def newQualifiedAlternateOf(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, attributes: util.Collection[Attribute]): QualifiedAlternateOf = {
+        val a = new AlternateOf
+        a.id = id
+        a.alternate1 = e1
+        a.alternate2 = e2
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedAlternateOf cannot have roles")
+        a
+    }
+    override def newQualifiedSpecializationOf(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, attributes: util.Collection[Attribute]): QualifiedSpecializationOf = {
+        val a = new SpecializationOf
+        a.id = id
+        a.specificEntity = e2
+        a.generalEntity = e1
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedSpecializationOf cannot have roles")
+        a
+    }
+    override def newQualifiedHadMember(id: model.QualifiedName, c: model.QualifiedName, e: util.Collection[model.QualifiedName], attributes: util.Collection[Attribute]): QualifiedHadMember = {
+        val a = new HadMember
+        a.id = id
+        a.collection = c
+        a.entity = new util.LinkedList[model.QualifiedName](e)
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("QualifiedHadMember cannot have roles")
+        a
+    }
+    override def newLocation(value: Any, `type`: model.QualifiedName): model.Location = {
+        new Location(value,`type`)
+    }
+    override def newOther(elementName: model.QualifiedName, value: Any, `type`: model.QualifiedName): model.Other = {
+        new Other(elementName,value,`type`)
+    }
+
+    override def newType(value: Any, `type`: model.QualifiedName): model.Type = {
+        new Type(value,`type`)
+    }
+
+    override def newMentionOf(e2: model.QualifiedName, e1: model.QualifiedName, b: model.QualifiedName): MentionOf = {
+        throw new UnsupportedOperationException("MentionOf not supported")
     }
 }
 

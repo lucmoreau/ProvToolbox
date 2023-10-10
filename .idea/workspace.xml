@@ -10,7 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +184,33 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.ModelSpec (1)">
+  <component name="RunManager" selected="JUnit.OrderingTest">
+    <configuration name="OrderingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-validation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.validation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.validation" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.validation.OrderingTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -268,21 +294,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ModelSpec.A generation should be equal to itself" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="prov-scala-misc" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Test name" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
-      <option name="testName" value="A generation should be equal to itself" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ModelSpec.A simple file should be loadable, saveable, and reloadable" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-scala-misc" />
       <option name="allowRunningInParallel" value="false" />
@@ -339,20 +350,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.OrderingTest" />
       <item itemvalue="ScalaTest.ModelSpec" />
       <item itemvalue="ScalaTest.ModelSpec (1)" />
       <item itemvalue="ScalaTest.ModelSpec.A file should be loadable twice" />
-      <item itemvalue="ScalaTest.ModelSpec.A generation should be equal to itself" />
       <item itemvalue="ScalaTest.ModelSpec.A simple file should be loadable, saveable, and reloadable" />
       <item itemvalue="ScalaTest.ModelSpec.An entity should be equal to itself" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.OrderingTest" />
         <item itemvalue="ScalaTest.ModelSpec (1)" />
         <item itemvalue="ScalaTest.ModelSpec.A file should be loadable twice" />
         <item itemvalue="ScalaTest.ModelSpec.A simple file should be loadable, saveable, and reloadable" />
         <item itemvalue="ScalaTest.ModelSpec.An entity should be equal to itself" />
-        <item itemvalue="ScalaTest.ModelSpec.A generation should be equal to itself" />
       </list>
     </recent_temporary>
   </component>
@@ -743,7 +754,7 @@
       <workItem from="1696237138764" duration="20889000" />
       <workItem from="1696348385334" duration="69320000" />
       <workItem from="1696836756493" duration="3240000" />
-      <workItem from="1696867289365" duration="34180000" />
+      <workItem from="1696867289365" duration="34353000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -1641,7 +1641,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
     override def newDocument(namespace: Namespace, statementsOrBundles: util.List[StatementOrBundle]): model.Document = {
         val d = new Document
         d.setNamespace(namespace)
-        d.getStatementOrBundle.addAll(statementsOrBundles)
+        if (statementsOrBundles!=null) d.getStatementOrBundle.addAll(statementsOrBundles)
         d
     }
 

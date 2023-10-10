@@ -1,5 +1,11 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
+`2.0.4`
+* restructuring of explanation system, definition of interfaces separating components
+* prov-model: removed dependency on ObjectFactory (dating from jaxb time)
+* prov-model: add builder for prov model
+* provman: refactored commandline
+
 `2.0.3`
 * issue #209:
   * fixing issue with timezone information preservation

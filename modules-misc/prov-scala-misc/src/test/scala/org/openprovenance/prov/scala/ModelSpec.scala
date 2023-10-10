@@ -14,7 +14,7 @@ import org.openprovenance.prov.model.Statement
 import java.util
 
 
-abstract class ModelSpec extends AnyFlatSpec with Matchers {
+class ModelSpec extends AnyFlatSpec with Matchers {
   val EX_NS="http://example.org/"
   val pf=new ProvFactory
   val ipf=new org.openprovenance.prov.scala.immutable.ProvFactory

@@ -153,8 +153,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     @Override
-    public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a) {
-        return mc.newActivity(a,null,null,new LinkedList<>());
+    public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes) {
+        return mc.newActivity(a,startTime, endTime, attributes);
     }
 
     @Override
@@ -255,12 +255,12 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
-                                                      org.openprovenance.prov.model.QualifiedName aid,
+                                                      org.openprovenance.prov.model.QualifiedName activity,
                                                       String role,
-                                                      org.openprovenance.prov.model.QualifiedName eid) {
+                                                      org.openprovenance.prov.model.QualifiedName entity) {
         List<Attribute> attributes=new LinkedList<>();
         if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
-        return mc.newUsed(id,aid,eid,null,attributes);
+        return mc.newUsed(id, activity, entity,null,attributes);
     }
 
     /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
@@ -316,14 +316,18 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName id,
-                                                                          org.openprovenance.prov.model.QualifiedName eid,
+                                                                          org.openprovenance.prov.model.QualifiedName entity,
                                                                           String role,
-                                                                          org.openprovenance.prov.model.QualifiedName aid) {
+                                                                          org.openprovenance.prov.model.QualifiedName activity) {
         Collection<Attribute> attributes=new LinkedList<>();
         if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
-        return mc.newWasGeneratedBy(id,eid,aid, null,attributes);
+        return mc.newWasGeneratedBy(id, entity, activity, null,attributes);
     }
 
+    @Override
+    public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+        return mc.newWasGeneratedBy(id, entity, activity, time, attributes);
+    }
 
     public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                               org.openprovenance.prov.model.QualifiedName eid,
@@ -585,8 +589,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
 
-    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
-        return mc.newWasStartedBy(id,aid,eid,null,null,new LinkedList<>());
+    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName trigger) {
+        return mc.newWasStartedBy(id, activity, trigger,null,null,new LinkedList<>());
     }
 
     /** A factory method to create an instance of a start {@link org.openprovenance.prov.model.WasStartedBy}
@@ -649,6 +653,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                   Collection<Attribute> attributes) {
         return mc.newWasEndedBy(id,activity,trigger,ender,time,attributes);
     }
+
+
 
 
     /*

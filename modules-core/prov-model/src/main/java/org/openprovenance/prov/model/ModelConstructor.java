@@ -17,7 +17,7 @@ public interface ModelConstructor {
      * @param attributes optional set  of attributes representing additional information about this delegation association
      * @return an instance of {@link ActedOnBehalfOf}
      */
-    public ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible, QualifiedName activity, Collection<Attribute> attributes);
+    ActedOnBehalfOf newActedOnBehalfOf(QualifiedName id, QualifiedName delegate, QualifiedName responsible, QualifiedName activity, Collection<Attribute> attributes);
     public Activity newActivity(QualifiedName id, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes);
     public Agent newAgent(QualifiedName id, Collection<Attribute> attributes);
     public AlternateOf newAlternateOf(QualifiedName e1, QualifiedName e2);

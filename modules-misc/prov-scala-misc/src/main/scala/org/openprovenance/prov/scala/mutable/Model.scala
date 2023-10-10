@@ -23,20 +23,19 @@ import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE
 
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-import org.openprovenance.prov.model.Namespace
-import org.openprovenance.prov.model.Statement
-import org.openprovenance.prov.model.StatementOrBundle
+import org.openprovenance.prov.model.{Attribute, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf
 import org.openprovenance.prov.model.extension.QualifiedHadMember
-import org.openprovenance.prov.model.QualifiedNameUtils
 import org.openprovenance.prov.model.exception.QualifiedNameException
 
 import javax.xml.datatype.XMLGregorianCalendar
 import org.openprovenance.prov.model
 import org.openprovenance.prov.model.Attribute.AttributeKind
+import org.openprovenance.prov.scala.mutable.ProvFactory.splitrec
 
 import java.util
+import java.util.stream.Collectors
 
 
 trait HasLocation {
@@ -1181,6 +1180,50 @@ class ObjectFactory extends org.openprovenance.prov.model.ObjectFactory {
 
 
 }
+
+object ProvFactory {
+    @scala.annotation.tailrec
+    def splitrec(attributes: util.List[Attribute],
+                 ls: util.List[org.openprovenance.prov.model.Label],
+                 ts: util.List[org.openprovenance.prov.model.Type],
+                 vs: util.List[org.openprovenance.prov.model.Value],
+                 locs: util.List[org.openprovenance.prov.model.Location],
+                 rs: util.List[org.openprovenance.prov.model.Role],
+                 os: util.List[org.openprovenance.prov.model.Other])
+    : (util.List[org.openprovenance.prov.model.Label],
+       util.List[org.openprovenance.prov.model.Type],
+       util.List[org.openprovenance.prov.model.Value],
+       util.List[org.openprovenance.prov.model.Location],
+       util.List[org.openprovenance.prov.model.Role],
+       util.List[org.openprovenance.prov.model.Other]) = {
+        if ((attributes == null) || (attributes.isEmpty)) {
+            (ls, ts, vs, locs, rs, os)
+        } else{
+            val attr = attributes.get(0)
+            val rest=attributes.subList(1, attributes.size())
+            attr match {
+                case l: org.openprovenance.prov.model.Label    => splitrec(rest, extend(ls, l), ts, vs, locs, rs, os)
+                case t: org.openprovenance.prov.model.Type     => splitrec(rest, ls, extend(ts, t), vs, locs, rs, os)
+                case v: org.openprovenance.prov.model.Value    => splitrec(rest, ls, ts, extend(vs, v), locs, rs, os)
+                case l: org.openprovenance.prov.model.Location => splitrec(rest, ls, ts, vs, extend(locs, l), rs, os)
+                case r: org.openprovenance.prov.model.Role     => splitrec(rest, ls, ts, vs, locs, extend(rs, r), os)
+                case o: org.openprovenance.prov.model.Other    => splitrec(rest, ls, ts, vs, locs, rs, extend(os, o))
+            }
+        }
+    }
+
+
+    private def extend[T](ls: util.List[T], l: T):  util.List[T]= {
+        if (ls==null) {
+            val ls2=new util.LinkedList[T]()
+            ls2.add(l)
+            ls2
+        } else {
+            ls.add(l)
+            ls
+        }
+    }
+}
  
 class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectFactory) {
  
@@ -1188,7 +1231,7 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
   
   override def getSerializer() = throw new UnsupportedOperationException
   override def newQualifiedName(x1: String, x2:String, x3: String, x4:org.openprovenance.prov.model.ProvUtilities.BuildFlag) = throw new UnsupportedOperationException
-  override def newAttribute(kind: org.openprovenance.prov.model.Attribute.AttributeKind,value: Any,typ: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute = {
+  override def newAttribute(kind: org.openprovenance.prov.model.Attribute.AttributeKind, value: Any, typ: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Attribute = {
     kind match {
       case AttributeKind.PROV_TYPE => new Type(value,typ)
       case AttributeKind.PROV_ROLE => new Role(value,typ)
@@ -1248,6 +1291,314 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
   override def newQualifiedName(namespace: String, local: String, prefix: String): org.openprovenance.prov.model.QualifiedName = {
     new QualifiedName(namespace,local,prefix)
   }
+
+    /** A factory method to create an instance of a delegation {@link ActedOnBehalfOf}
+     *
+     * @param id          identifier for the delegation association between delegate and responsible
+     * @param delegate    identifier for the agent associated with an activity, acting on behalf of the responsible agent
+     * @param responsible identifier for the agent, on behalf of which the delegate agent acted
+     * @param activity    optional identifier of an activity for which the delegation association holds
+     * @param attributes  optional set  of attributes representing additional information about this delegation association
+     * @return an instance of {@link ActedOnBehalfOf}
+     */
+    override def newActedOnBehalfOf(id: model.QualifiedName,
+                                    delegate: model.QualifiedName,
+                                    responsible: model.QualifiedName,
+                                    activity: model.QualifiedName,
+                                    attributes: util.Collection[Attribute]): model.ActedOnBehalfOf = {
+        val a=new ActedOnBehalfOf
+        a.id=id
+        a.delegate=delegate
+        a.responsible=responsible
+        a.activity=activity
+
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("ActedOnBehalfOf cannot have roles")
+
+        // todo what about attributes
+
+        a
+    }
+
+    /** A factory method to create an instance of an Association {@link WasAssociatedWith}
+     *
+     * @param id         an optional identifier for the association between an activity and an agent
+     * @param activity   an identifier for the activity
+     * @param agent      an optional identifier for the agent associated with the activity
+     * @param plan       an optional identifier for the plan the agent relied on in the context of this activity
+     * @param attributes an optional set of attribute-value pairs representing additional information about this association of this activity with this agent.
+     * @return an instance of {@link WasAssociatedWith}
+     */
+    override def newWasAssociatedWith(id: model.QualifiedName, activity: model.QualifiedName, agent: model.QualifiedName, plan: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasAssociatedWith = {
+        val a = new WasAssociatedWith
+        a.id = id
+        a.activity=activity
+        a.agent = agent
+        a.plan = plan
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), a.getRole(), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasAssociatedWith cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("WasAssociatedWith cannot have locations")
+        a
+    }
+
+    /** A factory method to create an instance of an attribution {@link WasAttributedTo}
+     *
+     * @param id         an optional identifier for the relation
+     * @param entity     an entity identifier
+     * @param agent      the identifier of the agent whom the entity is ascribed to, and therefore bears some responsibility for its existence
+     * @param attributes an optional set of attribute-value pairs representing additional information about this attribution.
+     * @return an instance of {@linkWasAttributedTo}
+     */
+    override def newWasAttributedTo(id: model.QualifiedName, entity: model.QualifiedName, agent: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasAttributedTo = {
+        val a = new WasAttributedTo
+        a.id = id
+        a.entity = entity
+        a.agent = agent
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("WasAttributedTo cannot have roles")
+        a
+    }
+
+    /** A factory method to create an instance of an communication {@link WasInformedBy}
+     *
+     * @param id         an optional identifier identifying the association;
+     * @param informed   the identifier of the informed activity;
+     * @param informant  the identifier of the informant activity;
+     * @param attributes an optional set of attribute-value pairs representing additional information about this communication.
+     * @return an instance of {@link WasInformedBy}
+     */
+    override def newWasInformedBy(id: model.QualifiedName, informed: model.QualifiedName, informant: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasInformedBy = {
+        val a = new WasInformedBy
+        a.id = id
+        a.informed = informed
+        a.informant = informant
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("WasInformedBy cannot have roles")
+        a
+    }
+
+
+    /** A factory method to create an instance of an invalidation {@link WasInvalidatedBy}
+     *
+     * @param id         an optional identifier for a usage
+     * @param entity     an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#invalidation.entity">entity</a>
+     * @param activity   an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#invalidation.activity">activity</a> that creates the entity
+     * @param time       an optional "invalidation time", the time at which the entity was completely created
+     * @param attributes an optional set of attribute-value pairs representing additional information about this invalidation
+     * @return an instance of {@link WasInvalidatedBy}
+     */
+    override def newWasInvalidatedBy(id: model.QualifiedName, entity: model.QualifiedName, activity: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[model.Attribute]): model.WasInvalidatedBy = {
+        val a = new WasInvalidatedBy
+        a.id = id
+        a.entity = entity
+        a.activity = activity
+        a.time=time
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasInvalidatedBy cannot have values")
+        a
+    }
+
+    private def attributeList(attributes: util.Collection[Attribute]): util.LinkedList[Attribute] = {
+        if (attributes==null) {
+            new util.LinkedList[Attribute]()
+        } else {
+            new util.LinkedList[Attribute](attributes)
+        }
+    }
+
+    /** A factory method to create an instance of a Usage {@link Used}
+     *
+     * @param id         an optional identifier for a usage
+     * @param activity   the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#usage.activity">activity</a> that used an entity
+     * @param entity     an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#usage.entity">entity</a> being used
+     * @param time       an optional "usage time", the <a href="http://www.w3.org/TR/prov-dm/#usage.time">time</a> at which the entity started to be used
+     * @param attributes an optional set of attribute-value pairs representing additional information about this usage
+     * @return an instance of {@link Used}
+     */
+    override def newUsed(id: model.QualifiedName, activity: model.QualifiedName, entity: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.Used = {
+        val a = new Used
+        a.id = id
+        a.entity = entity
+        a.activity = activity
+        a.time=time
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("Used cannot have values")
+        a
+
+    }
+
+    /** A factory method to create an instance of an end {@link WasEndedBy}
+     *
+     * @param id         an optional identifier for a end
+     * @param activity   an identifier for the ended <a href="http://www.w3.org/TR/prov-dm/#end.activity">activity</a>
+     * @param trigger    an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.trigger">entity triggering</a> the activity ending
+     * @param ender      an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#end.ender">activity</a> that generated the (possibly unspecified) entity
+     * @param time       the optional <a href="http://www.w3.org/TR/prov-dm/#end.time">time</a>  at which the activity was ended
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this activity start
+     * @return an instance of {@link WasStartedBy}
+     */
+    override def newWasEndedBy(id: model.QualifiedName, activity: model.QualifiedName, trigger: model.QualifiedName, ender: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.WasEndedBy = {
+        val a = new WasEndedBy
+        a.id = id
+        a.ender = ender
+        a.activity = activity
+        a.trigger = trigger
+        a.time=time
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasEndedBy cannot have values")
+        a
+
+    }
+
+    /** A factory method to create an instance of a start {@link WasStartedBy}
+     *
+     * @param id         an optional identifier for a start
+     * @param activity   an identifier for the started <a href="http://www.w3.org/TR/prov-dm/#start.activity">activity</a>
+     * @param trigger    an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.trigger">entity triggering</a> the activity
+     * @param starter    an optional identifier for the <a href="http://www.w3.org/TR/prov-dm/#start.starter">activity</a> that generated the (possibly unspecified) entity
+     * @param time       the optional <a href="http://www.w3.org/TR/prov-dm/#start.time">time</a>  at which the activity was started
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#start.attributes">attribute-value pairs</a> representing additional information about this activity start
+     * @return an instance of {@link WasStartedBy}
+     */
+    override def newWasStartedBy(id: model.QualifiedName, activity: model.QualifiedName, trigger: model.QualifiedName, starter: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.WasStartedBy = {
+        val a = new WasStartedBy
+        a.id = id
+        a.starter = starter
+        a.activity = activity
+        a.trigger = trigger
+        a.time=time
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasStartedBy cannot have values")
+        a
+    }
+
+    /** A factory method to create an instance of a generation {@link WasGeneratedBy}
+     *
+     * @param id         an optional identifier for a usage
+     * @param entity     an identifier for the created <a href="http://www.w3.org/TR/prov-dm/#generation.entity">entity</a>
+     * @param activity   an optional identifier  for the <a href="http://www.w3.org/TR/prov-dm/#generation.activity">activity</a> that creates the entity
+     * @param time       an optional "generation time", the time at which the entity was completely created
+     * @param attributes an optional set of attribute-value pairs representing additional information about this generation
+     * @return an instance of {@link WasGeneratedBy}
+     */
+    override def newWasGeneratedBy(id: model.QualifiedName, entity: model.QualifiedName, activity: model.QualifiedName, time: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.WasGeneratedBy = {
+        val a = new WasGeneratedBy
+        a.id = id
+        a.entity = entity
+        a.activity = activity
+        a.time=time
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), a.getRole(), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasGeneratedBy cannot have values")
+        a
+    }
+
+    override def newLabel(value: Any, `type`: model.QualifiedName): Attribute = {
+        newAttribute(AttributeKind.PROV_LABEL, value, `type`)
+    }
+
+    /** A factory method to create an instance of an influence {@link WasInfluencedBy}
+     *
+     * @param id         optional identifier identifying the association
+     * @param influencee an identifier for an entity, activity, or agent
+     * @param influencer an identifier for an ancestor entity, activity, or agent that the former depends on
+     * @param attributes an optional set of attribute-value pairs representing additional information about this association
+     * @return an instance of {@link WasInfluencedBy}
+     */
+    override def newWasInfluencedBy(id: model.QualifiedName, influencee: model.QualifiedName, influencer: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasInfluencedBy =  {
+        val a = new WasInfluencedBy
+        a.id = id
+        a.influencer = influencer
+        a.influencee = influencee
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("WasInfluencedBy cannot have roles")
+        a
+    }
+
+    override def newActivity(id: model.QualifiedName, startTime: XMLGregorianCalendar, endTime: XMLGregorianCalendar, attributes: util.Collection[Attribute]): model.Activity = {
+        val a = new Activity
+        a.id=id
+        a.startTime=startTime
+        a.endTime=endTime
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("Activity cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("Activity cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("Activity cannot have roles")
+        a
+    }
+
+    override def newAgent(id: model.QualifiedName, attributes: util.Collection[Attribute]): model.Agent = {
+        val a = new Agent
+        a.id = id
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), a.getLocation(), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("Agent cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("Agent cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("Agent cannot have roles")
+        a
+    }
+
+    override def newAlternateOf(e1: model.QualifiedName, e2: model.QualifiedName): model.AlternateOf = {
+        val a = new AlternateOf
+        a.id = null
+        a.alternate1 = e1
+        a.alternate2 = e2
+        a
+    }
+
+    /** A factory method to create an instance of a derivation {@link WasDerivedFrom}
+     *
+     * @param id         an optional identifier for a derivation
+     * @param e2         the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.generatedEntity">entity generated</a> by the derivation
+     * @param e1         the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
+     * @param activity   an identifier for the <a href="http://www.w3.org/TR/prov-dm/#derivation.activity">activity</a> underpinning the derivation
+     * @param generation an identifier for the <a href="http://www.w3.org/TR/prov-dm/#derivation.genertion">generation</a> associated with the derivation
+     * @param usage      an identifier for the <a href="http://www.w3.org/TR/prov-dm/#derivation.usage">usage</a> associated with the derivation
+     * @param attributes an optional set of <a href="http://www.w3.org/TR/prov-dm/#end.attributes">attribute-value pairs</a> representing additional information about this derivation
+     * @return an instance of {@link WasDerivedFrom}
+     */
+    override def newWasDerivedFrom(id: model.QualifiedName, e2: model.QualifiedName, e1: model.QualifiedName, activity: model.QualifiedName, generation: model.QualifiedName, usage: model.QualifiedName, attributes: util.Collection[Attribute]): model.WasDerivedFrom = {
+        val a = new WasDerivedFrom
+        a.id = id
+        a.generatedEntity = e2
+        a.usedEntity = e1
+        a.activity = activity
+        a.generation = generation
+        a.usage = usage
+        val (ls, ts, vs, locs, rs, os) = splitrec(attributeList(attributes), new util.LinkedList[model.Label](), a.getType(), new util.LinkedList[model.Value](), new util.LinkedList[model.Location](), new util.LinkedList[model.Role](), a.getOther())
+        a.setLabel(ls.stream().map(lab => lab.getValue.asInstanceOf[model.LangString]).collect(Collectors.toList()))
+        if (!vs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have values")
+        if (!locs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have locations")
+        if (!rs.isEmpty) throw new UnsupportedOperationException("WasDerivedFrom cannot have roles")
+        a
+    }
+
+    override def newSpecializationOf(e2: model.QualifiedName, e1: model.QualifiedName): model.SpecializationOf = {
+
+        val a = new SpecializationOf
+        a.id = null
+        a.specificEntity = e2
+        a.generalEntity = e1
+        a
+    }
 }
 
 object Entity {
@@ -1256,7 +1607,7 @@ object Entity {
     e.id=id
     e
   }  
-  def activity(id: QualifiedName)(implicit startTime: XMLGregorianCalendar=null, endTime: XMLGregorianCalendar=null)= {
+  def activity(id: QualifiedName)(implicit startTime: XMLGregorianCalendar=null, endTime: XMLGregorianCalendar=null): Activity = {
     val act=new Activity
     act.id=id
     act.startTime=startTime
@@ -1264,7 +1615,7 @@ object Entity {
     act
   }
   
-  def test () = {
+  def test (): Unit = {
     val  e=entity(null)
     val  a1=activity(null)
     val  a2=activity(null)(null)

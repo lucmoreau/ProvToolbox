@@ -91,9 +91,7 @@ public class Validate {
 		return inf;
 	}
 
-	public ValidationReport validate(Document b)
-			throws
-			java.io.IOException {
+	public ValidationReport validate(Document b) throws java.io.IOException {
 		Pair<ValidationReport,Document> res=validate(u.getStatement(b),true);
 
 		ValidationReport report=res.car;

@@ -90,4 +90,21 @@ public class RoundTripJavaToScalaToJsonAndBackTest extends RoundTripFromJavaTest
         System.out.println(escapeRed("########## Skipping testing for default1 in scala"));
         //super.testDefault1();
     }
+
+    @Override
+    public void testDictionaryMembership1() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (scala)"));
+    }
+    @Override
+    public void testDictionaryMembership2() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership2 (scala)"));
+    }
+    @Override
+    public void testDictionaryMembership3() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (scala)"));
+    }
+    @Override
+    public void testDictionaryMembership4() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (scala)"));
+    }
 }

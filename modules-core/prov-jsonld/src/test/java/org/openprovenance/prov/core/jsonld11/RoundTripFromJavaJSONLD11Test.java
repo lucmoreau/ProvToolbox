@@ -56,11 +56,29 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     }
 
     public boolean checkTest(String name) {
-        if (name.endsWith("entity101" + extension())) {
-            System.out.println(escapeRed("########## Skipping testing for entity101 in JSONLD"));
+        if (name.endsWith("entity101" + extension())
+        || name.contains("DictionaryMembership")) {
+            System.out.println(escapeRed("########## Skipping testing for " + name + " in " + extension()));
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void testDictionaryMembership1() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (jsonld)"));
+    }
+    @Override
+    public void testDictionaryMembership2() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership2 (jsonld)"));
+    }
+    @Override
+    public void testDictionaryMembership3() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (jsonld)"));
+    }
+    @Override
+    public void testDictionaryMembership4() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (jsonld)"));
     }
 
 

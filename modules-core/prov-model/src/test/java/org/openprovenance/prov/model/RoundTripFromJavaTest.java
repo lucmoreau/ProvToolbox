@@ -81,7 +81,7 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
             // w.setValue(URI.create(EX_NS+"london"));
             a.getLocation().add(pFactory.newLocation(EX_NS + "london", name.XSD_ANY_URI));
 
-            Location loc = pFactory.newLocation(new Long(2),   name.XSD_LONG);
+            Location loc = pFactory.newLocation(2L,   name.XSD_LONG);
             // FIXME: Location containing a QName does not work
             // loc.getAttributes().put(name.QNAME_XSD_LONG,"1");
             a.getLocation().add(loc);
@@ -1943,8 +1943,9 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         makeDocAndTest(statements, opt, "target/dictionaryRemoval5");
 
     }
+    */
 
-    public void NOtestDictionaryMembership1() { // this makes no sense, member
+    public void testDictionaryMembership1() { // this makes no sense, member
                                                 // is mandatory.
         DictionaryMembership mem = pFactory.newDictionaryMembership(q("d"),
                                                                     null);
@@ -2009,7 +2010,6 @@ public class RoundTripFromJavaTest extends ProvFrameworkTest {
         makeDocAndTest(statements, opt, "target/dictionaryMembership4");
 
     }
-*/
 
 
 

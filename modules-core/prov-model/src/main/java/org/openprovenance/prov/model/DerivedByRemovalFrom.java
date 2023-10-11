@@ -18,7 +18,6 @@ import java.util.List;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newDerivedByRemovalFrom(QualifiedName, QualifiedName, QualifiedName, List, java.util.Collection)}
- * <li> {@link DictionaryFactory#createDerivedByRemovalFrom()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

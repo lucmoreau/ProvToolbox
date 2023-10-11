@@ -424,6 +424,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	}
 
 
+	/*
 	public DictionaryMembership newDictionaryMembership(QualifiedName dict,
 														List<Entry> entitySet) {
 		DictionaryMembership res = of.createDictionaryMembership();
@@ -432,6 +433,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 			res.getKeyEntityPair().addAll(entitySet);
 		return res;
 	}
+
+	 */
 
 	/**
 	 * Factory method to construct a {@link Document}
@@ -551,12 +554,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	 * @param entity a {@link QualifiedName} denoting an entity
 	 * @return an instance of {@link Entry}
 	 */
-	public Entry newEntry(Key key, QualifiedName entity) {
+
+	abstract public Entry newEntry(Key key, QualifiedName entity); /*{
 		Entry res = of.createEntry();
 		res.setKey(key);
 		res.setEntity(entity);
 		return res;
 	}
+	 */
 
 	/*
 	 * (non-Javadoc)

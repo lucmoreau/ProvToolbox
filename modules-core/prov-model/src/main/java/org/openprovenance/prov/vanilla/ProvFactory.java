@@ -180,6 +180,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return mc.newEntity(id,attrs);
     }
 
+    @Override
+    public org.openprovenance.prov.model.Entry newEntry(org.openprovenance.prov.model.Key key, QualifiedName entity) {
+        return new Entry(key,entity);
+    }
+
     /**
      * Creates a new {@link org.openprovenance.prov.model.Entity} with provided identifier and attributes
      * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the entity
@@ -198,8 +203,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     @Override
-    public Key newKey(Object o, org.openprovenance.prov.model.QualifiedName type) {
-        throw new UnsupportedOperationException("newKey not supported");
+    public org.openprovenance.prov.model.Key newKey(Object o, org.openprovenance.prov.model.QualifiedName type) {
+        return new Key(o,type);
     }
 
     public org.openprovenance.prov.model.Value newValue(Object value, org.openprovenance.prov.model.QualifiedName type) {
@@ -449,6 +454,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      */
     public org.openprovenance.prov.model.AlternateOf newAlternateOf(org.openprovenance.prov.model.QualifiedName entity1, org.openprovenance.prov.model.QualifiedName entity2) {
         return mc.newAlternateOf(entity1,entity2);
+    }
+
+    @Override
+    public org.openprovenance.prov.model.DictionaryMembership newDictionaryMembership(QualifiedName dict, List<org.openprovenance.prov.model.Entry> keyEntitySet) {
+        return new DictionaryMembership(dict,keyEntitySet);
     }
 
 

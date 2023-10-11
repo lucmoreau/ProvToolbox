@@ -3395,8 +3395,6 @@ class ObjectFactory extends org.openprovenance.prov.model.DictionaryFactory {
 
   override def createDerivedByInsertionFrom() = throw new UnsupportedOperationException
   override def createDerivedByRemovalFrom() = throw new UnsupportedOperationException
-  override def createDictionaryMembership() = throw new UnsupportedOperationException
-  override def createEntry() = throw new UnsupportedOperationException
 
 }
 
@@ -4348,7 +4346,7 @@ class ProvFactory extends ProvFactory1  {
   }
 
 
-  override def newKey(x$1: Any,x$2: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Key = throw new UnsupportedOperationException
+  override def newKey(x$1: Object, x$2: org.openprovenance.prov.model.QualifiedName): org.openprovenance.prov.model.Key = throw new UnsupportedOperationException
 
   override def newQualifiedName(namespace: String, local: String, prefix: String): org.openprovenance.prov.model.QualifiedName = {
     new QualifiedName(prefix,local,namespace)

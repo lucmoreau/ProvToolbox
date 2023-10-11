@@ -14,12 +14,6 @@ public interface DictionaryFactory {
 
     DerivedByRemovalFrom createDerivedByRemovalFrom();
 
-    DictionaryMembership createDictionaryMembership();
-
-
-    Entry createEntry();
-
-
 
    
 }

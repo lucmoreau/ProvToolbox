@@ -52,7 +52,7 @@ public class ExpandAction implements StatementAction {
     final private Expand expand;
     final private Map<QualifiedName, QualifiedName> env;
     final private ProvUtilities u;
-    final private List<StatementOrBundle> ll = new LinkedList<StatementOrBundle>();
+    final private List<StatementOrBundle> ll = new LinkedList<>();
     final private List<Integer> index;
     final private OldBindings oldBindings;
     final private Groupings grp1;
@@ -360,6 +360,21 @@ public class ExpandAction implements StatementAction {
             Collection<Attribute> dstAttributes = new LinkedList<>();
 
             for (Attribute attribute : attributes) {
+                if (ExpandUtil.isVariable(attribute.getElementName())) {
+                    //System.out.println("WARNING: attribute " + attribute.getElementName() + " is a variable name");
+                    List<TypedValue> vals = env2.get(attribute.getElementName());
+                    //System.out.println("WARNING: values " + vals + " " + env2 + " " + env);
+                    if (qualifiedNameURI.equals(vals.get(0).getType().getUri())) {
+                        //System.out.println("WARNING: associated value is a qualified name");
+                        QualifiedName qn1 = (QualifiedName) vals.get(0).getValue();
+                        attribute=pf.newAttribute(qn1, attribute.getValue(), attribute.getType());
+                        //System.out.println("Now attribute is " + attribute);
+                    }
+
+
+
+                }
+
                 if (qualifiedNameURI.equals(attribute.getType().getUri())) {
 
                     Object o = attribute.getValue();
@@ -426,19 +441,27 @@ public class ExpandAction implements StatementAction {
             } else if (ExpandUtil.TIME_URI.equals(elementName)) {
                 Object value=val.getValue();
                 if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
-                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                                                      value,
-                                                      val.getType()));
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
                 } else if (dstStatement instanceof HasTime) {
                     ((HasTime) dstStatement).setTime(pf.newISOTime((String) value));
                 }
             } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
-                    ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
+                    Object value=val.getValue();
+                    if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                    } else {
+                        ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
+                    }
                 }
             } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
-                    ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
+                    Object value=val.getValue();
+                    if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                    } else {
+                        ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
+                    }
                 }
             } else {
                 dstAttributes.add(pf.newAttribute(attribute.getElementName(),
@@ -641,8 +664,7 @@ public class ExpandAction implements StatementAction {
         boolean updated0 = setExpand(res, col, 0);
         List<QualifiedName> ent = res.getEntity();
         if (ent.size() > 1) {
-            throw new UnsupportedOperationException(
-                                                    "can't expand QualfiedHadMember with more than one members");
+            throw new UnsupportedOperationException("can't expand QualfiedHadMember with more than one members");
         }
         boolean updated1 = setExpand(res, ent.get(0), 1);
         boolean updated2 = expandAttributes(s, res);

@@ -127,6 +127,11 @@ public class ExpandUtil {
                         result.add(qn);
                 }
             }
+
+            if (ExpandUtil.isVariable(attr.getElementName())) {
+                //System.out.println("Free variable: found attrib variable " + attr.getElementName());
+                result.add(attr.getElementName());
+            }
         }
         return result;
     }

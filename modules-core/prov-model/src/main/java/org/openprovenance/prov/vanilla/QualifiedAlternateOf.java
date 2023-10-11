@@ -12,7 +12,7 @@ import static org.openprovenance.prov.vanilla.ActedOnBehalfOf.QUALIFIED_NAME_XSD
 public class QualifiedAlternateOf implements org.openprovenance.prov.model.extension.QualifiedAlternateOf, Equals, HashCode, ToString, HasAttributes {
 
     private Optional<QualifiedName> id=Optional.empty();
-    private List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
+    private final List<org.openprovenance.prov.model.LangString> labels = new LinkedList<>();
     private List<org.openprovenance.prov.model.Other> other = new LinkedList<>();
     private List<org.openprovenance.prov.model.Type> type = new LinkedList<>();
     protected QualifiedName alternate1;

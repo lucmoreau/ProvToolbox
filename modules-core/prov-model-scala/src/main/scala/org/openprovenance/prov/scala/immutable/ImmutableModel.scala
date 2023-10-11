@@ -3389,15 +3389,6 @@ class QualifiedName (val prefix: String,
 }
 
 
-class ObjectFactory extends org.openprovenance.prov.model.DictionaryFactory {
-
-
-
-  override def createDerivedByInsertionFrom() = throw new UnsupportedOperationException
-  override def createDerivedByRemovalFrom() = throw new UnsupportedOperationException
-
-}
-
 class FooException extends Exception
 
 object ProvFactory {
@@ -4243,11 +4234,15 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
 
   }
 
-  override def newDerivedByInsertionFrom(qualifiedName: model.QualifiedName, qualifiedName1: model.QualifiedName, qualifiedName2: model.QualifiedName, list: util.List[Entry], collection: util.Collection[model.Attribute]): DerivedByInsertionFrom = ???
+  override def newDerivedByInsertionFrom(qualifiedName: model.QualifiedName, qualifiedName1: model.QualifiedName, qualifiedName2: model.QualifiedName, list: util.List[Entry], collection: util.Collection[model.Attribute]): DerivedByInsertionFrom = {
+    throw new UnsupportedOperationException("not implemented yet")
+  }
 
   override def newDerivedByRemovalFrom(qualifiedName: model.QualifiedName, qualifiedName1: model.QualifiedName, qualifiedName2: model.QualifiedName, list: util.List[Key], collection: util.Collection[model.Attribute]): DerivedByRemovalFrom = ???
 
-  override def newDictionaryMembership(qualifiedName: model.QualifiedName, list: util.List[Entry]): DictionaryMembership = ???
+  override def newDictionaryMembership(qualifiedName: model.QualifiedName, list: util.List[Entry]): DictionaryMembership = {
+    throw new UnsupportedOperationException("not implemented yet")
+  }
 
   override def newMentionOf(qualifiedName: model.QualifiedName, qualifiedName1: model.QualifiedName, qualifiedName2: model.QualifiedName): model.MentionOf = ???
 
@@ -4266,12 +4261,13 @@ class ProvConstructor ( adelegate: ImmutableConstructorInterface) extends org.op
     new Document(forStatementOrBundle(statementsOrBundles),namespace)
   }
 
+  override def newDictionaryMembership(id: model.QualifiedName, dict: model.QualifiedName, keyEntitySet: util.List[Entry], attributes: util.Collection[model.Attribute]): DictionaryMembership = ???
 }
 
 class ICons extends ImmutableConstructor
 
 
-class ProvFactory1 extends vanilla.ProvFactory(new ObjectFactory, new ProvConstructor(new ICons)) {}
+class ProvFactory1 extends vanilla.ProvFactory(new ProvConstructor(new ICons)) {}
 
 
 //TODO: code duplication between ProvConstructor (Delegated) and ProvFactory. Requires refactoring

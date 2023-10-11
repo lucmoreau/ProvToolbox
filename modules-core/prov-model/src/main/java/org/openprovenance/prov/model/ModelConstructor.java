@@ -32,6 +32,7 @@ public interface ModelConstructor {
                                                  List<Key> keys,
                                                  Collection<Attribute> attributes);
     DictionaryMembership newDictionaryMembership(QualifiedName dict, List<Entry> keyEntitySet);
+    DictionaryMembership newDictionaryMembership(QualifiedName id, QualifiedName dict, List<Entry> keyEntitySet, Collection<Attribute> attributes);
 
     /** A factory method to create an instance of a {@link Document}
      * @param namespace the prefix namespace mapping for the current document

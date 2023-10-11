@@ -210,6 +210,28 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
     }
 
     @Override
+    public DictionaryMembership newDictionaryMembership(QualifiedName id, QualifiedName dict, List<Entry> keyEntitySet, Collection<Attribute> attributes) {
+        if (abbrev) {
+            String s = "provx:hadDictionaryMember(" + idOrMarker(dict) + ","
+                    + keyEntitySet(keyEntitySet) + ")";
+            writeln(s);
+        } else {
+            for (Entry entry : keyEntitySet) {
+
+                String s = "prov:hadDictionaryMember("
+                        + idOrMarker(dict)
+                        + ","
+                        + idOrMarker(entry.getEntity())
+                        + ","
+                        + ProvUtilities.valueToNotationString(entry.getKey())
+                        + ")";
+                writeln(s);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Document newDocument(Namespace namespaces,
                                 Collection<Statement> statements,
                                 Collection<Bundle> bundles) {

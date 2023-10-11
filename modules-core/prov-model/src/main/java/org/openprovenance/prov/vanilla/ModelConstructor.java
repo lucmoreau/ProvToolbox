@@ -57,17 +57,22 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
 
     @Override
     public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id, QualifiedName after, QualifiedName before, List<Entry> keyEntitySet, Collection<Attribute> attributes) {
-        throw new UnsupportedOperationException();
+        return new org.openprovenance.prov.vanilla.DerivedByInsertionFrom(id,after, before,keyEntitySet,attributes);
     }
 
     @Override
     public DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id, QualifiedName after, QualifiedName before, List<Key> keys, Collection<Attribute> attributes) {
-        throw new UnsupportedOperationException();
+        return new org.openprovenance.prov.vanilla.DerivedByRemovalFrom(id, after, before, keys, attributes);
     }
 
     @Override
-    public DictionaryMembership newDictionaryMembership(QualifiedName dict, List<Entry> keyEntitySet) {
-        throw new UnsupportedOperationException();
+    public org.openprovenance.prov.model.DictionaryMembership newDictionaryMembership(QualifiedName dict, List<Entry> keyEntitySet) {
+        return new org.openprovenance.prov.vanilla.DictionaryMembership(null,dict,keyEntitySet,null);
+    }
+
+    @Override
+    public DictionaryMembership newDictionaryMembership(QualifiedName id, QualifiedName dict, List<Entry> keyEntitySet, Collection<Attribute> attributes) {
+        return new org.openprovenance.prov.vanilla.DictionaryMembership(id,dict,keyEntitySet,attributes);
     }
 
     /**
@@ -96,7 +101,7 @@ final public class ModelConstructor implements org.openprovenance.prov.model.Mod
     @Override
     public HadMember newHadMember(QualifiedName c, Collection<QualifiedName> e) {
         List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<>();
-        ll.addAll(e);
+        if (e!=null) ll.addAll(e);
         return new org.openprovenance.prov.vanilla.HadMember(c,ll);
     }
 

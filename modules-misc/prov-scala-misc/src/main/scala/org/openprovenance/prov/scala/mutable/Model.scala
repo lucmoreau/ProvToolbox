@@ -23,7 +23,7 @@ import org.openprovenance.prov.model.StatementOrBundle.Kind.PROV_BUNDLE
 
 import scala.beans.BeanProperty
 import scala.jdk.CollectionConverters._
-import org.openprovenance.prov.model.{Attribute, DictionaryFactory, MentionOf, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
+import org.openprovenance.prov.model.{Attribute, DerivedByInsertionFrom, DerivedByRemovalFrom, DictionaryMembership, Entry, Key, MentionOf, Namespace, QualifiedNameUtils, Statement, StatementOrBundle}
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf
 import org.openprovenance.prov.model.extension.QualifiedHadMember
@@ -144,7 +144,7 @@ class Activity extends org.openprovenance.prov.model.Activity with Identifiable 
     
     
         
-    def canEqual(a: Any) = a.isInstanceOf[Activity]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[Activity]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -249,7 +249,7 @@ class WasGeneratedBy extends org.openprovenance.prov.model.WasGeneratedBy with I
     @BeanProperty
     val kind: Kind=PROV_GENERATION
     
-    def canEqual(a: Any) = a.isInstanceOf[WasGeneratedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasGeneratedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -289,7 +289,7 @@ class WasInvalidatedBy extends org.openprovenance.prov.model.WasInvalidatedBy wi
     @BeanProperty
     val kind: Kind=PROV_INVALIDATION
     
-    def canEqual(a: Any) = a.isInstanceOf[WasInvalidatedBy]
+    def canEqual(a: Any): Boolean = a.isInstanceOf[WasInvalidatedBy]
 
     override def equals(that: Any): Boolean =
     that match {
@@ -1134,14 +1134,6 @@ class QualifiedName () extends org.openprovenance.prov.model.QualifiedName {
 
 }
 
-class ObjectFactory extends DictionaryFactory {
-
-  override def createDerivedByInsertionFrom() = throw new UnsupportedOperationException
-  override def createDerivedByRemovalFrom() = throw new UnsupportedOperationException
-  override def createDictionaryMembership() = throw new UnsupportedOperationException
-  override def createEntry() = throw new UnsupportedOperationException
-
-}
 
 object ProvFactory {
     @scala.annotation.tailrec
@@ -1187,7 +1179,7 @@ object ProvFactory {
     }
 }
  
-class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectFactory) {
+class ProvFactory extends org.openprovenance.prov.model.ProvFactory {
  
   //println("In ProvFactory Constructor")
   
@@ -1709,6 +1701,28 @@ class ProvFactory extends org.openprovenance.prov.model.ProvFactory (new ObjectF
         b.setNamespace(namespace)
         b.setStatement(new util.LinkedList[Statement](statements));
         b
+    }
+
+    /** Factory method for Key-entity entries. Key-entity entries are used to identify the members of a dictionary.
+     *
+     * @param key    indexing the entity in the dictionary
+     * @param entity a {@link QualifiedName} denoting an entity
+     * @return an instance of {@link Entry}
+     */
+    override def newEntry(key: model.Key, entity: model.QualifiedName): model.Entry = {
+        throw new UnsupportedOperationException("Entry not supported")
+    }
+
+    override def newDictionaryMembership(id: model.QualifiedName, dict: model.QualifiedName, keyEntitySet: util.List[model.Entry], attributes: util.Collection[model.Attribute]): model.DictionaryMembership = {
+        throw new UnsupportedOperationException("DictionaryMembership not supported")
+    }
+
+    override def newDerivedByInsertionFrom(id: model.QualifiedName, after: model.QualifiedName, before: model.QualifiedName, keyEntitySet: util.List[Entry], attributes: util.Collection[Attribute]): DerivedByInsertionFrom = {
+        throw new UnsupportedOperationException("DerivedByInsertionFrom not supported")
+    }
+
+    override def newDerivedByRemovalFrom(id: model.QualifiedName, after: model.QualifiedName, before: model.QualifiedName, keys: util.List[Key], attributes: util.Collection[Attribute]): DerivedByRemovalFrom = {
+        throw new UnsupportedOperationException("DerivedByRemovalFrom not supported")
     }
 }
 

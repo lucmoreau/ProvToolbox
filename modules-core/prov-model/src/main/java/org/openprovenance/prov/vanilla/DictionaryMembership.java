@@ -3,24 +3,36 @@ package org.openprovenance.prov.vanilla;
 import org.openprovenance.apache.commons.lang.builder.EqualsBuilder;
 import org.openprovenance.apache.commons.lang.builder.HashCodeBuilder;
 import org.openprovenance.apache.commons.lang.builder.ToStringBuilder;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.Entry;
+import org.openprovenance.prov.model.LangString;
+import org.openprovenance.prov.model.Other;
 import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.Type;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 
-public class DictionaryMembership implements org.openprovenance.prov.model.DictionaryMembership{
+public class DictionaryMembership implements org.openprovenance.prov.model.DictionaryMembership, Identifiable, HasType, HasLabel, HasOther {
+    private QualifiedName id;
+    private final List<LangString> labels=new LinkedList<>();
+    private final List<Type> type=new LinkedList<>();
+    private final List<Other> other= new LinkedList<>();
+
     private QualifiedName dictionary;
     private final List<Entry> keyEntityPair;
+    final ProvUtilities u=new ProvUtilities();
 
-    public DictionaryMembership(QualifiedName dictionary, List<Entry> keyEntityPair) {
+
+    public DictionaryMembership(QualifiedName id, QualifiedName dictionary, List<Entry> keyEntityPair, Collection<Attribute> attributes) {
+        this.id=id;
         this.dictionary=dictionary;
-        if (keyEntityPair==null) {
-            this.keyEntityPair=new LinkedList<>();
-        } else {
-            this.keyEntityPair = keyEntityPair;
-        }
+        this.keyEntityPair = Objects.requireNonNullElseGet(keyEntityPair, LinkedList::new);
+        u.populateAttributes(attributes, labels, new LinkedList<>(), type, new LinkedList<>(),other,null);
+
     }
 
     @Override
@@ -96,4 +108,28 @@ public class DictionaryMembership implements org.openprovenance.prov.model.Dicti
         return toStringBuilder.toString();
     }
 
+    @Override
+    public List<LangString> getLabel() {
+        return labels;
+    }
+
+    @Override
+    public List<Other> getOther() {
+        return other;
+    }
+
+    @Override
+    public List<Type> getType() {
+        return type;
+    }
+
+    @Override
+    public QualifiedName getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(QualifiedName id) {
+        this.id=id;
+    }
 }

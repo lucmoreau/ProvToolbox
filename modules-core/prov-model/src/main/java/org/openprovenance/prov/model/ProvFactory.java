@@ -46,9 +46,7 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 	protected DatatypeFactory dataFactory;
 
 
-	final protected DictionaryFactory of;
-	public ProvFactory(DictionaryFactory of) {
-		this.of = of;
+	public ProvFactory() {
 		init();
 	}
 
@@ -250,10 +248,6 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return name;
 	}
 
-	public DictionaryFactory getObjectFactory() {
-		return of;
-	}
-
 
 	abstract public ProvSerialiser getSerializer();
 
@@ -392,6 +386,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return newAttribute(newQualifiedName(namespace, localName, prefix), value, type);
 	}
 
+	/*
+
 	public DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id,
 															QualifiedName after,
 															QualifiedName before,
@@ -405,6 +401,8 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		setAttributes(res, attributes);
 		return res;
 	}
+
+
 
 
 
@@ -423,18 +421,14 @@ public abstract class ProvFactory implements LiteralConstructor, ModelConstructo
 		return res;
 	}
 
+ */
 
-	/*
 	public DictionaryMembership newDictionaryMembership(QualifiedName dict,
 														List<Entry> entitySet) {
-		DictionaryMembership res = of.createDictionaryMembership();
-		res.setDictionary(dict);
-		if (entitySet != null)
-			res.getKeyEntityPair().addAll(entitySet);
-		return res;
+		return newDictionaryMembership(null, dict, entitySet, null);
 	}
 
-	 */
+
 
 	/**
 	 * Factory method to construct a {@link Document}

@@ -1,9 +1,10 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.0.4`
-* restructuring of explanation system, definition of interfaces separating components
-* prov-model: removed dependency on ObjectFactory (dating from jaxb time)
-* prov-model: add builder for prov model
+* prov-explanations: restructured explanation system, introduced interfaces separating components
+* prov-query: refactored the query engine
+* prov-model: removed dependency on ObjectFactory, included classes for Dictionary
+* prov-model: added builder for prov model
 * provman: refactored commandline
 
 `2.0.3`

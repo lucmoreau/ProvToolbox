@@ -9,25 +9,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/DictionaryMembership.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Entry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Key.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/DerivedByInsertionFrom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/DerivedByRemovalFrom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/src/test/java/org/openprovenance/prov/core/RoundTripFromJavaXMLTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/json/RoundTripFromJavaJSONTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/json/RoundTripFromJavaJSONTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/java/org/openprovenance/prov/core/jsonld11/RoundTripFromJavaJSONLD11Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/main/scala/org/openprovenance/prov/scala/immutable/ImmutableModel.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaToJsonAndBackTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/java/org/openprovenance/prov/scala/model/immutable/RoundTripJavaToScalaToJsonAndBackTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByInsertionFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByInsertionFrom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByRemovalFrom.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DerivedByRemovalFrom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryMembership.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryMembership.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/DictionaryFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ModelConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ModelConstructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/DictionaryMembership.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/DictionaryMembership.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ModelConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ModelConstructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/RoundTripFromJavaTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromJavaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/test/java/org/openprovenance/prov/notation/RoundTripFromJavaTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedAlternateOf.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/QualifiedAlternateOf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/NotationConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/src/main/java/org/openprovenance/prov/notation/NotationConstructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-misc/prov-scala-misc/src/main/scala/org/openprovenance/prov/scala/mutable/Model.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,11 +190,11 @@
       <recent name="org.openprovenance.prov.service.translator.translator" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.vanilla" />
       <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.service.core.storage" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.service" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.RoundTripFromJavaJSONLD11Test.testDictionaryMembership4">
@@ -793,7 +789,7 @@
       <workItem from="1696237138764" duration="20889000" />
       <workItem from="1696348385334" duration="69320000" />
       <workItem from="1696836756493" duration="3240000" />
-      <workItem from="1696867289365" duration="38384000" />
+      <workItem from="1696867289365" duration="45657000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1072,17 +1068,6 @@
     </ignored-roots>
     <MESSAGE value="First cut of json-ld serialisation for activities" />
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java</url>
-          <line>757</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand>

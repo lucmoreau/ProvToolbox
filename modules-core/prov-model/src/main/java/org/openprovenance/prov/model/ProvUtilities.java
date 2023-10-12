@@ -89,7 +89,7 @@ public class ProvUtilities {
     }
 
     public <T> List<T> getObject(Class<T> cl, List<StatementOrBundle> ll) {
-        List<T> res = new LinkedList<T>();
+        List<T> res = new LinkedList<>();
         for (Object o : ll) {
             if (cl.isInstance(o)) {
                 @SuppressWarnings("unchecked")
@@ -100,7 +100,7 @@ public class ProvUtilities {
         return res;
     }
     public <T> List<T> getObject2(Class<T> cl, List<Statement> ll) {
-        List<T> res = new LinkedList<T>();
+        List<T> res = new LinkedList<>();
         for (Object o : ll) {
             if (cl.isInstance(o)) {
                 @SuppressWarnings("unchecked")
@@ -226,7 +226,7 @@ public class ProvUtilities {
 
     public List<QualifiedName> getOtherCauses(Relation r) {
         if (r instanceof WasAssociatedWith) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             QualifiedName e = ((WasAssociatedWith) r).getPlan();
             if (e == null)
                 return null;
@@ -234,7 +234,7 @@ public class ProvUtilities {
             return res;
         }
         if (r instanceof WasStartedBy) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             QualifiedName a = ((WasStartedBy) r).getStarter();
             if (a == null)
                 return null;
@@ -242,7 +242,7 @@ public class ProvUtilities {
             return res;
         }
         if (r instanceof MentionOf) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             QualifiedName a = ((MentionOf) r).getBundle();
             if (a == null)
                 return null;
@@ -250,7 +250,7 @@ public class ProvUtilities {
             return res;
         }
         if (r instanceof HadMember) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             List<QualifiedName> entities=((HadMember) r).getEntity();
             if ((entities==null) || (entities.size()<=1)) return null;
             boolean first=true;
@@ -261,7 +261,7 @@ public class ProvUtilities {
             return res;
         }
         if (r instanceof WasEndedBy) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             QualifiedName a = ((WasEndedBy) r).getEnder();
             if (a == null)
                 return null;
@@ -269,7 +269,7 @@ public class ProvUtilities {
             return res;
         }
         if (r instanceof ActedOnBehalfOf) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             QualifiedName a = ((ActedOnBehalfOf) r).getActivity();
             if (a == null)
                 return null;
@@ -277,7 +277,7 @@ public class ProvUtilities {
             return res;
         }
         if (r instanceof DerivedByInsertionFrom) {
-            List<QualifiedName> res = new LinkedList<QualifiedName>();
+            List<QualifiedName> res = new LinkedList<>();
             DerivedByInsertionFrom dbif = ((DerivedByInsertionFrom) r);
 
             for (Entry entry : dbif.getKeyEntityPair()) {
@@ -508,13 +508,13 @@ public class ProvUtilities {
     static public boolean hasType(org.openprovenance.prov.model.QualifiedName type, Collection<org.openprovenance.prov.model.Attribute> attributes) {
         for (org.openprovenance.prov.model.Attribute attribute: attributes) {
             switch (attribute.getKind()) {
-            case PROV_TYPE :
-                if (attribute.getValue().equals(type)) {
-                    return true;
-                }
-                break;			
-            default :
-                break;
+                case PROV_TYPE :
+                    if (attribute.getValue().equals(type)) {
+                        return true;
+                    }
+                    break;
+                default :
+                    break;
 
             }
         }

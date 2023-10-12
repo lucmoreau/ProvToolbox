@@ -2,6 +2,10 @@
 
 
 # TODO
+- write test with query and count, and binding variable in query
+- update query to count of provenance types (see dong's email)
+
+
 - upgrade scala version
 - add template as options in pull down
 

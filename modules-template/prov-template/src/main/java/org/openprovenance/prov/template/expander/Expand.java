@@ -43,7 +43,7 @@ public class Expand {
             throw new UncheckedException("Bundle missing in template", e);
         }
 
-        Groupings grp1 = Groupings.fromDocument(docIn);
+        Groupings grp1 = Groupings.fromDocument(docIn, bindings, pf);
         logger.debug("expander: Found groupings " + grp1);
 
         Bundle bun1 = (Bundle) expand(bun, bindings, grp1).get(0);

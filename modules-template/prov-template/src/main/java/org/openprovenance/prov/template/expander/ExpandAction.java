@@ -362,62 +362,86 @@ public class ExpandAction implements StatementAction {
             for (Attribute attribute : attributes) {
                 if (ExpandUtil.isVariable(attribute.getElementName())) {
                     //System.out.println("WARNING: attribute " + attribute.getElementName() + " is a variable name");
-                    List<TypedValue> vals = env2.get(attribute.getElementName());
-                    //System.out.println("WARNING: values " + vals + " " + env2 + " " + env);
-                    if (qualifiedNameURI.equals(vals.get(0).getType().getUri())) {
-                        //System.out.println("WARNING: associated value is a qualified name");
-                        QualifiedName qn1 = (QualifiedName) vals.get(0).getValue();
-                        attribute=pf.newAttribute(qn1, attribute.getValue(), attribute.getType());
-                        //System.out.println("Now attribute is " + attribute);
-                    }
-
-
-
-                }
-
-                if (qualifiedNameURI.equals(attribute.getType().getUri())) {
-
-                    Object o = attribute.getValue();
-                    if (o instanceof QualifiedName) { // if attribute is
-                                                      // constructed properly,
-                                                      // this test should always
-                                                      // return true
-                        QualifiedName qn1 = (QualifiedName) o;
-
-                        if (ExpandUtil.isVariable(qn1)) {
-                            List<TypedValue> vals = env2.get(qn1);
-
-                            if (vals == null) {
-                                if (ExpandUtil.isGensymVariable(qn1)) {
-                                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                                                                      getUUIDQualifiedName(),
-                                                                      pf.getName().PROV_QUALIFIED_NAME));
-                                }
-                                // if not a vargen, then simply drop this
-                                // attribute
-                                // dstAttributes.add(attribute);
+                    int count=0;
+                    List<TypedValue> typedValues = env2.get(attribute.getElementName());
+                    if (typedValues!=null) {
+                        // if prop has not value, we skip this
+                        for (TypedValue val : typedValues) {
+                            // System.out.println("WARNING: values " + val); // + " " + env2 + " " + env);
+                            if (qualifiedNameURI.equals(val.getType().getUri())) {
+                                //System.out.println("WARNING: associated value is a qualified name");
+                                QualifiedName qn1 = (QualifiedName) val.getValue();
+                                attribute = pf.newAttribute(qn1, attribute.getValue(), attribute.getType());
+                                //System.out.println("Now attribute is " + attribute);
+                                found = expandAttribute(dstStatement, attribute, dstAttributes, found, count);
+                                count++;
                             } else {
-                                found = true;
-                                processTemplateAttributes(dstStatement,
-                                                          dstAttributes,
-                                                          attribute,
-                                                          vals);
+                                // this was not a qualified name, so we ignore it
                             }
-                        } else { // no variable here
-                            dstAttributes.add(attribute);
                         }
-                    } else { // not even a qualified name
-                        dstAttributes.add(attribute);
                     }
-                } else { // not a qualified name
-                    dstAttributes.add(attribute);
+                } else {
+
+                    found = expandAttribute(dstStatement, attribute, dstAttributes, found, null);
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
         }
         return found;
     }
-    
+
+    private boolean expandAttribute(Statement dstStatement, Attribute attribute, Collection<Attribute> dstAttributes, boolean found, Integer count) {
+        if (qualifiedNameURI.equals(attribute.getType().getUri())) {
+
+            Object o = attribute.getValue();
+            if (o instanceof QualifiedName) { // if attribute is
+                                              // constructed properly,
+                                              // this test should always
+                                              // return true
+                QualifiedName qn1 = (QualifiedName) o;
+
+                if (ExpandUtil.isVariable(qn1)) {
+                    List<TypedValue> vals = env2.get(qn1);
+
+                    if (vals == null) {
+                        if (ExpandUtil.isGensymVariable(qn1)) {
+                            dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                                              getUUIDQualifiedName(),
+                                                              pf.getName().PROV_QUALIFIED_NAME));
+                        }
+                        // if not a vargen, then simply drop this
+                        // attribute
+                        // dstAttributes.add(attribute);
+                    } else {
+                        found = true;
+                        if (count!=null) {
+                            // it means that the property name was a variable (say prop), it was bound to
+                            // the count value associated with prop. We are now about to process the value
+                            // of prop which has been determined to be a variable (say prop_value).
+                            // We select the 'count' value associated with prop_value.
+                            processTemplateAttributes(dstStatement,
+                                    dstAttributes,
+                                    attribute,
+                                    List.of(vals.get(count)));
+                        } else {
+                            processTemplateAttributes(dstStatement,
+                                    dstAttributes,
+                                    attribute,
+                                    vals);
+                        }
+                    }
+                } else { // no variable here
+                    dstAttributes.add(attribute);
+                }
+            } else { // not even a qualified name
+                dstAttributes.add(attribute);
+            }
+        } else { // not a qualified name
+            dstAttributes.add(attribute);
+        }
+        return found;
+    }
+
     boolean allowVariableInLabelAndTime=true;
 
     public void processTemplateAttributes(Statement dstStatement,

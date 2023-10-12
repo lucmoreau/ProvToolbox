@@ -27,7 +27,7 @@ public class GroupingsTest extends TestCase {
     public Groupings getGroupings(String filename)  {
         Document doc=(Document) new Utility().readDocument(filename, pf);
 
-        Groupings grps=Groupings.fromDocument(doc);
+        Groupings grps=Groupings.fromDocument(doc, null, pf);
 
         System.out.println("Groupings is " + grps);
 

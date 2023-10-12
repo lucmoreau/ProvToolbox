@@ -34,7 +34,7 @@ public class ExpandTest extends TestCase {
 
 
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
-        Groupings grp1=Groupings.fromDocument(doc);
+        Groupings grp1=Groupings.fromDocument(doc, newBindings, pf);
         System.err.println("Found groupings " + grp1);
 
         Bundle bun1=(Bundle) new Expand(pf,addOrderp,false).expand(bun, newBindings, grp1).get(0);
@@ -68,11 +68,11 @@ public class ExpandTest extends TestCase {
 
         Document doc= new Utility().readDocument(inFilename, pf);
         Bundle bun=(Bundle) doc.getStatementOrBundle().get(0);
+        Bindings inBindings=mapper.readValue(new File(inFileBindings),Bindings.class);
 
-        Groupings grp1=Groupings.fromDocument(doc);
+        Groupings grp1=Groupings.fromDocument(doc, inBindings, pf);
         System.err.println("Found groupings " + grp1);
 
-        Bindings inBindings=mapper.readValue(new File(inFileBindings),Bindings.class);
         BindingsBean inBindingsBean=inBindings.toBean();
         OldBindings inBindingsLegacy=BindingsJson.fromBean(inBindings,pf);
        System.out.println(inBindingsLegacy.toString());

@@ -189,6 +189,11 @@ public class ExpandUtil {
         return VARGEN_NS.equals(namespaceURI);
     }
 
+    static public QualifiedName newVariable(String name, ProvFactory pf) {
+        return pf.newQualifiedName(VAR_NS,name,VAR_PREFIX);
+    }
+
+
 
 }
 

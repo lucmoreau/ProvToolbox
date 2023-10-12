@@ -6,7 +6,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-model: removed dependency on ObjectFactory, included classes for Dictionary
 * prov-model: added builder for prov model
 * provman: refactored commandline
-* prov-template: 
+* prov-template: support for variables in property names
 
 `2.0.3`
 * issue #209:

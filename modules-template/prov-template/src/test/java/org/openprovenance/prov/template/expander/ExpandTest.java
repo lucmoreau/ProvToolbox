@@ -75,7 +75,7 @@ public class ExpandTest extends TestCase {
 
         BindingsBean inBindingsBean=inBindings.toBean();
         OldBindings inBindingsLegacy=BindingsJson.fromBean(inBindings,pf);
-       System.out.println(inBindingsLegacy.toString());
+        //System.out.println(inBindingsLegacy.toString());
         BindingsBean inBindingsBean2=Conversions.toBean(inBindingsLegacy);
 
 

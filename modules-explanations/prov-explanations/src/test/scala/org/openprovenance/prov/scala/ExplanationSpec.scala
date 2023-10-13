@@ -106,4 +106,18 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
     "Responsibilities for the AI pipeline were that a data engineer (staff/259) fit data for the company pipeline (1558649326/5011959424), that a data engineer (staff/259) split file (loans_train.xz), that manager (staff/37) approved pipeline (pipeline/1) and that a data engineer (staff/259) selected file (loans_filtered.xz).",
     testp = false) //non determinism
 
+
+
+  "Plan with count " should "be processable" in {
+
+
+    val doc=readDoc("src/test/resources/prov/loan/" + "16.provn")
+    val text=narrator.narrate(doc,makeConfig("aggregate-count.json","ln:borrower-noun",0))
+    print(text)
+
+    text
+  }
+
+
+
 }

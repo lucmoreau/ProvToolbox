@@ -20,6 +20,7 @@
             <version>2.0.4-SNAPSHOT</version>
         </dependency>
 
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
@@ -33,13 +34,14 @@
         </dependency>
 
         <!-- testing -->
-
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
             <version>2.0.4-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
+
         <dependency>
             <groupId>com.flipkart.zjsonpatch</groupId>
             <artifactId>zjsonpatch</artifactId>
@@ -62,6 +64,67 @@
                 </configuration>
             </plugin>
 
+            <!-- exec plugin: to exec main in Executor.java during test phase -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
+                            <arguments>
+                                <argument>src/main/resources/meta/config/config-generic.json</argument>
+                                <argument>src/main/resources/meta/config/config-plead.json</argument>
+                            </arguments>
+                        </configuration>
+
+
+                    </execution>
+                </executions>
+                <configuration>
+                    <includePluginDependencies>true</includePluginDependencies>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.openprovenance.prov</groupId>
+                        <artifactId>prov-dot</artifactId>
+                        <version>2.0.4-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.openprovenance.prov</groupId>
+                        <artifactId>prov-n</artifactId>
+                        <version>2.0.4-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${assembly.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>true</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>${project.build.outputDirectory}/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
 
         <resources>
@@ -78,6 +141,7 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
     </build>
 
 

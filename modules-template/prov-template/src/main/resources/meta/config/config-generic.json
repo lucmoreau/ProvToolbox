@@ -1,0 +1,41 @@
+{
+    "mtemplate_dir": "src/main/resources/meta/metatemplates",
+    "mbindings_dir": "src/main/resources/meta/metabindings",
+    "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/generic",
+
+    "tasks": [
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "forking2",
+            "bindings": "forking2.json",
+            "formats": ["provn", "png"],
+            "copyinput": true
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "joining2",
+            "bindings": "joining2.json",
+            "formats": ["provn", "png"]
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "parallel2",
+            "bindings": "parallel2.json",
+            "formats": ["provn", "png"]
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "product2-2",
+            "bindings": "product2-2.json",
+            "formats": ["provn", "png"]
+        }
+    ]
+
+
+}
+
+

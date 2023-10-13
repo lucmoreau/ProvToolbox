@@ -1,0 +1,19 @@
+{
+    "mtemplate_dir": "src/main/resources/meta/metatemplates",
+    "mbindings_dir": "src/main/resources/meta/pleadbindings",
+    "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/plead",
+
+    "tasks": [
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "plead-transforming",
+            "bindings": "plead-transforming.json",
+            "formats": ["provn", "png"]
+        }
+    ]
+
+
+}
+
+

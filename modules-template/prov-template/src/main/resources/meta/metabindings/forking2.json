@@ -1,0 +1,45 @@
+{
+    "var" : {
+        "start" :                   [{"@id" : "var:start"}],
+        "end" :                     [{"@id" : "var:end"}],
+        "agent" :                   [{"@id" : "var:agent"}],
+        "responsible" :             [{"@id" : "var:responsible"}],
+        "input" :                   [{"@id" : "var:input"}],
+        "path" :                    [{"@id" : "var:path"}],
+        "output" :                  [{"@id" : "var:output1"},{"@id" : "var:output2"}],
+        "activity" :                [{"@id" : "var:activity"}],
+
+        "agtype" :                  [[{"@id" : "var:agtype"}]],
+        "agprops" :                 [[{"@id" : "var:agprops"}]],
+        "agprop_values":            [[{"@id" : "var:agprop_values"}]],
+        "rtype" :                   [[{"@id" : "var:rtype"}]],
+        "rprops" :                  [[{"@id" : "var:rprops"}]],
+        "rprop_values":             [[{"@id" : "var:rprop_values"}]],
+        "itype" :                   [[{"@id" : "var:itype"}]],
+        "ilocation" :               [[{"@id" : "var:ilocation"}]],
+        "iprops" :                  [[{"@id" : "var:iprops"}]],
+        "iprop_values":             [[{"@id" : "var:iprop_values"}]],
+        "otype" :                   [[{"@id" : "var:otype1"}],       [{"@id" : "var:otype2"}]],
+        "olocation" :               [[{"@id" : "var:olocation1"}],   [{"@id" : "var:olocation2"}]],
+        "oprops":                   [[{"@id": "var:oprops1"}],       [{"@id" : "var:oprops2"}]],
+        "oprop_values":             [[{"@id": "var:oprop_values1"}], [{"@id" : "var:oprop_values2"}]],
+        "atype" :                   [[{"@id" : "var:atype"}]],
+        "aprop_values":             [[{"@id": "var:aprop_values"}]]
+
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:view"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "plead": "https://plead-project.org/ns/plead#",
+        "uuid" : "urn:uuid:",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "var": "http://openprovenance.org/var#",
+        "vargen": "http://openprovenance.org/vargen#",
+        "prov": "http://www.w3.org/ns/prov#"
+    },
+    "template" : null
+}

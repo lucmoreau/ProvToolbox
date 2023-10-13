@@ -1,0 +1,110 @@
+{
+    "select": {"pipeline": {"@type": "prov:Entity"}},
+
+    "query": [
+
+        "prefix ln <https://plead-project.org/ns/loan#>\n",
+        "prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>\n",
+        "prefix ex <http://example/org>\n",
+
+        "select * from pipeline a prov:Entity\n",
+        "from wdf a provext:WasDerivedFromStar\n",
+        " join pipeline.id = wdf.generatedEntity\n",
+        "from ancestor a prov:Entity\n",
+        " join wdf.usedEntity=ancestor.id\n",
+        "from wgb a prov:WasGeneratedBy\n",
+        " join ancestor.id=wgb.entity\n",
+        "from do a prov:Activity\n",
+        " join wgb.activity=do.id\n",
+
+        "where pipeline [prov:type]      >= 'sk:pipeline.Pipeline'\n",
+        "  and pipeline [prov:type]      >= 'ln:ApprovedPipeline'\n",
+        "  and ancestor[prov:type]       >= 'ln:File'\n",
+
+        "group by pipeline aggregate ancestor with Count\n",
+
+    ],
+
+    "sentence": {
+        "type": "clause\n",
+        "subject": {
+            "type": "noun_phrase\n",
+            "head": "responsibilities for the AI pipeline"},
+        "verb": "be\n",
+        "complements":  [
+            {
+                "type": "coordinated_phrase\n",
+                "conjunction": "and\n",
+                "@iterator": {
+                    "type": "@iterator\n",
+                    "@variable": "actor,do,ancestor\n",
+                    "@clause": "coordinates\n",
+                    "@element": {
+                        "type":"clause\n",
+                        "complementiser": "that\n",
+                        "subject": {
+                            "type": "@funcall\n",
+                            "@object": "actor\n",
+                            "@property":  "prov:type\n",
+                            "@function": "lookup-type\n",
+                            "@arg1": "noun_phrase\n",
+                            "@arg2": "ln\n",
+                            "determiner": "\n",
+                            "post-modifiers": [
+                                {
+                                    "type":"adjective_phrase\n",
+                                    "head": {
+                                        "type": "@funcall\n",
+                                        "@object": "actor\n",
+                                        "@field":  "id\n",
+                                        "@function": "noun+localname\n",
+                                        "@arg1": ""}}
+                            ]},
+                        "verb": {
+                            "type": "@funcall\n",
+                            "@object": "do\n",
+                            "@property":  "prov:type\n",
+                            "@function": "lookup-type\n",
+                            "@arg1": "verb_phrase\n",
+                            "@arg2": "pl"},
+                        "object": {
+                            "type": "@funcall\n",
+                            "@object": "ancestor\n",
+                            "@property":  "prov:type\n",
+                            "@function": "lookup-type\n",
+                            "@arg1": "noun_phrase\n",
+                            "@arg2": "ln,sk\n",
+                            "post-modifiers": [
+                                {
+                                    "type":"noun_phrase\n",
+                                    "head": {
+                                        "type": "@funcall\n",
+                                        "@object": "ancestor\n",
+                                        "@field":  "id\n",
+                                        "@function": "noun+localname\n",
+                                        "@arg1": ""}}
+                            ]
+                        },
+                        "features" : {"tense": "past"}
+                    }
+                }
+            }
+
+        ],
+
+        "features" : {"tense": "past\n", "number": "plural"}
+
+    },
+
+    "context": {
+        "ex": "http://example.org/#\n",
+        "foaf": "http://xmlns.com/foaf/0.1/\n",
+        "ln": "https://plead-project.org/ns/loan#\n",
+        "pl": "https://plead-project.org/ns/plead#\n",
+        "pd": "https://pandas.pydata.org/#\n",
+        "py": "urn:python:var:\n",
+        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+    }
+
+
+}

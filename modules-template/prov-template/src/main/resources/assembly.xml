@@ -1,0 +1,38 @@
+<assembly>
+    <id>template-library</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <files>
+
+
+
+        <file>
+            <source>${project.basedir}/../../license.txt</source>
+            <destName>LICENSE.TXT</destName>
+            <outputDirectory>prov-template-library/</outputDirectory>
+        </file>
+    </files>
+
+
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/generated-templates</directory>
+            <outputDirectory>prov-template-library/</outputDirectory>
+            <fileMode>755</fileMode>
+            <excludes>
+                <exclude>**/assembly.xml</exclude>
+                <exclude>**/README.txt</exclude>
+                <exclude>**/standalone-pom.xml</exclude>
+                <exclude>**/resources</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+
+
+</assembly>
+
+
+

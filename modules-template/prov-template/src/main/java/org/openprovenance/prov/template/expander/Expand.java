@@ -44,7 +44,7 @@ public class Expand {
         }
 
         Groupings grp1 = Groupings.fromDocument(docIn, bindings, pf);
-        logger.debug("expander: Found groupings " + grp1);
+        //logger.debug("expander: Found groupings " + grp1);
 
         Bundle bun1 = (Bundle) expand(bun, bindings, grp1).get(0);
         Document doc1 = pf.newDocument();

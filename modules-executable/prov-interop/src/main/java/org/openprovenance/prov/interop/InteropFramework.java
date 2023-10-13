@@ -36,9 +36,9 @@ import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
  * The interoperability framework for PROV, with utility methods to write and read documents to files and streams, 
  * according to media types, format (specified as {@link ProvFormat}). The class also provides helper functions to support content 
  * negotiation.
- * 
  *
- * 
+ *
+ *
  * @author lavm, dtm
  *
  */
@@ -100,8 +100,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     /** Default constructor for the ProvToolbox interoperability framework.
      * It uses the factory declared in the configuration file as its default factory.
      */
- 
-    
+
+
     public InteropFramework() {
         this(new CommandLineArguments(), defaultFactory);
     }
@@ -114,7 +114,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                             ProvFactory pFactory) {
         this.pFactory=pFactory;
         this.config=config;
-        
+
         extensionMap = new Hashtable<>();
         extensionRevMap = new Hashtable<>();
         mimeTypeMap = new Hashtable<>();
@@ -225,7 +225,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
 
 
-    
+
     /**Maps an file extension to a Media type
      * @param extension the extension of a file containing a serialization of PROV
      * @return a String for the Internet Media type corresponding to a file with this extension
@@ -295,7 +295,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      * @see <a href="http://docs.oracle.com/javaee/6/tutorial/doc/gkqbq.html">Content Negotiation</a>
      * @return a list of {@link Variant}
      */
-    
+
     public List<Variant> getVariants() {
         List<Variant> vs = new ArrayList<>();
         for (Map.Entry<String, ProvFormat> entry : mimeTypeRevMap.entrySet()) {
@@ -316,93 +316,93 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                                        Hashtable<String, ProvFormat> extensionRevMap) {
         for (ProvFormat f : ProvFormat.values()) {
             switch (f) {
-            case DOT:
-                extensionMap.put(ProvFormat.DOT, EXTENSION_DOT);
-                extensionRevMap.put(EXTENSION_DOT, ProvFormat.DOT);
-                extensionRevMap.put("gv", ProvFormat.DOT);
-                mimeTypeMap.put(ProvFormat.DOT, MEDIA_TEXT_VND_GRAPHVIZ);
-                mimeTypeRevMap.put(MEDIA_TEXT_VND_GRAPHVIZ, ProvFormat.DOT);
-                provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
-                break;
-            case JPEG:
-                extensionMap.put(ProvFormat.JPEG, EXTENSION_JPG);
-                extensionRevMap.put(EXTENSION_JPEG, ProvFormat.JPEG);
-                extensionRevMap.put(EXTENSION_JPG, ProvFormat.JPEG);
-                mimeTypeMap.put(ProvFormat.JPEG, MEDIA_IMAGE_JPEG);
-                mimeTypeRevMap.put(MEDIA_IMAGE_JPEG, ProvFormat.JPEG);
-                provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
-                break;
-            case PNG:
-                extensionMap.put(ProvFormat.PNG, EXTENSION_PNG);
-                extensionRevMap.put(EXTENSION_PNG, ProvFormat.PNG);
-                mimeTypeMap.put(ProvFormat.PNG, MEDIA_IMAGE_PNG);
-                mimeTypeRevMap.put(MEDIA_IMAGE_PNG, ProvFormat.PNG);
-                provTypeMap.put(ProvFormat.PNG, ProvFormatType.OUTPUT);
-                break;
-            case JSON:
-                extensionMap.put(ProvFormat.JSON, EXTENSION_JSON);
-                extensionRevMap.put(EXTENSION_JSON, ProvFormat.JSON);
-                mimeTypeMap.put(ProvFormat.JSON, MediaType.APPLICATION_JSON);
-                mimeTypeRevMap.put(MediaType.APPLICATION_JSON, ProvFormat.JSON);
-                provTypeMap.put(ProvFormat.JSON, ProvFormatType.INPUTOUTPUT);
-                break;
-            case PDF:
-                extensionMap.put(ProvFormat.PDF, EXTENSION_PDF);
-                extensionRevMap.put(EXTENSION_PDF, ProvFormat.PDF);
-                mimeTypeMap.put(ProvFormat.PDF, MEDIA_APPLICATION_PDF);
-                mimeTypeRevMap.put(MEDIA_APPLICATION_PDF, ProvFormat.PDF);
-                provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
-                break;
-            case PROVN:
-                extensionMap.put(PROVN, EXTENSION_PROVN);
-                extensionRevMap.put(EXTENSION_PROVN, PROVN);
-                extensionRevMap.put("pn", PROVN);
-                extensionRevMap.put("asn", PROVN);
-                extensionRevMap.put("prov-asn", PROVN);
-                mimeTypeMap.put(PROVN,
-                                MEDIA_TEXT_PROVENANCE_NOTATION);
-                mimeTypeRevMap.put(MEDIA_TEXT_PROVENANCE_NOTATION,
-                                   PROVN);
-                provTypeMap.put(PROVN, ProvFormatType.INPUTOUTPUT);
-                break;
-            case SVG:
-                extensionMap.put(ProvFormat.SVG, EXTENSION_SVG);
-                extensionRevMap.put(EXTENSION_SVG, ProvFormat.SVG);
-                mimeTypeMap.put(ProvFormat.SVG, MEDIA_IMAGE_SVG_XML);
-                mimeTypeRevMap.put(MEDIA_IMAGE_SVG_XML, ProvFormat.SVG);
-                provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
-                break;
-            case TRIG:
-                extensionMap.put(ProvFormat.TRIG, EXTENSION_TRIG);
-                extensionRevMap.put(EXTENSION_TRIG, ProvFormat.TRIG);
-                mimeTypeMap.put(ProvFormat.TRIG, MEDIA_APPLICATION_TRIG);
-                mimeTypeRevMap.put(MEDIA_APPLICATION_TRIG, ProvFormat.TRIG);
-                provTypeMap.put(ProvFormat.TRIG, ProvFormatType.INPUTOUTPUT);
-                break;
-            case TURTLE:
-                extensionMap.put(ProvFormat.TURTLE, EXTENSION_TTL);
-                extensionRevMap.put(EXTENSION_TTL, ProvFormat.TURTLE);
-                mimeTypeMap.put(ProvFormat.TURTLE, MEDIA_TEXT_TURTLE);
-                mimeTypeRevMap.put(MEDIA_TEXT_TURTLE, ProvFormat.TURTLE);
-                provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
-                break;
-            case JSONLD:
-                extensionMap.put(ProvFormat.JSONLD, EXTENSION_JSONLD);
-                extensionRevMap.put(EXTENSION_JSONLD, ProvFormat.JSONLD);
-                mimeTypeMap.put(ProvFormat.JSONLD, MEDIA_APPLICATION_JSONLD);
-                mimeTypeRevMap.put(MEDIA_APPLICATION_JSONLD, ProvFormat.JSONLD);
-                provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
-                break;
-            case PROVX:
-                extensionMap.put(ProvFormat.PROVX, EXTENSION_PROVX);
-                extensionRevMap.put(EXTENSION_PROVX, ProvFormat.PROVX);
-                extensionRevMap.put(EXTENSION_XML, ProvFormat.PROVX);
-                mimeTypeMap.put(ProvFormat.PROVX, MEDIA_APPLICATION_PROVENANCE_XML);
-                mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.PROVX);
-                provTypeMap.put(ProvFormat.PROVX, ProvFormatType.INPUTOUTPUT);
-                break;
-            default:
-                break;
+                case DOT:
+                    extensionMap.put(ProvFormat.DOT, EXTENSION_DOT);
+                    extensionRevMap.put(EXTENSION_DOT, ProvFormat.DOT);
+                    extensionRevMap.put("gv", ProvFormat.DOT);
+                    mimeTypeMap.put(ProvFormat.DOT, MEDIA_TEXT_VND_GRAPHVIZ);
+                    mimeTypeRevMap.put(MEDIA_TEXT_VND_GRAPHVIZ, ProvFormat.DOT);
+                    provTypeMap.put(ProvFormat.DOT, ProvFormatType.OUTPUT);
+                    break;
+                case JPEG:
+                    extensionMap.put(ProvFormat.JPEG, EXTENSION_JPG);
+                    extensionRevMap.put(EXTENSION_JPEG, ProvFormat.JPEG);
+                    extensionRevMap.put(EXTENSION_JPG, ProvFormat.JPEG);
+                    mimeTypeMap.put(ProvFormat.JPEG, MEDIA_IMAGE_JPEG);
+                    mimeTypeRevMap.put(MEDIA_IMAGE_JPEG, ProvFormat.JPEG);
+                    provTypeMap.put(ProvFormat.JPEG, ProvFormatType.OUTPUT);
+                    break;
+                case PNG:
+                    extensionMap.put(ProvFormat.PNG, EXTENSION_PNG);
+                    extensionRevMap.put(EXTENSION_PNG, ProvFormat.PNG);
+                    mimeTypeMap.put(ProvFormat.PNG, MEDIA_IMAGE_PNG);
+                    mimeTypeRevMap.put(MEDIA_IMAGE_PNG, ProvFormat.PNG);
+                    provTypeMap.put(ProvFormat.PNG, ProvFormatType.OUTPUT);
+                    break;
+                case JSON:
+                    extensionMap.put(ProvFormat.JSON, EXTENSION_JSON);
+                    extensionRevMap.put(EXTENSION_JSON, ProvFormat.JSON);
+                    mimeTypeMap.put(ProvFormat.JSON, MediaType.APPLICATION_JSON);
+                    mimeTypeRevMap.put(MediaType.APPLICATION_JSON, ProvFormat.JSON);
+                    provTypeMap.put(ProvFormat.JSON, ProvFormatType.INPUTOUTPUT);
+                    break;
+                case PDF:
+                    extensionMap.put(ProvFormat.PDF, EXTENSION_PDF);
+                    extensionRevMap.put(EXTENSION_PDF, ProvFormat.PDF);
+                    mimeTypeMap.put(ProvFormat.PDF, MEDIA_APPLICATION_PDF);
+                    mimeTypeRevMap.put(MEDIA_APPLICATION_PDF, ProvFormat.PDF);
+                    provTypeMap.put(ProvFormat.PDF, ProvFormatType.OUTPUT);
+                    break;
+                case PROVN:
+                    extensionMap.put(PROVN, EXTENSION_PROVN);
+                    extensionRevMap.put(EXTENSION_PROVN, PROVN);
+                    extensionRevMap.put("pn", PROVN);
+                    extensionRevMap.put("asn", PROVN);
+                    extensionRevMap.put("prov-asn", PROVN);
+                    mimeTypeMap.put(PROVN,
+                            MEDIA_TEXT_PROVENANCE_NOTATION);
+                    mimeTypeRevMap.put(MEDIA_TEXT_PROVENANCE_NOTATION,
+                            PROVN);
+                    provTypeMap.put(PROVN, ProvFormatType.INPUTOUTPUT);
+                    break;
+                case SVG:
+                    extensionMap.put(ProvFormat.SVG, EXTENSION_SVG);
+                    extensionRevMap.put(EXTENSION_SVG, ProvFormat.SVG);
+                    mimeTypeMap.put(ProvFormat.SVG, MEDIA_IMAGE_SVG_XML);
+                    mimeTypeRevMap.put(MEDIA_IMAGE_SVG_XML, ProvFormat.SVG);
+                    provTypeMap.put(ProvFormat.SVG, ProvFormatType.OUTPUT);
+                    break;
+                case TRIG:
+                    extensionMap.put(ProvFormat.TRIG, EXTENSION_TRIG);
+                    extensionRevMap.put(EXTENSION_TRIG, ProvFormat.TRIG);
+                    mimeTypeMap.put(ProvFormat.TRIG, MEDIA_APPLICATION_TRIG);
+                    mimeTypeRevMap.put(MEDIA_APPLICATION_TRIG, ProvFormat.TRIG);
+                    provTypeMap.put(ProvFormat.TRIG, ProvFormatType.INPUTOUTPUT);
+                    break;
+                case TURTLE:
+                    extensionMap.put(ProvFormat.TURTLE, EXTENSION_TTL);
+                    extensionRevMap.put(EXTENSION_TTL, ProvFormat.TURTLE);
+                    mimeTypeMap.put(ProvFormat.TURTLE, MEDIA_TEXT_TURTLE);
+                    mimeTypeRevMap.put(MEDIA_TEXT_TURTLE, ProvFormat.TURTLE);
+                    provTypeMap.put(ProvFormat.TURTLE, ProvFormatType.INPUTOUTPUT);
+                    break;
+                case JSONLD:
+                    extensionMap.put(ProvFormat.JSONLD, EXTENSION_JSONLD);
+                    extensionRevMap.put(EXTENSION_JSONLD, ProvFormat.JSONLD);
+                    mimeTypeMap.put(ProvFormat.JSONLD, MEDIA_APPLICATION_JSONLD);
+                    mimeTypeRevMap.put(MEDIA_APPLICATION_JSONLD, ProvFormat.JSONLD);
+                    provTypeMap.put(ProvFormat.JSONLD, ProvFormatType.INPUTOUTPUT);
+                    break;
+                case PROVX:
+                    extensionMap.put(ProvFormat.PROVX, EXTENSION_PROVX);
+                    extensionRevMap.put(EXTENSION_PROVX, ProvFormat.PROVX);
+                    extensionRevMap.put(EXTENSION_XML, ProvFormat.PROVX);
+                    mimeTypeMap.put(ProvFormat.PROVX, MEDIA_APPLICATION_PROVENANCE_XML);
+                    mimeTypeRevMap.put(MEDIA_APPLICATION_PROVENANCE_XML, ProvFormat.PROVX);
+                    provTypeMap.put(ProvFormat.PROVX, ProvFormatType.INPUTOUTPUT);
+                    break;
+                default:
+                    break;
 
             }
         }
@@ -416,7 +416,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
      */
     public Boolean isInputFormat(ProvFormat format) {
         ProvFormatType t = provTypeMap.get(format);
-        return (t.equals(ProvFormatType.INPUT) || 
+        return (t.equals(ProvFormatType.INPUT) ||
                 t.equals(ProvFormatType.INPUTOUTPUT));
     }
 
@@ -486,7 +486,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
 
         if ((Objects.equals(config.infile, "-")) && (Objects.equals(config.bindings, "-")))
             throw new InteropException("Cannot use standard input for both infile and bindings");
-        
+
 
         Document doc;
         if (config.infile != null && config.log2prov==null) {  // if log2prov is set, then the input file is a log, to be converted
@@ -497,8 +497,8 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             }
         } else if (config.merge != null) {
             IndexedDocument iDoc = new IndexedDocument(pFactory,
-                                                       pFactory.newDocument(),
-                                                       config.flatten != null);
+                    pFactory.newDocument(),
+                    config.flatten != null);
             try {
                 List<Inputer.ToRead> files;
                 if (config.merge.equals("-")) {
@@ -521,7 +521,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
         } else if (config.template_builder!=null) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
             return cp.processTemplateGenerationConfig(config.template_builder, pFactory);
-            
+
         } else if (config.log2prov!=null) {
             try {
                 Class<?>  clazz = Class.forName(config.log2prov);
@@ -576,10 +576,10 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         method.invoke(null, new Object[]{new String[]{config.infile, config.outfile, "-merge"}});
                     }
                     return 0;
-             } catch (Throwable e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                     return -1;
-             }
+                }
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
@@ -600,13 +600,13 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                 term = "e1";
 
             GeneratorDetails gd = new GeneratorDetails(
-                                                       Integer.parseInt(noOfNodes),
-                                                       Integer.parseInt(noOfEdges),
-                                                       firstNode,
-                                                       namespace,
-                                                       (seed == null) ? null
-                                                               : Long.valueOf(seed),
-                                                               term);
+                    Integer.parseInt(noOfNodes),
+                    Integer.parseInt(noOfEdges),
+                    firstNode,
+                    namespace,
+                    (seed == null) ? null
+                            : Long.valueOf(seed),
+                    term);
             System.err.println(gd);
             GraphGenerator gg = new GraphGenerator(gd, pFactory);
             gg.generateElements();
@@ -620,15 +620,15 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } 
-        
+        }
+
         if (config.template!=null  && !config.builder) {
             BindingsBeanGenerator bbgen=new BindingsBeanGenerator(pFactory);
-            
+
             boolean val=bbgen.generate(doc, config.template, config.packge, config.outfile, config.location);
             return (val) ? 0 : CommandLineArguments.STATUS_BEAN_GENERATION;
-      }
-        
+        }
+
         if (config.template!=null  && config.builder) {
             ConfigProcessor cp=new ConfigProcessor(pFactory);
 
@@ -708,7 +708,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
             //System.out.println("doCompare(): Success");
 
             return CommandLineArguments.STATUS_OK;
-        }	    
+        }
         //System.out.println("doCompare(): Failure");
         return CommandLineArguments.STATUS_COMPARE_DIFFERENT;
     }

@@ -1,11 +1,13 @@
 package org.openprovenance.prov.scala.query
 
-import org.openprovenance.prov.scala.immutable.{Statement, TypedValue}
+import org.openprovenance.prov.scala.immutable.{Other, ProvFactory, QualifiedName, Statement, TypedValue}
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.primitive.{Primitive, Result, Triple}
 import org.openprovenance.prov.scala.query.QueryAST.{Schema, toSchema}
 import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, RFields}
+import org.openprovenance.prov.scala.query.QuerySetup.qother
 import org.openprovenance.prov.scala.summary.types._
+import org.openprovenance.prov.scala.utilities.OrType
 import org.openprovenance.prov.scala.utilities.OrType._
 
 import scala.collection.mutable
@@ -220,7 +222,11 @@ trait QueryInterpreter extends SummaryTypesNames {
             case None => doAggregate[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0)
             case Some(ref) => doAggregateSort[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0, ref)
           }
+          case "Count" =>
+            doCount[Seq[Statement]](keys, agg, parent, yld, fieldUnit0, aggregateFun0, toField0)
+
         }
+
 
 
       case HashJoin(left, right) =>
@@ -265,6 +271,18 @@ trait QueryInterpreter extends SummaryTypesNames {
     }
     table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
       yld(Record(k ++ a.map(toField), keys ++ agg))
+    }
+  }
+
+  def doCount[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField): Unit = {
+    val table = new mutable.HashMap[RFields, Seq[AGGREGATE]]
+    execOp(parent) { rec =>
+      val kvs: RFields = rec(keys)
+      val aggregate: Seq[AGGREGATE] = table.getOrElseUpdate(kvs, agg.map(fieldUnit))
+      table(kvs) = (aggregate, rec(agg).map(f => Seq(f))).zipped.map(aggregateFun)
+    }
+    table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
+      yld(Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother,ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName],x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg))
     }
   }
 

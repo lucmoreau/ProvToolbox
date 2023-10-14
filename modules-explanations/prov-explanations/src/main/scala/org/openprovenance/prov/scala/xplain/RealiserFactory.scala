@@ -70,11 +70,9 @@ class RealiserFactory(plans:Seq[Plan],
 
     val sorted: Array[Narrative] =scala.util.Sorting.stableSort(narratives.toSeq)
     sorted.foreach(narrative => {
-      println(count.toString + narrative.sentences.reverse)
-      println("---")
+      println(count.toString + ": " + narrative.sentences.reverse)
       val tr: Set[Triple] =narrative.coverage.map(_.toSet).fold(Set())((a1, a2)=> a1 ++ a2)
-      println(tr)
-      println("------------------------")
+      if (tr.nonEmpty) println( "triples: " + tr)
       count=count+1
     })
     sorted.last

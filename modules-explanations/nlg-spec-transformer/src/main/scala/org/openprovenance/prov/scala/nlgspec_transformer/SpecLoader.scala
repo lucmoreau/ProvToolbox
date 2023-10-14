@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.ScalaObjectMapper
 import nlg.wrapper._
+import Constants.AT_ITERATOR
 import org.openprovenance.prov.model.Bundle
 import org.openprovenance.prov.scala.immutable.{ProvFactory, Statement}
 import org.openprovenance.prov.scala.jsonld11.serialization.{ProvDeserialiser, ProvMixin2}
@@ -92,7 +93,7 @@ object specTypes {
     new Type(value = classOf[CoordinatedPhrase], name=Constants.COORDINATED_PHRASE),
     new Type(value = classOf[PrepositionPhrase], name=Constants.PREPOSITION_PHRASE),
     new Type(value = classOf[StringPhrase],      name=Constants.STRING_PHRASE),
-    new Type(value = classOf[PhraseIterator],    name=Constants.AT_ITERATOR),
+    new Type(value = classOf[PhraseIterator],    name= AT_ITERATOR),
     new Type(value = classOf[Funcall],           name=Constants.AT_FUNCALL),
     new Type(value = classOf[Paragraph],         name=Constants.PARAGRAPH)
   ))
@@ -756,7 +757,7 @@ object defs  {
   case class CoordinatedPhrase(head: Head,
                                coordinates: Seq[Phrase]=Seq(),
                                //@JsonProperty("@posteval") posteval: Object,                 //TODO: DELETE
-                               @JsonProperty(Constants.AT_ITERATOR) iterator: Option[PhraseIterator],
+                               @JsonProperty(AT_ITERATOR) iterator: Option[PhraseIterator],
                                //@JsonProperty("@pick")     pick:     Option[PhraseIterator], //TODO: DELETE
                                conjunction: String,
                                @JsonProperty("post-modifiers")
@@ -814,7 +815,7 @@ object defs  {
                              @JsonProperty("@clause")   clause:       String,
                              @JsonProperty("@property") property:     String,
                              @JsonProperty("@element")  element:      Phrase,
-                             @JsonProperty(Constants.AT_ITERATOR) iterator:     PhraseIterator) extends Phrase {
+                             @JsonProperty(AT_ITERATOR) iterator:     PhraseIterator) extends Phrase {
 
     var head:Head=null
     var conjunction:String=null
@@ -974,9 +975,9 @@ object defs  {
       } else {
 
         val statements: Map[String, Statement] = e.statements
-        e.seqStatements
+        val seqStatements: Map[String, Seq[Statement]] =e.seqStatements
 
-        def friendly(s:String):Statement ={
+        def friendlyStatementAccessor(s:String):Statement ={
           try {
             statements(s)
           } catch {
@@ -986,7 +987,17 @@ object defs  {
           }
         }
 
-        val result: (Option[Result], Set[primitive.Triple]) = Primitive.processFunction(friendly, properties.toMap, e.environment)
+        def friendlySeqStatementAccessor(s: String): Seq[Statement] = {
+          try {
+            seqStatements(s)
+          } catch {
+            case e: Throwable =>
+              println("current seq statements " + seqStatements)
+              throw e
+          }
+        }
+
+        val result: (Option[Result], Set[primitive.Triple]) = Primitive.processFunction(friendlyStatementAccessor, friendlySeqStatementAccessor, properties.toMap, e.environment)
 
         val modifiers: Seq[Phrase] = nullSeq(post_modifiers).flatMap(s => s.transform[Phrase](e))
 
@@ -1216,7 +1227,7 @@ object defs  {
               v match {
                 case m2: Map[String, Object] @ unchecked =>
 
-                  val result = Primitive.processFunction(e.statements, m2, e.environment)
+                  val result = Primitive.processFunction(e.statements, e.seqStatements, m2, e.environment)
               //    println(result._1)
                   result._1 match {
                     case None => "<<none>>"

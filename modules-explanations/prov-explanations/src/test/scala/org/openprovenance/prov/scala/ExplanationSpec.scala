@@ -109,13 +109,10 @@ class ExplanationSpec extends AnyFlatSpec with Matchers {
 
 
   "Plan with count " should "be processable" in {
-
-
+    val template="aggregate-count"
     val doc=readDoc("src/test/resources/prov/loan/" + "16.provn")
-    val text=narrator.narrate(doc,makeConfig("aggregate-count.json","ln:borrower-noun",0))
-    print(text)
-
-    text
+    val (text:Map[String, Narrative], _, _, _) =narrator.narrate(doc,makeConfig(template,"ln:borrower-noun",0))
+    text.getOrElse(template, "<<not found>>")
   }
 
 

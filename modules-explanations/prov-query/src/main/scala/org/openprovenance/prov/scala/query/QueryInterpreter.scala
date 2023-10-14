@@ -267,24 +267,13 @@ trait QueryInterpreter extends SummaryTypesNames {
     execOp(parent) { rec =>
       val kvs: RFields = rec(keys)
       val aggregate: Seq[AGGREGATE] = table.getOrElseUpdate(kvs, agg.map(fieldUnit))
-      table(kvs) = (aggregate, rec(agg).map(f => Seq(f))).zipped.map(aggregateFun)
+      table(kvs) = aggregate.lazyZip(rec(agg).map(f => Seq(f))).map(aggregateFun)
     }
     table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
       yld(Record(k ++ a.map(toField), keys ++ agg))
     }
   }
 
-  def doCount[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField): Unit = {
-    val table = new mutable.HashMap[RFields, Seq[AGGREGATE]]
-    execOp(parent) { rec =>
-      val kvs: RFields = rec(keys)
-      val aggregate: Seq[AGGREGATE] = table.getOrElseUpdate(kvs, agg.map(fieldUnit))
-      table(kvs) = (aggregate, rec(agg).map(f => Seq(f))).zipped.map(aggregateFun)
-    }
-    table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
-      yld(Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother,ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName],x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg))
-    }
-  }
 
 
   def doAggregateSort[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField, sorter: Ref): Unit = {
@@ -320,6 +309,18 @@ trait QueryInterpreter extends SummaryTypesNames {
     }
   }
 
+
+  def doCount[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField): Unit = {
+    val table = new mutable.HashMap[RFields, Seq[AGGREGATE]]
+    execOp(parent) { rec =>
+      val kvs: RFields = rec(keys)
+      val aggregate: Seq[AGGREGATE] = table.getOrElseUpdate(kvs, agg.map(fieldUnit))
+      table(kvs) = (aggregate, rec(agg).map(f => Seq(f))).zipped.map(aggregateFun)
+    }
+    table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
+      yld(Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother, ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName], x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg))
+    }
+  }
   def execQuery(q: Operator): Unit = execOp(q) { _ => }
 }
 

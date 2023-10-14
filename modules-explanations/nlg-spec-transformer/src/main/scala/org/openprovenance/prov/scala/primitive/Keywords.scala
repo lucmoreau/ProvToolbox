@@ -5,7 +5,7 @@ object Keywords {
   val KEY: String = "@key"
 
 
-  val VARIABLE   = "@variable"
+  val AGGREGATE  = "@aggregate"
   val PROPERTY   = "@property"
   val ATTRIBUTES = "@attributes"
   val CLAUSE     = "@clause"

@@ -37,6 +37,10 @@ object CommandLine extends Constants {
 
 
   def main(args: Array[String]): Unit = {
+    // first, let's disable hsqldb logging
+    System.setProperty("hsqldb.reconfig_logging", "false")
+    System.setProperty("java.util.logging.config.file", "src/main/resources/config/logging.properties")
+
     parser.parse(args, Config()) match {
       case Some(config) =>
 

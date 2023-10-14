@@ -1,7 +1,8 @@
-PROVMAN=target/appassembler/bin/provmanagement
-
 DOCUMENTS=src/test/resources/queries/prov/loan
 QUERIES=src/test/resources/queries/queries-loan
+JAVA_OPTS=-Djava.util.logging.config.file=src/main/resource/config/logging.properties
+
+PROVMAN=export JAVA_OPTS=$(JAVA_OPTS); target/appassembler/bin/provmanagement
 
 mvn.test: test.batch.queries xp.all.file xp.aggregate
 
@@ -112,8 +113,9 @@ batch.explain:
 	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language src/test/resources/xplans/loan/template-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
 	@jq . target/narrative-loan.json
 
-xp.aggregate:
-	@$(MAKE) batch.explain  FILE=16 BATCH=[aggregate-count]
+xp.aggregate: 
+	$(MAKE) batch.explain  FILE=16 BATCH=[aggregate-count]
+
 
 
 kern:

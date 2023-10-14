@@ -3,7 +3,7 @@ PROVMAN=target/appassembler/bin/provmanagement
 DOCUMENTS=src/test/resources/queries/prov/loan
 QUERIES=src/test/resources/queries/queries-loan
 
-mvn.test: test.batch.queries xp.all.file
+mvn.test: test.batch.queries xp.all.file xp.aggregate
 
 test.batch.queries:
 	$(PROVMAN) batch --infile src/test/resources/batch/queries.txt --outfile ignore --parallel true

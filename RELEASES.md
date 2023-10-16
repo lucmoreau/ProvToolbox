@@ -7,7 +7,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-model: added builder for prov model
 * provman: refactored commandline
 * prov-template: support for variables in property names
-* prov-template-library: first templates
+* prov-template-library: first templates: generic and plead mlpipeline
 * prov-dot: display of prov:location property
 * prov-query: aggegate count function
 

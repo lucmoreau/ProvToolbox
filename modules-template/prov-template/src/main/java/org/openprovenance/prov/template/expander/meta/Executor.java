@@ -98,7 +98,8 @@ public class Executor {
 
     public void executeExpandTask(Config config, Config.ConfigTask task) throws IOException {
         Expand expand = new Expand(pf, false, false);
-        Document doc=expand.expander(deserialise(new FileInputStream(config.mtemplate_dir + "/" + task.input)), om.readValue(new FileInputStream(new File(config.mbindings_dir + "/" + task.bindings)), Bindings.class));
+        String mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
+        Document doc=expand.expander(deserialise(new FileInputStream(mtemplate_dir + "/" + task.input)), om.readValue(new FileInputStream(new File(config.mbindings_dir + "/" + task.bindings)), Bindings.class));
         for (String format: task.formats) {
             serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc, false);
             if (task.copyinput != null && task.copyinput) {

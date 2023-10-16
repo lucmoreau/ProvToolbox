@@ -26,6 +26,7 @@ public class Config {
     public static class ConfigTask {
         public String type;
         public String input;
+        public String mtemplate_dir;
         public String output;
         public String bindings;
         public List<String> formats;

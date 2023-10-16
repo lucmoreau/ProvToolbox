@@ -17,6 +17,13 @@
             "output": "plead-validating",
             "bindings": "plead-validating.json",
             "formats": ["provn", "png"]
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "plead-training",
+            "bindings": "plead-training.json",
+            "formats": ["provn", "png"]
         }
     ]
 

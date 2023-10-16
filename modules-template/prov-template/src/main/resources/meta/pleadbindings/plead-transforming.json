@@ -10,7 +10,6 @@
         "agent" :                   [{"@id" : "var:engineer"}],
         "responsible" :             [{"@id" : "var:organization"}],
         "input" :                   [{"@id" : "var:file"}],
-        "path" :                    [{"@id" : "var:path"}],
         "output" :                  [{"@id" : "var:transformed_file"}],
         "activity" :                [{"@id" : "var:transforming"}],
         "oprops":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],

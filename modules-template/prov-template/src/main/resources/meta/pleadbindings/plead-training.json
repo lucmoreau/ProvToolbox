@@ -2,18 +2,18 @@
     "var" : {
         "agent" :                   [{"@id" : "var:engineer"}],
         "responsible" :             [{"@id" : "var:organization"}],
-        "input" :                   [{"@id" : "var:testing_dataset"}],
-        "output" :                  [{"@id" : "var:score"}],
-        "activity" :                [{"@id" : "var:validating"}],
+        "input" :                   [{"@id" : "var:trainig_dataset"}],
+        "output" :                  [{"@id" : "var:pipeline"}],
+        "activity" :                [{"@id" : "var:training"}],
         "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
         "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
-        "itype" :                   [[{"@id" : "plead:DataFile"}]],
-        "otype" :                   [[{"@id" : "plead:AccuracyScore"}]],
-        "atype" :                   [[{"@id" : "plead:AssessingPerformance"}]],
-        "oprops":                   [[{"@id": "prov:value"}]],
-        "oprop_values":             [[{"@id": "var:score_value"}]],
+        "itype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "otype" :                   [[{"@id" : "sk:Pipeline"}]],
+        "atype" :                   [[{"@id" : "plead:FittingData"}]],
         "start" :                   [{"@id" : "var:start"}],
-        "end" :                     [{"@id" : "var:end"}]
+        "end" :                     [{"@id" : "var:end"}],
+        "oprops":                   [[{"@id": "plead:path"}]],
+        "oprop_values":             [[{"@id": "var:path"}]]
     },
     "vargen" : {
         "view" : [ {
@@ -27,7 +27,8 @@
         "xsd": "http://www.w3.org/2001/XMLSchema#",
         "var": "http://openprovenance.org/var#",
         "vargen": "http://openprovenance.org/vargen#",
-        "prov": "http://www.w3.org/ns/prov#"
+        "prov": "http://www.w3.org/ns/prov#",
+        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
     },
     "template" : null
 }

@@ -9,18 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplans/loan/aggregate-count2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/aggregate-count2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-validating.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-training.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplans/loan/template-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable-provman/src/test/resources/xplans/loan/template-library.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/nlgspec_transformer/SpecLoader.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/nlg-spec-transformer/src/main/scala/org/openprovenance/prov/scala/primitive/Primitive.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/template-library.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/main/resources/nlg/templates/loan/template-library.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/ExplanationSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-explanations/src/test/scala/org/openprovenance/prov/scala/ExplanationSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" beforeDir="false" afterPath="$PROJECT_DIR$/modules-explanations/prov-query/src/main/scala/org/openprovenance/prov/scala/query/QueryInterpreter.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-plead.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-validating.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-validating.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -750,7 +743,7 @@
       <workItem from="1696348385334" duration="69320000" />
       <workItem from="1696836756493" duration="3240000" />
       <workItem from="1696867289365" duration="87900000" />
-      <workItem from="1697230799513" duration="20131000" />
+      <workItem from="1697230799513" duration="22102000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

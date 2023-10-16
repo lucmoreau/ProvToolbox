@@ -976,6 +976,7 @@ object defs  {
 
         val statements: Map[String, Statement] = e.statements
         val seqStatements: Map[String, Seq[Statement]] =e.seqStatements
+        e
 
         def friendlyStatementAccessor(s:String):Statement ={
           try {

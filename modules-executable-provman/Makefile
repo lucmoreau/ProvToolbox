@@ -113,9 +113,13 @@ batch.explain:
 	@$(PROVMAN) explain --infile $(DOCUMENTS)/$(FILE).provn --outfile target/narrative-loan.provn --text target/narrative-loan.json --language src/test/resources/xplans/loan/template-library.json -s target/simplenlg2.txt --profile=$(PROFILE)  --batch-templates=$(BATCH)
 	@jq . target/narrative-loan.json
 
-xp.aggregate: 
+xp.aggregate: aggregate-count
+
+aggregate-count:
 	$(MAKE) batch.explain  FILE=16 BATCH=[aggregate-count]
 
+aggregate-count2:
+	$(MAKE) batch.explain  FILE=16 BATCH=[aggregate-count2]
 
 
 kern:

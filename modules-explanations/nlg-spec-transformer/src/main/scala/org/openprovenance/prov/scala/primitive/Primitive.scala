@@ -127,7 +127,13 @@ object Primitive {
           //ok, the function applies to
           val function = amap(Keywords.FUNCTION).toString
           val optionp: Boolean = amap.contains(Keywords.OPTIONAL)
-          applyFun(function = function, value = (getSeqStatement(aAggregate.get.toString),Set()), optionp = optionp)
+          val seqStatement = getSeqStatement(aAggregate.get.toString)
+          if (seqStatement!=null) {
+            println("processFunction: " + function + " " + seqStatement)
+            applyFun(function = function, value = (seqStatement,Set()), optionp = optionp)
+          } else {
+            val seqValue=getSeqStatement
+          }
 
         } else {
           throw new UnsupportedOperationException("processFunction: " + amap)

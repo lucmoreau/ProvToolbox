@@ -197,21 +197,17 @@ trait QueryInterpreter extends SummaryTypesNames {
       case Group(keys, agg, parent, kind, ref) =>
         type Aggregate = Seq[Statement]
 
-        /*
-    def fieldUnit[Aggregate <: Field](s:String): Aggregate = {
-      Seq[Statement]()
-    }
-
-    def aggregateFun [Aggregate <: Field](a:Aggregate, b:Seq[Field]) : Aggregate = {
-      a ++ b.map(f => toStatement(f))
-    }
-*/
         def fieldUnit0(s: String): Aggregate = {
           Seq[Statement]()
         }
 
         def aggregateFun0(a: Aggregate, b: Seq[RField]): Aggregate = {
-          val c = a ++ b.map(f => toStatement(f))
+          val c: Seq[Statement] = a ++ b.map(f => toStatement(f))
+          c
+        }
+
+        def aggregateFun1(a: Seq[Object], b: Seq[RField]): Seq[Object] = {
+          val c: Seq[Object] = a ++ b.map(f => toValues(f))
           c
         }
 
@@ -244,16 +240,6 @@ trait QueryInterpreter extends SummaryTypesNames {
           }
         }
 
-      /*
-  case Order(field, op, kind) => {
-    var ll:List[Record]=List()
-    execOp(op) { rec: Record => ll=rec::ll }
-    println("List to sort " + ll)
-    ll.reverse.foreach{rec => yld(rec) }
-  }
-
-     */
-
       case Print(parent) =>
         val schema = resultSchema(parent)
         printSchema(schema)
@@ -275,6 +261,19 @@ trait QueryInterpreter extends SummaryTypesNames {
   }
 
 
+  def doCount[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField): Unit = {
+    val table = new mutable.HashMap[RFields, Seq[AGGREGATE]]
+    execOp(parent) { rec =>
+      val kvs: RFields = rec(keys)
+      val aggregate: Seq[AGGREGATE] = table.getOrElseUpdate(kvs, agg.map(fieldUnit))
+      table(kvs) = aggregate.lazyZip(rec(agg).map(f => Seq(f))).map(aggregateFun)
+    }
+    table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
+      val record = Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother, ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName], x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg)
+      println(record)
+      yld(record)
+    }
+  }
 
   def doAggregateSort[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField, sorter: Ref): Unit = {
     val table = new mutable.HashMap[RFields, Seq[AGGREGATE]]
@@ -310,17 +309,6 @@ trait QueryInterpreter extends SummaryTypesNames {
   }
 
 
-  def doCount[AGGREGATE](keys: Schema, agg: Schema, parent: Operator, yld: Record => Unit, fieldUnit: String => AGGREGATE, aggregateFun: (AGGREGATE, Seq[RField]) => AGGREGATE, toField: AGGREGATE => RField): Unit = {
-    val table = new mutable.HashMap[RFields, Seq[AGGREGATE]]
-    execOp(parent) { rec =>
-      val kvs: RFields = rec(keys)
-      val aggregate: Seq[AGGREGATE] = table.getOrElseUpdate(kvs, agg.map(fieldUnit))
-      table(kvs) = (aggregate, rec(agg).map(f => Seq(f))).zipped.map(aggregateFun)
-    }
-    table foreach { case (k: RFields, a: Seq[AGGREGATE]) =>
-      yld(Record(k ++ a.map(x => OrType.bToOr2(Seq(new Other(qother, ProvFactory.pf.getName.XSD_INT.asInstanceOf[QualifiedName], x.asInstanceOf[Seq[AnyRef]].size.toString)))), keys ++ agg))
-    }
-  }
   def execQuery(q: Operator): Unit = execOp(q) { _ => }
 }
 

@@ -1,6 +1,13 @@
 {
     "name": "loan",
-    "templates": ["automatic.decision3.json", "human.decision1.json", "data.sources1.json", "data.sources2.json", "loan.application1.json",  "relevancy2.json",  "relevancy3.json", "responsibility5.json", "performance4.json", "responsibility6.json", "counterfactual1b.json", "counterfactual1a.json", "exclusion1.json", "inclusion3.json", "aggregate-count.json" ],
+    "templates": [
+        "automatic.decision3.json", "human.decision1.json",
+        "data.sources1.json", "data.sources2.json", "loan.application1.json",
+        "relevancy2.json",  "relevancy3.json",
+        "responsibility5.json", "performance4.json", "responsibility6.json",
+        "counterfactual1b.json", "counterfactual1a.json",
+        "exclusion1.json", "inclusion3.json",
+        "aggregate-count.json",  "aggregate-count2.json" ],
     "dictionaries": ["dictionary-loan.json"],
     "profiles": ["profile1.json"]
 }

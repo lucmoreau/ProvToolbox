@@ -1,0 +1,34 @@
+{
+    "var" : {
+        "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
+        "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
+        "itype" :                   [[{"@id" : "plead:DataFile"}]],
+        "otype" :                   [[{"@id" : "plead:AccuracyScore"}]],
+        "atype" :                   [[{"@id" : "plead:AssessingPerformance"}]],
+        "start" :                   [{"@id" : "var:start"}],
+        "end" :                     [{"@id" : "var:end"}],
+        "agent" :                   [{"@id" : "var:engineer"}],
+        "responsible" :             [{"@id" : "var:organization"}],
+        "input" :                   [{"@id" : "var:testing_dataset"}],
+        "path" :                    [{"@id" : "var:path"}],
+        "output" :                  [{"@id" : "var:score"}],
+        "activity" :                [{"@id" : "var:validating"}],
+        "oprops":                   [[{"@id": "prov:value"}]],
+        "oprop_values":             [[{"@id": "var:score_value"}]]
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:view"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "plead": "https://plead-project.org/ns/plead#",
+        "uuid" : "urn:uuid:",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "var": "http://openprovenance.org/var#",
+        "vargen": "http://openprovenance.org/vargen#",
+        "prov": "http://www.w3.org/ns/prov#"
+    },
+    "template" : null
+}

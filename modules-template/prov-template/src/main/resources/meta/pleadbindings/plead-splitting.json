@@ -1,0 +1,40 @@
+{
+    "var" : {
+        "agent" :                   [{"@id" : "var:engineer"}],
+        "responsible" :             [{"@id" : "var:organization"}],
+        "input" :                   [{"@id" : "var:file"}],
+        "output1" :                  [{"@id" : "var:split_file1"}],
+        "output2" :                  [{"@id" : "var:split_file2"}],
+        "plan" :                    [{"@id" : "var:method"}],
+        "activity" :                [{"@id" : "var:splitting"}],
+        "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
+        "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
+        "itype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "otype1" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "otype2" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "atype" :                   [[{"@id" : "plead:SplittingData"}]],
+        "ptype" :                   [[{"@id" : "plead:Method"}]],
+        "start" :                   [{"@id" : "var:start"}],
+        "end" :                     [{"@id" : "var:end"}],
+        "oprops1":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
+        "oprop_values1":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]],
+        "oprops2":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
+        "oprop_values2":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]]
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:view"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "plead": "https://plead-project.org/ns/plead#",
+        "uuid" : "urn:uuid:",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "var": "http://openprovenance.org/var#",
+        "vargen": "http://openprovenance.org/vargen#",
+        "prov": "http://www.w3.org/ns/prov#",
+        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+    },
+    "template" : null
+}

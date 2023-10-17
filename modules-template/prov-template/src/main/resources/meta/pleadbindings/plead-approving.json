@@ -16,27 +16,27 @@
         "atype" :                   [[{"@id" : "plead:SelectingData"}]],
         "start" :                   [{"@id" : "var:start"}],
         "end" :                     [{"@id" : "var:end"}],
-        "iprops1":                   [[{"@id" : "plead:path"}]],
-        "iprop_values1":             [[{"@id" : "var:path"}]],
-        "oprops1":                   [[{"@id" : "plead:path"}]],
-        "oprop_values1":             [[{"@id" : "var:path"}]],
-        "oprops2":                   [[{"@id" : "plead:signature"},   {"@id" : "plead:pipeline"}]],
-        "oprop_values2":             [[{"@id" : "var:signature"},     {"@id" : "var:approved_pipeline"}]]
+        "iprops1":                  [[{"@id" : "plead:path"}]],
+        "iprop_values1":            [[{"@id" : "var:path"}]],
+        "oprops1":                  [[{"@id" : "plead:path"}]],
+        "oprop_values1":            [[{"@id" : "var:path"}]],
+        "oprops2":                  [[{"@id" : "plead:signature"},   {"@id" : "plead:pipeline"}]],
+        "oprop_values2":            [[{"@id" : "var:signature"},     {"@id" : "var:approved_pipeline"}]]
     },
     "vargen" : {
         "view" : [ {
             "@id" : "vargen:view"
         } ]
     },
-    "linked": {"prop_values":  "props"},
     "context" : {
-        "plead": "https://plead-project.org/ns/plead#",
-        "uuid" : "urn:uuid:",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "var": "http://openprovenance.org/var#",
-        "vargen": "http://openprovenance.org/vargen#",
-        "prov": "http://www.w3.org/ns/prov#",
-        "sk": "https://scikit-learn.org/stable/modules/generated/sklearn."
+        "plead":  "${plead_ns}",
+        "prov":   "${prov_ns}",
+        "sk":     "${sk_ns}",
+        "uuid" :  "${uuid_ns}",
+        "var":    "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd":    "${xsd_ns}"
+
     },
     "template" : null
 }

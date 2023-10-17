@@ -1,0 +1,10 @@
+{
+    "plead_ns": "https://plead-project.org/ns/plead#",
+    "xsd_ns": "http://www.w3.org/2001/XMLSchema#",
+    "var_ns": "http://openprovenance.org/var#",
+    "vargen_ns": "http://openprovenance.org/vargen#",
+    "prov_ns": "http://www.w3.org/ns/prov#",
+    "sk_ns": "https://scikit-learn.org/stable/modules/generated/sklearn.",
+    "uuid_ns": "urn:uuid:"
+
+}

@@ -11,15 +11,10 @@ public class Config {
     public String mtemplate_dir;
     public String mbindings_dir;
     public String expand_dir;
+
+    public List<String> variableMaps;
     public List<ConfigTask> tasks;
 
-    public static Config load(String configurationPath, ObjectMapper objectMapper) {
-        try {
-            return objectMapper.readValue(new File(configurationPath), Config.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 
     //@JsonPropertyOrder({"type", "src", "output", "bindings", "formats"})
@@ -31,16 +26,19 @@ public class Config {
         public String bindings;
         public List<String> formats;
         public Boolean copyinput;
+        public List<String> variableMaps;
 
         @Override
         public String toString() {
             return "ConfigTask{" +
                     "type='" + type + '\'' +
                     ", input='" + input + '\'' +
+                    ", mtemplate_dir='" + mtemplate_dir + '\'' +
                     ", output='" + output + '\'' +
                     ", bindings='" + bindings + '\'' +
                     ", formats=" + formats +
                     ", copyinput=" + copyinput +
+                    ", variableMaps=" + variableMaps +
                     '}';
         }
     }
@@ -51,6 +49,7 @@ public class Config {
                 "mtemplate_dir='" + mtemplate_dir + '\'' +
                 ", mbindings_dir='" + mbindings_dir + '\'' +
                 ", expand_dir='" + expand_dir + '\'' +
+                ", variableMaps=" + variableMaps +
                 ", tasks=" + tasks +
                 '}';
     }

@@ -3,6 +3,8 @@
     "mbindings_dir": "src/main/resources/meta/pleadbindings",
     "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/plead",
 
+    "variableMaps": ["common-ns.json"],
+
     "tasks": [
         {
             "type": "expansion",
@@ -27,7 +29,7 @@
         },
         {
             "type": "expansion",
-            "input": "transforming-with-plan.provn",
+            "input": "transforming1-with-plan.provn",
             "output": "plead-filtering",
             "bindings": "plead-filtering.json",
             "formats": ["provn", "png"]

@@ -1,5 +1,5 @@
 {
-    "mtemplate_dir": "src/main/resources/meta/metatemplates",
+    "mtemplate_dir": ["src/main/resources/meta/metatemplates"],
     "mbindings_dir": "src/main/resources/meta/pleadbindings",
     "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/plead",
 
@@ -37,7 +37,7 @@
         {
             "type": "expansion",
             "input": "product2-2.provn",
-            "mtemplate_dir": "target/generated-templates/org/openprovenance/prov/templates/generic",
+            "mtemplate_dir": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "plead-approving",
             "bindings": "plead-approving.json",
             "formats": ["provn", "png"]
@@ -45,7 +45,7 @@
         {
             "type": "expansion",
             "input": "forking2.provn",
-            "mtemplate_dir": "target/generated-templates/org/openprovenance/prov/templates/generic",
+            "mtemplate_dir": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
             "output": "plead-splitting",
             "bindings": "plead-splitting.json",
             "formats": ["provn", "png"]

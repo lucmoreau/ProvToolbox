@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.logging.log4j.core.util.FileUtils.mkdir;
@@ -90,7 +91,7 @@ public class Executor {
 
 
     public int execute(Config config, Map<String, String> variableMap) throws IOException {
-        logger.info("mtemplate_dir: " + config.mtemplate_dir);
+        logger.info("mtemplate_dirs: " + config.mtemplate_dir);
         logger.info("mbindings_dir: " + config.mbindings_dir);
         logger.info("expand_dir: " + config.expand_dir);
 
@@ -123,14 +124,24 @@ public class Executor {
         InputStream is=substituteVariablesInFile(variableMap, config.mbindings_dir + "/" + task.bindings);
 
         Expand expand = new Expand(pf, false, false);
-        String mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
-        Document doc=expand.expander(deserialise(new FileInputStream(mtemplate_dir + "/" + task.input)), om.readValue(is, Bindings.class));
+        List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
+        Document doc=expand.expander(deserialise(findFileinDirs(task, mtemplate_dir)), om.readValue(is, Bindings.class));
         for (String format: task.formats) {
             serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc, false);
             if (task.copyinput != null && task.copyinput) {
                 serialize(new FileOutputStream(config.expand_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
             }
         }
+    }
+
+    private FileInputStream findFileinDirs(Config.ConfigTask task, List<String> mtemplate_dir) throws FileNotFoundException {
+        for (String dir: mtemplate_dir) {
+            File f=new File(dir + "/" + task.input);
+            if (f.exists()) {
+                return new FileInputStream(f);
+            }
+        }
+        throw new FileNotFoundException(task.input);
     }
 
     private InputStream substituteVariablesInFile(Map<String, String> variableMap, String filename) throws IOException {

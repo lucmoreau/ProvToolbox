@@ -1,10 +1,5 @@
 {
     "var" : {
-        "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
-        "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
-        "itype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
-        "otype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
-        "atype" :                   [[{"@id" : "plead:TransformingData"}]],
         "start" :                   [{"@id" : "var:start"}],
         "end" :                     [{"@id" : "var:end"}],
         "agent" :                   [{"@id" : "var:engineer"}],
@@ -12,8 +7,14 @@
         "input" :                   [{"@id" : "var:file"}],
         "output" :                  [{"@id" : "var:transformed_file"}],
         "activity" :                [{"@id" : "var:transforming"}],
+        "plan" :                    [{"@id" : null}],
         "oprops":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
-        "oprop_values":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]]
+        "oprop_values":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]],
+        "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
+        "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
+        "itype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "otype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "atype" :                   [[{"@id" : "plead:TransformingData"}]]
     },
     "vargen" : {
         "view" : [ {

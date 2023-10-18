@@ -14,13 +14,12 @@ document
 
     entity(var:input,  [prov:type='var:itype', prov:location='var:ilocation', var:iprops='var:iprop_values'])
     entity(var:output, [prov:type='var:otype', prov:location='var:olocation', var:oprops='var:oprop_values'])
-    entity(var:plan,  [prov:type='var:ptype', var:pprops='var:pprop_values'])
 
     activity(var:activity,-,-,[prov:type='var:atype', tmpl:startTime='var:start', tmpl:endTime='var:end', var:aprops='var:aprop_values'])
     used(var:activity,var:input,-)
     wasGeneratedBy(var:output,var:activity,-)
     wasDerivedFrom(var:output,var:input,var:activity,-,-)
-    wasAssociatedWith(var:activity,var:agent,var:plan)
+    wasAssociatedWith(var:activity,var:agent,-)
     actedOnBehalfOf(var:agent,var:responsible,var:activity)
     wasAttributedTo(var:output,var:agent,-)
 

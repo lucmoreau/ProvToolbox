@@ -7,6 +7,7 @@
         "output1" :                 [{"@id" : "var:approved_pipeline"}],
         "output2" :                 [{"@id" : "var:approval_score"}],
         "activity" :                [{"@id" : "var:approving"}],
+        "plan" :                    [{"@id" : null}],
         "agtype" :                  [[{"@id" : "plead:Manager"},   {"@id" : "prov:Person"}]],
         "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
         "itype1" :                  [[{"@id" : "sk:Pipeline"}]],

@@ -5,6 +5,7 @@
         "input" :                   [{"@id" : "var:testing_dataset"}],
         "output" :                  [{"@id" : "var:score"}],
         "activity" :                [{"@id" : "var:validating"}],
+        "plan" :                    [{"@id" : null}],
         "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
         "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
         "itype" :                   [[{"@id" : "plead:DataFile"}]],

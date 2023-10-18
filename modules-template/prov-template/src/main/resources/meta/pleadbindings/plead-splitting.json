@@ -6,6 +6,7 @@
         "output1" :                  [{"@id" : "var:split_file1"}],
         "output2" :                  [{"@id" : "var:split_file2"}],
         "activity" :                 [{"@id" : "var:splitting"}],
+        "plan":                      [{"@id" : null}],
         "agtype" :                   [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
         "rtype" :                    [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
         "itype" :                    [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],

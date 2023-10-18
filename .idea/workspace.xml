@@ -9,16 +9,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/extending-collection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/extending-collection.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/updating-entity.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/updating-entity.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic/transforming1.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/TypedValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/TypedValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/BindingsJson.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-plead.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-training.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-training.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1-with-plan.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1-with-plan.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic/transforming1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1.png" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/transforming1.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-splitting.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-splitting.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-validating.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-validating.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,11 +152,11 @@
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries" />
       <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -748,7 +750,7 @@
       <workItem from="1696348385334" duration="69320000" />
       <workItem from="1696836756493" duration="3240000" />
       <workItem from="1696867289365" duration="87900000" />
-      <workItem from="1697230799513" duration="41726000" />
+      <workItem from="1697230799513" duration="42079000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -22,14 +22,14 @@
         },
         {
             "type": "expansion",
-            "input": "transforming1-with-plan.provn",
+            "input": "transforming1.provn",
             "output": "plead-training",
             "bindings": "plead-training.json",
             "formats": ["provn", "png"]
         },
         {
             "type": "expansion",
-            "input": "transforming1-with-plan.provn",
+            "input": "transforming1.provn",
             "output": "plead-filtering",
             "bindings": "plead-filtering.json",
             "formats": ["provn", "png"]

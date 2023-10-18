@@ -28,3 +28,8 @@ wfl:
 	$(MAKE) LINE=4 do.csv
 	$(MAKE) LINE=5 do.csv
 	printf "file, target/block3.provn, provn\nfile, target/block4.provn, provn\nfile, target/block5.provn, provn\n" | provconvert -merge - -flatten -outfile target/wfl.png
+
+PTM_EXPAND=../../modules-executable/toolbox/target/appassembler/bin/ptm-expand
+
+test.ptm:
+	$(PTM_EXPAND) src/main/resources/meta/config/config-ptm.json

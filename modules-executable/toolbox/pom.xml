@@ -129,6 +129,10 @@
                             <mainClass>org.openprovenance.prov.interop.CommandLineArguments</mainClass>
                             <name>provconvert</name>
                         </program>
+                        <program>
+                            <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
+                            <name>ptm-expand</name>
+                        </program>
 
                     </programs>
                     <repositoryLayout>${repository.layout}</repositoryLayout>

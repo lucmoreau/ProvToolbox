@@ -3,8 +3,15 @@
     "xsd_ns": "http://www.w3.org/2001/XMLSchema#",
     "var_ns": "http://openprovenance.org/var#",
     "vargen_ns": "http://openprovenance.org/vargen#",
+    "ptm_ns": "http://openprovenance.org/ns/ptm#",
     "prov_ns": "http://www.w3.org/ns/prov#",
     "sk_ns": "https://scikit-learn.org/stable/modules/generated/sklearn.",
-    "uuid_ns": "urn:uuid:"
+    "uuid_ns": "urn:uuid:",
+    "foaf_ns": "http://xmlns.com/foaf/0.1/",
+    "dct_ns": "http://purl.org/dc/terms/",
+    "rdfs_ns": "http://www.w3.org/2000/01/rdf-schema#",
+    "void_ns": "http://vocab.deri.ie/void#",
+    "schema_ns": "http://schema.org/"
+
 
 }

@@ -2,7 +2,7 @@
 PROVCONVERT=../../../../../../modules-executable/toolbox/target/appassembler/bin/provconvert
 
 M_DIR=./metatemplates
-FILES_PIPELINE=$(M_DIR)/transforming1 $(M_DIR)/transforming1-with-plan
+FILES_PIPELINE=$(M_DIR)/transforming1 $(M_DIR)/transforming1-with-plan $(M_DIR)/extending-collection $(M_DIR)/updating-entity
 
 FILES=$(FILES_PIPELINE)
 

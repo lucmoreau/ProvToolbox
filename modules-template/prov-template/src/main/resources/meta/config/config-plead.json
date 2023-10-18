@@ -22,7 +22,7 @@
         },
         {
             "type": "expansion",
-            "input": "transforming1.provn",
+            "input": "transforming1-with-plan.provn",
             "output": "plead-training",
             "bindings": "plead-training.json",
             "formats": ["provn", "png"]

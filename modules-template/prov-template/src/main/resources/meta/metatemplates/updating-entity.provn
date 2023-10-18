@@ -1,0 +1,41 @@
+
+document
+
+
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+  prefix dot <http://openprovenance.org/provtoolbox/dot/ns#>
+
+
+
+  bundle vargen:view
+
+    agent(var:agent, [prov:type='var:agtype',var:agprops='var:agprop_values'])
+    agent(var:responsible, [prov:type='var:rtype',var:rprops='var:rprop_values'])
+    actedOnBehalfOf(var:agent,var:responsible,var:activity)
+
+    entity(var:plan, [prov:type='var:ptype', var:pprops='var:pprop_values'])
+
+
+    entity(var:entity, [prov:type='var:etype', var:eprops='var:eprop_values'])
+    entity(var:entity0, [prov:type='var:etype'])
+    entity(var:entity1, [prov:type='var:etype',var:e1props='var:e1prop_values'])
+    activity(var:activity,-,-,[prov:type='var:atype',var:aprops='var:aprop_values'])
+
+    wasDerivedFrom(var:entity1,var:entity0)
+    used(var:activity,var:entity0,-)
+    wasGeneratedBy(var:entity1,var:activity,-)
+    wasAssociatedWith(var:activity,var:agent,var:plan)
+    specializationOf(var:entity0,var:entity)
+    specializationOf(var:entity1,var:entity)
+
+
+  endBundle
+
+
+
+
+endDocument
+
+

@@ -108,7 +108,7 @@ public class BindingsJson {
                     Object theValue=conversion[0];
                     QualifiedName type=(QualifiedName)conversion[1];
                     if (!(type.equals(pf.getName().PROV_QUALIFIED_NAME))) single_value=false; // interested only in qualified names
-                    values.add(pf.newAttribute(ExpandUtil.TMPL_NS, OldBindings.VALUE2+i+"_"+count, ExpandUtil.TMPL_PREFIX, theValue, type));
+                    values.add(pf.newAttribute(ExpandUtil.TMPL_NS, OldBindings.VALUE2 + i + "_" + count, ExpandUtil.TMPL_PREFIX, theValue, type));
                     count++;
                 }
 

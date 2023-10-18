@@ -1,7 +1,7 @@
 {
     "var" : {
         "agent" :                   [{"@id" : "var:manager"}],
-        "responsible" :             [{"@id" : "var:organization"}],
+        "responsible" :             [{"@id" : null}],
         "input1" :                  [{"@id" : "var:pipeline"}],
         "input2" :                  [{"@id" : "var:score"}],
         "output1" :                 [{"@id" : "var:approved_pipeline"}],

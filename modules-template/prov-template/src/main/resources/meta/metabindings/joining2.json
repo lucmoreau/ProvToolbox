@@ -8,6 +8,7 @@
         "path" :                    [{"@id" : "var:path"}],
         "output" :                  [{"@id" : "var:output"}],
         "activity" :                [{"@id" : "var:activity"}],
+        "plan":                     [{"@id" : "var:plan"}],
 
         "agtype" :                  [[{"@id" : "var:agtype"}]],
         "agprops" :                 [[{"@id" : "var:agprops"}]],
@@ -24,7 +25,9 @@
         "iprops":                   [[{"@id" : "var:iprops1"}],       [{"@id" : "var:iprops2"}]],
         "iprop_values":             [[{"@id" : "var:iprop_values1"}], [{"@id" : "var:iprop_values2"}]],
         "atype" :                   [[{"@id" : "var:atype"}]],
-        "aprop_values":             [[{"@id" : "var:aprop_values"}]]
+        "aprop_values":             [[{"@id" : "var:aprop_values"}]],
+        "pprops":                   [[{"@id": "var:pprops"}]],
+        "pprop_values":             [[{"@id": "var:pprop_values"}]]
 
     },
     "vargen" : {

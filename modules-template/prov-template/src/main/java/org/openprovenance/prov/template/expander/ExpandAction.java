@@ -100,7 +100,8 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            // NOTE change: if a variable in id position was replaced with null value, then we ignore the change
+            if (updated1 && res.getId()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -166,7 +167,9 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            // NOTE change: if a variable in id position was replaced with null value, then we ignore the change
+            if (updated1 && res.getId()!=null) ll.add(res);
+
         }
         if (updated)
             addOrderAttribute(res);
@@ -346,7 +349,8 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            // NOTE change: if a variable in id position was replaced with null value, then we ignore the change
+            if (updated1 && res.getId()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -523,7 +527,8 @@ public class ExpandAction implements StatementAction {
     private boolean setExpand(Statement res, QualifiedName id, int position) {
         if (ExpandUtil.isVariable(id)) {
             QualifiedName val = env.get(id);
-            if (val != null) {
+
+            if ((val != null)  || env.containsKey(id)) {
                 u.setter(res, position, val);
                 return true;
             } else {
@@ -594,8 +599,7 @@ public class ExpandAction implements StatementAction {
         boolean updated0 = setExpand(res, col, 0);
         List<QualifiedName> ent = res.getEntity();
         if (ent.size() > 1) {
-            throw new UnsupportedOperationException(
-                                                    "can't expand HadMember with more than one members");
+            throw new UnsupportedOperationException("can't expand HadMember with more than one members");
         }
         boolean updated1 = setExpand(res, ent.get(0), 1);
 

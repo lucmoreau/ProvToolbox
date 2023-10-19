@@ -196,8 +196,7 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(WasAssociatedWith s) {
-        WasAssociatedWith res = pf.newWasAssociatedWith(s.getId(), s.getActivity(), s.getAgent());
-        res.setPlan(s.getPlan());
+        WasAssociatedWith res = pf.newWasAssociatedWith(s.getId(), s.getActivity(), s.getAgent(), s.getPlan());
         QualifiedName id = res.getId();
         boolean updated1 = setExpand(res, id, 0);
         QualifiedName en = res.getActivity();
@@ -528,6 +527,7 @@ public class ExpandAction implements StatementAction {
         if (ExpandUtil.isVariable(id)) {
             QualifiedName val = env.get(id);
 
+            // allows for null value associated with id
             if ((val != null)  || env.containsKey(id)) {
                 u.setter(res, position, val);
                 return true;

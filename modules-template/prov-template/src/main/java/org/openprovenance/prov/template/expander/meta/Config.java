@@ -16,11 +16,13 @@ public class Config {
     public static class ConfigTask {
         public String type;
         public String input;
+        public String input2;
         public List<String> mtemplate_dir;
         public String output;
         public String bindings;
         public List<String> formats;
         public Boolean copyinput;
+        public Boolean clean2;
         public List<String> variableMaps;
 
         @Override
@@ -28,11 +30,13 @@ public class Config {
             return "ConfigTask{" +
                     "type='" + type + '\'' +
                     ", input='" + input + '\'' +
-                    ", mtemplate_dir='" + mtemplate_dir + '\'' +
+                    ", input2='" + input2 + '\'' +
+                    ", mtemplate_dir=" + mtemplate_dir +
                     ", output='" + output + '\'' +
                     ", bindings='" + bindings + '\'' +
                     ", formats=" + formats +
                     ", copyinput=" + copyinput +
+                    ", clean2=" + clean2 +
                     ", variableMaps=" + variableMaps +
                     '}';
         }

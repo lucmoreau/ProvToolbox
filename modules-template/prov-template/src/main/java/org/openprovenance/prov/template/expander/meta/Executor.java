@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.ProvSerialiser;
-import org.openprovenance.prov.model.ProvDeserialiser;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
 
@@ -100,18 +97,18 @@ public class Executor {
         for (Config.ConfigTask task : config.tasks) {
             logger.info("task: " + task);
 
-
-            if (task.type.equals("expansion")) {
-                logger.info("expanding " + task.input);
-                logger.info("using bindings " + task.bindings);
-                logger.info("output " + task.output);
-                logger.info("formats " + task.formats);
-
-                executeExpandTask(config, task, variableMap);
-            } else {
-                logger.error("Unknown task type " + task.type);
-                return 1;
+            switch (task.type) {
+                case "expansion":
+                    executeExpandTask(config, task, variableMap);
+                    break;
+                case "merge":
+                    executeMergeTask(config, task, variableMap);
+                    break;
+                default:
+                    logger.error("Unknown task type " + task.type);
+                    return 1;
             }
+
         }
 
 
@@ -125,7 +122,7 @@ public class Executor {
 
         Expand expand = new Expand(pf, false, false);
         List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
-        Document doc=expand.expander(deserialise(findFileinDirs(task, mtemplate_dir)), om.readValue(is, Bindings.class));
+        Document doc=expand.expander(deserialise(findFileinDirs(mtemplate_dir, task.input)), om.readValue(is, Bindings.class));
         for (String format: task.formats) {
             serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc, false);
             if (task.copyinput != null && task.copyinput) {
@@ -134,14 +131,35 @@ public class Executor {
         }
     }
 
-    private FileInputStream findFileinDirs(Config.ConfigTask task, List<String> mtemplate_dir) throws FileNotFoundException {
+    public void executeMergeTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
+
+        Expand expand = new Expand(pf, false, false);
+        List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
+        Document doc1 = deserialise(findFileinDirs(mtemplate_dir, task.input));
+        Document doc2 = deserialise(findFileinDirs(mtemplate_dir, task.input2));
+        Document doc3=new IndexedDocument(pf,doc1).merge(doc2).toDocument();
+        for (String format: task.formats) {
+            serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc3, false);
+        }
+        // option to clean up tmp file
+        if (task.clean2!=null && task.clean2) {
+            for (String format: task.formats) {
+                for (String dir : mtemplate_dir) {
+                    File f = new File(dir + "/" + task.input2.replace(".provn", "." + format));
+                    if (f.exists()) f.delete();
+                }
+            }
+        }
+    }
+
+    private FileInputStream findFileinDirs(List<String> mtemplate_dir, String filename) throws FileNotFoundException {
         for (String dir: mtemplate_dir) {
-            File f=new File(dir + "/" + task.input);
+            File f=new File(dir + "/" + filename);
             if (f.exists()) {
                 return new FileInputStream(f);
             }
         }
-        throw new FileNotFoundException(task.input);
+        throw new FileNotFoundException(filename);
     }
 
     private InputStream substituteVariablesInFile(Map<String, String> variableMap, String filename) throws IOException {

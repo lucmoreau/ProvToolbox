@@ -10,7 +10,7 @@
         "responsible" :             [{"@id" : null}],
         "activity" :                [{"@id" : "vargen:expand"}],
         "oprops" :                  [{"@id" : "ptm:createdAt"}],
-        "agtype" :                  [[{"@id" : "prov:Person"}]],
+        "agtype" :                  [[{"@id" : "prov:Person"}, {"@id" : "schema:Person"}]],
         "agprops" :                 [[{"@id" : "schema:email"}]],
         "otype" :                   [[{"@id" : "ptm:ProvTemplate"}]],
         "itype1" :                  [[{"@id" : "ptm:ProvTemplate"}]],

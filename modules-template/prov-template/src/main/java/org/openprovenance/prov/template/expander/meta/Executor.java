@@ -137,7 +137,7 @@ public class Executor {
         List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
         Document doc1 = deserialise(findFileinDirs(mtemplate_dir, task.input));
         Document doc2 = deserialise(findFileinDirs(mtemplate_dir, task.input2));
-        Document doc3=new IndexedDocument(pf,doc1).merge(doc2).toDocument();
+        Document doc3=new IndexedDocument(pf,doc1,false).merge(doc2).toDocument();
         for (String format: task.formats) {
             serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc3, false);
         }

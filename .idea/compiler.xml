@@ -18,6 +18,7 @@
         <module name="benchmarks" />
         <module name="prov-model" />
         <module name="modules-executable-provman" />
+        <module name="templates_l2p" />
         <module name="prov-scala-misc" />
         <module name="prov-model-scala" />
         <module name="tutorial5" />
@@ -28,6 +29,7 @@
         <module name="prov-storage-filesystem" />
         <module name="demo" />
         <module name="prov-jsonld-xml" />
+        <module name="templates_cli" />
         <module name="prov-typemap" />
         <module name="prov-validation" />
         <module name="prov-storage-index-redis" />
@@ -78,9 +80,6 @@
       <module name="prov-xml" target="9" />
       <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />
-      <module name="templates" target="1.5" />
-      <module name="templates_cli" target="1.8" />
-      <module name="templates_l2p" target="1.8" />
       <module name="toolbox" target="1.8" />
       <module name="tutorial5" target="1.5" />
     </bytecodeTargetLevel>

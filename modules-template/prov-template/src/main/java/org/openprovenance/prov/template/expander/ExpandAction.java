@@ -210,7 +210,8 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            if (updated3 && res.getAgent()!=null) ll.add(res);
+            //ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -230,7 +231,7 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 && updated2 && updated3 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            if (res.getAgent()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -262,7 +263,7 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            if (updated3 && res.getResponsible()!=null) ll.add(res);
+            if (updated3 && res.getResponsible()!=null  && res.getDelegate()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);

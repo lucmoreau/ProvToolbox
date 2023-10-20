@@ -8,6 +8,9 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * provman: refactored commandline
 * prov-template: support for variables in property names
 * prov-template-library: first templates: generic and plead mlpipeline
+* prov-template-library: support for variables in property names
+* prov-template-library: templates fork, join, transform, collection-extension,
+* prov-template-library: support for ops/plead templates
 * prov-dot: display of prov:location property
 * prov-query: aggegate count function
 * prov-json: fixed issue #217, no longer serializing/experting _ prefix

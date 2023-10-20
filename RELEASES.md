@@ -10,6 +10,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-library: first templates: generic and plead mlpipeline
 * prov-dot: display of prov:location property
 * prov-query: aggegate count function
+* prov-json: fixed issue #217, no longer serializing/experting _ prefix
 
 `2.0.3`
 * issue #209:

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.openprovenance.prov.core.json.serialization.SortedBundle;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;
@@ -57,6 +58,9 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
                 ns.register(prefix, namespace);
             }
         }
+
+        map.put(SortedBundle.bnPrefix, SortedBundle.bnNS);
+        ns.register(SortedBundle.bnPrefix, SortedBundle.bnNS);
 
         // now context is ready with current namespace
 

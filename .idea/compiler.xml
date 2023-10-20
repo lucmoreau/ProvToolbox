@@ -77,6 +77,7 @@
       <module name="prov-rdf" target="11" />
       <module name="prov-scala" target="9" />
       <module name="prov-sql" target="9" />
+      <module name="prov-template-compiler" target="11" />
       <module name="prov-xml" target="9" />
       <module name="ProvToolbox-Tutorial5" target="11" />
       <module name="ProvToolbox-Tutorial6" target="11" />

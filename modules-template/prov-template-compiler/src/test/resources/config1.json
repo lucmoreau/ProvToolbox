@@ -1,7 +1,7 @@
 {
     "group": "org.example",
     "name": "templates",
-    "destination": "target/libs/",
+    "destination": "target/libs",
     "description": "PROV template demo",
     "version": "0.1.0",
     "init_package": "org.example.templates",

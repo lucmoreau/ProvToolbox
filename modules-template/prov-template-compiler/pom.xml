@@ -140,6 +140,8 @@
 
   </build>
 
+  <!--
+
   <profiles>
     <profile>
       <id>jdk12</id>
@@ -186,6 +188,7 @@
     </profile>
   </profiles>
 
+-->
 
 
 </project>

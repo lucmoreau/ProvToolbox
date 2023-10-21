@@ -99,13 +99,13 @@ public class CompilerTest extends TestCase {
         cp.generateDocumentationEnd(configs,cli_webjar_dir);
 
         System.out.println("#### Invoking maven " + path);
-        execute(new String[] {"mvn", "clean", "install"},"target/libs/templates");
+        execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", "/usr/local/java/jdk-12.0.1.jdk/Contents/Home/");
 
         final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
         final String templateJsonSchema  = cli_dir + "/src/main/resources/" + configs.jsonschema;
 
         System.out.println("#### jq test " + theExamplarJsonFile);
-        execute(new String[] {"jq", ".", theExamplarJsonFile},".");
+        execute(new String[] {"jq", ".", theExamplarJsonFile},".", null);
 
         //TODO: LUC: cannot make this work on travis
         //execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
@@ -122,11 +122,15 @@ public class CompilerTest extends TestCase {
 
     }
 
-    public static void execute(String [] command, String where) {
+    public static void execute(String [] command, String where, String javaHome) {
 
         try {
             Runtime rt = Runtime.getRuntime();
             String home=System.getProperty("java.home");
+            if (javaHome!=null) {
+                home=javaHome;
+                System.out.println("###### Using JAVA_HOME=" + home);
+            }
             String path=System.getenv("PATH");
             Process pr = rt.exec(command, new String[] {"JAVA_HOME=" + home, "PATH="+path}, new File(where));
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));

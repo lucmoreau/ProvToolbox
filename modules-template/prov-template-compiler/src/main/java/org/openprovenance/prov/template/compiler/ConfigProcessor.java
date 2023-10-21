@@ -222,7 +222,7 @@ public class ConfigProcessor implements Constants {
         testfile.save();
 
         compilerMaven.makeRootPom(configs, root_dir, cli_lib, l2p_lib);
-        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, true, false, false);
+        compilerMaven.makeSubPom(configs, l2p_dir, l2p_lib, true, false, false, false);
 
         SpecificationFile testfile2= compilerClientTest.generateTestFile_cli(configs, locations, cli_test_dir, TESTER_FILE+ DOT_JAVA_EXTENSION);
         testfile2.save();

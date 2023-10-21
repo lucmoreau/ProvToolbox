@@ -29,47 +29,14 @@
 
 	<profiles>
 		<profile>
-			<id>java8-doclint-disabled</id>
+			<id>java8</id>
 			<activation>
-				<jdk>[1.8,1.12]</jdk>
+				<jdk>[1.8,)</jdk>
 			</activation>
 			<properties>
 				<javadoc.opts>-Xdoclint:none</javadoc.opts>
 			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jsweet</groupId>
-						<artifactId>jsweet-maven-plugin</artifactId>
-						<version>${jsweet.transpiler.version}</version>
-						<configuration>
-							<verbose>false</verbose>
-							<bundle>true</bundle>
-							<declaration>true</declaration>
-							<!-- <module>commonjs</module> -->
-							<outDir>${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}</outDir>
-							<dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
-							<targetVersion>ES6</targetVersion>
-						</configuration>
-						<executions>
-							<execution>
-								<id>clean</id>
-								<phase>clean</phase>
-								<goals>
-									<goal>clean</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>generate-js</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>jsweet</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
+
 		</profile>
 	</profiles>
 
@@ -113,6 +80,36 @@
 								</resource>
 							</resources>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jsweet</groupId>
+				<artifactId>jsweet-maven-plugin</artifactId>
+				<version>${jsweet.transpiler.version}</version>
+				<configuration>
+					<verbose>false</verbose>
+					<bundle>true</bundle>
+					<declaration>true</declaration>
+					<!-- <module>commonjs</module> -->
+					<outDir>${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}</outDir>
+					<dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
+					<targetVersion>ES6</targetVersion>
+				</configuration>
+				<executions>
+					<execution>
+						<id>clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate-js</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>jsweet</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

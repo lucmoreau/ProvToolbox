@@ -27,6 +27,53 @@
 	</pluginRepositories>
 	-->
 
+	<profiles>
+		<profile>
+			<id>java8-doclint-disabled</id>
+			<activation>
+				<jdk>[1.8,1.12]</jdk>
+			</activation>
+			<properties>
+				<javadoc.opts>-Xdoclint:none</javadoc.opts>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jsweet</groupId>
+						<artifactId>jsweet-maven-plugin</artifactId>
+						<version>${jsweet.transpiler.version}</version>
+						<configuration>
+							<verbose>false</verbose>
+							<bundle>true</bundle>
+							<declaration>true</declaration>
+							<!-- <module>commonjs</module> -->
+							<outDir>${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}</outDir>
+							<dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
+							<targetVersion>ES6</targetVersion>
+						</configuration>
+						<executions>
+							<execution>
+								<id>clean</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>generate-js</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>jsweet</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
 	<build>
 		<resources>
 			<resource>
@@ -37,43 +84,14 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>${compiler.plugin.version}</version>
 				<configuration>
 					<source>11</source>
 					<target>11</target>
 					<fork>true</fork>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.jsweet</groupId>
-				<artifactId>jsweet-maven-plugin</artifactId>
-				<version>${jsweet.transpiler.version}</version>
-				<configuration>
-					<verbose>false</verbose>
-					<bundle>true</bundle>
-					<declaration>true</declaration>
-					<!-- <module>commonjs</module> -->
-					<outDir>${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}</outDir>
-					<dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
-					<targetVersion>ES6</targetVersion>
-				</configuration>
-				<executions>
-					<execution>
-						<id>clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate-js</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>jsweet</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -107,8 +125,8 @@
 						<configuration>
 							<target>
 								<echo message="copying generated bundles to dist..." />
-								<copy file="${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js" tofile="dist/${project.artifactId}.js" verbose="true" />
-								<copy file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts" tofile="dist/${project.artifactId}.d.ts" verbose="true" />
+								<copy file="${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js" tofile="dist/${project.artifactId}.js" verbose="true" failonerror="false" />
+								<copy file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts" tofile="dist/${project.artifactId}.d.ts" verbose="true" failonerror="false"/>
 							</target>
 						</configuration>
 						<goals>

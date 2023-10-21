@@ -11,18 +11,18 @@
   <packaging>jar</packaging>
   <description>A template system for PROV bundles.</description>
 
-<!--
-  <repositories>
-    <repository>
-      <id>jsweet-central</id>
-      <name>libs-release</name>
-      <url>https://repository.jsweet.org/artifactory/libs-release-local</url>
-    </repository>
-  </repositories>-->
+  <!--
+    <repositories>
+      <repository>
+        <id>jsweet-central</id>
+        <name>libs-release</name>
+        <url>https://repository.jsweet.org/artifactory/libs-release-local</url>
+      </repository>
+    </repositories>-->
 
-   <properties>
-     <jsweet.core.version>6.3.0</jsweet.core.version>
-   </properties>
+  <properties>
+    <jsweet.core.version>6.3.0</jsweet.core.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -42,7 +42,6 @@
       <artifactId>javapoet</artifactId>
       <version>${poet.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -89,15 +88,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <!--
-    <dependency>
-      <groupId>com.google.errorprone</groupId>
-      <artifactId>javac</artifactId>
-      <version>9+181-r4173-1</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
-
     <!-- testing -->
 
     <dependency>
@@ -111,8 +101,6 @@
   </dependencies>
 
   <build>
-
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -122,21 +110,6 @@
           <source>1.9</source>
         </configuration>
       </plugin>
-
-      <!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.plugin.version}</version>
-        <configuration>
-          <verbose>true</verbose>
-          <fork>true</fork>
-          <executable>/usr/local/java/jdk-17.0.8.1+1/Contents/Home/bin/javac</executable>
-        </configuration>
-      </plugin>
-      -->
-
-
     </plugins>
 
 
@@ -149,10 +122,11 @@
 
 
     <testResources>
-       <testResource>
-         <directory>src/test/resources</directory>
-         <filtering>true</filtering>
-       </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+
       <testResource>
         <directory>src/test/config</directory>
         <filtering>true</filtering>
@@ -166,6 +140,51 @@
 
   </build>
 
+  <profiles>
+    <profile>
+      <id>jdk12</id>
+      <activation>
+        <jdk>[11,12]</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.plugin.version}</version>
+            <configuration>
+              <includes>
+                <include>**/*.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk13-and-above</id>
+      <activation>
+        <jdk>[13,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.plugin.version}</version>
+            <configuration>
+              <includes>
+                <include>**/*.java</include>
+              </includes>
+              <excludes>
+                <exclude>**/CompilerTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 
 

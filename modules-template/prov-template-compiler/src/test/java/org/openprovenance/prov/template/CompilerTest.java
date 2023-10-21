@@ -22,9 +22,6 @@ public class CompilerTest extends TestCase {
 
     static final String EX_NS = "http://example.org/";
 
-    public CompilerTest(String testName) {
-	super(testName);
-    }
     
     ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
     QualifiedName var_a=pf.newQualifiedName(VAR_NS, "a", "var");

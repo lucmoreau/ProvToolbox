@@ -10,6 +10,25 @@ public class Config {
     public List<String> variableMaps;
     public List<ConfigTask> tasks;
 
+    public static List<String> addBaseDir(String basedir, List<String> directories) {
+        if (directories!=null) {
+            for (int i=0; i<directories.size(); i++) {
+                if (!directories.get(i).startsWith("/")) {
+                    directories.set(i, basedir + "/" + directories.get(i));
+                }
+            }
+        }
+        return directories;
+    }
+    public static String addBaseDir(String basedir, String directory) {
+        if (directory!=null) {
+            if (!directory.startsWith("/")) {
+                return basedir + "/" + directory;
+            }
+        }
+
+        return directory;
+    }
 
 
     //@JsonPropertyOrder({"type", "src", "output", "bindings", "formats"})

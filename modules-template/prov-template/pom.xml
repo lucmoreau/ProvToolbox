@@ -86,12 +86,12 @@
                         <configuration>
                             <mainClass>org.openprovenance.prov.template.expander.meta.Executor</mainClass>
                             <arguments>
+                                <argument>${project.basedir}</argument>
                                 <argument>src/main/resources/meta/config/config-generic.json</argument>
                                 <argument>src/main/resources/meta/config/config-plead.json</argument>
                                 <argument>src/main/resources/meta/config/config-ptm.json</argument>
                             </arguments>
                         </configuration>
-
 
                     </execution>
                 </executions>

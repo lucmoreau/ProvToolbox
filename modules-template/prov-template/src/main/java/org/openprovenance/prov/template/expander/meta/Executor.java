@@ -61,8 +61,10 @@ public class Executor {
     }
 
 
-    public int execute(String configurationPath) {
+    public int execute(String basedir, String configurationPath) {
         try {
+
+            configurationPath=basedir + "/" + configurationPath;
 
             System.out.println("In executor " + configurationPath);
 
@@ -79,7 +81,7 @@ public class Executor {
                     variableMap.putAll(om.readValue(new FileInputStream(variableMapPath), Map.class));
                 }
             }
-            return execute(config, variableMap);
+            return execute(config, basedir, variableMap);
         } catch (Exception e) {
             logger.error("Error while executing", e);
             return 1;
@@ -87,7 +89,11 @@ public class Executor {
     }
 
 
-    public int execute(Config config, Map<String, String> variableMap) throws IOException {
+    public int execute(Config config, String basedir, Map<String, String> variableMap) throws IOException {
+        config.mtemplate_dir=Config.addBaseDir(basedir, config.mtemplate_dir);
+        config.mbindings_dir=Config.addBaseDir(basedir, config.mbindings_dir);
+        config.expand_dir=Config.addBaseDir(basedir, config.expand_dir);
+
         logger.info("mtemplate_dirs: " + config.mtemplate_dir);
         logger.info("mbindings_dir: " + config.mbindings_dir);
         logger.info("expand_dir: " + config.expand_dir);
@@ -95,6 +101,7 @@ public class Executor {
         mkdir(new File(config.expand_dir),true);
 
         for (Config.ConfigTask task : config.tasks) {
+            task.mtemplate_dir=Config.addBaseDir(basedir, task.mtemplate_dir);
             logger.info("task: " + task);
 
             switch (task.type) {
@@ -192,8 +199,13 @@ public class Executor {
 
     public static void main(String [] args) {
         Executor executor=new Executor();
-        for (String arg: args) {
-            executor.execute(arg);
+        String basedir=args[0];
+        // for all args starting with second execute
+
+        for (int i=1; i<args.length; i++) {
+            executor.execute(basedir, args[i]);
         }
+
+
     }
 }

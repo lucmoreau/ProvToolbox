@@ -18,6 +18,7 @@
             <version>2.0.4-SNAPSHOT</version>
         </dependency>
 
+
         <dependency>
             <groupId>org.apache.santuario</groupId>
             <artifactId>xmlsec</artifactId>
@@ -47,13 +48,13 @@
             </resource>
         </resources>
 
-
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>false</filtering> <!-- in newer version of maven, it trips on filter *.jks files -->
             </testResource>
         </testResources>
+
         <plugins>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -89,6 +90,9 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <!-- note scala version listed here because  scalac crashes on this code without it,
+                    but this leads to warning due to incompatibility with scalatest that requires  is 2.13.10. -->
+                    <scalaVersion>${scala.library.version}</scalaVersion>
                     <args>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>

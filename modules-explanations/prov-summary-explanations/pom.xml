@@ -80,6 +80,9 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <!-- note scala version listed here because  scalac crashes on this code without it,
+                                      but this leads to warning due to incompatibility with scalatest that requires  is 2.13.10. -->
+                    <scalaVersion>${scala.library.version}</scalaVersion>
                     <args>
                         <arg>-deprecation</arg>
                         <arg>-feature</arg>
@@ -96,7 +99,7 @@
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>${scalatest.mvn.plugin.version}</version>
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>

@@ -62,6 +62,14 @@
 			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-splitting.provn",
 			"package": "org.openprovenance.prov.template.library.plead",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-splitting.json"
+		},
+
+		{
+			"@type": "simple",
+			"name": "ptm_expanding",
+			"template": "target/prov-template-library/org/openprovenance/prov/templates/ptm/ptm-expanding.provn",
+			"package": "org.openprovenance.prov.template.library.ptm",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json"
 		}
 
 	],

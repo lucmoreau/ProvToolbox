@@ -1,0 +1,104 @@
+{
+    "var": {
+        "document": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/doc123-456.provn",
+                "@documentation": "The document resulting from template expansion",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "template": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/template123.provn",
+                "@documentation": "The template to be expanded",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "bindings": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/bindings456.json",
+                "@documentation": "The bindings used in expansion",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "agent": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "The agent controlling the expansion",
+                "@input": "optional"
+            }
+        ],
+        "expanding": [
+            {
+                "@id": "act:*",
+                "@type": "xsd:int",
+                "@documentation": "The activity of expanding the template",
+                "@output": "true",
+                "@sql.table": "activity"
+            }
+        ],
+        "email": [
+            [
+                {
+                    "@value": "mail:*",
+                    "@type": "xsd:string",
+                    "@documentation": "The agent's email",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "time": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformed file is created",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "start": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation starts",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "end": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation ends",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ]
+    },
+    "context": {
+        "ag":  "${PROV_API}/live/agent/",
+        "act": "${PROV_API}/live/activity/",
+        "file": "${PROV_API}/live/file/"
+    },
+    "template": "TODO template",
+    "@documentation": "TODO doc."
+}

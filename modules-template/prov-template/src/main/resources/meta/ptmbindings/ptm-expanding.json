@@ -1,18 +1,18 @@
 {
     "var" : {
-        "output" :                  [{"@id" : "var:template"}],
-        "input1" :                  [{"@id" : "var:mtemplate"}],
+        "output" :                  [{"@id" : "var:document"}],
+        "input1" :                  [{"@id" : "var:template"}],
         "input2" :                  [{"@id" : "var:bindings"}],
         "agent" :                   [{"@id" : "var:agent"}],
         "agprop_values":            [[{"@id" : "var:email"}]],
         "oprop_values" :            [[{"@id" : "var:time"}]],
         "plan":                     [{"@id" : null}],
         "responsible" :             [{"@id" : null}],
-        "activity" :                [{"@id" : "vargen:expand"}],
+        "activity" :                [{"@id" : "vargen:expanding"}],
         "oprops" :                  [{"@id" : "ptm:createdAt"}],
         "agtype" :                  [[{"@id" : "prov:Person"}, {"@id" : "schema:Person"}]],
         "agprops" :                 [[{"@id" : "schema:email"}]],
-        "otype" :                   [[{"@id" : "ptm:ProvTemplate"}]],
+        "otype" :                   [[{"@id" : "ptm:ProvDocument"}]],
         "itype1" :                  [[{"@id" : "ptm:ProvTemplate"}]],
         "itype2" :                  [[{"@id" : "ptm:Bindings"}]],
         "atype" :                   [[{"@id" : "ptm:ExpandingTemplate"}]]

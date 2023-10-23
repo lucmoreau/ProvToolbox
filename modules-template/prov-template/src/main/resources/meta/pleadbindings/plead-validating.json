@@ -11,8 +11,8 @@
         "itype" :                   [[{"@id" : "plead:DataFile"}]],
         "otype" :                   [[{"@id" : "plead:AccuracyScore"}]],
         "atype" :                   [[{"@id" : "plead:AssessingPerformance"}]],
-        "oprops":                   [[{"@id": "prov:value"}]],
-        "oprop_values":             [[{"@id": "var:score_value"}]],
+        "oprops":                   [[{"@id": "plead:createdAt"},{"@id": "prov:value"}]],
+        "oprop_values":             [[{"@id": "var:time"}, {"@id": "var:score_value"}]],
         "start" :                   [{"@id" : "var:start"}],
         "end" :                     [{"@id" : "var:end"}]
     },

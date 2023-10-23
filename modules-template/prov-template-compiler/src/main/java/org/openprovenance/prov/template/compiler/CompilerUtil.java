@@ -425,7 +425,7 @@ public class CompilerUtil {
             case "json":
                 return String.class;
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("getClassForType " + keyType);
         }
     }
 

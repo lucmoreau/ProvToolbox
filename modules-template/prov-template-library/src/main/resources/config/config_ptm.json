@@ -41,6 +41,13 @@
 			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-training.provn",
 			"package": "org.openprovenance.prov.template.library.plead",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-training.json"
+		},
+		{
+			"@type": "simple",
+			"name": "plead_validating",
+			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-validating.provn",
+			"package": "org.openprovenance.prov.template.library.plead",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json"
 		}
 
 	],

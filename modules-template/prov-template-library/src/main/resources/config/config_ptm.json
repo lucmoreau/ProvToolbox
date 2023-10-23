@@ -2,74 +2,38 @@
 	"group": "org.openprovenance.prov",
 	"name": "template_library",
 	"destination": "target",
-	"description": "PROV templates for plead ML pipeline",
+	"description": "PROV templates for prov template manatement",
 	"version": "0.1.0",
-	"init_package": "org.openprovenance.prov.template.library",
+	"init_package": "org.openprovenance.prov.template.library.ptm",
 	"logger": "Logger",
 	"templateBuilders": "TemplateBuilders",
 	"tableConfigurator": "TableConfigurator",
 	"beanProcessor": "BeanProcessor",
-	"logger_package": "org.openprovenance.prov.template.library.logger",
-	"configurator_package": "org.openprovenance.prov.template.library.plead.client.configurator",
+	"logger_package": "org.openprovenance.prov.template.library.ptm.logger",
+	"configurator_package": "org.openprovenance.prov.template.library.ptm.client.configurator",
 	"script": "tmp_run",
 	"script_dir": "target/bin",
 	"sbean": true,
 	"jsweet": true,
-	"jsonschema": "schema.json",
-	"documentation": "doc.html",
-	"sqlFile": "prov-template-library.sql",
+	"jsonschema": "schema-ptm.json",
+	"documentation": "doc-ptm.html",
+	"sqlFile": "prov-template-library-ptm.sql",
 	"templates" : [
 
-		{
-			"@type": "simple",
-			"name": "plead_transforming",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-transforming.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json"
-		},
-
-		{
-			"@type": "simple",
-			"name": "plead_filtering",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-filtering.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-filtering.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_training",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-training.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-training.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_validating",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-validating.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_approving",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-approving.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json"
-		},
-		{
-			"@type": "simple",
-			"name": "plead_splitting",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-splitting.provn",
-			"package": "org.openprovenance.prov.template.library.plead",
-			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-splitting.json"
-		},
 
 		{
 			"@type": "simple",
 			"name": "ptm_expanding",
-			"template": "target/prov-template-library/org/openprovenance/prov/templates/ptm/ptm-expanding.provn",
+			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-expanding.provn",
 			"package": "org.openprovenance.prov.template.library.ptm",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json"
+		},
+		{
+			"@type": "simple",
+			"name": "ptm_mexpanding",
+			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/ptm/ptm-mexpanding.provn",
+			"package": "org.openprovenance.prov.template.library.ptm",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-mexpanding.json"
 		}
 
 	],

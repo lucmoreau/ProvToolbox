@@ -145,7 +145,7 @@ public class CompilerExpansionBuilder {
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema, bindingsSchema));
 
         if (bindings_schema != null) {
-            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
+            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema, bindingsSchema));
             builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema));
@@ -587,7 +587,7 @@ public class CompilerExpansionBuilder {
         return "_Q_" + qn.getPrefix() + "_" + qn.getLocalPart();
     }
 
-    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);

@@ -389,7 +389,7 @@ public class CompilerUtil {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
 
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("no value associated with key " + key);
             }
             JsonNode hasType = the_key.get(0).get(0).get("@type");
             if (hasType != null) {

@@ -1,25 +1,46 @@
 {
     "var": {
-        "pipeline": [
+
+        "approved_pipeline": [
             {
                 "@id": "file:*",
                 "@type": "xsd:string",
-                "@examplar": "file/pipeline678.csv",
-                "@documentation": "The pipeline resulting from the training",
+                "@examplar": "file/approved-pipeline768",
+                "@documentation": "The approved pipeline",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
-        "training_dataset": [
+        "approval_record": [
+            {
+                "@id": "approval:*",
+                "@type": "xsd:int",
+                "@examplar": "9885",
+                "@documentation": "The approval record",
+                "@input": "false",
+                "@output": "true"}
+        ],
+        "pipeline": [
             {
                 "@id": "file:*",
                 "@type": "xsd:string",
-                "@examplar": "file/dataset.csv",
-                "@documentation": "The dataset used int he training",
+                "@examplar": "file/pipeline368",
+                "@documentation": "The pipeline before approval",
                 "@input": "compulsory",
                 "@output": "false",
                 "@sql.table": "file"
+            }
+        ],
+        "score": [
+            {
+                "@id": "score:*",
+                "@type": "xsd:int",
+                "@examplar": "356",
+                "@documentation": "The score obtained through validation",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "score"
             }
         ],
         "organization": [
@@ -30,22 +51,32 @@
                 "@input": "optional"
             }
         ],
-        "engineer": [
+        "manager": [
             {
                 "@id": "ag:*",
                 "@type": "xsd:int",
-                "@documentation": "The engineer developing the ML pipeline",
+                "@documentation": "The manager approving the ML pipeline",
                 "@input": "optional"
             }
         ],
-        "training": [
+        "approving": [
             {
                 "@id": "act:*",
                 "@type": "xsd:int",
-                "@documentation": "The activity of transforming the file",
+                "@documentation": "The activity of approving the pipeline",
                 "@output": "true",
                 "@sql.table": "activity"
             }
+        ],
+        "signature": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@documentation": "The approval's signature",
+                    "@input": "optional"
+                }
+            ]
         ],
         "path": [
             [
@@ -62,7 +93,7 @@
                 {
                     "@value": "*",
                     "@type": "xsd:dateTime",
-                    "@documentation": "Time when the pipeline is created",
+                    "@documentation": "Time when the filtered file is created",
                     "@input": "optional",
                     "@sql.type":  "timestamptz"
                 }
@@ -94,7 +125,8 @@
     "context": {
         "ag":  "${PROV_API}/live/agent/",
         "act": "${PROV_API}/live/activity/",
-        "file": "${PROV_API}/live/file/"
+        "file": "${PROV_API}/live/file/",
+        "approval": "${PROV_API}/live/approval/"
     },
     "template": "TODO template",
     "@documentation": "TODO doc."

@@ -5,7 +5,7 @@
         "input1" :                  [{"@id" : "var:pipeline"}],
         "input2" :                  [{"@id" : "var:score"}],
         "output1" :                 [{"@id" : "var:approved_pipeline"}],
-        "output2" :                 [{"@id" : "var:approval_score"}],
+        "output2" :                 [{"@id" : "var:approval_record"}],
         "activity" :                [{"@id" : "var:approving"}],
         "plan" :                    [{"@id" : null}],
         "agtype" :                  [[{"@id" : "plead:Manager"},   {"@id" : "prov:Person"}]],
@@ -19,10 +19,10 @@
         "end" :                     [{"@id" : "var:end"}],
         "iprops1":                  [[{"@id" : "plead:path"}]],
         "iprop_values1":            [[{"@id" : "var:path"}]],
-        "oprops1":                  [[{"@id" : "plead:path"}]],
-        "oprop_values1":            [[{"@id" : "var:path"}]],
-        "oprops2":                  [[{"@id" : "plead:signature"},   {"@id" : "plead:pipeline"}]],
-        "oprop_values2":            [[{"@id" : "var:signature"},     {"@id" : "var:approved_pipeline"}]]
+        "oprops1":                  [[{"@id": "plead:createdAt"}, {"@id" : "plead:path"}]],
+        "oprop_values1":            [[{"@id": "var:time"}, {"@id" : "var:path"}]],
+        "oprops2":                  [[{"@id": "plead:createdAt"}, {"@id" : "plead:signature"},   {"@id" : "plead:pipeline"}]],
+        "oprop_values2":            [[{"@id": "var:time"}, {"@id" : "var:signature"},     {"@id" : "var:approved_pipeline"}]]
     },
     "vargen" : {
         "view" : [ {

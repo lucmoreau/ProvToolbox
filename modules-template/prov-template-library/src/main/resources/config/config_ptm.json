@@ -48,6 +48,20 @@
 			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-validating.provn",
 			"package": "org.openprovenance.prov.template.library.plead",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json"
+		},
+		{
+			"@type": "simple",
+			"name": "plead_approving",
+			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-approving.provn",
+			"package": "org.openprovenance.prov.template.library.plead",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json"
+		},
+		{
+			"@type": "simple",
+			"name": "plead_splitting",
+			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-splitting.provn",
+			"package": "org.openprovenance.prov.template.library.plead",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-splitting.json"
 		}
 
 	],

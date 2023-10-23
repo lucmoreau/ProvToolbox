@@ -29,6 +29,54 @@
                 <exclude>**/resources</exclude>
             </excludes>
         </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/meta/metatemplates</directory>
+            <outputDirectory>prov-template-library/org/openprovenance/prov/templates/meta/</outputDirectory>
+            <fileMode>755</fileMode>
+            <excludes>
+                <exclude>**/assembly.xml</exclude>
+                <exclude>**/README.txt</exclude>
+                <exclude>**/standalone-pom.xml</exclude>
+                <exclude>**/resources</exclude>
+            </excludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/meta/metabindings</directory>
+            <outputDirectory>prov-template-library/org/openprovenance/prov/bindings/meta/generic</outputDirectory>
+            <fileMode>755</fileMode>
+            <excludes>
+                <exclude>**/assembly.xml</exclude>
+                <exclude>**/README.txt</exclude>
+                <exclude>**/standalone-pom.xml</exclude>
+                <exclude>**/resources</exclude>
+            </excludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/meta/pleadbindings</directory>
+            <outputDirectory>prov-template-library/org/openprovenance/prov/bindings/meta/plead</outputDirectory>
+            <fileMode>755</fileMode>
+            <excludes>
+                <exclude>**/assembly.xml</exclude>
+                <exclude>**/README.txt</exclude>
+                <exclude>**/standalone-pom.xml</exclude>
+                <exclude>**/resources</exclude>
+            </excludes>
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/meta/ptmbindings</directory>
+            <outputDirectory>prov-template-library/org/openprovenance/prov/bindings/meta/ptm/</outputDirectory>
+            <fileMode>755</fileMode>
+            <excludes>
+                <exclude>**/assembly.xml</exclude>
+                <exclude>**/README.txt</exclude>
+                <exclude>**/standalone-pom.xml</exclude>
+                <exclude>**/resources</exclude>
+            </excludes>
+        </fileSet>
     </fileSets>
 
 

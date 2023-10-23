@@ -17,9 +17,9 @@
         "start" :                    [{"@id" : "var:start"}],
         "end" :                      [{"@id" : "var:end"}],
         "oprops1":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
-        "oprop_values1":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]],
+        "oprop_values1":             [[{"@id": "var:n_rows1"},   {"@id" : "var:n_cols1"},   {"@id" : "var:path1"}]],
         "oprops2":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
-        "oprop_values2":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]]
+        "oprop_values2":             [[{"@id": "var:n_rows2"},   {"@id" : "var:n_cols2"},   {"@id" : "var:path2"}]]
     },
     "vargen" : {
         "view" : [ {

@@ -26,6 +26,21 @@
 			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-transforming.provn",
 			"package": "org.openprovenance.prov.template.library.plead",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json"
+		},
+
+		{
+			"@type": "simple",
+			"name": "plead_filtering",
+			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-filtering.provn",
+			"package": "org.openprovenance.prov.template.library.plead",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-filtering.json"
+		},
+		{
+			"@type": "simple",
+			"name": "plead_training",
+			"template": "target/prov-template-library/org/openprovenance/prov/templates/plead/plead-training.provn",
+			"package": "org.openprovenance.prov.template.library.plead",
+			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-training.json"
 		}
 
 	],

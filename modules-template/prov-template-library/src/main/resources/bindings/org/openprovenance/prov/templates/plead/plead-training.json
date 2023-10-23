@@ -1,22 +1,22 @@
 {
     "var": {
-        "transformed_file": [
+        "pipeline": [
             {
                 "@id": "file:*",
                 "@type": "xsd:string",
-                "@examplar": "file/123b.csv",
-                "@documentation": "The file resulting from transformation",
+                "@examplar": "file/pipeline.csv",
+                "@documentation": "The pipeline resulting from the training",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
-        "file": [
+        "training_dataset": [
             {
                 "@id": "file:*",
                 "@type": "xsd:string",
-                "@examplar": "file/123.csv",
-                "@documentation": "The file before transformation",
+                "@examplar": "file/dataset.csv",
+                "@documentation": "The dataset used int he training",
                 "@input": "compulsory",
                 "@output": "false",
                 "@sql.table": "file"
@@ -38,7 +38,7 @@
                 "@input": "optional"
             }
         ],
-        "transforming": [
+        "training": [
             {
                 "@id": "act:*",
                 "@type": "xsd:int",
@@ -46,26 +46,6 @@
                 "@output": "true",
                 "@sql.table": "activity"
             }
-        ],
-        "n_rows": [
-            [
-                {
-                    "@value": "*",
-                    "@type": "xsd:int",
-                    "@documentation": "The number of rows in the file",
-                    "@input": "optional"
-                }
-            ]
-        ],
-        "n_cols": [
-            [
-                {
-                    "@value": "*",
-                    "@type": "xsd:int",
-                    "@documentation": "The number of columns in the file",
-                    "@input": "optional"
-                }
-            ]
         ],
         "path": [
             [
@@ -82,7 +62,7 @@
                 {
                     "@value": "*",
                     "@type": "xsd:dateTime",
-                    "@documentation": "Time when the transformed file is created",
+                    "@documentation": "Time when the pipeline is created",
                     "@input": "optional",
                     "@sql.type":  "timestamptz"
                 }

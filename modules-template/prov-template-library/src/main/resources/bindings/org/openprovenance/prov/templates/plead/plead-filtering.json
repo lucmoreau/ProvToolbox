@@ -1,11 +1,11 @@
 {
     "var": {
-        "transformed_file": [
+        "filtered_file": [
             {
                 "@id": "file:*",
                 "@type": "xsd:string",
                 "@examplar": "file/123b.csv",
-                "@documentation": "The file resulting from transformation",
+                "@documentation": "The file resulting from the filtering",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
@@ -16,10 +16,21 @@
                 "@id": "file:*",
                 "@type": "xsd:string",
                 "@examplar": "file/123.csv",
-                "@documentation": "The file before transformation",
+                "@documentation": "The file before filtering",
                 "@input": "compulsory",
                 "@output": "false",
                 "@sql.table": "file"
+            }
+        ],
+        "method": [
+            {
+                "@id": "method:*",
+                "@type": "xsd:string",
+                "@examplar": "method/filter.py",
+                "@documentation": "The the method to filter the file",
+                "@input": "optional",
+                "@output": "false",
+                "@sql.table": "method"
             }
         ],
         "organization": [
@@ -38,11 +49,11 @@
                 "@input": "optional"
             }
         ],
-        "transforming": [
+        "filtering": [
             {
                 "@id": "act:*",
                 "@type": "xsd:int",
-                "@documentation": "The activity of transforming the file",
+                "@documentation": "The activity of filtering the file",
                 "@output": "true",
                 "@sql.table": "activity"
             }
@@ -82,7 +93,7 @@
                 {
                     "@value": "*",
                     "@type": "xsd:dateTime",
-                    "@documentation": "Time when the transformed file is created",
+                    "@documentation": "Time when the filtered file is created",
                     "@input": "optional",
                     "@sql.type":  "timestamptz"
                 }

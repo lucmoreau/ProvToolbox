@@ -112,9 +112,6 @@
         ]
     },
     "context": {
-        "ops": "https://openprovenance.org/sustainability/ns/#",
-        "aspect": "${PROV_API}/live/aspect/",
-        "impact": "${PROV_API}/live/impact/",
         "ag":  "${PROV_API}/live/agent/",
         "act": "${PROV_API}/live/activity/",
         "file": "${PROV_API}/live/file/"

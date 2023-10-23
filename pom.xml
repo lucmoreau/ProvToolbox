@@ -328,6 +328,10 @@
 		<antrun.plugin.version>3.1.0</antrun.plugin.version>
 		<surefire.plugin.version>3.1.2</surefire.plugin.version>
 		<failsafe.plugin.version>3.1.2</failsafe.plugin.version>
+		<exec.plugin.version>3.1.0</exec.plugin.version>
+		<dependency.plugin.version>3.1.2</dependency.plugin.version>
+		<jsweet.plugin.version>3.1.0</jsweet.plugin.version>
+		<build.helper.plugin.version>3.0.0</build.helper.plugin.version>
 
 		<!-- java, scala, jsweet-->
 

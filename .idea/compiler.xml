@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="prov-jsonld-xml (1)" />
         <module name="prov-nf" />
+        <module name="prov-template-library" />
         <module name="prov-storage-api" />
         <module name="prov-explanations" />
         <module name="prov-service-summary" />

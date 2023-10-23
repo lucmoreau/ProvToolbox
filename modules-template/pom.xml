@@ -16,6 +16,7 @@
         <module>prov-jsweet-candy-java</module>
         <module>prov-template</module>
         <module>prov-template-compiler</module>
+        <module>prov-template-library</module>
     </modules>
 
 </project>

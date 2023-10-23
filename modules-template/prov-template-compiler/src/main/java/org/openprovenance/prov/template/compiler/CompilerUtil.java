@@ -547,7 +547,7 @@ public class CompilerUtil {
 
     public String generateExampleForType(String declaredType, String localPart, ProvFactory pFactory) {
         if (declaredType == null) {
-            return "test_" + localPart;
+            return "test1_" + localPart;
         } else {
             switch (declaredType) {
                 case "xsd:date":
@@ -559,7 +559,7 @@ public class CompilerUtil {
                 case "xsd:int":
                     return "12345";
                 default:
-                    return "test_" + localPart;
+                    return "test2_" + localPart;
             }
         }
     }

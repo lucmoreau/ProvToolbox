@@ -4,7 +4,7 @@
             {
                 "@id": "score:*",
                 "@type": "xsd:int",
-                "@examplar": "1232",
+                "@examplar": 232,
                 "@documentation": "The result of the validation",
                 "@input": "false",
                 "@output": "true",

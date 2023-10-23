@@ -70,28 +70,6 @@
                     "@sql.type":  "timestamptz"
                 }
             ]
-        ],
-        "start": [
-            [
-                {
-                    "@value": "*",
-                    "@type": "xsd:dateTime",
-                    "@documentation": "Time when the transformation starts",
-                    "@input": "optional",
-                    "@sql.type":  "timestamptz"
-                }
-            ]
-        ],
-        "end": [
-            [
-                {
-                    "@value": "*",
-                    "@type": "xsd:dateTime",
-                    "@documentation": "Time when the transformation ends",
-                    "@input": "optional",
-                    "@sql.type":  "timestamptz"
-                }
-            ]
         ]
     },
     "context": {

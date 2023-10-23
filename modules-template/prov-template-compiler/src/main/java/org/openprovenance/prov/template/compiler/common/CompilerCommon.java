@@ -1404,13 +1404,15 @@ public class CompilerCommon {
             List<Descriptor> descriptors = theVar.get(q.getLocalPart());
             Descriptor qDescriptor = (descriptors==null)? null: descriptors.get(0);
             String idType=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getType, NameDescriptor::getType);
+            Object examplar=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+
 
             for (String key3: variables) {
                 if (q.getLocalPart().equals(key3)) {
                     if (idType==null) {
                         builder.addStatement("bean.$N=$S", q.getLocalPart(), "example_" + q.getLocalPart());
                     } else {
-                        String example = compilerUtil.generateExampleForType(idType, q.getLocalPart(), pFactory);
+                        String example = (examplar==null)?compilerUtil.generateExampleForType(idType, q.getLocalPart(), pFactory):examplar.toString();
                         Class<?> declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(theVar, key3);
 
                         final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
@@ -1430,17 +1432,21 @@ public class CompilerCommon {
         for (QualifiedName q : allAtts) {
             String declaredType = null;
             Class<?> declaredJavaType = null;
+            Object examplar=null;
 
             for (String key3: variables) {
 
-                    if (q.getLocalPart().equals(key3)) {
-                        declaredType = compilerUtil.getDeclaredType(theVar, key3);
-                        declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(theVar, key3);
-                    }
+                if (q.getLocalPart().equals(key3)) {
+                    declaredType = compilerUtil.getDeclaredType(theVar, key3);
+                    declaredJavaType=compilerUtil.getJavaTypeForDeclaredType(theVar, key3);
+                    List<Descriptor> descriptors = theVar.get(q.getLocalPart());
+                    Descriptor qDescriptor = (descriptors==null)? null: descriptors.get(0);
+                    examplar=(qDescriptor==null)? null : descriptorUtils.getFromDescriptor(qDescriptor, AttributeDescriptor::getExamplar, NameDescriptor::getExamplar);
+
                 }
+            }
 
-
-            String example = compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
+            String example = (examplar!=null)? examplar.toString(): compilerUtil.generateExampleForType(declaredType, q.getLocalPart(), pFactory);
 
             final String converter = compilerUtil.getConverterForDeclaredType2(declaredJavaType);
             if (converter == null) {

@@ -16,7 +16,7 @@
             {
                 "@id": "approval:*",
                 "@type": "xsd:int",
-                "@examplar": "9885",
+                "@examplar": 9885,
                 "@documentation": "The approval record",
                 "@input": "false",
                 "@output": "true"}
@@ -36,7 +36,7 @@
             {
                 "@id": "score:*",
                 "@type": "xsd:int",
-                "@examplar": "356",
+                "@examplar": 356,
                 "@documentation": "The score obtained through validation",
                 "@input": "compulsory",
                 "@output": "false",

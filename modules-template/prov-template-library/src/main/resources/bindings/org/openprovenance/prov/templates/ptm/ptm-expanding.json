@@ -55,6 +55,7 @@
                 {
                     "@value": "mail:*",
                     "@type": "xsd:string",
+                    "@examplar": "luc.moreau@kcl.ac.uk",
                     "@documentation": "The agent's email",
                     "@input": "optional"
                 }
@@ -66,28 +67,6 @@
                     "@value": "*",
                     "@type": "xsd:dateTime",
                     "@documentation": "Time when the transformed file is created",
-                    "@input": "optional",
-                    "@sql.type":  "timestamptz"
-                }
-            ]
-        ],
-        "start": [
-            [
-                {
-                    "@value": "*",
-                    "@type": "xsd:dateTime",
-                    "@documentation": "Time when the transformation starts",
-                    "@input": "optional",
-                    "@sql.type":  "timestamptz"
-                }
-            ]
-        ],
-        "end": [
-            [
-                {
-                    "@value": "*",
-                    "@type": "xsd:dateTime",
-                    "@documentation": "Time when the transformation ends",
                     "@input": "optional",
                     "@sql.type":  "timestamptz"
                 }

@@ -120,6 +120,22 @@
                         </configuration>
 
                     </execution>
+
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <basedir>${project.basedir}</basedir>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>test</argument>
+                            </arguments>
+                        </configuration>
+
+                    </execution>
                 </executions>
 
             </plugin>
@@ -190,9 +206,13 @@
                     <outDir>${project.build.directory}/js</outDir>
                     <tsOut>${project.build.directory}/ts</tsOut>
                     <candiesJsOut>target/webapp/candies</candiesJsOut>
+                    <excludes>
+                        <exclude>**/node_modules/**</exclude>
+                        <exclude>**/node/**</exclude>
+                    </excludes>
                     <targetVersion>ES6</targetVersion>
-                    <!--<module>none</module>
-                    <moduleResolution>classic</moduleResolution>-->
+                    <module>commonjs</module>
+                    <!--<moduleResolution>classic</moduleResolution>-->
                     <bundle>true</bundle>
                     <declaration>true</declaration>
                     <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
@@ -318,6 +338,65 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+
+            <!--
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.14.0</version>
+                <executions>
+
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v16.17.1</nodeVersion>
+                            <npmVersion>8.15.0</npmVersion>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>node test</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration><arguments>     -test **/*.test.js **/*.spec.js </arguments></configuration>
+                    </execution>
+
+                    <execution>
+                        <id>npm ci</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>ci</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>javascript tests</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run test</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+-->
 
         </plugins>
     </build>

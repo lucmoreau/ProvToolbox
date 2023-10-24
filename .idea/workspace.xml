@@ -9,16 +9,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/java/org/openprovenance/prov/templates/library/PtmTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/javascript/client.test.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/javascript/square.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript/node.test.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/AttributeDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/AttributeDescriptor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-validating.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-expanding.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-mexpanding.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm/ptm-mexpanding.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +56,7 @@
         <option value="Scala Trait" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -114,6 +114,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
@@ -131,6 +132,7 @@
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
     "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.General",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -150,11 +152,11 @@
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources" />
       <recent name="$PROJECT_DIR$/modules-executable-provman/src/test/resources/queries" />
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -770,7 +772,7 @@
       <workItem from="1696867289365" duration="87900000" />
       <workItem from="1697230799513" duration="57437000" />
       <workItem from="1697733330468" duration="9198000" />
-      <workItem from="1697808403526" duration="47403000" />
+      <workItem from="1697808403526" duration="58340000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

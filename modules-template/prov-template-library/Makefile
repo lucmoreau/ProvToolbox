@@ -1,0 +1,4 @@
+
+
+test.node:
+	npm test

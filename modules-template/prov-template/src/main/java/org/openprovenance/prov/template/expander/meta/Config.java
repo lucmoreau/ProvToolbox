@@ -42,6 +42,7 @@ public class Config {
         public List<String> formats;
         public Boolean copyinput;
         public Boolean clean2;
+        public String hasProvenance;
         public List<String> variableMaps;
 
         @Override
@@ -56,6 +57,7 @@ public class Config {
                     ", formats=" + formats +
                     ", copyinput=" + copyinput +
                     ", clean2=" + clean2 +
+                    ", hasProvenance='" + hasProvenance + '\'' +
                     ", variableMaps=" + variableMaps +
                     '}';
         }

@@ -10,28 +10,33 @@
             "output": "forking2",
             "bindings": "forking2.json",
             "formats": ["provn", "png"],
-            "copyinput": true
+            "copyinput": true,
+            "hasProvenance": "prov-forking2.csv"
         },
         {
             "type": "expansion",
             "input": "transforming1.provn",
             "output": "joining2",
             "bindings": "joining2.json",
-            "formats": ["provn", "png"]
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-joining2.csv"
         },
         {
             "type": "expansion",
             "input": "transforming1.provn",
             "output": "parallel2",
             "bindings": "parallel2.json",
-            "formats": ["provn", "png"]
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-parallel2.csv"
         },
         {
             "type": "expansion",
             "input": "transforming1.provn",
             "output": "product2-2",
             "bindings": "product2-2.json",
-            "formats": ["provn", "png"]
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-product2-2.csv"
+
         }
     ]
 

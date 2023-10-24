@@ -1,18 +1,22 @@
 package org.openprovenance.prov.template.expander.meta;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
+import org.openprovenance.prov.template.library.ptm.client.common.Ptm_expandingBean;
+import org.openprovenance.prov.template.library.ptm.client.common.Ptm_expandingBuilder;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -124,18 +128,56 @@ public class Executor {
 
     }
 
+    Ptm_expandingBuilder builder=new Ptm_expandingBuilder();
     public void executeExpandTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
-        InputStream is=substituteVariablesInFile(variableMap, config.mbindings_dir + "/" + task.bindings);
+        String bindingsFilename = config.mbindings_dir + "/" + task.bindings;
+        InputStream is=substituteVariablesInFile(variableMap, bindingsFilename);
 
         Expand expand = new Expand(pf, false, false);
         List<String> mtemplate_dir = (task.mtemplate_dir==null)? config.mtemplate_dir : task.mtemplate_dir;
-        Document doc=expand.expander(deserialise(findFileinDirs(mtemplate_dir, task.input)), om.readValue(is, Bindings.class));
+        Pair<FileInputStream, File> fileinDirs = findFileinDirs2(mtemplate_dir, task.input);
+
+        long secondsSince2023_01_01 = (System.currentTimeMillis() - 1672531200000L)/1000;
+
+        List<String> loggedRecords=new LinkedList<>();
+
+        Document doc=expand.expander(deserialise(fileinDirs.getLeft()), om.readValue(is, Bindings.class));
         for (String format: task.formats) {
-            serialize(new FileOutputStream(config.expand_dir + "/" + task.output + "." + format), format, doc, false);
+            String documentFilename = config.expand_dir + "/" + task.output + "." + format;
+            serialize(new FileOutputStream(documentFilename), format, doc, false);
             if (task.copyinput != null && task.copyinput) {
                 serialize(new FileOutputStream(config.expand_dir + "/" + task.input.replace(".provn","."+format)), format, doc, false);
             }
+            String csvRecord = createExpansionCsvRecord(task, format, fileinDirs, secondsSince2023_01_01);
+            loggedRecords.add(csvRecord);
         }
+
+
+        exportProvenanceAsCsv(config, task, loggedRecords);
+
+
+    }
+
+    private void exportProvenanceAsCsv(Config config, Config.ConfigTask task, List<String> loggedRecords) throws IOException {
+        if (task.hasProvenance!=null) {
+            try (FileOutputStream fos = new FileOutputStream(config.expand_dir + "/" + task.hasProvenance)) {
+                for (String csvRecord: loggedRecords) {
+                    fos.write(csvRecord.getBytes(StandardCharsets.UTF_8));
+                    fos.write("\n".getBytes(StandardCharsets.UTF_8));
+                }
+            }
+        }
+    }
+
+    private String createExpansionCsvRecord(Config.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs, long secondsSince2023_01_01) {
+        Ptm_expandingBean bean=new Ptm_expandingBean();
+        bean.bindings= task.bindings;
+        bean.time=pf.newTimeNow().toString();
+        bean.template= fileinDirs.getRight().getName();
+        bean.document= task.output + "." + format;
+        bean.expanding=Long.valueOf(secondsSince2023_01_01).intValue();
+
+        return bean.process(builder.args2csv());
     }
 
     public void executeMergeTask(Config config, Config.ConfigTask task, Map<String, String> variableMap) throws IOException {
@@ -164,6 +206,16 @@ public class Executor {
             File f=new File(dir + "/" + filename);
             if (f.exists()) {
                 return new FileInputStream(f);
+            }
+        }
+        throw new FileNotFoundException(filename);
+    }
+
+    private Pair<FileInputStream, File> findFileinDirs2(List<String> mtemplate_dir, String filename) throws FileNotFoundException {
+        for (String dir: mtemplate_dir) {
+            File f=new File(dir + "/" + filename);
+            if (f.exists()) {
+                return Pair.of(new FileInputStream(f),f);
             }
         }
         throw new FileNotFoundException(filename);

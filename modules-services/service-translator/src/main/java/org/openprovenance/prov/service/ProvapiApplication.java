@@ -115,6 +115,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());
+
+		singletons.add(new HasProvenanceHeaderFilter());
 		
 	    CorsFilter corsFilter = new CorsFilter();
         corsFilter.getAllowedOrigins().add("*");

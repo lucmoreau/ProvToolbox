@@ -9,62 +9,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/client/Builder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/client/LoggerInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/client/ProcessorArgsInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/client/RecordsProcessorInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/client/SQL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/BeanChecker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/BeanCompleter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/BeanEnactor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/BeanProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Delegator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Ptm_expandingBean.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Ptm_expandingBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Ptm_expandingProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Ptm_mexpandingBean.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Ptm_mexpandingBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/Ptm_mexpandingProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/common/QueryInvoker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/BuilderConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/CompositeEnactorConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/CompositeTableConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/ConverterConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/CsvConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/CsvRecord2ObjectRecordConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/EnactorConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/PropertyOrderConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/SqlConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/SqlInsertConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator/TableConfigurator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator2/CompositeEnactorConfigurator2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/configurator2/EnactorConfigurator2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/BeanChecker2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/BeanCompleter2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/BeanEnactor2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/CompositeBeanCompleter2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/InputOutputProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/InputProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_expandingInputs.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_expandingIntegrator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_expandingIntegratorBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_expandingOutputs.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_mexpandingInputs.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_mexpandingIntegrator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_mexpandingIntegratorBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/Ptm_mexpandingOutputs.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/QueryInvoker2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/TemplateInvoker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/client/integrator/TypeConverter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/logger/Logger.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm/logger/TemplateBuilders.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/javascript/client.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/javascript/client.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/Executor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/expander/meta/Executor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-generic.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-generic.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-plead.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-ptm.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-ptm.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic/transforming1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic/transforming1.provn" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,8 +52,8 @@
         <option value="Enum" />
         <option value="Scala Trait" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="JavaScript File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -185,11 +135,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.deserial" />
-      <recent name="org.openprovenance.prov.service.translation" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov" />
@@ -809,7 +759,7 @@
       <workItem from="1696867289365" duration="87900000" />
       <workItem from="1697230799513" duration="57437000" />
       <workItem from="1697733330468" duration="9198000" />
-      <workItem from="1697808403526" duration="67807000" />
+      <workItem from="1697808403526" duration="72369000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.notation.ProvDeserialiser;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
@@ -40,6 +41,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerUtil {
 
+    private final ProvFactory pFactory;
     boolean debugComment=true;
 
 
@@ -55,6 +57,10 @@ public class CompilerUtil {
     public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
     public static final ParameterizedTypeName builderMapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(CLIENT_PACKAGE,"Builder"));
     public static final TypeName listOfArrays=ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(Object[].class));
+
+    public CompilerUtil(ProvFactory pFactory) {
+        this.pFactory=pFactory;
+    }
 
     public String generateNewNameForVariable(String key) {
         return GENERATED_VAR_PREFIX + key;
@@ -260,16 +266,24 @@ public class CompilerUtil {
     }
 
     public Document readDocumentFromFile(String file) throws ClassNotFoundException,
-                                                             NoSuchMethodException,
-                                                             SecurityException,
-                                                             InstantiationException,
-                                                             IllegalAccessException,
-                                                             IllegalArgumentException,
-                                                             InvocationTargetException {
-        Object interop=getInteropFramework();
-        Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
-        Document doc=(Document)method.invoke(interop,file);
-        return doc;
+            NoSuchMethodException,
+            SecurityException,
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException,
+            FileNotFoundException {
+        try {
+            Object interop=getInteropFramework();
+            Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
+            Document doc=(Document)method.invoke(interop,file);
+            return doc;
+        } catch (java.lang.ClassNotFoundException e) {
+            //System.out.println("could not find Interop Framework, falling back on provn");
+            return new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file));
+        }
+
+
     }
 
     public void writeDocument(String file, Document doc) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

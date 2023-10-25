@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.lang3.tuple.Triple;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.CompilerBeanGenerator;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -27,13 +28,14 @@ import static org.openprovenance.prov.template.compiler.common.Constants.TO_INPU
 
 public class CompilerIntegrator {
     private final CompilerCommon compilerCommon;
-    private final CompilerUtil compilerUtil = new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final boolean debugComment = true;
     private final CompilerBeanGenerator compilerBeanGenerator;
 
-    public CompilerIntegrator(CompilerCommon compilerCommon, CompilerBeanGenerator compilerBeanGenerator) {
+    public CompilerIntegrator(ProvFactory pFactory, CompilerCommon compilerCommon, CompilerBeanGenerator compilerBeanGenerator) {
         this.compilerCommon = compilerCommon;
         this.compilerBeanGenerator=compilerBeanGenerator;
+        this.compilerUtil = new CompilerUtil(pFactory);
     }
 
     public SpecificationFile generateIntegrator(Locations locations, String templateName, String integrator_package, TemplateBindingsSchema bindingsSchema, String logger, BeanKind beanKind, String consistsOf, String directory, String fileName) {

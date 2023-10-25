@@ -4,7 +4,7 @@ import com.squareup.javapoet.JavaFile;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 
 public class SpecificationFile {
-    final private CompilerUtil compilerUtil=new CompilerUtil();
+    final private CompilerUtil compilerUtil;
 
     final private JavaFile javaFile;
     final private String directory;
@@ -16,6 +16,7 @@ public class SpecificationFile {
         this.directory = directory;
         this.fileName = fileName;
         this.class_package = class_package;
+        this.compilerUtil=new CompilerUtil(null); // note, factory not used when saving fiiles
     }
 
     public boolean save() {

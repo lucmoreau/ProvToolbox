@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -17,9 +18,11 @@ import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_
 
 public class CompilerClientTest {
 
-    CompilerUtil compilerUtil=new CompilerUtil();
+    final CompilerUtil compilerUtil;
 
-
+    public CompilerClientTest(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
+    }
 
 
     public SpecificationFile generateTestFile_cli(TemplatesCompilerConfig configs, Locations locations, String directory, String fileName) {

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -20,11 +21,12 @@ import java.util.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerJsonSchema {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     ObjectMapper om = new ObjectMapper();
     Map<String, Object> jsonSchemaAsAMap = initializeSchemaMap();
 
-    public CompilerJsonSchema() {
+    public CompilerJsonSchema(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     public void generateJSonSchemaEnd(String jsonschema, String root_dir) {

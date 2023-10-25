@@ -7,10 +7,8 @@ import com.squareup.javapoet.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.configuration.Configuration;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.IndexedDocument;
-import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.*;
+
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
@@ -54,28 +52,28 @@ public class ConfigProcessor implements Constants {
     private final CompilerIntegrator compilerIntegrator;
     boolean withMain=true; // TODO need to be updatable via command line
     public static final ObjectMapper objectMapper = new ObjectMapper();
-    private final CompilerUtil compilerUtil     = new CompilerUtil();
-    private final CompilerLogger compilerLogger = new CompilerLogger();
-    private final CompilerTemplateBuilders compilerTemplateBuilders = new CompilerTemplateBuilders();
-    private final CompilerTableConfigurator compilerTableConfigurator = new CompilerTableConfigurator();
-    private final CompilerTableConfiguratorWithMap compilerTableConfiguratorWithMap = new CompilerTableConfiguratorWithMap();
-    private final CompilerBeanProcessor compilerBeanProcessor = new CompilerBeanProcessor();
-    private final CompilerInputOutputProcessor compilerInputOutputProcessor = new CompilerInputOutputProcessor();
-    private final CompilerTemplateInvoker compilerTemplateInvoker = new CompilerTemplateInvoker();
-    private final CompilerBeanCompleter compilerBeanCompleter = new CompilerBeanCompleter();
-    private final CompilerBeanCompleter2 compilerBeanCompleter2 = new CompilerBeanCompleter2();
-    private final CompilerBeanCompleter2Composite compilerBeanCompleter2Composite = new CompilerBeanCompleter2Composite();
-    private final CompilerTypeConverter compilerTypeConverter = new CompilerTypeConverter();
-    private final CompilerBeanEnactor compilerBeanEnactor = new CompilerBeanEnactor();
-    private final CompilerBeanEnactor2 compilerBeanEnactor2 = new CompilerBeanEnactor2();
-    private final CompilerQueryInvoker compilerQueryInvoker = new CompilerQueryInvoker();
+    private final CompilerUtil compilerUtil;
+    private final CompilerLogger compilerLogger ;
+    private final CompilerTemplateBuilders compilerTemplateBuilders ;
+    private final CompilerTableConfigurator compilerTableConfigurator;
+    private final CompilerTableConfiguratorWithMap compilerTableConfiguratorWithMap ;
+    private final CompilerBeanProcessor compilerBeanProcessor;
+    private final CompilerInputOutputProcessor compilerInputOutputProcessor;
+    private final CompilerTemplateInvoker compilerTemplateInvoker;
+    private final CompilerBeanCompleter compilerBeanCompleter;
+    private final CompilerBeanCompleter2 compilerBeanCompleter2;
+    private final CompilerBeanCompleter2Composite compilerBeanCompleter2Composite;
+    private final CompilerTypeConverter compilerTypeConverter ;
+    private final CompilerBeanEnactor compilerBeanEnactor;
+    private final CompilerBeanEnactor2 compilerBeanEnactor2 ;
+    private final CompilerQueryInvoker compilerQueryInvoker ;
     private final CompilerBeanChecker compilerBeanChecker;
-    private final CompilerDelegator compilerDelegator = new CompilerDelegator();
-    private final CompilerConfigurations compilerConfigurations = new CompilerConfigurations();
-    private final CompilerCompositeConfigurations compilerCompositeConfigurations = new CompilerCompositeConfigurations();
-    private final CompilerMaven compilerMaven   = new CompilerMaven(this);
+    private final CompilerDelegator compilerDelegator;
+    private final CompilerConfigurations compilerConfigurations ;
+    private final CompilerCompositeConfigurations compilerCompositeConfigurations ;
+    private final CompilerMaven compilerMaven ;
     private final CompilerScript compilerScript   = new CompilerScript(this);
-    private final CompilerDocumentation compilerDocumentation = new CompilerDocumentation();
+    private final CompilerDocumentation compilerDocumentation ;
     private final CompilerCommon compilerCommon;
     private final CompilerExpansionBuilder compilerExpansionBuilder;
     private final CompilerBuilderInit compilerBuilderInit;
@@ -94,18 +92,38 @@ public class ConfigProcessor implements Constants {
     public ConfigProcessor(ProvFactory pFactory) {
         this.debugComment=true;
         this.pFactory=pFactory;
-        this.compilerSQL=new CompilerSQL(true, "ID");
+        this.compilerUtil= new CompilerUtil(pFactory);
+        this.compilerTypeConverter=new CompilerTypeConverter(pFactory);
+        this.compilerBeanCompleter=new CompilerBeanCompleter(pFactory);
+        this.compilerSQL=new CompilerSQL(pFactory, true, "ID");
         this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
-        this.compilerBeanGenerator =new CompilerBeanGenerator();
-        this.compilerIntegrator=new CompilerIntegrator(compilerCommon,compilerBeanGenerator);
+        this.compilerBeanGenerator =new CompilerBeanGenerator(pFactory);
+        this.compilerIntegrator=new CompilerIntegrator(pFactory, compilerCommon,compilerBeanGenerator);
         this.compilerTypeManagement= new CompilerTypeManagement(withMain, compilerCommon,pFactory,debugComment);
         this.compilerExpansionBuilder= new CompilerExpansionBuilder(withMain, compilerCommon,pFactory,debugComment,compilerTypeManagement);
         this.compilerTypedRecord = new CompilerTypedRecord(withMain, compilerCommon,pFactory,debugComment);
         this.compilerBuilderInit= new CompilerBuilderInit(pFactory);
-        this.compilerBeanChecker= new CompilerBeanChecker();
+        this.compilerBeanChecker= new CompilerBeanChecker(pFactory);
         this.compilerProcessor =new CompilerProcessor(pFactory);
-        this.compilerJsonSchema=new CompilerJsonSchema();
-        this.compilerClientTest =new CompilerClientTest();
+        this.compilerJsonSchema=new CompilerJsonSchema(pFactory);
+        this.compilerClientTest =new CompilerClientTest(pFactory);
+        this.compilerTemplateInvoker = new CompilerTemplateInvoker(pFactory);
+        this.compilerBeanEnactor2 = new CompilerBeanEnactor2(pFactory);
+        this.compilerBeanEnactor = new CompilerBeanEnactor(pFactory);
+        this.compilerBeanCompleter2 = new CompilerBeanCompleter2(pFactory);
+        this.compilerBeanCompleter2Composite  = new CompilerBeanCompleter2Composite(pFactory);
+        this.compilerBeanProcessor  = new CompilerBeanProcessor(pFactory);
+        this.compilerCompositeConfigurations = new CompilerCompositeConfigurations(pFactory);
+        this.compilerConfigurations = new CompilerConfigurations(pFactory);
+        this.compilerDelegator =  new CompilerDelegator(pFactory);
+        this.compilerDocumentation = new CompilerDocumentation(pFactory);
+        this.compilerInputOutputProcessor =  new CompilerInputOutputProcessor(pFactory);
+        this.compilerLogger = new CompilerLogger(pFactory);
+        this.compilerMaven =   new CompilerMaven(pFactory, this);
+        this.compilerQueryInvoker = new CompilerQueryInvoker(pFactory);
+        this.compilerTableConfigurator =  new CompilerTableConfigurator(pFactory);
+        this.compilerTableConfiguratorWithMap = new CompilerTableConfiguratorWithMap(pFactory);
+        this.compilerTemplateBuilders = new CompilerTemplateBuilders(pFactory);
     }
 
     public String readCompilerVersion() {
@@ -380,13 +398,14 @@ public class ConfigProcessor implements Constants {
         return compilerUtil.getBindingsSchema(location);
     }
 
+
     public Document readDocumentFromFile(SimpleTemplateCompilerConfig config) throws ClassNotFoundException,
             NoSuchMethodException,
             SecurityException,
             InstantiationException,
             IllegalAccessException,
             IllegalArgumentException,
-            InvocationTargetException {
+            InvocationTargetException, FileNotFoundException {
         return compilerUtil.readDocumentFromFile(config.template);
     }
 
@@ -400,7 +419,7 @@ public class ConfigProcessor implements Constants {
             generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, new LinkedList<>(), null, configs);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                | InvocationTargetException | FileNotFoundException e) {
             System.out.println("could not find Interop Framework");
             e.printStackTrace();
 
@@ -418,7 +437,7 @@ public class ConfigProcessor implements Constants {
             generate(doc, locations, config.name, config.package_, cli_src_dir, l2p_src_dir, "resource", configs.sbean, configs.logger, configs.jsonschema, configs.documentation, bindings_schema, bindingsSchema, configs.sqlTables, cli_webjar_dir, config.inComposition, compositeTemplateCompilerConfig.sharing, compositeTemplateCompilerConfig.consistsOf, configs);
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
                 | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                 | InvocationTargetException | FileNotFoundException e) {
             System.out.println("could not find Interop Framework");
             e.printStackTrace();
 
@@ -609,6 +628,12 @@ public class ConfigProcessor implements Constants {
 
     public CompilerJsonSchema getCompilerJsonSchema() {
         return compilerJsonSchema;
+    }
+
+    public static void main(String [] args) {
+        org.openprovenance.prov.vanilla.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
+        ConfigProcessor cp=new ConfigProcessor(pf);
+        cp.processTemplateGenerationConfig(args[0],pf);
     }
 
 }

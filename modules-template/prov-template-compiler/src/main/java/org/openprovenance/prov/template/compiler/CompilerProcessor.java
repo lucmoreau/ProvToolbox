@@ -20,11 +20,12 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerProcessor {
     private final ProvFactory pFactory;
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final boolean debugComment=true;
 
     public CompilerProcessor(ProvFactory pFactory) {
         this.pFactory=pFactory;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

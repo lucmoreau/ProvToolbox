@@ -23,7 +23,7 @@ import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerTypeManagement {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
@@ -35,6 +35,7 @@ public class CompilerTypeManagement {
         this.withMain=withMain;
         this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
+        this.compilerUtil=new CompilerUtil(pFactory);
 
     }
     private Map<String,Collection<String>> knownTypes;
@@ -174,9 +175,10 @@ public class CompilerTypeManagement {
         cbuilder.addStatement("this.idataConverters=idataConverters");
 
 
-        cbuilder.addStatement("this.pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()");
+        cbuilder.addStatement("this.pf=pf");
 
 
+        cbuilder.addParameter(ProvFactory.class,"pf");
         cbuilder.addParameter(Map_QN_S_of_String,"knownTypeMap");
         cbuilder.addParameter(Map_QN_S_of_String,"unknownTypeMap");
         cbuilder.addParameter(Map_S_Map_S_to_Function, "propertyConverters");

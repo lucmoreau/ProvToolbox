@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringSubstitutor;
+import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.Framework;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -32,7 +34,7 @@ import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeMa
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class CompilerExpansionBuilder {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
@@ -50,6 +52,7 @@ public class CompilerExpansionBuilder {
         this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
         this.compilerTypeManagement=compilerTypeManagement;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 
@@ -851,7 +854,9 @@ public class CompilerExpansionBuilder {
         compilerUtil.specWithComment(builder);
 
         builder
-                .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
+                .addStatement("$T fr=$T.dynamicLoad()", Framework.class, Framework.class)
+                .addStatement("$T pf=fr.getFactory()", ProvFactory.class)
+                //.addStatement("$T pf2=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
                 .addStatement("$N me=new $N(pf)", name, name);
 
 
@@ -880,7 +885,7 @@ public class CompilerExpansionBuilder {
 
         String args = "";
         boolean first = true;
-        Set<String> seen = new HashSet<String>();
+        Set<String> seen = new HashSet<>();
         for (QualifiedName q : allVars) {
             if (first) {
                 first = false;
@@ -906,7 +911,7 @@ public class CompilerExpansionBuilder {
 
 
         builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
-        builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,document,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN)"); //TODO make it load dynamically
+        builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
 
 
         if (bindings_schema != null) {
@@ -928,7 +933,7 @@ public class CompilerExpansionBuilder {
 
 
             builder.addStatement("document=me.make(" + args + ")");
-            builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,document,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN)");
+            builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
 
 
         }
@@ -958,7 +963,15 @@ public class CompilerExpansionBuilder {
         builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"idataConverters").build());
 
 
-        builder.addStatement("return new $T($N,$N,$N,$N,$N)", ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"), "knownTypeMap", "unknownTypeMap", "propertyConverters", "idata", "idataConverters");
+        builder.addStatement(
+                "return new $T($N,$N,$N,$N,$N,$N)",
+                ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"),
+                "pf",
+                "knownTypeMap",
+                "unknownTypeMap",
+                "propertyConverters",
+                "idata",
+                "idataConverters");
 
         return builder.build();
 

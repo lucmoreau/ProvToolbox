@@ -21,7 +21,7 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
 
 public class CompilerCommon {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
     private final boolean debugComment=true;
@@ -30,6 +30,7 @@ public class CompilerCommon {
     public CompilerCommon(ProvFactory pFactory, CompilerSQL compilerSQL) {
         this.pFactory=pFactory;
         this.compilerSQL=compilerSQL;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

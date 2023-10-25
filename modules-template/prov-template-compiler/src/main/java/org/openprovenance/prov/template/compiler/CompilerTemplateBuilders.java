@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
@@ -10,9 +11,10 @@ import javax.lang.model.element.Modifier;
 import static org.openprovenance.prov.template.compiler.common.Constants.DOT_JAVA_EXTENSION;
 
 public class CompilerTemplateBuilders {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
-    public CompilerTemplateBuilders() {
+    public CompilerTemplateBuilders(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

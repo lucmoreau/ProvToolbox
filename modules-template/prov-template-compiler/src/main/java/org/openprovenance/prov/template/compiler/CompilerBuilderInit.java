@@ -16,12 +16,13 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 
 public class CompilerBuilderInit {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
     private final ProvFactory pFactory;
 
     public CompilerBuilderInit(ProvFactory pFactory) {
         this.pFactory=pFactory;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

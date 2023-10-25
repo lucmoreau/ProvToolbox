@@ -12,6 +12,7 @@ public class Runner {
     
     public Runner (ProvFactory pf) {
         this.pf=pf;
+        this.cu=new CompilerUtil(pf);
     }
 
     public static void main (String [] args) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -26,7 +27,7 @@ public class Runner {
 
     final private ProvFactory pf;
     
-    final CompilerUtil cu=new CompilerUtil();
+    final CompilerUtil cu;
     
     
     public void processLogWithTime(String in, String out, String flag, String extra) throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

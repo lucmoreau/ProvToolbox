@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Triple;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -22,7 +23,11 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 public class CompilerBeanGenerator {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
-    private final CompilerUtil compilerUtil = new CompilerUtil();
+    private final CompilerUtil compilerUtil;
+
+    public CompilerBeanGenerator(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
+    }
 
     public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();

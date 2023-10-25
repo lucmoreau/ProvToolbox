@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.sql;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.descriptors.Descriptor;
@@ -18,7 +19,7 @@ import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
     public static final String TOKEN_VAR_NAME = "_token";
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
 
@@ -26,11 +27,12 @@ public class CompilerSqlComposer {
     final public boolean withRelationId;
     private final String tableKey;
 
-    public CompilerSqlComposer(boolean withRelationId, String tableKey, Map<String, String> functionDeclarations,  Map<String,String> arrayFunctionDeclarations) {
+    public CompilerSqlComposer(ProvFactory pFactory, boolean withRelationId, String tableKey, Map<String, String> functionDeclarations, Map<String,String> arrayFunctionDeclarations) {
         this.withRelationId=withRelationId;
         this.tableKey=tableKey;
         this.functionDeclarations = functionDeclarations;
         this.arrayFunctionDeclarations = arrayFunctionDeclarations;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     public static <T> Collector<T, List<T>, List<T>> toListCollector() {

@@ -6,6 +6,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -21,15 +22,19 @@ import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.
 
 public class CompilerSQL {
     public static final String SMALL_INDENTATION = "  ";
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
+    private final ProvFactory pFactory;
     ObjectMapper om = new ObjectMapper();
     final public boolean withRelationId;
     private final String tableKey;
 
-    public CompilerSQL(boolean withRelationId, String tableKey) {
+    public CompilerSQL(ProvFactory pFactory, boolean withRelationId, String tableKey) {
         this.withRelationId=withRelationId;
         this.tableKey=tableKey;
+        this.compilerUtil=new CompilerUtil(pFactory);
+        this.pFactory=pFactory;
     }
+
 
     public void generateSQLEnd(String sqlFile, String root_dir) {
 
@@ -413,10 +418,10 @@ public class CompilerSQL {
 
 
     public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
-        new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
+        new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
 
         if (shared!=null && shared.size()>0) {
-            new CompilerSqlComposer(withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
+            new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
         }
 
 

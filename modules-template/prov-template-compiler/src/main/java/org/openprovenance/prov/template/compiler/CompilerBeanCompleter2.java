@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
@@ -12,11 +13,12 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.descript
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerBeanCompleter2 {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final boolean debugComment=true;
 
 
-    public CompilerBeanCompleter2() {
+    public CompilerBeanCompleter2(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

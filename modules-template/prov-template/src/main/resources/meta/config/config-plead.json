@@ -12,7 +12,7 @@
             "output": "plead-transforming",
             "bindings": "plead-transforming.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-plead-transforming.csv"
+            "hasProvenance": "prov-plead-transforming.prov-csv"
         },
         {
             "type": "expansion",
@@ -20,7 +20,7 @@
             "output": "plead-validating",
             "bindings": "plead-validating.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-plead-validating.csv"
+            "hasProvenance": "prov-plead-validating.prov-csv"
         },
         {
             "type": "expansion",
@@ -28,7 +28,7 @@
             "output": "plead-training",
             "bindings": "plead-training.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-plead-training.csv"
+            "hasProvenance": "prov-plead-training.prov-csv"
         },
         {
             "type": "expansion",
@@ -36,7 +36,7 @@
             "output": "plead-filtering",
             "bindings": "plead-filtering.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-plead-filtering.csv"
+            "hasProvenance": "prov-plead-filtering.prov-csv"
         },
         {
             "type": "expansion",
@@ -45,7 +45,7 @@
             "output": "plead-approving",
             "bindings": "plead-approving.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-plead-approving.csv"
+            "hasProvenance": "prov-plead-approving.prov-csv"
         },
         {
             "type": "expansion",
@@ -54,7 +54,7 @@
             "output": "plead-splitting",
             "bindings": "plead-splitting.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-plead-splitting.csv"
+            "hasProvenance": "prov-plead-splitting.prov-csv"
         }
     ]
 

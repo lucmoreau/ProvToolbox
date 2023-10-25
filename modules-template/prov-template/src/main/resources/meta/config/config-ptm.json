@@ -12,7 +12,7 @@
             "output": "ptm-expanding",
             "bindings": "ptm-expanding.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-ptm-expanding.csv"
+            "hasProvenance": "prov-ptm-expanding.prov-csv"
 
         },
         {
@@ -21,7 +21,7 @@
             "output": "ptm-mexpanding",
             "bindings": "ptm-mexpanding.json",
             "formats": ["provn", "png"],
-            "hasProvenance": "prov-ptm-mexpanding.csv"
+            "hasProvenance": "prov-ptm-mexpanding.prov-csv"
 
         }
     ]

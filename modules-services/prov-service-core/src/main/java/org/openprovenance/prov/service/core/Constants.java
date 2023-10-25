@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public interface Constants {
+    String HAS_PROVENANCE = "http://www.w3.org/ns/prov#has_provenance";
 	String DOCUMENT_NOT_FOUND = "Document not found";
 	String WILDCARD = "*";
 	String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";

@@ -1,18 +1,28 @@
 package org.openprovenance.prov.service;
 
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openprovenance.prov.service.core.Constants;
 
 import java.io.IOException;
 
 
-public class HasProvenanceHeaderFilter  implements Filter {
+
+public class HasProvenanceHeaderFilter  implements Filter, Constants {
+
 
     //logger
     static Logger logger = LogManager.getLogger(HasProvenanceHeaderFilter.class);
+
+    //constructor
+    public HasProvenanceHeaderFilter() {
+        logger.info("########### HasProvenanceHeaderFilter constructor ###########");
+    }
+
 
 
     @Override
@@ -34,7 +44,7 @@ public class HasProvenanceHeaderFilter  implements Filter {
                 templateName = templateName.substring(0, templateName.lastIndexOf("."));
 
                 String theProvenance = prefix + "/prov-" + templateName + ".prov-csv";
-                httpServletResponse.setHeader("Link", "<" + theProvenance + ">; rel=\"http://www.w3.org/ns/prov#has_provenance\"");
+                httpServletResponse.setHeader("Link", "<" + theProvenance + ">; rel=\"" + HAS_PROVENANCE + "\"");
 
                 //Link: <http://acme.example.org/super-widget123/provenance>;
                 //         rel="http://www.w3.org/ns/prov#has_provenance"
@@ -43,10 +53,10 @@ public class HasProvenanceHeaderFilter  implements Filter {
 
                 logger.info("filter: " + requestURI);
                 logger.info("filter:   " + theProvenance);
-
             }
-            filterChain.doFilter(servletRequest, servletResponse);
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
 

@@ -9,12 +9,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/client/ClientConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/client/ClientConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic/transforming1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic/transforming1.provn" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,14 +117,14 @@
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/java/org/openprovenance/prov",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/main/webapp",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
@@ -142,11 +143,11 @@
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.deserial" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/client" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/ptm" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
@@ -184,19 +185,19 @@
       <recent name="org.openprovenance.prov.service.translator.translator" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.translator" />
       <recent name="org.openprovenance.prov.vanilla" />
       <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.service.core.storage" />
       <recent name="org.openprovenance.prov.model" />
-      <recent name="org.openprovenance.prov.service" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.test.node">
-    <configuration name="CompilerTest.testCompiler1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-template-compiler" />
+  <component name="RunManager" selected="JUnit.ProvenanceIT.testProvenanceOfTemplate">
+    <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -210,10 +211,63 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.CompilerTest" />
-      <option name="METHOD_NAME" value="testCompiler1" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.DateIT" />
+      <option name="METHOD_NAME" value="testTranslationWithDate1" />
       <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProvenanceIT.testProvenanceOfTemplate" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.ProvenanceIT" />
+      <option name="METHOD_NAME" value="testProvenanceOfTemplate" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProvenanceIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="service-translator" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.service.translator.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.ProvenanceIT" />
+      <option name="METHOD_NAME" value="testTranslationWithDate1" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-services/service-translator" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -282,33 +336,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="all.png" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/Makefile" target="all.png" workingDirectory="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
     <configuration name="test.node" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" target="test.node" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
-    </configuration>
-    <configuration name="ExplanationSpec.Plan with count should be processable" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="prov-explanations" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Test name" />
-      <option name="shortenClasspath" value="NONE" />
-      <option name="testClassPath" value="org.openprovenance.prov.scala.ExplanationSpec" />
-      <option name="testName" value="Plan with count should be processable" />
-      <option name="workingDirectory" value="$PROJECT_DIR$/modules-explanations/prov-explanations" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
@@ -352,20 +384,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.CompilerTest.testCompiler1" />
+      <item itemvalue="JUnit.ProvenanceIT.testProvenanceOfTemplate" />
+      <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
+      <item itemvalue="JUnit.ProvenanceIT.testTranslationWithDate1" />
       <item itemvalue="JUnit.PtmTest.testPtm1" />
       <item itemvalue="Makefile Target.test.node" />
-      <item itemvalue="Makefile Target.all.png" />
       <item itemvalue="ScalaTest.ModelSpec" />
-      <item itemvalue="ScalaTest.ExplanationSpec.Plan with count should be processable" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ProvenanceIT.testProvenanceOfTemplate" />
+        <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
+        <item itemvalue="JUnit.ProvenanceIT.testTranslationWithDate1" />
         <item itemvalue="Makefile Target.test.node" />
         <item itemvalue="JUnit.PtmTest.testPtm1" />
-        <item itemvalue="JUnit.CompilerTest.testCompiler1" />
-        <item itemvalue="Makefile Target.all.png" />
-        <item itemvalue="ScalaTest.ExplanationSpec.Plan with count should be processable" />
       </list>
     </recent_temporary>
   </component>
@@ -759,7 +791,8 @@
       <workItem from="1696867289365" duration="87900000" />
       <workItem from="1697230799513" duration="57437000" />
       <workItem from="1697733330468" duration="9198000" />
-      <workItem from="1697808403526" duration="72369000" />
+      <workItem from="1697808403526" duration="73500000" />
+      <workItem from="1698212176966" duration="17095000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -782,51 +815,6 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-    <option name="exactExcludedFiles">
-      <list>
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator2/CompositeEnactorConfigurator2.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/Template_blockInputs.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/Template_blockIntegrator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/Template_blockIntegratorBuilder.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/TemplateInvoker.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/Template_blockOutputs.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/QueryInvoker2.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/BeanEnactor2.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/TypeConverter.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/BeanCompleter2.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/InputOutputProcessor.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/CompositeBeanCompleter2.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/integrator/InputProcessor.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/openprovenance/prov/client/SQL.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/openprovenance/prov/client/Builder.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/openprovenance/prov/client/RecordsProcessorInterface.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/openprovenance/prov/client/LoggerInterface.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/openprovenance/prov/client/ProcessorArgsInterface.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/logger/TemplateBuilders.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/logger/Logger.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/BeanChecker.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/BeanCompleter.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/QueryInvoker.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/BeanProcessor.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/Delegator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/Template_blockBuilder.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/Template_blockProcessor.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/Template_blockBean.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/common/BeanEnactor.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/EnactorConfigurator2.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/CsvRecord2ObjectRecordConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/BuilderConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/CsvConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/TableConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/CompositeTableConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/PropertyOrderConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/EnactorConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/SqlConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/SqlInsertConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/CompositeEnactorConfigurator.js" />
-        <option value="$PROJECT_DIR$/modules-template/prov-template-compiler/target/libs/templates/templates_cli/target/ts/org/example/templates/block/client/configurator/ConverterConfigurator.js" />
-      </list>
-    </option>
   </component>
   <component name="UnknownFeatures">
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-text" />

@@ -474,6 +474,7 @@
                         <configuration>
                             <webApp>
                                 <contextPath>${service.context}</contextPath>
+                                <descriptor>src/main/webapp.filter/WEB-INF/jetty-web.xml</descriptor>
                             </webApp>
                             <httpConnector>
                                 <port>${service.port}</port>

@@ -14,6 +14,10 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-dot: display of prov:location property
 * prov-query: aggegate count function
 * prov-json: fixed issue #217, no longer serializing/experting _ prefix
+* prov-template-compiler: dynamic loading of InteropFramework to avoid compile-time dependency in generated code.
+* prov-template-library: generating provenance of expanded templates
+* provapi service: exposing prov-template-library and provenance
+
 
 `2.0.3`
 * issue #209:

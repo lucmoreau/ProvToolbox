@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-interop</artifactId>
+            <artifactId>prov-template-compiler</artifactId>
             <version>2.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -96,8 +96,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
                                 <classpath />
-                                <argument>org.openprovenance.prov.interop.CommandLineArguments</argument>
-                                <argument>-templatebuilder</argument>
+                                <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/config_plead.json</argument>
                             </arguments>
                         </configuration>
@@ -112,8 +111,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
                                 <classpath />
-                                <argument>org.openprovenance.prov.interop.CommandLineArguments</argument>
-                                <argument>-templatebuilder</argument>
+                                <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/config_ptm.json</argument>
                             </arguments>
 

@@ -42,7 +42,7 @@ import static org.openprovenance.prov.interop.Formats.ProvFormat.*;
  * @author lavm, dtm
  *
  */
-public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvDocumentWriter {
+public class InteropFramework implements InteropMediaType, org.openprovenance.prov.model.ProvDocumentWriter,  Framework{
 
     public final static String configFile="config.interop.properties";
     public final static String configuration;
@@ -50,37 +50,37 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
     public final static ProvFactory defaultFactory;
 
     static {
-        Properties properties=getPropertiesFromClasspath(configFile);
+        Properties properties=Framework.getPropertiesFromClasspath(configFile);
         configuration=(String)properties.get("interop.config");
         factoryClass = properties.getProperty("prov.factory");
-        defaultFactory=dynamicallyLoadFactory(factoryClass);
+        defaultFactory= dynamicallyLoadFactory(factoryClass);
     }
 
-
-    private final Outputer outputer;
-    private final Inputer inputer;
-
-
-    public static Properties getPropertiesFromClasspath(String propFileName) {
-        return Configuration.getPropertiesFromClasspath(InteropFramework.class, propFileName);
-    }
-
-    static public ProvFactory getDefaultFactory(){
-        return defaultFactory;
-    }
-
-
-    static public ProvFactory dynamicallyLoadFactory(String factory) {
+    static ProvFactory dynamicallyLoadFactory(String factory) {
         Class<?> clazz=null;
         try {
             clazz = Class.forName(factory);
             Method method=clazz.getMethod("getFactory");
             return (ProvFactory) method.invoke(new Object[0]);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            logger.throwing(e);
+            e.printStackTrace();
         }
         return null;
     }
+
+    private final Outputer outputer;
+    private final Inputer inputer;
+
+
+    static public ProvFactory getDefaultFactory(){
+        return defaultFactory;
+    }
+
+    public ProvFactory getFactory(){
+        return defaultFactory;
+    }
+
+
 
 
     static Logger logger = LogManager.getLogger(InteropFramework.class);

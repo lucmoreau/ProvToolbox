@@ -9,13 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-translator/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/client/ClientConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/client/ClientConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -792,7 +787,7 @@
       <workItem from="1697230799513" duration="57437000" />
       <workItem from="1697733330468" duration="9198000" />
       <workItem from="1697808403526" duration="73500000" />
-      <workItem from="1698212176966" duration="17095000" />
+      <workItem from="1698212176966" duration="19322000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

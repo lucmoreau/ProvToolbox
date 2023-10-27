@@ -773,7 +773,7 @@ public class CompilerExpansionBuilder {
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
 
-        builder.addParameter(Object[].class, "record");
+        builder.addParameter(Object[].class, "__record");
 
         int count = 1;
         Iterator<String> iter = the_var.fieldNames();
@@ -783,10 +783,10 @@ public class CompilerExpansionBuilder {
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
             if (converter == null) {
-                String statement = "$T $N=($T) record[" + count + "]";
+                String statement = "$T $N=($T) __record[" + count + "]";
                 builder.addStatement(statement, atype, key, atype);
             } else {
-                String statement = "$T $N=$N(record[" + count + "])";
+                String statement = "$T $N=$N(__record[" + count + "])";
                 builder.addStatement(statement, atype, key, converter);
             }
             if (count > 1) args = args + ", ";
@@ -814,7 +814,7 @@ public class CompilerExpansionBuilder {
 
         JsonNode the_var = bindings_schema.get("var");
 
-        builder.addParameter(Object[].class, "record");
+        builder.addParameter(Object[].class, "__record");
         builder.addParameter(processorInterfaceType(template, packge), "_processor");
 
         int count = 1;
@@ -825,10 +825,10 @@ public class CompilerExpansionBuilder {
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
             if (converter == null) {
-                String statement = "$T $N=($T) record[" + count + "]";
+                String statement = "$T $N=($T) __record[" + count + "]";
                 builder.addStatement(statement, atype, key, atype);
             } else {
-                String statement = "$T $N=$N(record[" + count + "])";
+                String statement = "$T $N=$N(__record[" + count + "])";
                 builder.addStatement(statement, atype, key, converter);
             }
             if (count > 1) args = args + ", ";

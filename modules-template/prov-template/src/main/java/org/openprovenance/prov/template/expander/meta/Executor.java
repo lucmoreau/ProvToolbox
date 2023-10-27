@@ -48,6 +48,9 @@ public class Executor {
             ProvSerialiser serialiser2 = (ProvSerialiser) cons.newInstance(pf, "png");
             this.serializerMap.put("png", serialiser2);
 
+            ProvSerialiser serialiser3 = (ProvSerialiser) cons.newInstance(pf, "svg");
+            this.serializerMap.put("svg", serialiser3);
+
             c = Class.forName("org.openprovenance.prov.notation.ProvDeserialiser");
             cons = c.getConstructor(ProvFactory.class);
             this.deserialiser = (ProvDeserialiser) cons.newInstance(pf);

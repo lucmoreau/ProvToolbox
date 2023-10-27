@@ -2,8 +2,15 @@
 
 
 # TODO
-- write test with query and count, and binding variable in query
-- update query to count of provenance types (see dong's email)
+- templates
+  - abstract pokemon templates to prov template library
+  - test expander, check it works with webjar
+  - HasProvenance plug in, to load a config file?
+  - deployable service for compact templates with prov-template-library
+  - test command line with prov-template-library
+-queries
+  - write test with query and count, and binding variable in query
+  - update query to count of provenance types (see dong's email)
 
 
 - upgrade scala version

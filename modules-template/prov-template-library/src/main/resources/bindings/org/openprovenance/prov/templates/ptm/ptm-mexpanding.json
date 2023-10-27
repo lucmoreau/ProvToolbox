@@ -11,6 +11,17 @@
                 "@sql.table": "file"
             }
         ],
+        "provenance": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/prov-doc123-456.prov-csv",
+                "@documentation": "The provenance of the document resulting from the template expansion",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
         "mtemplate": [
             {
                 "@id": "file:*",

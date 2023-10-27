@@ -33,11 +33,15 @@ public class HasProvenanceHeaderFilter  implements Filter, Constants {
         if (requestURI.contains("webjars/prov-template-library/")) {
 
             if (requestURI.contains("templates/org/openprovenance/prov/templates/")
-                    && (requestURI.endsWith(".provn") || requestURI.endsWith(".png"))) {
+                    && (requestURI.endsWith(".provn") || requestURI.endsWith(".png")|| requestURI.endsWith(".prov-csv"))) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
                 // last section of requestURI after the last slash
                 String templateName = requestURI.substring(requestURI.lastIndexOf("/") + 1);
+                if (templateName.startsWith("prov-")) {
+                    // remove prov- prefix
+                    templateName = templateName.substring(5);
+                }
                 // prefix preceding the last slash
                 String prefix = requestURI.substring(0, requestURI.lastIndexOf("/"));
                 // remove extension

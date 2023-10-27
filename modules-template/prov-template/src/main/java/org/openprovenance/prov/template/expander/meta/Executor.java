@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.template.expander.Expand;
 import org.openprovenance.prov.template.json.Bindings;
-import org.openprovenance.prov.template.library.ptm.client.common.Ptm_expandingBean;
-import org.openprovenance.prov.template.library.ptm.client.common.Ptm_expandingBuilder;
+import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBean;
+import org.openprovenance.prov.template.library.ptm_copy.client.common.Ptm_expandingBuilder;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -175,6 +175,7 @@ public class Executor {
     private String createExpansionCsvRecord(Config.ConfigTask task, String format, Pair<FileInputStream, File> fileinDirs, long secondsSince2023_01_01) {
         Ptm_expandingBean bean=new Ptm_expandingBean();
         bean.bindings= task.bindings;
+        bean.provenance=task.hasProvenance;
         bean.time=pf.newTimeNow().toString();
         bean.template= fileinDirs.getRight().getName();
         bean.document= task.output + "." + format;

@@ -8,7 +8,7 @@
     "tasks": [
         {
             "type": "expansion",
-            "input": "joining2.provn",
+            "input": "parallel2.provn",
             "output": "ptm-expanding",
             "bindings": "ptm-expanding.json",
             "formats": ["provn", "png"],
@@ -17,7 +17,7 @@
         },
         {
             "type": "expansion",
-            "input": "joining2.provn",
+            "input": "parallel2.provn",
             "output": "ptm-mexpanding",
             "bindings": "ptm-mexpanding.json",
             "formats": ["provn", "png"],

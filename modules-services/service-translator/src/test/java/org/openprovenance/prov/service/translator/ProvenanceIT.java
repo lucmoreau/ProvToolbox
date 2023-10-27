@@ -48,8 +48,7 @@ public class ProvenanceIT extends TestCase implements ApiUriFragments {
     }
 
     public void testProvenanceOfTemplate(String url) {
-        Response response = getResource(url,
-                MEDIA_TEXT_PROVENANCE_NOTATION);
+        Response response = getResource(url, MEDIA_TEXT_PROVENANCE_NOTATION);
         System.out.println(response.getHeaders());
         Set<Link> links = response.getLinks();
 
@@ -64,12 +63,20 @@ public class ProvenanceIT extends TestCase implements ApiUriFragments {
         assertEquals(HAS_PROVENANCE, rels.get(0));
 
 
-        URI uri = link.getUri();
-        String provUri=config.hostURLprefix+uri.getPath();
+        URI uri1 = link.getUri();
+        String provUri=config.hostURLprefix+uri1.getPath();
 
         Response response2 = getResource(provUri, MEDIA_TEXT_PROVENANCE_NOTATION);
+        Set<Link> links2 = response2.getLinks();
         String o=response2.readEntity(String.class);
+        assertEquals(1, links2.size());
+        Link link2 = links2.iterator().next();
+        System.out.println(escapeGreen(link2.getParams().toString()));
+        List<String> rels2 = link2.getRels();
+        assertEquals(HAS_PROVENANCE, rels2.get(0));
+        URI uri2 = link2.getUri();
 
+        assertEquals(uri1, uri2);
 
         System.out.println(response2.getHeaders());
         System.out.println(escapeGreen(o));

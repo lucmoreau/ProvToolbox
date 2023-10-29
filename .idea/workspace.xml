@@ -9,23 +9,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/pg/pg-ballcollecting.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/pg/pg-capturing.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_pg.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/config-pg.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/operation.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/operation.provn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pg-bindings/pg-ballcollecting.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pg-bindings/pg-capturing.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pg-bindings/pg-dropping.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo/all.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo/ballcollect.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo/capture.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_ptm.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_ptm.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/common-ns.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config/common-ns.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +116,7 @@
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template/src/main/resources/meta/config",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable/toolbox/src/test/resources/pgo",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -153,11 +142,11 @@
       <recent name="org.openprovenance.prov.core.jsonld11.serialization.deserial" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates" />
       <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
@@ -202,7 +191,7 @@
       <recent name="org.openprovenance.prov.model" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.all.png">
+  <component name="RunManager" selected="Makefile Target.test.pgo1">
     <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="service-translator" />
       <extension name="coverage">
@@ -326,8 +315,8 @@
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="test.node" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" target="test.node" workingDirectory="" arguments="">
+    <configuration name="test.pgo1" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.pgo1" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -378,16 +367,16 @@
       <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
       <item itemvalue="JUnit.ProvenanceIT.testTranslationWithDate1" />
       <item itemvalue="Makefile Target.all.png" />
-      <item itemvalue="Makefile Target.test.node" />
+      <item itemvalue="Makefile Target.test.pgo1" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.test.pgo1" />
         <item itemvalue="Makefile Target.all.png" />
         <item itemvalue="JUnit.ProvenanceIT.testProvenanceOfTemplate" />
         <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
         <item itemvalue="JUnit.ProvenanceIT.testTranslationWithDate1" />
-        <item itemvalue="Makefile Target.test.node" />
       </list>
     </recent_temporary>
   </component>
@@ -782,7 +771,7 @@
       <workItem from="1697230799513" duration="57437000" />
       <workItem from="1697733330468" duration="9198000" />
       <workItem from="1697808403526" duration="73500000" />
-      <workItem from="1698212176966" duration="42083000" />
+      <workItem from="1698212176966" duration="44318000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

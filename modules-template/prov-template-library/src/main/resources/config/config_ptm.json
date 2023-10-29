@@ -2,7 +2,7 @@
 	"group": "org.openprovenance.prov",
 	"name": "template_library",
 	"destination": "target",
-	"description": "PROV templates for prov template manatement",
+	"description": "PROV templates for prov template management",
 	"version": "0.1.0",
 	"init_package": "org.openprovenance.prov.template.library.ptm",
 	"logger": "Logger",

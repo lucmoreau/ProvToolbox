@@ -118,6 +118,21 @@
                         </configuration>
 
                     </execution>
+                    <execution>
+                        <id>compile-template-pg</id>
+                        <phase>generate-sources</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath />
+                                <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
+                                <argument>src/main/resources/config/config_pg.json</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
 
                     <execution>
                         <id>default-cli</id>
@@ -399,5 +414,5 @@
         </plugins>
     </build>
 
-    
+
 </project>

@@ -1,0 +1,22 @@
+document
+ prefix tmpl <http://openprovenance.org/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+ 
+ bundle var:b
+  activity(var:block_instance,
+           [ tmpl:startTime='var:starttime', 
+             tmpl:endTime='var:endtime',
+             prov:type='var:block_type', 
+             tmpl:label='var:block_label' ] )
+  entity(var:consumed,[tmpl:label='var:consumed_label', prov:type='var:consumed_type', var:cprops='var:cprop_values'])
+  used(var:block_instance, var:consumed, -,
+       [ tmpl:time='var:consumed_at',
+         prov:role='var:consumed_role'] )
+  entity(var:produced,[tmpl:label='var:produced_label',prov:type='var:produced_type', var:pprops='var:pprop_values'])
+  wasGeneratedBy(var:produced, var:block_instance, -,
+                 [ tmpl:time='var:produced_at',
+                   prov:role='var:produced_role'] )
+  wasDerivedFrom(var:produced, var:consumed, var:block_instance, -, -)
+ endBundle
+endDocument

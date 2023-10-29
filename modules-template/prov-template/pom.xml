@@ -89,6 +89,7 @@
                                 <argument>src/main/resources/meta/config/config-generic.json</argument>
                                 <argument>src/main/resources/meta/config/config-plead.json</argument>
                                 <argument>src/main/resources/meta/config/config-ptm.json</argument>
+                                <argument>src/main/resources/meta/config/config-pg.json</argument>
                             </arguments>
                         </configuration>
 

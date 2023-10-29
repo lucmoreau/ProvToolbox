@@ -1,0 +1,38 @@
+{
+    "group": "org.openprovenance",
+    "name": "template_library",
+    "destination": "target/",
+    "description": "Pokemon Go simulation",
+    "version": "0.1.0",
+    "init_package": "org.openprovenance.pokemongo",
+    "logger": "Logger",
+    "templateBuilders": "TemplateBuilders",
+    "tableConfigurator": "TableConfigurator",
+    "beanProcessor": "BeanProcessor",
+    "configurator_package": "org.openprovenance.pokemongo.client.configurator",
+    "logger_package": "org.openprovenance.pokemongo.client",
+    "script": "pokemon_run",
+    "script_dir": "target/bin",
+    "jsweet": true,
+    "sbean": true,
+    "jsonschema": "schema-pg.json",
+    "sqlFile": "prov-template-library-pg.sql",
+    "documentation": "doc-pg.html",
+    "templates" : [
+
+        {
+            "@type": "simple",
+            "name": "pg_capturing",
+            "template": "target/prov-template-library/templates/org/openprovenance/prov/templates/pg/pg-capturing.provn",
+            "package": "org.openprovenance.pokemongo",
+            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/pg/pg-capturing.json"
+        },
+        {
+            "@type": "simple",
+            "name": "pg_ballcollecting",
+            "template": "target/prov-template-library/templates/org/openprovenance/prov/templates/pg/pg-ballcollecting.provn",
+            "package": "org.openprovenance.pokemongo",
+            "bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/pg/pg-ballcollecting.json"
+        }
+    ]
+}

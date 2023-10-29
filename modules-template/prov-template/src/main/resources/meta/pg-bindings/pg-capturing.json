@@ -1,0 +1,31 @@
+{
+    "var": {
+        "b": [{"@id": "vargen:b"}],
+        "block_instance": [{"@id": "var:operation"}],
+        "block_type": [{"@id": "var:operation_type"}],
+        "produced_type": [{"@id": "var:player_type"}, {"@id": "var:pokemon_type"}],
+        "produced": [{"@id": "var:player_after"}, {"@id": "var:pokemon_after"}],
+        "produced_role": [{"@id": "pgo:Picker"},{"@id": "pgo:Picked"}],
+        "consumed": [{"@id": "var:player_before"}, {"@id": "var:pokemon_before"}],
+        "consumed_type": [{"@id": "var:player_type"}, {"@id": "var:pokemon_type"}],
+        "consumed_role": [{"@id": "pgo:Player"}, {"@id": "pgo:Pokemon"}],
+        "cprops":  [[{"@id": "pgo:team"}],[]],
+        "cprop_values":  [[{"@id": "var:team"}],[]],
+        "pprops":  [[{"@id": "pgo:team"}],[]],
+        "pprop_values":  [[{"@id": "var:team"}],[]],
+
+        "produced_labelIGNORE": [{"@id": "var:user_after_label"}, {"@id": "var:object_after_label"}],
+        "produced_atIGNORE": [{"@id": "var:player_produced_at"}, {"@id": "var:pokemon_produced_at"}],
+        "consumed_labelIGNORE": [{"@id": "var:user_before_label"}, {"@id": "var:object_before_label"}],
+        "consumed_atIGNORE": [{"@id": "var:player_consumed_at"}, {"@id": "var:pokemon_consumed_at"}]
+    },
+    "vargen": {},
+    "context": {
+        "prov": "${prov_ns}",
+        "uuid": "${uuid_ns}",
+        "var": "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd": "${xsd_ns}",
+        "pgo": "${pgo_ns}"
+    }
+}

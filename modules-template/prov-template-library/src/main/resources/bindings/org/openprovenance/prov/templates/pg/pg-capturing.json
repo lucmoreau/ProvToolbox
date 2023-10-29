@@ -1,0 +1,118 @@
+{
+    "var" : {
+        "operation": [
+            {
+                "@id": "*",
+                "@documentation": "The operation identifier",
+                "@examplar": "pgo:op123",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "operation_type": [
+            {
+                "@id": "*",
+                "@documentation": "The operation type",
+                "@examplar": "pgo:OpType",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "time": [[
+            {
+                "@type": "xsd:int",
+                "@documentation": "The value of the time of the operation",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ]],
+        "player_before":  [
+            {
+                "@id": "*",
+                "@documentation": "The player before",
+                "@examplar": "pgo:playerbefore34",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "player_type": [
+            {
+                "@id": "*",
+                "@documentation": "The player type",
+                "@examplar": "pgo:PlayerType",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "team":  [
+            {
+                "@id": "*",
+                "@documentation": "The player team",
+                "@examplar": "pgo:team123",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "pokemon_before":  [
+            {
+                "@id": "*",
+                "@documentation": "The pokemon before",
+                "@examplar": "pgo:pokemonbefore12",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "pokemon_type": [
+            {
+                "@id": "*",
+                "@documentation": "The pokemon type",
+                "@examplar": "pgo:pokemonType",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "species": [[
+            {
+                "@type": "xsd:int",
+                "@documentation": "The species (as an integer)",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ]],
+        "strength": [[
+            {
+                "@type": "xsd:int",
+                "@documentation": "Stength (as an integer)",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ]],
+        "player_after":  [
+            {
+                "@id": "*",
+                "@documentation": "The player after",
+                "@examplar": "pgo:playerafter34",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "pokemon_after":  [
+            {
+                "@id": "*",
+                "@documentation": "The pokemon after",
+                "@examplar": "pgo:pokemonafter12",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ]
+    },
+    "context": {
+        "prov": "${prov_ns}",
+        "uuid": "${uuid_ns}",
+        "var": "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd": "${xsd_ns}",
+        "pgo": "${pgo_ns}",
+        "game": "${game_ns}"
+    }
+}

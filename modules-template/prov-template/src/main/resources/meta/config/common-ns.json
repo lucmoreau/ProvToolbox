@@ -11,7 +11,7 @@
     "dct_ns": "http://purl.org/dc/terms/",
     "rdfs_ns": "http://www.w3.org/2000/01/rdf-schema#",
     "void_ns": "http://vocab.deri.ie/void#",
-    "schema_ns": "http://schema.org/"
-
-
+    "schema_ns": "http://schema.org/",
+    "pgo_ns": "http://sociam.org/pokemongo#",
+    "game_ns":    "http://sociam.org/pokemongogame#"
 }

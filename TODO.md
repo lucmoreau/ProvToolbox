@@ -3,10 +3,10 @@
 
 # TODO
 - templates
+  - update expander web page, make it use bindings b1, b2, b3, b4 from webjar.
   - abstract pokemon templates to prov template library
-  - test expander, check it works with webjar
   - HasProvenance plug in, to load a config file?
-  - deployable service for compact templates with prov-template-library
+  - deployable service for compact templates (ala sustainability) with prov-template-library
   - test command line with prov-template-library
 -queries
   - write test with query and count, and binding variable in query

@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 import javax.lang.model.element.Modifier;
 
@@ -312,6 +313,24 @@ public class CompilerUtil {
             };
             out = new PrintWriter(destination);
             out.print(spec);
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean saveToFile(String destinationDir, String destination, Supplier<String> spec) {
+        PrintWriter out;
+        try {
+            File dir=new File(destinationDir);
+            if (!dir.exists() && !dir.mkdirs()) {
+                System.err.println("failed to create directory " + destinationDir);
+                return false;
+            };
+            out = new PrintWriter(destination);
+            out.print(spec.get());
             out.close();
             return true;
         } catch (FileNotFoundException e) {
@@ -782,6 +801,15 @@ public class CompilerUtil {
                 .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
                         stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
                 .build();
+    }
+
+    public String pySpecWithComment(TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
+        return "Generated automatically by ProvToolbox for template '" + templateName + "'\n"
+                + "by class " + stackTraceElement.getClassName()
+                + ", method " + stackTraceElement.getMethodName()
+                + ", \nin file " + stackTraceElement.getFileName()
+                + ", at line $L " + stackTraceElement.getLineNumber();
+
     }
 
     public void specWithComment(MethodSpec.Builder mspec) {

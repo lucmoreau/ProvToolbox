@@ -17,7 +17,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: dynamic loading of InteropFramework to avoid compile-time dependency in generated code.
 * prov-template-library: generating provenance of expanded templates
 * provapi service: exposing prov-template-library and provenance
-* prov-template-library: template binaryop
+* prov-template-library: template binaryop, templaes pokemon-go simulator
+
 
 
 `2.0.3`

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import com.squareup.javapoet.CodeEmitter;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -24,6 +25,7 @@ public class CompilerBeanGenerator {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
     private final CompilerUtil compilerUtil;
+
 
     public CompilerBeanGenerator(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
@@ -140,15 +142,25 @@ public class CompilerBeanGenerator {
 
 
         }
+        System.out.println(builder);
+
 
         TypeSpec spec = builder.build();
 
+
         JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
 
-        return new SpecificationFile(myfile, directory, fileName, packge);
+        final CodeEmitter codeEmitter = new CodeEmitter();
+        codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
+        codeEmitter.emitCode(spec,null);
+
+        String pyDirectory = "target/py/";
+        return new SpecificationFile(myfile, directory, fileName, packge,
+                pyDirectory, myfile.typeSpec.name+".py", () ->codeEmitter.getSb().toString());
 
 
     }
+
 
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 

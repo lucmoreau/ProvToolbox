@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.common;
 
 import com.squareup.javapoet.*;
+import com.squareup.javapoet.CodeEmitter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
@@ -15,12 +16,20 @@ import org.openprovenance.prov.template.descriptors.*;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
 
 public class CompilerCommon {
+    public static final String SB_VAR = "sb";
+    public static final String SELF_VAR = "self";
+    public static final String MARKER_LAMBDA_END = "/*#lend#*/";
+    public static final String MARKER_LAMBDA_BODY = "/*#lbody#*/";
+    public static final String MARKER_LAMBDA = "/*#lambda#*/";
+    public static final String MARKER_PARAMS = "/*#params#*/";
+    public static final String MARKER_PARAMS_END = "/*#paramsend#*/";
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
@@ -109,9 +118,9 @@ public class CompilerCommon {
 
             builder.addMethod(generateCommonMethod6static(indexed));
 
-            builder.addField(generateFieldOutputs(allVars, allAtts,name, templateName, packageName, bindingsSchema));
-            builder.addField(generateFieldInputs(allVars, allAtts, name, templateName, packageName, bindingsSchema));
-            builder.addField(generateFieldCompulsoryInputs(allVars,allAtts,name,templateName,packageName, bindingsSchema));
+            builder.addField(generateFieldOutputs(bindingsSchema));
+            builder.addField(generateFieldInputs(bindingsSchema));
+            builder.addField(generateFieldCompulsoryInputs(bindingsSchema));
 
             builder.addField(generateField4aBeanConverter(templateName,packageName, bindingsSchema));
             builder.addField(generateField4aBeanConverter2("toBean", templateName,packageName, Constants.A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
@@ -163,9 +172,19 @@ public class CompilerCommon {
 
 
         JavaFile myfile = compilerUtil.specWithComment(bean, configs, packageName, stackTraceElement);
-        SpecificationFile spec=new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName);
 
-        return Pair.of(spec,successorTable);
+
+        final CodeEmitter codeEmitter = new CodeEmitter();
+        codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
+        codeEmitter.emitCode(bean, Set.of("args2csv"));
+
+        String pyDirectory = "target/py/";
+
+        SpecificationFile specFile=new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName,
+                pyDirectory, myfile.typeSpec.name+".py", () -> codeEmitter.getSb().toString());
+
+
+        return Pair.of(specFile,successorTable);
     }
 
 
@@ -203,34 +222,43 @@ public class CompilerCommon {
         builder.addJavadoc(jdoc.build());
 
 
-        builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
+        builder.addStatement("$T $N=$N", ClassName.get(packge,name), SELF_VAR, "this");
 
         Map<String, List<Descriptor>> var = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
-        StringBuilder args = new StringBuilder();
-        StringBuilder args2 = new StringBuilder();
-
-        boolean first=true;
-
-        for (String key: variables) {
-            String newkey = "__" + key;
-            if (first) {
-                first=false;
-            } else {
-                args.append(", ");
-                args2.append(", ");
-            }
-            args.append(compilerUtil.getJavaTypeForDeclaredType(var, key).getName()).append(" ").append(newkey);
-            args2.append(" ").append(newkey);
-
-        }
-
-        builder.addStatement("return (" + args + ") -> { $T sb=new $T();$N.$N(sb," + args2 + "); return sb.toString(); }", StringBuffer.class,StringBuffer.class, "self",loggerName);
+        CodeBlock.Builder lambda=CodeBlock.builder();
+        CodeBlock paramsList= makeParamsList(variables, var, compilerUtil);
+        lambda.add("($N$L$N) -> $N {\n", MARKER_PARAMS, paramsList, MARKER_PARAMS_END, MARKER_LAMBDA_BODY).indent();
+        lambda.addStatement("$T $N=new $T()", StringBuffer.class, SB_VAR, StringBuffer.class);
+        CodeBlock argsList = makeRenamedArgsList(SB_VAR,variables);
+        lambda.addStatement("$N.$N($L)", SELF_VAR, loggerName, argsList);
+        lambda.addStatement("return $N.$N()", SB_VAR,"toString");
+        lambda.unindent().add("}; $N", MARKER_LAMBDA_END);
+        // note, poet builder does not accept nested statement codeblock, so instead of adding a statement, we add a codeblock
+        builder.addCode("return $N $L", MARKER_LAMBDA, lambda.build());
 
         MethodSpec method = builder.build();
 
         return method;
+    }
+
+    public static CodeBlock makeParamsList(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil) {
+        return CodeBlock.join(variables.stream().map(variable ->
+                CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), "__" + variable)).collect(Collectors.toList()), ", ");
+    }
+
+    public static CodeBlock makeRenamedArgsList(String sbVar, Collection<String> variables) {
+        List<String> variables2=new LinkedList<>();
+        if (sbVar!=null) variables2.add(sbVar);
+        variables2.addAll(variables);
+        return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(sbVar)?variable: "__" + variable))).collect(Collectors.toList()), ", ");
+    }
+    public static CodeBlock makeStringSequence(String head, Collection<String> variables) {
+        List<String> variables2=new LinkedList<>();
+        if (head!=null) variables2.add(head);
+        variables2.addAll(variables);
+        return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$S",variable) ).collect(Collectors.toList()), ", ");
     }
 
 
@@ -265,98 +293,34 @@ public class CompilerCommon {
 
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.PROPERTY_ORDER, Modifier.PUBLIC, Modifier.STATIC);
 
-        String args = "";
-        String args2 = "new String[] { $S ";
-
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
-
-        for (String key: variables) {
-
-            args2 = args2 + ", ";
-
-            args2=args2+ " " + "\""+ key+"\"";
-
-        }
-        fbuilder.initializer(args2 + "}", IS_A);
+        fbuilder.initializer("new $T {$L}", String[].class, makeStringSequence(IS_A,variables));
 
         return fbuilder.build();
     }
 
-    private FieldSpec generateFieldOutputs(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
-
+    private FieldSpec generateFieldOutputs(TemplateBindingsSchema bindingsSchema) {
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.OUTPUTS, Modifier.PUBLIC, Modifier.STATIC);
-
-        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
-
-        String args = "new String[] { ";
-
-        boolean first=true;
-
-        for (String key: variables) {
-            if (descriptorUtils.isOutput(key,bindingsSchema)) {
-                if (first) {
-                    first = false;
-                } else {
-                    args = args + ", ";
-                }
-                args = args + " " + "\"" + key + "\"";
-            }
-        }
-        fbuilder.initializer(args + "}");
-
+        List<String> outputs=variables.stream().filter(variable->descriptorUtils.isOutput(variable,bindingsSchema)).collect(Collectors.toList());
+        fbuilder.initializer("new $T {$L}", String[].class, makeStringSequence(null,outputs));
         return fbuilder.build();
     }
-    private FieldSpec generateFieldInputs(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
-
+    private FieldSpec generateFieldInputs(TemplateBindingsSchema bindingsSchema) {
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.INPUTS, Modifier.PUBLIC, Modifier.STATIC);
-
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
-
-        String args = "new String[] { ";
-
-        boolean first=true;
-
-        for (String key: variables) {
-            if (descriptorUtils.isInput(key,bindingsSchema)) {
-                if (first) {
-                    first = false;
-                } else {
-                    args = args + ", ";
-                }
-                args = args + " " + "\"" + key + "\"";
-            }
-        }
-        fbuilder.initializer(args + "}");
-
+        List<String> inputs=variables.stream().filter(variable->descriptorUtils.isInput(variable,bindingsSchema)).collect(Collectors.toList());
+        fbuilder.initializer("new $T {$L}", String[].class, makeStringSequence(null,inputs));
         return fbuilder.build();
     }
-    private FieldSpec generateFieldCompulsoryInputs(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
 
+    private FieldSpec generateFieldCompulsoryInputs(TemplateBindingsSchema bindingsSchema) {
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.COMPULSORY_INPUTS, Modifier.PUBLIC, Modifier.STATIC);
-
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
-
-        String args = "new String[] { ";
-
-        boolean first=true;
-
-        for (String key: variables) {
-            if (descriptorUtils.isCompulsoryInput(key,bindingsSchema)) {
-                if (first) {
-                    first = false;
-                } else {
-                    args = args + ", ";
-                }
-                args = args + " " + "\"" + key + "\"";
-            }
-        }
-        fbuilder.initializer(args + "}");
-
+        List<String> compulsoryInputs=variables.stream().filter(variable->descriptorUtils.isCompulsoryInput(variable,bindingsSchema)).collect(Collectors.toList());
+        fbuilder.initializer("new $T {$L}", String[].class, makeStringSequence(null,compulsoryInputs));
         return fbuilder.build();
     }
-
-
 
 
 
@@ -373,7 +337,7 @@ public class CompilerCommon {
         TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(packge,compilerUtil.beanNameClass(templateName, direction)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, fieldName,Modifier.FINAL, Modifier.PUBLIC);
         if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aBeanConverter2()");
-        fbuilder.initializer(" (Object [] record) -> { return $N(record); }",toBean);
+        fbuilder.initializer(" ($T $N) -> { return $N($N); }",Object[].class,"record",toBean,"record");
         return fbuilder.build();
     }
 
@@ -400,7 +364,7 @@ public class CompilerCommon {
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_SQL_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
 
 
-        fbuilder.initializer(" (Object [] record) -> { return $N(record).process($N); }", "toBean", Constants.A_BEAN_SQL_CONVERTER);
+        fbuilder.initializer(" ($T $N) -> { return $N($N).$N($N); }", Object[].class, "record", "toBean", "record", "process", Constants.A_BEAN_SQL_CONVERTER);
         return fbuilder.build();
     }
 
@@ -409,7 +373,7 @@ public class CompilerCommon {
         TypeName myType=ParameterizedTypeName.get(ClassName.get(Constants.CLIENT_PACKAGE, Constants.PROCESSOR_ARGS_INTERFACE),ClassName.get(String.class));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_RECORD_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
         if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aRecord2CsvConverter()");
-        fbuilder.initializer(" (Object [] record) -> { return $N(record).process($N); }", "toBean", Constants.A_ARGS_CSV_CONVERTER);
+        fbuilder.initializer(" ($T $N) -> { return $N($N).$N($N); }", Object[].class, "record", "toBean", "record", "process", Constants.A_ARGS_CSV_CONVERTER);
         return fbuilder.build();
     }
 
@@ -432,7 +396,7 @@ public class CompilerCommon {
         Map<String, List<Descriptor>> theVar = bindingsSchema.getVar();
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
-        builder.addStatement("$T $N=this", ClassName.get(packge,name), "self");
+        builder.addStatement("$T $N=this", ClassName.get(packge,name), SELF_VAR);
 
         String args = "";
         String args2 = "";
@@ -462,7 +426,7 @@ public class CompilerCommon {
 
 
 
-        builder.addStatement("return (" + args + ") -> { $T sb=new $T(); $N.$N(sb," + args2 + "); return sb.toString(); }", StringBuffer.class, StringBuffer.class, "self","sqlTuple");
+        builder.addStatement("return (" + args + ") -> { $T sb=new $T(); $N.$N(sb," + args2 + "); return sb.toString(); }", StringBuffer.class, StringBuffer.class, SELF_VAR,"sqlTuple");
 
         return builder.build();
     }
@@ -703,7 +667,7 @@ public class CompilerCommon {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
-        String var = "sb";
+        String var = SB_VAR;
 
         compilerUtil.specWithComment(builder);
 

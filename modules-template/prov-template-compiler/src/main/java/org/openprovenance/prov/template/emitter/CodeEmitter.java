@@ -1,10 +1,14 @@
 //package org.openprovenance.prov.template.emitter;
 package com.squareup.javapoet;
-import com.squareup.javapoet.*;
+import org.openprovenance.prov.template.emitter.*;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.openprovenance.prov.template.emitter.Statement.makeStatement;
 
 public class CodeEmitter {
 
@@ -33,7 +37,7 @@ public class CodeEmitter {
         });
 
 
-        de_indent();
+        unindent();
 
         /*
         System.out.println("# ++++++++++");
@@ -55,8 +59,14 @@ public class CodeEmitter {
          */
     }
 
-    private void emitCode(MethodSpec method, Set<String> names) {
+    private Method emitCode(MethodSpec method, Set<String> names) {
+        System.out.println("++++ method: " + method.name);
         if (names==null || names.contains(method.name)) {
+            System.out.println("YES");
+            Method methodResult=new Method();
+            methodResult.name=method.name;
+            methodResult.returnType=method.returnType.toString();
+            methodResult.parameters=method.parameters.stream().map(p -> new Parameter(p.name, p.type.toString())).collect(Collectors.toList());
 
             emitLine("def " + method.name + "(self" +
                     (method.parameters.isEmpty()?"":",") +
@@ -67,63 +77,82 @@ public class CodeEmitter {
                 emitLine(l.replace("//", "#"));
             });
 
-            CodeBlock codeBlock = method.code;
-            emitCode(codeBlock);
 
-            de_indent();
+
+            CodeBlock codeBlock = method.code;
+            methodResult.body=emitCode(codeBlock);
+
+            unindent();
             emitNewline();
+            System.out.println("methodResult: " + methodResult);
+            return methodResult;
+        } else {
+            return null;
         }
     }
 
-    private void emitCode(CodeBlock codeBlock) {
+    private List<Statement> emitCode(CodeBlock codeBlock) {
         CodeBlock.Builder builder = codeBlock.toBuilder();
+        List<Statement> statements=new LinkedList<>();
+        List<Element> elements=new LinkedList<>();
+
         int i=0;
-        //System.out.println("formatParts: " + builder.formatParts.size());
-        //System.out.println("formatParts: " + builder.args.size());
         for (String formatPart: builder.formatParts) {
             if (formatPart.equals("$[")) {
-                System.out.println("$[: start statement");
+                if (!elements.isEmpty()) {
+                    statements.add(makeStatement(elements));
+                }
+                elements=new LinkedList<>();
             } else if (formatPart.equals("$]")) {
-                System.out.println("$]: end statement");
+                if (!elements.isEmpty()) {
+                    statements.add(makeStatement(elements));
+                    elements = new LinkedList<>();
+                }
+            } else if (formatPart.startsWith("//") ) {
+                elements.add(new Comment(formatPart));
             } else if (formatPart.trim().equals("=")) {
-                System.out.println("$assignment");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals("return")) {
-                System.out.println("$return");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().isEmpty()) {
-                System.out.println("$space");
+
             } else if (formatPart.trim().equals(".")) {
-                System.out.println("$.");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals(",")) {
-                System.out.println("$,");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals("(")) {
-                System.out.println("$(");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals(")")) {
-                System.out.println("$)");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals("$<")) {
-                System.out.println("$<");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals("$>")) {
-                System.out.println("$>");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().startsWith(";")) {
-                System.out.println("$;");
+                if (!elements.isEmpty()) {
+                    statements.add(makeStatement(elements));
+                    elements=new LinkedList<>();
+                }
             } else if (formatPart.trim().startsWith("()")) {
-                System.out.println("$()");
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().startsWith("{")) {
                 System.out.println("${");
             } else if (formatPart.equals("$L") || formatPart.equals("$N") || formatPart.equals("$T")) {
-                System.out.print(formatPart);
                 Object arg_i = builder.args.get(i);
                 if (arg_i instanceof CodeBlock) {
-                    System.out.print(" ->> ");
-                    emitCode((CodeBlock) arg_i);
+                    elements.add(new Pair(formatPart,emitCode((CodeBlock) arg_i)));
                 } else {
-                    System.out.print(" -> " + arg_i);
+                    elements.add(new Pair(formatPart,arg_i));
                 }
                 i++;
             } else {
-                System.out.print(formatPart + " (other)");
+                elements.add(new Token(formatPart));
             }
-            System.out.println("");
         }
+        if (!elements.isEmpty()) {
+            statements.add(makeStatement(elements));
+        }
+        return statements;
     }
 
     private void emitNewline() {
@@ -157,7 +186,7 @@ public class CodeEmitter {
         indent++;
     }
 
-    private void de_indent() {
+    private void unindent() {
         indent--;
     }
 

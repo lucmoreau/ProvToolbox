@@ -230,7 +230,7 @@ public class CompilerCommon {
         CodeBlock.Builder lambda=CodeBlock.builder();
         CodeBlock paramsList= makeParamsList(variables, var, compilerUtil);
         lambda.add("($N$L$N) -> $N {\n", MARKER_PARAMS, paramsList, MARKER_PARAMS_END, MARKER_LAMBDA_BODY).indent();
-        lambda.addStatement("$T $N=new $T()", StringBuffer.class, SB_VAR, StringBuffer.class);
+        lambda.addStatement("$T $N=$N $T()", StringBuffer.class, SB_VAR, "new", StringBuffer.class);
         CodeBlock argsList = makeRenamedArgsList(SB_VAR,variables);
         lambda.addStatement("$N.$N($L)", SELF_VAR, loggerName, argsList);
         lambda.addStatement("return $N.$N()", SB_VAR,"toString");

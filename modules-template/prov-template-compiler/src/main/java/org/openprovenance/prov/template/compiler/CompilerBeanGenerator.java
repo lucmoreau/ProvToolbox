@@ -280,7 +280,9 @@ public class CompilerBeanGenerator {
 
         builder.addParameter(processorClassType(template,packge), PROCESSOR_PARAMETER_NAME);
 
-        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME, String.join(", ", fieldNames));
+        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
+                CodeBlock.join(fieldNames.stream().map(field ->
+                        CodeBlock.of("$N", field)).collect(Collectors.toList()), ","));
 
         return builder.build();
 
@@ -288,8 +290,6 @@ public class CompilerBeanGenerator {
 
 
     public void generateSimpleConfigsWithVariants(Locations locations, TemplatesCompilerConfig configs) {
-        //Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> allVariantsUpdates=new HashMap<>();
-
         variantTable.keySet().forEach(
                 templateName -> {
                     Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants=variantTable.get(templateName);

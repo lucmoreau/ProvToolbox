@@ -12,6 +12,8 @@ import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+import org.openprovenance.prov.template.emitter.minilanguage.Class;
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -152,7 +154,10 @@ public class CompilerBeanGenerator {
 
         final CodeEmitter codeEmitter = new CodeEmitter();
         codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
-        codeEmitter.parse(spec,null);
+        Class clazz=codeEmitter.parse(spec,null);
+
+        clazz.emit(new Python(codeEmitter.getSb(), 0));
+
 
         String pyDirectory = "target/py/";
         return new SpecificationFile(myfile, directory, fileName, packge,

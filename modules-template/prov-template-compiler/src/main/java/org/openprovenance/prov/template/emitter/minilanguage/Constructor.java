@@ -20,7 +20,11 @@ public class Constructor extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, boolean continueLine) {
-        emitter.emitLine( type + "()",continueLine);
+    public void emit(Python emitter, boolean continueLine, List<String> locals) {
+        if (type.equals("java.lang.StringBuffer")) {
+            emitter.emitLine( "[]",continueLine);
+        } else {
+            emitter.emitLine(type + "()", continueLine);
+        }
     }
 }

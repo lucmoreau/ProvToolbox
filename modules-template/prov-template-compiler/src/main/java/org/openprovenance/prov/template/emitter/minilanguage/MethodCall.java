@@ -3,7 +3,10 @@ package org.openprovenance.prov.template.emitter.minilanguage;
 import org.openprovenance.prov.template.emitter.Element;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class MethodCall extends Expression {
     private final Object object;
@@ -26,10 +29,16 @@ public class MethodCall extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, boolean continueLine) {
-        emitter.emitLine(object.toString(),continueLine);
-        emitter.emitContinueLine(".");
-        emitter.emitContinueLine(methodName);
+    public void emit(Python emitter, boolean continueLine, List<String> locals) {
+        if (object.equals("sb") && methodName.equals("toString")) {
+            emitter.emitLine("''.join(sb)", continueLine);
+            return;
+        }
+        emitter.emitLine(convertName(object.toString()),continueLine);
+        if (!methodName.equals("process")) { // this is lambda, and in java we need to call method
+            emitter.emitContinueLine(".");
+            emitter.emitContinueLine(methodName);
+        }
         emitter.emitContinueLine("(");
         // concat all arguments, with a comma separator
         boolean first=true;
@@ -40,9 +49,10 @@ public class MethodCall extends Expression {
                 emitter.emitContinueLine(",");
             }
             if (argument instanceof Expression) {
-                ((Expression) argument).emit(emitter);
+                ((Expression) argument).emit(emitter, true, locals);
             } else {
-                emitter.emitContinueLine(argument.toString());
+                emitter.emitContinueLine(localized(argument.toString(),locals));
+
             }
         }
         emitter.emitContinueLine(")");
@@ -50,4 +60,15 @@ public class MethodCall extends Expression {
             emitter.emitNewline();
         }
     }
+
+    static public String convertName(String string) {
+        if (table.containsKey(string)) {
+            return table.get(string);
+        }
+        return string;
+    }
+
+    static Map<String,String> table=new HashMap<>() {{
+        put("org.openprovenance.apache.commons.lang.StringEscapeUtils","StringEscapeUtils");
+    }};
 }

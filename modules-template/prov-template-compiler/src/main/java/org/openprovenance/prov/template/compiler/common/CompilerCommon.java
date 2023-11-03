@@ -13,6 +13,7 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -30,6 +31,9 @@ public class CompilerCommon {
     public static final String MARKER_LAMBDA = "/*#lambda#*/";
     public static final String MARKER_PARAMS = "/*#params#*/";
     public static final String MARKER_PARAMS_END = "/*#paramsend#*/";
+    public static final String MARKER_ENDIF = "/*#endif#*/";
+    public static final String MARKER_ELSE = "/*#else#*/";
+    public static final String MARKER_THEN = "/*#then#*/";
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
@@ -176,7 +180,9 @@ public class CompilerCommon {
 
         final CodeEmitter codeEmitter = new CodeEmitter();
         codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
-        codeEmitter.parse(bean, Set.of("args2csv"));
+        org.openprovenance.prov.template.emitter.minilanguage.Class clazz=codeEmitter.parse(bean, Set.of("args2csv", "logTemplate_block"));
+        clazz.emit(new Python(codeEmitter.getSb(), 0));
+
 
         String pyDirectory = "target/py/";
 
@@ -690,12 +696,12 @@ public class CompilerCommon {
             final boolean isQualifiedName = theVar.get(key).get(0) instanceof NameDescriptor; //the_var.get(key).get(0).get("@id") != null;
 
             constant = constant + ',';
-            builder.addStatement("$N.append($S)", var, constant);
+            builder.addStatement("$N.$N($S)", var, "append", constant);
             constant = "";
 
             if (String.class.equals(clazz)) {
-                String myStatement = "$N.append($N)";
-                String myEscapeStatement = "$N.append($T.escapeCsv($N))";
+                String myStatement = "$N.$N($N)";
+                String myEscapeStatement = "$N.$N($T.$N($N))";
                 boolean doEscape=false;
                 if (!isQualifiedName) {
                     doEscape = ((AttributeDescriptorList)theVar.get(key).get(0)).getItems().get(0).getEscape() !=null; //.the_var.get(key).get(0).get(0).get("@escape") != null;
@@ -703,28 +709,28 @@ public class CompilerCommon {
                         foundEscape=true;
                     }
                 }
-                builder.beginControlFlow("if ($N==null)", newName);
+                builder.beginControlFlow("if ($N==$L) $N", newName,null, MARKER_THEN);
                 if (legacy) {
-                    builder.addStatement("$N.append($N)", var, newName);  // in legacy format, we insert a null
+                    builder.addStatement("$N.$N($N)", var, "append", newName);  // in legacy format, we insert a null
                 }
-                builder.nextControlFlow("else");
+                builder.nextControlFlow("else $N", MARKER_ELSE);
 
                 if (doEscape) {
-                    builder.addStatement(myEscapeStatement, var, ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), newName);
+                    builder.addStatement(myEscapeStatement, var, "append", ClassName.get("org.openprovenance.apache.commons.lang", "StringEscapeUtils"), "escapeCsv", newName);
                 } else {
-                    builder.addStatement(myStatement, var, newName);
+                    builder.addStatement(myStatement, var, "append", newName);
                 }
-                builder.endControlFlow();
+                builder.endControlFlow("$N", MARKER_ENDIF);
             } else {
-                builder.beginControlFlow("if ($N==null)", newName);
-                builder.nextControlFlow("else");
-                builder.addStatement("$N.append($S)", var, constant);
-                builder.addStatement("$N.append($N)", var, newName);
-                builder.endControlFlow();
+                builder.beginControlFlow("if ($N==$L) $N", newName, null, MARKER_THEN);
+                builder.nextControlFlow("else $N", MARKER_ELSE);
+                builder.addStatement("$N.$N($S)", var, "append", constant);
+                builder.addStatement("$N.$N($N)", var, "append", newName);
+                builder.endControlFlow("$N", MARKER_ENDIF);
             }
         }
         constant = constant + (legacy ? ']' : "");
-        builder.addStatement("$N.append($S)", var, constant);
+        builder.addStatement("$N.$N($S)", var, "append", constant);
 
 
         return builder.build();

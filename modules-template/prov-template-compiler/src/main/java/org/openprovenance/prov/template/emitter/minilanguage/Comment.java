@@ -24,6 +24,10 @@ public class Comment extends Statement {
             }
         }
     }
+    public Comment(String comment) {
+        super(null);
+        this.comment=comment;
+    }
 
     @Override
     public String toString() {
@@ -33,7 +37,7 @@ public class Comment extends Statement {
     }
 
     @Override
-    public void emit(Python emitter) {
+    public void emit(Python emitter, List<String> locals) {
         emitter.emitBeginLine("# " + comment.substring(2).trim());
         emitter.emitNewline();
     }

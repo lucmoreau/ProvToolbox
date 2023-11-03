@@ -68,21 +68,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="jsweet-quickstart" target="11" />
-      <module name="modules-legacy" target="1.5" />
-      <module name="prov-explanations (1)" target="11" />
-      <module name="prov-explanations (2)" target="11" />
-      <module name="prov-interop-light" target="1.5" />
-      <module name="prov-json" target="9" />
       <module name="prov-jsonld-xml (1)" target="11" />
-      <module name="prov-rdf" target="11" />
       <module name="prov-scala" target="9" />
-      <module name="prov-sql" target="9" />
-      <module name="prov-xml" target="9" />
-      <module name="ProvToolbox-Tutorial5" target="11" />
-      <module name="ProvToolbox-Tutorial6" target="11" />
       <module name="toolbox" target="1.8" />
-      <module name="tutorial5" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

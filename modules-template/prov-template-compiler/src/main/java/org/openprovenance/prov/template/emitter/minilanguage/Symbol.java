@@ -20,7 +20,7 @@ public class Symbol extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, boolean continueLine) {
-        emitter.emitLine(symbol,continueLine);
+    public void emit(Python emitter, boolean continueLine, List<String> locals) {
+        emitter.emitLine(localized(symbol,locals),continueLine);
     }
 }

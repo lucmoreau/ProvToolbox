@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.emitter.minilanguage;
 import org.openprovenance.prov.template.emitter.Element;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Assignment extends Statement {
@@ -26,13 +27,14 @@ public class Assignment extends Statement {
                 '}';
     }
 
-    public void emit(Python emitter) {
+    public void emit(Python emitter, List<String> locals) {
         if (variable.equals("self")) {
             return;
         }
         emitter.emitBeginLine(variable);
         emitter.emitContinueLine("=");
-        value.emit(emitter, true);
+        value.emit(emitter, true, new LinkedList<>());
+        locals.add(variable);
         emitter.emitNewline();
     }
 }

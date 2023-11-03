@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.emitter.minilanguage;
 import org.openprovenance.prov.template.emitter.Element;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Lambda extends Expression {
@@ -23,7 +24,7 @@ public class Lambda extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, boolean continueLine) {
+    public void emit(Python emitter, boolean continueLine, List<String> locals) {
         // ahahah ... lambdas cannot be multiline
         emitter.emitLine("lambda ", continueLine);
         boolean first=true;
@@ -38,7 +39,7 @@ public class Lambda extends Expression {
         emitter.emitNewline();
         emitter.indent();
         for (Statement s: body) {
-            s.emit(emitter);
+            s.emit(emitter, new LinkedList<>());
         }
         emitter.unindent();
         emitter.emitNewline();

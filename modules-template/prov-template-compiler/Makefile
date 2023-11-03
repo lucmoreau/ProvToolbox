@@ -54,3 +54,7 @@ JSWEET_CLASSPATH=/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-templ
 
 jsc:
 	 cd target/libs/templates/templates_cli; java -jar   ~/.m2/repository/org/jsweet/jsweet-transpiler/4.0.0-SNAPSHOT/jsweet-transpiler-4.0.0-SNAPSHOT-jar-with-dependencies.jar  -i src/main/java --classpath $(JSWEET_CLASSPATH)  --targetVersion ES6 --jsout target/js --tsout target/ts --moduleResolution classic --candiesJsOut target/webapp/candies  --module none --verbose
+
+
+py:
+	export PYTHONPATH=target/py; python3 test.py

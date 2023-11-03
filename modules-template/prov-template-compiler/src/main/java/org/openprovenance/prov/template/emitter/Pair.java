@@ -13,7 +13,7 @@ public class Pair implements Element {
     public String toString() {
         return "Pair{" +
                 formatPart + "->'" +
-                arg.toString().substring(0,Math.min(arg.toString().length(),5)) +
+                ((arg==null)? null: arg.toString().substring(0,Math.min(arg.toString().length(),5))) +
                 '}';
     }
 
@@ -31,6 +31,12 @@ public class Pair implements Element {
             return ((Pair) o).getArg();
         }
         throw new UnsupportedOperationException("Cannot getArg from " + o);
+    }
+    static public String getFormat(Element o) {
+        if (o instanceof Pair) {
+            return ((Pair) o).getFormatPart();
+        }
+        throw new UnsupportedOperationException("Cannot getFormat from " + o);
     }
     static public boolean isPair(Element o) {
         return o instanceof Pair;

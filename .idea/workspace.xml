@@ -9,28 +9,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-core/prov-model/src/test/java/org/openprovenance/prov/model/StringTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/test/java/org/openprovenance/apache/commons/lang/StringTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Comment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/emitters/Python.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/BinaryOp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Class.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Conditional.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Field.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/dist/prov-jsweet-candy-java.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/dist/prov-jsweet-candy-java.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java/org/openprovenance/apache/commons/lang/StringEscapeUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java/src/main/java/org/openprovenance/apache/commons/lang/StringEscapeUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Assignment.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Assignment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/CodeEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/CodeEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Comment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Constructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Expression.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Expression.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Lambda.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Lambda.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Method.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/MethodCall.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Pair.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Pair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Parameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Parameter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Return.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Return.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Statement.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Statement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/Symbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Symbol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Assignment.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Assignment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Constructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Expression.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Expression.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Lambda.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Lambda.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Method.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Method.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Return.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Return.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Statement.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Statement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Symbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Symbol.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,37 +125,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;public&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-executable/toolbox/src/test/resources/pgo&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.General&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "public",
+    "git-widget-placeholder": "development2__0",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-executable/toolbox/src/test/resources/pgo",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="prov-template-compiler">
+        <option name="myModuleName" value="prov-template-compiler" />
+      </console-settings>
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
       <recent name="org.openprovenance.prov.template.emitter" />
       <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
-      <recent name="org.openprovenance.prov.model" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo" />
@@ -207,7 +214,35 @@
       <recent name="org.openprovenance.prov.model.builder" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.StringTest (1)">
+  <component name="RunManager" selected="JUnit.CompilerTest">
+    <configuration name="CompilerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-template-compiler" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="12" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.CompilerTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="RoundTripFromJavaJSONTest" type="JUnit" factoryName="JUnit">
       <module name="prov-jsonld" />
       <extension name="net.ashald.envfile">
@@ -280,58 +315,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StringTest.testStringEscapeUtils" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsweet-candy-java" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.apache.commons.lang.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.apache.commons.lang" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.apache.commons.lang.StringTest" />
-      <option name="METHOD_NAME" value="testStringEscapeUtils" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StringTest.testStringEscapeUtils2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsweet-candy-java" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.apache.commons.lang.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.apache.commons.lang" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.apache.commons.lang.StringTest" />
-      <option name="METHOD_NAME" value="testStringEscapeUtils2" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="StringTest.testStringEscapeUtils3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-jsweet-candy-java" />
       <extension name="coverage">
@@ -375,6 +358,39 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="prov-template-compiler" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.11" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-template/prov-template-compiler" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules-template/prov-template-compiler/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
@@ -420,18 +436,18 @@
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
       <item itemvalue="JUnit.StringTest" />
       <item itemvalue="JUnit.StringTest (1)" />
-      <item itemvalue="JUnit.StringTest.testStringEscapeUtils" />
-      <item itemvalue="JUnit.StringTest.testStringEscapeUtils2" />
       <item itemvalue="JUnit.StringTest.testStringEscapeUtils3" />
+      <item itemvalue="JUnit.CompilerTest" />
+      <item itemvalue="Python.test" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.CompilerTest" />
+        <item itemvalue="Python.test" />
         <item itemvalue="JUnit.StringTest (1)" />
         <item itemvalue="JUnit.StringTest" />
         <item itemvalue="JUnit.StringTest.testStringEscapeUtils3" />
-        <item itemvalue="JUnit.StringTest.testStringEscapeUtils2" />
-        <item itemvalue="JUnit.StringTest.testStringEscapeUtils" />
       </list>
     </recent_temporary>
   </component>
@@ -829,7 +845,7 @@
       <workItem from="1698212176966" duration="59616000" />
       <workItem from="1698696945408" duration="249000" />
       <workItem from="1698697236048" duration="9444000" />
-      <workItem from="1698748365341" duration="40614000" />
+      <workItem from="1698748365341" duration="65945000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1122,6 +1138,7 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$PC1BuilderTest.ic" NAME="PC1BuilderTest Coverage Results" MODIFIED="1696686208827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.notation.*</FILTER>
     </SUITE>
+    <SUITE FILE_PATH="coverage/ProvToolbox$test.coverage" NAME="test Coverage Results" MODIFIED="1699017257868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-compiler" />
     <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.template.*</FILTER>
     </SUITE>

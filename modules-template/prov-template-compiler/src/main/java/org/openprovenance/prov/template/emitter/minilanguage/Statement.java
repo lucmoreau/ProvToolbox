@@ -42,7 +42,15 @@ public class Statement {
         return elements;
     }
 
-    public void emit(Python emitter) {
+    public void emit(Python emitter, List<String> locals) {
         emitter.emitLine(this.toString());
+    }
+
+    static public String localized(String str, List<String> locals) {
+        if (str.startsWith("\"") || locals.contains(str)) {
+            return str;
+        } else {
+            return "self."+str;
+        }
     }
 }

@@ -23,7 +23,7 @@ public class Expression extends Statement {
             return new Symbol((String)getArg(elements.get(0)), elements);
         } else if (elements.size()>1
                 && isPair(elements.get(0))
-                && getArg(elements.get(0)).equals(MARKER_LAMBDA)) {
+                && MARKER_LAMBDA.equals(getArg(elements.get(0)))) {
             List<Element> ll=elements.subList(1,elements.size());
             assert ll.size()==1;
             List<Statement> parameters_and_body=((List<Statement>) getArg(ll.get(0))).stream().map(x->makeStatement(x.getElements())).collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class Expression extends Statement {
 
         }  else if (elements.size()>1
                 && isPair(elements.get(0))
-                && getArg(elements.get(0)).equals("new")) {
+                && "new".equals(getArg(elements.get(0)))) {
             return new Constructor(getArg(elements.get(1)).toString(), elements);
 
         } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals(".")) {
@@ -69,17 +69,34 @@ public class Expression extends Statement {
             } else if (allArgsIncludingMarkers.size()==3
                     && allArgsIncludingMarkers.get(0).equals(new Token("("))
                     && allArgsIncludingMarkers.get(2).equals(new Token(")"))) {
-                Object arg=((Pair) allArgsIncludingMarkers.get(1)).getArg();
+                System.out.println("allArgsIncludingMarkers=" + allArgsIncludingMarkers);
+                Object arg=getArg( allArgsIncludingMarkers.get(1));
+                String format=getFormat( allArgsIncludingMarkers.get(1));
                 if (arg instanceof List) {
-                    List<Statement> ll=(List<Statement>)arg;
-                    assert ll.size()==1;
-                    List<Element> _elements=ll.get(0).getElements();
-                    List<Object> args=_elements.stream().filter(x->x instanceof Pair).map(x->((Pair)x).getArg()).collect(Collectors.toList());
-                    return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(),args, elements);
+                    List<Statement> ll = (List<Statement>) arg;
+                    assert ll.size() == 1;
+                    List<Element> _elements = ll.get(0).getElements();
+                    List<Object> args = _elements.stream().filter(x -> x instanceof Pair).map(x -> ((Pair) x).getArg()).collect(Collectors.toList());
+                    return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), args, elements);
+                } else if (arg instanceof String) {
+                    List<Object> args = new LinkedList<>();
+                    if (format.equals("$S")) {
+                        args.add("\"" + arg + "\"");
+                    } else {
+                        args.add(arg);
+                    }
+                    return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), args, elements);
+
                 } else {
                     throw new UnsupportedOperationException("Cannot handle "+arg);
                 }
+            } else if (allArgsIncludingMarkers.get(0).equals(new Token("("))) {
+                return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), List.of(makeExpression(allArgsIncludingMarkers.subList(1,allArgsIncludingMarkers.size()))), elements);
+            } else {
+                // falling through
             }
+        } else if (elements.size()>=3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("==")) {  // binary operator
+            return new BinaryOp(getArg(elements.get(0)), (String) getToken(elements.get(1)), getArg(elements.get(2)), elements);
         }
         return new Expression(elements);
     }
@@ -91,10 +108,10 @@ public class Expression extends Statement {
                 '}';
     }
 
-    public void emit(Python emitter) {
-        emit(emitter,false);
+    public void emit(Python emitter, List<String> locals) {
+        emit(emitter, false,  locals);
     }
-    public void emit(Python emitter, boolean continueLine) {
+    public void emit(Python emitter, boolean continueLine, List<String> locals) {
         emitter.emitLine("#" + this.toString());
     }
 }

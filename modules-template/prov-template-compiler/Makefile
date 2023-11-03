@@ -57,4 +57,4 @@ jsc:
 
 
 py:
-	export PYTHONPATH=target/py; python3 test.py
+	export PYTHONPATH=target/py:src/test/python; python3 test.py

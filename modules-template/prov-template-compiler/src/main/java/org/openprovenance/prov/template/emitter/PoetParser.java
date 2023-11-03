@@ -14,19 +14,21 @@ import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.emitter.minilanguage.Expression.makeExpression;
 import static org.openprovenance.prov.template.emitter.minilanguage.Statement.makeStatement;
 
-public class CodeEmitter {
+public class PoetParser {
 
     public StringBuffer getSb() {
         return sb;
     }
 
     private StringBuffer sb=new StringBuffer();
-    public CodeEmitter() {
+    public PoetParser() {
     }
 
     public Class parse (TypeSpec spec, Set<String> names) {
-        emitLine("\nfrom dataclasses import dataclass\n\n");
-
+        emitLine("\nfrom dataclasses import dataclass");
+        emitLine("from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils");
+        emitNewline();
+        emitNewline();
 
 
         List<Field> fields=new LinkedList<>();

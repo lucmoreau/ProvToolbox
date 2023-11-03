@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
-import com.squareup.javapoet.CodeEmitter;
+import com.squareup.javapoet.PoetParser;
 import org.apache.commons.lang3.tuple.Triple;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
@@ -152,16 +152,16 @@ public class CompilerBeanGenerator {
 
         JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
 
-        final CodeEmitter codeEmitter = new CodeEmitter();
-        codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
-        Class clazz=codeEmitter.parse(spec,null);
+        final PoetParser poetParser = new PoetParser();
+        poetParser.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
+        Class clazz= poetParser.parse(spec,null);
 
-        clazz.emit(new Python(codeEmitter.getSb(), 0));
+        clazz.emit(new Python(poetParser.getSb(), 0));
 
 
         String pyDirectory = "target/py/";
         return new SpecificationFile(myfile, directory, fileName, packge,
-                pyDirectory, myfile.typeSpec.name+".py", () ->codeEmitter.getSb().toString());
+                pyDirectory, myfile.typeSpec.name+".py", () -> poetParser.getSb().toString());
 
 
     }

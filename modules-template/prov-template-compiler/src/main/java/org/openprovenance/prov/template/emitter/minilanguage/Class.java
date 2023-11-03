@@ -23,6 +23,7 @@ public class Class {
 
     public void emit(Python emitter) {
 
+
         //emitter.emitLine("@dataclass");
         emitter.emitBeginLine("class " + name + ":");
         emitter.emitNewline();

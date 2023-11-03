@@ -1,17 +1,11 @@
 
 from Template_blockBuilder import Template_blockBuilder
 from Template_blockBean import Template_blockBean
+import sys
 
+print(sys.path)
 
-
-
-        
-class StringEscapeUtils:
-
-    def escapeCsv(x):
-        return '"' + x + '"'
-
-
+from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils
 
 
 

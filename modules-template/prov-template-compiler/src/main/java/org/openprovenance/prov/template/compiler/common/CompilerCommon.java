@@ -176,7 +176,7 @@ public class CompilerCommon {
 
         final CodeEmitter codeEmitter = new CodeEmitter();
         codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
-        codeEmitter.emitCode(bean, Set.of("args2csv"));
+        codeEmitter.parse(bean, Set.of("args2csv"));
 
         String pyDirectory = "target/py/";
 
@@ -229,7 +229,7 @@ public class CompilerCommon {
 
         CodeBlock.Builder lambda=CodeBlock.builder();
         CodeBlock paramsList= makeParamsList(variables, var, compilerUtil);
-        lambda.add("($N$L$N) -> $N {\n", MARKER_PARAMS, paramsList, MARKER_PARAMS_END, MARKER_LAMBDA_BODY).indent();
+        lambda.add("($L) -> $N {\n", paramsList, MARKER_LAMBDA_BODY).indent();
         lambda.addStatement("$T $N=$N $T()", StringBuffer.class, SB_VAR, "new", StringBuffer.class);
         CodeBlock argsList = makeRenamedArgsList(SB_VAR,variables);
         lambda.addStatement("$N.$N($L)", SELF_VAR, loggerName, argsList);
@@ -290,12 +290,9 @@ public class CompilerCommon {
     }
 
     private FieldSpec generateFieldPropertyOrder(TemplateBindingsSchema bindingsSchema) {
-
         FieldSpec.Builder fbuilder=FieldSpec.builder(ArrayTypeName.of(String.class), Constants.PROPERTY_ORDER, Modifier.PUBLIC, Modifier.STATIC);
-
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
         fbuilder.initializer("new $T {$L}", String[].class, makeStringSequence(IS_A,variables));
-
         return fbuilder.build();
     }
 

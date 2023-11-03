@@ -26,16 +26,16 @@ public class Pair implements Element {
     }
 
 
-    static Object getArg(Element o) {
+    static public Object getArg(Element o) {
         if (o instanceof Pair) {
             return ((Pair) o).getArg();
         }
         throw new UnsupportedOperationException("Cannot getArg from " + o);
     }
-    static boolean isPair(Element o) {
+    static public boolean isPair(Element o) {
         return o instanceof Pair;
     }
-    static String getToken(Element o) {
+    static public String getToken(Element o) {
         if (o instanceof Token) {
             return ((Token ) o).token;
         }

@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.emitter;
+package org.openprovenance.prov.template.emitter.minilanguage;
 
 public class Parameter {
     public String name;

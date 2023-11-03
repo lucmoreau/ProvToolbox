@@ -1,6 +1,10 @@
 //package org.openprovenance.prov.template.emitter;
 package com.squareup.javapoet;
 import org.openprovenance.prov.template.emitter.*;
+import org.openprovenance.prov.template.emitter.minilanguage.Method;
+import org.openprovenance.prov.template.emitter.minilanguage.Parameter;
+import org.openprovenance.prov.template.emitter.minilanguage.Statement;
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.emitter.Statement.makeStatement;
+import static org.openprovenance.prov.template.emitter.minilanguage.Statement.makeStatement;
 
 public class CodeEmitter {
 
@@ -20,20 +24,23 @@ public class CodeEmitter {
     public CodeEmitter() {
     }
 
-    public void emitCode(TypeSpec spec, Set<String> names) {
+    public void parse(TypeSpec spec, Set<String> names) {
         emitNewline();
         emitLine("from dataclasses import dataclass");
         emitNewline();
         emitJavaDoc(spec.javadoc);
         emitClassName(spec.name);
         spec.fieldSpecs.forEach(field -> {
-            emitCode(field,names);
+            parse(field,names);
             emitNewline();
         });
         
         spec.methodSpecs.forEach(method -> {
-            emitCode(method, names);
-            emitNewline();
+            Method m= parse(method, names);
+            if (m!=null) {
+                m.emit(new Python(sb, indent));
+                emitNewline();
+            }
         });
 
 
@@ -59,7 +66,7 @@ public class CodeEmitter {
          */
     }
 
-    private Method emitCode(MethodSpec method, Set<String> names) {
+    private Method parse(MethodSpec method, Set<String> names) {
         System.out.println("++++ method: " + method.name);
         if (names==null || names.contains(method.name)) {
             System.out.println("YES");
@@ -68,22 +75,10 @@ public class CodeEmitter {
             methodResult.returnType=method.returnType.toString();
             methodResult.parameters=method.parameters.stream().map(p -> new Parameter(p.name, p.type.toString())).collect(Collectors.toList());
 
-            emitLine("def " + method.name + "(self" +
-                    (method.parameters.isEmpty()?"":",") +
-                    method.parameters.stream().map(p -> p.name).collect(Collectors.joining(", ")) + "):");
-            indent();
-
-            Arrays.asList(method.code.toString().split("\n")).forEach(l -> {
-                emitLine(l.replace("//", "#"));
-            });
-
-
 
             CodeBlock codeBlock = method.code;
-            methodResult.body=emitCode(codeBlock);
+            methodResult.body= parse(codeBlock);
 
-            unindent();
-            emitNewline();
             System.out.println("methodResult: " + methodResult);
             return methodResult;
         } else {
@@ -91,7 +86,7 @@ public class CodeEmitter {
         }
     }
 
-    private List<Statement> emitCode(CodeBlock codeBlock) {
+    private List<Statement> parse(CodeBlock codeBlock) {
         CodeBlock.Builder builder = codeBlock.toBuilder();
         List<Statement> statements=new LinkedList<>();
         List<Element> elements=new LinkedList<>();
@@ -109,7 +104,11 @@ public class CodeEmitter {
                     elements = new LinkedList<>();
                 }
             } else if (formatPart.startsWith("//") ) {
-                elements.add(new Comment(formatPart));
+                if (!elements.isEmpty()) {
+                    statements.add(makeStatement(elements));
+                    elements = new LinkedList<>();
+                }
+                elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals("=")) {
                 elements.add(new Token(formatPart));
             } else if (formatPart.trim().equals("return")) {
@@ -140,7 +139,7 @@ public class CodeEmitter {
             } else if (formatPart.equals("$L") || formatPart.equals("$N") || formatPart.equals("$T")) {
                 Object arg_i = builder.args.get(i);
                 if (arg_i instanceof CodeBlock) {
-                    elements.add(new Pair(formatPart,emitCode((CodeBlock) arg_i)));
+                    elements.add(new Pair(formatPart, parse((CodeBlock) arg_i)));
                 } else {
                     elements.add(new Pair(formatPart,arg_i));
                 }
@@ -199,19 +198,19 @@ public class CodeEmitter {
         emitLine("");
     }
 
-    public void emitJavaDoc(CodeBlock javadoc) {
-        Arrays.asList(javadoc.toString().split("\n")).forEach(s -> emitLine("# " + s));
+    public List<Statement>  emitJavaDoc(CodeBlock javadoc) {
+        return parse(javadoc);
     }
-    public void emitCode(FieldSpec f) {
-        emitCode(f,null);
+    public void parse(FieldSpec f) {
+        parse(f,null);
     }
 
-    public void emitCode(FieldSpec f, Set<String> names) {
+    public void parse(FieldSpec f, Set<String> names) {
         if (names==null || names.contains(f.name)) {
             emitJavaDoc(f.javadoc);
-            emitBeginLine(f.name + ":  " + convertType(f.type));
-            if (f.initializer != null) {
-                emitContinueLine(f.initializer.toString());
+            emitBeginLine(f.name + ": " + convertType(f.type));
+            if (f.initializer != null && !f.initializer.toString().trim().isEmpty()) {
+                emitContinueLine(" = " + f.initializer.toString().replace("\"", "'"));
             }
             emitNewline();
         }

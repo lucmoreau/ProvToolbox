@@ -1,4 +1,7 @@
-package org.openprovenance.prov.template.emitter;
+package org.openprovenance.prov.template.emitter.minilanguage;
+
+import org.openprovenance.prov.template.emitter.Element;
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import java.util.List;
 
@@ -15,5 +18,9 @@ public class Constructor extends Expression {
         return "Constructor{" +
                 "type='" + type + '\'' +
                 '}';
+    }
+
+    public void emit(Python emitter, boolean continueLine) {
+        emitter.emitLine( type + "()",continueLine);
     }
 }

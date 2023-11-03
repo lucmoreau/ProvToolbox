@@ -1,4 +1,9 @@
-package org.openprovenance.prov.template.emitter;
+package org.openprovenance.prov.template.emitter.minilanguage;
+
+import org.openprovenance.prov.template.emitter.Element;
+import org.openprovenance.prov.template.emitter.Pair;
+import org.openprovenance.prov.template.emitter.Token;
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,7 +11,6 @@ import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.MARKER_LAMBDA;
 import static org.openprovenance.prov.template.emitter.Pair.*;
-import static org.openprovenance.prov.template.emitter.Statement.makeStatement;
 
 public class Expression extends Statement {
 
@@ -15,15 +19,43 @@ public class Expression extends Statement {
     }
 
     static public Expression makeExpression(List<Element> elements) {
-        if (elements.size()==1) {
+        if (elements.size()==1 && elements.get(0) instanceof Pair) {
             return new Symbol((String)getArg(elements.get(0)), elements);
         } else if (elements.size()>1
                 && isPair(elements.get(0))
                 && getArg(elements.get(0)).equals(MARKER_LAMBDA)) {
             List<Element> ll=elements.subList(1,elements.size());
             assert ll.size()==1;
-            List<Statement> body=((List<Statement>) getArg(ll.get(0))).stream().map(x->makeStatement(x.getElements())).collect(Collectors.toList());
-            return new Lambda(body, elements);
+            List<Statement> parameters_and_body=((List<Statement>) getArg(ll.get(0))).stream().map(x->makeStatement(x.getElements())).collect(Collectors.toList());
+            List<Element> parameterElements=parameters_and_body.get(0).getElements();
+            assert parameterElements.size()>4;
+            assert parameterElements.get(0).equals(new Token("("));
+            assert parameterElements.get(1) instanceof Pair;
+            assert parameterElements.get(2).equals(new Token(") -> "));
+            List<Element> _params=((List<Expression>)getArg(parameterElements.get(1))).get(0).getElements();
+            List<Parameter> parameters=new LinkedList<>();
+            Parameter parameter=null;
+            for (Element e: _params) {
+                if (e instanceof Pair) {
+                    Pair p=(Pair)e;
+                    if (p.getFormatPart().equals("$T")) {
+                        parameter=new Parameter(null, p.getArg().toString());
+                    } else if (p.getFormatPart().equals("$N")) {
+                        assert parameter != null;
+                        parameter.name = p.getArg().toString();
+                        parameters.add(parameter);
+                    }
+                } else if (e instanceof Token) {
+                    assert getToken(e).equals(", ");
+                } else {
+                    throw new UnsupportedOperationException("Cannot handle "+e);
+                }
+            }
+
+
+            List<Statement> body=parameters_and_body.subList(1,parameters_and_body.size());
+
+            return new Lambda(parameters, body, elements);
 
         }  else if (elements.size()>1
                 && isPair(elements.get(0))
@@ -57,5 +89,12 @@ public class Expression extends Statement {
         return "Expression{" +
                 "elements=" + elements +
                 '}';
+    }
+
+    public void emit(Python emitter) {
+        emit(emitter,false);
+    }
+    public void emit(Python emitter, boolean continueLine) {
+        emitter.emitLine("#" + this.toString());
     }
 }

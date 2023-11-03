@@ -1,4 +1,7 @@
-package org.openprovenance.prov.template.emitter;
+package org.openprovenance.prov.template.emitter.minilanguage;
+
+import org.openprovenance.prov.template.emitter.Element;
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import java.util.List;
 
@@ -21,5 +24,15 @@ public class Assignment extends Statement {
                 ", variable=" + variable +
                 ", value=" + value +
                 '}';
+    }
+
+    public void emit(Python emitter) {
+        if (variable.equals("self")) {
+            return;
+        }
+        emitter.emitBeginLine(variable);
+        emitter.emitContinueLine("=");
+        value.emit(emitter, true);
+        emitter.emitNewline();
     }
 }

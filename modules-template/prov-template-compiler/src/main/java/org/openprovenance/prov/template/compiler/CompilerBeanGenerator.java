@@ -152,7 +152,7 @@ public class CompilerBeanGenerator {
 
         final CodeEmitter codeEmitter = new CodeEmitter();
         codeEmitter.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
-        codeEmitter.emitCode(spec,null);
+        codeEmitter.parse(spec,null);
 
         String pyDirectory = "target/py/";
         return new SpecificationFile(myfile, directory, fileName, packge,

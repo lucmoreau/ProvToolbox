@@ -182,7 +182,8 @@ public class CompilerCommon {
         } else {
             final PoetParser poetParser = new PoetParser();
             poetParser.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
-            org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(bean, Set.of("args2csv", "logTemplate_block"));
+            Set<String> selectedExports = Set.of("args2csv", "log" + myfile.typeSpec.name.replace("Builder", ""));
+            org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(bean, selectedExports);
             clazz.emit(new Python(poetParser.getSb(), 0));
 
             String pyDirectory = locations.python_dir + "/" + packageName.replace('.', '/') + "/";

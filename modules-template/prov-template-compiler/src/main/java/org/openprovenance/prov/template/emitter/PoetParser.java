@@ -24,7 +24,7 @@ public class PoetParser {
     public PoetParser() {
     }
 
-    public Class parse (TypeSpec spec, Set<String> names) {
+    public Class parse (TypeSpec spec, Set<String> selectedExports) {
         emitLine("\nfrom dataclasses import dataclass");
         emitLine("from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils");
         emitNewline();
@@ -33,7 +33,7 @@ public class PoetParser {
 
         List<Field> fields=new LinkedList<>();
         spec.fieldSpecs.forEach(field -> {
-            Field f=parse(field,names);
+            Field f=parse(field,selectedExports);
             if (f!=null) {
                 fields.add(f);
             }
@@ -41,7 +41,7 @@ public class PoetParser {
 
         List<Method> methods=new LinkedList<>();
         spec.methodSpecs.forEach(method -> {
-            Method m= parse(method, names);
+            Method m= parse(method, selectedExports);
             if (m!=null) {
                 methods.add(m);
             }

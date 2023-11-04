@@ -18,11 +18,13 @@ public class DateTest extends TestCase {
         XMLGregorianCalendar noTZtime = pFactory.newISOTime(date);
         XMLGregorianCalendar yesTZtime = pFactory.newISOTimeTZ(date);
 
-  //      System.out.println("time zone (no):  " + noTZtime);
-    //    System.out.println("time zone (yes): " + yesTZtime);
+        System.out.println("time zone (no):  " + noTZtime);
+        System.out.println("time zone (yes): " + yesTZtime);
+        System.out.println("time now: " + pFactory.newTimeNow());
 
         assertEquals("original time format, with offset, not preserved", yesTZtime.toXMLFormat(), date);
-        assertEquals("transformed format is not expressed in default timezone", noTZtime.getTimezone(),pFactory.newTimeNow().getTimezone());
+        // this test does not work, the result depends on the timezone of the date and where the test in run
+        // assertEquals("transformed format is not expressed in default timezone", noTZtime.getTimezone(),pFactory.newTimeNow().getTimezone());
     }
 
     public void testDate2() {

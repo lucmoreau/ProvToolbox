@@ -13,6 +13,7 @@
     "logger_package": "org.openprovenance.pokemongo.client",
     "script": "pokemon_run",
     "script_dir": "target/bin",
+    "python_dir": "target/generated-python",
     "jsweet": true,
     "sbean": true,
     "jsonschema": "schema-pg.json",

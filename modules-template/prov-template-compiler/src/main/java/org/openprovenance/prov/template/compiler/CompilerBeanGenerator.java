@@ -144,7 +144,6 @@ public class CompilerBeanGenerator {
 
 
         }
-        System.out.println(builder);
 
 
         TypeSpec spec = builder.build();

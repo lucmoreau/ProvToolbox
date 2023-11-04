@@ -53,9 +53,7 @@ public class PoetParser {
     }
 
     private Method parse(MethodSpec method, Set<String> names) {
-        System.out.println("++++ method: " + method.name);
         if (names==null || names.contains(method.name)) {
-            System.out.println("YES");
             Method methodResult=new Method();
             methodResult.name=method.name;
             methodResult.returnType=method.returnType.toString();
@@ -64,8 +62,6 @@ public class PoetParser {
 
             CodeBlock codeBlock = method.code;
             methodResult.body= parse(codeBlock);
-
-            System.out.println("methodResult: " + methodResult);
             return methodResult;
         } else {
             return null;
@@ -131,7 +127,7 @@ public class PoetParser {
             } else if (formatPart.trim().startsWith("()")) {
                 elements.add(new Token(formatPart));
             } else if (formatPart.trim().startsWith("{")) {
-                System.out.println("${");
+                //System.out.println("${");
             } else if (formatPart.equals("$L") || formatPart.equals("$S") || formatPart.equals("$N") || formatPart.equals("$T")) {
                 Object arg_i = builder.args.get(i);
                 if (arg_i instanceof CodeBlock) {
@@ -143,7 +139,7 @@ public class PoetParser {
                         if (arg_i_str.contains(MARKER_ENDIF) && conditional != null) {
                             statements.add(makeStatement(elements)); // ISSUE: making statement and not statements, what about other statements)
                             conditional.alternates = statements;
-                            System.out.println("conditional.alternates=" + conditional.alternates);
+                            //System.out.println("conditional.alternates=" + conditional.alternates);
                             // restore previous statements, and add conditional
                             statements = back;
                             statements.add(conditional);
@@ -153,13 +149,13 @@ public class PoetParser {
                         if (arg_i_str.contains(MARKER_ELSE) && conditional != null) {
                             statements.add(makeStatement(elements));
                             conditional.consequents=statements;
-                            System.out.println("conditional.consequents=" + conditional.consequents);
+                            //System.out.println("conditional.consequents=" + conditional.consequents);
                             statements = new LinkedList<>();
                             elements = new LinkedList<>();
                         }
                         if (arg_i_str.contains(MARKER_THEN) && conditional != null) {
                             conditional.predicate=makeExpression(elements);
-                            System.out.println("conditional.predicate=" + conditional.predicate);
+                            //System.out.println("conditional.predicate=" + conditional.predicate);
                             back=statements;
                             statements=new LinkedList<>();
                             elements=new LinkedList<>();

@@ -13,7 +13,6 @@ public class Return extends Statement {
 
     public Return(List<Element> value, List<Element> elements) {
         super(elements);
-        System.out.println("+++Return: " + value);
         this.value=makeExpression(value);
     }
 

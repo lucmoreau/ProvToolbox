@@ -13,6 +13,7 @@
 	"configurator_package": "org.openprovenance.prov.template.library.plead.client.configurator",
 	"script": "tmp_run",
 	"script_dir": "target/bin",
+	"python_dir": "target/generated-python",
 	"sbean": true,
 	"jsweet": true,
 	"jsonschema": "schema-plead.json",

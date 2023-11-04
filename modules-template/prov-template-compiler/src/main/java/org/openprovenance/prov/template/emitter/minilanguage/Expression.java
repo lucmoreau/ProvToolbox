@@ -69,7 +69,6 @@ public class Expression extends Statement {
             } else if (allArgsIncludingMarkers.size()==3
                     && allArgsIncludingMarkers.get(0).equals(new Token("("))
                     && allArgsIncludingMarkers.get(2).equals(new Token(")"))) {
-                System.out.println("allArgsIncludingMarkers=" + allArgsIncludingMarkers);
                 Object arg=getArg( allArgsIncludingMarkers.get(1));
                 String format=getFormat( allArgsIncludingMarkers.get(1));
                 if (arg instanceof List) {

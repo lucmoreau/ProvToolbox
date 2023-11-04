@@ -12,7 +12,7 @@ import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
-import org.openprovenance.prov.template.emitter.minilanguage.Class;
+
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
@@ -152,18 +152,20 @@ public class CompilerBeanGenerator {
 
         JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
 
-        final PoetParser poetParser = new PoetParser();
-        poetParser.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
-        Class clazz= poetParser.parse(spec,null);
+        if (locations.python_dir==null) {
+            return new SpecificationFile(myfile, directory, fileName, packge);
+        } else {
+            final PoetParser poetParser = new PoetParser();
+            poetParser.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
+            org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(spec, null);
 
-        clazz.emit(new Python(poetParser.getSb(), 0));
+            clazz.emit(new Python(poetParser.getSb(), 0));
 
+            String pyDirectory = locations.python_dir + "/" + packge.replace('.', '/') + "/";
 
-        String pyDirectory = "target/py/";
-        return new SpecificationFile(myfile, directory, fileName, packge,
-                pyDirectory, myfile.typeSpec.name+".py", () -> poetParser.getSb().toString());
-
-
+            return new SpecificationFile(myfile, directory, fileName, packge,
+                    pyDirectory, myfile.typeSpec.name + ".py", () -> poetParser.getSb().toString());
+        }
     }
 
 

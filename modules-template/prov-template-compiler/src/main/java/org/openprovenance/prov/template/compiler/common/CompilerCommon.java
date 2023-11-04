@@ -176,21 +176,21 @@ public class CompilerCommon {
 
 
         JavaFile myfile = compilerUtil.specWithComment(bean, configs, packageName, stackTraceElement);
+        SpecificationFile specFile;
+        if (locations.python_dir==null) {
+            specFile =  new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName);
+        } else {
+            final PoetParser poetParser = new PoetParser();
+            poetParser.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
+            org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(bean, Set.of("args2csv", "logTemplate_block"));
+            clazz.emit(new Python(poetParser.getSb(), 0));
 
+            String pyDirectory = locations.python_dir + "/" + packageName.replace('.', '/') + "/";
 
-        final PoetParser poetParser = new PoetParser();
-        poetParser.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
-        org.openprovenance.prov.template.emitter.minilanguage.Class clazz= poetParser.parse(bean, Set.of("args2csv", "logTemplate_block"));
-        clazz.emit(new Python(poetParser.getSb(), 0));
-
-
-        String pyDirectory = "target/py/";
-
-        SpecificationFile specFile=new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName,
-                pyDirectory, myfile.typeSpec.name+".py", () -> poetParser.getSb().toString());
-
-
-        return Pair.of(specFile,successorTable);
+            specFile = new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName,
+                    pyDirectory, myfile.typeSpec.name + ".py", () -> poetParser.getSb().toString());
+        }
+        return Pair.of(specFile, successorTable);
     }
 
 

@@ -13,6 +13,7 @@ public class Locations {
     final private String configurator_package;
     final private String logger_package;
     final private String configurator_package2;
+    public final String python_dir;
     private String config_common_package;
     private String config_backend;
     private String config_integrator_package;
@@ -39,6 +40,7 @@ public class Locations {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
         this.compositeTableConfigurator=COMPOSITE + configs.tableConfigurator;
+        this.python_dir=configs.python_dir;
 
         configurator_package=configs.configurator_package;
         configurator_package2=configs.configurator_package+ CONFIG2_EXTENSION;

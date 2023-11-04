@@ -13,6 +13,7 @@
     "configurator_package": "org.example.templates.block.client.configurator",
     "script": "example_run",
     "script_dir": "target/libs/bin",
+    "python_dir": "target/libs/python",
     "jsweet": true,
     "sbean": true,
     "jsonschema": "schema.json",

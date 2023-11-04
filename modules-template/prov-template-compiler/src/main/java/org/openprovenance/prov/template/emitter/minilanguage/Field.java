@@ -40,6 +40,8 @@ public class Field {
         }
         if (initialiser != null && !initialiser.toString().trim().isEmpty()) {
             emitter.emitContinueLine(" = " + initialiser.toString().replace("\"", "'"));
+        } else {
+            emitter.emitContinueLine(" = None");
         }
         emitter.emitNewline();
         emitter.emitNewline();

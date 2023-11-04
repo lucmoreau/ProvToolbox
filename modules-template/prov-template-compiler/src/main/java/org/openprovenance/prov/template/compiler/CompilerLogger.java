@@ -8,17 +8,18 @@ import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
+import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerLogger {
+    public static final String __BUILDERS_VAR = "__builders";
+    public static final String A_TABLE_VAR = "aTable";
     private final CompilerUtil compilerUtil;
 
     public CompilerLogger(ProvFactory pFactory) {
@@ -39,7 +40,7 @@ public class CompilerLogger {
             final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
             FieldSpec fspec = FieldSpec.builder(className, Constants.PREFIX_LOG_VAR + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                    .initializer("new $T()", className)
+                    .initializer("$N $T()", "new", className)
                     .build();
 
             builder.addField(fspec);
@@ -58,9 +59,9 @@ public class CompilerLogger {
         }
         ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
         ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
-        FieldSpec fspec = FieldSpec.builder(builderArrayType, "__builders")
+        FieldSpec fspec = FieldSpec.builder(builderArrayType, __BUILDERS_VAR)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                .initializer("new $T[] {" + names + "}", cln)
+                .initializer("$N $T[] {" + names + "}", "new", cln)
                 .build();
 
         builder.addField(fspec);
@@ -81,20 +82,25 @@ public class CompilerLogger {
 
         builder.addField(FieldSpec
                 .builder(builderMapType, "simpleBuilders", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package, BUILDER_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(configs.configurator_package, BUILDER_CONFIGURATOR))
                 .build());
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
-                .initializer("$N(new $T())", INITIALIZE_BEAN_TABLE, ClassName.get(configs.configurator_package,CONVERTER_CONFIGURATOR))
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(configs.configurator_package,CONVERTER_CONFIGURATOR))
                 .build());
 
         TypeSpec theLogger = builder.build();
 
         String myPackage = locations.getFilePackage(fileName);
+        String directory = locations.convertToDirectory(myPackage);
 
         JavaFile myfile = compilerUtil.specWithComment(theLogger, configs, myPackage, stackTraceElement);
 
-        return new SpecificationFile(myfile, locations.convertToDirectory(myPackage), fileName+DOT_JAVA_EXTENSION, myPackage);
+        if (locations.python_dir==null) {
+            return new SpecificationFile(myfile, directory, fileName + DOT_JAVA_EXTENSION, myPackage);
+        } else {
+            return newSpecificationFiles(compilerUtil, locations, theLogger, configs, stackTraceElement, myfile, directory, fileName, myPackage, null);
+        }
     }
 
     static final ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), TypeVariableName.get("T"));
@@ -110,18 +116,18 @@ public class CompilerLogger {
 
         builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(configs.tableConfigurator), configs.tableConfigurator), TypeVariableName.get("T")), "configurator");
 
-        builder.addStatement("$T aTable=new $T()",mapType,mapType2);
+        builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR,"new", mapType2);
 
         for (TemplateCompilerConfig config : configs.templates) {
 
             String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
-            builder.addStatement("aTable.put($N.getName(),configurator.$N($N))", thisBuilderName, config.name, thisBuilderName);
+            builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
 
 
         }
 
 
-        builder.addStatement("return aTable");
+        builder.addStatement("return $N", A_TABLE_VAR);
 
         return builder.build();
 
@@ -138,17 +144,17 @@ public class CompilerLogger {
         builder.addParameter( ParameterizedTypeName.get(ClassName.get(locations.getFilePackage(compositeTableConfigurator), compositeTableConfigurator), typeT), "configurator");
 
 
-        builder.addStatement("$T aTable=new $T()",mapType,mapType2);
+        builder.addStatement("$T $N=$N $T()",mapType, A_TABLE_VAR, "new", mapType2);
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) {
                 String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
-                builder.addStatement("aTable.put($N.getName(),configurator.$N($N))", thisBuilderName, config.name, thisBuilderName);
+                builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
             }
         }
 
 
-        builder.addStatement("return aTable");
+        builder.addStatement("return $N", A_TABLE_VAR);
 
         return builder.build();
 
@@ -234,23 +240,26 @@ public class CompilerLogger {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
         JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
         JsonNode the_documentation = bindings_schema.get("@documentation");
         JsonNode the_return = bindings_schema.get("@return");
         compilerUtil.generateSpecializedParameters(builder, the_var);
         compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
-        int count = 1;
+        CodeBlock argsList = convertToArgsList(the_var);
+
+
+        builder.addStatement("return $N.$N().$N($L)", Constants.PREFIX_LOG_VAR + config.name, Constants.ARGS_CSV_CONVERSION_METHOD, "process",argsList);
+        return builder.build();
+    }
+
+    public static CodeBlock convertToArgsList(JsonNode the_var) {
+        List<String> variables=new LinkedList<>();
         Iterator<String> iter = the_var.fieldNames();
-        String args = "";
         while (iter.hasNext()) {
             String key = iter.next();
-            if (count > 1) args = args + ", ";
-            args = args + key;
-            count++;
+            variables.add(key);
         }
-        builder.addStatement("return $N.$N()." + "process" + "(" + args + ")", Constants.PREFIX_LOG_VAR + config.name, Constants.ARGS_CSV_CONVERSION_METHOD);
-        return builder.build();
+        return makeArgsList(variables);
     }
 
     public MethodSpec generateStaticBeanMethod(SimpleTemplateCompilerConfig config, Locations locations) {
@@ -263,24 +272,15 @@ public class CompilerLogger {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
 
         JsonNode the_var = bindings_schema.get("var");
-        JsonNode the_context = bindings_schema.get("context");
         JsonNode the_documentation = bindings_schema.get("@documentation");
         JsonNode the_return = bindings_schema.get("@return");
         compilerUtil.generateSpecializedParameters(builder, the_var);
         compilerUtil.generateSpecializedParametersJavadoc(builder, the_var, the_documentation, the_return);
 
 
-        int count = 1;
-        Iterator<String> iter = the_var.fieldNames();
-        String args = "";
-        while (iter.hasNext()) {
-            String key = iter.next();
-            if (count > 1) args = args + ", ";
-            args = args + key;
-            count++;
-        }
-        //builder.addStatement("return " + compilerUtil.templateNameClass(config.name) + ".toBean(" + args + ")");
-        builder.addStatement("return $N.$N." + "process" +  "(" + args + ")", Constants.PREFIX_LOG_VAR + config.name, Constants.A_ARGS_BEAN_CONVERTER);
+        CodeBlock argsList = convertToArgsList(the_var);
+
+        builder.addStatement("return $N.$N." + "$N" +  "($L)", Constants.PREFIX_LOG_VAR + config.name, Constants.A_ARGS_BEAN_CONVERTER, "process", argsList);
 
         return builder.build();
 
@@ -294,11 +294,7 @@ public class CompilerLogger {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(builderArrayType);
         compilerUtil.specWithComment(builder);
-
-
-        builder.addStatement("return __builders");
-
-
+        builder.addStatement("return $N", __BUILDERS_VAR);
         return builder.build();
 
     }

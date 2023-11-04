@@ -803,13 +803,19 @@ public class CompilerUtil {
                 .build();
     }
 
-    public String pySpecWithComment(TypeSpec typeSpec, String templateName, String packge, StackTraceElement stackTraceElement) {
+    public String pySpecWithComment(String templateName, StackTraceElement stackTraceElement) {
         return "Generated automatically by ProvToolbox for template '" + templateName + "'\n"
                 + "by class " + stackTraceElement.getClassName()
                 + ", method " + stackTraceElement.getMethodName()
                 + ", \nin file " + stackTraceElement.getFileName()
                 + ", at line $L " + stackTraceElement.getLineNumber();
-
+    }
+    public String pySpecWithComment(TemplatesCompilerConfig configs, StackTraceElement stackTraceElement) {
+        return "Generated automatically by ProvToolbox for template configuration '" + configs.name + "'\n"
+                + "by class " + stackTraceElement.getClassName()
+                + ", method " + stackTraceElement.getMethodName()
+                + ", \nin file " + stackTraceElement.getFileName()
+                + ", at line $L " + stackTraceElement.getLineNumber();
     }
 
     public void specWithComment(MethodSpec.Builder mspec) {

@@ -19,6 +19,7 @@ import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
@@ -170,6 +171,7 @@ public class CompilerCommon {
         }
 
 
+        String directory = locations.convertToDirectory(packageName);
 
 
         TypeSpec bean=builder.build();
@@ -178,8 +180,13 @@ public class CompilerCommon {
         JavaFile myfile = compilerUtil.specWithComment(bean, configs, packageName, stackTraceElement);
         SpecificationFile specFile;
         if (locations.python_dir==null) {
-            specFile =  new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName);
+            specFile =  new SpecificationFile(myfile, directory, fileName, packageName);
         } else {
+            Set<String> selectedExports = Set.of("args2csv", "log" + myfile.typeSpec.name.replace("Builder", ""));
+
+            specFile =  newSpecificationFiles(compilerUtil, locations, bean, templateName, stackTraceElement, myfile, directory, fileName, packageName, selectedExports);
+
+            /*
             final PoetParser poetParser = new PoetParser();
             poetParser.emitPrelude(compilerUtil.pySpecWithComment(bean, templateName, packageName, stackTraceElement));
             Set<String> selectedExports = Set.of("args2csv", "log" + myfile.typeSpec.name.replace("Builder", ""));
@@ -190,6 +197,8 @@ public class CompilerCommon {
 
             specFile = new SpecificationFile(myfile, locations.convertToDirectory(packageName), fileName, packageName,
                     pyDirectory, myfile.typeSpec.name + ".py", () -> poetParser.getSb().toString());
+
+             */
         }
         return Pair.of(specFile, successorTable);
     }
@@ -260,6 +269,10 @@ public class CompilerCommon {
         if (sbVar!=null) variables2.add(sbVar);
         variables2.addAll(variables);
         return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(sbVar)?variable: "__" + variable))).collect(Collectors.toList()), ", ");
+    }
+
+    public static CodeBlock makeArgsList(Collection<String> variables) {
+        return CodeBlock.join(variables.stream().map(variable -> CodeBlock.of("$N", variable)).collect(Collectors.toList()), ", ");
     }
     public static CodeBlock makeStringSequence(String head, Collection<String> variables) {
         List<String> variables2=new LinkedList<>();

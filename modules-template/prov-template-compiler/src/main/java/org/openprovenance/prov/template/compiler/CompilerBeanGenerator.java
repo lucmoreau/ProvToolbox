@@ -154,19 +154,29 @@ public class CompilerBeanGenerator {
         if (locations.python_dir==null) {
             return new SpecificationFile(myfile, directory, fileName, packge);
         } else {
-            final PoetParser poetParser = new PoetParser();
-            poetParser.emitPrelude(compilerUtil.pySpecWithComment(spec, templateName, packge, stackTraceElement));
-            org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(spec, null);
-
-            clazz.emit(new Python(poetParser.getSb(), 0));
-
-            String pyDirectory = locations.python_dir + "/" + packge.replace('.', '/') + "/";
-
-            return new SpecificationFile(myfile, directory, fileName, packge,
-                    pyDirectory, myfile.typeSpec.name + ".py", () -> poetParser.getSb().toString());
+            return newSpecificationFiles(compilerUtil, locations, spec, templateName, stackTraceElement, myfile, directory, fileName, packge, null);
         }
     }
 
+    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
+        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(templateName, stackTraceElement));
+    }
+
+
+    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesCompilerConfig configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
+        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
+    }
+
+    private static SpecificationFile newSpecificationFiles(Locations locations, TypeSpec spec, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports, String prelude) {
+        final PoetParser poetParser = new PoetParser();
+        poetParser.emitPrelude(prelude);
+        org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(spec, selectedExports);
+        clazz.emit(new Python(poetParser.getSb(), 0));
+        String pyDirectory = locations.python_dir + "/" + packge.replace('.', '/') + "/";
+        String pyFilename = myfile.typeSpec.name + ".py";
+        return new SpecificationFile(myfile, directory, fileName, packge,
+                pyDirectory, pyFilename, () -> poetParser.getSb().toString());
+    }
 
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
 

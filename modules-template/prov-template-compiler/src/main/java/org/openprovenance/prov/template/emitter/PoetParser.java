@@ -160,6 +160,9 @@ public class PoetParser {
                             statements=new LinkedList<>();
                             elements=new LinkedList<>();
                         }
+                        if (arg_i_str.contains(MARKER_PARAMS)) {
+                            //elements.add(new Token(arg_i_str));
+                        }
                     }
                 }
 
@@ -204,13 +207,21 @@ public class PoetParser {
     public List<Statement> parseJavadoc(CodeBlock javadoc) {
         return parse(javadoc);
     }
-    public void parse(FieldSpec f) {
+    /*public void parse(FieldSpec f) {
         parse(f,null);
     }
 
+     */
+
     public Field parse(FieldSpec f, Set<String> names) {
         if (names==null || names.contains(f.name)) {
-            return new Field(f.name, convertType(f.type), f.annotations.stream().map(a -> a.toString()).collect(Collectors.toList()), f.initializer, getComments2(f.javadoc));
+            List<Statement> initialiser1 = parse(f.initializer);
+            assert  initialiser1.isEmpty() || initialiser1.size() == 1;
+            Expression initialiser=null;
+            if (!initialiser1.isEmpty()) {
+                initialiser= (Expression) initialiser1.get(0);
+            }
+            return new Field(f.name, convertType(f.type), f.annotations.stream().map(a -> a.toString()).collect(Collectors.toList()), initialiser, getComments2(f.javadoc));
         }
         return null;
     }

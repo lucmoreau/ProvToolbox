@@ -10,11 +10,11 @@ public class Field {
     final String name;
     final private List<String> attributes=new LinkedList<>();
     final private String type;
-    final private Object initialiser;
+    final private Expression initialiser;
     final private List<Comment> comments=new LinkedList<>();
 
 
-    public Field(String name, String type, List<String> attributes, Object initialiser, List<Comment> comments) {
+    public Field(String name, String type, List<String> attributes, Expression initialiser, List<Comment> comments) {
         this.name = name;
         this.type = type;
         this.attributes.addAll(attributes);
@@ -35,11 +35,23 @@ public class Field {
 
         emitter.emitBeginLine(name);
 
+        List<String> imports=new LinkedList<>();
+
+
         if (type != null && !type.trim().isEmpty()) {
-            emitter.emitContinueLine(" : " + type);
+            if (type.contains(".")) {
+                String[] parts = type.split("\\.");
+                String localType = parts[parts.length - 1];
+                imports.add("from " + type + " import " + localType);
+                emitter.emitContinueLine(" : " + localType);
+                System.out.println(imports);
+            } else {
+                emitter.emitContinueLine(" : " + type);
+            }
         }
         if (initialiser != null && !initialiser.toString().trim().isEmpty()) {
-            emitter.emitContinueLine(" = " + initialiser.toString().replace("\"", "'"));
+            emitter.emitContinueLine(" = "); // initialiser.toString().replace("\"", "'"));
+            initialiser.emit(emitter, true, new LinkedList<>());
         } else {
             emitter.emitContinueLine(" = None");
         }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.MARKER_LAMBDA;
+import static org.openprovenance.prov.template.compiler.common.CompilerCommon.MARKER_PARAMS;
 import static org.openprovenance.prov.template.emitter.Pair.*;
 
 public class Expression extends Statement {
@@ -19,8 +20,10 @@ public class Expression extends Statement {
     }
 
     static public Expression makeExpression(List<Element> elements) {
-        if (elements.size()==1 && elements.get(0) instanceof Pair) {
+        if (elements.size()==1 && elements.get(0) instanceof Pair && getFormat(elements.get(0)).equals("$N")) {
             return new Symbol((String)getArg(elements.get(0)), elements);
+        } else if (elements.size()==1 && elements.get(0) instanceof Pair && getFormat(elements.get(0)).equals("$S")) {
+            return new Constant((String)getArg(elements.get(0)), elements);
         } else if (elements.size()>1
                 && isPair(elements.get(0))
                 && MARKER_LAMBDA.equals(getArg(elements.get(0)))) {
@@ -65,10 +68,12 @@ public class Expression extends Statement {
         } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals(".")) {
             List<Element> allArgsIncludingMarkers = elements.subList(3, elements.size());
             if (allArgsIncludingMarkers.size()==1 && allArgsIncludingMarkers.get(0).equals(new Token("()"))) {
+                // method call with no arguments
                 return new MethodCall(((Pair)elements.get(0)).getArg(), (String) ((Pair)elements.get(2)).getArg(), new LinkedList<>(), elements);
             } else if (allArgsIncludingMarkers.size()==3
                     && allArgsIncludingMarkers.get(0).equals(new Token("("))
                     && allArgsIncludingMarkers.get(2).equals(new Token(")"))) {
+                // method call with one argument
                 Object arg=getArg( allArgsIncludingMarkers.get(1));
                 String format=getFormat( allArgsIncludingMarkers.get(1));
                 if (arg instanceof List) {
@@ -90,7 +95,8 @@ public class Expression extends Statement {
                     throw new UnsupportedOperationException("Cannot handle "+arg);
                 }
             } else if (allArgsIncludingMarkers.get(0).equals(new Token("("))) {
-                return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), List.of(makeExpression(allArgsIncludingMarkers.subList(1,allArgsIncludingMarkers.size()))), elements);
+                
+                return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), makeExpressions(allArgsIncludingMarkers.subList(1,allArgsIncludingMarkers.size())), elements);
             } else {
                 // falling through
             }
@@ -98,6 +104,26 @@ public class Expression extends Statement {
             return new BinaryOp(getArg(elements.get(0)), (String) getToken(elements.get(1)), getArg(elements.get(2)), elements);
         }
         return new Expression(elements);
+    }
+
+    private static List<Expression> makeExpressions(List<Element> elements) {
+        List<List<Element>> ll=new LinkedList<>();
+        List<Element> current=new LinkedList<>();
+        for (Element e: elements) {
+            if (e instanceof Pair && getArg(e).equals(MARKER_PARAMS)) {
+                ll.add(current);
+                current=new LinkedList<>();
+            } else if (e instanceof Token && getToken(e).equals(",")) {
+                    // nothing to do
+            }
+            else {
+                current.add(e);
+            }
+        }
+        if (!current.isEmpty()) {
+            ll.add(current);
+        }
+        return ll.stream().map(x->makeExpression(x)).collect(Collectors.toList());
     }
 
     @Override

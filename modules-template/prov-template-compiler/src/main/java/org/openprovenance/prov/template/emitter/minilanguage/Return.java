@@ -56,7 +56,7 @@ public class Return extends Statement {
 
         } else {
             emitter.emitBeginLine("return ");
-            value.emit(emitter, true, new LinkedList<>());
+            value.emit(emitter, true, locals);
             emitter.emitNewline();
         }
     }

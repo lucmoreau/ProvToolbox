@@ -4,7 +4,6 @@ import org.openprovenance.prov.template.emitter.Element;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class MethodCall extends Expression {
             emitter.emitLine("''.join(sb)", continueLine);
             return;
         }
-        emitter.emitLine(convertName(object.toString()),continueLine);
+        emitter.emitLine(convertName(object.toString(), locals),continueLine);
         if (!methodName.equals("process")) { // this is lambda, and in java we need to call method
             emitter.emitContinueLine(".");
             emitter.emitContinueLine(methodName);
@@ -61,14 +60,18 @@ public class MethodCall extends Expression {
         }
     }
 
-    static public String convertName(String string) {
+    static public String convertName(String string, List<String> locals) {
         if (table.containsKey(string)) {
             return table.get(string);
+        } else if (string.equals("self") || locals.contains(string)) {
+            return string;
+        } else {
+            return "self." + string;
         }
-        return string;
     }
 
     static Map<String,String> table=new HashMap<>() {{
         put("org.openprovenance.apache.commons.lang.StringEscapeUtils","StringEscapeUtils");
+
     }};
 }

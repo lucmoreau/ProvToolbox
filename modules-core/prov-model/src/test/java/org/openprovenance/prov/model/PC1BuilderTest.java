@@ -140,8 +140,9 @@ public class PC1BuilderTest extends TestCase {
                                     .attr(PC1_URL, URL_LOCATION + "resliced" + a2 + ".hdr")
                                     .build();
                             return builder;
-                        })
+                        }).build();
 
+                builder
                         .entity()
                         .id(PC1, "e23").aka()
                         .label("Atlas Image")
@@ -267,6 +268,9 @@ public class PC1BuilderTest extends TestCase {
                         .wasDerivedFrom().generatedEntity("e28").usedEntity("e25").build()
                         .wasDerivedFrom().generatedEntity("e29").usedEntity("e26").build()
                         .wasDerivedFrom().generatedEntity("e30").usedEntity("e27").build()
+                .build();
+
+        builder
 
                         .used().activity("a1").role("hdr").entity("e4").build()
                         .used().activity("a1").role("hdrRef").entity("e2").build()

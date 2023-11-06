@@ -18,6 +18,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-library: generating provenance of expanded templates
 * provapi service: exposing prov-template-library and provenance
 * prov-template-library: template binaryop, templaes pokemon-go simulator
+* prov-template-library: initial compilation to python
 
 
 

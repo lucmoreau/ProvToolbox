@@ -1,6 +1,7 @@
 
 from org.example.templates.block.client.common.Template_blockBuilder import Template_blockBuilder
 from org.example.templates.block.client.common.Template_blockBean import Template_blockBean
+from org.example.templates.block.logger.Logger import Logger
 
 import sys
 

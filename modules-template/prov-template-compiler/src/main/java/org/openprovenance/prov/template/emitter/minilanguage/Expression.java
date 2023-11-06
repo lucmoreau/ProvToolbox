@@ -9,8 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.template.compiler.common.CompilerCommon.MARKER_LAMBDA;
-import static org.openprovenance.prov.template.compiler.common.CompilerCommon.MARKER_PARAMS;
+import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.emitter.Pair.*;
 
 public class Expression extends Statement {
@@ -24,6 +23,8 @@ public class Expression extends Statement {
             return new Symbol((String)getArg(elements.get(0)), elements);
         } else if (elements.size()==1 && elements.get(0) instanceof Pair && getFormat(elements.get(0)).equals("$S")) {
             return new Constant((String)getArg(elements.get(0)), elements);
+        } else if (elements.size()==1 && elements.get(0) instanceof Pair && getFormat(elements.get(0)).equals("$L")) {
+            return ((List<Expression>) getArg(elements.get(0))).get(0);
         } else if (elements.size()>1
                 && isPair(elements.get(0))
                 && MARKER_LAMBDA.equals(getArg(elements.get(0)))) {
@@ -63,8 +64,16 @@ public class Expression extends Statement {
         }  else if (elements.size()>1
                 && isPair(elements.get(0))
                 && "new".equals(getArg(elements.get(0)))) {
-            return new Constructor(getArg(elements.get(1)).toString(), elements);
 
+            if (elements.size()>3
+                    && isPair(elements.get(2))
+                && MARKER_ARRAY.equals(getArg(elements.get(2)))) {
+
+                List<Element> allArgs=elements.subList(3, elements.size());
+                return new Constructor(getArg(elements.get(1)).toString(), makeExpressions(allArgs), elements);
+            } else {
+                return new Constructor(getArg(elements.get(1)).toString(), elements);
+            }
         } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals(".")) {
             List<Element> allArgsIncludingMarkers = elements.subList(3, elements.size());
             if (allArgsIncludingMarkers.size()==1 && allArgsIncludingMarkers.get(0).equals(new Token("()"))) {
@@ -113,7 +122,7 @@ public class Expression extends Statement {
             if (e instanceof Pair && getArg(e).equals(MARKER_PARAMS)) {
                 ll.add(current);
                 current=new LinkedList<>();
-            } else if (e instanceof Token && getToken(e).equals(",")) {
+            } else if (e instanceof Token && (getToken(e).equals(",") || getToken(e).equals("}"))) {
                     // nothing to do
             }
             else {

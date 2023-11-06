@@ -9,6 +9,7 @@ import org.openprovenance.prov.template.compiler.configuration.*;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
@@ -18,7 +19,7 @@ import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerLogger {
-    public static final String __BUILDERS_VAR = "__builders";
+    public static final String __BUILDERS_VAR = GENERATED_VAR_PREFIX + "builders";
     public static final String A_TABLE_VAR = "aTable";
     private final CompilerUtil compilerUtil;
 
@@ -38,7 +39,7 @@ public class CompilerLogger {
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             locations.updateWithConfig(config);
             final ClassName className = ClassName.get(locations.getFilePackage(BeanDirection.COMMON), templateNameClass);
-            FieldSpec fspec = FieldSpec.builder(className, Constants.PREFIX_LOG_VAR + config.name)
+            FieldSpec fspec = FieldSpec.builder(className, Constants.GENERATED_VAR_PREFIX + config.name)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
                     .initializer("$N $T()", "new", className)
                     .build();
@@ -46,22 +47,11 @@ public class CompilerLogger {
             builder.addField(fspec);
         }
 
-        String names = "";
-        boolean first = true;
-        for (TemplateCompilerConfig config : configs.templates) {
-            //if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
-            if (first) {
-                first = false;
-            } else {
-                names = names + ", ";
-            }
-            names = names + Constants.PREFIX_LOG_VAR + config.name;
-        }
-        ClassName cln = ClassName.get(Constants.CLIENT_PACKAGE, "Builder");
-        ArrayTypeName builderArrayType = ArrayTypeName.of(cln);
+        List<String> templates= Arrays.stream(configs.templates).map(x->x.name).collect(Collectors.toList());
+        ArrayTypeName builderArrayType = ArrayTypeName.of(ClassName.get(Constants.CLIENT_PACKAGE, "Builder"));
         FieldSpec fspec = FieldSpec.builder(builderArrayType, __BUILDERS_VAR)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                .initializer("$N $T[] {" + names + "}", "new", cln)
+                .initializer("$N $T $N {$L}", "new", builderArrayType, MARKER_ARRAY, makeRenamedArgsList(null,templates))
                 .build();
 
         builder.addField(fspec);
@@ -99,7 +89,7 @@ public class CompilerLogger {
         if (locations.python_dir==null) {
             return new SpecificationFile(myfile, directory, fileName + DOT_JAVA_EXTENSION, myPackage);
         } else {
-            return newSpecificationFiles(compilerUtil, locations, theLogger, configs, stackTraceElement, myfile, directory, fileName, myPackage, null);
+            return newSpecificationFiles(compilerUtil, locations, theLogger, configs, stackTraceElement, myfile, directory, fileName + DOT_JAVA_EXTENSION, myPackage, null);
         }
     }
 
@@ -120,7 +110,7 @@ public class CompilerLogger {
 
         for (TemplateCompilerConfig config : configs.templates) {
 
-            String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
+            String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
             builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
 
 
@@ -148,7 +138,7 @@ public class CompilerLogger {
 
         for (TemplateCompilerConfig config : configs.templates) {
             if (!(config instanceof SimpleTemplateCompilerConfig)) {
-                String thisBuilderName = Constants.PREFIX_LOG_VAR + config.name;
+                String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
                 builder.addStatement("$N.$N($N.$N()$N,$N.$N($N))", A_TABLE_VAR, "put", thisBuilderName, "getName", MARKER_PARAMS, "configurator", config.name, thisBuilderName);
             }
         }
@@ -248,7 +238,7 @@ public class CompilerLogger {
         CodeBlock argsList = convertToArgsList(the_var);
 
 
-        builder.addStatement("return $N.$N().$N($L)", Constants.PREFIX_LOG_VAR + config.name, Constants.ARGS_CSV_CONVERSION_METHOD, "process",argsList);
+        builder.addStatement("return $N.$N().$N($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.ARGS_CSV_CONVERSION_METHOD, "process",argsList);
         return builder.build();
     }
 
@@ -280,7 +270,7 @@ public class CompilerLogger {
 
         CodeBlock argsList = convertToArgsList(the_var);
 
-        builder.addStatement("return $N.$N." + "$N" +  "($L)", Constants.PREFIX_LOG_VAR + config.name, Constants.A_ARGS_BEAN_CONVERTER, "process", argsList);
+        builder.addStatement("return $N.$N." + "$N" +  "($L)", Constants.GENERATED_VAR_PREFIX + config.name, Constants.A_ARGS_BEAN_CONVERTER, "process", argsList);
 
         return builder.build();
 

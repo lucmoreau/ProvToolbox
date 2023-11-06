@@ -27,6 +27,15 @@ public class PoetParser {
     public Class parse (TypeSpec spec, Set<String> selectedExports) {
         emitLine("\nfrom dataclasses import dataclass");
         emitLine("from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils");
+
+        if (spec.name.equals("Logger")) {
+            emitLine("from org.openprovenance.prov.client.Builder import Builder");
+            emitLine("from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface");
+            emitLine("from typing import List");
+            emitLine("from typing import Dict");
+            emitLine("from org.example.templates.block.client.common.Template_blockBuilder import Template_blockBuilder");
+
+        }
         emitNewline();
         emitNewline();
 

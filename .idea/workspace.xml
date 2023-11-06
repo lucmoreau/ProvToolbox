@@ -9,18 +9,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Constant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python/org/openprovenance/prov/client/Builder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python/org/openprovenance/prov/client/ProcessorArgsInterface.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python/test2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerTemplateBuilders.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerTemplateBuilders.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/PoetParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/PoetParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Constructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Constructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Expression.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Expression.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Field.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Field.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Return.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Return.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +125,7 @@
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "code__emitter",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/src/test/python",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -156,11 +158,11 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test" />
       <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/config" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/java/org/openprovenance/prov/template/library/ptm" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
@@ -358,7 +360,6 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.11" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-template/prov-template-compiler" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -836,7 +837,9 @@
       <workItem from="1698212176966" duration="59616000" />
       <workItem from="1698696945408" duration="249000" />
       <workItem from="1698697236048" duration="9444000" />
-      <workItem from="1698748365341" duration="85307000" />
+      <workItem from="1698748365341" duration="89701000" />
+      <workItem from="1699289035155" duration="2395000" />
+      <workItem from="1699296893543" duration="3576000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

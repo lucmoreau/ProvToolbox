@@ -2,9 +2,9 @@ package org.openprovenance.prov.template.compiler.common;
 
 public interface Constants {
     String IS_A = "isA";
-    String ELEMENTS = "__elements";
-    String ADD_ELEMENTS = "__addElements";
-    String PREFIX_LOG_VAR = "___";
+    String GENERATED_VAR_PREFIX = "__";
+    String ELEMENTS = GENERATED_VAR_PREFIX + "elements";
+    String ADD_ELEMENTS = GENERATED_VAR_PREFIX + "addElements";
     String GET_NODES_METHOD = "getNodes";
     String BUILDER_INTERFACE = "Builder";
     String INIT = "Init";
@@ -83,12 +83,11 @@ public interface Constants {
     String INPUT_TABLE = "_input_table";
     String JAVADOC_NO_DOCUMENTATION = "-- no @documentation";
     String JAVADOC_NO_DOCUMENTATION_DEFAULT_TYPE = "xsd:string";
-    String GENERATED_VAR_PREFIX = "__";
     boolean IN_INTEGRATOR = true;
     String REALISER = "realiser";
     String OPENPROVENANCE_COMPOSITE_BEAN_JSON = "openprovenance:composite-bean.json";
     String RESOURCE_COMPOSITE_BEAN_JSON = "/composite/composite-bean.json";
-    String __NODES_FIELD = "__nodes";
+    String __NODES_FIELD = GENERATED_VAR_PREFIX+ "nodes";
     String COMPOSITE = "Composite";
     String INITIALIZE_BEAN_TABLE = "initializeBeanTable";
     String INSERT_ARRAY_SUFFIX = "_array";

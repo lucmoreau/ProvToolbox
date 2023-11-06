@@ -38,12 +38,15 @@ public class Field {
         List<String> imports=new LinkedList<>();
 
 
-        if (type != null && !type.trim().isEmpty()) {
+        String mappedType = table.get(type);
+        if (mappedType !=null) {
+            emitter.emitContinueLine(" : " + mappedType);
+        } else if (type != null && !type.trim().isEmpty()) {
             if (type.contains(".")) {
                 String[] parts = type.split("\\.");
                 String localType = parts[parts.length - 1];
                 imports.add("from " + type + " import " + localType);
-                emitter.emitContinueLine(" : " + localType);
+                emitter.emitContinueLine(" : " + convertType(localType));
                 System.out.println(imports);
             } else {
                 emitter.emitContinueLine(" : " + type);
@@ -58,4 +61,14 @@ public class Field {
         emitter.emitNewline();
         emitter.emitNewline();
     }
+
+    static public String convertType(String type) {
+        return table.getOrDefault(type, type);
+    }
+
+    static final java.util.Map<String, String> table = new java.util.HashMap<>() {{
+        put("Builder[]", "List[Builder]");
+        put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", "Dict[str,Builder]"); // watch out: string representation with a space!!
+        put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", "Dict[str,ProcessorArgsInterface]");
+    }};
 }

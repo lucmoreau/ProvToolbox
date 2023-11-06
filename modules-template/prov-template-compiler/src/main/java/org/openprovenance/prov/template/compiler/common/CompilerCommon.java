@@ -35,6 +35,7 @@ public class CompilerCommon {
     public static final String MARKER_ENDIF = "/*#endif#*/";
     public static final String MARKER_ELSE = "/*#else#*/";
     public static final String MARKER_THEN = "/*#then#*/";
+    public static final String MARKER_ARRAY = "/*#array#*/";
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
 
@@ -264,11 +265,11 @@ public class CompilerCommon {
                 CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), "__" + variable)).collect(Collectors.toList()), ", ");
     }
 
-    public static CodeBlock makeRenamedArgsList(String sbVar, Collection<String> variables) {
+    public static CodeBlock makeRenamedArgsList(String head, Collection<String> variables) {
         List<String> variables2=new LinkedList<>();
-        if (sbVar!=null) variables2.add(sbVar);
+        if (head!=null) variables2.add(head);
         variables2.addAll(variables);
-        return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(sbVar)?variable: "__" + variable))).collect(Collectors.toList()), ", ");
+        return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(head)?variable: "__" + variable))).collect(Collectors.toList()), ", ");
     }
 
     public static CodeBlock makeArgsList(Collection<String> variables) {

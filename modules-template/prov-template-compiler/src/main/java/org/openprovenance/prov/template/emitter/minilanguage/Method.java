@@ -22,7 +22,7 @@ public class Method {
                 '}';
     }
 
-    public void emit(Python emitter) {
+    public void emit(Python emitter, List<String> classVariables) {
         emitter.emitBeginLine("def ");
         emitter.emitContinueLine(name);
         emitter.emitContinueLine("(");
@@ -33,16 +33,11 @@ public class Method {
             emitter.emitContinueLine(",");
             emitter.emitContinueLine(p.name);
         }
-        LinkedList<String> locals = new LinkedList<>();
-        locals.add("self");
-        for (Parameter p: parameters) {
-            locals.add(p.name);
-        }
         emitter.emitContinueLine("):");
         emitter.emitNewline();
         emitter.indent();
         for (Statement s: body) {
-            s.emit(emitter, locals);
+            s.emit(emitter, classVariables);
         }
         emitter.unindent();
     }

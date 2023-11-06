@@ -4,6 +4,7 @@ import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Class {
     final private String name;
@@ -39,11 +40,14 @@ public class Class {
             emitter.emitNewline();
         }
 
+        // class variables are used in methods, to decide which variable to prefix with self.
+        List<String> classVariables=fields.stream().map(x->x.name).collect(Collectors.toList());
+
         for (Field f: fields) {
             f.emit(emitter);
         }
         for (Method m: methods) {
-            m.emit(emitter);
+            m.emit(emitter, classVariables);
         }
     }
 

@@ -27,27 +27,25 @@ public class Return extends Statement {
 
     static int lambdaCount=0;
 
-    public void emit(Python emitter, List<String> locals) {
+    public void emit(Python emitter, List<String> classVariables) {
         // as Python does not accept multiline lambdas, name it first, then return it.
         if (value instanceof Lambda) {
             int suffix= (lambdaCount++);
             Lambda lambda=(Lambda) value;
             emitter.emitBeginLine("def lambda" + suffix + " (") ;
             boolean first=true;
-            List<String> locals2=new LinkedList<>();
             for (Parameter p: lambda.parameters) {
                 if (!first) {
                     emitter.emitContinueLine(",");
                 }
                 first=false;
                 emitter.emitContinueLine(p.name);
-                locals2.add(p.name);
             }
             emitter.emitContinueLine("):");
             emitter.emitNewline();
             emitter.indent();
             for (Statement s: lambda.body) {
-                s.emit(emitter, locals2);
+                s.emit(emitter, classVariables);
             }
             emitter.unindent();
             emitter.emitNewline();
@@ -56,7 +54,7 @@ public class Return extends Statement {
 
         } else {
             emitter.emitBeginLine("return ");
-            value.emit(emitter, true, locals);
+            value.emit(emitter, true, classVariables);
             emitter.emitNewline();
         }
     }

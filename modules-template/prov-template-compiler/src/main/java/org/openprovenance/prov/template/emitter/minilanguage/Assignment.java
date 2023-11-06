@@ -27,14 +27,13 @@ public class Assignment extends Statement {
                 '}';
     }
 
-    public void emit(Python emitter, List<String> locals) {
+    public void emit(Python emitter, List<String> classVariables) {
         if (variable.equals("self")) {
             return;
         }
         emitter.emitBeginLine(variable);
         emitter.emitContinueLine("=");
-        value.emit(emitter, true, new LinkedList<>());
-        locals.add(variable);
+        value.emit(emitter, true, classVariables);
         emitter.emitNewline();
     }
 }

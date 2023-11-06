@@ -28,12 +28,12 @@ public class MethodCall extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, boolean continueLine, List<String> locals) {
+    public void emit(Python emitter, boolean continueLine, List<String> classVariables) {
         if (object.equals("sb") && methodName.equals("toString")) {
             emitter.emitLine("''.join(sb)", continueLine);
             return;
         }
-        emitter.emitLine(convertName(object.toString(), locals),continueLine);
+        emitter.emitLine(convertName(object.toString(), classVariables),continueLine);
         if (!methodName.equals("process")) { // this is lambda, and in java we need to call method
             emitter.emitContinueLine(".");
             emitter.emitContinueLine(methodName);
@@ -48,9 +48,9 @@ public class MethodCall extends Expression {
                 emitter.emitContinueLine(",");
             }
             if (argument instanceof Expression) {
-                ((Expression) argument).emit(emitter, true, locals);
+                ((Expression) argument).emit(emitter, true, classVariables);
             } else {
-                emitter.emitContinueLine(localized(argument.toString(),locals));
+                emitter.emitContinueLine(localized(argument.toString(),classVariables));
 
             }
         }
@@ -60,13 +60,13 @@ public class MethodCall extends Expression {
         }
     }
 
-    static public String convertName(String string, List<String> locals) {
+    static public String convertName(String string, List<String> classVariables) {
         if (table.containsKey(string)) {
             return table.get(string);
-        } else if (string.equals("self") || locals.contains(string)) {
-            return string;
-        } else {
+        } else if ( classVariables.contains(string)) {
             return "self." + string;
+        } else {
+            return string;
         }
     }
 

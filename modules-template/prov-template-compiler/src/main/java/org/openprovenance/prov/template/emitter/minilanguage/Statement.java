@@ -42,15 +42,15 @@ public class Statement {
         return elements;
     }
 
-    public void emit(Python emitter, List<String> locals) {
+    public void emit(Python emitter, List<String> classVariables) {
         emitter.emitLine(this.toString());
     }
 
-    static public String localized(String str, List<String> locals) {
-        if (str.startsWith("\"") || locals.contains(str)) {
-            return str;
-        } else {
+    static public String localized(String str, List<String> classVariables) {
+        if (classVariables.contains(str)) {
             return "self."+str;
+        } else {
+            return str;
         }
     }
 }

@@ -15,16 +15,16 @@ public class Conditional extends Statement{
     }
 
     @Override
-    public void emit(Python emitter, List<String> locals) {
+    public void emit(Python emitter, List<String> classVariables) {
         emitter.emitBeginLine("if ");
-        predicate.emit(emitter, true, locals);
+        predicate.emit(emitter, true, classVariables);
         emitter.emitContinueLine(":");
         emitter.emitNewline();
         emitter.indent();
         if (consequents!=null) {
 
             for (Statement consequent : consequents) {
-                consequent.emit(emitter, locals);
+                consequent.emit(emitter, classVariables);
             }
             emitter.emitLine("pass");
         }
@@ -34,7 +34,7 @@ public class Conditional extends Statement{
             emitter.emitNewline();
             emitter.indent();
             for (Statement alternate: alternates) {
-                alternate.emit(emitter, locals);
+                alternate.emit(emitter, classVariables);
             }
             emitter.unindent();
         }

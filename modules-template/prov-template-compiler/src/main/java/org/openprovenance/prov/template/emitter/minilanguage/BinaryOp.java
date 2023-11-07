@@ -17,14 +17,14 @@ public class BinaryOp extends Expression {
         this.right=right;
     }
 
-    public void emit(Python emitter, boolean continueLine, List<String> locals) {
+    public void emit(Python emitter, boolean continueLine, List<String> classVariables,  List<String> instanceVariables) {
         emitter.emitLine("(" + left.toString(),continueLine);
         if (right==null) {
             emitter.emitContinueLine(" is ");
             emitter.emitContinueLine("None");
         } else {
             emitter.emitContinueLine(" "+op+" ");
-            emitter.emitContinueLine(localized(right.toString(),locals));
+            emitter.emitContinueLine(localized(right.toString(),classVariables, instanceVariables));
         }
         emitter.emitContinueLine(")");
     }

@@ -183,7 +183,7 @@ public class CompilerCommon {
         if (locations.python_dir==null) {
             specFile =  new SpecificationFile(myfile, directory, fileName, packageName);
         } else {
-            Set<String> selectedExports = Set.of("args2csv", "log" + myfile.typeSpec.name.replace("Builder", ""));
+            Set<String> selectedExports = Set.of("args2csv", "getName", "log" + myfile.typeSpec.name.replace("Builder", ""));
 
             specFile =  newSpecificationFiles(compilerUtil, locations, bean, templateName, stackTraceElement, myfile, directory, fileName, packageName, selectedExports);
 

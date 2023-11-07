@@ -27,7 +27,7 @@ public class Return extends Statement {
 
     static int lambdaCount=0;
 
-    public void emit(Python emitter, List<String> classVariables) {
+    public void emit(Python emitter, List<String> classVariables, List<String> instanceVariables) {
         // as Python does not accept multiline lambdas, name it first, then return it.
         if (value instanceof Lambda) {
             int suffix= (lambdaCount++);
@@ -45,7 +45,7 @@ public class Return extends Statement {
             emitter.emitNewline();
             emitter.indent();
             for (Statement s: lambda.body) {
-                s.emit(emitter, classVariables);
+                s.emit(emitter, classVariables, instanceVariables);
             }
             emitter.unindent();
             emitter.emitNewline();
@@ -54,7 +54,7 @@ public class Return extends Statement {
 
         } else {
             emitter.emitBeginLine("return ");
-            value.emit(emitter, true, classVariables);
+            value.emit(emitter, true, classVariables, instanceVariables);
             emitter.emitNewline();
         }
     }

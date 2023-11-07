@@ -31,10 +31,10 @@ public class PoetParser {
         if (spec.name.equals("Logger")) {
             emitLine("from org.openprovenance.prov.client.Builder import Builder");
             emitLine("from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface");
-            emitLine("from typing import List");
-            emitLine("from typing import Dict");
+            emitLine("from typing import List, Dict");
             emitLine("from org.example.templates.block.client.common.Template_blockBuilder import Template_blockBuilder");
-
+            emitLine("from org.example.templates.block.client.configurator.BuilderConfigurator import BuilderConfigurator");
+            emitLine("from org.example.templates.block.client.configurator.ConverterConfigurator import ConverterConfigurator");
         }
         emitNewline();
         emitNewline();
@@ -65,8 +65,13 @@ public class PoetParser {
         if (names==null || names.contains(method.name)) {
             Method methodResult=new Method();
             methodResult.name=method.name;
-            methodResult.returnType=method.returnType.toString();
+            if (method.returnType==null) {
+                methodResult.returnType="VOID";
+            } else {
+                methodResult.returnType=method.returnType.toString();
+            }
             methodResult.parameters=method.parameters.stream().map(p -> new Parameter(p.name, p.type.toString())).collect(Collectors.toList());
+            methodResult.modifiers=method.modifiers;
 
 
             CodeBlock codeBlock = method.code;

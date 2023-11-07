@@ -90,7 +90,7 @@ public class Expression extends Statement {
                     assert ll.size() == 1;
                     List<Element> _elements = ll.get(0).getElements();
                     List<Object> args = _elements.stream().filter(x -> x instanceof Pair).map(x -> ((Pair) x).getArg()).collect(Collectors.toList());
-                    return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), args, elements);
+                    return new MethodCall(getArg(elements.get(0)), (String) getArg(elements.get(2)), args, elements);
                 } else if (arg instanceof String) {
                     List<Object> args = new LinkedList<>();
                     if (format.equals("$S")) {
@@ -104,12 +104,37 @@ public class Expression extends Statement {
                     throw new UnsupportedOperationException("Cannot handle "+arg);
                 }
             } else if (allArgsIncludingMarkers.get(0).equals(new Token("("))) {
-                
                 return new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), makeExpressions(allArgsIncludingMarkers.subList(1,allArgsIncludingMarkers.size())), elements);
+            } else if (allArgsIncludingMarkers.get(0).equals(new Token("."))) {
+                // accessor in object position (accessor is marked by argument=null as opposed to empty list())
+                MethodCall object=new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), null, elements);
+                allArgsIncludingMarkers.add(0, new Pair("$L", object));
+                //System.out.println("Found object " + object);
+                System.out.println(" recursing with " + allArgsIncludingMarkers);
+                return makeExpression(allArgsIncludingMarkers);
+
+            } else if (allArgsIncludingMarkers.get(0).equals(new Token("()."))) {
+                // method call in object position (with empty argument list)
+                MethodCall object=new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), new LinkedList<>(), elements);
+                allArgsIncludingMarkers.remove(0);
+                allArgsIncludingMarkers.add(0, new Token("."));
+                allArgsIncludingMarkers.add(0, new Pair("$L", object));
+                //System.out.println("Found object " + object);
+                System.out.println(" recursing with " + allArgsIncludingMarkers);
+                return makeExpression(allArgsIncludingMarkers);
+
             } else {
                 // falling through
+                System.out.println("Falling through " + elements);
+                System.out.println(" Falling through " + allArgsIncludingMarkers);
             }
-        } else if (elements.size()>=3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("==")) {  // binary operator
+        } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("(")) {
+            List<Element> allArgs = elements.subList(2, elements.size());
+            // method call with more arguments
+            return new MethodCall(null, (String) ((Pair) elements.get(0)).getArg(), makeExpressions(allArgs), elements);
+        }
+        else if (elements.size()>=3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("==")) {  // binary operator
+            //infix expression
             return new BinaryOp(getArg(elements.get(0)), (String) getToken(elements.get(1)), getArg(elements.get(2)), elements);
         }
         return new Expression(elements);
@@ -142,10 +167,10 @@ public class Expression extends Statement {
                 '}';
     }
 
-    public void emit(Python emitter, List<String> classVariables) {
-        emit(emitter, false,  classVariables);
+    public void emit(Python emitter, List<String> classVariables,  List<String> instanceVariables) {
+        emit(emitter, false,  classVariables, instanceVariables);
     }
-    public void emit(Python emitter, boolean continueLine, List<String> classVariables) {
+    public void emit(Python emitter, boolean continueLine, List<String> classVariables,  List<String> instanceVariables) {
         emitter.emitLine("#" + this.toString());
     }
 }

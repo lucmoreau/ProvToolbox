@@ -37,7 +37,7 @@ public class Comment extends Statement {
     }
 
     @Override
-    public void emit(Python emitter, List<String> locals) {
+    public void emit(Python emitter, List<String> classVariables, List<String> instanceVariables) {
         emitter.emitBeginLine("# " + comment.substring(2).trim());
         emitter.emitNewline();
     }

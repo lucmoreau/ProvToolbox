@@ -43,11 +43,16 @@ public class Class {
         // class variables are used in methods, to decide which variable to prefix with self.
         List<String> classVariables=fields.stream().map(x->x.name).collect(Collectors.toList());
 
+
+        for (Method m: methods) {
+            if (m.isStatic()) {
+                m.emit(emitter, classVariables, new LinkedList<>()); // if static, then we need to prefix with cls
+            } else {
+                m.emit(emitter, new LinkedList<>(), classVariables); // if not static, then we need to prefix with self
+            }
+        }
         for (Field f: fields) {
             f.emit(emitter);
-        }
-        for (Method m: methods) {
-            m.emit(emitter, classVariables);
         }
     }
 

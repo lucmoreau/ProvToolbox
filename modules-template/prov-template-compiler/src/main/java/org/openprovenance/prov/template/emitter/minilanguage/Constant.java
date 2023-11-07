@@ -20,11 +20,11 @@ public class Constant extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, List<String> classVariables) {
-        emit(emitter, false,  classVariables);
+    public void emit(Python emitter, List<String> classVariables, List<String> instanceVariables) {
+        emit(emitter, false,  classVariables, instanceVariables);
     }
 
-    public void emit(Python emitter, boolean continueLine, List<String> classVariables) {
+    public void emit(Python emitter, boolean continueLine, List<String> classVariables, List<String> instanceVariables) {
         emitter.emitLine("'" + string + "'",continueLine);
     }
 }

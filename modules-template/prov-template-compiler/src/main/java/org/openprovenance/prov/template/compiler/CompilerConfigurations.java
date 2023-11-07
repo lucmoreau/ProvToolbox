@@ -9,6 +9,7 @@ import javax.lang.model.element.Modifier;
 
 import java.util.function.Consumer;
 
+import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerConfigurations {
@@ -121,7 +122,13 @@ public class CompilerConfigurations {
 
         JavaFile myfile = compilerUtil.specWithComment(theConfigurator, configs, configs.configurator_package, stackTraceElement);
 
-        return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+       // return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+
+        if (locations.python_dir==null || !(fileName.equals("BuilderConfigurator.java") || fileName.equals("ConverterConfigurator.java"))) {
+            return new SpecificationFile(myfile, directory, fileName, configs.configurator_package);
+        } else {
+            return newSpecificationFiles(compilerUtil, locations, theConfigurator, configs, stackTraceElement, myfile, directory, fileName, configs.configurator_package, null);
+        }
 
     }
 

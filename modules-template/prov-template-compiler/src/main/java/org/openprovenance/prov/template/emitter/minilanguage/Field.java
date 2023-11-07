@@ -54,7 +54,7 @@ public class Field {
         }
         if (initialiser != null && !initialiser.toString().trim().isEmpty()) {
             emitter.emitContinueLine(" = "); // initialiser.toString().replace("\"", "'"));
-            initialiser.emit(emitter, true, new LinkedList<>());  // no need to pass any class variables, given that we are initialising fields
+            initialiser.emit(emitter, true, new LinkedList<>(), new LinkedList<>());  // no need to pass any class variables, given that we are initialising fields
         } else {
             emitter.emitContinueLine(" = None");
         }

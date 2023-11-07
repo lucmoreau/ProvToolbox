@@ -30,7 +30,7 @@ public class Constructor extends Expression {
                 '}';
     }
 
-    public void emit(Python emitter, boolean continueLine, List<String> locals) {
+    public void emit(Python emitter, boolean continueLine, List<String> classVariables,  List<String> instanceVariables) {
         if (type.equals("java.lang.StringBuffer")) {
             emitter.emitLine( "[]",continueLine);
         } else if (type.startsWith("java.util.HashMap<")) {
@@ -48,7 +48,7 @@ public class Constructor extends Expression {
                         } else {
                             first=false;
                         }
-                        e.emit(emitter, true, locals);
+                        e.emit(emitter, true, classVariables, instanceVariables);
                     }
                     emitter.emitContinueLine("]");
                 } else {

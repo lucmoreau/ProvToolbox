@@ -42,14 +42,16 @@ public class Statement {
         return elements;
     }
 
-    public void emit(Python emitter, List<String> classVariables) {
+    public void emit(Python emitter, List<String> classVariables,  List<String> instanceVariables) {
         emitter.emitLine(this.toString());
     }
 
-    static public String localized(String str, List<String> classVariables) {
+    static public String localized(String str, List<String> classVariables, List<String> instanceVariables) {
         if (classVariables.contains(str)) {
+            return "cls."+str;
+        } else if (instanceVariables.contains(str)) {
             return "self."+str;
-        } else {
+        }else {
             return str;
         }
     }

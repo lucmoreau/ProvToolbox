@@ -19,6 +19,7 @@ import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.openprovenance.prov.model.DOMProcessing.builder;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -183,7 +184,7 @@ public class CompilerCommon {
         if (locations.python_dir==null) {
             specFile =  new SpecificationFile(myfile, directory, fileName, packageName);
         } else {
-            Set<String> selectedExports = Set.of("args2csv", "getName", "log" + myfile.typeSpec.name.replace("Builder", ""));
+            Set<String> selectedExports = Set.of("args2csv", "toBean", "getName", "aArgs2BeanConverter", "log" + myfile.typeSpec.name.replace("Builder", ""));
 
             specFile =  newSpecificationFiles(compilerUtil, locations, bean, templateName, stackTraceElement, myfile, directory, fileName, packageName, selectedExports);
 
@@ -262,14 +263,14 @@ public class CompilerCommon {
 
     public static CodeBlock makeParamsList(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil) {
         return CodeBlock.join(variables.stream().map(variable ->
-                CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), "__" + variable)).collect(Collectors.toList()), ", ");
+                CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
     }
 
     public static CodeBlock makeRenamedArgsList(String head, Collection<String> variables) {
         List<String> variables2=new LinkedList<>();
         if (head!=null) variables2.add(head);
         variables2.addAll(variables);
-        return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(head)?variable: "__" + variable))).collect(Collectors.toList()), ", ");
+        return CodeBlock.join(variables2.stream().map(variable -> CodeBlock.of("$N", (variable.equals(head)?variable: Constants.GENERATED_VAR_PREFIX + variable))).collect(Collectors.toList()), ", ");
     }
 
     public static CodeBlock makeArgsList(Collection<String> variables) {
@@ -286,26 +287,20 @@ public class CompilerCommon {
     private FieldSpec generateField4aBeanConverter(String templateName, String packge, TemplateBindingsSchema bindingsSchema) {
         TypeName myType=processorClassType(templateName,packge,ClassName.get(packge,compilerUtil.commonNameClass(templateName)));
         FieldSpec.Builder fbuilder=FieldSpec.builder(myType, Constants.A_ARGS_BEAN_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
+        Map<String, List<Descriptor>> var = bindingsSchema.getVar();
+        Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
-        Map<String, List<Descriptor>> theVar= bindingsSchema.getVar();
+        CodeBlock paramsList= makeParamsList(variables, var, compilerUtil);
+        CodeBlock argsList=makeRenamedArgsList(null,variables);
 
-        String args = "";
-        String args2 = "";
+        //fbuilder.initializer(" $N ($L) -> { return $N($L); }", MARKER_LAMBDA, paramsList, "toBean", argsList);
 
-        boolean first=true;
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
-            String newkey = "__" + key;
-            if (first) {
-                first=false;
-            } else {
-                args = args + ", ";
-                args2 = args2 + ", ";
-            }
-            args = args +  compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName() + " " + newkey;
-            args2=args2+ " " + newkey;
+        CodeBlock.Builder lambda=CodeBlock.builder();
+        lambda.add("($L) -> $N {", paramsList, MARKER_LAMBDA_BODY).indent();
+        lambda.addStatement("return $N($L)", "toBean", argsList);
+        lambda.add("}; $N", MARKER_LAMBDA_END);
+        fbuilder.initializer(" $N $L", MARKER_LAMBDA, lambda.build());
 
-        }
-        fbuilder.initializer(" (" + args + ") -> { return $N(" + args2 + "); }", "toBean");
 
         return fbuilder.build();
     }
@@ -1218,20 +1213,18 @@ public class CompilerCommon {
             builder.addParameter(compilerUtil.getJavaTypeForDeclaredType(bindingsSchema.getVar(), key), newkey);
         }
 
-        builder.addStatement("$T bean=new $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),ClassName.get(packge,compilerUtil.commonNameClass(template)));
+        builder.addStatement("$T $N=$N $T()",ClassName.get(packge,compilerUtil.commonNameClass(template)),BEAN_VAR, "new", ClassName.get(packge,compilerUtil.commonNameClass(template)));
 
         for (String key: variables) {
             String newkey= compilerUtil.generateNewNameForVariable(key);
-            String statement = "bean.$N=$N";
-            builder.addStatement(statement, key, newkey);
+            String statement = "$N.$N=$N";
+            builder.addStatement(statement, BEAN_VAR, key, newkey);
         }
 
 
-        builder.addStatement("return bean");
+        builder.addStatement("return $N", BEAN_VAR);
 
-        MethodSpec method = builder.build();
-
-        return method;
+        return builder.build();
     }
 
 
@@ -1313,7 +1306,7 @@ public class CompilerCommon {
         builder.addParameter(Object[].class, "record");
 
         ClassName className = ClassName.get(packge, compilerUtil.beanNameClass(template,direction,extension));
-        builder.addStatement("$T bean=new $T()", className, className);
+        builder.addStatement("$T $N=new $T()", className, BEAN_VAR, className);
         builder.addJavadoc("Converter to bean of type $T for template $N.\n", className, template);
         if (shared!=null) {
             builder.addJavadoc("Variant $N of class $T to support shared variables $N\n", extension, ClassName.get(packge,compilerUtil.beanNameClass(template,direction)), shared.toString());
@@ -1330,16 +1323,16 @@ public class CompilerCommon {
                     || descriptorUtils.isInput(key,bindingsSchema)
                     || (shared!=null && shared.contains(key))) {
                 if (converter == null) {
-                    String statement = "bean.$N=($T) record[" + count + "]";
-                    builder.addStatement(statement, key, declaredJavaType);
+                    String statement = "$N.$N=($T) record[$L]";
+                    builder.addStatement(statement, BEAN_VAR, key, declaredJavaType, count);
                 } else {
-                    String statement = "bean.$N=(record[" + count + "]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
-                    builder.addStatement(statement, key, converter, declaredJavaType);
+                    String statement = "$N.$N=(record[" + count + "]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
+                    builder.addStatement(statement, BEAN_VAR, key, converter, declaredJavaType);
                 }
             }
             count++;
         }
-        builder.addStatement("return bean");
+        builder.addStatement("return $N", BEAN_VAR);
 
 
         MethodSpec method = builder.build();

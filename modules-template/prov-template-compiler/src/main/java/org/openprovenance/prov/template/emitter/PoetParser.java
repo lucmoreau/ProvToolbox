@@ -35,6 +35,9 @@ public class PoetParser {
             emitLine("from org.example.templates.block.client.common.Template_blockBuilder import Template_blockBuilder");
             emitLine("from org.example.templates.block.client.configurator.BuilderConfigurator import BuilderConfigurator");
             emitLine("from org.example.templates.block.client.configurator.ConverterConfigurator import ConverterConfigurator");
+            emitLine("from org.example.templates.block.client.common.Template_blockBean import Template_blockBean");
+        } else if (spec.name.equals("Template_blockBuilder")) {
+            emitLine("from org.example.templates.block.client.common.Template_blockBean import Template_blockBean");
         }
         emitNewline();
         emitNewline();

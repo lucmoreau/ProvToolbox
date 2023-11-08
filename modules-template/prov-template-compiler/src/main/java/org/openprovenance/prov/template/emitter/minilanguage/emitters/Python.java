@@ -2,7 +2,7 @@ package org.openprovenance.prov.template.emitter.minilanguage.emitters;
 
 public class Python {
 
-    int indent;
+    public int indent;
     public void indent() {
         indent++;
     }

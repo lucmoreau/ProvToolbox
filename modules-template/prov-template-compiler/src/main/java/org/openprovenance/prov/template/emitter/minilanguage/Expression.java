@@ -110,7 +110,7 @@ public class Expression extends Statement {
                 MethodCall object=new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), null, elements);
                 allArgsIncludingMarkers.add(0, new Pair("$L", object));
                 //System.out.println("Found object " + object);
-                System.out.println(" recursing with " + allArgsIncludingMarkers);
+                //System.out.println(" recursing with " + allArgsIncludingMarkers);
                 return makeExpression(allArgsIncludingMarkers);
 
             } else if (allArgsIncludingMarkers.get(0).equals(new Token("()."))) {
@@ -120,18 +120,27 @@ public class Expression extends Statement {
                 allArgsIncludingMarkers.add(0, new Token("."));
                 allArgsIncludingMarkers.add(0, new Pair("$L", object));
                 //System.out.println("Found object " + object);
-                System.out.println(" recursing with " + allArgsIncludingMarkers);
+                //System.out.println(" recursing with " + allArgsIncludingMarkers);
                 return makeExpression(allArgsIncludingMarkers);
 
             } else {
                 // falling through
+
                 System.out.println("Falling through " + elements);
                 System.out.println(" Falling through " + allArgsIncludingMarkers);
             }
         } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("(")) {
             List<Element> allArgs = elements.subList(2, elements.size());
             // method call with more arguments
-            return new MethodCall(null, (String) ((Pair) elements.get(0)).getArg(), makeExpressions(allArgs), elements);
+            List<Expression> arguments = makeExpressions(allArgs);
+            assert arguments.size() == 1;
+            List<Element> _elements = arguments.get(0).getElements();
+            if ("new".equals(getArg(_elements.get(0)))) {
+                return new MethodCall(null, (String) ((Pair) elements.get(0)).getArg(), arguments, elements);
+            } else {
+                List<Object> args = _elements.stream().filter(x -> x instanceof Pair).map(x -> ((Pair) x).getArg()).collect(Collectors.toList());
+                return new MethodCall(null, (String) ((Pair) elements.get(0)).getArg(), args, elements);
+            }
         }
         else if (elements.size()>=3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("==")) {  // binary operator
             //infix expression
@@ -147,17 +156,16 @@ public class Expression extends Statement {
             if (e instanceof Pair && getArg(e).equals(MARKER_PARAMS)) {
                 ll.add(current);
                 current=new LinkedList<>();
-            } else if (e instanceof Token && (getToken(e).equals(",") || getToken(e).equals("}"))) {
+            } else if (e instanceof Token && (getToken(e).equals(",") || getToken(e).equals("}") || getToken(e).equals(")"))) {
                     // nothing to do
-            }
-            else {
+            } else {
                 current.add(e);
             }
         }
         if (!current.isEmpty()) {
             ll.add(current);
         }
-        return ll.stream().map(x->makeExpression(x)).collect(Collectors.toList());
+        return ll.stream().map(Expression::makeExpression).collect(Collectors.toList());
     }
 
     @Override

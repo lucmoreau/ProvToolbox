@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MethodCall extends Expression {
-    private final Expression object;
+    public Expression object;
     private final String methodName;
     private final List<?> arguments;
 
@@ -63,6 +63,7 @@ public class MethodCall extends Expression {
                 if (object != null) {
                     emitter.emitContinueLine(".");
                 }
+                if (methodName.equals("toBean")) emitter.emitContinueLine("cls."); // FIXME: not systematic
                 emitter.emitContinueLine(methodName);
             }
             if (arguments==null) {
@@ -84,7 +85,6 @@ public class MethodCall extends Expression {
                     ((Expression) argument).emit(emitter, true, classVariables, instanceVariables);
                 } else {
                     emitter.emitContinueLine(localized(argument.toString(), classVariables, instanceVariables));
-
                 }
             }
             emitter.emitContinueLine(")");

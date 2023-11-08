@@ -3,7 +3,6 @@ package org.openprovenance.prov.template.emitter.minilanguage;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 

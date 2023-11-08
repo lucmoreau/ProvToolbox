@@ -8,10 +8,10 @@ import java.util.List;
 
 public class Assignment extends Statement {
     private final Object type;
-    private final String variable;
+    private final Expression variable;
     private final Expression value;
 
-    public Assignment(Object type, String variable, Expression value, List<Element> elementList) {
+    public Assignment(Object type, Expression variable, Expression value, List<Element> elementList) {
         super(elementList);
         this.type = type;
         this.variable = variable;
@@ -28,10 +28,11 @@ public class Assignment extends Statement {
     }
 
     public void emit(Python emitter, List<String> classVariables, List<String> instanceVariables) {
-        if (variable.equals("self")) {
+        if (variable instanceof Symbol && ((Symbol) variable).symbol.equals("self")) {
             return;
         }
-        emitter.emitBeginLine(variable);
+        emitter.emitBeginLine("");
+        variable.emit(emitter, true, classVariables, instanceVariables);
         emitter.emitContinueLine("=");
         value.emit(emitter, true, classVariables, instanceVariables);
         emitter.emitNewline();

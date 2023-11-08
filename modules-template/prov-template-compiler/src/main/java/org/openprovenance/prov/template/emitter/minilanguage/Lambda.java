@@ -26,6 +26,7 @@ public class Lambda extends Expression {
 
     public void emit(Python emitter, boolean continueLine, List<String> classVariables,  List<String> instanceVariables ) {
         // ahahah ... lambdas cannot be multiline
+        // so we need to emit the whole thing in one line
         emitter.emitLine("lambda ", continueLine);
         boolean first=true;
         for (Parameter p: parameters) {
@@ -36,12 +37,12 @@ public class Lambda extends Expression {
             emitter.emitContinueLine(p.name);
         }
         emitter.emitContinueLine(": ");
-        emitter.emitNewline();
-        emitter.indent();
+        //emitter.emitNewline();
+        //emitter.indent();
         for (Statement s: body) {
             s.emit(emitter, classVariables, instanceVariables);
         }
-        emitter.unindent();
-        emitter.emitNewline();
+        //emitter.unindent();
+        //emitter.emitNewline();
     }
 }

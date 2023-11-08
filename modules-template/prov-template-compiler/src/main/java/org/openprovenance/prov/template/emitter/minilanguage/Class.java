@@ -2,16 +2,19 @@ package org.openprovenance.prov.template.emitter.minilanguage;
 
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Class {
     final private String name;
     final private List<Comment> comments=new LinkedList<>();
-    final private List<Field> fields=new LinkedList<>();
+    public final List<Field> fields=new LinkedList<>();
     final private List<Method> methods=new LinkedList<>();
     private final List<String> interfaces=new LinkedList<>();
+    public Set<String> delayedFields=new HashSet<>();
 
     public Class(String name,  List<String> interfaces, List<Field> fields,  List<Method> methods,  List<Comment> comments) {
         this.name = name;
@@ -52,10 +55,28 @@ public class Class {
             }
         }
         for (Field f: fields) {
-            f.emit(emitter);
+            if (!delayedFields.contains(f.name)) {
+                f.emit(emitter);
+            }
+
         }
     }
 
 
+    public void setDelayInitializer(Set<String> delayedFields) {
+        this.delayedFields=delayedFields;
 
+    }
+
+    public void emitDelayedFields(Python emitter, int indent) {
+        for (Field f: fields) {
+            emitter.indent=indent;
+            if (delayedFields.contains(f.name)) {
+                emitter.emitBeginLine("Logger.");
+                ((MethodCall)f.initialiser).object=new Symbol("Logger",null);
+                f.emit(emitter);
+            }
+        }
+
+    }
 }

@@ -4,6 +4,7 @@ from org.example.templates.block.client.common.Template_blockBean import Templat
 from org.example.templates.block.logger.Logger import Logger
 
 import sys
+import json
 
 print(sys.path)
 
@@ -28,4 +29,11 @@ if __name__ == "__main__":
     builder=Template_blockBuilder()
     result=bean.process(builder.args2csv())
     print(result)
+
+
+    print(Logger.logTemplate_block('operation','operation_type','agent','consumed1','10','consumed2','15','produced','java.lang.Integer','25'))
+    bean=Logger.beanTemplate_block('operation','operation_type','agent','consumed1','10','consumed2','15','produced','java.lang.Integer','25')
+    print(bean)
+    #print(json.dumps(bean))
+
 

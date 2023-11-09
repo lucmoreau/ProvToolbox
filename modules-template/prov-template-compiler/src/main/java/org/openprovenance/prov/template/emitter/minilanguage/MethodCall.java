@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MethodCall extends Expression {
     public Expression object;
-    private final String methodName;
+    final String methodName;
     private final List<?> arguments;
 
     public MethodCall(Object object, String methodName, List<?> arguments, List<Element> elements) {

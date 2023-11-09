@@ -13,9 +13,6 @@ import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
-import org.openprovenance.prov.template.emitter.minilanguage.Field;
-import org.openprovenance.prov.template.emitter.minilanguage.MethodCall;
-import org.openprovenance.prov.template.emitter.minilanguage.Symbol;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
@@ -174,11 +171,11 @@ public class CompilerBeanGenerator {
         final PoetParser poetParser = new PoetParser();
         poetParser.emitPrelude(prelude);
         org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(spec, selectedExports);
-        clazz.setDelayInitializer(Set.of("simpleBuilders", "simpleBeanConverters"));
+        //clazz.setDelayInitializer(Set.of("simpleBuilders", "simpleBeanConverters"));
         Python emitter = new Python(poetParser.getSb(), 0);
         clazz.emit(emitter);
         // a bit of a trick: defined delayed fields outside the class, after the class definition, this allows the initialiser to refer to class methods.
-        clazz.emitDelayedFields(emitter,0);
+        clazz.emitClassInitialiser(emitter,0);
 
 
 

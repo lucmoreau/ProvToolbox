@@ -2,10 +2,7 @@ package org.openprovenance.prov.template.emitter.minilanguage;
 
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Class {
@@ -14,7 +11,7 @@ public class Class {
     public final List<Field> fields=new LinkedList<>();
     final private List<Method> methods=new LinkedList<>();
     private final List<String> interfaces=new LinkedList<>();
-    public Set<String> delayedFields=new HashSet<>();
+    public List<Field> fieldsForClassInitialiser=new LinkedList<>();
 
     public Class(String name,  List<String> interfaces, List<Field> fields,  List<Method> methods,  List<Comment> comments) {
         this.name = name;
@@ -46,36 +43,55 @@ public class Class {
         // class variables are used in methods, to decide which variable to prefix with self.
         List<String> classVariables=fields.stream().map(x->x.name).collect(Collectors.toList());
 
+        Collection<String> staticMethods=new HashSet<>();
 
         for (Method m: methods) {
             if (m.isStatic()) {
+                staticMethods.add(m.name);
                 m.emit(emitter, classVariables, new LinkedList<>()); // if static, then we need to prefix with cls
             } else {
                 m.emit(emitter, new LinkedList<>(), classVariables); // if not static, then we need to prefix with self
             }
         }
         for (Field f: fields) {
-            if (!delayedFields.contains(f.name)) {
+            if (belongingClassInitialiser(f, staticMethods)) {
+                fieldsForClassInitialiser.add(f);
+                System.out.println("#### fieldsForClassInitialiser " + fieldsForClassInitialiser);
+            } else {
                 f.emit(emitter);
             }
-
         }
     }
 
-
-    public void setDelayInitializer(Set<String> delayedFields) {
-        this.delayedFields=delayedFields;
-
+    public boolean belongingClassInitialiser(Field f, Collection<String> staticMethods) {
+        if (f.initialiser==null) return false;
+        if (f.initialiser instanceof MethodCall) {
+            MethodCall mc=(MethodCall)f.initialiser;
+            if (mc.object instanceof Symbol) {
+                Symbol s=(Symbol)mc.object;
+                if (s.symbol.equals(this.name)) {
+                    return true;
+                }
+            }
+            if (staticMethods.contains(mc.methodName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void emitDelayedFields(Python emitter, int indent) {
-        for (Field f: fields) {
+
+
+    public void emitClassInitialiser(Python emitter, int indent) {
+        if (fieldsForClassInitialiser.isEmpty()) return;
+        emitter.indent=indent;
+        emitter.emitLine("# class initialiser for " + name);
+        for (Field f: fieldsForClassInitialiser) {
             emitter.indent=indent;
-            if (delayedFields.contains(f.name)) {
-                emitter.emitBeginLine("Logger.");
-                ((MethodCall)f.initialiser).object=new Symbol("Logger",null);
-                f.emit(emitter);
-            }
+            emitter.emitBeginLine(name + ".");
+            ((MethodCall)f.initialiser).object=new Symbol(name,null);
+            f.emit(emitter);
+
         }
 
     }

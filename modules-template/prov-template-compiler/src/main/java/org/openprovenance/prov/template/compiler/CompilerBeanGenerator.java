@@ -170,12 +170,19 @@ public class CompilerBeanGenerator {
     private static SpecificationFile newSpecificationFiles(Locations locations, TypeSpec spec, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports, String prelude) {
         final PoetParser poetParser = new PoetParser();
         poetParser.emitPrelude(prelude);
+        int importPoint=poetParser.getSb().length();
         org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(spec, selectedExports);
-        //clazz.setDelayInitializer(Set.of("simpleBuilders", "simpleBeanConverters"));
         Python emitter = new Python(poetParser.getSb(), 0);
         clazz.emit(emitter);
         // a bit of a trick: defined delayed fields outside the class, after the class definition, this allows the initialiser to refer to class methods.
         clazz.emitClassInitialiser(emitter,0);
+
+        poetParser.getSb().insert(importPoint,"#end imports\n\n");
+        for (String imprt: new HashSet<>(emitter.getImports()).stream().sorted().collect(Collectors.toList())) {
+            poetParser.getSb().insert(importPoint,"\n");
+            poetParser.getSb().insert(importPoint,imprt);
+        }
+        poetParser.getSb().insert(importPoint,"\n\n#start imports\n");
 
 
 

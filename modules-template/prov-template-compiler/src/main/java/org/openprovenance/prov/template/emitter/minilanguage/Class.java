@@ -56,7 +56,6 @@ public class Class {
         for (Field f: fields) {
             if (belongingClassInitialiser(f, staticMethods)) {
                 fieldsForClassInitialiser.add(f);
-                System.out.println("#### fieldsForClassInitialiser " + fieldsForClassInitialiser);
             } else {
                 f.emit(emitter);
             }

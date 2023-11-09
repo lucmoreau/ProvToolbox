@@ -123,7 +123,7 @@ public class Expression extends Statement {
                 //System.out.println(" recursing with " + allArgsIncludingMarkers);
                 return makeExpression(allArgsIncludingMarkers);
 
-            } 
+            }
             else {
                 // falling through
 
@@ -134,7 +134,7 @@ public class Expression extends Statement {
                 return makeExpression(allArgsIncludingMarkers);
 
             }
-        } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("(")) {
+        } else if (elements.size()>3 && tokenExists(elements, 1, "(")) {
             List<Element> allArgs = elements.subList(2, elements.size());
             // method call with more arguments
             List<Expression> arguments = makeExpressions(allArgs);
@@ -147,7 +147,7 @@ public class Expression extends Statement {
                 return new MethodCall(null, (String) ((Pair) elements.get(0)).getArg(), args, elements);
             }
         }
-        else if (elements.size()>=3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("==")) {  // binary operator
+        else if (elements.size()>=3 && tokenExists(elements, 1, "==")) {  // binary operator
             //infix expression
             return new BinaryOp(getArg(elements.get(0)), (String) getToken(elements.get(1)), getArg(elements.get(2)), elements);
         }

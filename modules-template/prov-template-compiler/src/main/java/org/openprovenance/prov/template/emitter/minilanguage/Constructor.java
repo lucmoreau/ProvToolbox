@@ -36,7 +36,6 @@ public class Constructor extends Expression {
         } else if (type.startsWith("java.util.HashMap<")) {
             emitter.emitLine( "{}",continueLine);
         } else {
-            List<String> imports=new LinkedList<>();
             if (type.contains(".")) {
 
                 if (array!=null) {
@@ -54,11 +53,10 @@ public class Constructor extends Expression {
                 } else {
                     String[] parts=type.split("\\.");
                     String localType = parts[parts.length - 1];
-                    imports.add("from " + type + " import " + localType);
+                    emitter.getImports().add("from " + type + " import " + localType);
                     emitter.emitLine(localType, continueLine);
                     emitter.emitContinueLine("()");
                 }
-                System.out.println(imports);
             } else {
                 emitter.emitLine(type+"()", continueLine);
             }

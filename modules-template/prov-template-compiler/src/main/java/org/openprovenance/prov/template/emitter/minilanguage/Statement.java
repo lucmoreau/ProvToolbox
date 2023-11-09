@@ -69,7 +69,7 @@ public class Statement {
         //return new Statement(elements);
     }
 
-    private static boolean tokenExists(List<Element> elements, int i, String s) {
+    public static boolean tokenExists(List<Element> elements, int i, String s) {
         return elements.get(i) instanceof Token && getToken(elements.get(i)).equals(s);
     }
 

@@ -1,9 +1,10 @@
 package org.openprovenance.prov.template.emitter.minilanguage;
 
-import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.client_copy.Builder;
 import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,19 +56,18 @@ public class Field {
             emitter.emitBeginLine(name);
 
 
-            List<String> imports = new LinkedList<>();
 
-
-            String mappedType = table.get(type);
+            String mappedType = typeConversionTable.get(type);
             if (mappedType != null) {
                 emitter.emitContinueLine(" : " + mappedType);
+                String[] imprts = typeToImportsTable.get(type);
+                if (imprts!=null) Arrays.asList(imprts).forEach(imprt -> emitter.getImports().add(imprt));
             } else if (type != null && !type.trim().isEmpty()) {
                 if (type.contains(".")) {
                     String[] parts = type.split("\\.");
                     String localType = parts[parts.length - 1];
-                    imports.add("from " + type + " import " + localType);
+                    emitter.getImports().add("from " + type + " import " + localType);
                     emitter.emitContinueLine(" : " + convertType(localType));
-                    System.out.println(imports);
                 } else {
                     emitter.emitContinueLine(" : " + type);
                 }
@@ -95,13 +95,20 @@ public class Field {
     }
 
     static public String convertType(String type) {
-        return table.getOrDefault(type, type);
+        return typeConversionTable.getOrDefault(type, type);
     }
 
-    static final java.util.Map<String, String> table = new java.util.HashMap<>() {{
-        put("Builder[]", "List[Builder]");
+    static final java.util.Map<String, String> typeConversionTable = new java.util.HashMap<>() {{
+        put("org.openprovenance.prov.client.Builder[]", "List[Builder]");
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", "Dict[str,Builder]"); // watch out: string representation with a space!!
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", "Dict[str,ProcessorArgsInterface]");
         put("org.example.templates.block.client.common.Template_blockProcessor<org.example.templates.block.client.common.Template_blockBean>", "Template_blockProcessor");
+    }};
+
+    static final java.util.Map<String, String[]> typeToImportsTable = new java.util.HashMap<>() {{
+        put("org.openprovenance.prov.client.Builder[]", new String[] {"from typing import List", "from org.openprovenance.prov.client.Builder import Builder"});
+        put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", new String[] {"from typing import Dict"});
+        put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", new String[] {"from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface"});
+        put("org.example.templates.block.client.common.Template_blockProcessor<org.example.templates.block.client.common.Template_blockBean>", new String[] {"from org.example.templates.block.client.common.Template_blockBean import Template_blockBean"});
     }};
 }

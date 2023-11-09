@@ -1,6 +1,11 @@
 package org.openprovenance.prov.template.emitter.minilanguage.emitters;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Python {
+
+    private List<String> imports=new LinkedList<>();
 
     public int indent;
     public void indent() {
@@ -53,5 +58,9 @@ public class Python {
 
     public StringBuffer getSb() {
         return sb;
+    }
+
+    public List<String> getImports() {
+        return imports;
     }
 }

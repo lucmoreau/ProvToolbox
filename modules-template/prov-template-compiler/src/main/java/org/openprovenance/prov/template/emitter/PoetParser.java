@@ -1,5 +1,6 @@
 //package org.openprovenance.prov.template.emitter;
 package com.squareup.javapoet;
+import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.template.emitter.*;
 import org.openprovenance.prov.template.emitter.minilanguage.*;
 import org.openprovenance.prov.template.emitter.minilanguage.Class;
@@ -26,18 +27,10 @@ public class PoetParser {
 
     public Class parse (TypeSpec spec, Set<String> selectedExports) {
         emitLine("\nfrom dataclasses import dataclass");
-        emitLine("from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils");
 
         if (spec.name.equals("Logger")) {
-            emitLine("from org.openprovenance.prov.client.Builder import Builder");
-            emitLine("from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface");
-            emitLine("from typing import List, Dict");
-            emitLine("from org.example.templates.block.client.common.Template_blockBuilder import Template_blockBuilder");
-            emitLine("from org.example.templates.block.client.configurator.BuilderConfigurator import BuilderConfigurator");
-            emitLine("from org.example.templates.block.client.configurator.ConverterConfigurator import ConverterConfigurator");
-            emitLine("from org.example.templates.block.client.common.Template_blockBean import Template_blockBean");
-        } else if (spec.name.equals("Template_blockBuilder")) {
-            emitLine("from org.example.templates.block.client.common.Template_blockBean import Template_blockBean");
+        } else if (spec.name.endsWith("Builder")) {
+            emitLine("from " + StringEscapeUtils.class.getName() + " import " + StringEscapeUtils.class.getSimpleName());
         }
         emitNewline();
         emitNewline();
@@ -60,8 +53,6 @@ public class PoetParser {
         });
 
         return new Class(spec.name, new LinkedList<>(), fields, methods, getComments(spec.javadoc));
-
-
     }
 
     private Method parse(MethodSpec method, Set<String> names) {

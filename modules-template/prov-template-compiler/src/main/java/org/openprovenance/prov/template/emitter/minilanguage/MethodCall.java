@@ -40,7 +40,6 @@ public class MethodCall extends Expression {
                 '}';
     }
 
-    //TODO: put should be:         aTable[cls.__template_block.getName()] = configurator.template_block(cls.__template_block)
 
     public void emit(Python emitter, boolean continueLine, List<String> classVariables, List<String> instanceVariables) {
         if ("put".equals(methodName) && arguments!=null && arguments.size() == 2) {
@@ -51,6 +50,11 @@ public class MethodCall extends Expression {
             emitter.emitContinueLine("=");
             ((Expression)arguments.get(1)).emit(emitter, true, classVariables, instanceVariables);
             emitter.emitNewline();
+        } else if ("get".equals(methodName) && arguments!=null && arguments.size() == 1) {
+            object.emit(emitter, continueLine, classVariables, instanceVariables);
+            emitter.emitContinueLine("[");
+            ((Expression)arguments.get(0)).emit(emitter, true, classVariables, instanceVariables);
+            emitter.emitContinueLine("]");
         } else {
             if (object != null) {
                 if (object instanceof Symbol && ((Symbol) object).symbol.equals("sb") && methodName.equals("toString")) {

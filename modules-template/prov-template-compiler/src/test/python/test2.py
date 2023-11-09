@@ -15,6 +15,8 @@ from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscap
 if __name__ == "__main__":
 
     print("in main")
+
+
     bean=Template_blockBean()
     bean.operation='operation'
     bean.operation_type='operation_type'
@@ -24,8 +26,10 @@ if __name__ == "__main__":
     bean.consumed_value2_IGNORE='15'
     bean.produced='produced'
     bean.produced_value='25'
-    bean.produced_type='java.lang.Integer'        
+    bean.produced_type='java.lang.Integer'
     print(bean)
+
+
     builder=Template_blockBuilder()
     result=bean.process(builder.args2csv())
     print(result)
@@ -34,6 +38,7 @@ if __name__ == "__main__":
     print(Logger.logTemplate_block('operation','operation_type','agent','consumed1','10','consumed2','15','produced','java.lang.Integer','25'))
     bean=Logger.beanTemplate_block('operation','operation_type','agent','consumed1','10','consumed2','15','produced','java.lang.Integer','25')
     print(bean)
+    
     #print(json.dumps(bean))
 
 

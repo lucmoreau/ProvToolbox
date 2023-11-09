@@ -123,11 +123,16 @@ public class Expression extends Statement {
                 //System.out.println(" recursing with " + allArgsIncludingMarkers);
                 return makeExpression(allArgsIncludingMarkers);
 
-            } else {
+            } 
+            else {
                 // falling through
 
                 System.out.println("Falling through " + elements);
                 System.out.println(" Falling through " + allArgsIncludingMarkers);
+
+
+                return makeExpression(allArgsIncludingMarkers);
+
             }
         } else if (elements.size()>3 && elements.get(1) instanceof Token && getToken(elements.get(1)).equals("(")) {
             List<Element> allArgs = elements.subList(2, elements.size());

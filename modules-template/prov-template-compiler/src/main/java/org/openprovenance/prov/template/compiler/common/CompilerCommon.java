@@ -1306,7 +1306,8 @@ public class CompilerCommon {
         builder.addParameter(Object[].class, "record");
 
         ClassName className = ClassName.get(packge, compilerUtil.beanNameClass(template,direction,extension));
-        builder.addStatement("$T $N=new $T()", className, BEAN_VAR, className);
+        builder.addStatement("$T $N=$N $T()", className, BEAN_VAR, "new", className);
+
         builder.addJavadoc("Converter to bean of type $T for template $N.\n", className, template);
         if (shared!=null) {
             builder.addJavadoc("Variant $N of class $T to support shared variables $N\n", extension, ClassName.get(packge,compilerUtil.beanNameClass(template,direction)), shared.toString());
@@ -1323,11 +1324,11 @@ public class CompilerCommon {
                     || descriptorUtils.isInput(key,bindingsSchema)
                     || (shared!=null && shared.contains(key))) {
                 if (converter == null) {
-                    String statement = "$N.$N=($T) record[$L]";
-                    builder.addStatement(statement, BEAN_VAR, key, declaredJavaType, count);
+                    String statement = "$N.$N=($T)$N[$L]";
+                    builder.addStatement(statement, BEAN_VAR, key, declaredJavaType, "record", count);
                 } else {
-                    String statement = "$N.$N=(record[" + count + "]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
-                    builder.addStatement(statement, BEAN_VAR, key, converter, declaredJavaType);
+                    String statement = "$N.$N=($N[$L]==null)?null:((record[" + count + "] instanceof String)?$N((String)(record[" + count + "])):($T)(record[" + count + "]))";
+                    builder.addStatement(statement, BEAN_VAR, key, "record", count, converter, declaredJavaType);
                 }
             }
             count++;

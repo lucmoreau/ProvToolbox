@@ -9,10 +9,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly/python-assembly.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +118,7 @@
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "code__emitter",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/python/org/openprovenance",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/resources/assembly",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -149,11 +151,11 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test" />
-      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/pgo" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache" />
@@ -198,7 +200,7 @@
       <recent name="org.openprovenance.prov.vanilla" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test.py">
+  <component name="RunManager" selected="Makefile Target.test.pgo">
     <configuration name="CompilerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-template-compiler" />
       <extension name="coverage">
@@ -317,6 +319,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test.pgo" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.pgo" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <configuration name="test.py" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="prov-template-library" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -395,11 +403,13 @@
       <item itemvalue="JUnit.DateTest" />
       <item itemvalue="JUnit.DateTest.testDate1" />
       <item itemvalue="JUnit.CompilerTest" />
+      <item itemvalue="Makefile Target.test.pgo" />
       <item itemvalue="Python.test.py" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.test.pgo" />
         <item itemvalue="Python.test.py" />
         <item itemvalue="JUnit.CompilerTest" />
         <item itemvalue="JUnit.DateTest.testDate1" />
@@ -804,7 +814,7 @@
       <workItem from="1698748365341" duration="89701000" />
       <workItem from="1699289035155" duration="2395000" />
       <workItem from="1699296893543" duration="65757000" />
-      <workItem from="1699627670865" duration="2101000" />
+      <workItem from="1699627670865" duration="3605000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1101,7 +1111,7 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.template.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699629437237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
+    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699629786138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>

@@ -231,7 +231,7 @@ test.tmpl.init:
 	@$(PROVCONVERT) -infile "$(INFILE)" -log2prov $(INIT_LIB) -outfile "$(OUTFILE)"
 
 test.pgo.init:
-	@$(MAKE) test.tmpl.init INFILE=$(INFILE) OUTFILE=$(OUTFILE) INIT_LIB=org.openprovenance.pokemongo.Init
+	@$(MAKE) test.tmpl.init INFILE=$(INFILE) OUTFILE=$(OUTFILE) INIT_LIB=org.openprovenance.prov.template.library.pg.Init
 
 test.pgo:
 	@$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/ballcollect.csv OUTFILE=target/pgo1.png

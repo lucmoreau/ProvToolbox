@@ -1,2 +1,6 @@
 node
 node_modules
+src/main/python/org/openprovenance/apache/__pycache__/
+src/main/python/org/openprovenance/apache/commons/__pycache__/
+src/main/python/org/openprovenance/apache/commons/lang/__pycache__/
+src/main/python/org/openprovenance/prov/client/__pycache__/

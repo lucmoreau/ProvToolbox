@@ -252,6 +252,8 @@ public class PoetParser {
                 return "int";
             case "java.lang.Float":
                 return "float";
+            case "java.lang.Double":
+                return "float";
             case "java.lang.String[]":
                 return "str[]";
             default:

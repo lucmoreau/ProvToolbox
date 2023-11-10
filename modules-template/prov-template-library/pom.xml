@@ -147,8 +147,27 @@
                                 <argument>test</argument>
                             </arguments>
                         </configuration>
-
                     </execution>
+
+
+                    <execution>
+                        <configuration>
+                            <executable>python3</executable>
+                            <workingDirectory>${project.basedir}/src/test/python</workingDirectory>
+                            <arguments>
+                                <argument>test.py</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <PYTHONPATH>${project.build.directory}/generated-python:${project.basedir}/src/main/python:$PYTHONPATH</PYTHONPATH>
+                            </environmentVariables>
+                        </configuration>
+                        <id>python-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+
                 </executions>
 
             </plugin>

@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>modules-template</artifactId>
 		<groupId>org.openprovenance.prov</groupId>
-		<version>2.0.4-SNAPSHOT</version>
+		<version>2.0.4</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -123,7 +123,7 @@
 							<target>
 								<echo message="copying generated bundles to dist..." />
 								<copy file="${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js" tofile="dist/${project.artifactId}.js" verbose="true" failonerror="false" />
-								<copy file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts" tofile="dist/${project.artifactId}.d.ts" verbose="true" failonerror="false"/>
+								<copy file="${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts" tofile="dist/${project.artifactId}.d.ts" verbose="true" failonerror="false" />
 							</target>
 						</configuration>
 						<goals>

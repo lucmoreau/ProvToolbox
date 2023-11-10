@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -13,9 +14,10 @@ import static org.openprovenance.prov.template.compiler.common.Constants.INPUT_O
 import static org.openprovenance.prov.template.compiler.common.Constants.INPUT_PROCESSOR;
 
 public class CompilerInputOutputProcessor {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
-    public CompilerInputOutputProcessor() {
+    public CompilerInputOutputProcessor(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

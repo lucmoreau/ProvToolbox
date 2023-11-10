@@ -13,7 +13,6 @@ import java.util.List;
  * <ul>
  * <li> {@link ProvFactory#newHadMember(QualifiedName, java.util.Collection)}
  * <li> {@link ProvFactory#newHadMember(QualifiedName, QualifiedName...)}
- * <li> {@link ObjectFactory#createHadMember()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

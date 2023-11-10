@@ -5,7 +5,7 @@ import org.openprovenance.prov.scala.immutable.{ActedOnBehalfOf, Activity, Agent
 import org.openprovenance.prov.scala.nf.TransitiveClosure
 import org.openprovenance.prov.scala.utilities.{WasDerivedFromPlus, WasDerivedFromStar}
 
-class StatementIndexer (doc:Document) extends StatementAccessor {
+class StatementIndexer (doc:Document) extends StatementAccessor[Statement] {
 
   val idx: Map[Kind.Value, List[Statement]] = StatementIndexer.splitByStatementType(doc.statements().toSeq)
 

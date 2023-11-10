@@ -12,7 +12,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasInformedBy(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasInformedBy(QualifiedName, QualifiedName, QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasInformedBy()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

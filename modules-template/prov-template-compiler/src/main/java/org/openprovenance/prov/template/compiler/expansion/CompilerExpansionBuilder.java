@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.squareup.javapoet.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringSubstitutor;
+import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.Framework;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.InvalidCaseException;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -32,7 +34,7 @@ import static org.openprovenance.prov.template.compiler.expansion.CompilerTypeMa
 import static org.openprovenance.prov.template.expander.ExpandUtil.*;
 
 public class CompilerExpansionBuilder {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
@@ -50,6 +52,7 @@ public class CompilerExpansionBuilder {
         this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
         this.compilerTypeManagement=compilerTypeManagement;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 
@@ -145,7 +148,7 @@ public class CompilerExpansionBuilder {
         if (withMain) builder.addMethod(generateMain(allVars, allAtts, name, bindings_schema, bindingsSchema));
 
         if (bindings_schema != null) {
-            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema));
+            builder.addMethod(generateFactoryMethod(allVars, allAtts, name, bindings_schema, bindingsSchema));
             builder.addMethod(generateFactoryMethodWithContinuation(allVars, allAtts, name,  templateName, packge, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArray(allVars, allAtts, name, bindings_schema));
             builder.addMethod(generateFactoryMethodWithArrayAndContinuation(name,  templateName, packge, bindings_schema));
@@ -587,7 +590,7 @@ public class CompilerExpansionBuilder {
         return "_Q_" + qn.getPrefix() + "_" + qn.getLocalPart();
     }
 
-    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema) {
+    public MethodSpec generateFactoryMethod(Collection<QualifiedName> allVars, Collection<QualifiedName> allAtts, String name, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder("make")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(Document.class);
@@ -770,7 +773,7 @@ public class CompilerExpansionBuilder {
         JsonNode the_var = bindings_schema.get("var");
         JsonNode the_context = bindings_schema.get("context");
 
-        builder.addParameter(Object[].class, "record");
+        builder.addParameter(Object[].class, "__record");
 
         int count = 1;
         Iterator<String> iter = the_var.fieldNames();
@@ -780,10 +783,10 @@ public class CompilerExpansionBuilder {
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
             if (converter == null) {
-                String statement = "$T $N=($T) record[" + count + "]";
+                String statement = "$T $N=($T) __record[" + count + "]";
                 builder.addStatement(statement, atype, key, atype);
             } else {
-                String statement = "$T $N=$N(record[" + count + "])";
+                String statement = "$T $N=$N(__record[" + count + "])";
                 builder.addStatement(statement, atype, key, converter);
             }
             if (count > 1) args = args + ", ";
@@ -811,7 +814,7 @@ public class CompilerExpansionBuilder {
 
         JsonNode the_var = bindings_schema.get("var");
 
-        builder.addParameter(Object[].class, "record");
+        builder.addParameter(Object[].class, "__record");
         builder.addParameter(processorInterfaceType(template, packge), "_processor");
 
         int count = 1;
@@ -822,10 +825,10 @@ public class CompilerExpansionBuilder {
             final Class<?> atype = compilerUtil.getJavaTypeForDeclaredType(the_var, key);
             final String converter = compilerUtil.getConverterForDeclaredType(atype);
             if (converter == null) {
-                String statement = "$T $N=($T) record[" + count + "]";
+                String statement = "$T $N=($T) __record[" + count + "]";
                 builder.addStatement(statement, atype, key, atype);
             } else {
-                String statement = "$T $N=$N(record[" + count + "])";
+                String statement = "$T $N=$N(__record[" + count + "])";
                 builder.addStatement(statement, atype, key, converter);
             }
             if (count > 1) args = args + ", ";
@@ -851,7 +854,9 @@ public class CompilerExpansionBuilder {
         compilerUtil.specWithComment(builder);
 
         builder
-                .addStatement("$T pf=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
+                .addStatement("$T fr=$T.dynamicLoad()", Framework.class, Framework.class)
+                .addStatement("$T pf=fr.getFactory()", ProvFactory.class)
+                //.addStatement("$T pf2=org.openprovenance.prov.interop.InteropFramework.getDefaultFactory()", ProvFactory.class)
                 .addStatement("$N me=new $N(pf)", name, name);
 
 
@@ -880,7 +885,7 @@ public class CompilerExpansionBuilder {
 
         String args = "";
         boolean first = true;
-        Set<String> seen = new HashSet<String>();
+        Set<String> seen = new HashSet<>();
         for (QualifiedName q : allVars) {
             if (first) {
                 first = false;
@@ -906,7 +911,7 @@ public class CompilerExpansionBuilder {
 
 
         builder.addStatement("$T document=me.generator(" + args + ")", Document.class);
-        builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)"); //TODO make it load dynamically
+        builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
 
 
         if (bindings_schema != null) {
@@ -928,7 +933,7 @@ public class CompilerExpansionBuilder {
 
 
             builder.addStatement("document=me.make(" + args + ")");
-            builder.addStatement("new org.openprovenance.prov.interop.InteropFramework().writeDocument(System.out,org.openprovenance.prov.interop.Formats.ProvFormat.PROVN,document)");
+            builder.addStatement("fr.writeDocument($T.out,document,$T.PROVN)", System.class, Formats.ProvFormat.class);
 
 
         }
@@ -958,7 +963,15 @@ public class CompilerExpansionBuilder {
         builder.addParameter(ParameterSpec.builder(Map_S_Map_S_to_Function,"idataConverters").build());
 
 
-        builder.addStatement("return new $T($N,$N,$N,$N,$N)", ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"), "knownTypeMap", "unknownTypeMap", "propertyConverters", "idata", "idataConverters");
+        builder.addStatement(
+                "return new $T($N,$N,$N,$N,$N,$N)",
+                ClassName.get(packge,compilerUtil.templateNameClass(templateName)+"TypeManagement"),
+                "pf",
+                "knownTypeMap",
+                "unknownTypeMap",
+                "propertyConverters",
+                "idata",
+                "idataConverters");
 
         return builder.build();
 

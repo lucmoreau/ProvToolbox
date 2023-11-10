@@ -42,5 +42,6 @@
   "context" : {
     "ex" : "http://example.org/"
   },
-  "template" : null
+  "template" : null,
+  "linked": null
 }

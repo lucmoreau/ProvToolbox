@@ -1,0 +1,113 @@
+{
+    "var": {
+        "score": [
+            {
+                "@id": "score:*",
+                "@type": "xsd:int",
+                "@examplar": 232,
+                "@documentation": "The result of the validation",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "score"
+            }
+        ],
+        "testing_dataset": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/dataset.csv",
+                "@documentation": "The dataset used in the validation",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "organization": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "An organization aiming managing the ML pipeline",
+                "@input": "optional"
+            }
+        ],
+        "engineer": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "The engineer developing the ML pipeline",
+                "@input": "optional"
+            }
+        ],
+        "validating": [
+            {
+                "@id": "act:*",
+                "@type": "xsd:int",
+                "@documentation": "The activity of validating with the test dataset",
+                "@output": "true",
+                "@sql.table": "activity"
+            }
+        ],
+        "path": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@documentation": "The actual path of the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "score_value": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:double",
+                    "@documentation": "The validation score",
+                    "@input": "compulsory",
+                    "@sql.type": "double precision"
+                }
+            ]
+        ],
+        "time": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the pipeline is created",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "start": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation starts",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "end": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation ends",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ]
+    },
+    "context": {
+        "ag":  "${PROV_API}/live/agent/",
+        "act": "${PROV_API}/live/activity/",
+        "file": "${PROV_API}/live/file/",
+        "score": "${PROV_API}/live/score/"
+    },
+    "template": "TODO template",
+    "@documentation": "TODO doc."
+}

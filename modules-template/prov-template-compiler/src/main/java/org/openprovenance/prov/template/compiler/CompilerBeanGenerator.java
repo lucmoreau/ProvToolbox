@@ -1,7 +1,9 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import com.squareup.javapoet.PoetParser;
 import org.apache.commons.lang3.tuple.Triple;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -10,6 +12,8 @@ import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
+
+import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -22,7 +26,12 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 public class CompilerBeanGenerator {
     public static final String JAVADOC_NO_DOCUMENTATION = "xsd:string";
     public static final String PROCESSOR_PARAMETER_NAME = Constants.GENERATED_VAR_PREFIX + "processor";
-    private final CompilerUtil compilerUtil = new CompilerUtil();
+    private final CompilerUtil compilerUtil;
+
+
+    public CompilerBeanGenerator(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
+    }
 
     public SpecificationFile generateBean(TemplatesCompilerConfig configs, Locations locations, String templateName, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, BeanDirection beanDirection, String consistOf, List<String> sharing, String extension, String fileName) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
@@ -136,13 +145,51 @@ public class CompilerBeanGenerator {
 
         }
 
+
         TypeSpec spec = builder.build();
+
 
         JavaFile myfile = compilerUtil.specWithComment(spec, templateName, packge, stackTraceElement);
 
-        return new SpecificationFile(myfile, directory, fileName, packge);
+        if (locations.python_dir==null) {
+            return new SpecificationFile(myfile, directory, fileName, packge);
+        } else {
+            return newSpecificationFiles(compilerUtil, locations, spec, templateName, stackTraceElement, myfile, directory, fileName, packge, null);
+        }
+    }
+
+    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, String templateName, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
+        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(templateName, stackTraceElement));
+    }
 
 
+    static public SpecificationFile newSpecificationFiles(CompilerUtil compilerUtil, Locations locations, TypeSpec spec, TemplatesCompilerConfig configs, StackTraceElement stackTraceElement, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports) {
+        return newSpecificationFiles(locations, spec, myfile, directory, fileName, packge, selectedExports, compilerUtil.pySpecWithComment(configs, stackTraceElement));
+    }
+
+    private static SpecificationFile newSpecificationFiles(Locations locations, TypeSpec spec, JavaFile myfile, String directory, String fileName, String packge, Set<String> selectedExports, String prelude) {
+        final PoetParser poetParser = new PoetParser();
+        poetParser.emitPrelude(prelude);
+        int importPoint=poetParser.getSb().length();
+        org.openprovenance.prov.template.emitter.minilanguage.Class clazz = poetParser.parse(spec, selectedExports);
+        Python emitter = new Python(poetParser.getSb(), 0);
+        clazz.emit(emitter);
+        // a bit of a trick: defined delayed fields outside the class, after the class definition, this allows the initialiser to refer to class methods.
+        clazz.emitClassInitialiser(emitter,0);
+
+        poetParser.getSb().insert(importPoint,"#end imports\n\n");
+        for (String imprt: new HashSet<>(emitter.getImports()).stream().sorted().collect(Collectors.toList())) {
+            poetParser.getSb().insert(importPoint,"\n");
+            poetParser.getSb().insert(importPoint,imprt);
+        }
+        poetParser.getSb().insert(importPoint,"\n\n#start imports\n");
+
+
+
+        String pyDirectory = locations.python_dir + "/" + packge.replace('.', '/') + "/";
+        String pyFilename = myfile.typeSpec.name + ".py";
+        return new SpecificationFile(myfile, directory, fileName, packge,
+                pyDirectory, pyFilename, () -> poetParser.getSb().toString());
     }
 
     public Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> variantTable=new HashMap<>();
@@ -263,7 +310,9 @@ public class CompilerBeanGenerator {
 
         builder.addParameter(processorClassType(template,packge), PROCESSOR_PARAMETER_NAME);
 
-        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME, String.join(", ", fieldNames));
+        builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
+                CodeBlock.join(fieldNames.stream().map(field ->
+                        CodeBlock.of("$N", field)).collect(Collectors.toList()), ","));
 
         return builder.build();
 
@@ -271,8 +320,6 @@ public class CompilerBeanGenerator {
 
 
     public void generateSimpleConfigsWithVariants(Locations locations, TemplatesCompilerConfig configs) {
-        //Map<String, Map<String, Triple<String, List<String>, TemplateBindingsSchema>>> allVariantsUpdates=new HashMap<>();
-
         variantTable.keySet().forEach(
                 templateName -> {
                     Map<String, Triple<String, List<String>, TemplateBindingsSchema>> allVariants=variantTable.get(templateName);

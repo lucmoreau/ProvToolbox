@@ -1,0 +1,162 @@
+{
+    "var": {
+        "split_file1": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/12378_1.csv",
+                "@documentation": "The first file resulting from the split",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "split_file2": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/12378_2.csv",
+                "@documentation": "The second file resulting from the split",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "file": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/123.csv",
+                "@documentation": "The file before transformation",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "organization": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "An organization aiming managing the ML pipeline",
+                "@input": "optional"
+            }
+        ],
+        "engineer": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "The engineer developing the ML pipeline",
+                "@input": "optional"
+            }
+        ],
+        "splitting": [
+            {
+                "@id": "act:*",
+                "@type": "xsd:int",
+                "@documentation": "The activity of transforming the file",
+                "@output": "true",
+                "@sql.table": "activity"
+            }
+        ],
+        "n_rows1": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:int",
+                    "@documentation": "The number of rows in the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "n_cols1": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:int",
+                    "@documentation": "The number of columns in the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "path1": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@documentation": "The actual path of the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "n_rows2": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:int",
+                    "@documentation": "The number of rows in the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "n_cols2": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:int",
+                    "@documentation": "The number of columns in the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "path2": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@documentation": "The actual path of the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "time": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformed file is created",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "start": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation starts",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "end": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation ends",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ]
+    },
+    "context": {
+        "ag":  "${PROV_API}/live/agent/",
+        "act": "${PROV_API}/live/activity/",
+        "file": "${PROV_API}/live/file/"
+    },
+    "template": "TODO template",
+    "@documentation": "TODO doc."
+}

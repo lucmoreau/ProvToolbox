@@ -41,6 +41,7 @@ case class Triple (subject: QualifiedName,
 object Primitive {
 
   def processFunction(getStatement: String=>Statement,
+                      getSeqStatement: String=>Seq[Statement],
                       amap:Map[String,Object],
                       environment: Environment): (Option[Result],Set[Triple])= {
 
@@ -74,46 +75,67 @@ object Primitive {
         case Some(a1) => applyFun1(function, applyField(field, statement), optionp, (Seq(a1),Set()),environment)
       }
 
-    } else {
+    }
+    else {
 
-      val obj = amap(Keywords.OBJECT).toString
-      val property = amap(Keywords.PROPERTY).toString
-      val function = amap(Keywords.FUNCTION).toString
-      val optionp: Boolean = amap.contains(Keywords.OPTIONAL)
-      val index: Option[Int] = amap.get(Keywords.INDEX) match {
-        case None => None
-        case Some(s:String) => Some(s.toInt)
-        case _ => throw new UnsupportedOperationException("@index not associated with string")
-      }
-      val statement: Statement = getStatement(obj)
-      val arg1 = amap.get(Keywords.ARG1)
-      val arg2 = amap.get(Keywords.ARG2)
+      val an_object = amap.get(Keywords.OBJECT)
 
-      val object1 = amap.get(Keywords.OBJECT1)
-      arg1 match {
-        case None =>
-          object1 match {
-            case None => //throw new UnsupportedOperationException ("processFunction: " + function + "[ no @arg1, no @object1]")
-              applyFun(function, applyProperty(property, index, statement, environment), optionp)
-            case Some(obj1) =>
-              applyFun1(function, applyProperty(property, index, statement, environment), optionp, (Seq(obj1),Set()),environment)
-          }
+      if (an_object.isDefined) {
 
-        case Some(a1) =>
-          arg2 match {
-            case None =>  applyFun1(function, applyProperty(property, index, statement, environment), optionp,(Seq(a1),Set()),environment)
+        val obj = amap(Keywords.OBJECT).toString
+        val property = amap(Keywords.PROPERTY).toString
+        val function = amap(Keywords.FUNCTION).toString
+        val optionp: Boolean = amap.contains(Keywords.OPTIONAL)
+        val index: Option[Int] = amap.get(Keywords.INDEX) match {
+          case None => None
+          case Some(s: String) => Some(s.toInt)
+          case _ => throw new UnsupportedOperationException("@index not associated with string")
+        }
+        val statement: Statement = getStatement(obj)
+        val arg1 = amap.get(Keywords.ARG1)
+        val arg2 = amap.get(Keywords.ARG2)
 
-            case Some(a2) =>
-              val arg3 = amap.get(Keywords.ARG3)
+        val object1 = amap.get(Keywords.OBJECT1)
+        arg1 match {
+          case None =>
+            object1 match {
+              case None => //throw new UnsupportedOperationException ("processFunction: " + function + "[ no @arg1, no @object1]")
+                applyFun(function, applyProperty(property, index, statement, environment), optionp)
+              case Some(obj1) =>
+                applyFun1(function, applyProperty(property, index, statement, environment), optionp, (Seq(obj1), Set()), environment)
+            }
 
-              arg3 match {
-                case None =>
-                  applyFun2(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), environment)
-                case Some(a3) =>
-                  applyFun3(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), (Seq(a3), Set()), environment)
+          case Some(a1) =>
+            arg2 match {
+              case None => applyFun1(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), environment)
 
-              }
-          }
+              case Some(a2) =>
+                val arg3 = amap.get(Keywords.ARG3)
+
+                arg3 match {
+                  case None =>
+                    applyFun2(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), environment)
+                  case Some(a3) =>
+                    applyFun3(function, applyProperty(property, index, statement, environment), optionp, (Seq(a1), Set()), (Seq(a2), Set()), (Seq(a3), Set()), environment)
+
+                }
+            }
+        }
+      } else {
+        val aAggregate=amap.get(Keywords.AGGREGATE)
+        if (aAggregate.isDefined) {
+          //ok, the function applies to
+          val function = amap(Keywords.FUNCTION).toString
+          val optionp: Boolean = amap.contains(Keywords.OPTIONAL)
+          val seqStatement = getSeqStatement(aAggregate.get.toString)
+
+            println("processFunction: " + function + " " + seqStatement)
+            applyFun(function = function, value = (seqStatement,Set()), optionp = optionp)
+
+
+        } else {
+          throw new UnsupportedOperationException("processFunction: " + amap)
+        }
       }
     }
   }
@@ -268,6 +290,9 @@ object Primitive {
       case "ordinal"     => if (values.isEmpty) "NULL" else ordinal(values.head)
       case "cardinal"    => if (values.isEmpty) "NULL" else cardinal(values.head)
       case "cardinality" => if (values.isEmpty) "NULL" else cardinality(values.head)
+      case "count"       => values.size + ""
+      case "count+cardinality" => cardinality(values.size+"")
+
 
       case "flatten"    =>  values
       case "percentage" => if (values.isEmpty) "NULL" else {
@@ -313,6 +338,7 @@ object Primitive {
       case "lookup-type" =>
         lookup_type(value, arg1, Seq(), Map(), environment)
 
+
       case "markup-for-id" =>
         val uri=value.head.asInstanceOf[QualifiedName].getUri()
         val clazz=arg1.head.toString
@@ -326,7 +352,7 @@ object Primitive {
     val accessor = arg1.head.toString
     val myValue = value.head.asInstanceOf[QualifiedName]
 
-   // println("lookup-attribute " + accessor + " " + myValue)
+    // println("lookup-attribute " + accessor + " " + myValue)
 
 
     accessor match {
@@ -343,7 +369,7 @@ object Primitive {
         }
         println("Found adverb " + amap)
         amap
-     // case "self" => Json.toJsonSentence(Map[String, Object]("@splice" -> myValue.toString))
+      // case "self" => Json.toJsonSentence(Map[String, Object]("@splice" -> myValue.toString))
       case _ => throw new UnsupportedOperationException("environment lookup-attribute accessor " + accessor)
     }
   }
@@ -546,7 +572,7 @@ object Primitive {
     }
   }
 
-   def getNonProvAttributes(value: Statement): Seq[Attribute] = {
+  def getNonProvAttributes(value: Statement): Seq[Attribute] = {
     value.getAttributes.filterNot(a => a.elementName.namespaceURI.contentEquals(provns) || a.elementName.localPart.contentEquals("created_at"))
       .toSeq.sortWith{case (a1,a2) => a1.elementName.getUri() < a2.elementName.getUri()}
   }
@@ -694,14 +720,11 @@ object Primitive {
   }
 
 
-    def applyPatternFun(function: String, environment: Environment, arg1: String, arg2: Option[String]): Object = {
-    //println("-> applyPatternFun " + environment + " " + arg1)
+  def applyPatternFun(function: String, environment: Environment, arg1: String, arg2: Option[String]): Object = {
     function match {
       case "profile-features" =>
         val profiles: Map[String, Map[String, Object]] =environment.profiles(arg1).asInstanceOf[Map[String,Map[String,Object]]]
-        val default: Map[String, Object] =Map("features" -> Map())
         val arr: Array[Object] =environment.theprofile.flatMap{ p:String => profiles.get(p)}.flatMap(amap => amap.get("features"))
-        //profiles.getOrElse(environment.theprofile,default)("features")
         if (arr.isEmpty) {
           Map()
         } else {
@@ -718,11 +741,6 @@ object Primitive {
         }
         val set1: Set[String] = arg1.split(",").toSet
         val result: Set[String] =set1 -- set2
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
         result
 
 
@@ -736,11 +754,6 @@ object Primitive {
         }
         val set1: Set[String] = arg1.split(",").map(_.replace("[", "").replace("]", "")).toSet
         val result: Set[String] =set1 -- set2
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
         result
 
 
@@ -767,12 +780,6 @@ object Primitive {
         }
 
         val terms: Set[Object] =result.map(res => doFun1("lookup-attribute",Seq(fun(res)),Seq("noun_phrase"),environment))
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
-        //        println("terms: " + terms)
         terms
 
       case "difference-lookup-attributeOLD" =>
@@ -798,12 +805,6 @@ object Primitive {
         }
 
         val terms: Set[Object] =result.map(res => doFun1("lookup-attribute",Seq(fun(res)),Seq("noun_phrase"),environment))
-
-        //        println("==> arg1: " + arg1)
-        //        println("==> set1: " + set1)
-        //        println("==> set2: " + set2)
-        //        println("result: " + result)
-        //        println("terms: " + terms)
         terms
     }
 

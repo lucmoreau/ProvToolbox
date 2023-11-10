@@ -4,12 +4,11 @@ import org.apache.http.client.methods.{CloseableHttpResponse, HttpPost}
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
 import org.openprovenance.prov.scala.immutable._
-import org.openprovenance.prov.scala.interop.Output
 import org.openprovenance.prov.scala.nlgspec_transformer.Environment
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.callSimplenlgLibrary
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
 import org.openprovenance.prov.scala.primitive.{Keywords, Triple}
-import org.openprovenance.prov.scala.query.{EngineProcessFunction, Processor}
+import org.openprovenance.prov.scala.query.QueryInterpreter.{RField, getSeqStatement, getStatement}
 import org.openprovenance.prov.scala.summary.TypePropagator
 
 
@@ -50,12 +49,11 @@ object SentenceMaker {
 
 }
 
-class SentenceMaker (val engine:Processor) {
-  val primitive: EngineProcessFunction =engine.primitive
+class SentenceMaker () {
 
 
 
-  def transform(selected_objects: Map[String,engine.RField],
+  def transform(selected_objects: Map[String,RField],
                 phrase:Phrase,
                 environment0: Environment,
                 triples: scala.collection.mutable.Set[Triple],
@@ -66,11 +64,11 @@ class SentenceMaker (val engine:Processor) {
 
     val te=new TransformEnvironment {
       override val environment: Environment = environment0
-      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => engine.getStatement(f) match {
+      override val statements: Map[String, Statement] = selected_objects.flatMap{case (s,f) => getStatement(f) match {
         case None => None
         case Some(m) => Some((s,m))
       }}
-      override val seqStatements: Map[String, Seq[Statement]] = selected_objects.flatMap{case (s,f) => engine.getSeqStatement(f) match {
+      override val seqStatements: Map[String, Seq[Statement]] = selected_objects.flatMap{case (s,f) => getSeqStatement(f) match {
         case None => None
         case Some(m) => Some((s,m))
       }}
@@ -82,7 +80,7 @@ class SentenceMaker (val engine:Processor) {
 
   }
 
-
+/*
   def surface_realiser(s:Map[String,Object], h:String, p:Integer, log: Output): String = {
 
     val snlg: String = SentenceMaker.toJsonSentence(s)
@@ -95,6 +93,7 @@ class SentenceMaker (val engine:Processor) {
     callSimplenlgServer(h, p, snlg)
 
   }
+
 
   def callSimplenlgServer(h: String, p: Integer, snlg: String): String = {
 
@@ -112,6 +111,7 @@ class SentenceMaker (val engine:Processor) {
 
     scala.io.Source.fromInputStream(response.getEntity.getContent).mkString
   }
+ */
 
   val mylib=true
 
@@ -124,29 +124,6 @@ class SentenceMaker (val engine:Processor) {
     realised.getOrElse(emptyRealisation)
   }
 
-/*
 
-  def callSimplenlgLibraryMOVED_AWAY(p: Phrase, option: Int): (String, String, () => String) = {
-    val sw=new StringWriter()
-    SpecLoader.phraseExport(sw,p)
-    val snlg: String =sw.getBuffer.toString
-
-    //println(snlg)
-
-
-    val phrase=IO.phraseImportFromString(snlg)
-
-    val realiser: Realiser =if (option==1) defs.withMarkupFormatter() else wrapper.defs.theRealiser
-    //val realiser: Realiser =nlg.wrapper.defs.theRealiser
-    val spec =phrase.expand().asInstanceOf[NLGElement]
-   // println(spec.printTree("  "))
-
-    val tree=() => spec.printTree("  ")
-
-    val result: String =realiser.realiseSentence(spec)
-    (result, snlg, tree)
-  }
-
- */
 
 }

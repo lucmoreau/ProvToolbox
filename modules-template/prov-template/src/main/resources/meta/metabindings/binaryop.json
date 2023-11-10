@@ -1,0 +1,37 @@
+{
+    "var" : {
+        "agent" :                   [{"@id" : "var:agent"}],
+        "responsible" :             [{"@id" : null}],
+        "input1" :                  [{"@id" : "var:consumed1"}],
+        "input2" :                  [{"@id" : "var:consumed2"}],
+        "output" :                  [{"@id" : "var:produced"}],
+        "activity" :                [{"@id" : "var:operation"}],
+        "plan":                     [{"@id" : null}],
+
+
+        "atype" :                   [[{"@id" : "var:operation_type"}]],
+        "otype" :                   [[{"@id" : "var:produced_type"}]],
+        "oprops" :                  [[{"@id" : "prov:value"}]],
+        "oprop_values":             [[{"@id" : "var:produced_value"}]],
+        "iprops1":                  [[{"@id" : "prov:value"}]],
+        "iprop_values1":            [[{"@id" : "var:consumed_value1"}]],
+        "iprops2":                  [[{"@id" : "prov:value"}]],
+        "iprop_values2":            [[{"@id" : "var:consumed_value2"}]]
+
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:b"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "plead": "https://plead-project.org/ns/plead#",
+        "uuid" : "urn:uuid:",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "var": "http://openprovenance.org/var#",
+        "vargen": "http://openprovenance.org/vargen#",
+        "prov": "http://www.w3.org/ns/prov#"
+    },
+    "template" : null
+}

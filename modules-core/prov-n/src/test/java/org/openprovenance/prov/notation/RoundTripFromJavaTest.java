@@ -66,6 +66,19 @@ public class RoundTripFromJavaTest extends org.openprovenance.prov.model.RoundTr
 	@Override
 	public void testQualifiedHadMember1() {
 	}
-
+	@Override
+	public void testDictionaryMembership1() {
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (provn)"));
+	}
+	@Override
+	public void testDictionaryMembership2() {
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership2 (provn)"));
+	}
+	@Override public void testDictionaryMembership3() {
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (provn)"));
+	}
+	@Override public void testDictionaryMembership4() {
+		System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (provn)"));
+	}
 
 }

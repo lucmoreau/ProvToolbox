@@ -20,7 +20,6 @@ package org.openprovenance.prov.model;
  * <p><span class="strong">Relevant Factory Methods:</span>
  * <ul>
  * <li> {@link ProvFactory#newWasDerivedFrom(QualifiedName, QualifiedName, QualifiedName)}
- * <li> {@link ObjectFactory#createWasDerivedFrom()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

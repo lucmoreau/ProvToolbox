@@ -18,7 +18,7 @@ import static org.openprovenance.prov.template.compiler.CompilerUtil.u;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerTypedRecord {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
     private final boolean withMain;
     private final CompilerCommon compilerCommon;
@@ -30,6 +30,7 @@ public class CompilerTypedRecord {
         this.withMain=withMain;
         this.compilerCommon = compilerCommon;
         this.debugComment=debugComment;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     public SpecificationFile generatedTypedRecordConstructor(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packge, String resource, JsonNode bindings_schema, TemplateBindingsSchema bindingsSchema, String directory, String fileName) {

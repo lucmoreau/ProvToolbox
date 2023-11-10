@@ -32,7 +32,7 @@ public class AttributeDescriptor implements Descriptor {
     @JsonProperty("@escape")
     private String escape;
     @JsonProperty("@examplar")
-    private String examplar;
+    private Object examplar;
     @JsonProperty("@input")
     private InputFieldValue input;
     @JsonProperty("@output")
@@ -82,12 +82,12 @@ public class AttributeDescriptor implements Descriptor {
     }
 
     @JsonProperty("@examplar")
-    public String getExamplar() {
+    public Object getExamplar() {
         return examplar;
     }
 
     @JsonProperty("@examplar")
-    public void setExamplar(String examplar) {
+    public void setExamplar(Object examplar) {
         this.examplar = examplar;
     }
 

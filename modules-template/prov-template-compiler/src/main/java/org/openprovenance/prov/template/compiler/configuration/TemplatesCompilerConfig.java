@@ -28,6 +28,7 @@ public class TemplatesCompilerConfig {
     public String jsonschema;
     public String sqlFile;
     public String documentation;
+    public String python_dir;
 
     @Override
     public String toString() {
@@ -51,6 +52,7 @@ public class TemplatesCompilerConfig {
                 ", jsonschema='" + jsonschema + '\'' +
                 ", sqlFile='" + sqlFile + '\'' +
                 ", documentation='" + documentation + '\'' +
+                ", python_dir='" + python_dir + '\'' +
                 ", templates=" + Arrays.toString(templates) +
                 ", sqlTables=" + sqlTables +
                 '}';

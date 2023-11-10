@@ -52,7 +52,7 @@ public class ExpandAction implements StatementAction {
     final private Expand expand;
     final private Map<QualifiedName, QualifiedName> env;
     final private ProvUtilities u;
-    final private List<StatementOrBundle> ll = new LinkedList<StatementOrBundle>();
+    final private List<StatementOrBundle> ll = new LinkedList<>();
     final private List<Integer> index;
     final private OldBindings oldBindings;
     final private Groupings grp1;
@@ -100,7 +100,8 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            // NOTE change: if a variable in id position was replaced with null value, then we ignore the change
+            if (updated1 && res.getId()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -166,7 +167,9 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            // NOTE change: if a variable in id position was replaced with null value, then we ignore the change
+            if (updated1 && res.getId()!=null) ll.add(res);
+
         }
         if (updated)
             addOrderAttribute(res);
@@ -193,8 +196,7 @@ public class ExpandAction implements StatementAction {
 
     @Override
     public void doAction(WasAssociatedWith s) {
-        WasAssociatedWith res = pf.newWasAssociatedWith(s.getId(), s.getActivity(), s.getAgent());
-        res.setPlan(s.getPlan());
+        WasAssociatedWith res = pf.newWasAssociatedWith(s.getId(), s.getActivity(), s.getAgent(), s.getPlan());
         QualifiedName id = res.getId();
         boolean updated1 = setExpand(res, id, 0);
         QualifiedName en = res.getActivity();
@@ -208,7 +210,8 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            if (updated3 && res.getAgent()!=null) ll.add(res);
+            //ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -228,7 +231,7 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 && updated2 && updated3 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            if (res.getAgent()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -260,7 +263,7 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 && updated2 && updated3 && updated4 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            if (updated3 && res.getResponsible()!=null  && res.getDelegate()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -346,7 +349,8 @@ public class ExpandAction implements StatementAction {
         boolean allUpdated = updated1 ;
         allExpanded=allExpanded && allUpdated;
         if (!allUpdatedRequired || allUpdated) {
-            ll.add(res);
+            // NOTE change: if a variable in id position was replaced with null value, then we ignore the change
+            if (updated1 && res.getId()!=null) ll.add(res);
         }
         if (updated)
             addOrderAttribute(res);
@@ -360,49 +364,88 @@ public class ExpandAction implements StatementAction {
             Collection<Attribute> dstAttributes = new LinkedList<>();
 
             for (Attribute attribute : attributes) {
-                if (qualifiedNameURI.equals(attribute.getType().getUri())) {
-
-                    Object o = attribute.getValue();
-                    if (o instanceof QualifiedName) { // if attribute is
-                                                      // constructed properly,
-                                                      // this test should always
-                                                      // return true
-                        QualifiedName qn1 = (QualifiedName) o;
-
-                        if (ExpandUtil.isVariable(qn1)) {
-                            List<TypedValue> vals = env2.get(qn1);
-
-                            if (vals == null) {
-                                if (ExpandUtil.isGensymVariable(qn1)) {
-                                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                                                                      getUUIDQualifiedName(),
-                                                                      pf.getName().PROV_QUALIFIED_NAME));
-                                }
-                                // if not a vargen, then simply drop this
-                                // attribute
-                                // dstAttributes.add(attribute);
+                if (ExpandUtil.isVariable(attribute.getElementName())) {
+                    //System.out.println("WARNING: attribute " + attribute.getElementName() + " is a variable name");
+                    int count=0;
+                    List<TypedValue> typedValues = env2.get(attribute.getElementName());
+                    if (typedValues!=null) {
+                        // if prop has not value, we skip this
+                        for (TypedValue val : typedValues) {
+                            // System.out.println("WARNING: values " + val); // + " " + env2 + " " + env);
+                            if (qualifiedNameURI.equals(val.getType().getUri())) {
+                                //System.out.println("WARNING: associated value is a qualified name");
+                                QualifiedName qn1 = (QualifiedName) val.getValue();
+                                attribute = pf.newAttribute(qn1, attribute.getValue(), attribute.getType());
+                                //System.out.println("Now attribute is " + attribute);
+                                found = expandAttribute(dstStatement, attribute, dstAttributes, found, count);
+                                count++;
                             } else {
-                                found = true;
-                                processTemplateAttributes(dstStatement,
-                                                          dstAttributes,
-                                                          attribute,
-                                                          vals);
+                                // this was not a qualified name, so we ignore it
                             }
-                        } else { // no variable here
-                            dstAttributes.add(attribute);
                         }
-                    } else { // not even a qualified name
-                        dstAttributes.add(attribute);
                     }
-                } else { // not a qualified name
-                    dstAttributes.add(attribute);
+                } else {
+
+                    found = expandAttribute(dstStatement, attribute, dstAttributes, found, null);
                 }
             }
             pf.setAttributes((HasOther) dstStatement, dstAttributes);
         }
         return found;
     }
-    
+
+    private boolean expandAttribute(Statement dstStatement, Attribute attribute, Collection<Attribute> dstAttributes, boolean found, Integer count) {
+        if (qualifiedNameURI.equals(attribute.getType().getUri())) {
+
+            Object o = attribute.getValue();
+            if (o instanceof QualifiedName) { // if attribute is
+                                              // constructed properly,
+                                              // this test should always
+                                              // return true
+                QualifiedName qn1 = (QualifiedName) o;
+
+                if (ExpandUtil.isVariable(qn1)) {
+                    List<TypedValue> vals = env2.get(qn1);
+
+                    if (vals == null) {
+                        if (ExpandUtil.isGensymVariable(qn1)) {
+                            dstAttributes.add(pf.newAttribute(attribute.getElementName(),
+                                                              getUUIDQualifiedName(),
+                                                              pf.getName().PROV_QUALIFIED_NAME));
+                        }
+                        // if not a vargen, then simply drop this
+                        // attribute
+                        // dstAttributes.add(attribute);
+                    } else {
+                        found = true;
+                        if (count!=null) {
+                            // it means that the property name was a variable (say prop), it was bound to
+                            // the count value associated with prop. We are now about to process the value
+                            // of prop which has been determined to be a variable (say prop_value).
+                            // We select the 'count' value associated with prop_value.
+                            processTemplateAttributes(dstStatement,
+                                    dstAttributes,
+                                    attribute,
+                                    List.of(vals.get(count)));
+                        } else {
+                            processTemplateAttributes(dstStatement,
+                                    dstAttributes,
+                                    attribute,
+                                    vals);
+                        }
+                    }
+                } else { // no variable here
+                    dstAttributes.add(attribute);
+                }
+            } else { // not even a qualified name
+                dstAttributes.add(attribute);
+            }
+        } else { // not a qualified name
+            dstAttributes.add(attribute);
+        }
+        return found;
+    }
+
     boolean allowVariableInLabelAndTime=true;
 
     public void processTemplateAttributes(Statement dstStatement,
@@ -426,19 +469,27 @@ public class ExpandAction implements StatementAction {
             } else if (ExpandUtil.TIME_URI.equals(elementName)) {
                 Object value=val.getValue();
                 if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
-                    dstAttributes.add(pf.newAttribute(attribute.getElementName(),
-                                                      value,
-                                                      val.getType()));
+                    dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
                 } else if (dstStatement instanceof HasTime) {
                     ((HasTime) dstStatement).setTime(pf.newISOTime((String) value));
                 }
             } else if (ExpandUtil.STARTTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
-                    ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
+                    Object value=val.getValue();
+                    if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                    } else {
+                        ((Activity) dstStatement).setStartTime(pf.newISOTime((String) val.getValue()));
+                    }
                 }
             } else if (ExpandUtil.ENDTIME_URI.equals(elementName)) {
                 if (dstStatement instanceof Activity) {
-                    ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
+                    Object value=val.getValue();
+                    if (allowVariableInLabelAndTime && (value instanceof QualifiedName) && ((QualifiedName)value).getNamespaceURI().equals(ExpandUtil.VAR_NS)) {
+                        dstAttributes.add(pf.newAttribute(attribute.getElementName(), value, val.getType()));
+                    } else {
+                        ((Activity) dstStatement).setEndTime(pf.newISOTime((String) val.getValue()));
+                    }
                 }
             } else {
                 dstAttributes.add(pf.newAttribute(attribute.getElementName(),
@@ -476,7 +527,9 @@ public class ExpandAction implements StatementAction {
     private boolean setExpand(Statement res, QualifiedName id, int position) {
         if (ExpandUtil.isVariable(id)) {
             QualifiedName val = env.get(id);
-            if (val != null) {
+
+            // allows for null value associated with id
+            if ((val != null)  || env.containsKey(id)) {
                 u.setter(res, position, val);
                 return true;
             } else {
@@ -547,8 +600,7 @@ public class ExpandAction implements StatementAction {
         boolean updated0 = setExpand(res, col, 0);
         List<QualifiedName> ent = res.getEntity();
         if (ent.size() > 1) {
-            throw new UnsupportedOperationException(
-                                                    "can't expand HadMember with more than one members");
+            throw new UnsupportedOperationException("can't expand HadMember with more than one members");
         }
         boolean updated1 = setExpand(res, ent.get(0), 1);
 
@@ -641,8 +693,7 @@ public class ExpandAction implements StatementAction {
         boolean updated0 = setExpand(res, col, 0);
         List<QualifiedName> ent = res.getEntity();
         if (ent.size() > 1) {
-            throw new UnsupportedOperationException(
-                                                    "can't expand QualfiedHadMember with more than one members");
+            throw new UnsupportedOperationException("can't expand QualfiedHadMember with more than one members");
         }
         boolean updated1 = setExpand(res, ent.get(0), 1);
         boolean updated2 = expandAttributes(s, res);

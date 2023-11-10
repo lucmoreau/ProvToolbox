@@ -12,6 +12,7 @@ public class BindingsBean {
     public Map<String, List<Object>> vargen;
     public Map<String, String> context;
     public String template;
+    public Map<String, String> linked;
 
     @Override
     public boolean equals(Object o) {
@@ -21,12 +22,12 @@ public class BindingsBean {
 
         BindingsBean that = (BindingsBean) o;
 
-        return new EqualsBuilder().append(var, that.var).append(vargen, that.vargen).append(context, that.context).append(template, that.template).isEquals();
+        return new EqualsBuilder().append(var, that.var).append(vargen, that.vargen).append(context, that.context).append(template, that.template).append(linked, that.linked).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(var).append(vargen).append(context).append(template).toHashCode();
+        return new HashCodeBuilder(17, 37).append(var).append(vargen).append(context).append(template).append(linked).toHashCode();
     }
 
     @Override
@@ -36,6 +37,7 @@ public class BindingsBean {
                 ", vargen=" + vargen +
                 ", context=" + context +
                 ", template='" + template + '\'' +
+                ", linked=" + linked +
                 '}';
     }
 }

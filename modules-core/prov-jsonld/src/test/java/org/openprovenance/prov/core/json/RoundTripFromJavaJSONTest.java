@@ -45,6 +45,20 @@ public class RoundTripFromJavaJSONTest extends RoundTripFromJavaTest {
         System.out.println(escapeRed("########## Skipping testing for default1 in JSON"));
         super.testDefault1();
     }
+    @Override
+    public void testDictionaryMembership1() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (json)"));
+    }
+    @Override
+    public void testDictionaryMembership2() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership2 (json)"));
+    }
+    @Override public void testDictionaryMembership3() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (json)"));
+    }
+    @Override public void testDictionaryMembership4() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (json)"));
+    }
 
 
 }

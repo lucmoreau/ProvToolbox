@@ -14,7 +14,18 @@ var org;
                             return format;
                         }
                         static escapeCsv(format) {
-                            return "\"" + format + "\"";
+                            const newFormat = format.split("\"").join("\"\"");
+                            if (newFormat === format) {
+                                if ( /* contains */(format.indexOf(",") != -1) || /* contains */ (format.indexOf("\n") != -1) || /* contains */ (format.indexOf("\r") != -1)) {
+                                    return "\"" + format + "\"";
+                                }
+                                else {
+                                    return format;
+                                }
+                            }
+                            else {
+                                return "\"" + newFormat + "\"";
+                            }
                         }
                     }
                     lang.StringEscapeUtils = StringEscapeUtils;

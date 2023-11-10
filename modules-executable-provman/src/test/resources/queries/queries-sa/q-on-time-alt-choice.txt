@@ -1,0 +1,47 @@
+prefix sch <https://www.get-information-schools.service.gov.uk/Establishments/Establishment/Details/>
+prefix ch <http://southampton-citizen-portal.mock/children/>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix appl <http://southampton-citizen-portal.mock/school-applications/>
+prefix ex <http://example.org/>
+prefix sa <https://plead-project.org/ns/school-admission#>
+
+
+select * from wl_place a prov:Entity
+
+from der1 a prov:WasDerivedFrom
+ join wl_place.id=der1.generatedEntity
+
+from ranked_pos a prov:Entity
+ join der1.usedEntity=ranked_pos.id
+
+from der2 a prov:WasDerivedFrom
+ join ranked_pos.id=der2.generatedEntity
+
+from preference a prov:Entity
+ join der2.usedEntity=preference.id
+
+from der3 a prov:WasDerivedFrom
+ join wl_place.id=der3.generatedEntity
+
+from pan a prov:Entity
+ join der3.usedEntity=pan.id
+
+from der4 a prov:WasDerivedFrom
+ join wl_place.id=der4.generatedEntity
+
+from allocation_list a prov:Entity
+ join der4.usedEntity=allocation_list.id
+
+
+from alt_offer a prov:Entity
+
+
+where wl_place[prov:type]     >= 'sa:WaitingListPlace'
+and  ranked_pos[prov:type]    >= 'sa:SchoolPlaceRankedPosition'
+and  preference[prov:type]    >= 'sa:SchoolPlacePreference'
+and  pan[prov:type]           >= 'sa:PublishedAdmissionNumber'
+and  allocation_list[prov:type] >= 'sa:OfferCategoryList'
+and  preference[sa:school] = wl_place[sa:school]
+
+and  alt_offer[prov:type]     >= 'sa:AlternativeSchoolPlaceOffer'
+and  wl_place[sa:child] = alt_offer[sa:child]

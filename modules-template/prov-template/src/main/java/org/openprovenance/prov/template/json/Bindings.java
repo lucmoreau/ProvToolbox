@@ -9,17 +9,20 @@ public class Bindings {
     public Map<String, Descriptors> var;
     public Map<String, Descriptors> vargen;
     public Map<String, String> context;
-    public String template;
 
     @Override
     public String toString() {
-        return "TestBean{" +
+        return "Bindings{" +
                 "var=" + var +
                 ", vargen=" + vargen +
                 ", context=" + context +
+                ", linked=" + linked +
                 ", template='" + template + '\'' +
                 '}';
     }
+
+    public Map<String, String> linked;
+    public String template;
 
     public BindingsBean toBean() {
         BindingsBean bindingsBean = new BindingsBean();
@@ -27,6 +30,7 @@ public class Bindings {
         if (vargen!=null) bindingsBean.vargen=vargen.keySet().stream().collect(Collectors.toMap(k -> k, k -> vargen.get(k).toList()));
         bindingsBean.context=context;
         bindingsBean.template=template;
+        bindingsBean.linked=linked;
         return bindingsBean;
     }
 }

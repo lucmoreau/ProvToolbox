@@ -1,0 +1,35 @@
+{
+    "var" : {
+        "agent" :                   [{"@id" : "var:engineer"}],
+        "responsible" :             [{"@id" : "var:organization"}],
+        "input" :                   [{"@id" : "var:training_dataset"}],
+        "output" :                  [{"@id" : "var:pipeline"}],
+        "activity" :                [{"@id" : "var:training"}],
+        "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
+        "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
+        "itype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "otype" :                   [[{"@id" : "sk:Pipeline"}]],
+        "atype" :                   [[{"@id" : "plead:FittingData"}]],
+        "start" :                   [{"@id" : "var:start"}],
+        "end" :                     [{"@id" : "var:end"}],
+        "plan":                     [{"@id" : null}],
+        "oprops":                   [[{"@id": "plead:createdAt"}, {"@id": "plead:path"}]],
+        "oprop_values":             [[{"@id": "var:time"},   {"@id": "var:path"}]]
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:view"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "plead":  "${plead_ns}",
+        "prov":   "${prov_ns}",
+        "sk":     "${sk_ns}",
+        "uuid" :  "${uuid_ns}",
+        "var":    "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd":    "${xsd_ns}"
+    },
+    "template" : null
+}

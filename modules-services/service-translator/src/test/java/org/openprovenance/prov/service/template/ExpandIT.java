@@ -12,8 +12,8 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
-import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.service.client.ClientConfig;
 import org.openprovenance.prov.service.translator.TranslateIT;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -42,18 +42,20 @@ import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_PROVEN
 public class ExpandIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(ExpandIT.class);
     final static ClientConfig config=new ClientConfig(TranslateIT.class);
+    final org.openprovenance.prov.model.ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
+    final InteropFramework intF=new InteropFramework(pf);
     final private VanillaDocumentMessageBodyWriter bodyWriter;
 
 
     public ExpandIT() {
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new InteropFramework(new ProvFactory()));
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(intF);
     }
 
 
     public Client getClient() {
         Client client= ClientBuilder.newBuilder().build();
         client.register(bodyWriter);
-        client.register(DocumentMessageBodyReader.class);
+        client.register(new VanillaDocumentMessageBodyReader(pf));
         return client;
     }
 

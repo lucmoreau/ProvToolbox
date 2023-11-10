@@ -1,0 +1,63 @@
+prefix ln <https://plead-project.org/ns/loan#>
+prefix pl <https://plead-project.org/ns/plead#>
+
+
+select * from (
+     select * from features a prov:Entity
+
+     from der1 a prov:WasDerivedFrom
+      join features.id=der1.generatedEntity
+
+     from ourdata a prov:Entity
+      join der1.usedEntity=ourdata.id
+
+     from der2 a prov:WasDerivedFrom
+      join features.id=der2.usedEntity
+
+     from decision a prov:Entity
+      join der2.generatedEntity=decision.id
+
+     from der3 a prov:WasDerivedFrom
+      join decision.id=der3.generatedEntity
+
+     from application a prov:Entity
+      join der3.usedEntity=application.id
+
+
+     where decision[prov:type]    >= 'ln:AutomatedLoanRecommendation'
+       and application[prov:type] >= 'ln:LoanApplication'
+       and ourdata[prov:type] >= 'pl:Controlled'
+
+     group by decision aggregate application,ourdata with Seq
+)
+from (
+     select * from features a prov:Entity
+
+     from der1 a prov:WasDerivedFrom
+      join features.id=der1.generatedEntity
+
+     from theirdata a prov:Entity
+      join der1.usedEntity=theirdata.id
+
+     from der2 a prov:WasDerivedFrom
+      join features.id=der2.usedEntity
+
+     from decision_ a prov:Entity
+      join der2.generatedEntity=decision_.id
+
+     from der3 a prov:WasDerivedFrom
+      join decision_.id=der3.generatedEntity
+
+     from application a prov:Entity
+      join der3.usedEntity=application.id
+
+
+     where decision_[prov:type]    >= 'ln:AutomatedLoanRecommendation'
+       and application[prov:type] >= 'ln:LoanApplication'
+       and theirdata[prov:type] !>= 'pl:Controlled'
+
+     group by decision_ aggregate theirdata with Seq
+)
+join decision.id=decision_.id
+
+

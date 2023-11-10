@@ -1,0 +1,29 @@
+prefix ln <https://plead-project.org/ns/loan#>
+
+
+select * from features a prov:Entity
+
+from der1 a prov:WasDerivedFrom
+ join features.id=der1.generatedEntity
+
+from data a prov:Entity
+ join der1.usedEntity=data.id
+
+from der2 a prov:WasDerivedFrom
+ join features.id=der2.usedEntity
+
+from decision a prov:Entity
+ join der2.generatedEntity=decision.id
+
+from der3 a prov:WasDerivedFrom
+ join decision.id=der3.generatedEntity
+
+from application a prov:Entity
+ join der3.usedEntity=application.id
+
+
+where decision[prov:type]    >= 'ln:AutomatedLoanRecommendation'
+  and application[prov:type] >= 'ln:LoanApplication'
+
+group by decision aggregate application,data with Seq
+

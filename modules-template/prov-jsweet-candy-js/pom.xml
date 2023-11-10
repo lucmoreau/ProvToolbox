@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>modules-template</artifactId>
 		<groupId>org.openprovenance.prov</groupId>
-		<version>2.0.3</version>
+		<version>2.0.4</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -26,11 +26,37 @@
 		<profile>
 			<id>java8-doclint-disabled</id>
 			<activation>
-				<jdk>[1.8,)</jdk>
+				<jdk>[1.8,1.12]</jdk>
 			</activation>
 			<properties>
 				<javadoc.opts>-Xdoclint:none</javadoc.opts>
 			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jsweet</groupId>
+						<artifactId>jsweet-maven-plugin</artifactId>
+						<version>${jsweet.transpiler.version}</version>
+						<configuration>
+							<verbose>true</verbose>
+							<!-- <definitions>true</definitions> -->
+							<tsOnly>true</tsOnly>
+							<tsOut>src/main/resources/src/typings/${project.artifactId}/${project.version}</tsOut>
+							<bundle>true</bundle>
+							<targetVersion>ES3</targetVersion>
+						</configuration>
+						<executions>
+							<execution>
+								<id>generate-js</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>jsweet</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
@@ -71,28 +97,7 @@
 					<fork>true</fork>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.jsweet</groupId>
-				<artifactId>jsweet-maven-plugin</artifactId>
-				<version>${jsweet.transpiler.version}</version>
-				<configuration>
-					<verbose>true</verbose>
-					<!-- <definitions>true</definitions> -->
-					<tsOnly>true</tsOnly>
-					<tsOut>src/main/resources/src/typings/${project.artifactId}/${project.version}</tsOut>
-					<bundle>true</bundle>
-					<targetVersion>ES3</targetVersion>
-				</configuration>
-				<executions>
-					<execution>
-						<id>generate-js</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>jsweet</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>${antrun.plugin.version}</version>

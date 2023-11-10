@@ -1,0 +1,102 @@
+{
+    "var" : {
+        "operation": [
+            {
+                "@id": "*",
+                "@documentation": "The operation identifier",
+                "@examplar": "pgo:op123",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "operation_type": [
+            {
+                "@id": "*",
+                "@documentation": "The operation type",
+                "@examplar": "pgo:OpType",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "time": [[
+            {
+                "@type": "xsd:int",
+                "@documentation": "The value of the time of the operation",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ]],
+        "player_before":  [
+            {
+                "@id": "*",
+                "@documentation": "The player before",
+                "@examplar": "pgo:playerbefore34",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "player_type": [
+            {
+                "@id": "*",
+                "@documentation": "The player type",
+                "@examplar": "pgo:PlayerType",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "team":  [
+            {
+                "@id": "*",
+                "@documentation": "The player team",
+                "@examplar": "pgo:team123",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "pokestop_before":  [
+            {
+                "@id": "*",
+                "@documentation": "The pokestop before",
+                "@examplar": "pgo:pokestopbefore12",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "pokestop_type": [
+            {
+                "@id": "*",
+                "@documentation": "The pokestop type",
+                "@examplar": "pgo:PokestopType",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "player_after":  [
+            {
+                "@id": "*",
+                "@documentation": "The player after",
+                "@examplar": "pgo:playerafter34",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ],
+        "pokestop_after":  [
+            {
+                "@id": "*",
+                "@documentation": "The pokestop after",
+                "@examplar": "pgo:pokestopafter12",
+                "@input": "compulsory",
+                "@output": "false"
+            }
+        ]
+    },
+    "context": {
+        "prov": "${prov_ns}",
+        "uuid": "${uuid_ns}",
+        "var": "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd": "${xsd_ns}",
+        "pgo": "${pgo_ns}",
+        "game": "${game_ns}"
+    }
+}

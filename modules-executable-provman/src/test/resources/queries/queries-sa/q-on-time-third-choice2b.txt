@@ -1,0 +1,35 @@
+prefix sch <https://www.get-information-schools.service.gov.uk/Establishments/Establishment/Details/>
+prefix ch <http://southampton-citizen-portal.mock/children/>
+prefix pl <https://plead-project.org/ns/plead#>
+prefix appl <http://southampton-citizen-portal.mock/school-applications/>
+prefix ex <http://example.org/>
+prefix sa <https://plead-project.org/ns/school-admission#>
+
+
+    select * from offer a prov:Entity
+
+    from der1P a prov:WasDerivedFrom
+     join offer.id=der1P.generatedEntity
+
+    from rankedlistP a prov:Entity
+     join der1P.usedEntity=rankedlistP.id
+
+    from der2P a prov:WasDerivedFrom
+     join rankedlistP.id=der2P.generatedEntity
+
+    from preferenceP a prov:Entity
+     join der2P.usedEntity=preferenceP.id
+
+    from attr2 a prov:WasAttributedTo
+     join preferenceP.id=attr2.entity
+
+    from applicantP a prov:Agent
+     join attr2.agent=applicantP.id
+
+    from schoolP a prov:Entity in document schools
+     join preferenceP[sa:school]=schoolP.id
+
+    where offer[prov:type]        >= 'sa:SchoolPlaceOffer'
+    and  rankedlistP[prov:type]    >= 'sa:SchoolPlaceRankedPosition'
+    and  preferenceP[prov:type]    >= 'sa:SchoolPlacePreference'
+    and  preferenceP[sa:school]    =  offer[sa:school]

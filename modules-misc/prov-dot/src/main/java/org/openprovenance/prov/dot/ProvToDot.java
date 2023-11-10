@@ -270,6 +270,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 &&
                 (! (statement instanceof HasRole) || ((HasRole)statement).getRole().isEmpty())
                 &&
+                (! (statement instanceof HasLocation) || ((HasLocation)statement).getLocation().isEmpty())
+                &&
                 (((HasLabel)statement).getLabel().isEmpty())
         ) return;
 
@@ -473,6 +475,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
                 label.append("	<TR>\n");
                 label.append("	    <TD align=\"left\">").append("role").append(":</TD>\n");
                 label.append("	    <TD align=\"left\">").append(getPropertyValueWithUrl(role)).append("</TD>\n");
+                label.append("	</TR>\n");
+            }
+        }
+        if (ann instanceof HasLocation) {
+            for (Location location: ((HasLocation)ann).getLocation()) {
+                label.append("	<TR>\n");
+                label.append("	    <TD align=\"left\">").append("location").append(":</TD>\n");
+                label.append("	    <TD align=\"left\">").append(getPropertyValueWithUrl(location)).append("</TD>\n");
                 label.append("	</TR>\n");
             }
         }

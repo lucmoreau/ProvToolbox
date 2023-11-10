@@ -151,7 +151,7 @@ issue.209:
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime UTC
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime SYSTEM
 
-mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default
+mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default test.pgo
 
 test.issue.209.jsonld:
 	@echo "- jsonld input: testing dateTime PRESERVE"
@@ -226,3 +226,14 @@ test.default.json:
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=json  | jq --exit-status '.["entity"]["e"]=={}' > /dev/null
 	@echo "- testing default namespace: PROVX -> JSONLD (lost default namespace)"
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provx  -outfile - -outformat=json | jq --exit-status '.["entity"]["bbc:e"]=={}' > /dev/null
+
+test.tmpl.init:
+	@$(PROVCONVERT) -infile "$(INFILE)" -log2prov $(INIT_LIB) -outfile "$(OUTFILE)"
+
+test.pgo.init:
+	@$(MAKE) test.tmpl.init INFILE=$(INFILE) OUTFILE=$(OUTFILE) INIT_LIB=org.openprovenance.prov.template.library.pg.Init
+
+test.pgo:
+	@$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/ballcollect.csv OUTFILE=target/pgo1.png
+	@$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/capture.csv OUTFILE=target/pgo2.png
+	$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/all.csv OUTFILE=target/pgo3.png

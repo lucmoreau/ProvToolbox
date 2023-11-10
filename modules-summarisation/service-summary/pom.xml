@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openprovenance.prov</groupId>
         <artifactId>modules-summarisation</artifactId>
-        <version>2.0.3</version>
+        <version>2.0.4</version>
     </parent>
     <name>|---- SERVICE: SUMMARY</name>
     <artifactId>service-summary</artifactId>
@@ -17,53 +17,43 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-summarisation</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-summary</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-interop</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-jsonld</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-core</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-service-translation</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
-
-        <!-- used for compilation only, so far, using memory and fs -->
-        <dependency>
-            <groupId>org.openprovenance.prov</groupId>
-            <artifactId>prov-storage-mongodb</artifactId>
-            <version>2.0.3</version>
-            <scope>provided</scope>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-storage-index-redis</artifactId>
-            <version>2.0.3</version>
-            <scope>provided</scope>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
@@ -434,11 +424,11 @@
                                         </property>
                                         <property>
                                             <name>PSERVICE_INDEX</name>
-                                            <value>redis</value>
+                                            <value>memory</value>
                                         </property>
                                         <property>
                                             <name>PSERVICE_DEL_PERIOD</name>
-                                            <value>60</value>
+                                            <value>600</value>
                                         </property>
                                         <property>
                                             <name>PSERVICE_STORAGE</name>

@@ -97,11 +97,11 @@ public class SortedDocument extends SortedBundle {
             }
         }
 
-        if (count>0)
-        namespace.register(SortedBundle.bnPrefix,bnNS);
+        if (count>0 && isUnderscoreDenotingANamespace) namespace.register(SortedBundle.bnPrefix,bnNS);
 
     }
 
+    static public boolean isUnderscoreDenotingANamespace=false;
 
     public Map<QualifiedName, Bundle> getBundle() {
         return theBundles;
@@ -143,6 +143,7 @@ public class SortedDocument extends SortedBundle {
         if (defaultJsonStyle!=null) {
             namespace.unregister("default", defaultJsonStyle);
         }
+        namespace.unregister(SortedBundle.bnPrefix, SortedBundle.bnNS);
         namespace.setDefaultNamespace(defaultJsonStyle);
         // return provFactory.newDocument(namespace,ss, reassignId(theBundles).values());
         // NO reassignement here, as it was done in the SortedBundle

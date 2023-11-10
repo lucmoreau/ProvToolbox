@@ -5,7 +5,7 @@ package org.openprovenance.prov.scala.nlgspec_transformer
 
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.{Document, MyActions, MyActions2, MyParser, Statement}
-import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Template}
+import org.openprovenance.prov.scala.nlgspec_transformer.defs.{Dictionary, Plan}
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.{Phrase, TransformEnvironment}
 import org.openprovenance.prov.scala.streaming.{DocBuilder, DocBuilderFunctions}
 import org.scalatest.flatspec.AnyFlatSpec
@@ -42,7 +42,7 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
   val path = "src/test/resources/nlg/templates/loan/"
 
 
-  val (templates,dictionaries,profiles): (Seq[Template], Seq[Dictionary], Map[String, Object]) = Language.read(Seq(path + "template-library.json"),filep = true)
+  val (templates,dictionaries,profiles): (Seq[Plan], Seq[Dictionary], Map[String, Object]) = Language.read(Seq(path + "template-library.json"),filep = true)
 
  // println(dictionaries)
   //println(profiles)
@@ -50,7 +50,7 @@ class TransformSpecsSpec extends AnyFlatSpec with Matchers {
 
   def transformerCall(template: String, m: Map[String, Statement], ms: Map[String, Seq[Statement]]=null, profile:String="ln:borrower-noun"): Phrase = {
 
-    val tmpl: defs.Template = SpecLoader.templateImport (template)
+    val tmpl: defs.Plan = SpecLoader.templateImport (template)
     val phraseSpec = tmpl.sentence
     val context=tmpl.context
 

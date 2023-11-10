@@ -36,8 +36,9 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
             jsonGenerator.writeObject(attr.getValue());
         } else if ((attr.getValue() instanceof String) &&
                 (QUALIFIED_NAME_XSD_STRING.equals(attr.getType()))) {
-            throw new UnsupportedOperationException("should never be here");
-            //jsonGenerator.writeString((String)attr.getValue());
+            //throw new UnsupportedOperationException("should never be here");
+
+            jsonGenerator.writeString((String)attr.getValue());
         } else if ((attr.getValue() instanceof LangString) &&
                 ((LangString)attr.getValue()).getLang()!=null ) {
 

@@ -21,6 +21,8 @@ import org.openprovenance.prov.scala.summary.*;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.jobs.JobManagement;
 import org.openprovenance.prov.service.core.memory.DocumentResourceInMemory;
+import org.openprovenance.prov.service.summary.actions.ActionSummary;
+import org.openprovenance.prov.service.summary.actions.ActionUpload;
 import org.openprovenance.prov.storage.api.*;
 import scala.Tuple2;
 
@@ -463,7 +465,7 @@ public class SummaryService implements Constants, InteropMediaType {
         StreamingOutput promise2=(out) -> TypePropagator.om().writeValue(out,sc);
 
 
-        return utils.composeResponseOK(promise2).type(MediaType.APPLICATION_JSON_TYPE).build();
+        return ServiceUtils.composeResponseOK(promise2).type(MediaType.APPLICATION_JSON_TYPE).build();
 
 
     }

@@ -38,12 +38,12 @@
 
     </style>
 
-    <script type="text/javascript" src="${service.context}/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
 
     
-    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/bootstrap-table/1.9.1/bootstrap-table.min.css" />
-    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/bootstrap-table/${webjars.bootstrap.tables.version}/bootstrap-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/font-awesome/${webjars.fontawesome.version}/css/font-awesome.min.css" />
 
 
   </head>
@@ -280,7 +280,7 @@
 
         const mybutton = $(this);
         const xhr = new XMLHttpRequest();
-        const url = '${service.context}/provapi/documents/';
+        const url = '${service.context}/provapi/documents_form/';
         xhr.open('POST', url, true);
         xhr.onprogress = function(event) {
           console.log(event);
@@ -1198,8 +1198,8 @@
     </script>
 
 
-    <script type="text/javascript" src="${service.context}/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${service.context}/webjars/bootstrap-table/1.9.1/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${service.context}/webjars/bootstrap-table/${webjars.bootstrap.tables.version}/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="${service.context}/webjars/ace-builds/src-min-noconflict/ace.js"></script>
     <script type="text/javascript" src="${service.context}/webjars/ace-builds/src-min-noconflict/ext-static_highlight.js"></script>
 

@@ -6,10 +6,10 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
+import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
 import org.openprovenance.prov.service.client.StringMessageBodyReader;
 import org.openprovenance.prov.service.client.ClientConfig;
-import org.openprovenance.prov.service.core.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import jakarta.ws.rs.client.Client;
@@ -30,10 +30,14 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
     private final Client client;
     private final DocumentEquality documentEquality;
     final private VanillaDocumentMessageBodyWriter bodyWriter;
+    private final InteropFramework intf;
+    private final ProvFactory pf;
 
     public TranslateIT() {
         this.documentEquality = new DocumentEquality(mergeDuplicateProperties(),null);
-        this.bodyWriter = new VanillaDocumentMessageBodyWriter(new InteropFramework(new ProvFactory()));
+        pf = new ProvFactory();
+        intf = new InteropFramework(pf);
+        this.bodyWriter = new VanillaDocumentMessageBodyWriter(intf);
         this.client=getClient();
 
     }
@@ -41,7 +45,7 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
     public Client getClient() {
         Client client= ClientBuilder.newBuilder().build();
         client.register(bodyWriter);
-        client.register(DocumentMessageBodyReader.class);
+        client.register(new VanillaDocumentMessageBodyReader(pf));
         return client;
     }
 
@@ -179,9 +183,7 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
     public void testDictionaryRemoval3() {}
     public void testDictionaryRemoval4() {}
     public void testDictionaryRemoval5() {}
-    public void testDictionaryMembership2() {}
-    public void testDictionaryMembership3() {}
-    public void testDictionaryMembership4() {}
+
 
 
    // public void testMembership1() {} //ok in service.light
@@ -219,5 +221,21 @@ public class TranslateIT extends RoundTripFromJavaTest implements ApiUriFragment
         System.out.println(escapeRed("########## Skipping testing for default1 in PROVX"));
         //super.testDefault1();
     }
+
+    @Override
+    public void testDictionaryMembership1() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership1 (service)"));
+    }
+    @Override
+    public void testDictionaryMembership2() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership2 (service)"));
+    }
+    @Override public void testDictionaryMembership3() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership3 (service)"));
+    }
+    @Override public void testDictionaryMembership4() {
+        System.out.println(escapeRed("########## Skipping testDictionaryMembership4 (service)"));
+    }
+
 
 }

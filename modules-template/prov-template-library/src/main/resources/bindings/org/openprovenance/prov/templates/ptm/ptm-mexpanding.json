@@ -1,0 +1,93 @@
+{
+    "var": {
+        "template": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/tmpl123-456.provn",
+                "@documentation": "The template resulting from the mtemplate expansion",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "provenance": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/prov-doc123-456.prov-csv",
+                "@documentation": "The provenance of the document resulting from the template expansion",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "mtemplate": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/mtemplate123.provn",
+                "@documentation": "The meta template to be expanded",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "bindings": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/mbindings456.json",
+                "@documentation": "The bindings used in expansion",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "agent": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "The agent controlling the expansion",
+                "@input": "optional"
+            }
+        ],
+        "mexpanding": [
+            {
+                "@id": "act:*",
+                "@type": "xsd:int",
+                "@documentation": "The activity of expanding the template",
+                "@output": "true",
+                "@sql.table": "activity"
+            }
+        ],
+        "email": [
+            [
+                {
+                    "@value": "mail:*",
+                    "@type": "xsd:string",
+                    "@documentation": "The agent's email",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "time": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformed file is created",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ]
+    },
+    "context": {
+        "ag":  "${PROV_API}/live/agent/",
+        "act": "${PROV_API}/live/activity/",
+        "file": "${PROV_API}/live/file/"
+    },
+    "template": "TODO template",
+    "@documentation": "TODO doc."
+}

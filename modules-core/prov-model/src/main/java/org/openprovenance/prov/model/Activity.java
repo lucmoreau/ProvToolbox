@@ -14,7 +14,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <ul>
  * <li> {@link ProvFactory#newActivity(QualifiedName)}
  * <li> {@link ProvFactory#newActivity(org.openprovenance.prov.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
- * <li> {@link ObjectFactory#createActivity()}
  * </ul>
  * 
  * <p>The following schema fragment specifies the expected content contained within this type.

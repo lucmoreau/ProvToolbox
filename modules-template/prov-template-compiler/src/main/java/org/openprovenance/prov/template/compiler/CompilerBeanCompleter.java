@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.*;
@@ -11,10 +12,11 @@ import javax.lang.model.element.Modifier;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerBeanCompleter {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
 
-    public CompilerBeanCompleter() {
+    public CompilerBeanCompleter(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     // FIXME: J4TS does not have java.sql.ResultSet.

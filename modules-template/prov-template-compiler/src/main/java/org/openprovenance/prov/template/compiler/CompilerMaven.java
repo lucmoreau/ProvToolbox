@@ -22,10 +22,11 @@ import static org.openprovenance.prov.template.compiler.common.Constants.TESTER_
 
 public class CompilerMaven {
     private final ConfigProcessor configProcessor;
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
-    public CompilerMaven(ConfigProcessor configProcessor) {
+    public CompilerMaven(ProvFactory pFactory, ConfigProcessor configProcessor) {
         this.configProcessor = configProcessor;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     public boolean makeRootPom(TemplatesCompilerConfig configs, String root_dir, String cli_lib, String l2p_lib) {

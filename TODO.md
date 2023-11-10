@@ -2,6 +2,17 @@
 
 
 # TODO
+- templates
+  - update expander web page, make it use bindings b1, b2, b3, b4 from webjar.
+  - abstract pokemon templates to prov template library
+  - HasProvenance plug in, to load a config file?
+  - deployable service for compact templates (ala sustainability) with prov-template-library
+  - test command line with prov-template-library
+-queries
+  - write test with query and count, and binding variable in query
+  - update query to count of provenance types (see dong's email)
+
+
 - upgrade scala version
 - add template as options in pull down
 

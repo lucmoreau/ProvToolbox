@@ -1,0 +1,132 @@
+{
+    "var": {
+        "filtered_file": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/123b.csv",
+                "@documentation": "The file resulting from the filtering",
+                "@input": "false",
+                "@output": "true",
+                "@sql.table": "file"
+            }
+        ],
+        "file": [
+            {
+                "@id": "file:*",
+                "@type": "xsd:string",
+                "@examplar": "file/123.csv",
+                "@documentation": "The file before filtering",
+                "@input": "compulsory",
+                "@output": "false",
+                "@sql.table": "file"
+            }
+        ],
+        "method": [
+            {
+                "@id": "method:*",
+                "@type": "xsd:string",
+                "@examplar": "method/filter.py",
+                "@documentation": "The the method to filter the file",
+                "@input": "optional",
+                "@output": "false",
+                "@sql.table": "method"
+            }
+        ],
+        "organization": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "An organization aiming managing the ML pipeline",
+                "@input": "optional"
+            }
+        ],
+        "engineer": [
+            {
+                "@id": "ag:*",
+                "@type": "xsd:int",
+                "@documentation": "The engineer developing the ML pipeline",
+                "@input": "optional"
+            }
+        ],
+        "filtering": [
+            {
+                "@id": "act:*",
+                "@type": "xsd:int",
+                "@documentation": "The activity of filtering the file",
+                "@output": "true",
+                "@sql.table": "activity"
+            }
+        ],
+        "n_rows": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:int",
+                    "@documentation": "The number of rows in the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "n_cols": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:int",
+                    "@documentation": "The number of columns in the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "path": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@documentation": "The actual path of the file",
+                    "@input": "optional"
+                }
+            ]
+        ],
+        "time": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the filtered file is created",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "start": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation starts",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ],
+        "end": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:dateTime",
+                    "@documentation": "Time when the transformation ends",
+                    "@input": "optional",
+                    "@sql.type":  "timestamptz"
+                }
+            ]
+        ]
+    },
+    "context": {
+        "ag":  "${PROV_API}/live/agent/",
+        "act": "${PROV_API}/live/activity/",
+        "file": "${PROV_API}/live/file/"
+    },
+    "template": "TODO template",
+    "@documentation": "TODO doc."
+}

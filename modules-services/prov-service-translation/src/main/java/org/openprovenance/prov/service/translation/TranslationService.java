@@ -16,6 +16,7 @@ import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.*;
+import org.openprovenance.prov.service.translation.actions.ActionTranslate;
 import org.openprovenance.prov.storage.api.DocumentResource;
 import org.openprovenance.prov.storage.api.ResourceIndex;
 
@@ -175,26 +176,14 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
         ResourceIndex<DocumentResource> index=utils.getDocumentResourceIndex().getIndex();
         DocumentResource dr = index.get(msg);
         index.close();
-
         if (dr == null) {
             return utils.composeResponseNotFoundResource(msg);
         }
-
-       // if (dr.document() == null) {
-       //     return utils.composeResponseNotFoundDocument(msg);
-       // }
-
-
-        String format=dr.getStorageId().substring(0, dr.getStorageId().lastIndexOf(".")+1);
-
-
-
+        String storageId = dr.getStorageId();
+        String format= storageId.substring(storageId.lastIndexOf(".")+1).toUpperCase();
         String mimeType = intF.getMimeTypeMap().get(Formats.ProvFormat.valueOf(format));
-
-        File f = new File(dr.getStorageId());
-
-        logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + dr.getStorageId());
-
+        File f = new File(storageId);
+        logger.debug("**** Reconstructing  mimeType " + mimeType + " for  original " + storageId);
         return ServiceUtils.composeResponseOK((Object) f).type(mimeType).build();
     }
 

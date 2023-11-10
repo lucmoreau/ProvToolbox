@@ -1,0 +1,42 @@
+
+{
+
+    "select": {"usd": {"@type": "prov:Used"}},
+
+    "query": "select * from usd a prov:Used",
+    
+ 
+    "sentence": {
+	"type": "clause",
+	"subject": {"type": "noun_phrase",
+		    "head":  {"type": "@funcall",
+			      "@object": "usd",
+			      "@field":  "activity",
+			      "@function": "localname"}},
+	"object":  {"type": "noun_phrase",
+		    "head": {"type": "@funcall",
+			     "@object": "usd",
+			     "@field":  "entity",
+			     "@function": "localname"},
+		    "features": {"number": {"type": "@funcall",
+					    "@object": "usd",
+					    "@field": "entity",
+					    "@function": "pluralp"}}},
+	"verb": "use",
+	"modifiers": [{"type": "preposition_phrase",
+		       "preposition": "at",
+		       "noun": {"type": "@funcall",
+				"@object": "usd",
+				"@field": "time",
+				"@optional": "true",				
+				"@function": "timestring"}}],	
+	"features" : {"tense": "past"}
+
+    },
+
+    "context": {
+	"ex": "http://example.org/#"
+    }
+    
+    
+}

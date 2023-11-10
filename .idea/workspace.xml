@@ -9,19 +9,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly/python-assembly.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/ApiUriFragments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/interop/ApiUriFragments.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ServiceUtilsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-translation/src/main/java/org/openprovenance/prov/service/translation/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/java/org/openprovenance/prov/service/StorageConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/StorageConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-summarisation/service-summary/src/main/java/org/openprovenance/prov/service/summary/StorageConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-tutorial/tutorial1/src/main/java/org/openprovenance/prov/tutorial/tutorial1/Little.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-tutorial/tutorial1/src/main/java/org/openprovenance/prov/tutorial/tutorial1/Little.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,10 +48,13 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Package Object" />
-        <option value="Interface" />
         <option value="HTML File" />
+        <option value="Scala Trait" />
+        <option value="Interface" />
+        <option value="JavaScript File" />
         <option value="Enum" />
         <option value="Class" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -116,46 +112,57 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "development2__0",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-nf/prov-signature/src/test/scala/org.openprovenance.prov.scala",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-translator/src/test/resources",
+    "extract.method.default.visibility": "public",
+    "git-widget-placeholder": "code__emitter",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/resources/assembly",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
+    "project.structure.last.edited": "SDKs",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.General",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="prov-template-compiler">
+        <option name="myModuleName" value="prov-template-compiler" />
+      </console-settings>
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
+      <recent name="org.openprovenance.prov.template.emitter" />
+      <recent name="org.openprovenance.prov.service" />
+      <recent name="org.openprovenance.prov.model.builder" />
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
-      <recent name="org.openprovenance.prov.model" />
-      <recent name="org.openprovenance.prov.core.jsonld11.serialization.deserial" />
-      <recent name="org.openprovenance.prov.service.translation" />
-      <recent name="org.openprovenance.prov.template.json" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-core/prov-model-scala/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-executable/toolbox/src/test/resources/dates" />
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/dictionary" />
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/scala/nlg/wrapper" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/main/resources" />
-      <recent name="$PROJECT_DIR$/modules-explanations/nlg-wrapper/src/test/resources" />
-      <recent name="$PROJECT_DIR$/modules-explanations" />
-      <recent name="$PROJECT_DIR$/modules-explanations/prov-explanations" />
-      <recent name="$PROJECT_DIR$/modules-services/service-translator/src/main/webapp.filter/WEB-INF" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/javascript" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/attic" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template/src/main/resources" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="org.openprovenance.prov.core.json.serialization.deserial.CustomThreadConfig" />
@@ -186,19 +193,19 @@
       <recent name="org.openprovenance.prov.service.translator.translator" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
       <recent name="org.openprovenance.prov.model" />
-      <recent name="org.openprovenance.prov.service" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
-      <recent name="org.openprovenance.prov.core.xml.serialization.deserial" />
-      <recent name="org.openprovenance.prov.core.xml.serialization" />
+      <recent name="org.openprovenance.prov.template.emitter" />
+      <recent name="org.openprovenance.prov.service.translator" />
+      <recent name="org.openprovenance.prov.vanilla" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DateIT.testTranslationWithDate1">
-    <configuration name="DateIT.testTranslationWithDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-translator" />
+  <component name="RunManager" selected="Makefile Target.test.pgo">
+    <configuration name="CompilerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-template-compiler" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.service.client.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -212,19 +219,21 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.service.translator" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.service.translator.DateIT" />
-      <option name="METHOD_NAME" value="testTranslationWithDate1" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="12" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.CompilerTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONLD11Test.testDefault1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
+    <configuration name="DateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.jsonld11.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -238,9 +247,35 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.jsonld11" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.jsonld11.RoundTripFromJavaJSONLD11Test" />
-      <option name="METHOD_NAME" value="testDefault1" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DateTest.testDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
+      <option name="METHOD_NAME" value="testDate1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -266,32 +301,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RoundTripFromJavaJSONTest.testDefault1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-jsonld" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.core.json.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.core.json" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.core.json.RoundTripFromJavaJSONTest" />
-      <option name="METHOD_NAME" value="testDefault1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="net.ashald.envfile">
         <option name="IS_ENABLED" value="false" />
@@ -310,16 +319,43 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="test.default" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.default" workingDirectory="" arguments="">
+    <configuration name="test.pgo" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.pgo" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="test.default.json" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/modules-executable/toolbox/Makefile" target="test.default.json" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
+    <configuration name="test.py" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="prov-template-library" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PYTHONPATH" value="$PROJECT_DIR$/modules-template/prov-template-library/target/generated-python:$PROJECT_DIR$/modules-template/prov-template-library/src/main/python" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
@@ -364,20 +400,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test.testDefault1" />
-      <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testDefault1" />
-      <item itemvalue="Makefile Target.test.default" />
-      <item itemvalue="Makefile Target.test.default.json" />
+      <item itemvalue="JUnit.DateTest" />
+      <item itemvalue="JUnit.DateTest.testDate1" />
+      <item itemvalue="JUnit.CompilerTest" />
+      <item itemvalue="Makefile Target.test.pgo" />
+      <item itemvalue="Python.test.py" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.DateIT.testTranslationWithDate1" />
-        <item itemvalue="Makefile Target.test.default" />
-        <item itemvalue="Makefile Target.test.default.json" />
-        <item itemvalue="JUnit.RoundTripFromJavaJSONTest.testDefault1" />
-        <item itemvalue="JUnit.RoundTripFromJavaJSONLD11Test.testDefault1" />
+        <item itemvalue="Makefile Target.test.pgo" />
+        <item itemvalue="Python.test.py" />
+        <item itemvalue="JUnit.CompilerTest" />
+        <item itemvalue="JUnit.DateTest.testDate1" />
+        <item itemvalue="JUnit.DateTest" />
       </list>
     </recent_temporary>
   </component>
@@ -403,6 +439,7 @@
         <entry key="yaml" value="yaml" />
       </map>
     </option>
+    <option name="scala3DisclaimerShown" value="true" />
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -763,6 +800,21 @@
       <workItem from="1695023287797" duration="30105000" />
       <workItem from="1695190967915" duration="21095000" />
       <workItem from="1695355590282" duration="6546000" />
+      <workItem from="1696016222464" duration="32606000" />
+      <workItem from="1696237138764" duration="20889000" />
+      <workItem from="1696348385334" duration="69320000" />
+      <workItem from="1696836756493" duration="3240000" />
+      <workItem from="1696867289365" duration="87900000" />
+      <workItem from="1697230799513" duration="57437000" />
+      <workItem from="1697733330468" duration="9198000" />
+      <workItem from="1697808403526" duration="73500000" />
+      <workItem from="1698212176966" duration="59616000" />
+      <workItem from="1698696945408" duration="249000" />
+      <workItem from="1698697236048" duration="9444000" />
+      <workItem from="1698748365341" duration="89701000" />
+      <workItem from="1699289035155" duration="2395000" />
+      <workItem from="1699296893543" duration="65757000" />
+      <workItem from="1699627670865" duration="3605000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1042,25 +1094,6 @@
     <MESSAGE value="First cut of json-ld serialisation for activities" />
     <option name="LAST_COMMIT_MESSAGE" value="First cut of json-ld serialisation for activities" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/vanilla/ProvFactory.java</url>
-          <line>732</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/ProvFactory.java</url>
-          <line>485</line>
-          <properties class="org.openprovenance.prov.model.ProvFactory" method="newAttribute">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand>
       <path>
@@ -1071,6 +1104,14 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ProvToolbox$PC1BuilderTest.ic" NAME="PC1BuilderTest Coverage Results" MODIFIED="1696686208827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.openprovenance.prov.notation.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ProvToolbox$test.coverage" NAME="test Coverage Results" MODIFIED="1699017257868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-compiler" />
+    <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.openprovenance.prov.template.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699629786138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>

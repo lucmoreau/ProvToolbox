@@ -23,11 +23,12 @@ public class BindingsBeanGenerator {
 
     public BindingsBeanGenerator(ProvFactory pFactory) {
         this.pFactory=pFactory;
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
     
     static ProvUtilities u= new ProvUtilities();
     
-    final CompilerUtil gu=new CompilerUtil();
+    final CompilerUtil compilerUtil ;
 
     
     
@@ -62,7 +63,7 @@ public class BindingsBeanGenerator {
 
 
     public String beanName(String templateName) {
-        return gu.capitalize(templateName)+"BindingsBean";
+        return compilerUtil.capitalize(templateName)+"BindingsBean";
     }
 
 
@@ -75,7 +76,7 @@ public class BindingsBeanGenerator {
         Set<QualifiedName> allVars= new HashSet<>();
         Set<QualifiedName> allAtts= new HashSet<>();
 
-        gu.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
+        compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
         
         return generate(allVars,allAtts,name, templateName, packge, resource);
         
@@ -135,7 +136,7 @@ public class BindingsBeanGenerator {
     
     public MethodSpec generateVarMutator(QualifiedName v) {
         final String local=v.getLocalPart();
-        final String localCamel= gu.camelcase(local);
+        final String localCamel= compilerUtil.camelcase(local);
         MethodSpec method = MethodSpec.methodBuilder("add" + localCamel)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
@@ -148,7 +149,7 @@ public class BindingsBeanGenerator {
     
     public MethodSpec generateAttMutator(QualifiedName v, Class typ) {
         final String local=v.getLocalPart();
-        final String localCamel= gu.camelcase(local);
+        final String localCamel= compilerUtil.camelcase(local);
         MethodSpec method = MethodSpec.methodBuilder("add" + localCamel)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)

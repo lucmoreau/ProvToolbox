@@ -1,0 +1,64 @@
+{
+    "mtemplate_dir": ["src/main/resources/meta/metatemplates"],
+    "mbindings_dir": "src/main/resources/meta/pleadbindings",
+    "expand_dir": "target/generated-templates/org/openprovenance/prov/templates/plead",
+
+    "variableMaps": ["common-ns.json"],
+
+    "tasks": [
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "plead-transforming",
+            "bindings": "plead-transforming.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-plead-transforming.prov-csv"
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "plead-validating",
+            "bindings": "plead-validating.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-plead-validating.prov-csv"
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "plead-training",
+            "bindings": "plead-training.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-plead-training.prov-csv"
+        },
+        {
+            "type": "expansion",
+            "input": "transforming1.provn",
+            "output": "plead-filtering",
+            "bindings": "plead-filtering.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-plead-filtering.prov-csv"
+        },
+        {
+            "type": "expansion",
+            "input": "product2-2.provn",
+            "mtemplate_dir": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
+            "output": "plead-approving",
+            "bindings": "plead-approving.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-plead-approving.prov-csv"
+        },
+        {
+            "type": "expansion",
+            "input": "forking2.provn",
+            "mtemplate_dir": ["target/generated-templates/org/openprovenance/prov/templates/generic"],
+            "output": "plead-splitting",
+            "bindings": "plead-splitting.json",
+            "formats": ["provn", "png"],
+            "hasProvenance": "prov-plead-splitting.prov-csv"
+        }
+    ]
+
+
+}
+
+

@@ -2,7 +2,7 @@
   <parent>
     <artifactId>modules-template</artifactId>
     <groupId>org.openprovenance.prov</groupId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -11,30 +11,36 @@
   <packaging>jar</packaging>
   <description>A template system for PROV bundles.</description>
 
-<!--
-  <repositories>
-    <repository>
-      <id>jsweet-central</id>
-      <name>libs-release</name>
-      <url>https://repository.jsweet.org/artifactory/libs-release-local</url>
-    </repository>
-  </repositories>-->
+  <!--
+    <repositories>
+      <repository>
+        <id>jsweet-central</id>
+        <name>libs-release</name>
+        <url>https://repository.jsweet.org/artifactory/libs-release-local</url>
+      </repository>
+    </repositories>-->
 
-   <properties>
-     <jsweet.core.version>6.3.0</jsweet.core.version>
-   </properties>
+  <properties>
+    <jsweet.core.version>6.3.0</jsweet.core.version>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-model</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openprovenance.prov</groupId>
+      <artifactId>prov-n</artifactId>
+      <version>2.0.4</version>
     </dependency>
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-template</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4</version>
     </dependency>
 
     <dependency>
@@ -42,7 +48,6 @@
       <artifactId>javapoet</artifactId>
       <version>${poet.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -89,22 +94,19 @@
       <scope>compile</scope>
     </dependency>
 
-
-    <!-- testing -->
+    <!-- testing
 
     <dependency>
       <groupId>org.openprovenance.prov</groupId>
       <artifactId>prov-n</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.4-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
+-->
 
   </dependencies>
 
   <build>
-
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -114,8 +116,6 @@
           <source>1.9</source>
         </configuration>
       </plugin>
-
-
     </plugins>
 
 
@@ -128,10 +128,11 @@
 
 
     <testResources>
-       <testResource>
-         <directory>src/test/resources</directory>
-         <filtering>true</filtering>
-       </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+
       <testResource>
         <directory>src/test/config</directory>
         <filtering>true</filtering>
@@ -145,7 +146,55 @@
 
   </build>
 
+  <!--
 
+  <profiles>
+    <profile>
+      <id>jdk12</id>
+      <activation>
+        <jdk>[11,12]</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.plugin.version}</version>
+            <configuration>
+              <includes>
+                <include>**/*.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk13-and-above</id>
+      <activation>
+        <jdk>[13,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${surefire.plugin.version}</version>
+            <configuration>
+              <includes>
+                <include>**/*.java</include>
+              </includes>
+              <excludes>
+                <exclude>**/CompilerTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+-->
 
 
 </project>

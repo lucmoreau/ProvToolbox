@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 import javax.lang.model.element.Modifier;
 
@@ -23,6 +24,7 @@ import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.Statement;
 import org.openprovenance.prov.model.ValueConverter;
+import org.openprovenance.prov.notation.ProvDeserialiser;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
@@ -40,6 +42,7 @@ import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerUtil {
 
+    private final ProvFactory pFactory;
     boolean debugComment=true;
 
 
@@ -55,6 +58,10 @@ public class CompilerUtil {
     public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
     public static final ParameterizedTypeName builderMapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(CLIENT_PACKAGE,"Builder"));
     public static final TypeName listOfArrays=ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(Object[].class));
+
+    public CompilerUtil(ProvFactory pFactory) {
+        this.pFactory=pFactory;
+    }
 
     public String generateNewNameForVariable(String key) {
         return GENERATED_VAR_PREFIX + key;
@@ -260,16 +267,24 @@ public class CompilerUtil {
     }
 
     public Document readDocumentFromFile(String file) throws ClassNotFoundException,
-                                                             NoSuchMethodException,
-                                                             SecurityException,
-                                                             InstantiationException,
-                                                             IllegalAccessException,
-                                                             IllegalArgumentException,
-                                                             InvocationTargetException {
-        Object interop=getInteropFramework();
-        Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
-        Document doc=(Document)method.invoke(interop,file);
-        return doc;
+            NoSuchMethodException,
+            SecurityException,
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException,
+            FileNotFoundException {
+        try {
+            Object interop=getInteropFramework();
+            Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
+            Document doc=(Document)method.invoke(interop,file);
+            return doc;
+        } catch (java.lang.ClassNotFoundException e) {
+            //System.out.println("could not find Interop Framework, falling back on provn");
+            return new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file));
+        }
+
+
     }
 
     public void writeDocument(String file, Document doc) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -298,6 +313,24 @@ public class CompilerUtil {
             };
             out = new PrintWriter(destination);
             out.print(spec);
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean saveToFile(String destinationDir, String destination, Supplier<String> spec) {
+        PrintWriter out;
+        try {
+            File dir=new File(destinationDir);
+            if (!dir.exists() && !dir.mkdirs()) {
+                System.err.println("failed to create directory " + destinationDir);
+                return false;
+            };
+            out = new PrintWriter(destination);
+            out.print(spec.get());
             out.close();
             return true;
         } catch (FileNotFoundException e) {
@@ -389,7 +422,7 @@ public class CompilerUtil {
                 System.out.println("key is " + key);
                 System.out.println("decl is " + the_var);
 
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("no value associated with key " + key);
             }
             JsonNode hasType = the_key.get(0).get(0).get("@type");
             if (hasType != null) {
@@ -425,7 +458,7 @@ public class CompilerUtil {
             case "json":
                 return String.class;
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("getClassForType " + keyType);
         }
     }
 
@@ -547,7 +580,7 @@ public class CompilerUtil {
 
     public String generateExampleForType(String declaredType, String localPart, ProvFactory pFactory) {
         if (declaredType == null) {
-            return "test_" + localPart;
+            return "test1_" + localPart;
         } else {
             switch (declaredType) {
                 case "xsd:date":
@@ -559,7 +592,7 @@ public class CompilerUtil {
                 case "xsd:int":
                     return "12345";
                 default:
-                    return "test_" + localPart;
+                    return "test2_" + localPart;
             }
         }
     }
@@ -768,6 +801,21 @@ public class CompilerUtil {
                 .addFileComment("\nby class $L, method $L,\nin file $L, at line $L",
                         stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(), stackTraceElement.getLineNumber())
                 .build();
+    }
+
+    public String pySpecWithComment(String templateName, StackTraceElement stackTraceElement) {
+        return "Generated automatically by ProvToolbox for template '" + templateName + "'\n"
+                + "by class " + stackTraceElement.getClassName()
+                + ", method " + stackTraceElement.getMethodName()
+                + ", \nin file " + stackTraceElement.getFileName()
+                + ", at line $L " + stackTraceElement.getLineNumber();
+    }
+    public String pySpecWithComment(TemplatesCompilerConfig configs, StackTraceElement stackTraceElement) {
+        return "Generated automatically by ProvToolbox for template configuration '" + configs.name + "'\n"
+                + "by class " + stackTraceElement.getClassName()
+                + ", method " + stackTraceElement.getMethodName()
+                + ", \nin file " + stackTraceElement.getFileName()
+                + ", at line $L " + stackTraceElement.getLineNumber();
     }
 
     public void specWithComment(MethodSpec.Builder mspec) {

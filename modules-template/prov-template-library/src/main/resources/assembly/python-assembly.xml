@@ -1,0 +1,63 @@
+<assembly>
+  <id>python</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <files>
+    <file>
+      <source>../../license.txt</source>
+      <outputDirectory>/prov-template-library/${project.version}</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+
+    <file>
+      <source>${project.basedir}/src/main/resources/assembly/Makefile</source>
+      <outputDirectory>/prov-template-library/${project.version}</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+
+    <!--
+    <file>
+      <source>target/classes/README.txt</source>
+      <outputDirectory>/ProvToolbox</outputDirectory>
+      <fileMode>644</fileMode>
+    </file>
+    -->
+
+  </files>
+
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/generated-python</directory>
+      <outputDirectory>/prov-template-library/${project.version}/src/python/main</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>prov2dotBAK</exclude>
+      </excludes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.basedir}/src/test/python</directory>
+      <outputDirectory>/prov-template-library/${project.version}/src/python/test</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>prov2dotBAK</exclude>
+      </excludes>
+    </fileSet>
+
+    <fileSet>
+      <directory>${project.basedir}/src/main/python</directory>
+      <outputDirectory>/prov-template-library/${project.version}/src/python/main</outputDirectory>
+      <fileMode>755</fileMode>
+      <excludes>
+        <exclude>prov2dotBAK</exclude>
+      </excludes>
+    </fileSet>
+
+  </fileSets>
+
+
+</assembly>
+

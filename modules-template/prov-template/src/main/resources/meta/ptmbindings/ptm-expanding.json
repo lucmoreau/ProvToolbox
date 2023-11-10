@@ -1,0 +1,40 @@
+{
+    "var" : {
+        "output1" :                 [{"@id" : "var:document"}],
+        "output2" :                 [{"@id" : "var:provenance"}],
+        "input1" :                  [{"@id" : "var:template"}],
+        "input2" :                  [{"@id" : "var:bindings"}],
+        "agent" :                   [{"@id" : "var:agent"}],
+        "agprop_values":            [[{"@id" : "var:email"}]],
+        "plan":                     [{"@id" : null}],
+        "responsible" :             [{"@id" : null}],
+        "activity" :                [{"@id" : "vargen:expanding"}],
+        "oprops1" :                 [{"@id" : "ptm:createdAt"}],
+        "oprop_values1" :           [[{"@id" : "var:time"}]],
+        "oprops2" :                 [{"@id" : "ptm:createdAt"}],
+        "oprop_values2" :           [[{"@id" : "var:time"}]],
+        "agtype" :                  [[{"@id" : "prov:Person"}, {"@id" : "schema:Person"}]],
+        "agprops" :                 [[{"@id" : "schema:email"}]],
+        "otype1" :                  [[{"@id" : "ptm:ProvDocument"}]],
+        "otype2" :                  [[{"@id" : "ptm:CompactBindings"}]],
+        "itype1" :                  [[{"@id" : "ptm:ProvTemplate"}]],
+        "itype2" :                  [[{"@id" : "ptm:Bindings"}]],
+        "atype" :                   [[{"@id" : "ptm:ExpandingTemplate"}]]
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:view"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "prov":   "${prov_ns}",
+        "ptm":    "${ptm_ns}",
+        "uuid" :  "${uuid_ns}",
+        "var":    "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd":    "${xsd_ns}",
+        "schema": "${schema_ns}"
+    },
+    "template" : null
+}

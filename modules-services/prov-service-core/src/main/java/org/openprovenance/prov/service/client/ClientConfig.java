@@ -14,6 +14,7 @@ public class ClientConfig implements org.openprovenance.prov.interop.ApiUriFragm
     public final  String host ;
     public final  String protocol;
     public final  String hostURLprefix;
+    public final  String hostURLprefixContext;
     public final  String postURL;
     public final  String formURL;
     public final  String resourcesURLprefix;
@@ -26,11 +27,13 @@ public class ClientConfig implements org.openprovenance.prov.interop.ApiUriFragm
         context = properties.getProperty("service.context");
         host = properties.getProperty("service.host");
         protocol = properties.getProperty("service.protocol");
-        hostURLprefix = protocol + "://" + host + ":" + port + context;
-        postURL = hostURLprefix + FRAGMENT_PROVAPI + FRAGMENT_DOCUMENTS;
-        formURL = hostURLprefix + FRAGMENT_PROVAPI + FRAGMENT_DOCUMENTS_FORM;
-        resourcesURLprefix = hostURLprefix + FRAGMENT_PROVAPI + FRAGMENT_RESOURCES;
-        htmlURL = hostURLprefix + "/contact.html";
+
+        hostURLprefix = protocol + "://" + host + ":" + port;
+        hostURLprefixContext = protocol + "://" + host + ":" + port + context;
+        postURL = hostURLprefixContext + FRAGMENT_PROVAPI + FRAGMENT_DOCUMENTS;
+        formURL = hostURLprefixContext + FRAGMENT_PROVAPI + FRAGMENT_DOCUMENTS_FORM;
+        resourcesURLprefix = hostURLprefixContext + FRAGMENT_PROVAPI + FRAGMENT_RESOURCES;
+        htmlURL = hostURLprefixContext + "/contact.html";
     }
 
 }

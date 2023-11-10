@@ -103,9 +103,9 @@ public class Using implements Iterable<List<Integer>> {
     }
 
     public Map<QualifiedName, List<TypedValue>> getAttr(Set<QualifiedName> variables,
-                                                              OldBindings b,
-                                                              UsingIterator iter) {
-        Map<QualifiedName,List<TypedValue>> result= new HashMap<>();
+                                                        OldBindings b,
+                                                        UsingIterator iter) {
+        Map<QualifiedName, List<TypedValue>> result= new HashMap<>();
         int ind=iter.getCount();
 
         for (QualifiedName var: variables) {
@@ -113,7 +113,7 @@ public class Using implements Iterable<List<Integer>> {
             if (val!=null) {
                 try {
                     List<TypedValue> attVal = val.get(ind);
-                    if (attVal==null){
+                    if (attVal==null) {
                         throw new MissingAttributeValue("Missing attribute value for variable " + var + ": index is " + ind + " and values are " + val);
                     }
                     result.put(var, val.get(ind));

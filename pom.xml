@@ -5,7 +5,7 @@
 	<groupId>org.openprovenance.prov</groupId>
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-	<version>2.0.3</version>
+	<version>2.0.4</version>
 	<url>https://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</connection>
 		<developerConnection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</developerConnection>
 		<url>https://github.com/lucmoreau/ProvToolbox.git</url>
-		<tag>ProvToolbox-2.0.3</tag>
+		<tag>ProvToolbox-2.0.4</tag>
 	</scm>
 
 	<modules>
@@ -278,6 +278,13 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.6.0</version>
+				</plugin>
+
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.5.3</version>
 
@@ -321,6 +328,10 @@
 		<antrun.plugin.version>3.1.0</antrun.plugin.version>
 		<surefire.plugin.version>3.1.2</surefire.plugin.version>
 		<failsafe.plugin.version>3.1.2</failsafe.plugin.version>
+		<exec.plugin.version>3.1.0</exec.plugin.version>
+		<dependency.plugin.version>3.1.2</dependency.plugin.version>
+		<jsweet.plugin.version>3.1.0</jsweet.plugin.version>
+		<build.helper.plugin.version>3.0.0</build.helper.plugin.version>
 
 		<!-- java, scala, jsweet-->
 
@@ -329,6 +340,7 @@
 		<scala.library.version>2.13.12</scala.library.version> <!-- 2.12.18 -->
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
 		<scalatest.version>3.2.17</scalatest.version> <!-- 3.1.4, 3.1.0-RC3 -->
+		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
 		<scala.binary.version>2.13</scala.binary.version>
 		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>

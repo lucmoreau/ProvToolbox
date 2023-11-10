@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ProvToolbox.iml" filepath="$PROJECT_DIR$/ProvToolbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-summarisation/modules-summarisation.iml" filepath="$PROJECT_DIR$/modules-summarisation/modules-summarisation.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld-xml (1).iml" filepath="$PROJECT_DIR$/modules-core/prov-jsonld/prov-jsonld-xml (1).iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-core/prov-model-scala/prov-scala.iml" filepath="$PROJECT_DIR$/modules-core/prov-model-scala/prov-scala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules-template/prov-template-library/prov-template-library.iml" filepath="$PROJECT_DIR$/modules-template/prov-template-library/prov-template-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" filepath="$PROJECT_DIR$/modules-executable/toolbox/toolbox.iml" />
     </modules>
   </component>

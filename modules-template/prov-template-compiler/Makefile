@@ -49,3 +49,15 @@ HERE=$(HOME)/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/
 
 comp2:
 	cd target/libs/templates/templates_cli/src/main/java/;javac org/example/templates/block/client/*.java -cp $(HERE)/../prov-template/target/prov-template-0.9.10-SNAPSHOT.jar:$(HERE)/../../modules-core/prov-model/target/prov-model-0.9.10-SNAPSHOT.jar 
+
+JSWEET_CLASSPATH=/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-compiler/target/libs/templates/templates_cli/jsweet_extension:/Users/luc/.m2/repository/org/openprovenance/prov/prov-model/2.0.4-SNAPSHOT/prov-model-2.0.4-SNAPSHOT.jar:/Users/luc/.m2/repository/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar:/Users/luc/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/Users/luc/.m2/repository/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar:/Users/luc/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.0/jakarta.xml.bind-api-4.0.0.jar:/Users/luc/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.0/jakarta.activation-api-2.1.0.jar:/Users/luc/.m2/repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/Users/luc/.m2/repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/Users/luc/.m2/repository/org/openprovenance/prov/prov-jsweet-candy-java/2.0.4-SNAPSHOT/prov-jsweet-candy-java-2.0.4-SNAPSHOT.jar:/Users/luc/.m2/repository/org/jsweet/jsweet-core/6.3.1/jsweet-core-6.3.1.jar
+
+jsc:
+	 cd target/libs/templates/templates_cli; java -jar   ~/.m2/repository/org/jsweet/jsweet-transpiler/4.0.0-SNAPSHOT/jsweet-transpiler-4.0.0-SNAPSHOT-jar-with-dependencies.jar  -i src/main/java --classpath $(JSWEET_CLASSPATH)  --targetVersion ES6 --jsout target/js --tsout target/ts --moduleResolution classic --candiesJsOut target/webapp/candies  --module none --verbose
+
+
+py:
+	export PYTHONPATH=target/libs/python:src/test/python; python3 src/test/python/test.py
+
+py2:
+	export PYTHONPATH=target/libs/python:src/test/python; python3 src/test/python/test2.py

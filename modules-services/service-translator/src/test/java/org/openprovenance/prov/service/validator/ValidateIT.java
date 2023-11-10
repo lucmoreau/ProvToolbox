@@ -16,7 +16,8 @@ import org.openprovenance.prov.interop.ApiUriFragments;
 import org.openprovenance.prov.interop.Formats.ProvFormat;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.service.core.DocumentMessageBodyReader;
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.service.core.readers.VanillaDocumentMessageBodyReader;
 import org.openprovenance.prov.service.ValidationReportMessageBodyReader;
 
 import org.openprovenance.prov.service.client.ClientConfig;
@@ -36,7 +37,8 @@ public class ValidateIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(ValidateIT.class);
     final static ClientConfig config=new ClientConfig(TranslateIT.class);
 
-    final InteropFramework intF=new InteropFramework();
+    final ProvFactory pf=new org.openprovenance.prov.vanilla.ProvFactory();
+    final InteropFramework intF=new InteropFramework(pf);
 
     public static HashMap<String, String> table= new HashMap<>();
 
@@ -179,7 +181,7 @@ public class ValidateIT extends TestCase implements ApiUriFragments {
     @SuppressWarnings("unused")
     public Object readObject(String location, String media) {
         Client client=ClientBuilder.newBuilder().build();
-        client.register(DocumentMessageBodyReader.class);
+        client.register(new VanillaDocumentMessageBodyReader(pf));
         WebTarget target=client.target(location);
         Response response2=target.request(media).get();
         Object o=response2.readEntity(InputStream.class);

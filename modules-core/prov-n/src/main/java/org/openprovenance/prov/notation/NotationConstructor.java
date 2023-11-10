@@ -9,39 +9,8 @@ import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.openprovenance.prov.model.Entry;
-import org.openprovenance.prov.model.ActedOnBehalfOf;
-import org.openprovenance.prov.model.Activity;
-import org.openprovenance.prov.model.Agent;
-import org.openprovenance.prov.model.AlternateOf;
-import org.openprovenance.prov.model.Attribute;
-import org.openprovenance.prov.model.DerivedByInsertionFrom;
-import org.openprovenance.prov.model.DerivedByRemovalFrom;
-import org.openprovenance.prov.model.ModelConstructor;
-import org.openprovenance.prov.model.Document;
-import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.MentionOf;
-import org.openprovenance.prov.model.Bundle;
-import org.openprovenance.prov.model.ModelConstructorExtension;
-import org.openprovenance.prov.model.Namespace;
-import org.openprovenance.prov.model.NamespacePrefixMapper;
-import org.openprovenance.prov.model.ProvUtilities;
+import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.ProvUtilities.BuildFlag;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.Statement;
-import org.openprovenance.prov.model.DictionaryMembership;
-import org.openprovenance.prov.model.Used;
-import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
-import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasEndedBy;
-import org.openprovenance.prov.model.WasGeneratedBy;
-import org.openprovenance.prov.model.WasInfluencedBy;
-import org.openprovenance.prov.model.WasInformedBy;
-import org.openprovenance.prov.model.WasInvalidatedBy;
-import org.openprovenance.prov.model.WasStartedBy;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
@@ -241,11 +210,40 @@ public class NotationConstructor implements ModelConstructor, ModelConstructorEx
     }
 
     @Override
+    public DictionaryMembership newDictionaryMembership(QualifiedName id, QualifiedName dict, List<Entry> keyEntitySet, Collection<Attribute> attributes) {
+        if (abbrev) {
+            String s = "provx:hadDictionaryMember(" + idOrMarker(dict) + ","
+                    + keyEntitySet(keyEntitySet) + ")";
+            writeln(s);
+        } else {
+            for (Entry entry : keyEntitySet) {
+
+                String s = "prov:hadDictionaryMember("
+                        + idOrMarker(dict)
+                        + ","
+                        + idOrMarker(entry.getEntity())
+                        + ","
+                        + ProvUtilities.valueToNotationString(entry.getKey())
+                        + ")";
+                writeln(s);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Document newDocument(Namespace namespaces,
                                 Collection<Statement> statements,
                                 Collection<Bundle> bundles) {
         String s = "";
+        s = s + keyword("endDocument");
+        writeln(s);
+        return null;
+    }
 
+    @Override
+    public Document newDocument(Namespace namespace, List<StatementOrBundle> statementsOrBundles) {
+        String s = "";
         s = s + keyword("endDocument");
         writeln(s);
         return null;

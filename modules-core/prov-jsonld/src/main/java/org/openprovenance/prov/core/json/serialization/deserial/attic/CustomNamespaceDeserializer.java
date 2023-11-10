@@ -42,6 +42,7 @@ abstract public class CustomNamespaceDeserializer extends StdDeserializer<Namesp
         Namespace ns=new Namespace(map);
         ns.setDefaultNamespace(def.textValue());
 
+
         getAttributes().get().put(JSON_CONTEXT_KEY_NAMESPACE,ns);
 
 

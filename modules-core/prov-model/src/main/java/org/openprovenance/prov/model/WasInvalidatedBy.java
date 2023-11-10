@@ -23,7 +23,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasInvalidatedBy(QualifiedName, QualifiedName, QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasInvalidatedBy()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

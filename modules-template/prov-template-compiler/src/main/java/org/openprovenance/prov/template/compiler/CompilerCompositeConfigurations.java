@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.configuration.*;
 
@@ -9,9 +10,10 @@ import javax.lang.model.element.Modifier;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
 
 public class CompilerCompositeConfigurations {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
-    public CompilerCompositeConfigurations() {
+    public CompilerCompositeConfigurations(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     String enactorVar = "beanEnactor";

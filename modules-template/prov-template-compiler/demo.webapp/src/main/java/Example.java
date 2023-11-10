@@ -8,7 +8,7 @@ import org.example.templates.block.Template_blockBuilderTypeManagement;
 import org.example.templates.block.client.Template_blockBuilder;
 import org.example.templates.block.client.Template_blockBean;
 import org.example.templates.client.Logger;
-import org.openprovenance.prov.client.Builder;
+import org.openprovenance.prov.client_copy.Builder;
 import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.vanilla.ProvFactory;

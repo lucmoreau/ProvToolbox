@@ -1,0 +1,17 @@
+{
+    "name": "plead",
+    "templates": [
+        "plead.human.decision1.json",
+        "plead.erasure.accept1.json",
+        "plead.erasure.accept2a.json",
+        "plead.erasure.accept2b.json",
+        "plead.erasure.reject.json",
+        "plead.rectification.accept1.json",
+        "plead.rectification.accept2a.json",
+        "plead.rectification.accept2b.json",
+        "plead.rectification.reject.json"
+    ],
+    "dictionaries": ["plead-dictionary.json"],
+    "profiles": ["plead-profile1.json"]
+}
+	

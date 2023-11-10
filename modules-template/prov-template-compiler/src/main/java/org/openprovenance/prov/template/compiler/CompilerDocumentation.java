@@ -2,10 +2,9 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
@@ -19,11 +18,12 @@ import static org.openprovenance.prov.template.compiler.CompilerJsonSchema.conve
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
 
 public class CompilerDocumentation {
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
     ObjectMapper om = new ObjectMapper();
     Map<String, Object> jsonSchemaAsAMap = initializeSchemaMap();
 
-    public CompilerDocumentation() {
+    public CompilerDocumentation(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
 

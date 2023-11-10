@@ -1,0 +1,299 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query": [
+    "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+    "prefix pl <http://openprovenance.org/ns/plead#>",
+    "prefix app <https://explain.openprovenance.org/creditscoring/>",
+    "select * from decision a prov:Entity",
+    "from der1 a provext:WasDerivedFromStar",
+    "join decision.id = der1.generatedEntity",
+    "from record a prov:Entity",
+    " join der1.usedEntity = record.id",
+    "from der2 a provext:WasDerivedFromStar",
+    " join decision.id = der2.generatedEntity",
+    "from la_record a prov:Entity",
+    " join der2.usedEntity = la_record.id",
+    "where decision[prov:type] >= 'pl:Decision'",
+    "and record[prov:type] >= 'cs:IdentityRecord'",
+    "and la_record[prov:type] >= 'cs:LinkedAddressRecord'"
+  ],
+  "sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "clause",
+        "verb": {
+          "type": "verb_phrase",
+          "head": "perform",
+          "pre-modifiers": [
+            {
+              "type": "adjective_phrase",
+              "head": "to"
+            }
+          ]
+        },
+        "modifiers": [
+          {
+            "type": "coordinated_phrase",
+            "conjunction": "and",
+            "coordinates": [
+              {
+                "type": "noun_phrase",
+                "head": "identity",
+                "post-modifiers": [
+                  {
+                    "type": "adjective_phrase",
+                    "head": "matching"
+                  }
+                ]
+              },
+              {
+                "type": "clause",
+                "subject": "we",
+                "verb": "received",
+                "object": {
+                  "type": "noun_phrase",
+                  "head": "electoral register data",
+                  "post-modifiers": [
+                    {
+                      "type": "adjective_phrase",
+                      "head": "last",
+                      "post-modifiers": [
+                        {
+                          "type": "verb_phrase",
+                          "head": "updated",
+                          "features": {
+                            "type": "features",
+                            "tense": "past"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "preposition_phrase",
+                      "preposition": "on",
+                      "noun": {
+                        "type": "noun_phrase",
+                        "head": "date",
+                        "post-modifiers": [
+                          {
+                            "type": "noun_phrase",
+                            "head": {
+                              "type": "@funcall",
+                              "@object": "record",
+                              "@property": "cs:on_electoral_register_since",
+                              "@function": "identity"
+                            },
+                            "features": {
+                              "head_markup_element": "span",
+                              "head_markup_attributes": {
+                                "type": "@funcall",
+                                "@object": "record",
+                                "@function": "markup-for-id",
+                                "@field": "id",
+                                "@arg1": "provelement"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "preposition_phrase",
+                      "preposition": "for",
+                      "noun": {
+                        "type": "noun_phrase",
+                        "head": "date of birth",
+                        "post-modifiers": [
+                          {
+                            "type": "noun_phrase",
+                            "head": {
+                              "type": "@funcall",
+                              "@object": "record",
+                              "@property": "cs:attr_dob",
+                              "@function": "identity"
+                            },
+                            "features": {
+                              "head_markup_element": "span",
+                              "head_markup_attributes": {
+                                "type": "@funcall",
+                                "@object": "record",
+                                "@function": "markup-for-id",
+                                "@field": "id",
+                                "@arg1": "provelement"
+                              }
+                            }
+                          }
+                        ],
+                        "specifier": "##borrower-possessive"
+                      }
+                    }
+                  ]
+                },
+                "features": {
+                  "type": "features",
+                  "tense": "past"
+                }
+              },
+              {
+                "type": "clause",
+                "subject": {
+                  "type": "coordinated_phrase",
+                  "conjunction": "and",
+                  "coordinates": [
+                    {
+                      "type": "noun_phrase",
+                      "head": "address",
+                      "pre-modifiers": [
+                        {
+                          "type": "adjective_phrase",
+                          "head": "current"
+                        }
+                      ],
+                      "specifier": "##borrower-possessive"
+                    },
+                    {
+                      "type": "noun_phrase",
+                      "head": "addresses",
+                      "features": {
+                        "type": "features",
+                        "number": "plural"
+                      },
+                      "pre-modifiers": [
+                        {
+                          "type": "adjective_phrase",
+                          "head": "previous"
+                        }
+                      ],
+                      "specifier": "##borrower-possessive"
+                    }
+                  ]
+                },
+                "verb": "supply",
+                "indirect_object": {
+                  "type": "preposition_phrase",
+                  "preposition": "by",
+                  "noun": {
+                    "type": "@funcall",
+                    "@object": "la_record",
+                    "@property": "prov:type",
+                    "@function": "lookup-type",
+                    "@arg1": "noun_phrase",
+                    "@arg2": "cs",
+                    "post-modifiers": [
+                      {
+                        "type": "adjective_phrase",
+                        "head": {
+                          "type": "@funcall",
+                          "@object": "la_record",
+                          "@field": "id",
+                          "@function": "noun+localname",
+                          "@arg1": ""
+                        },
+                        "features": {
+                          "markup_element": "span",
+                          "markup_attributes": {
+                            "type": "@funcall",
+                            "@object": "la_record",
+                            "@function": "markup-for-id",
+                            "@field": "id",
+                            "@arg1": "provelement"
+                          }
+                        }
+                      }
+                    ],
+                    "features": {
+                      "head_markup_element": "span",
+                      "head_markup_attributes": {
+                        "type": "@funcall",
+                        "@object": "la_record",
+                        "@function": "markup-for-id",
+                        "@field": "id",
+                        "@arg1": "provelement"
+                      }
+                    }
+                  }
+                },
+                "features": {
+                  "type": "features",
+                  "tense": "past"
+                }
+              },
+              {
+                "type": "clause",
+                "verb": {
+                  "type": "verb_phrase",
+                  "head": "update",
+                  "pre-modifiers": [
+                    {
+                      "type": "adjective_phrase",
+                      "head": "last"
+                    }
+                  ]
+                },
+                "indirect_object": {
+                  "type": "preposition_phrase",
+                  "preposition": "on",
+                  "noun": {
+                    "type": "noun_phrase",
+                    "head": {
+                      "type": "@funcall",
+                      "@object": "la_record",
+                      "@property": "cs:attr_last_confirmed",
+                      "@function": "identity"
+                    },
+                    "features": {
+                      "head_markup_element": "span",
+                      "head_markup_attributes": {
+                        "type": "@funcall",
+                        "@object": "record",
+                        "@function": "markup-for-id",
+                        "@field": "id",
+                        "@arg1": "provelement"
+                      }
+                    }
+                  }
+                },
+                "features": {
+                  "type": "features",
+                  "tense": "past"
+                }
+              }
+            ]
+          }
+        ],
+        "features": {
+          "type": "features",
+          "tense": "present",
+          "number": "plural"
+        }
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+    "ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

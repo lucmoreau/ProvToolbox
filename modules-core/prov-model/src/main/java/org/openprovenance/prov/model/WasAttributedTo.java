@@ -14,7 +14,6 @@ package org.openprovenance.prov.model;
  * <ul>
  * <li> {@link ProvFactory#newWasAttributedTo(QualifiedName, QualifiedName, QualifiedName)}
  * <li> {@link ProvFactory#newWasAttributedTo(QualifiedName, QualifiedName, QualifiedName, java.util.Collection)}
- * <li> {@link ObjectFactory#createWasAttributedTo()}
  * </ul>
  * 
  * <p><span class="strong">Schema Definition:</span>

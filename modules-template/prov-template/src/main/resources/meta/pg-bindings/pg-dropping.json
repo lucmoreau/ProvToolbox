@@ -1,0 +1,27 @@
+{
+    "var" : {
+        "b" :              [ { "@id" : "vargen:b" } ],
+        "agent" :          [ { "@id" : "var:agent" } ],
+        "block_instance" : [ { "@id" : "var:drop_instance" } ],
+        "block_type" :     [ { "@id" : "pgo:Drop"  } ] ,
+        "parent" :         [ { "@id" : "var:parent" } ],
+        "produced_label" : [ { "@id" : "var:user_after_label"  }, { "@id" : "var:object_after_label"  } ],
+        "produced_type" :  [ { "@id" : "pgo:User" }, { "@id" : "pgo:FreeObject" } ],
+        "produced" :       [ { "@id" : "var:user_after" }, { "@id" : "var:object_after" } ],
+        "produced_at" :    [ { "@id" : "var:drop_end1" }, { "@id" : "var:drop_end2" }],
+        "produced_role" :  [ { "@id" : "pgo:Dropper" }, { "@id" : "pgo:Droppee" } ],
+        "consumed" :       [ { "@id" : "var:user_before" }, { "@id" : "var:object_before" } ],
+        "consumed_type" :  [ { "@id" : "pgo:User" }, { "@id" : "pgo:TakenObject" } ],
+        "consumed_label" : [ { "@id" : "var:user_before_label" }, { "@id" : "var:object_before_label" } ],
+        "consumed_role" :  [ { "@id" : "pgo:User" }, { "@id" : "pgo:Object" } ],
+        "consumed_at" :    [ { "@id" : "var:drop_begin1" }, { "@id" : "var:drop_begin2" } ]  },
+    "vargen" : {  },
+    "context" : {
+        "prov":   "${prov_ns}",
+        "uuid" :  "${uuid_ns}",
+        "var":    "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd":    "${xsd_ns}",
+        "pgo":    "${pgo_ns}"
+    }
+}

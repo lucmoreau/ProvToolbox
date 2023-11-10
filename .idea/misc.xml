@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.11 (ProvToolbox)" />
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="Osmorc" url="file://$PROJECT_DIR$/modules-executable/prov-interop" />
@@ -41,6 +44,7 @@
         <option value="$PROJECT_DIR$/modules-executable-provman/pom.xml" />
         <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

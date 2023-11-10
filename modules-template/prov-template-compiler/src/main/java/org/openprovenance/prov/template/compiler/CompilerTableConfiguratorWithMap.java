@@ -15,9 +15,10 @@ import static org.openprovenance.prov.template.compiler.common.Constants.WITH_MA
 
 public class CompilerTableConfiguratorWithMap {
     public static final String PREFIX = "_b_";
-    private final CompilerUtil compilerUtil=new CompilerUtil();
+    private final CompilerUtil compilerUtil;
 
-    public CompilerTableConfiguratorWithMap() {
+    public CompilerTableConfiguratorWithMap(ProvFactory pFactory) {
+        this.compilerUtil=new CompilerUtil(pFactory);
     }
 
     SpecificationFile generateTableConfigurator(TemplatesCompilerConfig configs, Locations locations, String l2p_src_dir) {

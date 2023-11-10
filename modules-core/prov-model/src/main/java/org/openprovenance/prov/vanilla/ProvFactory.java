@@ -1,27 +1,23 @@
 package org.openprovenance.prov.vanilla;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Activity;
 import org.openprovenance.prov.model.Agent;
 import org.openprovenance.prov.model.Bundle;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.Entity;
-import org.openprovenance.prov.model.HadMember;
-import org.openprovenance.prov.model.LangString;
 import org.openprovenance.prov.model.ModelConstructor;
 import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.SpecializationOf;
-import org.openprovenance.prov.model.Used;
 import org.openprovenance.prov.model.WasAssociatedWith;
-import org.openprovenance.prov.model.WasAttributedTo;
 import org.openprovenance.prov.model.WasDerivedFrom;
-import org.openprovenance.prov.model.WasGeneratedBy;
 import org.openprovenance.prov.model.*;
-import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class ProvFactory extends org.openprovenance.prov.model.ProvFactory implements LiteralConstructor, ModelConstructor, ModelConstructorExtension, AtomConstructor {
@@ -36,23 +32,25 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     final org.openprovenance.prov.model.ModelConstructor mc;
     final AtomConstructor ac;
 
-    public ProvFactory(ObjectFactory of) {
+    /*
+    public ProvFactory(DictionaryFactory of) {
         super(of);
         mc=new org.openprovenance.prov.vanilla.ModelConstructor();
         ac=(AtomConstructor)mc;
     }
+
+     */
 
     public ProvFactory () {
-        super(null);
+        super();
         mc=new org.openprovenance.prov.vanilla.ModelConstructor();
         ac=(AtomConstructor)mc;
     }
 
-    public ProvFactory(ObjectFactory of, ModelConstructor mc) {
-        super(of);
+    public ProvFactory(ModelConstructor mc) {
+        super();
         this.mc=mc;
         ac=(AtomConstructor)mc;
-
     }
 
 
@@ -81,7 +79,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
             return newLabel(value, type);
         }
         if (elementName.equals(getName().PROV_KEY)) {
-            new UnsupportedOperationException("key not there yet");
+            //return newKey(value, type);
+            throw new UnsupportedOperationException("key not there yet");
         }
         return newOther(elementName, value, type);
     }
@@ -120,14 +119,12 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     @Override
     public org.openprovenance.prov.model.LangString newInternationalizedString(String s,
                                                                                String lang) {
-        LangString res = ac.newInternationalizedString(s,lang);
-        return res;
+        return ac.newInternationalizedString(s,lang);
     }
 
     @Override
     public org.openprovenance.prov.model.LangString newInternationalizedString(String s) {
-        LangString res = ac.newInternationalizedString(s);
-        return res;
+        return ac.newInternationalizedString(s);
     }
 
     @Override
@@ -138,8 +135,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
     @Override
     public org.openprovenance.prov.model.Other newOther(org.openprovenance.prov.model.QualifiedName elementName,
-                          Object value,
-                          org.openprovenance.prov.model.QualifiedName type) {
+                                                        Object value,
+                                                        org.openprovenance.prov.model.QualifiedName type) {
         return ac.newOther(elementName, value, type);
     }
 
@@ -153,8 +150,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
     @Override
-    public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a) {
-        return mc.newActivity(a,null,null,new LinkedList<>());
+    public org.openprovenance.prov.model.Activity newActivity(org.openprovenance.prov.model.QualifiedName a, XMLGregorianCalendar startTime, XMLGregorianCalendar endTime, Collection<Attribute> attributes) {
+        return mc.newActivity(a,startTime, endTime, attributes);
     }
 
     @Override
@@ -183,6 +180,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return mc.newEntity(id,attrs);
     }
 
+    @Override
+    public org.openprovenance.prov.model.Entry newEntry(org.openprovenance.prov.model.Key key, QualifiedName entity) {
+        return new Entry(key,entity);
+    }
+
     /**
      * Creates a new {@link org.openprovenance.prov.model.Entity} with provided identifier and attributes
      * @param id a {@link org.openprovenance.prov.model.QualifiedName} for the entity
@@ -201,10 +203,11 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
     @Override
-    public Key newKey(Object o, org.openprovenance.prov.model.QualifiedName type) {
-        throw new UnsupportedOperationException("newKey not supported");
+    public org.openprovenance.prov.model.Key newKey(Object o, org.openprovenance.prov.model.QualifiedName type) {
+        return new Key(o,type);
     }
 
+    @Override
     public org.openprovenance.prov.model.Value newValue(Object value, org.openprovenance.prov.model.QualifiedName type) {
         if (value==null) return null;
         return ac.newValue(value,type);
@@ -216,6 +219,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param ag a {@link org.openprovenance.prov.model.QualifiedName} for the agent
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
+    @Override
     public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName ag) {
         return mc.newAgent(ag,new LinkedList<>());
     }
@@ -227,6 +231,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
 
+    @Override
     public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName id, Collection<Attribute> attributes) {
         return mc.newAgent(id,attributes);
     }
@@ -237,6 +242,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param label a String for the label property (see {@link HasLabel#getLabel()}
      * @return an object of type {@link org.openprovenance.prov.model.Agent}
      */
+    @Override
     public org.openprovenance.prov.model.Agent newAgent(org.openprovenance.prov.model.QualifiedName ag, String label) {
         Agent res = newAgent(ag);
         //new Label(null,newInternationalizedString(label));
@@ -250,17 +256,19 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param id an optional identifier for a usage
      * @return an instance of {@link org.openprovenance.prov.model.Used}
      */
+    @Override
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id) {
         return mc.newUsed(id,null,null, null, new LinkedList<>());
     }
 
+    @Override
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
-                                                      org.openprovenance.prov.model.QualifiedName aid,
+                                                      org.openprovenance.prov.model.QualifiedName activity,
                                                       String role,
-                                                      org.openprovenance.prov.model.QualifiedName eid) {
+                                                      org.openprovenance.prov.model.QualifiedName entity) {
         List<Attribute> attributes=new LinkedList<>();
         if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
-        return mc.newUsed(id,aid,eid,null,attributes);
+        return mc.newUsed(id, activity, entity,null,attributes);
     }
 
     /** A factory method to create an instance of a usage {@link org.openprovenance.prov.model.Used}
@@ -270,6 +278,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.Used}
      */
 
+    @Override
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity) {
         return mc.newUsed(id,activity,entity,null, new LinkedList<>());
     }
@@ -281,6 +290,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.Used}
      */
 
+    @Override
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName entity) {
         return newUsed((QualifiedName)null, activity, entity);
     }
@@ -288,6 +298,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newUsed(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
+    @Override
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
                                                       org.openprovenance.prov.model.QualifiedName activity,
                                                       org.openprovenance.prov.model.QualifiedName entity,
@@ -296,6 +307,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return mc.newUsed(id, activity, entity,time,  attributes);
     }
 
+    @Override
     public org.openprovenance.prov.model.Used newUsed(org.openprovenance.prov.model.QualifiedName id,
                                                       org.openprovenance.prov.model.QualifiedName activity,
                                                       org.openprovenance.prov.model.QualifiedName entity,
@@ -310,20 +322,26 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return ac.newRole(value,type);
     }
 
+    @Override
     public org.openprovenance.prov.model.Label newLabel(Object value, org.openprovenance.prov.model.QualifiedName type) {
         if (value==null) return null;
         return ac.newLabel(value,type);
     }
 
+    @Override
     public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(org.openprovenance.prov.model.QualifiedName id,
-                                                                          org.openprovenance.prov.model.QualifiedName eid,
+                                                                          org.openprovenance.prov.model.QualifiedName entity,
                                                                           String role,
-                                                                          org.openprovenance.prov.model.QualifiedName aid) {
+                                                                          org.openprovenance.prov.model.QualifiedName activity) {
         Collection<Attribute> attributes=new LinkedList<>();
         if (role!=null) attributes.add(newRole(role,getName().XSD_STRING));
-        return mc.newWasGeneratedBy(id,eid,aid, null,attributes);
+        return mc.newWasGeneratedBy(id, entity, activity, null,attributes);
     }
 
+    @Override
+    public org.openprovenance.prov.model.WasGeneratedBy newWasGeneratedBy(QualifiedName id, QualifiedName entity, QualifiedName activity, XMLGregorianCalendar time, Collection<Attribute> attributes) {
+        return mc.newWasGeneratedBy(id, entity, activity, time, attributes);
+    }
 
     public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                               org.openprovenance.prov.model.QualifiedName eid,
@@ -342,6 +360,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.WasInvalidatedBy}
      */
 
+    @Override
     public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName entity, org.openprovenance.prov.model.QualifiedName activity) {
         return mc.newWasInvalidatedBy(id,entity,activity,null,new LinkedList<>());
     }
@@ -349,6 +368,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasInvalidatedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
+    @Override
     public org.openprovenance.prov.model.WasInvalidatedBy newWasInvalidatedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                               org.openprovenance.prov.model.QualifiedName entity,
                                                                               org.openprovenance.prov.model.QualifiedName activity,
@@ -368,8 +388,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param agent an optional identifier for the agent associated with the activity
      * @return an instance of {@link org.openprovenance.prov.model.WasAssociatedWith}
      */
-
-
+    @Override
     public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
                                                                                 org.openprovenance.prov.model.QualifiedName activity,
                                                                                 org.openprovenance.prov.model.QualifiedName agent) {
@@ -381,6 +400,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @see org.openprovenance.prov.model.ModelConstructor#newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
      */
 
+    @Override
     public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
                                                                                 org.openprovenance.prov.model.QualifiedName a,
                                                                                 org.openprovenance.prov.model.QualifiedName ag,
@@ -389,6 +409,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return mc.newWasAssociatedWith(id,a,ag, plan, attributes);
     }
 
+    @Override
     public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.QualifiedName id,
                                                                                 org.openprovenance.prov.model.QualifiedName a,
                                                                                 org.openprovenance.prov.model.QualifiedName ag,
@@ -398,6 +419,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
 
+    @Override
     public org.openprovenance.prov.model.WasAssociatedWith newWasAssociatedWith(org.openprovenance.prov.model.WasAssociatedWith u) {
         WasAssociatedWith u1 = newWasAssociatedWith(u.getId(), u.getActivity(), u.getAgent(), u.getPlan());
         u1.getType().addAll(u.getType());
@@ -414,6 +436,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param agent  the identifier of the agent whom the entity is ascribed to, and therefore bears some responsibility for its existence
      * @return an instance of {@link org.openprovenance.prov.model.WasAttributedTo}
      */
+    @Override
     public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName entity,
                                                                             org.openprovenance.prov.model.QualifiedName agent) {
@@ -429,6 +452,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasAttributedTo(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
      */
+    @Override
     public org.openprovenance.prov.model.WasAttributedTo newWasAttributedTo(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName entity,
                                                                             org.openprovenance.prov.model.QualifiedName agent,
@@ -446,8 +470,24 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param entity2 an identifier for the second {@link org.openprovenance.prov.model.Entity}
      * @return an instance of {@link org.openprovenance.prov.model.AlternateOf}
      */
+    @Override
     public org.openprovenance.prov.model.AlternateOf newAlternateOf(org.openprovenance.prov.model.QualifiedName entity1, org.openprovenance.prov.model.QualifiedName entity2) {
         return mc.newAlternateOf(entity1,entity2);
+    }
+
+    @Override
+    public  org.openprovenance.prov.model.DerivedByInsertionFrom newDerivedByInsertionFrom(QualifiedName id, QualifiedName after, QualifiedName before, List<org.openprovenance.prov.model.Entry> keyEntitySet, Collection<Attribute> attributes) {
+        return new DerivedByInsertionFrom(id,after,before,keyEntitySet,attributes);
+    }
+
+    @Override
+    public org.openprovenance.prov.model.DerivedByRemovalFrom newDerivedByRemovalFrom(QualifiedName id, QualifiedName after, QualifiedName before, List<org.openprovenance.prov.model.Key> keys, Collection<Attribute> attributes) {
+        return new DerivedByRemovalFrom(id,after,before,keys,attributes);
+    }
+
+    @Override
+    public org.openprovenance.prov.model.DictionaryMembership newDictionaryMembership(QualifiedName id, QualifiedName dict, List<org.openprovenance.prov.model.Entry> keyEntitySet, Collection<Attribute> attributes) {
+        return new DictionaryMembership(id, dict, keyEntitySet, attributes);
     }
 
 
@@ -457,6 +497,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
      * @return an instance of {@link org.openprovenance.prov.model.WasDerivedFrom}
      */
+    @Override
     public org.openprovenance.prov.model.WasDerivedFrom newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName id,
                                                                           org.openprovenance.prov.model.QualifiedName e2,
                                                                           org.openprovenance.prov.model.QualifiedName e1) {
@@ -468,6 +509,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param e1 the identifier  of the <a href="http://www.w3.org/TR/prov-dm/#derivation.usedEntity">entity used</a> by the derivation
      * @return an instance of {@link org.openprovenance.prov.model.WasDerivedFrom}
      */
+    @Override
     public org.openprovenance.prov.model.WasDerivedFrom newWasDerivedFrom(org.openprovenance.prov.model.QualifiedName e2,
                                                                           org.openprovenance.prov.model.QualifiedName e1) {
         return mc.newWasDerivedFrom(null,e2,e1,null,null,null,new LinkedList<>());
@@ -491,6 +533,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
 
+    @Override
     public Document newDocument(Collection<Activity> ps,
                                 Collection<org.openprovenance.prov.model.Entity> as,
                                 Collection<Agent> ags,
@@ -504,6 +547,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
 
+    @Override
     public Document newDocument(Document graph) {
         Document res = newDocument();
         res.getStatementOrBundle().addAll(graph.getStatementOrBundle());
@@ -521,6 +565,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.WasInformedBy}
      */
 
+    @Override
     public org.openprovenance.prov.model.WasInformedBy newWasInformedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                         org.openprovenance.prov.model.QualifiedName informed,
                                                                         org.openprovenance.prov.model.QualifiedName informant) {
@@ -532,6 +577,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @see org.openprovenance.prov.model.ModelConstructor#newWasInformedBy(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
      */
 
+    @Override
     public org.openprovenance.prov.model.WasInformedBy newWasInformedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                         org.openprovenance.prov.model.QualifiedName informed,
                                                                         org.openprovenance.prov.model.QualifiedName informant,
@@ -549,6 +595,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.WasInfluencedBy}
      */
 
+    @Override
     public org.openprovenance.prov.model.WasInfluencedBy newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName influencee,
                                                                             org.openprovenance.prov.model.QualifiedName influencer) {
@@ -560,6 +607,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @see org.openprovenance.prov.model.ModelConstructor#newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
      */
 
+    @Override
     public org.openprovenance.prov.model.WasInfluencedBy newWasInfluencedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName influencee,
                                                                             org.openprovenance.prov.model.QualifiedName influencer,
@@ -568,25 +616,31 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     }
 
 
+    @Override
     public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName collection, org.openprovenance.prov.model.QualifiedName... entities) {
         return new org.openprovenance.prov.vanilla.HadMember(collection, Arrays.asList(entities));
     }
 
 
+    @Override
     public org.openprovenance.prov.model.HadMember newHadMember(org.openprovenance.prov.model.QualifiedName c,
                                                                 Collection<org.openprovenance.prov.model.QualifiedName> e) {
-        List<org.openprovenance.prov.model.QualifiedName> ll=new LinkedList<org.openprovenance.prov.model.QualifiedName>();
+        List<org.openprovenance.prov.model.QualifiedName> ll= new LinkedList<>();
         if (e!=null) {
-            for (org.openprovenance.prov.model.QualifiedName q: e) {
-                ll.add(q);
-            }
+            ll.addAll(e);
         }
         return new org.openprovenance.prov.vanilla.HadMember(c,ll);
     }
 
+    @Override
+    public MentionOf newMentionOf(QualifiedName e2, QualifiedName e1, QualifiedName b) {
+        throw new UnsupportedOperationException("newMentionOf not supported");
+    }
 
-    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
-        return mc.newWasStartedBy(id,aid,eid,null,null,new LinkedList<>());
+
+    @Override
+    public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName activity, org.openprovenance.prov.model.QualifiedName trigger) {
+        return mc.newWasStartedBy(id, activity, trigger,null,null,new LinkedList<>());
     }
 
     /** A factory method to create an instance of a start {@link org.openprovenance.prov.model.WasStartedBy}
@@ -597,6 +651,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.WasStartedBy}
      */
 
+    @Override
     public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                       org.openprovenance.prov.model.QualifiedName activity,
                                                                       org.openprovenance.prov.model.QualifiedName trigger,
@@ -607,6 +662,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasStartedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
+    @Override
     public org.openprovenance.prov.model.WasStartedBy newWasStartedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                       org.openprovenance.prov.model.QualifiedName activity,
                                                                       org.openprovenance.prov.model.QualifiedName trigger,
@@ -619,6 +675,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
 
 
 
+    @Override
     public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName aid, org.openprovenance.prov.model.QualifiedName eid) {
         return mc.newWasEndedBy(id,aid,eid,null,null,new LinkedList<>());
     }
@@ -631,6 +688,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @return an instance of {@link org.openprovenance.prov.model.WasEndedBy}
      */
 
+    @Override
     public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                   org.openprovenance.prov.model.QualifiedName activity,
                                                                   org.openprovenance.prov.model.QualifiedName trigger,
@@ -641,6 +699,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     /* (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newWasEndedBy(org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, org.openprovenance.model.QualifiedName, javax.xml.datatype.XMLGregorianCalendar, java.util.Collection)
      */
+    @Override
     public org.openprovenance.prov.model.WasEndedBy newWasEndedBy(org.openprovenance.prov.model.QualifiedName id,
                                                                   org.openprovenance.prov.model.QualifiedName activity,
                                                                   org.openprovenance.prov.model.QualifiedName trigger,
@@ -649,6 +708,8 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                                                   Collection<Attribute> attributes) {
         return mc.newWasEndedBy(id,activity,trigger,ender,time,attributes);
     }
+
+
 
 
     /*
@@ -660,10 +721,17 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
                                 Collection<Statement> statements,
                                 Collection<Bundle> bundles) {
         Document res = newDocument();
-
         res.setNamespace(namespace);
         res.getStatementOrBundle().addAll(statements);
         res.getStatementOrBundle().addAll(bundles);
+        return res;
+    }
+
+    @Override
+    public Document newDocument(Namespace namespace, List<StatementOrBundle> statementsOrBundles) {
+        Document res = newDocument();
+        res.setNamespace(namespace);
+        res.getStatementOrBundle().addAll(statementsOrBundles);
         return res;
     }
 
@@ -675,6 +743,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param activity optional identifier of an activity for which the delegation association holds
      * @return an instance of {@link org.openprovenance.prov.model.ActedOnBehalfOf}
      */
+    @Override
     public org.openprovenance.prov.model.ActedOnBehalfOf newActedOnBehalfOf(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName delegate,
                                                                             org.openprovenance.prov.model.QualifiedName responsible,
@@ -686,6 +755,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * (non-Javadoc)
      * @see org.openprovenance.prov.model.ModelConstructor#newActedOnBehalfOf(org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, org.openprovenance.prov.model.QualifiedName, java.util.Collection)
      */
+    @Override
     public org.openprovenance.prov.model.ActedOnBehalfOf newActedOnBehalfOf(org.openprovenance.prov.model.QualifiedName id,
                                                                             org.openprovenance.prov.model.QualifiedName delegate,
                                                                             org.openprovenance.prov.model.QualifiedName responsible,
@@ -701,6 +771,7 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
      * @param responsible identifier for the agent, on behalf of which the delegate agent acted
      * @return an instance of {@link org.openprovenance.prov.model.ActedOnBehalfOf}
      */
+    @Override
     public org.openprovenance.prov.model.ActedOnBehalfOf newActedOnBehalfOf(org.openprovenance.prov.model.QualifiedName id, org.openprovenance.prov.model.QualifiedName delegate, QualifiedName responsible) {
         return mc.newActedOnBehalfOf(id,delegate,responsible,null,new LinkedList<>());
     }
@@ -726,13 +797,10 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
         return newNamedBundle(id,attr);
     }
 
-
     @Override
     public org.openprovenance.prov.model.extension.QualifiedHadMember newQualifiedHadMember(QualifiedName id, QualifiedName c, Collection<QualifiedName> e, Collection<Attribute> attributes) {
         return new QualifiedHadMember(id, c, e, attributes);
     }
-
-
 
     @Override
     public org.openprovenance.prov.model.extension.QualifiedSpecializationOf newQualifiedSpecializationOf(QualifiedName id, QualifiedName specific, QualifiedName general, Collection<Attribute> attributes) {
@@ -743,7 +811,6 @@ public class ProvFactory extends org.openprovenance.prov.model.ProvFactory imple
     public org.openprovenance.prov.model.extension.QualifiedAlternateOf newQualifiedAlternateOf(QualifiedName id, QualifiedName alt1, QualifiedName alt2, Collection<Attribute> attributes) {
         return new org.openprovenance.prov.vanilla.QualifiedAlternateOf(id,alt1,alt2,attributes);
     }
-
 
 
 }

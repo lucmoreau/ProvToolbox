@@ -34,4 +34,7 @@ object QuerySetup {
     count = count + 1
     new QualifiedName(NLG_PREFIX, "evt" + count, NLG_URI)
   }
+
+  val qother = new QualifiedName(NLG_PREFIX, "other", NLG_URI)
+
 }

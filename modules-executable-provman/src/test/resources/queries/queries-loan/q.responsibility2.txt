@@ -1,0 +1,45 @@
+prefix ln <https://plead-project.org/ns/loan#>
+prefix sk <https://scikit-learn.org/stable/modules/generated/sklearn.>
+prefix ex <http://example/org>
+
+
+select * from waw a prov:WasAssociatedWith
+from actor a prov:Agent
+ join waw.agent = actor.id
+from do a prov:Activity
+ join waw.activity=do.id
+
+from wgb a prov:WasGeneratedBy
+ join do.id=wgb.activity
+from pipeline a prov:Entity
+ join wgb.entity=pipeline.id
+from wdf a prov:WasDerivedFrom
+ join pipeline.id=wdf.usedEntity
+from recommendation a prov:Entity
+ join wdf.generatedEntity=recommendation.id
+
+
+from wdf2 a prov:WasDerivedFrom
+ join pipeline.id=wdf2.generatedEntity
+from pipeline2 a prov:Entity
+ join wdf2.usedEntity=pipeline2.id
+from wgb2 a prov:WasGeneratedBy
+ join pipeline2.id=wgb2.entity
+from do2 a prov:Activity
+ join wgb2.activity=do2.id
+
+from waw2 a prov:WasAssociatedWith
+ join do2.id=waw2.activity
+from actor2 a prov:Agent
+ join waw2.agent = actor2.id
+
+
+
+
+
+where actor[prov:type]          >= 'prov:Person'
+  and recommendation[prov:type] >= 'ln:AutomatedLoanRecommendation'
+  and do [prov:type]            >= 'ln:PipelineApproval'
+  and pipeline [prov:type]      >= 'sk:pipeline.Pipeline'
+  and pipeline2[prov:type]      >= 'sk:pipeline.Pipeline'
+  and do2[prov:type]            >= 'ex:DataFitting'

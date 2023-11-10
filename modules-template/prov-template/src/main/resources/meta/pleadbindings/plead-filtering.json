@@ -1,0 +1,37 @@
+{
+    "var" : {
+        "agent" :                   [{"@id" : "var:engineer"}],
+        "responsible" :             [{"@id" : "var:organization"}],
+        "input" :                   [{"@id" : "var:file"}],
+        "output" :                  [{"@id" : "var:filtered_file"}],
+        "plan" :                    [{"@id" : "var:method"}],
+        "activity" :                [{"@id" : "var:filtering"}],
+        "agtype" :                  [[{"@id" : "plead:DataEngineer"},   {"@id" : "prov:Person"}]],
+        "rtype" :                   [[{"@id" : "plead:CreditProvider"}, {"@id" : "prov:Organization"}]],
+        "itype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "otype" :                   [[{"@id" : "plead:DataFile"},       {"@id" : "plead:CSVFile"}]],
+        "atype" :                   [[{"@id" : "plead:SelectingData"}]],
+        "ptype" :                   [[{"@id" : "plead:Method"}]],
+        "start" :                   [{"@id" : "var:start"}],
+        "end" :                     [{"@id" : "var:end"}],
+        "oprops":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
+        "oprop_values":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]]
+    },
+    "vargen" : {
+        "view" : [ {
+            "@id" : "vargen:view"
+        } ]
+    },
+    "linked": {"prop_values":  "props"},
+    "context" : {
+        "plead":  "${plead_ns}",
+        "prov":   "${prov_ns}",
+        "sk":     "${sk_ns}",
+        "uuid" :  "${uuid_ns}",
+        "var":    "${var_ns}",
+        "vargen": "${vargen_ns}",
+        "xsd":    "${xsd_ns}"
+
+    },
+    "template" : null
+}

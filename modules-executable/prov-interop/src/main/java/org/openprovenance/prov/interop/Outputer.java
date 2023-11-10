@@ -102,7 +102,7 @@ public class Outputer implements InteropMediaType {
         return serializer;
     }
 
-    public void setMaxStringLength(Integer maxStringLength) {
+    void setMaxStringLength(Integer maxStringLength) {
         this.maxStringLength = maxStringLength;
         serializerMap.put(
                 SVG, () -> new org.openprovenance.prov.dot.ProvSerialiser(pFactory, interopFramework.getExtensionMap().get(SVG), maxStringLength));

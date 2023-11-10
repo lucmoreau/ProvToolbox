@@ -1,0 +1,191 @@
+{
+  "select": {
+    "decision": {
+      "@type": "prov:Entity"
+    },
+    "request": {
+      "@type": "prov:Entity"
+    },
+    "officer": {
+      "@type": "prov:Agent"
+    },
+    "reviewing": {
+      "@type": "prov:Activity"
+    },
+    "assoc": {
+      "@type": "prov:WasAssociatedWith"
+    },
+    "der1": {
+      "@type": "prov:WasDerivedFrom"
+    }
+  },
+  "query": [
+ 
+        "prefix cs <http://openprovenance.org/ns/creditscoring#>",
+        "prefix pl <http://openprovenance.org/ns/plead#>",
+        "prefix app <https://explain.openprovenance.org/creditscoring/>",
+        "",
+        "select * from decision a prov:Entity",
+        "",
+        "from der1 a prov:WasDerivedFrom",
+        "join decision.id = der1.generatedEntity",
+        "",
+        "from recommendation a prov:Entity",
+        "join der1.usedEntity = recommendation.id",
+        "",
+        "from der2 a prov:WasDerivedFrom",
+        "join recommendation.id = der2.generatedEntity",
+        "",
+        "from credit_history a prov:Entity",
+        "join der2.usedEntity = credit_history.id",
+        "",
+        "from wat1 a prov:WasAttributedTo",
+        "join credit_history.id = wat1.entity",
+        "",
+        "from cra a prov:Agent",
+        "join wat1.agent = cra.id",
+        "",
+        "where decision[prov:type] >= 'pl:Decision'",
+        "and recommendation[prov:type] >= 'pl:AutomatedRecommendation'",
+        "and credit_history[prov:type] >= 'cs:CreditHistory'",
+        "and cra[prov:type] >= 'cs:CreditReferencingAgency'"
+
+  ],
+  "sentence": {
+    "type": "paragraph",
+    "items": [
+      {
+        "type": "clause",
+        "subject": {
+          "type": "noun_phrase",
+          "head": "assessment",
+          "specifier": "##company-possessive"
+        },
+        "verb": "indicate",
+        "object": {
+          "type": "clause",
+          "subject": {
+            "type": "noun_phrase",
+            "determiner": "the",
+            "head": "commitments",
+            "post-modifiers": [
+              {
+                "type": "preposition_phrase",
+                "preposition": "of",
+                "noun": {
+                  "type": "noun_phrase",
+                  "determiner": "the",
+                  "head": "credit agreement"
+                }
+              }
+            ]
+          },
+          "verb": {
+            "type": "verb_phrase",
+            "head": "have",
+            "features": {
+              "type": "features",
+              "tense": "past",
+              "modal": "would"
+            }
+          },
+          "object": {
+            "type": "noun_phrase",
+            "determiner": "a",
+            "head": "impact",
+            "pre-modifiers": [
+              {
+                "type": "adjective_phrase",
+                "head": "adverse"
+              }
+            ],
+            "post-modifiers": [
+              {
+                "type": "preposition_phrase",
+                "preposition": "on",
+                "noun": {
+                  "type": "noun_phrase",
+                  "head": "financial situation",
+                  "specifier": "##borrower-possessive"
+                }
+              }
+            ]
+          }
+        },
+        "features": {
+          "type": "features",
+          "tense": "past"
+        }
+      },
+      {
+        "type": "clause",
+        "subject": {
+         
+                                "type": "@funcall",
+                                "@object": "decision",
+                                "@property": "prov:type",
+                                "@function": "lookup-type",
+                                "@arg1": "noun_phrase",
+                                "@arg2": "cs",
+
+          "post-modifiers": [
+            {
+              "type": "adjective_phrase",
+              "head": {
+                "type": "@funcall",
+                "@object": "decision",
+                "@field":  "id",
+                "@function": "noun+localname",
+                "@arg1": ""
+              },
+              "features": {
+                "markup_element": "span",
+                "markup_attributes": {
+                  "type": "@funcall",
+                  "@object": "decision",
+                  "@function": "markup-for-id",
+                  "@field":  "id",
+                  "@arg1": "provelement"
+                }
+              }
+            }
+          ],
+          "features": {
+            "head_markup_element": "span",
+            "head_markup_attributes": {
+              "type": "@funcall",
+              "@object": "decision",
+              "@function": "markup-for-id",
+              "@field": "id",
+              "@arg1": "provelement"
+            }
+          },
+          "specifier": "##company-possessive"
+        },
+        "verb": "is",
+        "object": {
+          "type": "verb_phrase",
+          "head": "to refuse",
+          "object": {
+            "type": "noun_phrase",
+            "head": "application",
+            "specifier": "##borrower-possessive"
+          }
+        },
+        "front-modifiers": [
+          {
+            "type": "adverb_phrase",
+            "head": "hence"
+          }
+        ]
+      }
+    ],
+    "properties": {}
+  },
+  "context": {
+"ex": "http://example.org/#",
+    "app": "https://explain.openprovenance.org/creditscoring/",
+    "pl": "http://openprovenance.org/ns/plead#",
+    "cs": "http://openprovenance.org/ns/creditscoring#"
+  }
+}

@@ -23,11 +23,11 @@ public interface HasTime {
      * Get time instant
      * @return {@link XMLGregorianCalendar} 
      */
-    public XMLGregorianCalendar getTime();
+    XMLGregorianCalendar getTime();
     
     /**
      * Set time instant
      * @param time {@link XMLGregorianCalendar}
      */
-    public void setTime(XMLGregorianCalendar time);
+    void setTime(XMLGregorianCalendar time);
 } 

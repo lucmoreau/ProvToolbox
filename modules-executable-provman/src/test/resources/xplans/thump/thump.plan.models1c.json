@@ -1,0 +1,151 @@
+
+{
+
+	"select": {
+		"plan1":        {"@type": "prov:Entity"},
+		"plan2":        {"@type": "prov:Entity"},
+		"ag":           {"@type": "prov:Agent"}
+		},
+	"query": [
+		"prefix ros <https://openprovenance.org/ns/ros>",
+		"prefix rpl <http://openprovenance.org/ns/rosplan>",
+		"prefix rs <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/>",
+		"prefix rn <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/>",
+		"prefix msg <urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/>",
+		"prefix ex <http://example.org/>",
+
+		"prefix pl <https://plead-project.org/ns/plead#>",
+
+		"select * from (",
+		"  select * from wdf a provext:WasDerivedFromStar",
+		"  from plan a prov:Entity",
+		"   join wdf.generatedEntity=plan.id",
+		"  from model a prov:Entity",
+		"   join wdf.usedEntity=model.id",
+
+
+		"  where plan[prov:type]       >= 'rpl:EsterelPlan'",
+		"    and model[prov:type]      >= 'ex:PDDLFile'",
+
+		"  group by plan aggregate model with Seq",
+		")",
+
+		"from (",
+		"  select * from wdf a provext:WasDerivedFromStar",
+		"  from plan_ a prov:Entity",
+		"   join wdf.generatedEntity=plan_.id",
+		"  from model_ag a prov:Entity",
+		"   join wdf.usedEntity=model_ag.id",
+		"  from wgb a prov:WasGeneratedBy",
+		"   join model_ag.id=wgb.entity",
+		"  from activity a prov:Activity",
+		"   join wgb.activity=activity.id",
+		"  from waw a prov:WasAssociatedWith",
+		"   join activity.id=waw.activity",
+		"  from agent a prov:Agent",
+		"   join waw.agent=agent.id",
+
+
+		"  where plan_[prov:type]      >= 'rpl:EsterelPlan'",
+		"    and model_ag[prov:type]   >= 'ex:PDDLFile'",
+
+		"  group by plan_ aggregate model_ag, activity, agent with Seq",
+		")",
+		"join plan.id=plan_.id"
+	],
+
+
+
+
+	"sentence": {
+		"type": "clause",
+		"object": {
+			"type": "noun_phrase",
+
+			"head": {
+				"type": "@funcall",
+				"@object": "plan",
+				"@field":  "id",
+				"@function": "noun+localname",
+				"@arg1":   "plan"
+			}
+		},
+		"subject": {
+			"type": "coordinated_phrase",
+			"conjunction": "and",
+			"@iterator": {
+				"type": "@iterator",
+				"@variable": "@values",
+				"@element": {
+					"type": "@funcall",
+					"post-modifiers": [
+						{
+							"type": "adjective_phrase",
+							"head": "unattributed",
+							"post-modifiers": [
+								{
+									"type": "preposition_phrase",
+									"preposition": "to",
+									"noun": {
+										"type": "noun_phrase",
+										"determiner": "an",
+										"head": "agent"
+									}
+								}
+							]
+						}],
+					"@clause": "coordinates",
+					"@function": "set-minus",
+					"@args": [
+						{
+							"type": "@iterator",
+							"@variable": "model",
+							"@flatten": "false",
+							"@element": {
+								"type": "@funcall",
+								"@object": "model",
+								"@field":  "id",
+								"@function": "noun+localname",
+								"@arg1":   "model"
+							}},
+						{
+							"type": "@iterator",
+							"@variable": "model_ag",
+							"@flatten": "false",
+							"@element": {
+								"type": "@funcall",
+								"@object": "model_ag",
+								"@field":  "id",
+								"@function": "noun+localname",
+								"@arg1":   "model"
+							}}]
+				}
+			}
+		},
+
+		"verb": "influence",
+		"features" : {
+			"tense": "past",
+			"passive": "true"
+		}
+
+
+	},
+
+	"context": {
+		"ex": "http://example.org/#",
+		"foaf": "http://xmlns.com/foaf/0.1/",
+		"ln": "https://plead-project.org/ns/loan#",
+		"pl": "https://plead-project.org/ns/plead#",
+		"pd": "https://pandas.pydata.org/#",
+		"ros": "https://openprovenance.org/ns/ros",
+		"rpl": "http://openprovenance.org/ns/rosplan",
+		"rs": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2",
+		"rn": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/nodes/",
+		"msg": "urn:uuid:e760c81c-0e64-11eb-bcbf-000c292939e2/messages/"
+
+
+	}
+
+
+}

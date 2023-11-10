@@ -127,6 +127,11 @@ public class ExpandUtil {
                         result.add(qn);
                 }
             }
+
+            if (ExpandUtil.isVariable(attr.getElementName())) {
+                //System.out.println("Free variable: found attrib variable " + attr.getElementName());
+                result.add(attr.getElementName());
+            }
         }
         return result;
     }
@@ -183,6 +188,11 @@ public class ExpandUtil {
         final String namespaceURI = id.getNamespaceURI();
         return VARGEN_NS.equals(namespaceURI);
     }
+
+    static public QualifiedName newVariable(String name, ProvFactory pf) {
+        return pf.newQualifiedName(VAR_NS,name,VAR_PREFIX);
+    }
+
 
 
 }

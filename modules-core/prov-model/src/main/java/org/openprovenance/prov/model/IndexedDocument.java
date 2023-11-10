@@ -771,10 +771,12 @@ public class IndexedDocument implements StatementAction {
     /** This function allows a document to be merged with this IndexedDocument. If flatten is true, bundles include in the document will be flattend into this one.
      *
      *
-     * @param doc the document to be merge into this
+     * @param doc the document to be merged into this
+     * @return this indexed document
      */
-    public void merge(Document doc) {
+    public IndexedDocument merge(Document doc) {
         u.forAllStatementOrBundle(doc.getStatementOrBundle(), this);
+        return this;
     }
 
     public Set<QualifiedName> traverseDerivations(QualifiedName from) {

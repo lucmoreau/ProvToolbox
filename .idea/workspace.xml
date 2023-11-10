@@ -9,23 +9,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/ProvToolbox.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/prov-template-library.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache/commons/lang/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/prov/client/Builder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/prov/client/ProcessorArgsInterface.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/PoetParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/PoetParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Field.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/Field.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/commons/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/commons/lang/StringEscapeUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache/commons/lang/StringEscapeUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/commons/lang/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache/commons/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_pg.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_pg.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/emitter/minilanguage/MethodCall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -817,7 +804,7 @@
       <workItem from="1698748365341" duration="89701000" />
       <workItem from="1699289035155" duration="2395000" />
       <workItem from="1699296893543" duration="65757000" />
-      <workItem from="1699627670865" duration="1443000" />
+      <workItem from="1699627670865" duration="2101000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -1114,7 +1101,7 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.template.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699628666296" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
+    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699629437237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>

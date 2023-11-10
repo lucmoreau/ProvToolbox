@@ -58,7 +58,7 @@ public class MethodCall extends Expression {
         } else {
             if (object != null) {
                 if (object instanceof Symbol && ((Symbol) object).symbol.equals("sb") && methodName.equals("toString")) {
-                    emitter.emitLine("''.join(sb)", continueLine);
+                    emitter.emitLine("''.join(str(e) for e in sb)", continueLine);
                     return;
                 }
                 object.emit(emitter, continueLine, classVariables, instanceVariables);

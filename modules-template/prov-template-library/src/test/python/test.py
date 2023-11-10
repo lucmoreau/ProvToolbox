@@ -6,7 +6,7 @@ from org.openprovenance.prov.template.library.plead.client.common.Plead_approvin
 import sys
 import json
 
-print(sys.path)
+#print(sys.path)
 
 from org.openprovenance.apache.commons.lang.StringEscapeUtils import StringEscapeUtils
 
@@ -19,12 +19,12 @@ if __name__ == "__main__":
 
     bean=Plead_approvingBean()
     bean.approved_pipeline='approved_pipeline'
-    bean.approval_record='100'
+    bean.approval_record=100
     bean.pipeline='pipeline'
-    bean.score='21'
+    bean.score=21
     bean.organization='kcl'
     bean.manager='tdh'
-    bean.approving='245'
+    bean.approving=245
     bean.signature='sig'
     bean.path='/home/plead/workflow/123'
     bean.time='2023-11-10T14:09:55.265Z'
@@ -38,8 +38,8 @@ if __name__ == "__main__":
     print(result)
 
 
-    print(Logger.logPlead_approving('approved_pipeline','100','pipeline','21','kcl','tdh','245','sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
-    bean2=Logger.beanPlead_approving('approved_pipeline','100','pipeline','21','kcl','tdh','245','sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
+    print(Logger.logPlead_approving('approved_pipeline',100,'pipeline',21,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
+    bean2=Logger.beanPlead_approving('approved_pipeline',100,'pipeline',21,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
     print(bean2)
     
     #print(json.dumps(bean))

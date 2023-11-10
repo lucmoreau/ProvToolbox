@@ -1,7 +1,6 @@
 package org.openprovenance.prov.template.compiler.common;
 
 import com.squareup.javapoet.*;
-import com.squareup.javapoet.PoetParser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;
 import org.openprovenance.prov.model.*;
@@ -13,13 +12,11 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesCompilerConfig;
 import org.openprovenance.prov.template.descriptors.*;
-import org.openprovenance.prov.template.emitter.minilanguage.emitters.Python;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.openprovenance.prov.model.DOMProcessing.builder;
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
@@ -107,7 +104,7 @@ public class CompilerCommon {
         builder.addMethod(builder1.build());
 
         if (beanKind==BeanKind.SIMPLE) {
-            builder.addMethod(generateCommonCSVConverterMethod_aux(allVars, allAtts, name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
@@ -225,7 +222,7 @@ public class CompilerCommon {
         return generateCommonMethod2(template, bindingsSchema, false);
     }
 
-    public MethodSpec generateCommonCSVConverterMethod_aux(Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)

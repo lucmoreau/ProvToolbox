@@ -57,10 +57,11 @@ public class Field {
 
 
 
+
             String mappedType = typeConversionTable.get(type);
             if (mappedType != null) {
                 emitter.emitContinueLine(" : " + mappedType);
-                String[] imprts = typeToImportsTable.get(type);
+                String[] imprts = getImportTypes(type);
                 if (imprts!=null) Arrays.asList(imprts).forEach(imprt -> emitter.getImports().add(imprt));
             } else if (type != null && !type.trim().isEmpty()) {
                 if (type.contains(".")) {
@@ -83,6 +84,7 @@ public class Field {
         emitter.emitNewline();
     }
 
+
     @Override
     public String toString() {
         return "Field{" +
@@ -95,20 +97,44 @@ public class Field {
     }
 
     static public String convertType(String type) {
-        return typeConversionTable.getOrDefault(type, type);
+        String res=typeConversionTable.get(type);
+        if (res!=null) return res;
+        if (type.contains("<")) {
+            // return string precedent <
+            return type.substring(0, type.indexOf("<"));
+        }
+        return type;
     }
+
+    private String[] getImportTypes(String type) {
+        String[] strings = typeToImportsTable.get(type);
+        if (strings!=null) return strings;
+        if (type.contains("<") && type.contains(">")) {
+            // return string precedent <
+            String contentType=type.substring(type.indexOf("<")+1,type.indexOf(">"));
+            System.out.println("contentType=" + contentType);
+            if (contentType.contains(".")) {
+                String[] parts = contentType.split("\\.");
+                String localType = parts[parts.length - 1];
+                return new String[]{"from " + contentType + " import " + localType};
+            }
+
+        }
+        return null;
+    }
+
 
     static final java.util.Map<String, String> typeConversionTable = new java.util.HashMap<>() {{
         put("org.openprovenance.prov.client.Builder[]", "List[Builder]");
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", "Dict[str,Builder]"); // watch out: string representation with a space!!
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", "Dict[str,ProcessorArgsInterface]");
-        put("org.example.templates.block.client.common.Template_blockProcessor<org.example.templates.block.client.common.Template_blockBean>", "Template_blockProcessor");
+        //put("org.example.templates.block.client.common.Template_blockProcessor<org.example.templates.block.client.common.Template_blockBean>", "Template_blockProcessor");
     }};
 
     static final java.util.Map<String, String[]> typeToImportsTable = new java.util.HashMap<>() {{
         put("org.openprovenance.prov.client.Builder[]", new String[] {"from typing import List", "from org.openprovenance.prov.client.Builder import Builder"});
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.Builder>", new String[] {"from typing import Dict"});
         put("java.util.Map<java.lang.String, org.openprovenance.prov.client.ProcessorArgsInterface<?>>", new String[] {"from org.openprovenance.prov.client.ProcessorArgsInterface import ProcessorArgsInterface"});
-        put("org.example.templates.block.client.common.Template_blockProcessor<org.example.templates.block.client.common.Template_blockBean>", new String[] {"from org.example.templates.block.client.common.Template_blockBean import Template_blockBean"});
+       // put("org.example.templates.block.client.common.Template_blockProcessor<org.example.templates.block.client.common.Template_blockBean>", new String[] {"from org.example.templates.block.client.common.Template_blockBean import Template_blockBean"});
     }};
 }

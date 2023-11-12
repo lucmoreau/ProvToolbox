@@ -62,20 +62,13 @@
                                 <artifactItem>
                                     <groupId>org.openprovenance.prov</groupId>
                                     <artifactId>prov-template</artifactId>
-                                    <version>2.0.4-SNAPSHOT</version>
+                                    <!--<version>2.0.5-SNAPSHOT</version> -->
                                     <classifier>template-library</classifier>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
-                            <!--
-                            <includes>**/*.java</includes>
-                            <excludes>**/*.properties</excludes>
-                            <outputDirectory>${project.build.directory}/wars</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            -->
                         </configuration>
                     </execution>
                 </executions>
@@ -112,10 +105,9 @@
                                 <argument>org.openprovenance.prov.template.compiler.ConfigProcessor</argument>
                                 <argument>src/main/resources/config/config_ptm.json</argument>
                             </arguments>
-
                         </configuration>
-
                     </execution>
+
                     <execution>
                         <id>compile-template-pg</id>
                         <phase>generate-sources</phase>
@@ -131,7 +123,6 @@
                         </configuration>
                     </execution>
 
-
                     <execution>
                         <id>default-cli</id>
                         <goals>
@@ -146,7 +137,6 @@
                             </arguments>
                         </configuration>
                     </execution>
-
 
                     <execution>
                         <configuration>
@@ -165,7 +155,6 @@
                             <goal>exec</goal>
                         </goals>
                     </execution>
-
                 </executions>
 
             </plugin>

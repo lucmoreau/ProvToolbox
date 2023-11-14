@@ -98,8 +98,9 @@ public class CompilerTest extends TestCase {
         cp.generateSQLEnd(configs,cli_src_dir);
         cp.generateDocumentationEnd(configs,cli_webjar_dir);
 
-        System.out.println("#### Invoking maven " + path);
-        execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", "/usr/local/java/jdk-12.0.1.jdk/Contents/Home/");
+        //System.out.println("#### Invoking maven " + path);
+        //execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", "/usr/local/java/jdk-12.0.1.jdk/Contents/Home/");
+        execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", null);
 
         final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
         final String templateJsonSchema  = cli_dir + "/src/main/resources/" + configs.jsonschema;

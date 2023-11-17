@@ -8,10 +8,10 @@
         "type" : "prov:QUALIFIED_NAME",
         "$" : "xsd:int"
       }],
-      "prov:value" :  {
+      "prov:value" :  [{
         "type" : "xsd:int",
         "$" : "1"
-      }
+      }]
 
 	
     }                           

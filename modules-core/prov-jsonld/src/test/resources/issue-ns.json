@@ -4,10 +4,10 @@
   },                            
   "entity": {                   
     "ex:e": {                   
-      "prov:type" :  {
+      "prov:type" :  [{
         "type" : "prov:QUALIFIED_NAME",
-        "$" : "ex:abc"
-      }
+        "$" : "xsd:int"
+      }]
     }                           
   }
 }

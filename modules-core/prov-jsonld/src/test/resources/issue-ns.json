@@ -1,0 +1,13 @@
+{                               
+  "prefix": {                   
+    "ex": "http://ex.org/"
+  },                            
+  "entity": {                   
+    "ex:e": {                   
+      "prov:type" :  {
+        "type" : "prov:QUALIFIED_NAME",
+        "$" : "ex:abc"
+      }
+    }                           
+  }
+}

@@ -1,7 +1,7 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 `2.0.5-SNAPSHOT`
 * prov-template-library: cleaned up pom.xml
-* 
+* prov-template-compiler: allowing for @sql.type in NameDescriptor
 
 `2.0.4`
 * prov-explanations: restructured explanation system, introduced interfaces separating components

@@ -298,7 +298,15 @@ public class CompilerSqlComposer {
                 "                RETURNING policy.id as id\n" +
                 "                $$ language SQL;\n" +
                 "\t\t\t\t"+
-                "\n\n";
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_assembled_collection (input_id BIGINT)\n" +
+                        "    returns table(id INT)\n" +
+                        "as $$\n" +
+                        "INSERT INTO assembled_collection (id)\n" +
+                        "SELECT input_id\n" +
+                        "RETURNING assembled_collection.id as id\n" +
+                        "$$ language SQL;\n" +
+                        "\n\n";
 
 
 
@@ -441,7 +449,7 @@ public class CompilerSqlComposer {
         final String defaultSqlType = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
         final String overrideSqlType = descriptorUtils.getSqlType(key, templateBindingsSchema);
         String theSqlType;
-        if (overrideSqlType!=null && !Constants.NULLABLE_TEXT.equals(overrideSqlType)) {
+        if (overrideSqlType!=null && !Constants.NULLABLE_TEXT.equals(overrideSqlType) && !Constants.NON_NULLABLE_TEXT.equals(overrideSqlType)) {
             theSqlType=overrideSqlType;
         } else {
             theSqlType=defaultSqlType;

@@ -304,6 +304,14 @@ public class StatementCompilerAction implements StatementAction {
                             // use attribute variables (expected to be of type Object) and calculates its type as a QualifiedName dynamically.
                             String localPart = vq.getLocalPart();
 
+                            /*
+                            System.out.println("vq " + vq);
+                            System.out.println("local " + localPart);
+                            System.out.println("eleemnt " + element);
+                            System.out.println("vmap.eleemnt " +  vmap.get(element));
+
+                             */
+
                             builder.addStatement("if ($N!=null) attrs.add(pf.newAttribute($N,$N,vc.getXsdType($N)))",
                                     localPart,
                                     vmap.get(element),

@@ -9,7 +9,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/resources/issue-ns.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/src/test/resources/issue-ns.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerQueryInvoker.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerQueryInvoker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/expansion/StatementCompilerAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/DescriptorUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/DescriptorUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/NameDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/descriptors/NameDescriptor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +76,11 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="InvalidFacetManager">
+    <ignored-facets>
+      <facet id="prov-template-library/invalid/Python" />
+    </ignored-facets>
+  </component>
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
       <map>
@@ -105,31 +117,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "extract.method.default.visibility": "public",
-    "git-widget-placeholder": "development2__0",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/resources/assembly",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.stylelint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.stylelint": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.66091955",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm",
-    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;public&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
+    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/resources/assembly&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="prov-template-compiler">
@@ -167,11 +179,11 @@
       <recent name="org.openprovenance.prov.interop.Configuration" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.template.compiler.CompilerQueryInvoker" />
       <recent name="org.openprovenance.prov.interop.ApiUriFragments" />
       <recent name="org.openprovenance.prov.service.core.Constants" />
       <recent name="org.openprovenance.prov.service.core.SwaggerTags" />
       <recent name="org.openprovenance.prov.dot.ProvToDot" />
-      <recent name="org.openprovenance.prov.dot.DotProperties" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.dot" />
@@ -326,7 +338,7 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="PYTHONPATH" value="$PROJECT_DIR$/modules-template/prov-template-library/target/generated-python:$PROJECT_DIR$/modules-template/prov-template-library/src/main/python" />
+        <env name="PYTHONPATH" value="$PROJECT_DIR$/modules-template/prov-template-library/target/generated-python:/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/python" />
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
@@ -399,7 +411,6 @@
       <item itemvalue="JUnit.DateTest.testDate1" />
       <item itemvalue="JUnit.CompilerTest" />
       <item itemvalue="Makefile Target.test.pgo" />
-      <item itemvalue="Python.test.py" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
@@ -407,7 +418,6 @@
         <item itemvalue="JUnit.CompilerTest.testCompiler1" />
         <item itemvalue="JUnit.CompilerTest" />
         <item itemvalue="Makefile Target.test.pgo" />
-        <item itemvalue="Python.test.py" />
         <item itemvalue="JUnit.DateTest.testDate1" />
       </list>
     </recent_temporary>
@@ -810,6 +820,12 @@
       <workItem from="1699289035155" duration="2395000" />
       <workItem from="1699296893543" duration="65757000" />
       <workItem from="1699627670865" duration="3605000" />
+      <workItem from="1700464624485" duration="593000" />
+      <workItem from="1700513916475" duration="1211000" />
+      <workItem from="1700584051640" duration="7685000" />
+      <workItem from="1701289062850" duration="20000" />
+      <workItem from="1701289090156" duration="438000" />
+      <workItem from="1701289536148" duration="2984000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -860,6 +876,7 @@
     <option featureType="dependencySupport" implementationName="java:org.glassfish.jaxb:txw2" />
     <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-annotations" />
     <option featureType="dependencySupport" implementationName="java:org.webjars:jquery" />
+    <option featureType="com.intellij.configurationType" implementationName="PythonConfigurationType" />
     <option featureType="dependencySupport" implementationName="java:commons-lang:commons-lang" />
     <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-memory" />
     <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-models" />
@@ -918,6 +935,7 @@
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-api" />
     <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec" />
     <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec" />
+    <option featureType="com.intellij.facetType" implementationName="Python" />
     <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-spatial" />
     <option featureType="dependencySupport" implementationName="java:org.jvnet.staxex:stax-ex" />
     <option featureType="dependencySupport" implementationName="java:com.opencsv:opencsv" />
@@ -949,6 +967,7 @@
     <option featureType="dependencySupport" implementationName="java:com.googlecode.libphonenumber:libphonenumber" />
     <option featureType="dependencySupport" implementationName="java:javax.servlet:javax.servlet-api" />
     <option featureType="dependencySupport" implementationName="java:log4j:log4j" />
+    <option featureType="dependencySupport" implementationName="maven-packaging:war" />
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-util" />
     <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-api" />
     <option featureType="dependencySupport" implementationName="java:com.github.fge:msg-simple" />
@@ -969,6 +988,7 @@
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-manager" />
     <option featureType="dependencySupport" implementationName="java:org.scala-lang:scala-library" />
     <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-xml" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
     <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:fluent-hc" />
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-event" />
     <option featureType="dependencySupport" implementationName="java:com.spatial4j:spatial4j" />
@@ -1016,6 +1036,7 @@
     <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-analyzers-common" />
     <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-core" />
     <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-pool2" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.ws.rs:jakarta.ws.rs-api" />
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-nativerdf" />
     <option featureType="dependencySupport" implementationName="java:joda-time:joda-time" />
     <option featureType="dependencySupport" implementationName="java:jakarta.activation:jakarta.activation-api" />
@@ -1102,11 +1123,9 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$PC1BuilderTest.ic" NAME="PC1BuilderTest Coverage Results" MODIFIED="1696686208827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.notation.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$test.coverage" NAME="test Coverage Results" MODIFIED="1699017257868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-compiler" />
     <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.template.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699629786138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>

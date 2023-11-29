@@ -15,6 +15,8 @@ import java.util.Set;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 
 public class CompilerQueryInvoker {
+    public static final String CONVERT_TO_NULLABLE_TEXT = "convertToNullableTEXT";
+    public static final String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";
     private final CompilerUtil compilerUtil;
 
 
@@ -108,7 +110,7 @@ public class CompilerQueryInvoker {
         }
         if (foundSpecialTypes.contains(Constants.NULLABLE_TEXT)) {
             final String strVariable = "str";
-            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToNullableTEXT");
+            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NULLABLE_TEXT);
             compilerUtil.specWithComment(mbuilder3);
             mbuilder3
                     .addModifiers(Modifier.FINAL)
@@ -122,6 +124,19 @@ public class CompilerQueryInvoker {
 
             builder.addMethod(mbuilder3.build());
         }
+        if (foundSpecialTypes.contains(Constants.NON_NULLABLE_TEXT)) {
+            final String strVariable = "str";
+            MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder(CONVERT_TO_NON_NULLABLE_TEXT);
+            compilerUtil.specWithComment(mbuilder3);
+            mbuilder3
+                    .addModifiers(Modifier.FINAL)
+                    .addParameter(String.class, strVariable)
+                    .returns(String.class)
+                    .addStatement("return $S+$N.replace($S,$S)+$S", "'", strVariable, "'", "''", "'::TEXT");
+
+            builder.addMethod(mbuilder3.build());
+        }
+
         if (foundSpecialTypes.contains(Constants.JSON_TEXT)) {
             final String strVariable = "str";
             MethodSpec.Builder mbuilder3= MethodSpec.methodBuilder("convertToJsonTEXT");
@@ -313,7 +328,9 @@ select * from insert_anticipating_impact_composite_array (ARRAY[
             case Constants.TIMESTAMPTZ:
                 return "convertToTimestamptz";
             case Constants.NULLABLE_TEXT:
-                return "convertToNullableTEXT";
+                return CONVERT_TO_NULLABLE_TEXT;
+            case Constants.NON_NULLABLE_TEXT:
+                return CONVERT_TO_NON_NULLABLE_TEXT;
             case Constants.JSON_TEXT:
                 return "convertToJsonTEXT";
             default:

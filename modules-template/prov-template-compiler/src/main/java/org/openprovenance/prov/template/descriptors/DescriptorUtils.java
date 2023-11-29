@@ -129,8 +129,9 @@ public class DescriptorUtils {
         if (var==null) throw new NullPointerException("getSqlType could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor=var.get(0);
         return getFromDescriptor(descriptor,
-                                AttributeDescriptor::getSqlType,
-                                (nd) -> null);
+                                 AttributeDescriptor::getSqlType,
+                                 NameDescriptor::getSqlType);
+
     }
 
 

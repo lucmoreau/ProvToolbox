@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -152,6 +153,21 @@ public class CompilerSqlComposer {
                 .collect(Collectors.toMap(  this::newTableWithId,
                         key -> {
                             String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                            Optional<AttributeDescriptor.SqlForeign> sqlForeign = descriptorUtils.getOutputSqlForeign(key, templateBindingsSchema);
+                            if (sqlForeign.isPresent()) {
+                                String foreignType=Constants.INPUT_PREFIX + sqlForeign.get().getType();
+                                String foreignAttribute=Constants.INPUT_PREFIX + sqlForeign.get().getAttribute();
+                                String foreignItem=Constants.INPUT_PREFIX + sqlForeign.get().getItem();
+
+
+                                String theTable = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+
+                                //(SELECT f_build_and_execute_select('creating_emission_report', input_attribute, input_item) as literal),
+                                return (pp) -> new QueryBuilder(pp)
+                                        .selectExp("f_build_and_execute_select(" + foreignType + ", " + foreignAttribute + ", " + foreignItem + " )")
+                                        .alias(key+"_id")
+                                        ;
+                            }
                             return (pp) -> new QueryBuilder(pp)
                                     .insertInto(the_table)
                                     .values(otherInputs.apply(key))

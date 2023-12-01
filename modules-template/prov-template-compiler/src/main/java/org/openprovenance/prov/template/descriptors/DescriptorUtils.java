@@ -64,10 +64,20 @@ public class DescriptorUtils {
     public Optional<String> getOutputSqlTable(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var = templateBindingsSchema.getVar().get(key);
         if (var == null)
-            throw new NullPointerException("getSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+            throw new NullPointerException("getOutputSqlTable could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
         Descriptor descriptor = var.get(0);
         Function<AttributeDescriptor, Optional<String>> af = (ad) -> Optional.empty();
         Function<NameDescriptor, Optional<String>> nf = (nd) -> Optional.ofNullable(nd.getTable());
+        return getFromDescriptor(descriptor, af, nf);
+    }
+
+    public Optional<AttributeDescriptor.SqlForeign> getOutputSqlForeign(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null)
+            throw new NullPointerException("getOutputSqlForeign could not find descriptor for " + key + " in template descriptor " + templateBindingsSchema.getTemplate());
+        Descriptor descriptor = var.get(0);
+        Function<AttributeDescriptor, Optional<AttributeDescriptor.SqlForeign>> af = (ad) -> Optional.ofNullable(ad.getSqlForeign());
+        Function<NameDescriptor, Optional<AttributeDescriptor.SqlForeign>> nf = (nd) -> Optional.empty();
         return getFromDescriptor(descriptor, af, nf);
     }
     public Optional<Map<String,String>> getSqlNewInputs(String key, TemplateBindingsSchema templateBindingsSchema) {

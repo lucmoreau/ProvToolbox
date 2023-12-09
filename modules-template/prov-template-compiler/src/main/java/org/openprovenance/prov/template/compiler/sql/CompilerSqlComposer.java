@@ -20,6 +20,7 @@ import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
     public static final String TOKEN_VAR_NAME = "_token";
+    public static final String DUMMY = "__dummy_";
     private final CompilerUtil compilerUtil;
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
@@ -86,6 +87,10 @@ public class CompilerSqlComposer {
                                                             if (withRelationId) {
                                                                 put(tableKey, unquote("INT"));
                                                  }}}));
+        if (functionReturns.keySet().size()==1) {
+            // ensure that there are more than one column, otherwise postgres converts it to a scalar
+            functionReturns.put(DUMMY, unquote("INT"));
+        }
 
 
         Map<String,Object> insertValues2=descriptorUtils
@@ -188,6 +193,11 @@ public class CompilerSqlComposer {
                         add(orig_templateName + "." + tableKey);
                     }
                 }}));
+
+        // insuring that the table has more than one column, otherwise postgress converts it to a scalar
+        if (outputs.size()==1) {
+            outputs.add("1 AS " + DUMMY);
+        }
 
 
         QueryBuilder fun=
@@ -322,7 +332,21 @@ public class CompilerSqlComposer {
                         "SELECT input_id\n" +
                         "RETURNING assembled_collection.id as id\n" +
                         "$$ language SQL;\n" +
-                        "\n\n";
+                "\n\n" +
+                "\t\t\t\t"+
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_chart (input_id BIGINT)\n" +
+                "    returns table(id INT)\n" +
+                "as $$\n" +
+                "INSERT INTO chart (id)\n" +
+                "SELECT input_id\n" +
+                "RETURNING chart.id as id\n" +
+                "$$ language SQL;\n" +
+                "\n\n"
+
+
+
+                ;
 
 
 

@@ -10,8 +10,8 @@
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-filtering.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-filtering.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/NamespaceGatherer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/NamespaceGatherer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/NamespacePrefixMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/src/main/java/org/openprovenance/prov/model/NamespacePrefixMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/extending-collection.provn" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/metatemplates/extending-collection.provn" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -825,7 +825,7 @@
       <workItem from="1701289536148" duration="8909000" />
       <workItem from="1701433252726" duration="2775000" />
       <workItem from="1702032132661" duration="7977000" />
-      <workItem from="1702305543427" duration="7201000" />
+      <workItem from="1702305543427" duration="10463000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

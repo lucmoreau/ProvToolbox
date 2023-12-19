@@ -9,6 +9,9 @@ import org.openprovenance.prov.model.extension.QualifiedAlternateOf;
 import org.openprovenance.prov.model.extension.QualifiedHadMember;
 import org.openprovenance.prov.model.extension.QualifiedSpecializationOf;
 
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_NS;
+import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_EXT_PREFIX;
+
 
 /**
  * Utility class to traverse a document, register all namespaces occurring in {@link QualifiedName}s 
@@ -157,6 +160,8 @@ public class NamespaceGatherer implements StatementAction {
 		registerType(mem.getType());
 		registerOther(mem.getOther());
 
+		registerProvExt();
+
 	}
 
 	@Override
@@ -172,6 +177,8 @@ public class NamespaceGatherer implements StatementAction {
 		register(spec.getSpecificEntity());
 		registerType(spec.getType());
 		registerOther(spec.getOther());
+
+		registerProvExt();
 	}
 
 	@Override
@@ -181,6 +188,12 @@ public class NamespaceGatherer implements StatementAction {
 		register(alt.getAlternate2());
 		registerType(alt.getType());
 		registerOther(alt.getOther());
+
+		registerProvExt();
+	}
+
+	public void registerProvExt() {
+		ns.register(PROV_EXT_PREFIX, PROV_EXT_NS);
 	}
 
 	@Override

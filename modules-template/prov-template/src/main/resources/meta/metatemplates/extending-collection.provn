@@ -25,7 +25,7 @@ document
     wasDerivedFrom(var:collection1,var:collection0)
 
 
-    entity(var:item, [prov:type='var:itype', prov:value='var:ivalue', var:createdAt='var:time', var:iprops='var:iprop_values'])
+    entity(var:item, [prov:type='var:itype', prov:value='var:ivalue', var:iprops='var:iprop_values'])
     activity(var:activity,-,-,[prov:type='var:atype',var:aprops='var:aprop_values'])
     used(var:activity,var:collection0,-)
     wasGeneratedBy(var:item,var:activity,-)

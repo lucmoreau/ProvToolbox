@@ -6,6 +6,7 @@ document
   prefix var <http://openprovenance.org/var#>
   prefix vargen <http://openprovenance.org/vargen#>
   prefix dot <http://openprovenance.org/provtoolbox/dot/ns#>
+  prefix provext <http://openprovenance.org/prov/extension#>
 
 
 
@@ -31,7 +32,7 @@ document
     wasGeneratedBy(var:collection1,var:activity,-)
     wasAssociatedWith(var:activity,var:agent,-)
     wasDerivedFrom(var:item,var:collection0)
-    hadMember(var:collection1,var:item)
+    provext:hadMember(var:collection1,var:item,[var:hasKey='var:key'])
     wasAttributedTo(var:item,var:responsible)
 
 

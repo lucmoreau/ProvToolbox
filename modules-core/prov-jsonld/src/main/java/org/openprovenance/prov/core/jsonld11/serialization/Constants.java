@@ -33,4 +33,6 @@ public interface Constants {
     String PROPERTY_PROV_QUALIFIED_SPECIALIZATION = "prov:QualifiedSpecialization";
     String PROPERTY_PROV_QUALIFIED_ALTERNATE = "prov:QualifiedAlternate";
     String PROPERTY_PROV_QUALIFIED_MEMBERSHIP = "prov:QualifiedMembership";
+    String OLD_JSONLD_CONTEXT_URL = "http://openprovenance.org/prov.jsonld";
+    String JSONLD_CONTEXT_URL = "https://openprovenance.org/prov-jsonld/context.json";
 }

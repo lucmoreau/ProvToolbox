@@ -105,4 +105,15 @@ public class DateTest extends TestCase {
 
     }
 
+    // arbitrary precision from fractional seconds is not supported by XMLGregorianCalendar
+    public void testDate5() {
+        String date1 = "2023-09-08T14:12:45.10931231236545213876";
+        String date2 = "2023-09-08T14:12:45.109321321312321432523";
+        XMLGregorianCalendar time1 = pFactory.newISOTime(date1);
+        XMLGregorianCalendar time2 = pFactory.newISOTime(date2);
+        assertEquals(time1, time2);
+        System.out.println("time1 = " + time1);
+        System.out.println("time2 = " + time2);
+    }
+
 }

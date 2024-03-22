@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='ASCII'?>
+<prov:document xmlns:ex="https://example.org/" xmlns="https://default.org/" xmlns:prov="http://www.w3.org/ns/prov#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <prov:entity prov:id="ex:e"/>
+</prov:document>

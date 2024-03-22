@@ -237,3 +237,7 @@ test.pgo:
 	@$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/ballcollect.csv OUTFILE=target/pgo1.png
 	@$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/capture.csv OUTFILE=target/pgo2.png
 	$(MAKE) test.pgo.init INFILE=src/test/resources/pgo/all.csv OUTFILE=target/pgo3.png
+
+#  issue#215
+test.issue.215:
+	@$(PROVCONVERT) -infile src/test/resources/issue215/example.xml -outfile - -outformat provn

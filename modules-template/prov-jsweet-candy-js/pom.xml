@@ -36,7 +36,7 @@
 					<plugin>
 						<groupId>org.jsweet</groupId>
 						<artifactId>jsweet-maven-plugin</artifactId>
-						<version>${jsweet.transpiler.version}</version>
+						<version>${jsweet.plugin.version}</version>
 						<configuration>
 							<verbose>true</verbose>
 							<!-- <definitions>true</definitions> -->

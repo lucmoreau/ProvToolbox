@@ -20,9 +20,6 @@
       </repository>
     </repositories>-->
 
-  <properties>
-    <jsweet.core.version>6.3.0</jsweet.core.version>
-  </properties>
 
   <dependencies>
     <dependency>

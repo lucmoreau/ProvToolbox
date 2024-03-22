@@ -111,7 +111,9 @@
                     <execution>
                         <id>compile-template-pg</id>
                         <phase>generate-sources</phase>
-                        <goals><goal>exec</goal></goals>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
                         <configuration>
                             <executable>java</executable>
                             <arguments>
@@ -139,6 +141,11 @@
                     </execution>
 
                     <execution>
+                        <id>python-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
                         <configuration>
                             <executable>python3</executable>
                             <workingDirectory>${project.basedir}/src/test/python</workingDirectory>
@@ -149,15 +156,32 @@
                                 <PYTHONPATH>${project.build.directory}/generated-python:${project.basedir}/src/main/python:$PYTHONPATH</PYTHONPATH>
                             </environmentVariables>
                         </configuration>
-                        <id>python-test</id>
-                        <phase>test</phase>
+                    </execution>
+
+                    <!--
+                    <execution>
+                        <id>transpile.to.js</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>-f</argument>
+                                <argument>pom12.xml</argument>
+                                <argument>jsweet:jsweet</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <JAVA_HOME>${java12.home}</JAVA_HOME>
+                            </environmentVariables>
+                        </configuration>
                     </execution>
+                    -->
                 </executions>
 
             </plugin>
+
 
 
             <plugin>
@@ -196,9 +220,74 @@
                             </target>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>check-java12-exists</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <available file="${java12.home}" type="dir" property="java12Exists"/>
+                            </target>
+                            <exportAntProperties>true</exportAntProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>antrun-jsweet</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target if="${java12Exists}">
+                                <exec executable="mvn" >
+                                    <env key="JAVA_HOME" value="${java12.home}"/>
+                                    <arg value="-f" />
+                                    <arg value="pom12.xml" />
+                                    <arg value="jsweet:jsweet" />
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
+            <!--
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.plugin.version}</version>
+                <executions>
+
+
+                    <execution>
+                        <id>transpile.to.js</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>-f</argument>
+                                <argument>pom12.xml</argument>
+                                <argument>jsweet:jsweet</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <JAVA_HOME>${java12.home}</JAVA_HOME>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
+
+-->
+
+            <!--
             <plugin>
                 <groupId>org.jsweet</groupId>
                 <artifactId>jsweet-maven-plugin</artifactId>
@@ -231,12 +320,14 @@
                     </excludes>
                     <targetVersion>ES6</targetVersion>
                     <module>commonjs</module>
-                    <!--<moduleResolution>classic</moduleResolution>-->
                     <bundle>true</bundle>
                     <declaration>true</declaration>
                     <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
                 </configuration>
             </plugin>
+-->
+
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -377,62 +468,7 @@
             </plugin>
 
 
-            <!--
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.14.0</version>
-                <executions>
 
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v16.17.1</nodeVersion>
-                            <npmVersion>8.15.0</npmVersion>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>node test</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration><arguments>     -test **/*.test.js **/*.spec.js </arguments></configuration>
-                    </execution>
-
-                    <execution>
-                        <id>npm ci</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>ci</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>javascript tests</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run test</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm run build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
 
         </plugins>
     </build>

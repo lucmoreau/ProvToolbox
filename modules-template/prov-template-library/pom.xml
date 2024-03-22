@@ -4,11 +4,11 @@
     <parent>
         <artifactId>modules-template</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.0.6-SNAPSHOT</version>
+        <version>2.0.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>prov-template-library</artifactId>
-    <version>2.0.6-SNAPSHOT</version>
+    <version>2.0.5-SNAPSHOT</version>
 
     <name> |---- PROV-TEMPLATE-LIBRARY</name>
 
@@ -16,22 +16,22 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-n</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>2.0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-model</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>2.0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template-compiler</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>2.0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-template</artifactId>
-            <version>2.0.6-SNAPSHOT</version>
+            <version>2.0.5-SNAPSHOT</version>
             <classifier>template-library</classifier>
             <type>zip</type>
         </dependency>
@@ -228,7 +228,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <available file="${java12.home}" type="dir" property="java12Exists" />
+                                <available file="${java12.home}" type="dir" property="java12Exists"/>
                             </target>
                             <exportAntProperties>true</exportAntProperties>
                         </configuration>
@@ -241,8 +241,8 @@
                         </goals>
                         <configuration>
                             <target if="${java12Exists}">
-                                <exec executable="mvn">
-                                    <env key="JAVA_HOME" value="${java12.home}" />
+                                <exec executable="mvn" >
+                                    <env key="JAVA_HOME" value="${java12.home}"/>
                                     <arg value="-f" />
                                     <arg value="pom12.xml" />
                                     <arg value="jsweet:jsweet" />

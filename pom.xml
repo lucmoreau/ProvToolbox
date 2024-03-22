@@ -265,8 +265,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${compiler.plugin.version}</version>
 					<configuration>
-						<source>11</source>
-						<target>11</target>
+						<release>11</release>
 					</configuration>
 				</plugin>
 
@@ -279,7 +278,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>3.6.0</version>
+					<version>3.6.1</version> <!--3.6.0 -->
 				</plugin>
 
 
@@ -342,9 +341,9 @@
 
 		<java.version>1.8</java.version>
 
-		<scala.library.version>2.13.12</scala.library.version> <!-- 2.12.18 -->
+		<scala.library.version>2.13.13</scala.library.version> <!-- 2.13.12, 2.12.18 -->
 		<scala.plugin.version>4.8.1</scala.plugin.version> <!-- 4.2.0 -->
-		<scalatest.version>3.2.17</scalatest.version> <!-- 3.1.4, 3.1.0-RC3 -->
+		<scalatest.version>3.2.18</scalatest.version> <!-- 3.2.17, 3.1.4, 3.1.0-RC3 -->
 		<scalatest.mvn.plugin.version>2.2.0</scalatest.mvn.plugin.version>
 		<scala.parallel.collection.version>1.0.4</scala.parallel.collection.version>
 		<scala.binary.version>2.13</scala.binary.version>
@@ -381,21 +380,21 @@
 
 
 
-		<jackson.version>2.15.2</jackson.version><!--2.14.2, 2.11.2, 2.9.9 -->
+		<jackson.version>2.17.0</jackson.version><!--2.15.2, 2.14.2, 2.11.2, 2.9.9 -->
 		<poet.version>1.13.0</poet.version> <!--1.11.1 -->
 
 		<scm.version>1.3</scm.version>
 
 		<!-- log4j -->
-		<log4j.version>2.20.0</log4j.version> <!-- 2.17.1 -->
-		<slf4j.version>2.0.9</slf4j.version>
+		<log4j.version>2.23.1</log4j.version> <!-- 2.20.0, 2.17.1 -->
+		<slf4j.version>2.0.12</slf4j.version>  <!-- 2.0.9 -->
 
 		<!-- apache commons stuff -->
 
-		<commons.io.version>2.8.0</commons.io.version>
+		<commons.io.version>2.15.1</commons.io.version>  <!-- 2.8.0 -->
 		<commons.csv.version>1.10.0</commons.csv.version>
-		<commons.text.version>1.10.0</commons.text.version>
-		<commons.cli.version>1.5.0</commons.cli.version>
+		<commons.text.version>1.11.0</commons.text.version><!-- 1.10.0 -->
+		<commons.cli.version>1.6.0</commons.cli.version> <!-- 1.5.0 -->
 
 		<!-- js stuff -->
 		<webjars.jquery.version>3.7.1</webjars.jquery.version>

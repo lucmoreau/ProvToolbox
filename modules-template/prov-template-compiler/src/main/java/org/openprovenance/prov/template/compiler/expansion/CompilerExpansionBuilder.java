@@ -625,6 +625,14 @@ public class CompilerExpansionBuilder {
             final JsonNode entry = the_var.path(key);
             if (entry != null && !(entry instanceof MissingNode)) {
                 String s = entry.get(0).get("@id").textValue();
+                // substring of s preceding first occurrence of :
+                int existsColumn = s.indexOf(":");
+                if (existsColumn >= 0) {
+                    String pre = s.substring(0, existsColumn);
+                    if (pre != null && !pre.isEmpty() && the_context.get(pre) == null) {
+                        throw new InvalidCaseException("CompilerExpansionBuilder (line 629): Reference to prefix '" + pre + "' in '" + s + "' for key '" + key + "', not available in context " + the_context.toPrettyString());
+                    }
+                }
                 JsonNode toEscapeEntry = entry.get(0).get("@escape");
                 boolean toEscape = toEscapeEntry != null && toEscapeEntry.textValue() != null && "true".equals(toEscapeEntry.textValue());
                 String s2 = "\"" + s.replace("*", "\" + $N + \"") + "\"";

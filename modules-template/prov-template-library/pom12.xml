@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>modules-template</artifactId>
+        <groupId>org.openprovenance.prov</groupId>
+        <version>2.0.5-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>prov-template-library</artifactId>
+    <version>2.0.5-SNAPSHOT</version>
+
+    <name> |---- PROV-TEMPLATE-LIBRARY</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-n</artifactId>
+            <version>2.0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-model</artifactId>
+            <version>2.0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template-compiler</artifactId>
+            <version>2.0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openprovenance.prov</groupId>
+            <artifactId>prov-template</artifactId>
+            <version>2.0.5-SNAPSHOT</version>
+            <classifier>template-library</classifier>
+            <type>zip</type>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <meta-inf-webjars>META-INF/resources/webjars</meta-inf-webjars>
+        <package.name>template_library</package.name>
+        <template_lib_cli>${package.name}/${package.name}_cli</template_lib_cli>
+        <template_lib_l2p>${package.name}/${package.name}_l2p</template_lib_l2p>
+    </properties>
+
+    <build>
+        <plugins>
+
+
+            <plugin>
+                <groupId>org.jsweet</groupId>
+                <artifactId>jsweet-maven-plugin</artifactId>
+                <version>${jsweet.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-js</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>jsweet</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+                <configuration>
+                    <compileSourceRootsOverride>${project.build.directory}/generated-sources/${package.name}_cli</compileSourceRootsOverride>
+                    <verbose>true</verbose>
+                    <outDir>${project.build.directory}/js</outDir>
+                    <tsOut>${project.build.directory}/ts</tsOut>
+                    <candiesJsOut>target/webapp/candies</candiesJsOut>
+                    <excludes>
+                        <exclude>**/node_modules/**</exclude>
+                        <exclude>**/node/**</exclude>
+                    </excludes>
+                    <targetVersion>ES6</targetVersion>
+                    <module>commonjs</module>
+                    <!--<moduleResolution>classic</moduleResolution>-->
+                    <bundle>true</bundle>
+                    <declaration>true</declaration>
+                    <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build.helper.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/${package.name}_cli</source>
+                                <source>${project.build.directory}/generated-sources/${package.name}_l2p</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>resources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/resources</directory>
+                                    <targetPath />
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/js</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/js</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/js</targetPath>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/ts</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/ts</targetPath>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/bindings</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/bindings</targetPath>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/prov-template-library/templates</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/templates</targetPath>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/prov-template-library/mbindings</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/mbindings</targetPath>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+
+                                <resource>
+                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/css</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/css</targetPath>
+                                    <includes>
+                                        <include>*.css</include>
+                                    </includes>
+                                </resource>
+
+                                <resource>
+                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/schema</targetPath>
+                                    <includes>
+                                        <include>schema-plead.json</include>
+                                        <include>schema-ptm.json</include>
+                                    </includes>
+                                </resource>
+
+                                <resource>
+                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/sql</targetPath>
+                                    <includes>
+                                        <include>prov-template-library-plead.sql</include>
+                                        <include>prov-template-library-ptm.sql</include>
+                                    </includes>
+                                </resource>
+
+
+                                <resource>
+                                    <directory>${project.build.directory}/${template_lib_cli}/src/main/resources/${meta-inf-webjars}/${package.name}_cli/0.1.0/html</directory>
+                                    <targetPath>${meta-inf-webjars}/${project.artifactId}/${project.version}/html</targetPath>
+                                    <includes>
+                                        <include>doc-plead.html</include>
+                                        <include>doc-ptm.html</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>**/junk/**</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+
+
+</project>

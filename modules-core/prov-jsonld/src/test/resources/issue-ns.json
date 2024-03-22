@@ -1,0 +1,19 @@
+{                               
+  "prefix": {                   
+    "ex": "http://ex.org/"
+  },                            
+  "entity": {                   
+    "ex:e": {                   
+      "prov:type" :  [{
+        "type" : "prov:QUALIFIED_NAME",
+        "$" : "xsd:int"
+      }],
+      "prov:value" :  [{
+        "type" : "xsd:int",
+        "$" : "1"
+      }]
+
+	
+    }                           
+  }
+}

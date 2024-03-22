@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.CompilerUtil;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -19,6 +20,7 @@ import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 public class CompilerSqlComposer {
     public static final String[] ARRAY_OF_STRING = {};
     public static final String TOKEN_VAR_NAME = "_token";
+    public static final String DUMMY = "__dummy_";
     private final CompilerUtil compilerUtil;
     final Map<String,String> functionDeclarations;
     final Map<String,String> arrayFunctionDeclarations;
@@ -85,6 +87,10 @@ public class CompilerSqlComposer {
                                                             if (withRelationId) {
                                                                 put(tableKey, unquote("INT"));
                                                  }}}));
+        if (functionReturns.keySet().size()==1) {
+            // ensure that there are more than one column, otherwise postgres converts it to a scalar
+            functionReturns.put(DUMMY, unquote("INT"));
+        }
 
 
         Map<String,Object> insertValues2=descriptorUtils
@@ -152,6 +158,21 @@ public class CompilerSqlComposer {
                 .collect(Collectors.toMap(  this::newTableWithId,
                         key -> {
                             String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                            Optional<AttributeDescriptor.SqlForeign> sqlForeign = descriptorUtils.getOutputSqlForeign(key, templateBindingsSchema);
+                            if (sqlForeign.isPresent()) {
+                                String foreignType=Constants.INPUT_PREFIX + sqlForeign.get().getType();
+                                String foreignAttribute=Constants.INPUT_PREFIX + sqlForeign.get().getAttribute();
+                                String foreignItem=Constants.INPUT_PREFIX + sqlForeign.get().getItem();
+
+
+                                String theTable = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+
+                                //(SELECT f_build_and_execute_select('creating_emission_report', input_attribute, input_item) as literal),
+                                return (pp) -> new QueryBuilder(pp)
+                                        .selectExp("f_build_and_execute_select(" + foreignType + ", " + foreignAttribute + ", " + foreignItem + " )")
+                                        .alias(key+"_id")
+                                        ;
+                            }
                             return (pp) -> new QueryBuilder(pp)
                                     .insertInto(the_table)
                                     .values(otherInputs.apply(key))
@@ -172,6 +193,11 @@ public class CompilerSqlComposer {
                         add(orig_templateName + "." + tableKey);
                     }
                 }}));
+
+        // insuring that the table has more than one column, otherwise postgress converts it to a scalar
+        if (outputs.size()==1) {
+            outputs.add("1 AS " + DUMMY);
+        }
 
 
         QueryBuilder fun=
@@ -298,7 +324,29 @@ public class CompilerSqlComposer {
                 "                RETURNING policy.id as id\n" +
                 "                $$ language SQL;\n" +
                 "\t\t\t\t"+
-                "\n\n";
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_assembled_collection (input_id BIGINT)\n" +
+                        "    returns table(id INT)\n" +
+                        "as $$\n" +
+                        "INSERT INTO assembled_collection (id)\n" +
+                        "SELECT input_id\n" +
+                        "RETURNING assembled_collection.id as id\n" +
+                        "$$ language SQL;\n" +
+                "\n\n" +
+                "\t\t\t\t"+
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_chart (input_id BIGINT)\n" +
+                "    returns table(id INT)\n" +
+                "as $$\n" +
+                "INSERT INTO chart (id)\n" +
+                "SELECT input_id\n" +
+                "RETURNING chart.id as id\n" +
+                "$$ language SQL;\n" +
+                "\n\n"
+
+
+
+                ;
 
 
 
@@ -441,7 +489,7 @@ public class CompilerSqlComposer {
         final String defaultSqlType = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
         final String overrideSqlType = descriptorUtils.getSqlType(key, templateBindingsSchema);
         String theSqlType;
-        if (overrideSqlType!=null && !Constants.NULLABLE_TEXT.equals(overrideSqlType)) {
+        if (overrideSqlType!=null && !Constants.NULLABLE_TEXT.equals(overrideSqlType) && !Constants.NON_NULLABLE_TEXT.equals(overrideSqlType)) {
             theSqlType=overrideSqlType;
         } else {
             theSqlType=defaultSqlType;

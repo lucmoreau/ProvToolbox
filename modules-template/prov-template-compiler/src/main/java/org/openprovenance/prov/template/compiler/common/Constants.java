@@ -75,6 +75,7 @@ public interface Constants {
     String INPUT_PREFIX = "input_";
     String SHARED_PREFIX = "composite_";
     String NULLABLE_TEXT = "nullableTEXT";
+    String NON_NULLABLE_TEXT = "nonNullableTEXT";
     String JSON_TEXT = "json";
     String TIMESTAMPTZ = "timestamptz";
     String SQL_DATE = "date";

@@ -8,14 +8,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly/python-assembly.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/toolbox/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
-    </list>
+    <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,8 +46,8 @@
         <option value="Interface" />
         <option value="JavaScript File" />
         <option value="Enum" />
-        <option value="Class" />
         <option value="Python Script" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -73,6 +66,11 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="InvalidFacetManager">
+    <ignored-facets>
+      <facet id="prov-template-library/invalid/Python" />
+    </ignored-facets>
   </component>
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
@@ -113,12 +111,15 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "JUnit.DateTest.testDate5.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
-    "git-widget-placeholder": "code__emitter",
+    "git-widget-placeholder": "development2__0",
+    "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-template-library/src/main/resources/assembly",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-jsweet-candy-java",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -151,11 +152,11 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java" />
+      <recent name="$PROJECT_DIR$/modules-template/prov-template-library" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test/python" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-compiler/src/test" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache" />
@@ -172,11 +173,11 @@
       <recent name="org.openprovenance.prov.interop.Configuration" />
     </key>
     <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.core.jsonld11.serialization.Constants" />
+      <recent name="org.openprovenance.prov.template.compiler.CompilerQueryInvoker" />
       <recent name="org.openprovenance.prov.interop.ApiUriFragments" />
       <recent name="org.openprovenance.prov.service.core.Constants" />
       <recent name="org.openprovenance.prov.service.core.SwaggerTags" />
-      <recent name="org.openprovenance.prov.dot.ProvToDot" />
-      <recent name="org.openprovenance.prov.dot.DotProperties" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.openprovenance.prov.dot" />
@@ -200,7 +201,7 @@
       <recent name="org.openprovenance.prov.vanilla" />
     </key>
   </component>
-  <component name="RunManager" selected="Makefile Target.test.pgo">
+  <component name="RunManager" selected="JUnit.DateTest.testDate5">
     <configuration name="CompilerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-template-compiler" />
       <extension name="coverage">
@@ -229,11 +230,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-model" />
+    <configuration name="CompilerTest.testCompiler1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-template-compiler" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="PATTERN" value="org.openprovenance.prov.template.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -247,10 +248,10 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
         </ENTRIES>
       </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.template" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.template.CompilerTest" />
+      <option name="METHOD_NAME" value="testCompiler1" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -276,6 +277,32 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
       <option name="METHOD_NAME" value="testDate1" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DateTest.testDate5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-model" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
+      <option name="METHOD_NAME" value="testDate5" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -325,39 +352,6 @@
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="test.py" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="prov-template-library" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="PYTHONPATH" value="$PROJECT_DIR$/modules-template/prov-template-library/target/generated-python:$PROJECT_DIR$/modules-template/prov-template-library/src/main/python" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <EXTENSION ID="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </EXTENSION>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
       <option name="allowRunningInParallel" value="false" />
@@ -400,20 +394,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
-      <item itemvalue="JUnit.DateTest" />
+      <item itemvalue="JUnit.DateTest.testDate5" />
+      <item itemvalue="JUnit.CompilerTest.testCompiler1" />
       <item itemvalue="JUnit.DateTest.testDate1" />
       <item itemvalue="JUnit.CompilerTest" />
       <item itemvalue="Makefile Target.test.pgo" />
-      <item itemvalue="Python.test.py" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Makefile Target.test.pgo" />
-        <item itemvalue="Python.test.py" />
+        <item itemvalue="JUnit.DateTest.testDate5" />
+        <item itemvalue="JUnit.CompilerTest.testCompiler1" />
         <item itemvalue="JUnit.CompilerTest" />
+        <item itemvalue="Makefile Target.test.pgo" />
         <item itemvalue="JUnit.DateTest.testDate1" />
-        <item itemvalue="JUnit.DateTest" />
       </list>
     </recent_temporary>
   </component>
@@ -452,6 +446,14 @@
         </serviceView>
       </list>
     </option>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.10-corretto-17.0.10-f644763e9732-24582b8d" />
+        <option value="jdk-17.0.9-corretto-17.0.9-f644763e9732-203781b8" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -815,6 +817,21 @@
       <workItem from="1699289035155" duration="2395000" />
       <workItem from="1699296893543" duration="65757000" />
       <workItem from="1699627670865" duration="3605000" />
+      <workItem from="1700464624485" duration="593000" />
+      <workItem from="1700513916475" duration="1211000" />
+      <workItem from="1700584051640" duration="7685000" />
+      <workItem from="1701289062850" duration="20000" />
+      <workItem from="1701289090156" duration="438000" />
+      <workItem from="1701289536148" duration="8909000" />
+      <workItem from="1701433252726" duration="2775000" />
+      <workItem from="1702032132661" duration="7977000" />
+      <workItem from="1702305543427" duration="15566000" />
+      <workItem from="1704189739936" duration="188000" />
+      <workItem from="1704189967892" duration="1198000" />
+      <workItem from="1708331698235" duration="9936000" />
+      <workItem from="1709408911546" duration="549000" />
+      <workItem from="1710416342599" duration="1308000" />
+      <workItem from="1711105997230" duration="10827000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>
@@ -865,6 +882,7 @@
     <option featureType="dependencySupport" implementationName="java:org.glassfish.jaxb:txw2" />
     <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-annotations" />
     <option featureType="dependencySupport" implementationName="java:org.webjars:jquery" />
+    <option featureType="com.intellij.configurationType" implementationName="PythonConfigurationType" />
     <option featureType="dependencySupport" implementationName="java:commons-lang:commons-lang" />
     <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-memory" />
     <option featureType="dependencySupport" implementationName="java:io.swagger.core.v3:swagger-models" />
@@ -923,6 +941,7 @@
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-queryresultio-api" />
     <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec" />
     <option featureType="dependencySupport" implementationName="java:org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec" />
+    <option featureType="com.intellij.facetType" implementationName="Python" />
     <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-spatial" />
     <option featureType="dependencySupport" implementationName="java:org.jvnet.staxex:stax-ex" />
     <option featureType="dependencySupport" implementationName="java:com.opencsv:opencsv" />
@@ -954,6 +973,7 @@
     <option featureType="dependencySupport" implementationName="java:com.googlecode.libphonenumber:libphonenumber" />
     <option featureType="dependencySupport" implementationName="java:javax.servlet:javax.servlet-api" />
     <option featureType="dependencySupport" implementationName="java:log4j:log4j" />
+    <option featureType="dependencySupport" implementationName="maven-packaging:war" />
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-util" />
     <option featureType="dependencySupport" implementationName="java:org.apache.logging.log4j:log4j-api" />
     <option featureType="dependencySupport" implementationName="java:com.github.fge:msg-simple" />
@@ -974,6 +994,7 @@
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-manager" />
     <option featureType="dependencySupport" implementationName="java:org.scala-lang:scala-library" />
     <option featureType="dependencySupport" implementationName="java:org.openprovenance.prov:prov-xml" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
     <option featureType="dependencySupport" implementationName="java:org.apache.httpcomponents:fluent-hc" />
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-repository-event" />
     <option featureType="dependencySupport" implementationName="java:com.spatial4j:spatial4j" />
@@ -1021,6 +1042,7 @@
     <option featureType="dependencySupport" implementationName="java:org.apache.lucene:lucene-analyzers-common" />
     <option featureType="dependencySupport" implementationName="java:org.apache.james:apache-mime4j-core" />
     <option featureType="dependencySupport" implementationName="java:org.apache.commons:commons-pool2" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.ws.rs:jakarta.ws.rs-api" />
     <option featureType="dependencySupport" implementationName="java:org.openrdf.sesame:sesame-sail-nativerdf" />
     <option featureType="dependencySupport" implementationName="java:joda-time:joda-time" />
     <option featureType="dependencySupport" implementationName="java:jakarta.activation:jakarta.activation-api" />
@@ -1107,11 +1129,9 @@
     <SUITE FILE_PATH="coverage/ProvToolbox$PC1BuilderTest.ic" NAME="PC1BuilderTest Coverage Results" MODIFIED="1696686208827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.notation.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$test.coverage" NAME="test Coverage Results" MODIFIED="1699017257868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-compiler" />
     <SUITE FILE_PATH="coverage/ProvToolbox$CompilerTest.ic" NAME="CompilerTest Coverage Results" MODIFIED="1698861833985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.template.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ProvToolbox$test__1_.coverage" NAME="test.py Coverage Results" MODIFIED="1699629786138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
     <SUITE FILE_PATH="coverage/ProvToolbox$RoundTripFromJavaTest.ic" NAME="RoundTripFromJavaTest Coverage Results" MODIFIED="1567964860900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.openprovenance.prov.core.*</FILTER>
     </SUITE>

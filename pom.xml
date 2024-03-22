@@ -5,7 +5,7 @@
 	<groupId>org.openprovenance.prov</groupId>
 	<artifactId>ProvToolbox</artifactId>
 	<name>ProvToolbox: JVM (Java and Scala) for W3C PROV</name>
-	<version>2.0.4</version>
+	<version>2.0.5</version>
 	<url>https://lucmoreau.github.io/ProvToolbox/</url>
 	<packaging>pom</packaging>
 	<description>Java toolbox to create and convert W3C PROV data model representations.</description>
@@ -14,7 +14,7 @@
 		<connection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</connection>
 		<developerConnection>scm:git:https://github.com/lucmoreau/ProvToolbox.git</developerConnection>
 		<url>https://github.com/lucmoreau/ProvToolbox.git</url>
-		<tag>ProvToolbox-2.0.4</tag>
+		<tag>ProvToolbox-2.0.5</tag>
 	</scm>
 
 	<modules>
@@ -335,6 +335,11 @@
 
 		<!-- java, scala, jsweet-->
 
+		<jsweet.core.version>6.3.0</jsweet.core.version>
+
+		<!-- the jsweet transpiler to generate typescript/js from java code requires version 12 (or older) of java. Set the home here.-->
+		<java12.home>/usr/local/java/jdk-12.0.1.jdk/Contents/Home/</java12.home>
+
 		<java.version>1.8</java.version>
 
 		<scala.library.version>2.13.12</scala.library.version> <!-- 2.12.18 -->
@@ -345,8 +350,6 @@
 		<scala.binary.version>2.13</scala.binary.version>
 		<scala.parser.comb.version>1.1.2</scala.parser.comb.version>
 		<parboiled.version>2.5.0</parboiled.version>
-
-		<jsweet.transpiler.version>3.1.0</jsweet.transpiler.version>
 
 		<xmlsec.version>2.1.4</xmlsec.version> <!--2.0.6 -->
 

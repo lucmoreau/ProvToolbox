@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
         if (embedContext) {
             theContext[1]=embeddedContext;
         } else {
-            theContext[1]="http://openprovenance.org/prov.jsonld";
+            theContext[1]= Constants.JSONLD_CONTEXT_URL;
         }
         jsonGenerator.writeObject(theContext);
     }

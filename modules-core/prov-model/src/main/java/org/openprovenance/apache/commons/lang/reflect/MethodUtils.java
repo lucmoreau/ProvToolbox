@@ -29,8 +29,8 @@ import java.lang.reflect.Modifier;
  * already existed within Lang.
  * </p>
  *
- * <h3>Known Limitations</h3>
- * <h4>Accessing Public Methods In A Default Access Superclass</h4>
+ * <b>Known Limitations</b>
+ * <b>Accessing Public Methods In A Default Access Superclass</b>
  * <p>There is an issue when invoking public methods contained in a default access superclass on JREs prior to 1.4.
  * Reflection locates these methods fine and correctly assigns them as public.
  * However, an <code>IllegalAccessException</code> is thrown if the method is invoked.</p>

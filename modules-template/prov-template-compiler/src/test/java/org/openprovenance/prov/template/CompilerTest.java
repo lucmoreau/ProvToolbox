@@ -9,6 +9,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.notation.Utility;
 import org.openprovenance.prov.template.compiler.ConfigProcessor;
 import org.openprovenance.prov.template.compiler.configuration.*;
+import org.openprovenance.prov.template.compiler.util.JavaVersion;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -98,26 +99,33 @@ public class CompilerTest extends TestCase {
         cp.generateSQLEnd(configs,cli_src_dir);
         cp.generateDocumentationEnd(configs,cli_webjar_dir);
 
-        System.out.println("#### Invoking maven " + path);
-        execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", "/usr/local/java/jdk-12.0.1.jdk/Contents/Home/");
+        //System.out.println("#### Invoking maven " + path);
+        String java12Home=new JavaVersion().getJava12Home();
+        if (java12Home!=null) {
 
-        final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
-        final String templateJsonSchema  = cli_dir + "/src/main/resources/" + configs.jsonschema;
+            execute(new String[]{"mvn", "clean", "install"}, "target/libs/templates", java12Home);
+            //execute(new String[] {"mvn", "clean", "install"},"target/libs/templates", null);
 
-        System.out.println("#### jq test " + theExamplarJsonFile);
-        execute(new String[] {"jq", ".", theExamplarJsonFile},".", null);
+            final String theExamplarJsonFile = cli_dir + "/target/example_template_block.json";
+            final String templateJsonSchema = cli_dir + "/src/main/resources/" + configs.jsonschema;
 
-        //TODO: LUC: cannot make this work on travis
-        //execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
+            System.out.println("#### jq test " + theExamplarJsonFile);
+            execute(new String[]{"jq", ".", theExamplarJsonFile}, ".", null);
 
-        com.networknt.schema.JsonSchema schema=cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
-        Set<ValidationMessage> result=cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);
-        System.out.println(result);
+            //TODO: LUC: cannot make this work on travis
+            //execute(new String[] {"/usr/local/bin/ajv", "-s", templateJsonSchema, "-d", theExamplarJsonFile},".");
 
-        System.out.println("#### checking schema compatibility for " + theExamplarJsonFile);
-        com.networknt.schema.JsonSchema schema2=cp.getCompilerJsonSchema().setupJsonSchemaFromFile( templateJsonSchema);
-        Set<ValidationMessage> result2=cp.getCompilerJsonSchema().checkSchema(schema2, theExamplarJsonFile);
-        System.out.println(result2);
+            com.networknt.schema.JsonSchema schema = cp.getCompilerJsonSchema().setupJsonSchemaFromClasspathV7("schema/json-schema-v7.json");
+            Set<ValidationMessage> result = cp.getCompilerJsonSchema().checkSchema(schema, templateJsonSchema);
+            System.out.println(result);
+
+            System.out.println("#### checking schema compatibility for " + theExamplarJsonFile);
+            com.networknt.schema.JsonSchema schema2 = cp.getCompilerJsonSchema().setupJsonSchemaFromFile(templateJsonSchema);
+            Set<ValidationMessage> result2 = cp.getCompilerJsonSchema().checkSchema(schema2, theExamplarJsonFile);
+            System.out.println(result2);
+        } else {
+            System.out.println("#### Skipping transpiling because no java12 was configured " + path);
+        }
 
 
     }

@@ -125,7 +125,8 @@
     "context": {
         "ag":  "${PROV_API}/live/agent/",
         "act": "${PROV_API}/live/activity/",
-        "file": "${PROV_API}/live/file/"
+        "file": "${PROV_API}/live/file/",
+        "method": "${PROV_API}/live/method/"
     },
     "template": "TODO template",
     "@documentation": "TODO doc."

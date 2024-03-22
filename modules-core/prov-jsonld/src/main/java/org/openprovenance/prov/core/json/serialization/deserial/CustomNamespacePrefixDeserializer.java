@@ -41,6 +41,7 @@ public class CustomNamespacePrefixDeserializer extends StdDeserializer<Map<Strin
         Namespace parentNs = getAttributes().get().get(JSON_CONTEXT_KEY_NAMESPACE);
 
         Namespace ns=new Namespace();
+        ns.addKnownNamespaces();
         ns.setParent(parentNs);
         getAttributes().get().put(JSON_CONTEXT_KEY_NAMESPACE,ns);
 

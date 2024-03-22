@@ -899,6 +899,10 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
+        if (values.isEmpty()) {
+            return this;
+        }
+
         prettyPrinter.write("WITH");
         prettyPrinter.begin(2);
         prettyPrinter.newline(0);

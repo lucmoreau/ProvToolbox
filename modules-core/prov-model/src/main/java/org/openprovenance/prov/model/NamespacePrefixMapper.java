@@ -7,27 +7,28 @@ package org.openprovenance.prov.model;
  * @see <a href="http://grepcode.com/file/repo1.maven.org/maven2/com.sun.xml.bind/jaxb-impl/2.1.11/com/sun/xml/bind/marshaller/NamespacePrefixMapper.java">JAXB NamespacePrefixMapper</a>
  */
 public interface NamespacePrefixMapper {
-    static final public String PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
-    static final public String PROV_NS = "http://www.w3.org/ns/prov#";
-    static final public String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
-    static final public String XSD_NS = "http://www.w3.org/2001/XMLSchema#";
-    static final public String PRINTER_NS = "http://openprovenance.org/model/opmPrinterConfig";
-    static final public String XML_NS = "http://www.w3.org/XML/1998/namespace";
-    static final public String PROV_PREFIX = "prov";
-    static final public String XSD_PREFIX = "xsd";
-    static final public String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-    static final public String RDF_PREFIX = "rdf";
-    static final public String RDFS_NS = "http://www.w3.org/2000/01/rdf-schema#";
-    static final public String RDFS_PREFIX = "rdfs";
-    static final public String BOOK_PREFIX = "bk";
-    static final public String BOOK_NS = "http://www.provbook.org/ns/#";
-    static final public String SHARED_PROV_TOOLBOX_PREFIX="http://openprovenance.org/provtoolbox/";
-    static final public String TOOLBOX_NS = SHARED_PROV_TOOLBOX_PREFIX + "ns#";
-    static final public String TOOLBOX_PREFIX = "box";
-    static final public String DOT_NS = SHARED_PROV_TOOLBOX_PREFIX + "dot/ns#";
-    static final public String DOT_PREFIX = "dot";
-    static final public String SUMMARY_NS = NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX + "summary/ns#";
-    static final public String SUMMARY_PREFIX = "sum";
+    String PROV_EXT_NS = "http://openprovenance.org/prov/extension#";
+    String PROV_NS = "http://www.w3.org/ns/prov#";
+    String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
+    String XSD_NS = "http://www.w3.org/2001/XMLSchema#";
+    String PRINTER_NS = "http://openprovenance.org/model/opmPrinterConfig";
+    String XML_NS = "http://www.w3.org/XML/1998/namespace";
+    String PROV_PREFIX = "prov";
+    String PROV_EXT_PREFIX = "provext";
+    String XSD_PREFIX = "xsd";
+    String RDF_NS = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    String RDF_PREFIX = "rdf";
+    String RDFS_NS = "http://www.w3.org/2000/01/rdf-schema#";
+    String RDFS_PREFIX = "rdfs";
+    String BOOK_PREFIX = "bk";
+    String BOOK_NS = "http://www.provbook.org/ns/#";
+    String SHARED_PROV_TOOLBOX_PREFIX="http://openprovenance.org/provtoolbox/";
+    String TOOLBOX_NS = SHARED_PROV_TOOLBOX_PREFIX + "ns#";
+    String TOOLBOX_PREFIX = "box";
+    String DOT_NS = SHARED_PROV_TOOLBOX_PREFIX + "dot/ns#";
+    String DOT_PREFIX = "dot";
+    String SUMMARY_NS = NamespacePrefixMapper.SHARED_PROV_TOOLBOX_PREFIX + "summary/ns#";
+    String SUMMARY_PREFIX = "sum";
 
 
     /**

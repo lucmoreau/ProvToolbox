@@ -121,12 +121,12 @@ public class CompilerSQL {
             String sqlTypeFromJava = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
 
             final String sqlType = descriptorUtils.getSqlType(key, templateBindingsSchema);
-            if (sqlType !=null && !sqlType.equals(Constants.NULLABLE_TEXT)) {
+            if (sqlType !=null && !sqlType.equals(Constants.NULLABLE_TEXT) && !sqlType.equals(Constants.NON_NULLABLE_TEXT)) {
                 sqlTypeFromJava=sqlType;
             }
 
 
-                Descriptor entry=var.get(key).get(0);
+            Descriptor entry=var.get(key).get(0);
             documentation = retrieveDocumentation(entry);
 
 

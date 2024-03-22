@@ -9,6 +9,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Objects;
+
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -19,7 +21,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
         "@examplar",
         "@input",
         "@output",
-        "@sql.type"
+        "@sql.type",
+        "@sql.foreign"
+
 })
 public class AttributeDescriptor implements Descriptor {
 
@@ -39,6 +43,10 @@ public class AttributeDescriptor implements Descriptor {
     private OutputFieldValue output;
     @JsonProperty("@sql.type")
     private String sqlType;
+
+    @JsonProperty("@sql.foreign")
+    private SqlForeign sqlForeign;
+
 
 
     @JsonProperty("@value")
@@ -120,25 +128,42 @@ public class AttributeDescriptor implements Descriptor {
         this.sqlType = sqlType;
     }
 
+    @JsonProperty("@sql.foreign")
+    public SqlForeign getSqlForeign() {
+        return sqlForeign;
+    }
+
+    @JsonProperty("@sql.foreign")
+    public void setSqlForeign(SqlForeign sqlForeign) {
+        this.sqlForeign = sqlForeign;
+    }
+
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "AttributeDescriptor{" +
+                "value='" + value + '\'' +
+                ", type='" + type + '\'' +
+                ", documentation='" + documentation + '\'' +
+                ", escape='" + escape + '\'' +
+                ", examplar=" + examplar +
+                ", input=" + input +
+                ", output=" + output +
+                ", sqlType='" + sqlType + '\'' +
+                ", sqlForeign=" + sqlForeign +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         AttributeDescriptor that = (AttributeDescriptor) o;
-
-        return new EqualsBuilder().append(value, that.value).append(type, that.type).append(documentation, that.documentation).append(escape, that.escape).append(examplar, that.examplar).append(input, that.input).append(output, that.output).isEquals();
+        return Objects.equals(value, that.value) && Objects.equals(type, that.type) && Objects.equals(documentation, that.documentation) && Objects.equals(escape, that.escape) && Objects.equals(examplar, that.examplar) && input == that.input && output == that.output && Objects.equals(sqlType, that.sqlType) && Objects.equals(sqlForeign, that.sqlForeign);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(value).append(type).append(documentation).append(escape).append(examplar).append(input).append(output).toHashCode();
+        return Objects.hash(value, type, documentation, escape, examplar, input, output, sqlType, sqlForeign);
     }
 
     @JsonIgnore
@@ -146,4 +171,57 @@ public class AttributeDescriptor implements Descriptor {
         return DescriptorTypes.ATTRIBUTE;
     }
 
+    public static class SqlForeign {
+        private String type;
+        private String attribute;
+        private String item;
+
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getAttribute() {
+            return attribute;
+        }
+
+        public void setAttribute(String attribute) {
+            this.attribute = attribute;
+        }
+
+        public String getItem() {
+            return item;
+        }
+
+        public void setItem(String item) {
+            this.item = item;
+        }
+
+        @Override
+        public String toString() {
+            return "SqlForeign{" +
+                    "type='" + type + '\'' +
+                    ", attribute='" + attribute + '\'' +
+                    ", item='" + item + '\'' +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SqlForeign that = (SqlForeign) o;
+            return Objects.equals(type, that.type) && Objects.equals(attribute, that.attribute) && Objects.equals(item, that.item);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(type, attribute, item);
+        }
+
+    }
 }

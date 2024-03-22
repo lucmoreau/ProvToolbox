@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Map;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -19,6 +20,7 @@ import java.util.Map;
         "@examplar",
         "@input",
         "@output",
+        "@sql.type",
         Descriptor.SQL_TABLE,
         Descriptor.SQL_NEW_INPUTS
 })
@@ -36,6 +38,10 @@ public class NameDescriptor implements Descriptor {
     private InputFieldValue input;
     @JsonProperty("@output")
     private OutputFieldValue output;
+    @JsonProperty("@sql.type")
+    private String sqlType;
+
+
     @JsonProperty("@sql.table")
     private String table;
     @JsonProperty("@sql.new.inputs")
@@ -127,6 +133,16 @@ public class NameDescriptor implements Descriptor {
         this.alsoOutputs = alsoOutputs;
     }
 
+    @JsonProperty("@sql.type")
+    public String getSqlType() {
+        return sqlType;
+    }
+
+    @JsonProperty("@sql.type")
+    public void setSqlType(String sqlType) {
+        this.sqlType = sqlType;
+    }
+
     @Override
     public String toString() {
         return "NameDescriptor{" +
@@ -136,8 +152,10 @@ public class NameDescriptor implements Descriptor {
                 ", examplar='" + examplar + '\'' +
                 ", input=" + input +
                 ", output=" + output +
+                ", sqlType='" + sqlType + '\'' +
                 ", table='" + table + '\'' +
                 ", newInputs=" + newInputs +
+                ", alsoOutputs=" + alsoOutputs +
                 '}';
     }
 
@@ -149,17 +167,14 @@ public class NameDescriptor implements Descriptor {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         NameDescriptor that = (NameDescriptor) o;
-
-        return new EqualsBuilder().append(id, that.id).append(type, that.type).append(documentation, that.documentation).append(examplar, that.examplar).append(input, that.input).append(output, that.output).append(table, that.table).isEquals();
+        return Objects.equals(id, that.id) && Objects.equals(type, that.type) && Objects.equals(documentation, that.documentation) && Objects.equals(examplar, that.examplar) && input == that.input && output == that.output && Objects.equals(sqlType, that.sqlType) && Objects.equals(table, that.table) && Objects.equals(newInputs, that.newInputs) && Objects.equals(alsoOutputs, that.alsoOutputs);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(type).append(documentation).append(examplar).append(input).append(output).append(table).toHashCode();
+        return Objects.hash(id, type, documentation, examplar, input, output, sqlType, table, newInputs, alsoOutputs);
     }
 
     @JsonIgnore

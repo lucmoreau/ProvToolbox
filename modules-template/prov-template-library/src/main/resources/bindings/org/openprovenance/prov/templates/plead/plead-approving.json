@@ -126,7 +126,8 @@
         "ag":  "${PROV_API}/live/agent/",
         "act": "${PROV_API}/live/activity/",
         "file": "${PROV_API}/live/file/",
-        "approval": "${PROV_API}/live/approval/"
+        "approval": "${PROV_API}/live/approval/",
+        "score": "${PROV_API}/live/score/"
     },
     "template": "TODO template",
     "@documentation": "TODO doc."

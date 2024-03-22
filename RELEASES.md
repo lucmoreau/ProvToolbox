@@ -1,7 +1,12 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
-`2.0.5-SNAPSHOT`
+
+`2.0.6-SNAPSHOT`
+* xxx
+
+`2.0.5`
 * prov-template-library: cleaned up pom.xml
 * prov-template-compiler: allowing for @sql.type in NameDescriptor
+* provtoolbox compiles with jdk 21 and 22, but requires jdk12 for jsweet
 
 `2.0.4`
 * prov-explanations: restructured explanation system, introduced interfaces separating components

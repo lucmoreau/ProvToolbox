@@ -1,0 +1,45 @@
+document
+
+  prefix tmpl <http://openprovenance.org/tmpl#>
+  prefix var <http://openprovenance.org/var#>
+  prefix vargen <http://openprovenance.org/vargen#>
+
+
+  bundle vargen:logbundle
+
+
+
+
+    activity(vargen:activity, [prov:type='tmpl:ExpansionActivity'])
+    agent(var:account)
+
+
+    wasAttributedTo(var:newDocument, var:account)			  
+
+    wasAssociatedWith(vargen:activity,var:logaccount,-)
+
+
+
+
+    entity(var:newDocument, [prov:type='tmpl:Document']) //, tmpl:has_provenance='vargen:logbundle'
+    entity(var:namedDocument, [prov:type='tmpl:Document'])
+
+
+
+    specializationOf(var:newDocument,var:namedDocument)
+
+
+    entity(vargen:logbundle, [prov:type='prov:Bundle', prov:type='tmpl:SelfAttributedBundle', prov:label="put-first-named-document"])
+    entity(var:logtemplate, [prov:type='tmpl:Template'])
+    entity(var:logbindings, [prov:type='tmpl:Bindings'])
+    wasGeneratedBy(vargen:logbundle, vargen:activity , -, [tmpl:time='var:time'])
+    used(vargen:activity, var:logtemplate, -)
+    used(vargen:activity, var:logbindings, -)
+    agent(var:logaccount)
+    wasAttributedTo(vargen:logbundle,var:logaccount)
+    wasDerivedFrom(vargen:logbundle, var:logtemplate,- , -, -, [prov:type='tmpl:Expansion'])
+    wasDerivedFrom(vargen:logbundle, var:logbindings,- , -, -, [prov:type='tmpl:BindingsDerivation'])
+
+  endBundle
+
+endDocument

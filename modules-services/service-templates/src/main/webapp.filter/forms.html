@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="utf-8" http-equiv="encoding"/>
+    <title>PLEAD Templates Dashboard ${project.version}</title>
+    <link rel="stylesheet" href="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
+    <link rel="stylesheet" href="/ptm/webjars/prov-template-library/${project.version}/css/provtemplate.css" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+
+<body>
+<script src="/ptm/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+<script src="/ptm/webjars/JSV/lib/jsv.js"></script>
+<script src="/ptm/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
+<script src="/ptm/webjars/jsonform/lib/jsonform.js"></script>
+<!--<script src="/ptm/webjars/prov-jsweet-candy-java/${prov.toolbox.version}/bundle.js"></script>-->
+<script src="/ptm/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
+
+
+<script src="/ptm/webjars/prov-template-library/${project.version}/js/bundle.js"></script>
+<script src="/ptm/webjars/prov-template-library/${project.version}/js/TemplateManager.js"></script>
+
+<style>
+    .container {
+        min-width:1200px;
+        width: auto !important;
+        width:1500px;
+    }
+</style>
+
+<div class="container">
+    <div class="row header">
+        <div class="col-lg-12 text-left">
+            <h3>PROV Environmental Management System (${project.version})</h3>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a href="#tab_compose" data-toggle="pill" class="nav-link show active" role="tab" id="composer-lnk">Composer</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="all-tab-contents">
+            <div id="tab_compose" class="tab-pane active" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-composer">
+                        <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="template-dropdown-composer-lnk">PLEAD Templates</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 first-column">
+                    <div id="template-form">
+                        <form></form>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>CSV encoding</h4>
+                    <pre id="csv_result"><p> </p></pre>
+                    <p> </p>
+                    <h4>JSON encoding</h4>
+                    <pre id="json_result" class="pretty">
+                    </pre>
+                </div>
+                <div class="col-sm-3">
+                    <button id="button-submit" type="button" class="btn btn-warning" onclick="submitEnactor()">Submit</button>
+                    <button id="button-clear" type="button" class="btn btn-info" onclick="enactClear()">Clear</button>
+                    <h4>Submission Result</h4>
+                    <pre id="enact_result" class="pretty"> </pre>
+                </div>
+            </div>
+
+            <div id="tab_documentation" class="tab-pane" role="tabpanel">
+                <div class="col-lg-2">
+                    <div id="template-dropdown-documentation">
+                        <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">PLEAD Templates</a>
+                    </div>
+                </div>
+                <div class="col-lg-7 first-column">
+                    <div id="documentation">
+                    </div>
+                    <div id="documentation_image">
+                    </div>
+                    <div id="tmp_div" class="invisible_div">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function diff (arr1, arr2) {
+        return arr1.filter(x => !arr2.includes(x));
+    }
+
+    function constructMenusConfiguration() {
+        let profile = {}
+        for (var indx in builders) {
+            const builder = builders[indx]
+            let name = builder.getName()
+            if (typeof builder.getCompulsoryInputs !== "undefined") { //not selecting composite
+                let compusolryFields = ["isA"].concat(builder.getCompulsoryInputs());
+                let optionalFields = diff(builder.getInputs(), builder.getCompulsoryInputs());
+                profile[name] = {
+                    compulsory: compusolryFields,
+                    optional: optionalFields
+                }
+            }
+        }
+        return profile;
+    }
+
+
+    let schemaUrl = "/ptm/webjars/prov-template-library/${project.version}/schema/schema-plead.json";
+    let docUrl = "/ptm/webjars/prov-template-library/${project.version}/html/doc-plead.html";
+    const logger=new org.openprovenance.prov.template.library.plead.logger.Logger();
+    const builders=logger.getBuilders()
+    var profile = constructMenusConfiguration();
+    console.log(profile)
+
+
+    const enact_result_box_identifier = '#enact_result';
+
+
+    var jsonSubmit=true;
+
+
+    function submitEnactor() {
+        var url = '/ptm/provapi/statements/';
+        var id=enact_result_box_identifier;
+        $(id).html($('<p>'));
+        $(id).attr('received','false');
+        submitService(url,id,"#csv_log", true,true)
+    }
+
+
+
+
+    var alreadySeen=[]
+
+
+    function submitService(url,id,id2, enactorp, allRecordsp) {
+        console.log("submitService")
+
+        let csv_data=$('#csv_result').text()
+        let json_data=JSON.stringify(alreadySeen.concat([tm.getBean()]))
+        if (allRecordsp) alreadySeen=[]
+        console.log("submitService " + json_data);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+            $(id).html("error with " + event);
+
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+            $(id).html("abort with " + event);
+        };
+        xhr.onload= function() {
+            console.log("loaded " + xhr.status);
+            if (xhr.status === 400 || xhr.status === 404) {
+                $(id).html("status code " + xhr.status + " " + xhr.responseText);
+            } else if (!enactorp && (xhr.status === 200)) {
+                $(id).html('<i class="fa fa-check"></i>' + "Passed Validator!");
+            } else {
+                const parsed = JSON.parse(xhr.responseText);
+                let name=parsed[0]["isA"];
+                let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
+                $(id).html(highlighted);
+                if (id2) $(id2).append(xhr.responseText);
+            }
+            $(id).attr('received','true');
+        }
+        xhr.setRequestHeader("Accept", "text/csv");
+        xhr.setRequestHeader("Accept", "application/vnd.kcl.prov-sustainability+json");
+        if (jsonSubmit) {
+            xhr.setRequestHeader("Content-Type", "application/vnd.kcl.prov-sustainability+json");
+        } else {
+            xhr.setRequestHeader("Content-Type", "text/csv");
+        }
+
+        console.log("submitService " + jsonSubmit);
+
+        if (jsonSubmit) {
+            xhr.send(json_data);
+        } else {
+            xhr.send(csv_data);
+        }
+    }
+
+    function enactClear() {
+        $(enact_result_box_identifier).html("");
+    }
+
+    let imageNameMapper = {
+        "plead_transforming": "plead-transforming",
+        "plead_filtering": "plead-filtering",
+        "plead_training": "plead-training",
+        "plead_validating": "plead-validating",
+        "plead_approving": "plead-approving",
+        "plead_splitting": "plead-splitting"
+    };
+
+    const tm=new TemplateManager(logger,schemaUrl,docUrl,profile);
+    tm.setCsvResult('#csv_result');
+    tm.setJsonResult('#json_result');
+    tm.setImageUrlPrefix('/ptm/webjars/prov-template-library/${project.version}/templates/org/openprovenance/prov/templates/plead/');
+    tm.setImageLocation('#documentation_image');
+    tm.setFilenameConverter(imageNameMapper)
+    tm.createDropdownForPlayground("#template-dropdown-composer", "tm");
+    tm.createDropdownForDocumentation("#template-dropdown-documentation", "tm");
+
+
+</script>
+
+<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/dropdown.js"></script>
+<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/tab.js"></script>
+<script>
+    $('.dropdown-toggle').dropdown();
+</script>
+</body>
+</html>

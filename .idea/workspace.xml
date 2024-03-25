@@ -9,12 +9,69 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/license/THIRD-PARTY.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ViewService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/properties/jetty.webapp.config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/properties/prov.webapp.config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/properties/tomcat.webapp.config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/templates/post-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/templates/provapi/post-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/templates/provapi/translate-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/templates/put-first-named-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/templates/put-named-document.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/prov/invalid.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/prov/pc1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/prov/primer.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/webresources/templates/org/openprovenance/generic/binaryop/1/b4.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/META-INF/context.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/classes/org/openprovenance/prov/service/core/config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/jetty-web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/tomcat-web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/about.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/api.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/contact.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/provservice.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/config/log4j2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/IsDocumentWithFieldsToIgnore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/ValidationReportMessageBodyReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/template/ExpandIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/translator/DateIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/translator/TranslateIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/validator/ValidateIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/config/log4j2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/dates/date_with_tz_offset.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/dates/date_with_tz_offset.jsonld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/dates/date_with_tz_offset.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/dates/date_with_tz_offset.provx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/org/openprovenance/prov/interop/config.interop.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/org/openprovenance/prov/service/translator/config.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/test-templates/bindings1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/test-templates/expansion-bindings1.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/test-validator/doc-tovalidate.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/test-validator/picaso-file.provn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/test-validator/picaso-file2.provn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot/chatSessions/00000000000.xd" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilot/chatSessions/00000000000.xd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot/chatSessions/xd.lck" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilot/chatSessions/xd.lck" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld-xml/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-jsonld/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model-scala/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-model/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-core/prov-n/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-core/prov-n/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_plead.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -116,34 +173,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;JUnit.DateTest.testDate5.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;public&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;development2__0&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_directory_selection&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/luc/IdeaProjects/ProvToolbox/modules-template/prov-jsweet-candy-java&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.66091955&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;scala_project_settings_configurable.last_selected_tab_index&quot;: &quot;0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "JUnit.DateTest.testDate5.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "extract.method.default.visibility": "public",
+    "git-widget-placeholder": "development2__0",
+    "kotlin-language-version-configured": "true",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-core/prov-model/src/main/java/org/openprovenance/prov/model",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-templates/src/main/webapp.filter",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.66091955",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "scala_project_settings_configurable.last_selected_tab_index": "0",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="prov-template-compiler">
@@ -160,11 +217,11 @@
       <recent name="org.openprovenance.prov.core.xml.serialization.serial" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter" />
+      <recent name="$PROJECT_DIR$/modules-services" />
       <recent name="$PROJECT_DIR$/modules-template/prov-jsweet-candy-java" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library" />
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/assembly" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance" />
-      <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-template/prov-template-library/src/main/python/org/openprovenance/apache" />
@@ -840,6 +897,7 @@
       <workItem from="1710416342599" duration="1308000" />
       <workItem from="1711105997230" duration="12994000" />
       <workItem from="1711121045894" duration="4750000" />
+      <workItem from="1711296175962" duration="7429000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

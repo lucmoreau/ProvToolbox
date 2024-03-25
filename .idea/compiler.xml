@@ -44,6 +44,7 @@
         <module name="ProvToolbox-Tutorial1" />
         <module name="service-translator" />
         <module name="nlg-spec-transformer" />
+        <module name="service-templates" />
         <module name="prov-summarisation" />
         <module name="prov-service-validation" />
         <module name="prov-interop" />

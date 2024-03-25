@@ -354,9 +354,9 @@
 
 		<!-- web services -->
 
-		<jetty.version>11.0.16</jetty.version> <!-- 10.0.15, 9.4.52.v20230823, 9.4.20.v20190813 --> <!-- not work 11.0.7 requires upgrade to servlet 5 -->
+		<jetty.version>11.0.20</jetty.version> <!-- 11.0.20, 11.0.16, 10.0.15, 9.4.52.v20230823, 9.4.20.v20190813 --> <!-- not work 11.0.7 requires upgrade to servlet 5 -->
 
-		<resteasy.version>6.2.5.Final</resteasy.version>  <!-- 4.7.9.Final, 4.3.0.Final -->  <!-- not working 5.0.8.Final -->
+		<resteasy.version>6.2.8.Final</resteasy.version>  <!-- 6.2.5.Final, 4.7.9.Final, 4.3.0.Final -->  <!-- not working 5.0.8.Final -->
 		<microprofile.version>3.0.3</microprofile.version>
 	<!--	<servletapi.version>4.0.0</servletapi.version> -->
 		<jakarta.servlet.version>5.0.0</jakarta.servlet.version>
@@ -399,7 +399,7 @@
 		<!-- js stuff -->
 		<webjars.jquery.version>3.7.1</webjars.jquery.version>
 		<webjars.bootstrap.version>3.4.0</webjars.bootstrap.version>
-		<webjars.bootstrap.tables.version>1.9.1-1</webjars.bootstrap.tables.version>
+		<webjars.bootstrap.tables.version>1.16.0</webjars.bootstrap.tables.version> <!-- 1.9.1-1 -->
 		<webjars.jquery.csv.version>0.8.3</webjars.jquery.csv.version>
 		<webjars.datatables.version>1.10.25</webjars.datatables.version>
 		<webjars.datatables.net-scroller.version>2.0.2</webjars.datatables.net-scroller.version>

@@ -45,6 +45,7 @@
         <option value="$PROJECT_DIR$/modules-explanations/pom.xml" />
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial1/pom.xml" />
         <option value="$PROJECT_DIR$/modules-explanations/prov-summary-explanations/pom.xml" />
+        <option value="$PROJECT_DIR$/modules-services/service-templates/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -53,7 +54,6 @@
         <option value="$PROJECT_DIR$/modules-tutorial/tutorial2/pom.xml" />
       </set>
     </option>
-    <option name="workspaceImportForciblyTurnedOn" value="true" />
   </component>
   <component name="ProjectResources">
     <resource url="http://www.w3.org/ns/prov#" location="$PROJECT_DIR$" />

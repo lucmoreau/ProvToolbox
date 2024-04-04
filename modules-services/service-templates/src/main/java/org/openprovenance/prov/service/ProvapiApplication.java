@@ -23,13 +23,10 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
-import org.openprovenance.prov.service.translation.RandomService;
-import org.openprovenance.prov.service.translation.TemplateService;
 import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import org.openprovenance.prov.service.validation.ValidationService;
 import org.openprovenance.prov.service.validation.storage.StorageConfiguration;
 
 import java.util.HashSet;
@@ -102,15 +99,14 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 		singletons.add(ps);
 		singletons.add(new TranslationService(ps));
+		singletons.add(new org.openprovenance.prov.service.translation.TemplateService(ps));
 		singletons.add(new TemplateService(ps));
-        //singletons.add(new ValidationService(ps));
-		//singletons.add(new RandomService(ps));
 		singletons.add(new ResourcesService());
-		//singletons.add(new ViewService());
 
 
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());
+		singletons.add(new JsonOrCsvMessageBodyReader());
 		
 
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
@@ -122,9 +118,6 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
         corsFilter.getAllowedOrigins().add("*");
         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
         singletons.add(corsFilter);
-
-
-
 
 
 		logger.info("ProvapiApplication constructor ... completion");

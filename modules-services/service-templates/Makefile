@@ -10,9 +10,9 @@ build.docker:
 	mvn clean install -Ptomcat,hsqldb,docker
 
 
-# will run on port 7070 as per root pom.xml
 jetty:
-	 mvn jetty:run-war -Pjetty
+	 export SUST_DB_USER=luc; export SUST_DB_PASS=admin; export EMS_HOST=http://localhost:7072/ptm; export EMS_API=http://localhost:7072/ptm/provapi; mvn jetty:run-war -Pjetty
+
 
 jetty.post:
 	 mvn -Ppostgres jetty:run

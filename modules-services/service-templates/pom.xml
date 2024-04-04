@@ -199,6 +199,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+        </dependency>
+
 
         <!-- for testing -->
 
@@ -227,89 +233,8 @@
     <build>
         <plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${war.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
 
 
-                        <configuration>
-                            <classifier />
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <webXml>src/main/webapp.filter/WEB-INF/jetty-web.xml</webXml>
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
-                            <filters>
-                                <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
-                                <filter>src/main/resources/properties/jetty.webapp.config.properties</filter>
-                            </filters>
-                            <webResources>
-                                <resource>
-                                    <filtering>true</filtering>
-                                    <!-- this is relative to the pom.xml directory -->
-                                    <directory>src/main/webapp.filter</directory>
-                                    <excludes>
-                                        <exclude>WEB-INF/jetty-web.xml</exclude>
-                                        <exclude>WEB-INF/tomcat-web.xml</exclude>
-                                        <exclude>WEB-INF/classes</exclude>
-                                    </excludes>
-                                    <includes>**/*</includes>
-                                </resource>
-                                <resource>
-                                    <filtering>true</filtering>
-                                    <!-- this is relative to the pom.xml directory -->
-                                    <directory>src/main/resources/org</directory>
-                                    <targetPath>WEB-INF/classes/org</targetPath>
-                                </resource>
-                            </webResources>
-
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>build-docker-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>docker</classifier>
-
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
-                            <filters>
-                                <filter>src/main/resources/properties/prov.webapp.config.properties</filter>
-                                <filter>src/main/resources/properties/tomcat.webapp.config.properties</filter>
-                            </filters>
-                            <webResources>
-                                <resource>
-                                    <filtering>true</filtering>
-                                    <!-- this is relative to the pom.xml directory -->
-                                    <directory>src/main/webapp.filter</directory>
-                                    <excludes>
-                                        <exclude>WEB-INF/jetty-web.xml</exclude>
-                                        <exclude>WEB-INF/tomcat-web.xml</exclude>
-                                        <exclude>WEB-INF/classes</exclude>
-                                    </excludes>
-                                    <includes>**/*</includes>
-                                </resource>
-                                <resource>
-                                    <filtering>true</filtering>
-                                    <!-- this is relative to the pom.xml directory -->
-                                    <directory>src/main/resources/org</directory>
-                                    <targetPath>WEB-INF/classes/org</targetPath>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -339,12 +264,22 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
+                <directory>src/main/sql</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
                 <directory>src/main/config</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>log4j2.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/webapp.filter</directory>
+                <targetPath>${project.build.directory}/webapp.filtered</targetPath>
+                <filtering>true</filtering>
+            </resource>
+
         </resources>
 
 
@@ -427,7 +362,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.plugin.version}</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -457,6 +391,65 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${war.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>default-war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                                    <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
+                                    <filters>
+                                        <filter>src/main/resources/properties/prov-sustainability.webapp.config.properties</filter>
+                                    </filters>
+                                    <classifier />
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>build-jetty-war</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+
+                                <configuration>
+                                    <classifier>jetty</classifier>
+                                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                                    <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
+                                    <!-- <webXml>${project.basedir}/src/main/web-config/jetty-web.xml</webXml> -->
+                                    <filters>
+                                        <filter>src/main/resources/properties/prov-sustainability.webapp.config.properties</filter>
+                                    </filters>
+                                    <webResources>
+                                        <resource>
+                                            <filtering>true</filtering>
+                                            <!-- this is relative to the pom.xml directory -->
+                                            <directory>src/main/webapp.filter</directory>
+                                            <includes>*</includes>
+                                        </resource>
+                                    </webResources>
+
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>

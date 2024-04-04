@@ -3,7 +3,7 @@
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
     <meta content="utf-8" http-equiv="encoding"/>
-    <title>PLEAD Templates Dashboard ${project.version}</title>
+    <title>${form.dashboard.title}</title>
     <link rel="stylesheet" href="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
     <link rel="stylesheet" href="/ptm/webjars/prov-template-library/${project.version}/css/provtemplate.css" />
 
@@ -34,7 +34,7 @@
 <div class="container">
     <div class="row header">
         <div class="col-lg-12 text-left">
-            <h3>PROV Environmental Management System (${project.version})</h3>
+            <h3>${form.dashboard.title}</h3>
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -124,6 +124,7 @@
 
 
     const enact_result_box_identifier = '#enact_result';
+    const APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
 
 
     var jsonSubmit=true;
@@ -178,9 +179,9 @@
             $(id).attr('received','true');
         }
         xhr.setRequestHeader("Accept", "text/csv");
-        xhr.setRequestHeader("Accept", "application/vnd.kcl.prov-sustainability+json");
+        xhr.setRequestHeader("Accept", APPLICATION_PROV_TEMPLATE_JSON);
         if (jsonSubmit) {
-            xhr.setRequestHeader("Content-Type", "application/vnd.kcl.prov-sustainability+json");
+            xhr.setRequestHeader("Content-Type", APPLICATION_PROV_TEMPLATE_JSON);
         } else {
             xhr.setRequestHeader("Content-Type", "text/csv");
         }

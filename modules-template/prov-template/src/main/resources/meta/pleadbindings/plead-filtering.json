@@ -14,8 +14,8 @@
         "ptype" :                   [[{"@id" : "plead:Method"}]],
         "start" :                   [{"@id" : "var:start"}],
         "end" :                     [{"@id" : "var:end"}],
-        "oprops":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id" : "plead:path"}]],
-        "oprop_values":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id" : "var:path"}]]
+        "oprops":                   [[{"@id": "plead:n_rows"}, {"@id" : "plead:n_cols"}, {"@id": "plead:filename"}, {"@id" : "plead:path"}]],
+        "oprop_values":             [[{"@id": "var:n_rows"},   {"@id" : "var:n_cols"},   {"@id": "var:filename"},   {"@id" : "var:path"}]]
     },
     "vargen" : {
         "view" : [ {

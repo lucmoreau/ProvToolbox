@@ -3,31 +3,43 @@
         "filtered_file": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/123b.csv",
-                "@documentation": "The file resulting from the filtering",
+                "@type": "xsd:int",
+                "@examplar": 122,
+                "@documentation": "The file resulting from filtering",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
+        "filename": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@examplar": "file/123b.csv",
+                    "@documentation": "The file name resulting from the filtering",
+                    "@input": "compulsory",
+                    "@output": "false",
+                    "@sql.type":  "nonNullableTEXT"
+                }
+            ]
+        ],
         "file": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/123.csv",
+                "@type": "xsd:int",
+                "@examplar": 121,
                 "@documentation": "The file before filtering",
                 "@input": "compulsory",
-                "@output": "false",
                 "@sql.table": "file"
             }
         ],
         "method": [
             {
                 "@id": "method:*",
-                "@type": "xsd:string",
-                "@examplar": "method/filter.py",
-                "@documentation": "The the method to filter the file",
+                "@type": "xsd:int",
+                "@examplar": 222,
+                "@documentation": "The method to filter the file",
                 "@input": "optional",
                 "@output": "false",
                 "@sql.table": "method"
@@ -84,7 +96,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],

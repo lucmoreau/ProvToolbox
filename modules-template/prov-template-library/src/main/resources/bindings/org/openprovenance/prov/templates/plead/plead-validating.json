@@ -14,8 +14,8 @@
         "testing_dataset": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/dataset.csv",
+                "@type": "xsd:int",
+                "@examplar": 123,
                 "@documentation": "The dataset used in the validation",
                 "@input": "compulsory",
                 "@output": "false",
@@ -53,7 +53,9 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@examplar": "/my/path/",
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],
@@ -64,6 +66,7 @@
                     "@type": "xsd:double",
                     "@documentation": "The validation score",
                     "@input": "compulsory",
+                    "@examplar": 3.1415,
                     "@sql.type": "double precision"
                 }
             ]
@@ -75,6 +78,7 @@
                     "@type": "xsd:dateTime",
                     "@documentation": "Time when the pipeline is created",
                     "@input": "optional",
+                    "@examplar": "2022-09-01T12:00:01",
                     "@sql.type":  "timestamptz"
                 }
             ]

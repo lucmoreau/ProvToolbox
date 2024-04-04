@@ -74,7 +74,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The approval's signature",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],
@@ -84,7 +85,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],

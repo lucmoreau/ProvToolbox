@@ -3,22 +3,32 @@
         "transformed_file": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/123b.csv",
+                "@type": "xsd:int",
+                "@examplar": 122,
                 "@documentation": "The file resulting from transformation",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
         ],
+        "filename": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@documentation": "The name of the transformed file",
+                    "@input": "compulsory",
+                    "@sql.type":  "nonNullableTEXT"
+                }
+            ]
+        ],
         "file": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/123.csv",
+                "@type": "xsd:int",
+                "@examplar": 121,
                 "@documentation": "The file before transformation",
                 "@input": "compulsory",
-                "@output": "false",
                 "@sql.table": "file"
             }
         ],
@@ -73,7 +83,8 @@
                     "@value": "*",
                     "@type": "xsd:string",
                     "@documentation": "The actual path of the file",
-                    "@input": "optional"
+                    "@input": "optional",
+                    "@sql.type":  "nullableTEXT"
                 }
             ]
         ],
@@ -117,5 +128,5 @@
         "file": "${PROV_API}/live/file/"
     },
     "template": "TODO template",
-    "@documentation": "TODO doc."
+    "@documentation": "Template describing the transformation of a file."
 }

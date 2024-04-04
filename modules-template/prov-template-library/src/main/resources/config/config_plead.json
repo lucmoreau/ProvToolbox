@@ -69,6 +69,27 @@
 
 	],
 	"sql.tables":  {
+		"file": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
+		"score": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
+		"approval_record": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
+		"pipeline": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
+		"approved_pipeline": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
+
 		"activity": {
 			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"

@@ -36,7 +36,7 @@ public class Storage {
     }
     static final String version;
 
-    public static final String PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES = "/properties/prov-sustainability.webapp.config.properties";
+    public static final String PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES = "/properties/prov-template-library.webapp.config.properties";
 
     static {
         Properties properties=getPropertiesFromClasspath(Storage.class, PROV_SUSTAINABILITY_WEBAPP_CONFIG_PROPERTIES);

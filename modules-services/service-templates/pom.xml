@@ -300,9 +300,11 @@
 
     <properties>
         <service.port>7072</service.port>
-        <service.context>/ptm</service.context>
+        <service.context>/ptl</service.context>
         <service.host>localhost</service.host>
         <service.protocol>http</service.protocol>
+        <the.template.library>prov-template-library</the.template.library>
+        <the.template.sublibrary>-plead</the.template.sublibrary>
     </properties>
 
 
@@ -408,7 +410,9 @@
                                     <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
                                     <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
                                     <filters>
-                                        <filter>src/main/resources/properties/prov-sustainability.webapp.config.properties</filter>
+                                        <filter>
+                                            src/main/resources/properties/prov-template-library.webapp.config.properties
+                                        </filter>
                                     </filters>
                                     <classifier />
                                     <webResources>
@@ -434,7 +438,9 @@
                                     <webappDirectory>${project.build.directory}/${project.build.finalName}-jetty</webappDirectory>
                                     <!-- <webXml>${project.basedir}/src/main/web-config/jetty-web.xml</webXml> -->
                                     <filters>
-                                        <filter>src/main/resources/properties/prov-sustainability.webapp.config.properties</filter>
+                                        <filter>
+                                            src/main/resources/properties/prov-template-library.webapp.config.properties
+                                        </filter>
                                     </filters>
                                     <webResources>
                                         <resource>

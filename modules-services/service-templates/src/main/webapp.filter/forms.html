@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-    <meta content="utf-8" http-equiv="encoding"/>
+    <meta content="utf-8"/>
     <title>${form.dashboard.title}</title>
-    <link rel="stylesheet" href="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
-    <link rel="stylesheet" href="/ptm/webjars/prov-template-library/${project.version}/css/provtemplate.css" />
+    <link rel="stylesheet" href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
+    <link rel="stylesheet" href="${service.context}/webjars/${the.template.library}/${project.version}/css/provtemplate.css" />
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 
 <body>
-<script src="/ptm/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
-<script src="/ptm/webjars/JSV/lib/jsv.js"></script>
-<script src="/ptm/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
-<script src="/ptm/webjars/jsonform/lib/jsonform.js"></script>
-<!--<script src="/ptm/webjars/prov-jsweet-candy-java/${prov.toolbox.version}/bundle.js"></script>-->
-<script src="/ptm/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
+<script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+<script src="${service.context}/webjars/JSV/lib/jsv.js"></script>
+<script src="${service.context}/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
+<script src="${service.context}/webjars/jsonform/lib/jsonform.js"></script>
+<script src="${service.context}/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
 
 
-<script src="/ptm/webjars/prov-template-library/${project.version}/js/bundle.js"></script>
-<script src="/ptm/webjars/prov-template-library/${project.version}/js/TemplateManager.js"></script>
+<script src="${service.context}/webjars/${the.template.library}/${project.version}/js/bundle.js"></script>
+<script src="${service.context}/webjars/${the.template.library}/${project.version}/js/TemplateManager.js"></script>
 
 <style>
     .container {
@@ -125,42 +124,44 @@
     }
 
 
-    let schemaUrl = "/ptm/webjars/prov-template-library/${project.version}/schema/schema-plead.json";
-    let docUrl = "/ptm/webjars/prov-template-library/${project.version}/html/doc-plead.html";
-    const logger=new org.openprovenance.prov.template.library.plead.logger.Logger();
-    const builders=logger.getBuilders()
-    var profile = constructMenusConfiguration();
-    console.log(profile)
-
-
-    const enact_result_box_identifier = '#enact_result';
 
     const MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
     const MEDIA_TYPE_TEXT_CSV = "text/csv";
 
+    const HTML_ANCHOR_ENACT_RESULT_BOX = '#enact_result';
+    const HTML_ANCHOR_JSON_RESULT = '#json_result';
+    const HTML_ANCHOR_CSV_RESULT = '#csv_result';
+    const HTML_ANCHOR_CSV_LOG = '#csv_log';
+    const HTML_ANCHOR_DOCUMENTATION_IMAGE = '#documentation_image';
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "#template-dropdown-composer";
+    const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "#template-dropdown-documentation";
 
-    var jsonSubmit=true;
+    const SUBMISSION_URL = '${service.context}/provapi/statements/';
+    const SCHEMA_URL = "${service.context}/webjars/${the.template.library}/${project.version}/schema/schema${the.template.sublibrary}.json";
+    const DOC_URL = "${service.context}/webjars/${the.template.library}/${project.version}/html/doc${the.template.sublibrary}.html";
+
+    const logger=new org.openprovenance.prov.template.library.plead.logger.Logger();
+    const builders=logger.getBuilders()
+    const profile = constructMenusConfiguration();
+
+    console.log(profile)
 
 
     function submitEnactor(jsonSubmit) {
-        var url = '/ptm/provapi/statements/';
-        var id=enact_result_box_identifier;
+        var id=HTML_ANCHOR_ENACT_RESULT_BOX;
         $(id).html($('<p>'));
         $(id).attr('received','false');
-        submitService(jsonSubmit, url, id, "#csv_log", true,true)
+        submitService(jsonSubmit, SUBMISSION_URL, id, HTML_ANCHOR_CSV_LOG, true,true)
     }
-
 
 
 
     var alreadySeen=[]
 
-
-
     function submitService(jsonSubmit, url, id, id2, enactorp, allRecordsp) {
         console.log("submitService")
 
-        let csv_data=$('#csv_result').text()
+        let csv_data=$(HTML_ANCHOR_CSV_RESULT).text()
         const input_bean = tm.getBean();
         let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
         if (allRecordsp) alreadySeen=[]
@@ -217,7 +218,7 @@
     }
 
     function enactClear() {
-        $(enact_result_box_identifier).html("");
+        $(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
     }
 
     let imageNameMapper = {
@@ -229,21 +230,21 @@
         "plead_splitting": "plead-splitting"
     };
 
-    const tm=new TemplateManager(logger,schemaUrl,docUrl,profile);
-    tm.setCsvResult('#csv_result');
-    tm.setJsonResult('#json_result');
-    tm.setImageUrlPrefix('/ptm/webjars/prov-template-library/${project.version}/templates/org/openprovenance/prov/templates/plead/');
-    tm.setImageLocation('#documentation_image');
+    const tm=new TemplateManager(logger,SCHEMA_URL,DOC_URL,profile);
+    tm.setCsvResult(HTML_ANCHOR_CSV_RESULT);
+    tm.setJsonResult(HTML_ANCHOR_JSON_RESULT);
+    tm.setImageUrlPrefix('${image.url.prefix}');
+    tm.setImageLocation(HTML_ANCHOR_DOCUMENTATION_IMAGE);
     tm.setFilenameConverter(imageNameMapper)
-    tm.createDropdownForPlayground("#template-dropdown-composer", "tm");
-    tm.createDropdownForDocumentation("#template-dropdown-documentation", "tm");
+    tm.createDropdownForPlayground(HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER, "tm");
+    tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
 
 
 </script>
 
-<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
-<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/dropdown.js"></script>
-<script src="/ptm/webjars/bootstrap/${webjars.bootstrap.version}/js/tab.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/dropdown.js"></script>
+<script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/tab.js"></script>
 <script>
     $('.dropdown-toggle').dropdown();
 </script>

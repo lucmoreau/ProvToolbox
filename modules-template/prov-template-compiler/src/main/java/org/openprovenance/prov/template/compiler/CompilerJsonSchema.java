@@ -154,9 +154,9 @@ public class CompilerJsonSchema {
             case "java.lang.Integer":
                 return "integer";
             case "java.lang.Float":
-                return "float";
+                return "number";
             case "java.lang.Double":
-                return "double";
+                return "number";
             case "java.lang.Boolean":
                 return "boolean";
         }

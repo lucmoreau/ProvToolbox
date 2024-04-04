@@ -43,6 +43,10 @@
             <li class="nav-item">
                 <a href="#tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
             </li>
+            <li class="nav-item">
+                <a href="#tab_csv_log" data-toggle="pill" class="nav-link" role="tab">CSV Log</a>
+            </li>
+
         </ul>
 
         <div class="tab-content" id="all-tab-contents">
@@ -66,7 +70,8 @@
                     </pre>
                 </div>
                 <div class="col-sm-3">
-                    <button id="button-submit" type="button" class="btn btn-warning" onclick="submitEnactor()">Submit</button>
+                    <button id="button-submit-json" type="button" class="btn btn-warning" onclick="submitEnactor(true)">Submit (json)</button>
+                    <button id="button-submit-csv" type="button" class="btn btn-warning" onclick="submitEnactor(false)">Submit (csv)</button>
                     <button id="button-clear" type="button" class="btn btn-info" onclick="enactClear()">Clear</button>
                     <h4>Submission Result</h4>
                     <pre id="enact_result" class="pretty"> </pre>
@@ -87,6 +92,11 @@
                     <div id="tmp_div" class="invisible_div">
                     </div>
                 </div>
+            </div>
+
+
+            <div id="tab_csv_log" class="tab-pane" role="tabpanel">
+                <pre id="csv_log"></pre>
             </div>
         </div>
     </div>
@@ -124,18 +134,20 @@
 
 
     const enact_result_box_identifier = '#enact_result';
-    const APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
+
+    const MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
+    const MEDIA_TYPE_TEXT_CSV = "text/csv";
 
 
     var jsonSubmit=true;
 
 
-    function submitEnactor() {
+    function submitEnactor(jsonSubmit) {
         var url = '/ptm/provapi/statements/';
         var id=enact_result_box_identifier;
         $(id).html($('<p>'));
         $(id).attr('received','false');
-        submitService(url,id,"#csv_log", true,true)
+        submitService(jsonSubmit, url, id, "#csv_log", true,true)
     }
 
 
@@ -144,11 +156,13 @@
     var alreadySeen=[]
 
 
-    function submitService(url,id,id2, enactorp, allRecordsp) {
+
+    function submitService(jsonSubmit, url, id, id2, enactorp, allRecordsp) {
         console.log("submitService")
 
         let csv_data=$('#csv_result').text()
-        let json_data=JSON.stringify(alreadySeen.concat([tm.getBean()]))
+        const input_bean = tm.getBean();
+        let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
         if (allRecordsp) alreadySeen=[]
         console.log("submitService " + json_data);
 
@@ -174,16 +188,23 @@
                 let name=parsed[0]["isA"];
                 let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
                 $(id).html(highlighted);
-                if (id2) $(id2).append(xhr.responseText);
+                if (id2) {
+                    let merged= {...input_bean, ...parsed[0]}
+                    let csv_bean=tm.populateBean(name, merged)
+                    // if we want json log
+                    //      $(id2).append(JSON.stringify(merged, null, 2));
+                    // if we want csv log
+                    $(id2).append("<p>").append(csv_bean[0]).append("</p>");
+                }
             }
             $(id).attr('received','true');
         }
-        xhr.setRequestHeader("Accept", "text/csv");
-        xhr.setRequestHeader("Accept", APPLICATION_PROV_TEMPLATE_JSON);
+        xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
+        xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
         if (jsonSubmit) {
-            xhr.setRequestHeader("Content-Type", APPLICATION_PROV_TEMPLATE_JSON);
+            xhr.setRequestHeader("Content-Type", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
         } else {
-            xhr.setRequestHeader("Content-Type", "text/csv");
+            xhr.setRequestHeader("Content-Type", MEDIA_TYPE_TEXT_CSV);
         }
 
         console.log("submitService " + jsonSubmit);

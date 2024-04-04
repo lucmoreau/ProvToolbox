@@ -158,7 +158,7 @@ public class CompilerSQL {
             first=sepIfNotFirst(res2,first,",\n");
             final String sqlType=getTheSqlType(compilerUtil,key,templateBindingsSchema,var);
             final String sqlType2 = convertToSQLType(compilerUtil.getJavaTypeForDeclaredType(var, key).getName());
-            res2.append(SMALL_INDENTATION).append(key).append( " ").append(sqlType);
+            res2.append(SMALL_INDENTATION).append(sqlify(key)).append( " ").append(sqlType);
         }
         res2.append("\n );\n");
 
@@ -278,9 +278,11 @@ public class CompilerSQL {
     
     Map<String,String> nameMap=initNameMap();
 
-    private Map<String, String> initNameMap() {
+    static public Map<String, String> initNameMap() {
         Map<String,String> res=new HashMap<>();
         res.put("order", "_order");
+        res.put("end", "_end");
+        res.put("start", "_start");
         return res;
     }
 

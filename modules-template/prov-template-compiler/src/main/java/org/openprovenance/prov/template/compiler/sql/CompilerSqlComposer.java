@@ -14,6 +14,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.convertToSQLType;
+import static org.openprovenance.prov.template.compiler.CompilerSQL.initNameMap;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 
@@ -304,6 +305,7 @@ public class CompilerSqlComposer {
                 .stream()
                 .filter(key -> isInput.test(key) || shared.contains(key))
                 .map(key -> shared.contains(key)? table_token_id_pairs(key) + ".id" : key)
+                .map(this::sqlify)
                 .collect(Collectors.toList());
 
 
@@ -504,11 +506,7 @@ public class CompilerSqlComposer {
 
     Map<String,String> nameMap=initNameMap();
 
-    private Map<String, String> initNameMap() {
-        Map<String,String> res=new HashMap<>();
-        res.put("order", "_order");
-        return res;
-    }
+
 
     public String sqlify(String key) {
         return nameMap.getOrDefault(key,key);

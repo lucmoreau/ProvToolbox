@@ -91,7 +91,7 @@ public class TemplateLogic {
             }
         }
         StreamingOutput promise= out -> om.writeValue(out,recordsResult);
-        return utils.composeResponseOK(promise).build();
+        return ServiceUtils.composeResponseOK(promise).build();
     }
 
     public Object[] convertToArray(Map<String, Object> entry, String[] props) {

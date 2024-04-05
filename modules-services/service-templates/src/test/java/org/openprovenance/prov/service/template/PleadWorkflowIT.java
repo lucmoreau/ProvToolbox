@@ -1,10 +1,12 @@
-package org.openprovenance.prov.templates.library;
+package org.openprovenance.prov.service.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
-import org.openprovenance.prov.template.library.plead.client.integrator.*;
+import org.openprovenance.prov.service.client.ClientConfig;
+import org.openprovenance.prov.template.library.plead.client.integrator.InputOutputProcessor;
+import org.openprovenance.prov.templates.library.LocalEnactor;
+import org.openprovenance.prov.templates.library.PleadWorkflow;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,15 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PleadTest extends TestCase {
+abstract public class PleadWorkflowIT extends TestCase {
     private final InputOutputProcessor templateInvoker;
     private final ObjectMapper om = new ObjectMapper();
 
-    public PleadTest(InputOutputProcessor templateInvoker) {
+    public PleadWorkflowIT(InputOutputProcessor templateInvoker) {
         this.templateInvoker = templateInvoker;
     }
 
-    public PleadTest() {
+    public PleadWorkflowIT() {
         Map<String,AtomicInteger> map=new HashMap<>() {{
                 put("activity", new AtomicInteger(1000));
                 put("file", new AtomicInteger(1000));
@@ -35,8 +37,9 @@ public class PleadTest extends TestCase {
             }
         };
     }
+    final static ClientConfig config=new ClientConfig(PleadWorkflowIT.class);
 
-    public void testPlead1() {
+    public void testPleadLocal() {
         List<Object> inputs=new LinkedList<>();
         List<Object> outputs=new LinkedList<>();
         new PleadWorkflow(templateInvoker,null,null).workflow("doc123", 1, 220, 222, 1, 50, "path",null,null);
@@ -46,5 +49,22 @@ public class PleadTest extends TestCase {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+    public void testPleadRemote() {
+        List<Object> inputs=new LinkedList<>();
+        List<Object> outputs=new LinkedList<>();
+
+
+        String statementsURL= config.hostURLprefixContext + "/provapi/statements";
+
+
+        new PleadWorkflow(new WebTemplateInvoker(statementsURL),inputs,outputs).workflow("doc123", 1, 220, 222, 1, 50, "path",null,null);
+
+        try {
+            System.out.println(om.writeValueAsString(outputs));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

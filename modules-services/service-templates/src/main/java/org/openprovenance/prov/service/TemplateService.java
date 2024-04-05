@@ -48,20 +48,18 @@ public class TemplateService {
     private final TemplateDispatcher templateDispatcher;
     private final ObjectMapper om;
     private final Storage storage;
- //   private final Querier querier;
-  //  private final QueryTemplate queryTemplate;
     final ProvFactory pf;
     private final Map<String, FileBuilder> documentBuilderDispatcher;
-    public static final String EMS_HOST = "EMS_HOST";
-    public static final String emsHost=getSystemOrEnvironmentVariableOrDefault(EMS_HOST, "http://localhost:8080/ems");
-    public static final String EMS_API = "EMS_API";
-    public static final String emsAPI=getSystemOrEnvironmentVariableOrDefault(EMS_API, "http://localhost:8080/ems/provapi");
+    public static final String PROV_HOST = "PROV_HOST";
+    public static final String provHost =getSystemOrEnvironmentVariableOrDefault(PROV_HOST, "http://localhost:8080/ems");
+    public static final String PROV_API = "PROV_API";
+    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
     public static final String POSTGRES_HOST = "POSTGRES_HOST";
     public static final String postgresHost=System.getProperty(POSTGRES_HOST, "localhost");
-    public static final String SUST_DB_USER = "SUST_DB_USER";
-    public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(SUST_DB_USER, "user");
-    public static final String SUST_DB_PASS = "SUST_DB_PASS";
-    public static final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(SUST_DB_PASS,"password");
+    public static final String DB_USER = "PROV_DB_USER";
+    public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
+    public static final String DB_PASS = "PROV_DB_PASS";
+    public static final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
     private final TemplateLogic templateLogic;
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
 
@@ -96,7 +94,6 @@ public class TemplateService {
         this.om=new ObjectMapper();
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
         this.om.registerModule(new JavaTimeModule());
-//this.queryTemplate=new QueryTemplate(querier);
 
         this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage,conn);
         this.queryTemplate=new TemplateQuery(querier, templateDispatcher);
@@ -114,8 +111,8 @@ public class TemplateService {
             }
         }
         HashMap<String,String> map=new HashMap<>() {{
-            put("EMS_HOST",emsHost);
-            put("EMS_API",emsAPI);
+            put("PROV_HOST", provHost);
+            put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
         this.templateLogic=new TemplateLogic(pf,null,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3);
@@ -211,7 +208,7 @@ public class TemplateService {
         List<Object> newRecords=enactCsvRecords.process(collection, enactors2, null);
 
         StreamingOutput promise= out -> om.writeValue(out,newRecords);
-        return utils.composeResponseOK(promise).build();
+        return ServiceUtils.composeResponseOK(promise).build();
     }
 
 

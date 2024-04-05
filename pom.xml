@@ -374,6 +374,7 @@
 
 		<junit.version>4.13.2</junit.version>
 		<quartz.version>2.3.2</quartz.version>
+		<spring.version>2.7.6</spring.version> <!-- 2.3.11.RELEASE -->
 
 
 

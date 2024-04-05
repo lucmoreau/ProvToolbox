@@ -7,6 +7,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: deployment of prov-template-library as a service
 * service-templates: submission of csv with json results and reconstructed csv_log
 * service-templates: visualising prov for a template instantiation
+* service-templates: plead workflow, run locally and remotely
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

@@ -11,7 +11,7 @@ build.docker:
 
 
 jetty:
-	 export SUST_DB_USER=luc; export SUST_DB_PASS=admin; export EMS_HOST=http://localhost:7072/ptm; export EMS_API=http://localhost:7072/ptm/provapi; mvn jetty:run-war -Pjetty
+	 export PROV_DB_USER=luc; export PROV_DB_PASS=admin; export PROV_HOST=http://localhost:7072/ptl; export PROV_API=http://localhost:7072/ptl/provapi; mvn jetty:run-war -Pjetty
 
 
 jetty.post:

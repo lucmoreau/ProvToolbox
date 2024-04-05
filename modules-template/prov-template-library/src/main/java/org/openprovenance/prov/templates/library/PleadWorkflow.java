@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PleadWorkflow {
+    private final List<Object> inputs;
+    private final List<Object> outputs;
     Integer organization = 1;
     Integer engineer;
 
@@ -16,13 +18,15 @@ public class PleadWorkflow {
 
     private final ProvFactory pf = ProvFactory.getFactory();
 
-    public PleadWorkflow(InputOutputProcessor templateInvoker) {
+    public PleadWorkflow(InputOutputProcessor templateInvoker, List<Object> inputs, List<Object> outputs) {
         this.templateInvoker = templateInvoker;
+        this.inputs = inputs;
+        this.outputs = outputs;
     }
 
 
 
-    public List<Object> workflow(String filenameRoot, Integer oldFileId, Integer tmethod, Integer fmethod, Integer n_rows, Integer n_cols, String path, String start, String end) {
+    public void workflow(String filenameRoot, Integer oldFileId, Integer tmethod, Integer fmethod, Integer n_rows, Integer n_cols, String path, String start, String end) {
 
         Plead_transformingInputs transformingInputs = new Plead_transformingInputs();
         transformingInputs.filename = filenameRoot + "-transformed.csv";
@@ -36,7 +40,10 @@ public class PleadWorkflow {
         transformingInputs.time = pf.newTimeNow().toString();
         transformingInputs.start = start;
         transformingInputs.end = end;
+
+        if (inputs!=null) inputs.add(transformingInputs);
         Plead_transformingOutputs transformingOutputs = templateInvoker.process(transformingInputs);
+        if (outputs!=null) outputs.add(transformingOutputs);
 
         Plead_filteringInputs filteringInputs = new Plead_filteringInputs();
         filteringInputs.filename = filenameRoot + "-filtered.csv";
@@ -50,7 +57,10 @@ public class PleadWorkflow {
         filteringInputs.time = pf.newTimeNow().toString();
         filteringInputs.start = start;
         filteringInputs.end = end;
+
+        if (inputs!=null) inputs.add(filteringInputs);
         Plead_filteringOutputs filteringOutputs = templateInvoker.process(filteringInputs);
+        if (outputs!=null) outputs.add(filteringOutputs);
 
         Plead_splittingInputs splittingInputs = new Plead_splittingInputs();
         splittingInputs.filename1 = filenameRoot + "-training.csv";
@@ -60,7 +70,10 @@ public class PleadWorkflow {
         splittingInputs.engineer = engineer;
         splittingInputs.path1 = path;
         splittingInputs.time = pf.newTimeNow().toString();
+
+        if (inputs!=null) inputs.add(splittingInputs);
         Plead_splittingOutputs splittingOutputs = templateInvoker.process(splittingInputs);
+        if (outputs!=null) outputs.add(splittingOutputs);
 
         Plead_trainingInputs trainingInputs = new Plead_trainingInputs();
         trainingInputs.filename = filenameRoot + ".pipeline";
@@ -69,7 +82,10 @@ public class PleadWorkflow {
         trainingInputs.engineer = engineer;
         trainingInputs.path = path;
         trainingInputs.time = pf.newTimeNow().toString();
+
+        if (inputs!=null) inputs.add(trainingInputs);
         Plead_trainingOutputs trainingOutputs = templateInvoker.process(trainingInputs);
+        if (outputs!=null) outputs.add(trainingOutputs);
 
         Plead_validatingInputs validatingInputs = new Plead_validatingInputs();
         //random value between 0 and 1
@@ -79,7 +95,10 @@ public class PleadWorkflow {
         validatingInputs.engineer = engineer;
         validatingInputs.path = path;
         validatingInputs.time = pf.newTimeNow().toString();
+
+        if (inputs!=null) inputs.add(validatingInputs);
         Plead_validatingOutputs validatingOutputs = templateInvoker.process(validatingInputs);
+        if (outputs!=null) outputs.add(validatingOutputs);
 
         Plead_approvingInputs approvingInputs = new Plead_approvingInputs();
         approvingInputs.pipeline = trainingOutputs.pipeline;
@@ -89,11 +108,10 @@ public class PleadWorkflow {
         approvingInputs.organization = organization;
         approvingInputs.path = path;
         approvingInputs.time = pf.newTimeNow().toString();
+
+        if (inputs!=null) inputs.add(approvingInputs);
         Plead_approvingOutputs approvingOutputs = templateInvoker.process(approvingInputs);
-
-        return Arrays.asList(transformingOutputs, filteringOutputs, splittingOutputs, trainingOutputs, validatingOutputs, approvingOutputs);
-
-
+        if (outputs!=null) outputs.add(approvingOutputs);
 
     }
 

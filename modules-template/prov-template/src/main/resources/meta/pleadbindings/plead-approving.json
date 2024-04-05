@@ -14,15 +14,15 @@
         "itype2" :                  [[{"@id" : "plead:AccuracyScore"}]],
         "otype1" :                  [[{"@id" : "plead:ApprovedPipeline"}]],
         "otype2" :                  [[{"@id" : "plead:ApprovalRecord"}]],
-        "atype" :                   [[{"@id" : "plead:SelectingData"}]],
+        "atype" :                   [[{"@id" : "plead:ApprovingPipeline"}]],
         "start" :                   [{"@id" : "var:start"}],
         "end" :                     [{"@id" : "var:end"}],
         "iprops1":                  [[{"@id" : "plead:path"}]],
         "iprop_values1":            [[{"@id" : "var:path"}]],
-        "oprops1":                  [[{"@id": "plead:createdAt"}, {"@id" : "plead:path"}]],
-        "oprop_values1":            [[{"@id": "var:time"}, {"@id" : "var:path"}]],
+        "oprops1":                  [[{"@id": "plead:createdAt"}, {"@id" : "plead:path"},  {"@id" : "plead:pipeline"}]],
+        "oprop_values1":            [[{"@id": "var:time"},        {"@id" : "var:path"},    {"@id" : "var:filename"}]],
         "oprops2":                  [[{"@id": "plead:createdAt"}, {"@id" : "plead:signature"},   {"@id" : "plead:pipeline"}]],
-        "oprop_values2":            [[{"@id": "var:time"}, {"@id" : "var:signature"},     {"@id" : "var:approved_pipeline"}]]
+        "oprop_values2":            [[{"@id": "var:time"},        {"@id" : "var:signature"},     {"@id" : "var:approved_pipeline"}]]
     },
     "vargen" : {
         "view" : [ {

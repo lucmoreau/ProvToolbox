@@ -4,13 +4,37 @@
         "approved_pipeline": [
             {
                 "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/approved-pipeline768",
+                "@type": "xsd:int",
+                "@examplar": 130,
                 "@documentation": "The approved pipeline",
                 "@input": "false",
                 "@output": "true",
                 "@sql.table": "file"
             }
+        ],
+        "filename": [
+            [
+                {
+                    "@value": "*",
+                    "@type": "xsd:string",
+                    "@examplar": "file/130-approved.pipeline",
+                    "@documentation": "The filename of the approved pipeline",
+                    "@input": "compulsory",
+                    "@output": "false",
+                    "@sql.type":  "nonNullableTEXT"
+                }
+            ]
+        ],
+        "pipeline": [
+                {
+                    "@id": "*",
+                    "@type": "xsd:int",
+                    "@examplar": 118,
+                    "@documentation": "The pipeline before approval",
+                    "@input": "compulsory",
+                    "@output": "false",
+                    "@sql.table": "file"
+                }
         ],
         "approval_record": [
             {
@@ -19,17 +43,7 @@
                 "@examplar": 9885,
                 "@documentation": "The approval record",
                 "@input": "false",
-                "@output": "true"}
-        ],
-        "pipeline": [
-            {
-                "@id": "file:*",
-                "@type": "xsd:string",
-                "@examplar": "file/pipeline368",
-                "@documentation": "The pipeline before approval",
-                "@input": "compulsory",
-                "@output": "false",
-                "@sql.table": "file"
+                "@output": "true"
             }
         ],
         "score": [

@@ -9,18 +9,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/Querier.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/inface/BiConsumerWithException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/inface/FunctionWithException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/java/org/openprovenance/prov/templates/library/LocalEnactor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/java/org/openprovenance/prov/templates/library/PleadTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/java/org/openprovenance/prov/templates/library/PleadWorkflow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplatesDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-approving.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-transforming.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/test/python/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-approving.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template/src/main/resources/meta/pleadbindings/plead-transforming.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,6 +123,7 @@
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "JUnit.DateTest.testDate5.executor": "Run",
+    "JUnit.PleadTest.testPlead1.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
@@ -208,14 +207,14 @@
       <recent name="org.openprovenance.prov.service.translator.translator" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.templates.library" />
       <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
       <recent name="org.openprovenance.prov.model" />
       <recent name="org.openprovenance.prov.template.emitter" />
-      <recent name="org.openprovenance.prov.service.translator" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DateTest.testDate5">
+  <component name="RunManager" selected="JUnit.PleadTest.testPlead1">
     <configuration name="CompilerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-template-compiler" />
       <extension name="coverage">
@@ -270,32 +269,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DateTest.testDate1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="prov-model" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.openprovenance.prov.model.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
-      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
-      <option name="METHOD_NAME" value="testDate1" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="DateTest.testDate5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-model" />
       <extension name="coverage">
@@ -317,6 +290,32 @@
       <option name="PACKAGE_NAME" value="org.openprovenance.prov.model" />
       <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.model.DateTest" />
       <option name="METHOD_NAME" value="testDate5" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PleadTest.testPlead1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="prov-template-library" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.openprovenance.prov.templates.library.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.openprovenance.prov.templates.library" />
+      <option name="MAIN_CLASS_NAME" value="org.openprovenance.prov.templates.library.PleadTest" />
+      <option name="METHOD_NAME" value="testPlead1" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -408,20 +407,20 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.PleadTest.testPlead1" />
       <item itemvalue="JUnit.DateTest.testDate5" />
       <item itemvalue="JUnit.CompilerTest.testCompiler1" />
-      <item itemvalue="JUnit.DateTest.testDate1" />
       <item itemvalue="JUnit.CompilerTest" />
       <item itemvalue="Makefile Target.test.pgo" />
       <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.PleadTest.testPlead1" />
         <item itemvalue="JUnit.DateTest.testDate5" />
         <item itemvalue="JUnit.CompilerTest.testCompiler1" />
         <item itemvalue="JUnit.CompilerTest" />
         <item itemvalue="Makefile Target.test.pgo" />
-        <item itemvalue="JUnit.DateTest.testDate1" />
       </list>
     </recent_temporary>
   </component>
@@ -846,7 +845,7 @@
       <workItem from="1710416342599" duration="1308000" />
       <workItem from="1711105997230" duration="12994000" />
       <workItem from="1711121045894" duration="4750000" />
-      <workItem from="1711296175962" duration="62111000" />
+      <workItem from="1711296175962" duration="71295000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

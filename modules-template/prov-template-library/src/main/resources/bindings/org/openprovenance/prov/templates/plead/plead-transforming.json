@@ -32,6 +32,17 @@
                 "@sql.table": "file"
             }
         ],
+        "method": [
+            {
+                "@id": "method:*",
+                "@type": "xsd:int",
+                "@examplar": 222,
+                "@documentation": "The method to transform the file",
+                "@input": "optional",
+                "@output": "false",
+                "@sql.table": "method"
+            }
+        ],
         "organization": [
             {
                 "@id": "ag:*",
@@ -125,7 +136,8 @@
     "context": {
         "ag":  "${PROV_API}/live/agent/",
         "act": "${PROV_API}/live/activity/",
-        "file": "${PROV_API}/live/file/"
+        "file": "${PROV_API}/live/file/",
+        "method": "${PROV_API}/live/method/"
     },
     "template": "TODO template",
     "@documentation": "Template describing the transformation of a file."

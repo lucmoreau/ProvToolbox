@@ -11,8 +11,9 @@ import java.util.List;
 public class PleadWorkflow {
     private final List<Object> inputs;
     private final List<Object> outputs;
-    Integer organization = 1;
-    Integer engineer;
+    Integer organization = 111;
+    Integer engineer=222;
+    Integer manager=333;
 
     private final InputOutputProcessor templateInvoker;
 
@@ -106,6 +107,7 @@ public class PleadWorkflow {
         approvingInputs.score = validatingOutputs.validating;
         approvingInputs.signature="signature";
         approvingInputs.organization = organization;
+        approvingInputs.manager = manager;
         approvingInputs.path = path;
         approvingInputs.time = pf.newTimeNow().toString();
 

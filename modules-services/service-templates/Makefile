@@ -464,4 +464,4 @@ WEBSERVICE=https://openprovenance.org/services/provapi/documents
 WEBSERVICE=http://localhost:7072/ptl/provapi/templates
 
 test.ptl1:
-	curl -i -X POST  -H "Content-Type: application/json"  -d @src/test/resources/json/table-key1.json  $(WEBSERVICE).provn
+	curl -i -X POST  -H "Content-Type: application/json"  -d @src/test/resources/json/table-key1.json  $(WEBSERVICE).svg

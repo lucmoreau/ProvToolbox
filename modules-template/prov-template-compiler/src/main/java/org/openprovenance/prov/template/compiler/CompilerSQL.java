@@ -276,7 +276,7 @@ public class CompilerSQL {
         return count;
     }
     
-    Map<String,String> nameMap=initNameMap();
+    static Map<String,String> nameMap=initNameMap();
 
     static public Map<String, String> initNameMap() {
         Map<String,String> res=new HashMap<>();
@@ -286,7 +286,7 @@ public class CompilerSQL {
         return res;
     }
 
-    public String sqlify(String key) {
+    static public String sqlify(String key) {
         return nameMap.getOrDefault(key,key);
     }
 

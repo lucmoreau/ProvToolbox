@@ -5,13 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -21,13 +19,13 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.sql.Connection;
@@ -47,7 +45,7 @@ public class TemplateService {
     public static final String APPLICATION_VND_KCL_PROV_TEMPLATE_JSON = "application/vnd.kcl.prov-template+json";
     private final PostService ps;
     private final ServiceUtils utils;
-    private final TemplatesDispatcher templateDispatcher;
+    private final TemplateDispatcher templateDispatcher;
     private final ObjectMapper om;
     private final Storage storage;
  //   private final Querier querier;
@@ -68,6 +66,8 @@ public class TemplateService {
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
+    private final Querier querier;
+    private final TemplateQuery queryTemplate;
 
     static final String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
         String value = System.getProperty(name);
@@ -90,8 +90,8 @@ public class TemplateService {
         this.storage=new Storage();
 
         Connection conn=storage.setup(postgresHost, postgresUsername, postgresPassword);
-        this.templateDispatcher=new TemplatesDispatcher(storage,conn);
-       // this.querier =new Querier(storage,conn);
+        this.templateDispatcher=new TemplateDispatcher(storage,conn);
+        this.querier =new Querier(storage,conn);
        // this.spreadsheetExporter=new SpreadsheetExporter(querier);
         this.om=new ObjectMapper();
         this.om.enable(SerializationFeature.INDENT_OUTPUT);
@@ -99,6 +99,7 @@ public class TemplateService {
 //this.queryTemplate=new QueryTemplate(querier);
 
         this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage,conn);
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher);
 
 
         if (conn!=null) {
@@ -156,6 +157,38 @@ public class TemplateService {
         } else {
             return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
         }
+    }
+
+    @GET
+    @Path("/template/{template}/{id}.{extension}")
+    @Tag(name = "ems_q")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_IMAGE_SVG_XML })
+    public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
+                                                 @Context HttpServletRequest request,
+                                                 @Context HttpHeaders headers,
+                                                 @Context UriInfo uriInfo,
+                                                 @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                                 @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id,
+                                                 @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
+
+
+        logger.info("getTemplateInstanceWithId " + template + " " + id + " " + extension);
+
+        List<Object[]> records = queryTemplate.query(template, id, false);
+        debugDisplay("records.size ", records.size());
+
+        Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
+
+        switch (extension) {
+            case "jsonld":
+                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+            case "provn":
+                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+            case "svg":
+                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
+
+        }
+        return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
 
     private void debugDisplay(String msg, Object object) {

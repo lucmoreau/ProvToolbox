@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
 
     bean=Plead_approvingBean()
-    bean.approved_pipeline='approved_pipeline'
+    bean.isA=bean.isA
     bean.approval_record=100
     bean.pipeline='pipeline'
     bean.score=21
@@ -32,16 +32,23 @@ if __name__ == "__main__":
     bean.end='2023-11-10T14:09:55.265Z'
     print(bean)
 
+    print(json.dumps(vars(bean)))
+
+    print('-----')
+
 
     builder=Plead_approvingBuilder()
     result=bean.process(builder.args2csv())
     print(result)
 
+    print('-----')
 
     print(Logger.logPlead_approving('approved_pipeline',100,'pipeline',21,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z'))
     bean2=Logger.beanPlead_approving('approved_pipeline',100,'pipeline',21,'kcl','tdh',245,'sig','/home/plead/workflow/123','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z','2023-11-10T14:09:55.265Z')
-    print(bean2)
-    
-    #print(json.dumps(bean))
+
+    print(json.dumps(vars(bean2)))
+
+
+#print(json.dumps(bean))
 
 

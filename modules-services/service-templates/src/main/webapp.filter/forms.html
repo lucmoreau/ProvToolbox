@@ -74,6 +74,7 @@
                     <button id="button-clear" type="button" class="btn btn-info" onclick="enactClear()">Clear</button>
                     <h4>Submission Result</h4>
                     <pre id="enact_result" class="pretty"> </pre>
+                    <p id="prov_link"></p>
                 </div>
             </div>
 
@@ -132,6 +133,7 @@
     const HTML_ANCHOR_JSON_RESULT = '#json_result';
     const HTML_ANCHOR_CSV_RESULT = '#csv_result';
     const HTML_ANCHOR_CSV_LOG = '#csv_log';
+    const HTML_ANCHOR_ENACT_RESULT_PROV_LINK = '#prov_link';
     const HTML_ANCHOR_DOCUMENTATION_IMAGE = '#documentation_image';
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_COMPOSER = "#template-dropdown-composer";
     const HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN = "#template-dropdown-documentation";
@@ -148,17 +150,22 @@
 
 
     function submitEnactor(jsonSubmit) {
-        var id=HTML_ANCHOR_ENACT_RESULT_BOX;
-        $(id).html($('<p>'));
-        $(id).attr('received','false');
-        submitService(jsonSubmit, SUBMISSION_URL, id, HTML_ANCHOR_CSV_LOG, true,true)
+        $(HTML_ANCHOR_ENACT_RESULT_BOX).html($('<p>'));
+        $(HTML_ANCHOR_ENACT_RESULT_BOX).attr('received','false');
+        submitService(jsonSubmit, SUBMISSION_URL, HTML_ANCHOR_ENACT_RESULT_BOX, HTML_ANCHOR_CSV_LOG, HTML_ANCHOR_ENACT_RESULT_PROV_LINK, true,true)
     }
 
 
 
     var alreadySeen=[]
 
-    function submitService(jsonSubmit, url, id, id2, enactorp, allRecordsp) {
+    function createProvLink(name, ID) {
+        return "Link to Provenance <a href='${service.context}/provapi/template/" + name + "/" + ID + ".svg'>(svg)</a>,"
+                               + " <a href='${service.context}/provapi/template/" + name + "/" + ID + ".provn'>(provn)</a>,"
+                               + " <a href='${service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
+    }
+
+    function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, enactorp, allRecordsp) {
         console.log("submitService")
 
         let csv_data=$(HTML_ANCHOR_CSV_RESULT).text()
@@ -171,34 +178,39 @@
         xhr.open('POST', url, true);
         xhr.onerror= function(xhr,event) {
             console.log("error with " + event);
-            $(id).html("error with " + event);
+            $(anchor_result_box).html("error with " + event);
 
         };
         xhr.onabort= function(xhr,event) {
             console.log("abort with " + event);
-            $(id).html("abort with " + event);
+            $(anchor_result_box).html("abort with " + event);
         };
         xhr.onload= function() {
             console.log("loaded " + xhr.status);
             if (xhr.status === 400 || xhr.status === 404) {
-                $(id).html("status code " + xhr.status + " " + xhr.responseText);
+                $(anchor_result_box).html("status code " + xhr.status + " " + xhr.responseText);
             } else if (!enactorp && (xhr.status === 200)) {
-                $(id).html('<i class="fa fa-check"></i>' + "Passed Validator!");
+                $(anchor_result_box).html('<i class="fa fa-check"></i>' + "Passed Validator!");
             } else {
                 const parsed = JSON.parse(xhr.responseText);
                 let name=parsed[0]["isA"];
                 let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
-                $(id).html(highlighted);
-                if (id2) {
+                $(anchor_result_box).html(highlighted);
+                if (anchor_csv) {
                     let merged= {...input_bean, ...parsed[0]}
                     let csv_bean=tm.populateBean(name, merged)
                     // if we want json log
                     //      $(id2).append(JSON.stringify(merged, null, 2));
                     // if we want csv log
-                    $(id2).append("<p>").append(csv_bean[0]).append("</p>");
+                    $(anchor_csv).append("<p>").append(csv_bean[0]).append("</p>");
+                }
+                if (anchor_result_prov_link) {
+                    let ID=parsed[0]["ID"];
+                    let prov_link = createProvLink(name, ID);
+                    $(anchor_result_prov_link).html(prov_link);
                 }
             }
-            $(id).attr('received','true');
+            $(anchor_result_box).attr('received','true');
         }
         xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
         xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
@@ -219,6 +231,7 @@
 
     function enactClear() {
         $(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
+        $(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
     }
 
     let imageNameMapper = {

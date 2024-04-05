@@ -24,13 +24,13 @@ public class TemplateLogic {
 
     static Logger logger = LogManager.getLogger(TemplateLogic.class);
     private final ProvFactory pf;
-    private final TemplatesDispatcher templateDispatcher;
+    private final TemplateDispatcher templateDispatcher;
     private final Map<String, FileBuilder> documentBuilderDispatcher;
     private final ServiceUtils utils;
     private final ObjectMapper om;
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
 
-    public TemplateLogic(ProvFactory pf, Object o, TemplatesDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3) {
+    public TemplateLogic(ProvFactory pf, Object o, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;

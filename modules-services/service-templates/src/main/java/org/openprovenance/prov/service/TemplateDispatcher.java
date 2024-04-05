@@ -16,8 +16,8 @@ import java.util.Map;
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeCompositeBeanTable;
 
-public class TemplatesDispatcher {
-    static Logger logger = LogManager.getLogger(TemplatesDispatcher.class);
+public class TemplateDispatcher {
+    static Logger logger = LogManager.getLogger(TemplateDispatcher.class);
 
     final TemplateBuilders allBuilders=new TemplateBuilders();
 
@@ -30,7 +30,7 @@ public class TemplatesDispatcher {
     private final Map<String, ProcessorArgsInterface<?>> enactorConverter;
     private final Map<String, RecordsProcessorInterface<?>> compositeEnactorConverter;
 
-    public TemplatesDispatcher(Storage storage, Connection conn) {
+    public TemplateDispatcher(Storage storage, Connection conn) {
         propertyOrder=initializeBeanTable(new PropertyOrderConfigurator());
         sqlConverter=initializeBeanTable(new SqlConfigurator());
         csvConverter=initializeBeanTable(new CsvConfigurator());

@@ -27,7 +27,7 @@
         ],
         "pipeline": [
                 {
-                    "@id": "*",
+                    "@id": "file:*",
                     "@type": "xsd:int",
                     "@examplar": 118,
                     "@documentation": "The pipeline before approval",

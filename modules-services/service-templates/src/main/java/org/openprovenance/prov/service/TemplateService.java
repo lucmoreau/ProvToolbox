@@ -11,13 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.openprovenance.prov.client.ProcessorArgsInterface;
-import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.PostService;
@@ -30,11 +26,9 @@ import java.io.InputStream;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
@@ -63,7 +57,6 @@ public class TemplateService {
     private final TemplateLogic templateLogic;
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
 
-    private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final Querier querier;
     private final TemplateQuery queryTemplate;
 
@@ -148,7 +141,7 @@ public class TemplateService {
             return utils.composeResponseInternalServerError("null document", new NullPointerException());
         }
         if (documentOrCsv.csv!=null) {
-            return processIncomingCsv(documentOrCsv.csv);
+            return templateLogic.processIncomingCsv(documentOrCsv.csv);
         } else if (documentOrCsv.json!=null) {
             return templateLogic.processIncomingJson(documentOrCsv.json);
         } else {
@@ -198,20 +191,36 @@ public class TemplateService {
 
 
 
-    public Response processIncomingCsv(CSVParser csv) {
-        Collection<CSVRecord> collection=csv.getRecords();
-        Map<String, ProcessorArgsInterface<?>> enactors = templateDispatcher.getEnactorConverter();
-        Map<String, ProcessorArgsInterface<Object>> enactors2= enactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (ProcessorArgsInterface<Object>) e.getValue()));
-        Map<String, RecordsProcessorInterface<?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
-        Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));
-        Map<String, RecordsProcessor<Object>> enactorsN = null;
-        List<Object> newRecords=enactCsvRecords.process(collection, enactors2, null);
 
-        StreamingOutput promise= out -> om.writeValue(out,newRecords);
-        return ServiceUtils.composeResponseOK(promise).build();
+    @POST
+    @Path("/templates.{extension}")
+    @Tag(name = "ems_q")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_IMAGE_SVG_XML })
+    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response getTemplates(@Context HttpServletResponse response,
+                                              @Context HttpServletRequest request,
+                                              @Context HttpHeaders headers,
+                                              @Context UriInfo uriInfo,
+                                              @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension,
+                                 TableKeyList tableKey) {
+
+        List<Object[]> records = queryTemplate.queryTemplates(tableKey, false);
+
+        Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
+
+        switch (extension) {
+            case "jsonld":
+                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+            case "provn":
+                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+            case "svg":
+                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
+
+        }
+        return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
+
+
     }
-
-
 
 
 

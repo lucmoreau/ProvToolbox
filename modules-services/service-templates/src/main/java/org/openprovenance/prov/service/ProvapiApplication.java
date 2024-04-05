@@ -107,7 +107,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(new OpenApiResource());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		singletons.add(new JsonOrCsvMessageBodyReader());
-		
+		singletons.add(new TableKeyListMessageBodyReader());
+
 
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());

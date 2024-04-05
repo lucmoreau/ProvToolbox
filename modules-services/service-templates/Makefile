@@ -458,3 +458,10 @@ test.syntax1:
 	@curl -i -X POST  -H "Content-Type: multipart/form-data"  -Ftype=provn -Fstatements=@target/contents.provn -Ftranslate=turtle  $(WEBSERVICE) #| grep Location | awk '{ print $$2 }' > target/location.txt
 #--trace-ascii target/output.txt
 	curl -X GET -i `cat target/location.txt`
+
+
+WEBSERVICE=https://openprovenance.org/services/provapi/documents
+WEBSERVICE=http://localhost:7072/ptl/provapi/templates
+
+test.ptl1:
+	curl -i -X POST  -H "Content-Type: application/json"  -d @src/test/resources/json/table-key1.json  $(WEBSERVICE).provn

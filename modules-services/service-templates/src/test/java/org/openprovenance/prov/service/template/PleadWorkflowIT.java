@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-abstract public class PleadWorkflowIT extends TestCase {
+ public class PleadWorkflowIT extends TestCase {
     private final InputOutputProcessor templateInvoker;
     private final ObjectMapper om = new ObjectMapper();
 

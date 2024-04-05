@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
@@ -13,9 +15,11 @@ import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.ELEMENTS;
 import static org.openprovenance.prov.template.compiler.common.Constants.IS_A;
@@ -29,6 +33,8 @@ public class TemplateLogic {
     private final ServiceUtils utils;
     private final ObjectMapper om;
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
+
+    private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
 
     public TemplateLogic(ProvFactory pf, Object o, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3) {
         this.pf = pf;
@@ -112,4 +118,16 @@ public class TemplateLogic {
         }
     }
 
+    public Response processIncomingCsv(CSVParser csv) {
+        Collection<CSVRecord> collection=csv.getRecords();
+        Map<String, ProcessorArgsInterface<?>> enactors = templateDispatcher.getEnactorConverter();
+        Map<String, ProcessorArgsInterface<Object>> enactors2= enactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (ProcessorArgsInterface<Object>) e.getValue()));
+        Map<String, RecordsProcessorInterface<?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
+        Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));
+        Map<String, RecordsProcessor<Object>> enactorsN = null;
+        List<Object> newRecords=enactCsvRecords.process(collection, enactors2, null);
+
+        StreamingOutput promise= out -> om.writeValue(out,newRecords);
+        return ServiceUtils.composeResponseOK(promise).build();
+    }
 }

@@ -5,6 +5,8 @@ import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,12 +58,25 @@ public class TemplateQuery {
                         for (int i = 1; i < record.length; i++) {
                             // ISSUE, these are the sql names, not the property names
                             String columnLabel = sqlify(propertyOrder[i]);
-                            record[i] = rs.getObject(columnLabel);
+                            Object o = rs.getObject(columnLabel);
+                            if (o instanceof Timestamp) {
+                                o = o.toString();
+                            }
+                            record[i] = o;
                         }
                         data.add(record);
                     }
                 });
 
         return the_records;
+    }
+
+    public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles) {
+        List<Object[]> result = new LinkedList<>();
+        for (TableKey tableKey : tableKeyList.key) {
+            List<Object[]> tmp=query(tableKey.isA, tableKey.ID, withTitles);
+            result.addAll(tmp);
+        }
+        return result;
     }
 }

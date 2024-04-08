@@ -57,5 +57,10 @@ public abstract class LocalEnactor implements InputOutputProcessor {
         pleadSplittingOutputs.split_file2 = incrementCounter("file");
         return pleadSplittingOutputs;
     }
+
+    @Override
+    public Plead_transforming_compositeOutputs process(Plead_transforming_compositeInputs bean) {
+        throw new UnsupportedOperationException("Plead_transforming_composite not supported");
+    }
 }
 

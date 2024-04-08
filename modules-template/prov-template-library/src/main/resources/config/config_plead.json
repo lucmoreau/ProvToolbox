@@ -63,10 +63,15 @@
 			"template": "target/prov-template-library/templates/org/openprovenance/prov/templates/plead/plead-splitting.provn",
 			"package": "org.openprovenance.prov.template.library.plead",
 			"bindings": "src/main/resources/bindings/org/openprovenance/prov/templates/plead/plead-splitting.json"
+		},
+
+		{
+			"@type": "composite",
+			"name": "plead_transforming_composite",
+			"consistsOf": "plead_transforming",
+			"package": "org.openprovenance.prov.template.library.plead",
+			"sharing": ["transformed_file", "transforming"]
 		}
-
-
-
 	],
 	"sql.tables":  {
 		"file": {
@@ -95,47 +100,6 @@
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
 
-		"impact": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"aspect": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"environmentType": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"policy": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"objective": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"target": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"reports": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
 		"method": {
 			"id": "SERIAL",
 			"serial": "INT",
@@ -148,18 +112,15 @@
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
 
-		"progress": {
+
+		"assembled_collection": {
 			"id": "SERIAL",
-			"serial": "INT",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
 
-		"obligation": {
+		"chart": {
 			"id": "SERIAL",
-			"serial": "INT",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		}
-
-
 	}
 }

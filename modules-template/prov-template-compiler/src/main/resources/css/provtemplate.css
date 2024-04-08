@@ -20,6 +20,17 @@
     content: '(type: ';
 }
 
+.csv_shared::after {
+    content: ')';
+}
+.csv_shared::before {
+    content: '(';
+}
+.csv_shared {
+     color: red;
+ }
+
+
 .csv_type {
     font-style: italic;
 }

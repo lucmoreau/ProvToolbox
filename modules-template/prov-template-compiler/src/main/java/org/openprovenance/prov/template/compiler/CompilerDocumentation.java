@@ -43,7 +43,7 @@ public class CompilerDocumentation {
 
 
 
-    public void generateDocumentation(String documentationFile, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema) {
+    public void generateDocumentation(String documentationFile, String templateName, String root_dir, TemplateBindingsSchema bindingsSchema, List<String> sharing) {
 
         if (os==null) {
             new File(root_dir).mkdirs();
@@ -108,6 +108,7 @@ public class CompilerDocumentation {
 
             for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
 
+
                 required.add(key);
 
                 os.println("<li>");
@@ -117,7 +118,11 @@ public class CompilerDocumentation {
 
                 final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
 
-                os.println(makeSpan(jsonType, "csv_type")+":");
+                os.print(makeSpan(jsonType, "csv_type"));
+                if (sharing!=null && sharing.contains(key)) {
+                    os.print(makeSpan("share-able variable", "csv_shared"));
+                }
+                os.println(":");
 
 
                 Descriptor descriptor=theVar.get(key).get(0);

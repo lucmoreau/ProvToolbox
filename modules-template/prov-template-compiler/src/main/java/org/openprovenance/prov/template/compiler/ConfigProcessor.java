@@ -175,6 +175,7 @@ public class ConfigProcessor implements Constants {
 
 
                     String simple=config.consistsOf;
+                    List<String> sharing=config.sharing;
                     boolean found=false;
                     //System.out.println("==> Found " + config);
                     for (TemplateCompilerConfig aconfig2: configs.templates) {
@@ -555,6 +556,8 @@ public class ConfigProcessor implements Constants {
 
                 if (inComposition) {
 
+                    // generate the composite bean schema
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema);
 
 
                     if (consistsOf==null) {
@@ -597,7 +600,11 @@ public class ConfigProcessor implements Constants {
                 if (!inComposition) {
                     final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                     new File(cli_webjar_html_dir).mkdirs();
-                    compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema);
+                    compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema, null);
+                } else {
+                    final String cli_webjar_html_dir = cli_webjar_dir + "/html";
+                    new File(cli_webjar_html_dir).mkdirs();
+                    compilerDocumentation.generateDocumentation(documentation, templateName, cli_webjar_html_dir, bindingsSchema, sharing);
                 }
             }
 

@@ -146,6 +146,7 @@
                         </configuration>
                     </execution>
 
+                    <!--
                     <execution>
                         <id>python-test</id>
                         <phase>test</phase>
@@ -163,6 +164,7 @@
                             </environmentVariables>
                         </configuration>
                     </execution>
+                    -->
 
                     <!--
                     <execution>

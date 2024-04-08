@@ -9,6 +9,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: visualising prov for a template instantiation
 * service-templates: plead workflow, run locally and remotely
 * service-templates: extracting provenance of a workflow run
+* prov-template-library: added composite template plead_transforming_composite
+* prov-template-compiler: documentation for composite templates
 
 `2.0.5`
 * prov-template-library: cleaned up pom.xml

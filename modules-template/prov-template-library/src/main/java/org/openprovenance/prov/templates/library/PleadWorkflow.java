@@ -104,7 +104,7 @@ public class PleadWorkflow {
         Plead_approvingInputs approvingInputs = new Plead_approvingInputs();
         approvingInputs.pipeline = trainingOutputs.pipeline;
         approvingInputs.filename = filenameRoot + ".approved-pipeline";
-        approvingInputs.score = validatingOutputs.validating;
+        approvingInputs.score = validatingOutputs.score;
         approvingInputs.signature="signature";
         approvingInputs.organization = organization;
         approvingInputs.manager = manager;

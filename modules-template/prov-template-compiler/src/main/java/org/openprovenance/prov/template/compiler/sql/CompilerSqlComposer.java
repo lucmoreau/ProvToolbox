@@ -344,6 +344,16 @@ public class CompilerSqlComposer {
                 "SELECT input_id\n" +
                 "RETURNING chart.id as id\n" +
                 "$$ language SQL;\n" +
+                "\n\n" +
+                "\t\t\t\t"+
+                "\n\n" +
+                "CREATE OR REPLACE FUNCTION insert_into_file (input_id BIGINT)\n" +
+                "    returns table(id INT)\n" +
+                "as $$\n" +
+                "INSERT INTO file (id)\n" +
+                "SELECT input_id\n" +
+                "RETURNING file.id as id\n" +
+                "$$ language SQL;\n" +
                 "\n\n"
 
 

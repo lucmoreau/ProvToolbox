@@ -491,7 +491,7 @@ public class ConfigProcessor implements Constants {
 
             if (!inComposition) {
                 // generating client first to ensure successor is calculated
-                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, indexed, logger, BeanKind.SIMPLE, bn + DOT_JAVA_EXTENSION);
+                Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, indexed, logger, BeanKind.SIMPLE, bn + DOT_JAVA_EXTENSION, consistsOf);
                 SpecificationFile spec2 = tmp.getLeft();
                 val2=spec2.save();
                 Map<Integer, List<Integer>> successorTable = tmp.getRight();
@@ -538,16 +538,16 @@ public class ConfigProcessor implements Constants {
                     SpecificationFile spec7 = compilerIntegrator.generateIntegrator(locations, templateName, integratorPackage, bindingsSchema, logger, BeanKind.SIMPLE, consistsOf, integratorDir, integratorBuilder + DOT_JAVA_EXTENSION);
                     val3 = val3 & spec7.save();
 
-                    SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName) + DOT_JAVA_EXTENSION, consistsOf);
                     val4 = spec4.save();
 
-                    SpecificationFile spec4b = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.INPUTS), bindingsSchema, IN_INTEGRATOR, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION);
+                    SpecificationFile spec4b = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.INPUTS), bindingsSchema, IN_INTEGRATOR, compilerUtil.integratorNameClass(templateName) + DOT_JAVA_EXTENSION, consistsOf);
                     val4 = val4 & spec4b.save();
                 }
 
                 if (!inComposition) {
 
-                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema);
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema, null, "#/definitions/");
                     compilerSQL.generateSQL(jsonschema + SQL_INTERFACE, templateName, cli_src_dir + "/../sql", bindingsSchema);
                     compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
 
@@ -556,22 +556,29 @@ public class ConfigProcessor implements Constants {
 
                 if (inComposition) {
 
-                    // generate the composite bean schema
-                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema);
-
-
                     if (consistsOf==null) {
                         throw new NullPointerException("No composed class has been specified for composite " + templateName);
                     }
+
+
+                    // generate the composite bean schema
+                    compilerJsonSchema.generateJSonSchema(templateName+"_1", bindingsSchema, null, "#/definitions/");
+
 
                     compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing);
 
                     SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                     config.name = compositeBeanNameClass;
                     config.package_ = packageName;
-                    config.bindings = "openprovenance:composite-bean.json";
+
+                    config.bindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
                     config.template = "openprovenance:composite-bean.provn";
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/");
+
+                    // LUC: FIXME: not generating processor fully, with composite subbean
+                    SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName)  + DOT_JAVA_EXTENSION, consistsOf);
+                    val4 = spec4.save();
 
                     SpecificationFile spec7b = compilerBeanGenerator.generateBean(configs, locations, templateName, bindingsSchema2, BeanKind.COMPOSITE, BeanDirection.COMMON, consistsOf, null, null, compositeBeanNameClass + DOT_JAVA_EXTENSION);
                     if (spec7b!=null) {
@@ -586,7 +593,7 @@ public class ConfigProcessor implements Constants {
                         val3 = val3 & spec7d.save();
                     }
 
-                    Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, indexed, logger, BeanKind.COMPOSITE, bn + DOT_JAVA_EXTENSION);
+                    Pair<SpecificationFile, Map<Integer, List<Integer>>> tmp = compilerCommon.generateCommonLib(configs, locations, doc, bn, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, indexed, logger, BeanKind.COMPOSITE, bn + DOT_JAVA_EXTENSION,consistsOf);
                     if (tmp.getLeft()!=null) {
                         SpecificationFile spec2 = tmp.getLeft();
                         val3 = val3 & spec2.save();

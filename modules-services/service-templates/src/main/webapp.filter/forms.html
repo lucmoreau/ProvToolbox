@@ -16,6 +16,8 @@
 <script src="${service.context}/webjars/JSV/lib/jsv.js"></script>
 <script src="${service.context}/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
 <script src="${service.context}/webjars/jsonform/lib/jsonform.js"></script>
+<script src="${service.context}/webjars/jsonform/deps/opt/jquery-ui.js"></script>
+
 <script src="${service.context}/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
 
 
@@ -119,8 +121,17 @@
                     compulsory: compusolryFields,
                     optional: optionalFields
                 }
+            } else {
+                console.log("composite " + name)
+                console.log("composite " + builder.getPropertyOrder())
+                profile[name] = {
+                    compulsory: ["isA","__elements"],
+                    optional: diff(builder.getPropertyOrder(), ["isA"])
+                }
+                profile[name].compulsory=profile[name].compulsory.concat(profile["plead_transforming"].compulsory.map(x => ["__element", x]));
             }
         }
+        console.log(profile)
         return profile;
     }
 

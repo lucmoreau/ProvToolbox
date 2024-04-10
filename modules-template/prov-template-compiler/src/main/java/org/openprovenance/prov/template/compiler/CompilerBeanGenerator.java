@@ -128,7 +128,7 @@ public class CompilerBeanGenerator {
         }
 
         if (beanKind==BeanKind.SIMPLE && beanDirection==BeanDirection.COMMON) {
-            MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema);
+            MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema, null);
             builder.addMethod(mbuild);
 
         } else if (beanKind==BeanKind.COMPOSITE) {
@@ -137,6 +137,11 @@ public class CompilerBeanGenerator {
 
             if (sharing!=null) {
                 variant = newVariant(consistOf, sharing, configs);
+            }
+
+            if (beanDirection==BeanDirection.COMMON) {
+                MethodSpec mbuild = generateInvokeProcessor(templateName, packge, bindingsSchema, ELEMENTS);
+                builder.addMethod(mbuild);
             }
 
             generateCompositeList(consistOf, packge, builder, beanDirection, variant, sharing);
@@ -296,7 +301,7 @@ public class CompilerBeanGenerator {
         return ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(template)),typeT);
     }
 
-    public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateInvokeProcessor(String template, String packge, TemplateBindingsSchema bindingsSchema, String elements) {
 
         Collection<String> fieldNames = descriptorUtils.fieldNames(bindingsSchema);
         if (fieldNames.contains(PROCESSOR_PARAMETER_NAME)) {
@@ -310,8 +315,16 @@ public class CompilerBeanGenerator {
 
         builder.addParameter(processorClassType(template,packge), PROCESSOR_PARAMETER_NAME);
 
+        Collection<String> actualFieldNames;
+        if (elements!=null) {
+            actualFieldNames=new LinkedList<>(fieldNames);
+            actualFieldNames.add(elements);
+        } else {
+            actualFieldNames=fieldNames;
+        }
+
         builder.addStatement("return $N.$N($L)", PROCESSOR_PARAMETER_NAME, Constants.PROCESSOR_PROCESS_METHOD_NAME,
-                CodeBlock.join(fieldNames.stream().map(field ->
+                CodeBlock.join(actualFieldNames.stream().map(field ->
                         CodeBlock.of("$N", field)).collect(Collectors.toList()), ","));
 
         return builder.build();

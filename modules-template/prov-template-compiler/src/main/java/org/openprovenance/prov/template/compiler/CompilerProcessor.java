@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
@@ -34,7 +35,7 @@ public class CompilerProcessor {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName) {
+    public SpecificationFile generateProcessor(Locations locations, String templateName, String packge, TemplateBindingsSchema bindingsSchema, boolean inIntegrator, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateProcessorClassInit(inIntegrator? compilerUtil.integratorNameClass(templateName) : compilerUtil.processorNameClass(templateName));
@@ -81,6 +82,15 @@ public class CompilerProcessor {
             }
 
         }
+
+
+
+        if (consistsOf!=null) {
+            final TypeName listType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge, compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON)));
+            mbuilder.addParameter(listType, Constants.ELEMENTS);
+            jdoc.add("@param $N: to do \n", Constants.ELEMENTS);
+        }
+
         jdoc.add(retString);
 
         mbuilder.addJavadoc(jdoc.build());

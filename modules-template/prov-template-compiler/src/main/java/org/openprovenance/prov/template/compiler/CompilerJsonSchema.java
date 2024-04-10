@@ -3,8 +3,6 @@ package org.openprovenance.prov.template.compiler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.MissingNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import org.openprovenance.prov.model.ProvFactory;
@@ -19,14 +17,17 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.descriptorUtils;
+import static org.openprovenance.prov.template.compiler.common.Constants.ELEMENTS;
 
 public class CompilerJsonSchema {
     private final CompilerUtil compilerUtil;
+    private final ProvFactory pFactory;
     ObjectMapper om = new ObjectMapper();
     Map<String, Object> jsonSchemaAsAMap = initializeSchemaMap();
 
     public CompilerJsonSchema(ProvFactory pFactory) {
         this.compilerUtil=new CompilerUtil(pFactory);
+        this.pFactory=pFactory;
     }
 
     public void generateJSonSchemaEnd(String jsonschema, String root_dir) {
@@ -55,18 +56,18 @@ public class CompilerJsonSchema {
         return res;
     }
 
-    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema) {
+    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema, String consistsOf, String idPrefix) {
 
 
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
         Collection<String> variables=descriptorUtils.fieldNames(bindingsSchema);
 
 
-        Map<String, Object> aSchema = new HashMap<String, Object>();
-        aSchema.put(get$id(), "#/definitions/" + templateName);
+        Map<String, Object> aSchema = new HashMap<>();
+        aSchema.put(get$id(), idPrefix + templateName);
         aSchema.put("type", "object");
 
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         aSchema.put("properties", properties);
 
         List<String> requiredProperties=new LinkedList<>();
@@ -76,14 +77,21 @@ public class CompilerJsonSchema {
         for (String key: variables) {
 
             requiredProperties.add(key);
-            Map<String, Object> atype = new HashMap<String, Object>();
-            atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
+            Map<String, Object> atype = new HashMap<>();
+            atype.put(get$id(), idPrefix +templateName+"/properties/"+key);
             atype.put("title", title(key));
             final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
             atype.put("type", jsonType);
             final Object defaultValue=defaultValue(jsonType);
             if (defaultValue!=null) atype.put("default", defaultValue);
             //atype.put("required", true);
+
+            // LUC FIXME: should be generated for composite only, and subtype needs to be adjusted.
+            if (consistsOf!=null && key.equals("type")) {
+                atype.put("readOnly", "true");
+                atype.put("default", consistsOf);
+            }
+
 
             Descriptor descriptor=theVar.get(key).get(0);
             String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
@@ -96,9 +104,53 @@ public class CompilerJsonSchema {
             properties.put(key, atype);
         }
 
+        if (consistsOf!=null) {
+            String elementKey = ELEMENTS;
+            requiredProperties.add(elementKey);
+            Map<String, Object> atype2 = new HashMap<>();
+            atype2.put(get$id(), idPrefix + templateName + "/properties/" + elementKey);
+            atype2.put("title", title(elementKey));
+            atype2.put("type", "array");
+            //atype2.put("items", Map.of("$ref", idPrefix + "plead_transforming_composite_1"));
+
+            // jsonform does not support $ref in items, so we need to expand the schema
+
+            Map<String,Object>subschema= (Map<String, Object>) ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).get("plead_transforming");
+
+            System.out.println("### subschema=" + subschema);
+
+            Map<String, Object> subschema2 = new HashMap<>(subschema);
+            Map<String, Object> properties2 = (Map<String, Object>) subschema2.get("properties");
+            List<String> requiredProperties2 = (List<String>) subschema2.get("required");
+            Map<String, Object> properties3 = new HashMap<>();
+            for (String property: requiredProperties2) {
+                properties3.put(property, properties2.get(property));
+            }
+            subschema2.put("title", consistsOf + " {{idx}}");
+            subschema2.put("properties", properties3);
+
+            System.out.println("### subschema=" + subschema2);
+
+            /*
+            atype2.put("items", Map.of(
+                    "type", "object",
+                    "title", consistsOf + " {{idx}}",
+                 //   "properties", Map.of("item", Map.of("type", "string", "format", "date-time"))));
+                    "properties", Map.of("item", subschema)));
+
+             */
+
+            atype2.put("items",subschema2);
+
+            properties.put(elementKey, atype2);
+
+        }
+
+
+
         String key="isA";
-        Map<String, Object> atype = new HashMap<String, Object>();
-        atype.put(get$id(), "#/definitions/"+templateName+"/properties/"+key);
+        Map<String, Object> atype = new HashMap<>();
+        atype.put(get$id(), idPrefix +templateName+"/properties/"+key);
         atype.put("title", title(key));
         atype.put("type", "string");
         atype.put("readOnly", "true");
@@ -117,7 +169,7 @@ public class CompilerJsonSchema {
         Map<String,Object> ifThenBlock=new HashMap<>();
         Map<String,Object> ifBlock=new HashMap<>();
         ifThenBlock.put("if",ifBlock);
-        ifThenBlock.put("then", Map.of("$ref","#/definitions/" + templateName));
+        ifThenBlock.put("then", Map.of("$ref", idPrefix + templateName));
         ifBlock.put("type", "object");
         ifBlock.put("properties", Map.of("isA", Map.of("const", templateName)));
 

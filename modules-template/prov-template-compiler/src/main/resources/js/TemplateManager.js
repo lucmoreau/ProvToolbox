@@ -129,7 +129,7 @@ class TemplateManager {
             let compulsory=myprofile.compulsory.includes(property)
             if (myprofile==="ALL" || compulsory || myprofile.optional.includes(property)) {
                 if (compulsory) {
-                    schemaDef.properties[property].required=true;  // updates schema, and make property mandatory
+                    schemaDef.properties[property].required = true;
                 }
                 required.push({
                     "key": property,
@@ -145,10 +145,29 @@ class TemplateManager {
                 });
             }
         });
-        required.push({
-            "type": "submit",
-            "title": "Submit"
-        });
+
+        if (schemaDef.properties["__elements"]) {
+            const nested_compulsory=myprofile.compulsory.filter(x => Array.isArray(x)).map(x => x[1])
+            $.each(schemaDef.properties["__elements"].items.required, function (i, property) {
+                let compulsory=nested_compulsory.includes(property)
+                if (compulsory) {
+                    schemaDef.properties["__elements"].items.properties[property].required = true;
+                }
+            });
+            const newSubProperties={}
+            $.each(schemaDef.properties["__elements"].items.required, function (i, property) {
+                newSubProperties[property]=schemaDef.properties["__elements"].items.properties[property]
+            });
+            schemaDef.properties["__elements"].items.properties=newSubProperties;
+
+        }
+
+        if (false) {
+            required.push({
+                "type": "submit",
+                "title": "Submit"
+            });
+        }
         //console.log(schemaDef);
         //console.log(required)
         var config = {};

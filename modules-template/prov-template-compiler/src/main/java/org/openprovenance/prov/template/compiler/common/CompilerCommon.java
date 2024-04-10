@@ -55,7 +55,7 @@ public class CompilerCommon {
                 .addModifiers(Modifier.PUBLIC);
     }
 
-    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName) {
+    public Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib(TemplatesCompilerConfig configs, Locations locations, Document doc, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName, String consistsOf) {
 
 
         Bundle bun=u.getBundle(doc).get(0);
@@ -66,12 +66,12 @@ public class CompilerCommon {
         compilerUtil.extractVariablesAndAttributes(bun, allVars, allAtts, pFactory);
 
 
-        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, logger, beanKind, fileName);
+        return generateCommonLib_aux(configs, locations, allVars,allAtts,name, templateName, packageName, bindingsSchema, indexed, logger, beanKind, fileName, consistsOf);
 
     }
 
 
-    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesCompilerConfig configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName) {
+    Pair<SpecificationFile, Map<Integer, List<Integer>>> generateCommonLib_aux(TemplatesCompilerConfig configs, Locations locations, Set<QualifiedName> allVars, Set<QualifiedName> allAtts, String name, String templateName, String packageName, TemplateBindingsSchema bindingsSchema, IndexedDocument indexed, String logger, BeanKind beanKind, String fileName, String consistsOf) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = generateClassInit(name, Constants.CLIENT_PACKAGE, compilerUtil.processorNameClass(templateName), Constants.BUILDER);
@@ -104,7 +104,7 @@ public class CompilerCommon {
         builder.addMethod(builder1.build());
 
         if (beanKind==BeanKind.SIMPLE) {
-            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
@@ -112,8 +112,8 @@ public class CompilerCommon {
             builder.addMethod(generateApplyMethod(templateName, packageName));
 
 
-            builder.addMethod(generateCommonMethod2(templateName, bindingsSchema));
-            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema));
+            builder.addMethod(generateLoggerMethod(templateName, bindingsSchema));
+            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonMethod3static(bindingsSchema));
             builder.addMethod(generateCommonMethod4static(allVars, bindingsSchema, indexed));
             final Pair<MethodSpec, Map<Integer, List<Integer>>> methodSpecMapPair = generateCommonMethod5static(allVars, bindingsSchema, indexed);
@@ -166,6 +166,12 @@ public class CompilerCommon {
         } else {
             builder.addField(generateField4aBeanConverter3("toBean", templateName, packageName, A_RECORD_BEAN_CONVERTER, BeanDirection.COMMON));
             builder.addMethod(generateFactoryMethodToBeanWithArrayComposite("toBean", templateName, packageName, bindingsSchema, locations.getFilePackage(logger), logger, BeanDirection.COMMON, null, null));
+            builder.addMethod(generateNewBean(templateName, packageName));
+
+            builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
+            builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf));
+
 
         }
 
@@ -215,14 +221,14 @@ public class CompilerCommon {
         return builder.build();
     }
 
-    public MethodSpec generateCommonMethod2(String template, TemplateBindingsSchema bindingsSchema) {
-        return generateCommonMethod2(template, bindingsSchema, true);
+    public MethodSpec generateLoggerMethod(String template, TemplateBindingsSchema bindingsSchema) {
+        return generateLoggerMethod(template, bindingsSchema, true, null);
     }
-    public MethodSpec generateCommonMethod2PureCsv(String template, TemplateBindingsSchema bindingsSchema) {
-        return generateCommonMethod2(template, bindingsSchema, false);
+    public MethodSpec generateCommonMethod2PureCsv(String template, TemplateBindingsSchema bindingsSchema, String consistsOf) {
+        return generateLoggerMethod(template, bindingsSchema, false, consistsOf);
     }
 
-    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema) {
+    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)
@@ -243,9 +249,22 @@ public class CompilerCommon {
         Collection<String> variables = descriptorUtils.fieldNames(bindingsSchema);
 
         CodeBlock.Builder lambda=CodeBlock.builder();
-        CodeBlock paramsList= makeParamsList(variables, var, compilerUtil);
+        Collection<String> actualVariables;
+        CodeBlock paramsList;
+        if (beanKind==BeanKind.COMPOSITE) {
+            actualVariables = new LinkedList<>(variables);
+            actualVariables.add(ELEMENTS);
+            String beanNameClass = compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON);
+            ParameterizedTypeName listBeanType=ParameterizedTypeName.get(ClassName.get(List.class),ClassName.get(packge,beanNameClass));
+            paramsList= makeParamsListComposite(actualVariables, var, compilerUtil, listBeanType);
+        } else {
+            actualVariables=variables;
+            paramsList= makeParamsList(actualVariables, var, compilerUtil);
+        }
+
         lambda.add("($L) -> $N {\n", paramsList, MARKER_LAMBDA_BODY).indent();
         lambda.addStatement("$T $N=$N $T()", StringBuffer.class, SB_VAR, "new", StringBuffer.class);
+
         CodeBlock argsList = makeRenamedArgsList(SB_VAR,variables);
         lambda.addStatement("$N.$N($L)", SELF_VAR, loggerName, argsList);
         lambda.addStatement("return $N.$N()", SB_VAR,"toString");
@@ -261,6 +280,10 @@ public class CompilerCommon {
     public static CodeBlock makeParamsList(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil) {
         return CodeBlock.join(variables.stream().map(variable ->
                 CodeBlock.of("$T $N", compilerUtil.getJavaTypeForDeclaredType(var, variable), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
+    }
+    public static CodeBlock makeParamsListComposite(Collection<String> variables, Map<String, List<Descriptor>> var, CompilerUtil compilerUtil, ParameterizedTypeName listBeanType) {
+        return CodeBlock.join(variables.stream().map(variable ->
+                CodeBlock.of("$T $N", (variable.equals(ELEMENTS)? listBeanType: compilerUtil.getJavaTypeForDeclaredType(var, variable)), Constants.GENERATED_VAR_PREFIX + variable)).collect(Collectors.toList()), ", ");
     }
 
     public static CodeBlock makeRenamedArgsList(String head, Collection<String> variables) {
@@ -363,7 +386,7 @@ public class CompilerCommon {
     private FieldSpec generateField4aArgs2CsvConverter(String name, String templateName, String packge) {
         final TypeName processorClassName = processorClassType(templateName, packge, ClassName.get(String.class));
         FieldSpec.Builder fbuilder=FieldSpec.builder(processorClassName, Constants.A_ARGS_CSV_CONVERTER,Modifier.FINAL, Modifier.PUBLIC);
-
+        if (debugComment) fbuilder.addJavadoc("Generated by method $N", getClass().getName()+".generateField4aArgs2CsvConverter()");
         fbuilder.initializer("$N()", Constants.ARGS_CSV_CONVERSION_METHOD);
         return fbuilder.build();
     }
@@ -673,7 +696,7 @@ public class CompilerCommon {
     }
 
 
-    public MethodSpec generateCommonMethod2(String template, TemplateBindingsSchema bindingsSchema, boolean legacy) {
+    public MethodSpec generateLoggerMethod(String template, TemplateBindingsSchema bindingsSchema, boolean legacy, String consistOf) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(compilerUtil.loggerName(template) + (legacy ? "_impure" : ""))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);

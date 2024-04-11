@@ -56,7 +56,7 @@ public class CompilerJsonSchema {
         return res;
     }
 
-    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema, String consistsOf, String idPrefix) {
+    public void generateJSonSchema(String templateName, TemplateBindingsSchema bindingsSchema, String consistsOf, String idPrefix, List<String> sharing) {
 
 
         Map<String, List<Descriptor>> theVar=bindingsSchema.getVar();
@@ -82,8 +82,8 @@ public class CompilerJsonSchema {
             atype.put("title", title(key));
             final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
             atype.put("type", jsonType);
-            final Object defaultValue=defaultValue(jsonType);
-            if (defaultValue!=null) atype.put("default", defaultValue);
+            //final Object defaultValue=defaultValue(jsonType);
+            //if (defaultValue!=null) atype.put("default", defaultValue);
             //atype.put("required", true);
 
             // LUC FIXME: should be generated for composite only, and subtype needs to be adjusted.
@@ -111,37 +111,20 @@ public class CompilerJsonSchema {
             atype2.put(get$id(), idPrefix + templateName + "/properties/" + elementKey);
             atype2.put("title", title(elementKey));
             atype2.put("type", "array");
-            //atype2.put("items", Map.of("$ref", idPrefix + "plead_transforming_composite_1"));
 
             // jsonform does not support $ref in items, so we need to expand the schema
 
-            Map<String,Object>subschema= (Map<String, Object>) ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).get("plead_transforming");
+            Map<String,Object>subschema= (Map<String, Object>) ((Map<String,Object>)jsonSchemaAsAMap.get("definitions")).get(consistsOf);
 
-            System.out.println("### subschema=" + subschema);
 
             Map<String, Object> subschema2 = new HashMap<>(subschema);
-            Map<String, Object> properties2 = (Map<String, Object>) subschema2.get("properties");
-            List<String> requiredProperties2 = (List<String>) subschema2.get("required");
-            Map<String, Object> properties3 = new HashMap<>();
-            for (String property: requiredProperties2) {
-                properties3.put(property, properties2.get(property));
-            }
+            // note: the $id are not correct
             subschema2.put("title", consistsOf + " {{idx}}");
-            subschema2.put("properties", properties3);
 
-            System.out.println("### subschema=" + subschema2);
-
-            /*
-            atype2.put("items", Map.of(
-                    "type", "object",
-                    "title", consistsOf + " {{idx}}",
-                 //   "properties", Map.of("item", Map.of("type", "string", "format", "date-time"))));
-                    "properties", Map.of("item", subschema)));
-
-             */
+            // modify description for field in sharing
+            System.out.println("### subschema2=" + subschema2);
 
             atype2.put("items",subschema2);
-
             properties.put(elementKey, atype2);
 
         }

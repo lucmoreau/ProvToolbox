@@ -547,7 +547,7 @@ public class ConfigProcessor implements Constants {
 
                 if (!inComposition) {
 
-                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema, null, "#/definitions/");
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema, null, "#/definitions/", sharing);
                     compilerSQL.generateSQL(jsonschema + SQL_INTERFACE, templateName, cli_src_dir + "/../sql", bindingsSchema);
                     compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
 
@@ -562,7 +562,7 @@ public class ConfigProcessor implements Constants {
 
 
                     // generate the composite bean schema
-                    compilerJsonSchema.generateJSonSchema(templateName+"_1", bindingsSchema, null, "#/definitions/");
+                    compilerJsonSchema.generateJSonSchema(templateName+"_1", bindingsSchema, null, "#/definitions/", null);
 
 
                     compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing);
@@ -574,7 +574,7 @@ public class ConfigProcessor implements Constants {
                     config.bindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
                     config.template = "openprovenance:composite-bean.provn";
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
-                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/");
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/", null);
 
                     // LUC: FIXME: not generating processor fully, with composite subbean
                     SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName)  + DOT_JAVA_EXTENSION, consistsOf);

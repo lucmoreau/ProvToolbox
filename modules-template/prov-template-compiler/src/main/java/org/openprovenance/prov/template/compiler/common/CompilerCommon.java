@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
+import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.*;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.expander.ExpandUtil.isVariable;
@@ -104,7 +105,7 @@ public class CompilerCommon {
         builder.addMethod(builder1.build());
 
         if (beanKind==BeanKind.SIMPLE) {
-            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(logger), logger));
             builder.addMethod(generateCommonSQLConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema));
             builder.addMethod(generateArgsToRecordMethod(templateName, packageName, bindingsSchema));
             builder.addMethod(generateProcessorConverter(templateName, packageName, bindingsSchema, BeanDirection.COMMON));
@@ -170,7 +171,7 @@ public class CompilerCommon {
 
             builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
             builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
-            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf));
+            builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(logger), logger));
 
 
         }
@@ -228,7 +229,7 @@ public class CompilerCommon {
         return generateLoggerMethod(template, bindingsSchema, false, consistsOf);
     }
 
-    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf) {
+    public MethodSpec generateCommonCSVConverterMethod_aux(String name, String template, String loggerName, String packge, TemplateBindingsSchema bindingsSchema, BeanKind beanKind, String consistsOf, String loggerPackage, String logger) {
         final TypeName processorClassName = processorClassType(template, packge,ClassName.get(String.class));
         final TypeName processorClassNameNotParametrised = processorClassType(template, packge);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(Constants.ARGS_CSV_CONVERSION_METHOD)
@@ -267,6 +268,64 @@ public class CompilerCommon {
 
         CodeBlock argsList = makeRenamedArgsList(SB_VAR,variables);
         lambda.addStatement("$N.$N($L)", SELF_VAR, loggerName, argsList);
+
+        if (consistsOf!=null) {
+            String[] variableArray = variables.toArray(new String[]{});
+            String beanNameClass = compilerUtil.beanNameClass(consistsOf, BeanDirection.COMMON);
+            lambda.beginControlFlow("for ($T $N: $N) ", ClassName.get(packge,beanNameClass), VAR_ELEMENT, Constants.GENERATED_VAR_PREFIX + ELEMENTS);
+            ClassName loggerClassName = ClassName.get(loggerPackage, logger);
+
+            ParameterizedTypeName parametericInterface=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(consistsOf)), TypeName.get(Object[].class));
+            ParameterizedTypeName parametericInterface2=ParameterizedTypeName.get(ClassName.get(packge,compilerUtil.processorNameClass(consistsOf)), TypeVariableName.get("?"));
+
+            lambda.addStatement("$T $N=$T.$N.$N()",
+                    parametericInterface,
+                    "processor",
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + consistsOf,
+                    Constants.ARGS2RECORD_CONVERTER);
+
+            lambda.addStatement("// the following line generates ts error: Untyped function calls may not accept type arguments.");
+
+            lambda.addStatement("$T $N=$N.process($N)",
+                    Object[].class,
+                    VAR_OBJECTS,
+                    VAR_ELEMENT,
+                    "processor");
+
+            lambda.addStatement("$T $N=$T.simpleCSvConverters.get($N)",
+                    processorOfString,
+                    VAR_CSV_CONVERTER,
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + variableArray[2]);
+
+            lambda.addStatement("$T $N=$N.process($N)",
+                    String.class,
+                    VAR_CSV,
+                    VAR_CSV_CONVERTER,
+                    VAR_OBJECTS);
+
+
+
+/*
+            lambda.addStatement("$T $N=$T.simpleCSvConverters.get($N).process($N.get(i).process($T.$N.$N()))",
+                    String.class,
+                    "s",
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + variableArray[2],
+                    Constants.GENERATED_VAR_PREFIX + ELEMENTS,
+                    loggerClassName,
+                    Constants.GENERATED_VAR_PREFIX + consistsOf,
+                    Constants.ARGS2RECORD_CONVERTER);
+
+
+ */
+          //  lambda.addStatement("$T $N=$S", String.class, VAR_CSV, "hello");
+            lambda.addStatement("$N.append($S).append($N)", SB_VAR, "\n", VAR_CSV);
+            lambda.endControlFlow();
+        }
+
+
         lambda.addStatement("return $N.$N()", SB_VAR,"toString");
         lambda.unindent().add("}; $N", MARKER_LAMBDA_END);
         // note, poet builder does not accept nested statement codeblock, so instead of adding a statement, we add a codeblock

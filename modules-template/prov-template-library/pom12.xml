@@ -74,7 +74,7 @@
                     </excludes>
                     <targetVersion>ES6</targetVersion>
                     <module>commonjs</module>
-                    <!--<moduleResolution>classic</moduleResolution>-->
+                    <!--<moduleResolutio>classic</moduleResolutio>-->
                     <bundle>true</bundle>
                     <declaration>true</declaration>
                     <dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>

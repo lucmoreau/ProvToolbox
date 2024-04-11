@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.newSpecificationFiles;
+import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
@@ -78,6 +79,13 @@ public class CompilerLogger {
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfUnknown), "simpleBeanConverters", Modifier.STATIC, Modifier.PUBLIC)
                 .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(configs.configurator_package,CONVERTER_CONFIGURATOR))
                 .build());
+
+        builder.addField(FieldSpec
+                .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfString), "simpleCSvConverters", Modifier.STATIC, Modifier.PUBLIC)
+                .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(configs.configurator_package,CSV_CONFIGURATOR))
+                .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
+                .build());
+
 
         TypeSpec theLogger = builder.build();
 

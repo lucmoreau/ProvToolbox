@@ -103,4 +103,8 @@ public interface Constants {
     String DOT_JAVA_EXTENSION = ".java";
     String SQL_INTERFACE = "SQL";
     String WITH_MAP = "WithMap";
+    String VAR_OBJECTS = "objects";
+    String VAR_CSV = "csv";
+    String VAR_CSV_CONVERTER = "csvConverter";
+    String VAR_ELEMENT = "element";
 }

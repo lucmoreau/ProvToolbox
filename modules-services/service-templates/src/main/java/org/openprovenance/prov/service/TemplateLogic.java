@@ -121,7 +121,8 @@ public class TemplateLogic {
     public Response processIncomingCsv(CSVParser csv) {
         Collection<CSVRecord> collection=csv.getRecords();
         Map<String, ProcessorArgsInterface<?>> enactors = templateDispatcher.getEnactorConverter();
-        Map<String, ProcessorArgsInterface<Object>> enactors2= enactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (ProcessorArgsInterface<Object>) e.getValue()));
+        Map<String, ProcessorArgsInterface<Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (ProcessorArgsInterface<Object>) e.getValue()));
+
         Map<String, RecordsProcessorInterface<?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
         Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));
         Map<String, RecordsProcessor<Object>> enactorsN = null;

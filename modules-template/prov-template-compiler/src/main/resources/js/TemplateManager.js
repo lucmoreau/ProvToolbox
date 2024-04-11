@@ -68,8 +68,17 @@ class TemplateManager {
     populateBean(template, values) {
         var builder = this.builderTable[template];
         var bean = builder.newBean();
+        console.log("populateBean")
         for (const k in values) {
-            bean[k] = values[k];
+            if (k==="__elements") {
+                var subBeans = [];
+                for (const i in values[k]) {
+                    subBeans.push(this.populateSubBean(values["type"], values[k][i]));
+                }
+                bean[k] = subBeans;
+            } else {
+                bean[k] = values[k];
+            }
         }
         console.log(bean);
         var csv = bean.process(builder.aArgs2CsVConverter);
@@ -77,6 +86,18 @@ class TemplateManager {
         return [csv,values]; // note: i am only exporting the populated values, as opposed to the whole bean
     }
 
+    populateSubBean(template, values) {
+        console.log("populateSubBean " + template )
+        console.log(values)
+        var builder = this.builderTable[template];
+        var bean = builder.newBean();
+        for (const k in values) {
+            bean[k] = values[k];
+        }
+        console.log(bean);
+        values["isA"]=builder.getName();
+        return bean; // note: i am only exporting the populated values, as opposed to the whole bean
+    }
 
 
     defaultSubmitFunction(myself, template, csv_location, json_location) {

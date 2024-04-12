@@ -117,6 +117,19 @@ class TemplateManager {
             myself.setBean(bean);
             if (values[ELEMENTS]) {
                 myself.getBean().count=values[ELEMENTS].length;
+                // also update the form
+
+                var elementById = document.getElementById("jsonform-1-elt-count");
+                if (elementById==null) {
+                    elementById = document.getElementById("jsonform-2-elt-count");
+                    if (elementById == null) {
+                        elementById = document.getElementById("jsonform-3-elt-count");
+                    }
+                }
+                if (elementById!=null) {
+                    elementById.value=values[ELEMENTS].length;
+                }
+
             }
             if (csv_location) {
                 let csv_div = $('<div>');

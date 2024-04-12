@@ -574,7 +574,7 @@ public class ConfigProcessor implements Constants {
                     config.bindings = OPENPROVENANCE_COMPOSITE_BEAN_JSON; //"openprovenance:composite-bean.json";
                     config.template = "openprovenance:composite-bean.provn";
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
-                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/", null);
+                    compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/", sharing);
 
                     // LUC: FIXME: not generating processor fully, with composite subbean
                     SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName)  + DOT_JAVA_EXTENSION, consistsOf);

@@ -127,7 +127,7 @@ public class TemplateService {
     @Path("/statements")
     @Tag(name = "ems_s")
     @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
-    @Produces({APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
+    @Produces({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
     public Response submitStatements(@Context HttpServletResponse response,
                                       @Context HttpServletRequest request,
                                       @Context HttpHeaders headers,
@@ -140,13 +140,22 @@ public class TemplateService {
         if (documentOrCsv==null) {
             return utils.composeResponseInternalServerError("null document", new NullPointerException());
         }
+        List<Object> result;
         if (documentOrCsv.csv!=null) {
-            return templateLogic.processIncomingCsv(documentOrCsv.csv);
+            result=templateLogic.processIncomingCsv(documentOrCsv.csv);
         } else if (documentOrCsv.json!=null) {
-            return templateLogic.processIncomingJson(documentOrCsv.json);
+            result=templateLogic.processIncomingJson(documentOrCsv.json);
         } else {
             return utils.composeResponseInternalServerError("unknown input document", new UnsupportedOperationException());
         }
+        switch (request.getHeader(HttpHeaders.ACCEPT).toLowerCase()) {
+            case InteropMediaType.MEDIA_TEXT_CSV:
+                return ServiceUtils.composeResponseOK(templateLogic.streamOutRecordsToCSV(result)).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+            case APPLICATION_VND_KCL_PROV_TEMPLATE_JSON:
+                StreamingOutput promise= out -> om.writeValue(out,result);
+                return ServiceUtils.composeResponseOK(promise).type(APPLICATION_VND_KCL_PROV_TEMPLATE_JSON).build();
+        }
+        return utils.composeResponseBadRequest("unknown accept header " + request.getHeader(HttpHeaders.ACCEPT), new UnsupportedOperationException(request.getHeader(HttpHeaders.ACCEPT)));
     }
 
     @GET

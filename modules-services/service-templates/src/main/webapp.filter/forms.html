@@ -30,6 +30,9 @@
         width: auto !important;
         width:1500px;
     }
+    .shared_var {
+        color: blue;
+    }
 </style>
 
 <div class="container">
@@ -123,7 +126,6 @@
                 }
             } else {
                 console.log("composite " + name)
-                console.log("composite " + builder.getPropertyOrder())
                 profile[name] = {
                     compulsory: ["isA","__elements"],
                     optional: diff(builder.getPropertyOrder(), ["isA"])
@@ -131,7 +133,7 @@
                 profile[name].compulsory=profile[name].compulsory.concat(profile["plead_transforming"].compulsory.map(x => ["__element", x]));
             }
         }
-        console.log(profile)
+        //console.log(profile)
         return profile;
     }
 
@@ -228,8 +230,14 @@
             }
             $(anchor_result_box).attr('received','true');
         }
-        xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
-        xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
+
+        // Currently, the server does not support the csv format in the result
+        if (true) {
+            xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
+        } else {
+            xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);
+        }
+
         if (jsonSubmit) {
             xhr.setRequestHeader("Content-Type", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
         } else {

@@ -2,7 +2,7 @@ package org.openprovenance.prov.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.ws.rs.core.Response;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -15,6 +15,8 @@ import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +49,7 @@ public class TemplateLogic {
 
     }
 
-    public Response processIncomingJson(List<Map<String, Object>> entries) {
+    public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
         //logger.info("Processing incoming JSON " + entries);
 
         // assumption: all entries use the same template
@@ -97,8 +99,7 @@ public class TemplateLogic {
                 recordsResult.add(res);
             }
         }
-        StreamingOutput promise= out -> om.writeValue(out,recordsResult);
-        return ServiceUtils.composeResponseOK(promise).build();
+        return recordsResult;
     }
 
     public Object[] convertToArray(Map<String, Object> entry, String[] props) {
@@ -119,7 +120,7 @@ public class TemplateLogic {
         }
     }
 
-    public Response processIncomingCsv(CSVParser csv) {
+    public List<Object> processIncomingCsv(CSVParser csv) {
         Collection<CSVRecord> collection=csv.getRecords();
         Map<String, ProcessorArgsInterface<?>> enactors = templateDispatcher.getEnactorConverter();
         Map<String, ProcessorArgsInterface<Object>> enactors2= enactors.entrySet().stream().filter(e->e.getValue()!=null).collect(Collectors.toMap(Map.Entry::getKey, e -> (ProcessorArgsInterface<Object>) e.getValue()));
@@ -128,7 +129,18 @@ public class TemplateLogic {
         Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));
         List<Object> newRecords=enactCsvRecords.process(collection, enactors2, compositeEnactors2);
 
-        StreamingOutput promise= out -> om.writeValue(out,newRecords);
-        return ServiceUtils.composeResponseOK(promise).build();
+        return newRecords;
+    }
+
+    @NotNull
+    public StreamingOutput streamOutRecordsToCSV(List<Object> newRecords) {
+        return out -> newRecords.forEach(record -> {
+            try {
+                out.write(((String)record).getBytes(StandardCharsets.UTF_8));
+                out.write('\n');
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

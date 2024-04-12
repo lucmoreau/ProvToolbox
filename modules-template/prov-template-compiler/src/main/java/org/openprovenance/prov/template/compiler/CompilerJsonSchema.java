@@ -120,11 +120,17 @@ public class CompilerJsonSchema {
             Map<String, Object> subschema2 = new HashMap<>(subschema);
             // note: the $id are not correct
             subschema2.put("title", consistsOf + " {{idx}}");
-            Map<String, Object> itemsMap = (Map<String, Object>) subschema2.get("items");
+            Map<String, Object> propertiesMap = (Map<String, Object>) subschema2.get("properties");
             for (String sharingKey: sharing) {
-                Map<String, Object> sharedKeyMap = (Map<String, Object>) itemsMap.get(sharingKey);
+                Map<String, Object> sharedKeyMap = (Map<String, Object>) propertiesMap.get(sharingKey);
                 sharedKeyMap.put("required", "true");
-                sharedKeyMap.put("description", "shared " + sharingKey + sharedKeyMap.get("description"));
+                if ("integer".equals(sharedKeyMap.get("type"))) {
+                    sharedKeyMap.put("maximum", -1);
+                    sharedKeyMap.put("description", "<span class='shared_var'>Shared variable:</span> " + ((String)sharedKeyMap.get("description")).replace("integer", "<span class='shared_var'>convention: negative integer</span>"));
+                } else {
+                    sharedKeyMap.put("description", "<span class='shared_var'>Shared variable:</span> " + sharedKeyMap.get("description"));
+
+                }
             }
 
 

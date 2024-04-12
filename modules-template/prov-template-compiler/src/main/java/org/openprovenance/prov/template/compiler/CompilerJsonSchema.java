@@ -120,12 +120,20 @@ public class CompilerJsonSchema {
             Map<String, Object> subschema2 = new HashMap<>(subschema);
             // note: the $id are not correct
             subschema2.put("title", consistsOf + " {{idx}}");
+            Map<String, Object> itemsMap = (Map<String, Object>) subschema2.get("items");
+            for (String sharingKey: sharing) {
+                Map<String, Object> sharedKeyMap = (Map<String, Object>) itemsMap.get(sharingKey);
+                sharedKeyMap.put("required", "true");
+                sharedKeyMap.put("description", "shared " + sharingKey + sharedKeyMap.get("description"));
+            }
 
 
             atype2.put("items",subschema2);
             properties.put(elementKey, atype2);
 
             ((Map<String, Object>)properties.get("count")).put("readOnly", "true");
+
+
 
         }
 

@@ -1,3 +1,4 @@
+
 /**
  * ProvToolbox
  *
@@ -20,9 +21,11 @@
  *
  */
 
+const ELEMENTS = "__elements";
 
 
 class TemplateManager {
+
     constructor(logger, schemaUrl, docUrl, profileValue) {
         this.logger = logger;
         this.schemaUrl = schemaUrl;
@@ -70,7 +73,7 @@ class TemplateManager {
         var bean = builder.newBean();
         console.log("populateBean")
         for (const k in values) {
-            if (k==="__elements") {
+            if (k===ELEMENTS) {
                 var subBeans = [];
                 for (const i in values[k]) {
                     subBeans.push(this.populateSubBean(values["type"], values[k][i]));
@@ -103,11 +106,18 @@ class TemplateManager {
     defaultSubmitFunction(myself, template, csv_location, json_location) {
         return function (errors, values) {
             console.log(values);
+            if (values[ELEMENTS]) {
+                values.count=values[ELEMENTS].length;
+            }
             let csv_bean = myself.populateBean(template, values);
             let csv=csv_bean[0];
             let bean=csv_bean[1];
             let name=bean["isA"];
             console.log(csv);
+            myself.setBean(bean);
+            if (values[ELEMENTS]) {
+                myself.getBean().count=values[ELEMENTS].length;
+            }
             if (csv_location) {
                 let csv_div = $('<div>');
                 csv_div.append('<p>' + csv + '</p>')
@@ -120,7 +130,7 @@ class TemplateManager {
 
             if (json_location) {
                 let json_div = $('<div>');
-                myself.setBean(bean);
+
                 json_div.append('<p>' + myself.syntaxHighlight_json(JSON.stringify(bean, null, 2), name) + '</p>');
                 if (errors) {
                     json_div.append('<p>Reported errors:</p>')
@@ -167,19 +177,19 @@ class TemplateManager {
             }
         });
 
-        if (schemaDef.properties["__elements"]) {
+        if (schemaDef.properties[ELEMENTS]) {
             const nested_compulsory=myprofile.compulsory.filter(x => Array.isArray(x)).map(x => x[1])
-            $.each(schemaDef.properties["__elements"].items.required, function (i, property) {
+            $.each(schemaDef.properties[ELEMENTS].items.required, function (i, property) {
                 let compulsory=nested_compulsory.includes(property)
                 if (compulsory) {
-                    schemaDef.properties["__elements"].items.properties[property].required = true;
+                    schemaDef.properties[ELEMENTS].items.properties[property].required = true;
                 }
             });
             const newSubProperties={}
-            $.each(schemaDef.properties["__elements"].items.required, function (i, property) {
-                newSubProperties[property]=schemaDef.properties["__elements"].items.properties[property]
+            $.each(schemaDef.properties[ELEMENTS].items.required, function (i, property) {
+                newSubProperties[property]=schemaDef.properties[ELEMENTS].items.properties[property]
             });
-            schemaDef.properties["__elements"].items.properties=newSubProperties;
+            schemaDef.properties[ELEMENTS].items.properties=newSubProperties;
 
         }
 

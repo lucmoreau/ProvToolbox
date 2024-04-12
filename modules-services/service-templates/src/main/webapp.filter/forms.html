@@ -181,6 +181,7 @@
 
         let csv_data=$(HTML_ANCHOR_CSV_RESULT).text()
         const input_bean = tm.getBean();
+        const __elements=input_bean.__elements;
         let json_data=JSON.stringify(alreadySeen.concat([input_bean]))
         if (allRecordsp) alreadySeen=[]
         console.log("submitService " + json_data);
@@ -205,6 +206,10 @@
             } else {
                 const parsed = JSON.parse(xhr.responseText);
                 let name=parsed[0]["isA"];
+                if (__elements) {
+                    // this is a compositive bean, get the type from the input bean
+                    parsed[0].type=input_bean.type;
+                }
                 let highlighted=tm.syntaxHighlight_json(JSON.stringify(parsed, null, 2), name)
                 $(anchor_result_box).html(highlighted);
                 if (anchor_csv) {

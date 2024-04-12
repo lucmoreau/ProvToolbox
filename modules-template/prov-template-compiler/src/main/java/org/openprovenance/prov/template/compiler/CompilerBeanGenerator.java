@@ -43,6 +43,13 @@ public class CompilerBeanGenerator {
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(name);
 
+        /* does not work with transpiler
+        builder.addAnnotation(AnnotationSpec.builder(JsonInclude.class)
+                .addMember("value", "$T.Include.NON_NULL", JsonInclude.class)
+                .build());
+
+         */
+
         switch (beanKind) {
             case SIMPLE:
                 builder.addJavadoc("A Simple Bean");

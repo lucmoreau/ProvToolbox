@@ -42,6 +42,7 @@ public class TemplateLogic {
         this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.utils = utils;
         this.om = om;
+        om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
         this.sqlCompositeBeanEnactor3 = sqlCompositeBeanEnactor3;
 
     }
@@ -125,8 +126,7 @@ public class TemplateLogic {
 
         Map<String, RecordsProcessorInterface<?>> compositeEnactors= templateDispatcher.getCompositeEnactorConverter();
         Map<String, RecordsProcessorInterface<Object>> compositeEnactors2= compositeEnactors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (RecordsProcessorInterface<Object>) e.getValue()));
-        Map<String, RecordsProcessor<Object>> enactorsN = null;
-        List<Object> newRecords=enactCsvRecords.process(collection, enactors2, null);
+        List<Object> newRecords=enactCsvRecords.process(collection, enactors2, compositeEnactors2);
 
         StreamingOutput promise= out -> om.writeValue(out,newRecords);
         return ServiceUtils.composeResponseOK(promise).build();

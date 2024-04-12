@@ -121,11 +121,11 @@ public class CompilerJsonSchema {
             // note: the $id are not correct
             subschema2.put("title", consistsOf + " {{idx}}");
 
-            // modify description for field in sharing
-            System.out.println("### subschema2=" + subschema2);
 
             atype2.put("items",subschema2);
             properties.put(elementKey, atype2);
+
+            ((Map<String, Object>)properties.get("count")).put("readOnly", "true");
 
         }
 

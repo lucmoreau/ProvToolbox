@@ -9,17 +9,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/EnactCsvRecords.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/EnactCsvRecords.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/RecordsProcessor.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerConfigurations.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerConfigurations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerBeanGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerJsonSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerJsonSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/CompilerCommon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/composite/composite-bean.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/composite/composite-bean.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/resources/js/TemplateManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom12.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom12.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +73,12 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "lucmoreau"
+  }
+}]]></component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
       <filtered-out-file-type name="LOCAL_BRANCH" />
@@ -79,6 +87,12 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/lucmoreau/ProvToolbox",
+    "accountId": "f75af254-b653-4000-a82a-28cf662d1438"
+  }
+}]]></component>
   <component name="InvalidFacetManager">
     <ignored-facets>
       <facet id="prov-template-library/invalid/Python" />
@@ -224,18 +238,6 @@
     </key>
   </component>
   <component name="RunManager" selected="JUnit.PleadWorkflowIT.testPleadRemote">
-    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
-      <option name="allowRunningInParallel" value="false" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <option name="testKind" value="Class" />
-      <option name="shortenClasspath" value="NONE" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="DateTest.testDate5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="prov-model" />
       <extension name="coverage">
@@ -406,16 +408,52 @@
     </configuration>
     <configuration name="ModelSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="prov-model-scala" />
+      <option name="VMParameters" value="" />
       <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
       </option>
       <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
       <option name="searchTest" value="In single module" />
       <option name="shortenClasspath" value="NONE" />
       <option name="testClassPath" value="org.openprovenance.prov.scala.ModelSpec" />
       <option name="workingDirectory" value="$PROJECT_DIR$/modules-core/prov-model-scala" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest" show_console_on_std_err="false" show_console_on_std_out="false">
+      <option name="VMParameters" value="" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="alternativeJrePath" />
+      <option name="alternativeJrePathEnabled" value="false" />
+      <option name="classpathModifications">
+        <list />
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="passParentEnvs" value="true" />
+      <option name="programParameters" value="" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <option name="testKind" value="Class" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <option name="shortenClasspath" value="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -439,6 +477,7 @@
       <item itemvalue="JUnit.PleadWorkflowIT.testPleadLocal" />
       <item itemvalue="JUnit.PleadWorkflowIT.testPleadRemote" />
       <item itemvalue="JUnit.DateTest.testDate5" />
+      <item itemvalue="ScalaTest.ModelSpec" />
     </list>
     <recent_temporary>
       <list>
@@ -489,7 +528,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-17.0.10-corretto-17.0.10-4caba194b151-53826d6a" />
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
       </set>
     </attachedChunks>
   </component>
@@ -872,7 +912,8 @@
       <workItem from="1711105997230" duration="12994000" />
       <workItem from="1711121045894" duration="4750000" />
       <workItem from="1711296175962" duration="104799000" />
-      <workItem from="1712682645402" duration="47127000" />
+      <workItem from="1712682645402" duration="47841000" />
+      <workItem from="1712914860175" duration="7176000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

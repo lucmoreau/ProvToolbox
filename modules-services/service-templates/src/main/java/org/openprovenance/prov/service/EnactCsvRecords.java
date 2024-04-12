@@ -20,11 +20,11 @@ public class EnactCsvRecords<T> {
 
 
 
-    public List<T> process(CSVParser parser, Map<String, ProcessorArgsInterface<T>> enactors, Map<String,  RecordsProcessor<T>> enactors_N) throws IOException {
+    public List<T> process(CSVParser parser, Map<String, ProcessorArgsInterface<T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) throws IOException {
         return process(parser.getRecords(),enactors,enactors_N);
     }
 
-    public List<T> process(Collection<CSVRecord> records, Map<String, ProcessorArgsInterface<T>> enactors, Map<String,  RecordsProcessor<T>> enactors_N) {
+    public List<T> process(Collection<CSVRecord> records, Map<String, ProcessorArgsInterface<T>> enactors, Map<String,  RecordsProcessorInterface<T>> enactors_N) {
 
         List<T> populatedRecords=new LinkedList<>();
 
@@ -45,7 +45,7 @@ public class EnactCsvRecords<T> {
                 populatedRecords.add(processor_1.process(args));
             }
         } else {
-            RecordsProcessor<T> processor_N=enactors_N.get(method);
+            RecordsProcessorInterface<T> processor_N=enactors_N.get(method);
             if (processor_N!=null) {
                 List<Object[]> ll = records.stream().map(record -> {
                     int size = record.size();
@@ -53,8 +53,8 @@ public class EnactCsvRecords<T> {
                     populateRecordAndExtractMethod(record, size, args);
                     return args;
                 }).collect(Collectors.toList());
-                List<T> populatedRecords0 = processor_N.process(ll);
-                populatedRecords.addAll(populatedRecords0);
+                T populatedRecords0 = processor_N.process(ll);
+                populatedRecords.add(populatedRecords0);
             } else {
                 throw new EnactorException("Unknown method " + method, method);
             }

@@ -59,6 +59,8 @@ public class TemplateService {
 
     private final Querier querier;
     private final TemplateQuery queryTemplate;
+    private final Map<String, Linker> compositeLinker;
+
 
     static final String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
         String value = System.getProperty(name);
@@ -72,6 +74,16 @@ public class TemplateService {
     }
 
     static final List<String> sqlFilesToExecute = List.of("/utils.sql");
+
+    public static class Linker {
+        public final String table;
+        public final String linked;
+
+        public Linker(String table, String linked) {
+            this.table = table;
+            this.linked = linked;
+        }
+    }
 
     public TemplateService(PostService ps) {
         this.pf = new ProvFactory();
@@ -89,7 +101,12 @@ public class TemplateService {
         this.om.registerModule(new JavaTimeModule());
 
         this.sqlCompositeBeanEnactor3 =new SqlCompositeBeanEnactor3(storage,conn);
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher);
+
+        this.compositeLinker=new HashMap<>() {{
+            put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
+        }};
+
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher,compositeLinker);
 
 
         if (conn!=null) {

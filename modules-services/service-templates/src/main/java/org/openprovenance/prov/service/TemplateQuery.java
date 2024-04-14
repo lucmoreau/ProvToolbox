@@ -5,7 +5,6 @@ import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,13 +14,16 @@ import java.util.Map;
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
 
 public class TemplateQuery {
+    public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
+    private final Map<String, TemplateService.Linker> compositeLinker;
 
-    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher) {
+    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
+        this.compositeLinker = compositeLinker;
     }
 
     public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, List<Object[]> the_records) {
@@ -40,6 +42,18 @@ public class TemplateQuery {
         }
 
     public List<Object[]> query(String template, Integer id, boolean withTitles) {
+        if (isComposite(template)) {
+            return queryComposite(template, id, withTitles);
+        } else {
+            return querySimple(template, id, withTitles);
+        }
+    }
+
+    private boolean isComposite(String template) {
+        return compositeLinker.containsKey(template);
+    }
+
+    public List<Object[]> querySimple(String template, Integer id, boolean withTitles) {
         List<Object[]> the_records = new LinkedList<>();
         String[] propertyOrder=templateDispatcher.getPropertyOrder().get(template);
         System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
@@ -67,6 +81,55 @@ public class TemplateQuery {
                         data.add(record);
                     }
                 });
+
+        return the_records;
+    }
+
+    private static class RecordEntry {
+        public String table;
+        public Integer key;
+        @Override
+        public String toString() {
+            return "RecordEntry{" +
+                    "table='" + table + '\'' +
+                    ", key=" + key +
+                    '}';
+        }
+    }
+    public List<Object[]> queryComposite(String template, Integer id, boolean withTitles) {
+        List<RecordEntry> linked_records = new LinkedList<>();
+        TemplateService.Linker linker = compositeLinker.get(template);
+
+        querier.do_query(linked_records,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT * FROM ");
+                    sb.append(linker.table);
+                    sb.append(" WHERE composite=");
+                    sb.append(id);
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        RecordEntry record = new RecordEntry();
+                        record.table= linker.linked;
+                        int i=1;
+                        for (String colum: COMPOSITE_LINKER_COLUMNS) {
+                            Integer o = rs.getObject(colum, Integer.class);
+                            record.key = o;
+                            i++;
+                        }
+                        data.add(record);
+                    }
+                });
+
+        System.out.println("linked_records = " + linked_records);
+
+        List<Object[]> the_records = new LinkedList<>();
+        for (RecordEntry linked_record : linked_records) {
+            Integer simple = linked_record.key;
+            List<Object[]> simple_records = querySimple(linked_record.table, simple, withTitles);
+            the_records.addAll(simple_records);
+        }
 
         return the_records;
     }

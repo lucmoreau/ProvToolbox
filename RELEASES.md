@@ -15,6 +15,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: composite templates conversion to csv
 * service-templates: form interface to support composite templates (csv or json)
 * service-templates: composite templates are persisted as record linking to composed instances
+* service-templates: provenance generation for composite templates
 
 
 

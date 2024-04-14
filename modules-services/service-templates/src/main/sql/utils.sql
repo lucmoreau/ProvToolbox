@@ -1,6 +1,6 @@
 
 
-CREATE TABLE IF NOT EXISTS composite_simple
+CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
 (
     ID        SERIAL,
     --  The first file resulting from the split
@@ -29,7 +29,7 @@ WITH
     the_product AS (SELECT (SELECT id AS composite FROM the_record), ID as simple
                     FROM inserted_consistsOf),
 
-    tablexxx AS (INSERT INTO composite_simple(composite,simple)
+    tablexxx AS (INSERT INTO plead_transforming_composite_linker(composite,simple)
         SELECT * FROM the_product)
 
 SELECT ID,transformed_file, transforming, (select id as parent from the_record)

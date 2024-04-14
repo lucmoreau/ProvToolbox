@@ -173,9 +173,9 @@
     var alreadySeen=[]
 
     function createProvLink(name, ID) {
-        return "Link to Provenance <a href='${service.context}/provapi/template/" + name + "/" + ID + ".svg'>(svg)</a>,"
-                               + " <a href='${service.context}/provapi/template/" + name + "/" + ID + ".provn'>(provn)</a>,"
-                               + " <a href='${service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
+        return "Link to Provenance <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".svg'   >(svg)</a>,"
+                               + " <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".provn' >(provn)</a>,"
+                               + " <a target='_blank' href='${service.context}/provapi/template/" + name + "/" + ID + ".jsonld'>(jsonld)</a>";
     }
 
     function submitService(jsonSubmit, url, anchor_result_box, anchor_csv, anchor_result_prov_link, enactorp, allRecordsp) {
@@ -232,7 +232,7 @@
         }
 
         // Currently, the server does not support the csv format in the result
-        if (true) {
+        if (false) {
             xhr.setRequestHeader("Accept", MEDIA_TYPE_APPLICATION_PROV_TEMPLATE_JSON);
         } else {
             xhr.setRequestHeader("Accept", MEDIA_TYPE_TEXT_CSV);

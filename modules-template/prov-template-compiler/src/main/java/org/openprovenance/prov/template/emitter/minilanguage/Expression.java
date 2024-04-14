@@ -95,6 +95,8 @@ public class Expression extends Statement {
                     List<Object> args = new LinkedList<>();
                     if (format.equals("$S")) {
                         args.add("\"" + arg + "\"");
+                    } else if (format.equals("$N")) {
+                        args.add(new Symbol((String) arg, elements));
                     } else {
                         args.add(arg);
                     }
@@ -123,8 +125,29 @@ public class Expression extends Statement {
                 //System.out.println(" recursing with " + allArgsIncludingMarkers);
                 return makeExpression(allArgsIncludingMarkers);
 
-            }
-            else {
+            } else if (allArgsIncludingMarkers.size()==4
+                    && allArgsIncludingMarkers.get(3).equals(new Token("()"))
+                    && allArgsIncludingMarkers.get(1).equals(new Token("."))) {
+                //encountered Logger.__plead_transforming.aArgs2RecordConverter();
+                MethodCall object=new MethodCall(((Pair) elements.get(0)).getArg(), (String) ((Pair) elements.get(2)).getArg(), new LinkedList<>(), elements);
+                allArgsIncludingMarkers.remove(0);
+                allArgsIncludingMarkers.add(0, new Pair("$L", object));
+                //System.out.println("Found object " + object);
+                //System.out.println(" recursing with " + allArgsIncludingMarkers);
+                return makeExpression(allArgsIncludingMarkers);
+            } else if (allArgsIncludingMarkers.size()==6
+                    && allArgsIncludingMarkers.get(3).equals(new Token("("))
+                    && allArgsIncludingMarkers.get(2) instanceof Pair && getFormat(allArgsIncludingMarkers.get(2)).equals("$N") // get
+                    && allArgsIncludingMarkers.get(4) instanceof Pair && getFormat(allArgsIncludingMarkers.get(4)).equals("$N") //__type
+                    && allArgsIncludingMarkers.get(5).equals(new Token(")"))
+                    && allArgsIncludingMarkers.get(1).equals(new Token("."))) {
+                //encountered Logger.simpleCSvConverters.get(__type);
+                //                ----  0 ---           1 2 3  4   5
+                MethodCall object=new MethodCall(((Pair) elements.get(0)).getArg(),  (String) getArg(elements.get(2)), null, elements);
+                allArgsIncludingMarkers.remove(0);
+                allArgsIncludingMarkers.add(0, new Pair("$L", object));
+                return makeExpression(allArgsIncludingMarkers);
+            } else {
                 // falling through
 
                 System.out.println("Falling through " + elements);
@@ -132,7 +155,6 @@ public class Expression extends Statement {
 
 
                 return makeExpression(allArgsIncludingMarkers);
-
             }
         } else if (elements.size()>3 && tokenExists(elements, 1, "(")) {
             List<Element> allArgs = elements.subList(2, elements.size());
@@ -146,8 +168,7 @@ public class Expression extends Statement {
                 List<Object> args = _elements.stream().filter(x -> x instanceof Pair).map(x -> ((Pair) x).getArg()).collect(Collectors.toList());
                 return new MethodCall(null, (String) ((Pair) elements.get(0)).getArg(), args, elements);
             }
-        }
-        else if (elements.size()>=3 && tokenExists(elements, 1, "==")) {  // binary operator
+        } else if (elements.size()>=3 && tokenExists(elements, 1, "==")) {  // binary operator
             //infix expression
             return new BinaryOp(getArg(elements.get(0)), (String) getToken(elements.get(1)), getArg(elements.get(2)), elements);
         }
@@ -184,6 +205,6 @@ public class Expression extends Statement {
         emit(emitter, false,  classVariables, instanceVariables);
     }
     public void emit(Python emitter, boolean continueLine, List<String> classVariables,  List<String> instanceVariables) {
-        emitter.emitLine("#" + this.toString());
+        emitter.emitLine("#" + this.toString().replace("\n", " "));
     }
 }

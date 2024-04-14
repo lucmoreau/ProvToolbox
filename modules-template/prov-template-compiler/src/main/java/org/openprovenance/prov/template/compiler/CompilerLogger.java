@@ -83,7 +83,7 @@ public class CompilerLogger {
         builder.addField(FieldSpec
                 .builder( ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), processorOfString), "simpleCSvConverters", Modifier.STATIC, Modifier.PUBLIC)
                 .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(configs.configurator_package,CSV_CONFIGURATOR))
-                .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
+                // python conversion does not support javadoc .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
                 .build());
 
 

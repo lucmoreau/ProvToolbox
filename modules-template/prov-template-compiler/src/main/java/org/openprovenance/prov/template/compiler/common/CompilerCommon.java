@@ -287,22 +287,26 @@ public class CompilerCommon {
 
             lambda.addStatement("// the following line generates ts error: Untyped function calls may not accept type arguments.");
 
-            lambda.addStatement("$T $N=$N.process($N)",
+            lambda.addStatement("$T $N=$N.$N($N)",
                     Object[].class,
                     VAR_OBJECTS,
                     VAR_ELEMENT,
+                    "process",
                     "processor");
 
-            lambda.addStatement("$T $N=$T.simpleCSvConverters.get($N)",
+            lambda.addStatement("$T $N=$T.$N.$N($N)",
                     processorOfString,
                     VAR_CSV_CONVERTER,
                     loggerClassName,
+                    "simpleCSvConverters",
+                    "get",
                     Constants.GENERATED_VAR_PREFIX + variableArray[2]);
 
-            lambda.addStatement("$T $N=$N.process($N)",
+            lambda.addStatement("$T $N=$N.$N($N)",
                     String.class,
                     VAR_CSV,
                     VAR_CSV_CONVERTER,
+                    "process",
                     VAR_OBJECTS);
 
 
@@ -1364,7 +1368,7 @@ public class CompilerCommon {
 
 
 
-        builder.addStatement("return bean");
+        builder.addStatement("return $N", "bean");
 
 
         MethodSpec method = builder.build();

@@ -576,6 +576,9 @@ public class ConfigProcessor implements Constants {
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
                     compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/", sharing);
 
+                    compilerSQL.generateSQL(jsonschema + SQL_INTERFACE, templateName, cli_src_dir + "/../sql", bindingsSchema2);
+
+
                     // LUC: FIXME: not generating processor fully, with composite subbean
                     SpecificationFile spec4 = compilerProcessor.generateProcessor(locations, templateName, locations.getFilePackage(BeanDirection.COMMON), bindingsSchema2, !IN_INTEGRATOR, compilerUtil.processorNameClass(templateName)  + DOT_JAVA_EXTENSION, consistsOf);
                     val4 = spec4.save();

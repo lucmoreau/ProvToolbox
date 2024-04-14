@@ -17,4 +17,9 @@ public class SqlCompositeEnactorImplementation3 extends SqlEnactorImplementation
     public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
         return new SqlCompositeBeanCompleter3(rs);
     }
+
+    @Override
+    public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
+        return new SqlCompositeBeanCompleter3(rs, extra);
+    }
 }

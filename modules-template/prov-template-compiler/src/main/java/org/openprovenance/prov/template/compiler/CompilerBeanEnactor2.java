@@ -64,6 +64,14 @@ public class CompilerBeanEnactor2 {
 
         inface.addMethod(method2.build());
 
+        MethodSpec.Builder method3 = MethodSpec.methodBuilder("beanCompleterFactory")
+                .addModifiers(Modifier.PUBLIC,Modifier.ABSTRACT)
+                .addParameter(ParameterSpec.builder(typeResult,"rs").build())
+                .addParameter(ParameterSpec.builder(Object[].class,"extra").build())
+                .returns(beanCompleterClass);
+
+        inface.addMethod(method3.build());
+
 
         builder.addType(inface.build());
 

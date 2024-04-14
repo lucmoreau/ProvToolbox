@@ -55,7 +55,7 @@ public class CompilerBeanCompleter2 {
         builder.addType(inface.build());
 
 
-        builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL);
+        builder.addField(TypeVariableName.get(Constants.GETTER),"getter", Modifier.FINAL, Modifier.PROTECTED);
 
 
         MethodSpec.Builder cbuilder2= MethodSpec.constructorBuilder();

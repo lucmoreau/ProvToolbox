@@ -2,6 +2,7 @@ package org.openprovenance.prov.service.iobean.simple;
 
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.service.Storage;
+import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanCompleter3;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanCompleter2;
 import org.openprovenance.prov.template.library.plead.client.integrator.BeanEnactor2;
 
@@ -59,6 +60,11 @@ public class SqlEnactorImplementation3 implements BeanEnactor2.EnactorImplementa
 
     @Override
     public BeanCompleter2 beanCompleterFactory(ResultSet rs) {
+        return new SqlBeanCompleter3(rs);
+    }
+
+    @Override
+    public BeanCompleter2 beanCompleterFactory(ResultSet rs, Object [] extra) {
         return new SqlBeanCompleter3(rs);
     }
 

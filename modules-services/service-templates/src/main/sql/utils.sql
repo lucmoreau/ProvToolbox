@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
 
 
 
+/*
 
 CREATE OR REPLACE FUNCTION insert_plead_transforming_composite_inserters(_records plead_transforming_type [])
     RETURNS table(ID INT,
@@ -37,10 +38,40 @@ FROM inserted_consistsOf
 
 $$ LANGUAGE sql;
 
+
+
 select * from insert_plead_transforming_composite_inserters (ARRAY[
     ( -1,'ff'::TEXT,0,null,null,null,1,null,null,''::TEXT,NULL,NULL,NULL) :: plead_transforming_type,
     ( -1,'gggg'::TEXT,-1,null,null,null,1,null,null,''::TEXT,NULL,NULL,NULL) :: plead_transforming_type]);
 
+ */
+
+CREATE OR REPLACE FUNCTION search_records(from_date timestamptz)
+    RETURNS table(key integer,
+                  table_name text,
+                  created_at timestamptz)
+AS $$
+SELECT
+    COALESCE(plead_transforming.transforming, plead_filtering.filtering) AS key,
+    CASE
+        WHEN plead_transforming.transforming IS NOT NULL THEN 'plead_transforming'
+        WHEN plead_filtering.filtering IS NOT NULL THEN 'plead_filtering'
+        END AS table_name,
+    created_at
+FROM
+    activity
+        LEFT JOIN
+    plead_transforming ON plead_transforming.transforming = activity.ID
+        LEFT JOIN
+    plead_filtering ON plead_filtering.filtering = activity.ID
+WHERE
+    activity.created_at > from_date
+  AND ((plead_transforming.transforming is not NULL) OR (plead_filtering.filtering is not NULL))
+ORDER BY created_at DESC
+limit 50
+$$ language sql;
+
+select * from search_records('2024-04-15')
 
 
 

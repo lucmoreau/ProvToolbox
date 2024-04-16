@@ -92,6 +92,7 @@ public interface Constants {
     String COMPOSITE = "Composite";
     String INITIALIZE_BEAN_TABLE = "initializeBeanTable";
     String INSERT_ARRAY_SUFFIX = "_array";
+    String INSERT_COMPOSITE_AND_LINKER_SUFFIX = "_and_linker";
     String VARIABLE_BEAN = "bean";
     String GENERIC_POST_AND_RETURN = "generic_post_and_return";
     String M_VAR = "m";
@@ -107,4 +108,8 @@ public interface Constants {
     String VAR_CSV = "csv";
     String VAR_CSV_CONVERTER = "csvConverter";
     String VAR_ELEMENT = "element";
+    String INSERTED_CONSISTS_OF = "inserted_consistsOf";
+    String LINKER_SUFFIX = "_linker";
+    String THE_PRODUCT = "the_product";
+    String THE_RECORD = "the_record";
 }

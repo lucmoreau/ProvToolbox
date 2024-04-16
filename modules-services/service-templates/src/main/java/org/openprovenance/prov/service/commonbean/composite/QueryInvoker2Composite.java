@@ -206,7 +206,7 @@ public class QueryInvoker2Composite implements InputProcessor {
         sb.append("---- query invoker for  plead_transforming_composite\n"
                 + "\n");
         sb.append("select * from ");
-        sb.append("insert_plead_transforming_composite_inserters (");
+        sb.append("insert_plead_transforming_composite_and_linker (");
         sb.append("ARRAY[\n");
         boolean first=true;
         for (Plead_transformingInputs_1 bean_1: bean.__elements) {

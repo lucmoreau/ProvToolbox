@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.function.Function;
 
 public class PrettyPrinter
 {
@@ -142,6 +143,14 @@ public class PrettyPrinter
         end();
         write (")");
     }
+
+    public QueryBuilder bracket(Function<PrettyPrinter,QueryBuilder> qbf) {
+        open();
+        QueryBuilder qb=qbf.apply(this);
+        close();
+        return qb;
+    }
+
 
 }
 

@@ -1,13 +1,11 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
@@ -424,6 +422,7 @@ public class CompilerSQL {
 
         if (shared!=null && shared.size()>0) {
             new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
+            new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertCompositeAndLinkerFunction(templateName, consistOf, templateBindingsSchema, shared);
         }
 
 

@@ -1,7 +1,7 @@
 package org.openprovenance.prov.service.iobean.simple;
 
 import org.openprovenance.prov.service.Storage;
-import org.openprovenance.prov.template.library.plead.client.configurator.EnactorConfigurator2;
+import org.openprovenance.prov.template.library.plead.client.configurator2.EnactorConfigurator2;
 
 import java.sql.Connection;
 

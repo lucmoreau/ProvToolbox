@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -424,6 +425,13 @@ public class CompilerSQL {
             new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
             new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertCompositeAndLinkerFunction(templateName, consistOf, templateBindingsSchema, shared);
         }
+        List<Pair<String, String>> templates = List.of(
+                Pair.of("plead_transforming", "transforming"),
+                Pair.of("plead_filtering", "filtering")
+        );
+        String baseRelation = "activity";
+        new CompilerSqlComposer(pFactory, withRelationId, tableKey, functionDeclarations,arrayFunctionDeclarations)
+                .generateSQLSearchRecordFunction(baseRelation, templates, jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
 
 
     }

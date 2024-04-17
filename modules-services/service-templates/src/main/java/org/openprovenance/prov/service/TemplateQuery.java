@@ -15,6 +15,7 @@ import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
 
 public class TemplateQuery {
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
+    public static final String[] SEARCH_RECORDS_COLUMNS = new String[]{"key", "created_at", "table_name"};
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
@@ -85,6 +86,36 @@ public class TemplateQuery {
         return the_records;
     }
 
+    public List<RecordEntry2> queryTemplatesRecords(boolean b) {
+        List<RecordEntry2> linked_records = new LinkedList<>();
+
+        querier.do_query(linked_records,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT * FROM ");
+                    sb.append("search_records2(null,null)");
+                    sb.append("limit 10");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        RecordEntry2 record = new RecordEntry2();
+                        record.key = rs.getObject("key", Integer.class);
+                        record.created_at = rs.getObject("created_at", Timestamp.class).toString();
+                        record.base_relation = "activity";
+                        record.table_name = rs.getObject("table_name", String.class);
+                        // TODO
+                       // record.id = rs.getObject("id", Integer.class);
+
+                        data.add(record);
+                    }
+                });
+
+        System.out.println("the records = " + linked_records);
+
+
+        return linked_records;
+    }
+
     private static class RecordEntry {
         public String table;
         public Integer key;
@@ -95,6 +126,27 @@ public class TemplateQuery {
                     ", key=" + key +
                     '}';
         }
+    }
+    private static class RecordEntry2 {
+        public Integer key;
+
+        @Override
+        public String toString() {
+            return "RecordEntry2{" +
+                    "key=" + key +
+                    ", base_relation='" + base_relation + '\'' +
+                    ", created_at='" + created_at + '\'' +
+                    ", table_name='" + table_name + '\'' +
+                    ", id=" + id +
+                    '}';
+        }
+
+        public String base_relation;
+        public String created_at;
+        public String table_name;
+        public Integer id;
+
+
     }
     public List<Object[]> queryComposite(String template, Integer id, boolean withTitles) {
         List<RecordEntry> linked_records = new LinkedList<>();

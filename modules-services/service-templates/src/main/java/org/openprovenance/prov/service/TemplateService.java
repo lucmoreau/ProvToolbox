@@ -248,6 +248,23 @@ public class TemplateService {
 
     }
 
+    @GET
+    @Path("/templates/records")
+    @Tag(name = "ems_q")
+    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+   // @Produces({InteropMediaType.MEDIA_TEXT_CSV})
+    public Response getTemplatesRecords(@Context HttpServletResponse response,
+                                 @Context HttpServletRequest request,
+                                 @Context HttpHeaders headers,
+                                 @Context UriInfo uriInfo) {
+
+        Object records = queryTemplate.queryTemplatesRecords( false);
+
+        StreamingOutput promise= out -> om.writeValue(out,records);
+        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_APPLICATION_JSON).build();
+
+        }
+
 
 
     private InputStream getPart(List<InputPart> inputParts) {
@@ -284,6 +301,8 @@ public class TemplateService {
         }
         return null;
     }
+
+
 
 
 }

@@ -112,4 +112,7 @@ public interface Constants {
     String LINKER_SUFFIX = "_linker";
     String THE_PRODUCT = "the_product";
     String THE_RECORD = "the_record";
+    String BASETABLE_KEY_COLUMN = "key";
+    String TABLE_NAME_COLUMN = "table_name";
+    String CREATED_AT_COLUMN = "created_at";
 }

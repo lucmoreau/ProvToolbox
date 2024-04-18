@@ -608,7 +608,7 @@ public class CompilerSqlComposer {
 
     public void generateSQLSearchRecordFunction(String baseRelation, List<Pair<String,String>> templates, String jsonschema, String templateName, String consistOf, String rootDir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
-        String searchFunction="search_records2";
+        String searchFunction="search_records";
 
         Map<String,?> funParams=new HashMap<>() {{
             put("from_date", unquote("timestamptz"));
@@ -616,13 +616,15 @@ public class CompilerSqlComposer {
         }};
 
         Map<String,Object> functionReturns= new LinkedHashMap<>() {{
-            put(BASETABLE_KEY_COLUMN, unquote("INT"));
+            put("ID",                 unquote("INT"));
             put(CREATED_AT_COLUMN,    unquote("timestamptz"));
             put(TABLE_NAME_COLUMN,    unquote("text"));
+            put("key",                 unquote("INT"));
+
         }};
 
         //create string COALESCE(plead_transforming.transforming, plead_filtering.filtering) AS key,
-        String coalescedKey= templates.stream().map(p -> p.getLeft() + "." + p.getRight()).collect(Collectors.joining(", ", "COALESCE (", ")"));
+        String coalescedKey= templates.stream().map(p -> p.getLeft() + ".id").collect(Collectors.joining(", ", "COALESCE (", ")"));
 
         String nameCase="CASE " + templates.stream().map(p -> "WHEN " + p.getLeft() + "." + p.getRight() + " IS NOT NULL THEN '" + p.getLeft() + "'").collect(Collectors.joining(" ")) + " END";
 
@@ -633,7 +635,7 @@ public class CompilerSqlComposer {
                         .params(funParams)
                         .returns("table", functionReturns)
                         .bodyStart("")
-                        .selectExp(coalescedKey + " as " + BASETABLE_KEY_COLUMN, CREATED_AT_COLUMN, nameCase + " AS " + TABLE_NAME_COLUMN)
+                        .selectExp(baseRelation+".id as ID", CREATED_AT_COLUMN, nameCase + " AS " + TABLE_NAME_COLUMN, coalescedKey + " as " + BASETABLE_KEY_COLUMN )
                         .from(baseRelation);
 
         for (Pair<String,String> template: templates) {
@@ -641,11 +643,6 @@ public class CompilerSqlComposer {
         }
         fun.whereOpen("from_date", "is", "null").or(CREATED_AT_COLUMN, ">", "from_date").close();
         fun.andOpen("to_date", "is", "null").or(CREATED_AT_COLUMN, "<", "to_date").close();
-
-        // FIXME, OR missing within Brackets
-
-        //for all elements after the first in 'templates'
-        //templates.stream().map(p -> p.getLeft() + "." + p.getRight(), "is not", "null")
 
         AtomicBoolean first= new AtomicBoolean(true);
         templates.forEach(p -> {

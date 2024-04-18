@@ -14,10 +14,9 @@
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/sql/utils.sql" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/sql/utils.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/QueryBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/QueryBuilder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1150,7 +1149,7 @@
       <workItem from="1713337784627" duration="9990000" />
       <workItem from="1713372878257" duration="5927000" />
       <workItem from="1713385489351" duration="267000" />
-      <workItem from="1713385763798" duration="1874000" />
+      <workItem from="1713385763798" duration="12924000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

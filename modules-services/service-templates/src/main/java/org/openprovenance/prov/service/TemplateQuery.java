@@ -93,18 +93,17 @@ public class TemplateQuery {
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
-                    sb.append("search_records2(null,null)");
+                    sb.append("search_records(null,null)");
                     sb.append("limit 10");
                 },
                 (rs, data) -> {
                     while (rs.next()) {
                         RecordEntry2 record = new RecordEntry2();
                         record.key = rs.getObject("key", Integer.class);
-                        record.created_at = rs.getObject("created_at", Timestamp.class).toString();
+                        record.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
                         record.base_relation = "activity";
                         record.table_name = rs.getObject("table_name", String.class);
-                        // TODO
-                       // record.id = rs.getObject("id", Integer.class);
+                        record.id = rs.getObject("ID", Integer.class);
 
                         data.add(record);
                     }
@@ -127,7 +126,7 @@ public class TemplateQuery {
                     '}';
         }
     }
-    private static class RecordEntry2 {
+    public static class RecordEntry2 {
         public Integer key;
 
         @Override

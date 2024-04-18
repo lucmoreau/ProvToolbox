@@ -6,6 +6,8 @@
     <title>${form.dashboard.title}</title>
     <link rel="stylesheet" href="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/css/bootstrap.css" />
     <link rel="stylesheet" href="${service.context}/webjars/${the.template.library}/${project.version}/css/provtemplate.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="${service.context}/webjars/font-awesome/${webjars.fontawesome.version}/css/font-awesome.min.css"/>
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -13,10 +15,13 @@
 
 <body>
 <script src="${service.context}/webjars/jquery/${webjars.jquery.version}/jquery.min.js"></script>
+<script src="${service.context}/webjars/datatables.net/${webjars.datatables.version}/js/jquery.dataTables.min.js" type="text/javascript" charset="utf8" ></script>
 <script src="${service.context}/webjars/JSV/lib/jsv.js"></script>
 <script src="${service.context}/webjars/underscore/${webjars.underscore.version}/underscore.js"></script>
 <script src="${service.context}/webjars/jsonform/lib/jsonform.js"></script>
 <script src="${service.context}/webjars/jsonform/deps/opt/jquery-ui.js"></script>
+<script src="${service.context}/webjars/jquery-csv/${webjars.jquery.csv.version}/src/jquery.csv.js"></script>
+
 
 <script src="${service.context}/webjars/j4ts/${webjars.j4ts.version}/bundle.js"></script>
 
@@ -48,8 +53,15 @@
                 <a href="#tab_documentation" data-toggle="pill" class="nav-link" role="tab">Documentation</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_csv_log" data-toggle="pill" class="nav-link" role="tab">CSV Log</a>
+                <a href="#tab_csv_log" data-toggle="pill" class="nav-link" role="tab">CSV Logger</a>
             </li>
+            <li class="nav-item">
+                <a href="#tab_browser" data-toggle="pill" class="nav-link" role="tab">Browser</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab_navigator" data-toggle="pill" class="nav-link" role="tab">Navigator</a>
+            </li>
+
 
         </ul>
 
@@ -102,6 +114,23 @@
 
             <div id="tab_csv_log" class="tab-pane" role="tabpanel">
                 <pre id="csv_log"></pre>
+            </div>
+
+            <div id="tab_browser" class="tab-pane" role="tabpanel">
+                <div class="col-lg-1">
+                    <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse(true)">Refresh</button>
+                </div>
+                <div class="col-lg-11 first-column">
+                    <table id="browser_list"
+                           class="display"
+                           style="width:80%">
+
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab_navigator" class="tab-pane" role="tabpanel">
+                <pre id="navigator">To come soon</pre>
             </div>
         </div>
     </div>
@@ -257,6 +286,37 @@
         $(HTML_ANCHOR_ENACT_RESULT_BOX).html("");
         $(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
     }
+
+
+    function submitBrowse(b) {
+        let url = "http://localhost:7072/ptl/provapi/templates/records"
+        console.log("submitBrowse " + url)
+        let id = '#browser_list'
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "text",
+            success: function (contents) {
+                var data = $.csv.toArrays(contents);
+                data.shift()
+                var columns = data[0];
+                var titles = $.map(columns, function (column) {
+                    return {"title": column}
+                })
+                console.log(titles)
+                data.shift()
+
+                $(id).DataTable({
+                    destroy: true,
+                    "data": data,
+                    "columns": titles,
+                    order: [[1, 'desc']]
+                });
+            }
+        });
+    }
+
 
     let imageNameMapper = {
         "plead_transforming": "plead-transforming",

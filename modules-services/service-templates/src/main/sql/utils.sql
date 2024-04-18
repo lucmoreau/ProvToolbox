@@ -46,6 +46,7 @@ select * from insert_plead_transforming_composite_inserters (ARRAY[
 
  */
 
+/*
 CREATE OR REPLACE FUNCTION search_records(from_date timestamptz)
     RETURNS table(key integer,
                   table_name text,
@@ -73,7 +74,7 @@ $$ language sql;
 
 select * from search_records('2024-04-15')
 
-
+*/
 
 
 

@@ -108,7 +108,7 @@ public class CompilerSqlComposer {
                                 if (isShared) {
                                     return unquote(appendPossiblySharedOutput(key, isShared));
                                 } else {
-                                    String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                                    String the_table = descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
                                     String new_table = newTableWithId(key);
                                     String new_id = the_table + "_id";
                                     return (Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select(new_id).apply(pp).from(new_table);
@@ -160,7 +160,7 @@ public class CompilerSqlComposer {
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .collect(Collectors.toMap(  this::newTableWithId,
                         key -> {
-                            String the_table = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                            String the_table = descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
                             Optional<AttributeDescriptor.SqlForeign> sqlForeign = descriptorUtils.getOutputSqlForeign(key, templateBindingsSchema);
                             if (sqlForeign.isPresent()) {
                                 String foreignType=Constants.INPUT_PREFIX + sqlForeign.get().getType();
@@ -168,7 +168,7 @@ public class CompilerSqlComposer {
                                 String foreignItem=Constants.INPUT_PREFIX + sqlForeign.get().getItem();
 
 
-                                String theTable = descriptorUtils.getOutputSqlTable(key, templateBindingsSchema).orElse(key);
+                                String theTable = descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
 
                                 //(SELECT f_build_and_execute_select('creating_emission_report', input_attribute, input_item) as literal),
                                 return (pp) -> new QueryBuilder(pp)
@@ -241,7 +241,7 @@ public class CompilerSqlComposer {
 
         final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
         final Predicate<String> isInput  = (key) -> descriptorUtils.isInput (key, templateBindingsSchema);
-        final Function<String,String> table  = (key) -> descriptorUtils.getOutputSqlTable (key, templateBindingsSchema).orElse(key);
+        final Function<String,String> table  = (key) -> descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
 
 
         Map<String,?> funParams=new HashMap<>() {{
@@ -417,7 +417,7 @@ public class CompilerSqlComposer {
 
         final Predicate<String> isOutput = (key) -> descriptorUtils.isOutput(key, templateBindingsSchema);
         final Predicate<String> isInput  = (key) -> descriptorUtils.isInput (key, templateBindingsSchema);
-        final Function<String,String> table  = (key) -> descriptorUtils.getOutputSqlTable (key, templateBindingsSchema).orElse(key);
+        final Function<String,String> table  = (key) -> descriptorUtils.getSqlTable(key, templateBindingsSchema).orElse(key);
 
 
         Map<String,?> funParams=new HashMap<>() {{

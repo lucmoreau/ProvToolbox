@@ -2,13 +2,17 @@ package org.openprovenance.prov.template.compiler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.javapoet.*;
-
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeVariableName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.configuration.Configuration;
-import org.openprovenance.prov.model.*;
-
+import org.openprovenance.prov.model.Bundle;
+import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.IndexedDocument;
+import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
 import org.openprovenance.prov.template.compiler.common.CompilerCommon;
@@ -21,7 +25,10 @@ import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -204,10 +211,11 @@ public class ConfigProcessor implements Constants {
             generateDocumentationEnd(configs, cli_src_dir);
 
 
-
             doGenerateProject(configs, locations, root_dir, cli_lib, l2p_lib, l2p_dir, l2p_src_dir, l2p_test_src_dir, cli_test_src_dir, cli_webjar_dir);
 
             doGenerateClientAndProject(configs, locations, cli_lib, cli_dir, cli_src_dir);
+
+            System.out.println(objectMapper.writeValueAsString(getInputOutputMaps()));
 
 
         } catch (IOException e) {
@@ -471,6 +479,7 @@ public class ConfigProcessor implements Constants {
             String compositeBeanNameClass=compilerUtil.commonNameClass(templateName);
 
 
+            buildJoinTable(templateName, bindingsSchema);
 
 
             IndexedDocument indexed = makeIndexedDocument(doc);
@@ -626,6 +635,43 @@ public class ConfigProcessor implements Constants {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+
+        }
+    }
+
+    private final Map<String, Map<String,String>> inputMap =new HashMap<>();
+    private final Map<String, Map<String,String>> outputMap=new HashMap<>();
+
+
+    public Map<String,Map<String, Map<String, String>>> getInputOutputMaps() {
+        return new HashMap<>() {{
+            put("input", inputMap);
+            put("output", outputMap);
+        }};
+    }
+
+    /*
+    {
+    "output": {"plead_validating":{"score":"score","validating":"activity"},"plead_transforming_composite":{"transformed_file":"file","transforming":"activity"},"plead_approving":{"approving":"activity","approved_pipeline":"file"},"plead_filtering":{"filtered_file":"file","filtering":"activity"},"plead_splitting":{"splitting":"activity","split_file2":"file","split_file1":"file"},"plead_training":{"pipeline":"file","training":"activity"},"plead_transforming":{"transformed_file":"file","transforming":"activity"}},
+    "input":{"plead_validating":{"testing_dataset":"file"},"plead_transforming_composite":{"file":"file","method":"method"},"plead_approving":{"pipeline":"file","score":"score"},"plead_filtering":{"file":"file","method":"method"},"plead_splitting":{"file":"file"},"plead_training":{"training_dataset":"file"},"plead_transforming":{"file":"file","method":"method"}}}
+     */
+
+    public void buildJoinTable(String templateName, TemplateBindingsSchema bindingsSchema) {
+            for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+                Optional<String> sqlRelationName=descriptorUtils.getSqlTable(key, bindingsSchema);
+                if (descriptorUtils.isOutput(key, bindingsSchema)) {
+                    sqlRelationName.ifPresent(rel -> {
+                        Map<String, String> map = outputMap.computeIfAbsent(templateName, any -> new HashMap<>());
+                        map.put(key, rel);
+                    });
+                } else if (descriptorUtils.isInput(key, bindingsSchema)) {
+                    sqlRelationName.ifPresent(rel -> {
+                        Map<String, String> map = inputMap.computeIfAbsent(templateName, any -> new HashMap<>());
+                        map.put(key, rel);
+                    });
+
+                }
+
 
         }
     }

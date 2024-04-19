@@ -18,8 +18,10 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: provenance generation for composite templates
 * prov-template-compiler: generation of insert_plead_transforming_composite_composite_and_linker sql method
 * prov-template-compiler: search records function
-* service-template: search records functionality
-* service-template: browser tab
+* service-templates: search records functionality
+* service-templates: browser tab
+* service-templates: navigation between templates
+
 
 
 

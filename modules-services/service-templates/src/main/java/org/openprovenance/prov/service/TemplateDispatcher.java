@@ -11,7 +11,10 @@ import org.openprovenance.prov.template.library.plead.logger.TemplateBuilders;
 
 
 import java.sql.Connection;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeCompositeBeanTable;
@@ -29,6 +32,9 @@ public class TemplateDispatcher {
     private final Map<String, ProcessorArgsInterface<?>> beanConverter;
     private final Map<String, ProcessorArgsInterface<?>> enactorConverter;
     private final Map<String, RecordsProcessorInterface<?>> compositeEnactorConverter;
+    private final Map<String, Map<String, List<String>>> successors;
+    private final Map<String, Map<String, List<String>>> predecessors;
+
 
     public TemplateDispatcher(Storage storage, Connection conn) {
         propertyOrder=initializeBeanTable(new PropertyOrderConfigurator());
@@ -40,6 +46,25 @@ public class TemplateDispatcher {
         enactorConverter=initializeBeanTable(new SqlEnactorConfigurator3(storage,conn));
         //compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator(storage,conn));
         compositeEnactorConverter=initializeCompositeBeanTable(new SqlCompositeEnactorConfigurator3(storage,conn));
+        successors = initializeBeanTable(new SuccessorConfigurator());
+        predecessors = successors
+                .keySet()
+                .stream()
+                .collect(Collectors.toMap(k -> k,
+                        k -> getNonNullStringListMap(k)
+                                .entrySet()
+                                .stream()
+                                .flatMap(entry ->
+                                        entry
+                                        .getValue()
+                                        .stream().map(v -> Map.entry(entry.getKey(),v)))
+                                .collect(Collectors.groupingBy(Map.Entry::getValue,
+                                                               Collectors.mapping(Map.Entry::getKey, Collectors.toList())))));
+    }
+
+    private Map<String, List<String>> getNonNullStringListMap(String k) {
+        Map<String, List<String>> stringListMap = successors.get(k);
+        return stringListMap==null?Map.of():stringListMap;
     }
 
 
@@ -69,5 +94,12 @@ public class TemplateDispatcher {
 
     public Map<String, RecordsProcessorInterface<?>> getCompositeEnactorConverter() {
         return compositeEnactorConverter;
+    }
+
+    public Map<String, Map<String, List<String>>> getSuccessors() {
+        return successors;
+    }
+    public Map<String, Map<String, List<String>>> getPredecessors() {
+        return predecessors;
     }
 }

@@ -494,6 +494,11 @@ public class QueryBuilder {
         return this;
 
     }
+    public QueryBuilder newline() {
+        prettyPrinter.newline(0);
+        return this;
+
+    }
 
     private QueryBuilder conditionalStart(String operator) {
         prettyPrinter.write(operator);
@@ -736,7 +741,7 @@ public class QueryBuilder {
     public QueryBuilder alias(String alias) {
 
 
-        prettyPrinter.write("AS ");
+        prettyPrinter.write(" AS ");
         prettyPrinter.write(alias);
         prettyPrinter.write(" ");
 
@@ -824,7 +829,8 @@ public class QueryBuilder {
             throw new IllegalArgumentException();
         }
 
-        prettyPrinter.write("UNION ");
+        prettyPrinter.write(" UNION ");
+        prettyPrinter.allowBreak(0);
         QueryBuilder queryBuilder=queryBuilderFun.apply(prettyPrinter);
 
         //sqlBuilder.append(" union ");
@@ -1217,7 +1223,7 @@ public class QueryBuilder {
         prettyPrinter.flush();
     }
 
-    static class FunctionQueryBuilder extends QueryBuilder {
+    static public class FunctionQueryBuilder extends QueryBuilder {
 
         public FunctionQueryBuilder(StringBuilder sqlBuilder, PrettyPrinter prettyPrinter)  {
             super(sqlBuilder, prettyPrinter);
@@ -1570,7 +1576,7 @@ public class QueryBuilder {
 
 
 
-    static Unquote unquote(String val) {
+    public static Unquote unquote(String val) {
         return new Unquote(val);
     }
     static Unquote arrayOf(String val) {

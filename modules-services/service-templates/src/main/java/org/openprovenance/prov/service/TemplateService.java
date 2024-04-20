@@ -109,7 +109,7 @@ public class TemplateService {
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
         }};
 
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher,compositeLinker);
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om);
 
 
         if (conn!=null) {

@@ -1,30 +1,59 @@
 package org.openprovenance.prov.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
+import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
+import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
+import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote;
 
 public class TemplateQuery {
+    public static final String PARAM_ID = "__param_id";
+    public static final String PARAM_PROPERTY = "__param_property";
+    public static final String PARAM_TEMPLATE = "__param_template";
+    public static final String IN_TEMPLATE = "in_template";
+    public static final String IN_PROPERTY = "in_property";
+    public static final String IN_ID = "in_id";
+    public static final String OUT_ID = "out_id";
+    public static final String OUT_TEMPLATE = "out_template";
+    public static final String OUT_PROPERTY = "out_property";
+    public static final String INPUT = "input";
+    public static final String OUTPUT = "output";
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
     public static final String[] SEARCH_RECORDS_COLUMNS = new String[]{"key", "created_at", "table_name"};
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
     private final Map<String, TemplateService.Linker> compositeLinker;
+    private final ObjectMapper om;
 
-    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker) {
+
+    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
         this.compositeLinker = compositeLinker;
+        this.om = om;
+        generateTraversalMethods(querier);
+    }
+
+    private void generateTraversalMethods(Querier querier) {
+        Map<String,Map<String, Map<String, String>>> ioMap = getIoMap();
+
+        querier.do_statements(null,
+                null,
+                (sb, data) -> {
+                    sb.append(generateBackwardTemplateTraversal(ioMap));
+                });
     }
 
     public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, List<Object[]> the_records) {
@@ -193,4 +222,129 @@ public class TemplateQuery {
         }
         return result;
     }
+
+    String ioMapString="{\"output\":{\"plead_validating\":{\"score\":\"score\",\"validating\":\"activity\"},\"plead_approving\":{\"approving\":\"activity\",\"approved_pipeline\":\"file\"},\"plead_filtering\":{\"filtered_file\":\"file\",\"filtering\":\"activity\"},\"plead_splitting\":{\"splitting\":\"activity\",\"split_file2\":\"file\",\"split_file1\":\"file\"},\"plead_training\":{\"pipeline\":\"file\",\"training\":\"activity\"},\"plead_transforming\":{\"transformed_file\":\"file\",\"transforming\":\"activity\"}},\"input\":{\"plead_validating\":{\"testing_dataset\":\"file\"},\"plead_approving\":{\"pipeline\":\"file\",\"score\":\"score\"},\"plead_filtering\":{\"file\":\"file\",\"method\":\"method\"},\"plead_splitting\":{\"file\":\"file\"},\"plead_training\":{\"training_dataset\":\"file\"},\"plead_transforming\":{\"file\":\"file\",\"method\":\"method\"}}}";
+
+
+    TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
+
+    public Map<String, Map<String, Map<String, String>>> getIoMap() {
+        try {
+            return om.readValue(ioMapString, typeRef);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String generateBackwardTemplateTraversal(Map<String,Map<String, Map<String, String>>> ioMap) {
+        String backwardTraversalFunctionName="backwardTraversal";
+
+        Map<String,?> funParams=new LinkedHashMap<>() {{
+            put(PARAM_ID,       unquote("INT"));
+            put(PARAM_TEMPLATE, unquote("text"));
+            put(PARAM_PROPERTY, unquote("text"));
+
+        }};
+        Map<String,Object> functionReturns= new LinkedHashMap<>() {{
+
+            put(IN_ID,           unquote("INT"));
+            put(IN_TEMPLATE,     unquote("text"));
+            put(IN_PROPERTY,     unquote("text"));
+            put(OUT_ID,          unquote("INT"));
+            put(OUT_TEMPLATE,    unquote("text"));
+            put(OUT_PROPERTY,    unquote("text"));
+        }};
+
+
+        QueryBuilder fun=
+                new QueryBuilder()
+                        .comment("Generated by method " + getClass().getName()+ ".generateSQLSearchRecordFunction")
+                        .next(createFunction(backwardTraversalFunctionName))
+                        .params(funParams)
+                        .returns("table", functionReturns)
+                        .bodyStart("");
+        Set<String> allTables=ioMap.get(OUTPUT).values().stream().map(Map::values).flatMap(Collection::stream).collect(Collectors.toSet());
+        allTables.addAll(ioMap.get(INPUT).values().stream().map(Map::values).flatMap(Collection::stream).collect(Collectors.toSet()));
+
+        System.out.println("allTables = " + allTables);
+
+        System.out.println("* successors: " + templateDispatcher.getSuccessors());
+        System.out.println("* predecessors: " + templateDispatcher.getPredecessors());
+
+        System.out.println(ioMap.get(INPUT));
+        System.out.println(ioMap.get(OUTPUT));
+        Map<String, Map<String, String>> input = ioMap.get(INPUT);
+        Map<String, Map<String, String>> output = ioMap.get(OUTPUT);
+
+        boolean before=false;
+
+        for (String table: allTables) {
+
+            System.out.println("table = " + table);
+
+
+
+            Map<String, Map<String, String>> input_table=
+                    filterMapAccordingToTable(table, input);
+            Map<String, Map<String, String>> output_table=
+                    filterMapAccordingToTable(table, output);
+
+
+            for (String in_template: input_table.keySet()) {
+                if (!input_table.get(in_template).keySet().isEmpty()) {
+                    fun.comment(" + in_template = " + in_template);
+                    for (String in_property : input_table.get(in_template).keySet()) {
+                        for (String out_template : output_table.keySet()) {
+                            if (!output_table.get(out_template).keySet().isEmpty()) {
+                                for (String out_property : output_table.get(out_template).keySet()) {
+                                    String in_templatex=in_template;
+                                    String out_templatex=out_template;
+
+                                    if(in_template.equals(out_template)) {
+                                        in_templatex = "_" + in_template + "_in";
+                                        out_templatex = "_" + out_template + "_out";
+                                    }
+
+                                    String [] args={
+                                            String.format("%s as %s",    PARAM_ID, IN_ID),
+                                            String.format("'%s' as %s",  in_template,   IN_TEMPLATE),
+                                            String.format("'%s' as %s",  in_property,   IN_PROPERTY),
+                                            String.format("%s.id as %s", out_templatex, OUT_ID),
+                                            String.format("'%s' as %s",  out_template,  OUT_TEMPLATE),
+                                            String.format("'%s' as %s",  out_property,  OUT_PROPERTY)
+                                    };
+                                    if (before) {
+                                        fun.newline().union(pp -> select(args).apply(pp));
+                                    } else {
+                                        fun.selectExp(args);
+                                        before = true;
+                                    }
+                                    fun.from(in_template);
+                                    if (!in_template.equals(in_templatex)) {
+                                        fun.alias(in_templatex);
+                                    }
+                                    fun.join(out_template);
+                                    if (!out_template.equals(out_templatex)) {
+                                        fun.alias(out_templatex);
+                                    }
+                                    fun.on (out_templatex + "." +  out_property + " = " + in_templatex  + "." +  in_property )
+                                            .and(           unquote(PARAM_PROPERTY) + " = '" + in_property + "'")
+                                            .and( in_templatex + ".id=" + PARAM_ID);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return fun.bodyEnd("").getSQL();
+
+    }
+
+    private Map<String, Map<String, String>> filterMapAccordingToTable(String table, Map<String, Map<String, String>> input) {
+        return input.keySet().stream().collect(Collectors.toMap(k -> k, k -> input.get(k).keySet().stream().filter(k2 -> input.get(k).get(k2).equals(table)).collect(Collectors.toMap(k2 -> k2, k2 -> input.get(k).get(k2)))));
+    }
+
 }

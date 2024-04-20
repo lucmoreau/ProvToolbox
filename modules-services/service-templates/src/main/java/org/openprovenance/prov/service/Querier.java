@@ -43,6 +43,24 @@ public class Querier  {
         return data;
     }
 
+    public <T> boolean do_statements(T data,
+                                     Consumer<T> check,
+                                     BiConsumer<StringBuilder,T> composeQuery) {
+        if (check!=null) check.accept(data);
+        StringBuilder sb=new StringBuilder();
+        composeQuery.accept(sb,data);
+        String statement=sb.toString();
+        boolean rs;
+        try {
+            rs=storage.executeStatements(conn,statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new org.openprovenance.prov.model.exception.UncheckedException("Issue in enactment " + statement, e);
+        }
+        return rs;
+    }
+
+
 
     public long storeBlobs(InputStream descriptorStream, InputStream binaryStream, String mediaType, String name, String insertStatement) throws SQLException, IOException {
         try (descriptorStream; binaryStream) {

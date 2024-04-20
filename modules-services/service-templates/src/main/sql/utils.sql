@@ -10,7 +10,40 @@ CREATE TABLE IF NOT EXISTS plead_transforming_composite_linker
 --  The simple record
 );
 
+CREATE TABLE if not exists predecessor_table  (template text, output text, input text);
 
+truncate predecessor_table;
+
+insert into predecessor_table (template, output, input)
+values
+    ('plead_validating', 'score', 'testing_dataset'),
+    ('plead_filtering', 'filtered_file', 'file'),
+    ('plead_approving', 'approval_record,', 'pipeline'),
+    ('plead_approving', 'approval_record', 'score'),
+    ('plead_approving', 'approved_pipeline', 'pipeline'),
+    ('plead_approving', 'approved_pipeline', 'score'),
+    ('plead_splitting', 'split_file1', 'file'),
+    ('plead_splitting', 'split_file2', 'file'),
+    ('plead_transforming', 'transformed_file', 'file'),
+    ('plead_training', 'pipeline', 'training_dataset')
+;
+
+/*
+
+select * from backwardTraversal(8, 'plead_approving', 'pipeline')
+union
+select * from backwardTraversal(18, 'plead_training', 'training_dataset')
+
+
+select edges.*, predecessor_table.input
+from
+(select * from backwardTraversal(8, 'plead_approving', 'pipeline')
+union
+select * from backwardTraversal(18, 'plead_training', 'training_dataset')) as edges
+left join predecessor_table on edges.out_template=predecessor_table.template
+and edges.out_property=predecessor_table.output
+
+ */
 
 /*
 

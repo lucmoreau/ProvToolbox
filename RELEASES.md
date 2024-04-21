@@ -21,6 +21,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: search records functionality
 * service-templates: browser tab
 * service-templates: navigation between templates
+* service-templates: recursive traversal query
 
 
 

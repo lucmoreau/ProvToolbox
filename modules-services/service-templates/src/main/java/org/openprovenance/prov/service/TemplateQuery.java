@@ -44,7 +44,44 @@ public class TemplateQuery {
         this.compositeLinker = compositeLinker;
         this.om = om;
         generateTraversalMethods(querier);
+        try {
+            System.out.println(om.writeValueAsString(recursiveTraversal(8, "lead_approving", "pipeline")));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    String recursiveQuery="CREATE OR REPLACE FUNCTION backwardtraversal_star(\n" +
+            "    __param_id integer, \n" +
+            "    __param_template text, \n" +
+            "    __param_property text\n" +
+            ") RETURNS TABLE(\n" +
+            "    in_id integer, \n" +
+            "    in_template text, \n" +
+            "    in_property text, \n" +
+            "    out_id integer, \n" +
+            "    out_template text, \n" +
+            "    out_property text\n" +
+            ")\n" +
+            "AS $$\n" +
+            "WITH RECURSIVE recurse_traverse AS (\n" +
+            "    -- Initial query from backwardTraversal function with an additional column for recursion depth\n" +
+            "    SELECT in_id, in_template, in_property, out_id, out_template, out_property, 1 AS depth\n" +
+            "    FROM backwardTraversal(__param_id, __param_template, __param_property)\n" +
+            "\n" +
+            "    UNION \n" +
+            "\n" +
+            "\t-- Recursive step using the output of backwardTraversal called on new parameters obtained from predecessor_table\n" +
+            "    SELECT bt.in_id, bt.in_template, bt.in_property, bt.out_id, bt.out_template, bt.out_property, rt.depth + 1 AS depth\n" +
+            "    FROM recurse_traverse rt\n" +
+            "    JOIN predecessor_table pt ON rt.out_template = pt.template AND rt.out_property = pt.output\n" +
+            "    CROSS JOIN LATERAL backwardTraversal(rt.out_id, rt.out_template, pt.input) AS bt\n" +
+            "    WHERE pt.input IS NOT NULL AND rt.depth < 100 -- Ensuring pt.input is not null and limiting recursion depth\n" +
+            "\n" +
+            ")\n" +
+            "SELECT in_id, in_template, in_property, out_id, out_template, out_property\n" +
+            "FROM recurse_traverse\n" +
+            "$$ LANGUAGE SQL;";
 
     private void generateTraversalMethods(Querier querier) {
         Map<String,Map<String, Map<String, String>>> ioMap = getIoMap();
@@ -53,7 +90,49 @@ public class TemplateQuery {
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
+                    sb.append(recursiveQuery);
                 });
+
+
+    }
+
+    static public class TemplateConnection {
+        public Integer in_id;
+        public String in_template;
+        public String in_property;
+        public Integer out_id;
+        public String out_template;
+        public String out_property;
+    }
+
+    public List<TemplateConnection> recursiveTraversal(Integer id, String template, String property) {
+        List<TemplateConnection> the_records = new LinkedList<>();
+        querier.do_query(the_records,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT * FROM ");
+                    sb.append("backwardtraversal_star(");
+                    sb.append(id);
+                    sb.append(",'");
+                    sb.append(template);
+                    sb.append("','");
+                    sb.append(property);
+                    sb.append("')");
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        TemplateConnection record = new TemplateConnection();
+                        record.in_id=rs.getObject("in_id", Integer.class);
+                        record.in_template=rs.getObject("in_template", String.class);
+                        record.in_property=rs.getObject("in_property", String.class);
+                        record.out_id=rs.getObject("out_id", Integer.class);
+                        record.out_template=rs.getObject("out_template", String.class);
+                        record.out_property=rs.getObject("out_property", String.class);
+                        data.add(record);
+                    }
+                });
+
+        return the_records;
     }
 
     public Document constructDocument(Map<String, FileBuilder> documentBuilderDispatcher, List<Object[]> the_records) {

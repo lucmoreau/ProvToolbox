@@ -138,13 +138,16 @@ public class TemplatesToDot extends ProvToDot {
 
     }
 
+    String headstyle="inv";
+    String tailstyle="normal";
 
     private void emitEdge(String source, String destination, PrintStream out) {
         StringBuffer sb=new StringBuffer();
         sb.append("\n");
-        sb.append(source);
+        sb.append(source).append(":n"); // anchor to north
         sb.append(" -> ");
-        sb.append(destination);
+        sb.append(destination).append(":s"); // anchor to south
+        sb.append("[dir=\"both\", arrowhead=\"").append(headstyle).append("\", arrowtail=\"").append(tailstyle).append("\"]");
         sb.append(";\n");
         out.println(sb.toString());
     }

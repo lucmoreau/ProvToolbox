@@ -18,6 +18,7 @@ import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,9 +38,10 @@ public class TemplateLogic {
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
+    private final TemplateQuery templateQuery;
 
 
-    public TemplateLogic(ProvFactory pf, Object o, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
@@ -47,10 +49,7 @@ public class TemplateLogic {
         this.om = om;
         om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
         this.sqlCompositeBeanEnactor3 = sqlCompositeBeanEnactor3;
-
-
-
-
+        this.templateQuery = templateQuery;
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
@@ -149,4 +148,7 @@ public class TemplateLogic {
     }
 
 
+    public void generateViz(TemplateService.TemplatesVizConfig config, OutputStream out) {
+        templateQuery.generateViz(config.id, config.template, config.property, out);
+    }
 }

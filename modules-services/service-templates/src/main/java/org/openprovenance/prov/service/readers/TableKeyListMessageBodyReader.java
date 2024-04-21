@@ -1,6 +1,5 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.readers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.WebApplicationException;
@@ -8,19 +7,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.openprovenance.prov.interop.InteropMediaType;
+import org.openprovenance.prov.service.TableKeyList;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-
-import static org.openprovenance.prov.service.TemplateService.APPLICATION_VND_KCL_PROV_TEMPLATE_JSON;
 
 @Provider
 @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})

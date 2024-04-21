@@ -172,7 +172,8 @@ public class CompilerCommon {
             builder.addField(generateField4aArgs2CsvConverter(name,templateName,packageName));
             builder.addMethod(generateCommonMethod2PureCsv(templateName, bindingsSchema, consistsOf));
             builder.addMethod(generateCommonCSVConverterMethod_aux(name, templateName, compilerUtil.loggerName(templateName), packageName, bindingsSchema, beanKind, consistsOf, locations.getFilePackage(logger), logger));
-
+            builder.addMethod(generateNullOutputsMethod());
+            builder.addMethod(generateNullInputsMethod());
 
         }
 
@@ -926,6 +927,22 @@ public class CompilerCommon {
                 .returns(String[].class);
         compilerUtil.specWithComment(builder5);
         builder5.addStatement("return $N", Constants.INPUTS);
+        return builder5.build();
+    }
+    public MethodSpec generateNullInputsMethod() {
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.INPUTS_METHOD)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String[].class);
+        compilerUtil.specWithComment(builder5);
+        builder5.addStatement("return $N", "null");
+        return builder5.build();
+    }
+    public MethodSpec generateNullOutputsMethod() {
+        MethodSpec.Builder builder5 = MethodSpec.methodBuilder(Constants.OUTPUTS_METHOD)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String[].class);
+        compilerUtil.specWithComment(builder5);
+        builder5.addStatement("return $N", "null");
         return builder5.build();
     }
     public MethodSpec generateRecordCsvProcessorMethod(BeanKind beanKind) {

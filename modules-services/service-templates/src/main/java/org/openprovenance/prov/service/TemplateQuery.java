@@ -3,12 +3,15 @@ package org.openprovenance.prov.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,6 +21,8 @@ import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote;
 
 public class TemplateQuery {
+    // declare logger
+    private static final Logger logger = LogManager.getLogger(TemplateQuery.class);
     public static final String PARAM_ID = "__param_id";
     public static final String PARAM_PROPERTY = "__param_property";
     public static final String PARAM_TEMPLATE = "__param_template";
@@ -36,6 +41,13 @@ public class TemplateQuery {
     private final TemplateDispatcher templateDispatcher;
     private final Map<String, TemplateService.Linker> compositeLinker;
     private final ObjectMapper om;
+    private final Map<String, Map<String, Map<String, String>>> ioMap;
+
+    final String ioMapString="{\"output\":{\"plead_validating\":{\"score\":\"score\",\"validating\":\"activity\"},\"plead_approving\":{\"approving\":\"activity\",\"approved_pipeline\":\"file\"},\"plead_filtering\":{\"filtered_file\":\"file\",\"filtering\":\"activity\"},\"plead_splitting\":{\"splitting\":\"activity\",\"split_file2\":\"file\",\"split_file1\":\"file\"},\"plead_training\":{\"pipeline\":\"file\",\"training\":\"activity\"},\"plead_transforming\":{\"transformed_file\":\"file\",\"transforming\":\"activity\"}},\"input\":{\"plead_validating\":{\"testing_dataset\":\"file\"},\"plead_approving\":{\"pipeline\":\"file\",\"score\":\"score\"},\"plead_filtering\":{\"file\":\"file\",\"method\":\"method\"},\"plead_splitting\":{\"file\":\"file\"},\"plead_training\":{\"training_dataset\":\"file\"},\"plead_transforming\":{\"file\":\"file\",\"method\":\"method\"}}}";
+
+
+    static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
+
 
 
     public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
@@ -43,13 +55,13 @@ public class TemplateQuery {
         this.templateDispatcher = templateDispatcher;
         this.compositeLinker = compositeLinker;
         this.om = om;
-        generateTraversalMethods(querier);
-        try {
-            System.out.println(om.writeValueAsString(recursiveTraversal(8, "lead_approving", "pipeline")));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        this.ioMap = getIoMap();
+
+        System.out.println("*********** ioMap = " + ioMap);
+        generateTraversalMethods(querier,ioMap);
+
     }
+
 
     String recursiveQuery="CREATE OR REPLACE FUNCTION backwardtraversal_star(\n" +
             "    __param_id integer, \n" +
@@ -83,17 +95,73 @@ public class TemplateQuery {
             "FROM recurse_traverse\n" +
             "$$ LANGUAGE SQL;";
 
-    private void generateTraversalMethods(Querier querier) {
-        Map<String,Map<String, Map<String, String>>> ioMap = getIoMap();
+    /* now provides an output for the template, rather than input. */
+    String recursiveQuery2="CREATE OR REPLACE FUNCTION backwardtraversal_star(\n" +
+            "    __param_id integer, \n" +
+            "    __param_template text, \n" +
+            "    __param_property text\n" +
+            ") RETURNS TABLE(\n" +
+            "    in_id integer, \n" +
+            "    in_template text, \n" +
+            "    in_property text, \n" +
+            "    out_id integer, \n" +
+            "    out_template text, \n" +
+            "    out_property text\n" +
+            ")\n" +
+            "AS $$\n" +
+            "WITH RECURSIVE recurse_traverse AS (\n" +
+            "    -- Initial query from backwardTraversal function with an additional column for recursion depth\n" +
+            "\t\n" +
+            "    SELECT \n" +
+            "        bt.in_id, \n" +
+            "        bt.in_template, \n" +
+            "        bt.in_property, \n" +
+            "        bt.out_id, \n" +
+            "        bt.out_template, \n" +
+            "        bt.out_property, \n" +
+            "        1 AS depth\n" +
+            "    FROM \n" +
+            "        predecessor_table as pt \n" +
+            "        CROSS JOIN LATERAL backwardTraversal(__param_id, __param_template, pt.input) AS bt\n" +
+            "    WHERE \n" +
+            "        pt.template = __param_template \n" +
+            "        AND pt.output = __param_property\n" +
+            "\t\n" +
+            "    UNION \n" +
+            "\n" +
+            "\t-- Recursive step using the output of backwardTraversal called on new parameters obtained from predecessor_table\n" +
+            "    SELECT bt.in_id, bt.in_template, bt.in_property, bt.out_id, bt.out_template, bt.out_property, rt.depth + 1 AS depth\n" +
+            "    FROM recurse_traverse rt\n" +
+            "    JOIN predecessor_table pt ON rt.out_template = pt.template AND rt.out_property = pt.output\n" +
+            "    CROSS JOIN LATERAL backwardTraversal(rt.out_id, rt.out_template, pt.input) AS bt\n" +
+            "    WHERE pt.input IS NOT NULL AND rt.depth < 100 -- Ensuring pt.input is not null and limiting recursion depth\n" +
+            "\n" +
+            ")\n" +
+            "SELECT in_id, in_template, in_property, out_id, out_template, out_property\n" +
+            "FROM recurse_traverse\n" +
+            "$$ LANGUAGE SQL;";
+
+    private void generateTraversalMethods(Querier querier,  Map<String,Map<String, Map<String, String>>> ioMap) {
 
         querier.do_statements(null,
                 null,
                 (sb, data) -> {
                     sb.append(generateBackwardTemplateTraversal(ioMap));
-                    sb.append(recursiveQuery);
+                    sb.append(recursiveQuery2);
                 });
 
 
+    }
+
+    public void generateViz(Integer id, String template, String property, OutputStream out) {
+        logger.info("generateViz " + id + " " + template + " " + property);
+
+        List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property);
+        // reverse list
+        Collections.reverse(templateConnections);
+
+
+        new TemplatesToDot(templateConnections, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
     }
 
     static public class TemplateConnection {
@@ -217,9 +285,6 @@ public class TemplateQuery {
                     }
                 });
 
-        System.out.println("the records = " + linked_records);
-
-
         return linked_records;
     }
 
@@ -302,10 +367,6 @@ public class TemplateQuery {
         return result;
     }
 
-    String ioMapString="{\"output\":{\"plead_validating\":{\"score\":\"score\",\"validating\":\"activity\"},\"plead_approving\":{\"approving\":\"activity\",\"approved_pipeline\":\"file\"},\"plead_filtering\":{\"filtered_file\":\"file\",\"filtering\":\"activity\"},\"plead_splitting\":{\"splitting\":\"activity\",\"split_file2\":\"file\",\"split_file1\":\"file\"},\"plead_training\":{\"pipeline\":\"file\",\"training\":\"activity\"},\"plead_transforming\":{\"transformed_file\":\"file\",\"transforming\":\"activity\"}},\"input\":{\"plead_validating\":{\"testing_dataset\":\"file\"},\"plead_approving\":{\"pipeline\":\"file\",\"score\":\"score\"},\"plead_filtering\":{\"file\":\"file\",\"method\":\"method\"},\"plead_splitting\":{\"file\":\"file\"},\"plead_training\":{\"training_dataset\":\"file\"},\"plead_transforming\":{\"file\":\"file\",\"method\":\"method\"}}}";
-
-
-    TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
 
     public Map<String, Map<String, Map<String, String>>> getIoMap() {
         try {

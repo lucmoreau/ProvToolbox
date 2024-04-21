@@ -130,7 +130,17 @@
             </div>
 
             <div id="tab_navigator" class="tab-pane" role="tabpanel">
-                <pre id="navigator">To come soon</pre>
+                <div class="col-lg-2">
+                    <label for="navigator-id"></label><input type="number" id="navigator-id" class="form-control" value="8">
+                    <label for="navigator-template"></label><input type="text" id="navigator-template" class="form-control" value="plead_approving">
+                    <label for="navigator-property"></label><input type="text" id="navigator-property" class="form-control" value="approved_pipeline">
+                    <p></p>
+                    <p></p>
+
+                    <button id="navigator-refresh" type="button" class="btn btn-info" onclick="submitNavigate('#navigator-div')">Refresh</button>
+                </div>
+                <div class="col-lg-10 first-column" id="navigator-div">
+                </div>
             </div>
         </div>
     </div>
@@ -315,6 +325,42 @@
                 });
             }
         });
+    }
+
+    function submitNavigate(id) {
+        let url = "http://localhost:7072/ptl/provapi/templates/viz"
+        let template=$('#navigator-template').val();
+        let property=$('#navigator-property').val();
+        let template_id=$('#navigator-id').val();
+
+        console.log("submitNavigate " + template + " " + property + " " + id)
+
+        let config = {
+            template: template,
+            property: property,
+            id: template_id
+        }
+
+        let json_data=JSON.stringify(config)
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function() {
+            const response = xhr.responseText;
+            console.log("loaded " + xhr.status);
+            $(id).html(response);
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Accept", "image/svg+xml");
+        xhr.send(json_data);
+
+
     }
 
 

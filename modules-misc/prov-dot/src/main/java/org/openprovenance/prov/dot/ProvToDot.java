@@ -787,8 +787,8 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
     //////////////////////////////////////////////////////////////////////
 
 
-    String name;
-    private String layout;
+    protected String name;
+    protected String layout;
 
     /* make name compatible with dot notation*/
 
@@ -871,14 +871,14 @@ public class ProvToDot implements DotProperties,  RecommendedProvVisualPropertie
         sb.append("]");
     }
 
-    void prelude(Document ignoredDoc, PrintStream out) {
+    protected void prelude(Document ignoredDoc, PrintStream out) {
         out.println("digraph \"" + name + "\" { rankdir=\"BT\"; ");  //size="16,12"; 
         if (layout!=null) {
             out.println("layout=\"" + layout + "\"; ");
         }
     }
 
-    void postlude(Document ignoredDoc, PrintStream out) {
+    protected void postlude(Document ignoredDoc, PrintStream out) {
         out.println("}");
         out.close();
     }

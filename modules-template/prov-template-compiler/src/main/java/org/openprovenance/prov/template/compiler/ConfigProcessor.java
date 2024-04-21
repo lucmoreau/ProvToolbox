@@ -350,6 +350,12 @@ public class ConfigProcessor implements Constants {
         SpecificationFile configurationPropertyOrder= compilerConfigurations.generatePropertyOrderConfigurator(configs,PROPERTY_ORDER_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(PROPERTY_ORDER_CONFIGURATOR)), PROPERTY_ORDER_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationPropertyOrder.save();
 
+        SpecificationFile configurationInputPropertyOrder= compilerConfigurations.generateInputsConfigurator(configs, INPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(INPUTS_CONFIGURATOR)), INPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationInputPropertyOrder.save();
+
+        SpecificationFile configurationOutputPropertyOrder= compilerConfigurations.generateOutputsConfigurator(configs, OUTPUTS_CONFIGURATOR, locations, locations.convertToDirectory(locations.getFilePackage(OUTPUTS_CONFIGURATOR)), OUTPUTS_CONFIGURATOR + DOT_JAVA_EXTENSION);
+        configurationOutputPropertyOrder.save();
+
         SpecificationFile configurationCsv= compilerConfigurations.generateCsvConfigurator(configs,CSV_CONFIGURATOR, locations,locations.convertToDirectory(locations.getFilePackage(CSV_CONFIGURATOR)), CSV_CONFIGURATOR + DOT_JAVA_EXTENSION);
         configurationCsv.save();
 

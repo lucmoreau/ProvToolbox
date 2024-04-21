@@ -43,7 +43,8 @@
                 "@examplar": 9885,
                 "@documentation": "The approval record",
                 "@input": "false",
-                "@output": "true"
+                "@output": "true",
+                "@sql.table": "approval_record"
             }
         ],
         "score": [

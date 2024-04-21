@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
 
@@ -128,7 +129,7 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.templateLogic=new TemplateLogic(pf,null,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3);
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3);
     }
 
     private void executeStatementsFromFile(Connection conn, String filename) {
@@ -181,7 +182,7 @@ public class TemplateService {
     @GET
     @Path("/template/{template}/{id}.{extension}")
     @Tag(name = "ems_q")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_IMAGE_SVG_XML })
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
                                                  @Context HttpServletRequest request,
                                                  @Context HttpHeaders headers,
@@ -204,7 +205,7 @@ public class TemplateService {
             case "provn":
                 return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
 
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
@@ -224,7 +225,7 @@ public class TemplateService {
     @POST
     @Path("/templates.{extension}")
     @Tag(name = "ems_q")
-    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, InteropMediaType.MEDIA_IMAGE_SVG_XML })
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
     public Response getTemplates(@Context HttpServletResponse response,
                                               @Context HttpServletRequest request,
@@ -243,7 +244,7 @@ public class TemplateService {
             case "provn":
                 return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
-                return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
+                return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
 
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
@@ -281,6 +282,29 @@ public class TemplateService {
         };
 
         return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_TEXT_CSV).build();
+
+    }
+
+    public static class TemplatesVizConfig {
+        public Integer id;
+        public String template;
+        public String property;
+    }
+    @POST
+    @Path("/templates/viz")
+    @Tag(name = "ems_q")
+    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    @Produces({MEDIA_IMAGE_SVG_XML})
+    public Response getTemplatesViz(@Context HttpServletResponse response,
+                                    @Context HttpServletRequest request,
+                                    @Context HttpHeaders headers,
+                                    @Context UriInfo uriInfo,
+                                    TemplatesVizConfig config) {
+
+
+        StreamingOutput promise= out -> templateLogic.generateViz(config, out);
+
+        return ServiceUtils.composeResponseOK(promise).type(InteropMediaType.MEDIA_IMAGE_SVG_XML).build();
 
     }
 

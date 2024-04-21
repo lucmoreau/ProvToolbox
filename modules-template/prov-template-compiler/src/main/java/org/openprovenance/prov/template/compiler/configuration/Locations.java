@@ -88,6 +88,8 @@ public class Locations {
             case BUILDER_CONFIGURATOR:
             case SQL_INSERT_CONFIGURATOR:
             case PROPERTY_ORDER_CONFIGURATOR:
+            case OUTPUTS_CONFIGURATOR:
+            case INPUTS_CONFIGURATOR:
             case SQL_CONFIGURATOR:
             case CSV_CONFIGURATOR:
             case ENACTOR_CONFIGURATOR:

@@ -34,10 +34,14 @@ public class TemplateDispatcher {
     private final Map<String, RecordsProcessorInterface<?>> compositeEnactorConverter;
     private final Map<String, Map<String, List<String>>> successors;
     private final Map<String, Map<String, List<String>>> predecessors;
+    private final Map<String, String[]> inputs;
+    private final Map<String, String[]> outputs;
 
 
     public TemplateDispatcher(Storage storage, Connection conn) {
         propertyOrder=initializeBeanTable(new PropertyOrderConfigurator());
+        inputs=initializeBeanTable(new InputsConfigurator());
+        outputs = initializeBeanTable(new OutputsConfigurator());
         sqlConverter=initializeBeanTable(new SqlConfigurator());
         csvConverter=initializeBeanTable(new CsvConfigurator());
         sqlInsert=initializeBeanTable(new SqlInsertConfigurator());
@@ -101,5 +105,11 @@ public class TemplateDispatcher {
     }
     public Map<String, Map<String, List<String>>> getPredecessors() {
         return predecessors;
+    }
+    public Map<String, String[]> getInputs() {
+        return inputs;
+    }
+    public Map<String, String[]> getOutputs() {
+        return outputs;
     }
 }

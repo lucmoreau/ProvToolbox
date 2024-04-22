@@ -23,7 +23,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: navigation between templates
 * service-templates: recursive traversal query
 * service-templates: navigation tab
-
+* prov-template-compiler: getting level0 types for template variables
 
 
 

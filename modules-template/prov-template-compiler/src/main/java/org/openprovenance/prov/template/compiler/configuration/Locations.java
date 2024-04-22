@@ -61,9 +61,9 @@ public class Locations {
     public String getFilePackage(String file) {
         if (file.equals(configs.logger)) {
             return logger_package;
-        } else if (file.equals(configs.tableConfigurator)) {
+        } else if (file.equals(configs.tableConfigurator) || file.equals(configs.tableConfigurator+"ForTypes")) {
             return configurator_package;
-        } else if (file.equals(configs.tableConfigurator + WITH_MAP)) {
+        } else if (file.equals(configs.tableConfigurator + WITH_MAP) || file.equals(configs.tableConfigurator + "ForTypes" + WITH_MAP)) {
             return configurator_package;
         } else if (file.equals(compositeTableConfigurator)) {
             return configurator_package;

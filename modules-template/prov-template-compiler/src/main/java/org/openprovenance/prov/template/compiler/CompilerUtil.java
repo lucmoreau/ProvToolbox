@@ -47,9 +47,11 @@ public class CompilerUtil {
 
 
     public static final TypeVariableName typeT = TypeVariableName.get("T");
+    static final TypeName stringArrayType=ArrayTypeName.get(String[].class);
     static final TypeName classType=ParameterizedTypeName.get(ClassName.get(Class.class), typeT);
     static final TypeName mapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(Object.class));
     static final TypeName mapString2StringType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(String.class));
+    static final TypeName mapString2StringArrayType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),stringArrayType);
     static final TypeName listMapType=ParameterizedTypeName.get(ClassName.get(List.class),mapType);
     static final TypeName hashMapType=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),ClassName.get(Object.class));
 
@@ -57,7 +59,11 @@ public class CompilerUtil {
     static final TypeName hashMapTypeT=ParameterizedTypeName.get(ClassName.get(HashMap.class),ClassName.get(String.class),typeT);
     public static final ParameterizedTypeName hashmapType = ParameterizedTypeName.get(ClassName.get(HashMap.class), TypeName.get(Integer.class), TypeName.get(int[].class));
     public static final ParameterizedTypeName builderMapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(CLIENT_PACKAGE,"Builder"));
+    public static final ParameterizedTypeName fileBuilderMapType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),ClassName.get(FileBuilder.class));
     public static final TypeName listOfArrays=ParameterizedTypeName.get(ClassName.get(List.class),ArrayTypeName.get(Object[].class));
+    static final TypeName setStringT=ParameterizedTypeName.get(ClassName.get(Set.class),ClassName.get(String.class));
+    static final TypeName mapQualifiedName2StringSetType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(QualifiedName.class),setStringT);
+    static final TypeName mapString2StringSetType=ParameterizedTypeName.get(ClassName.get(Map.class),ClassName.get(String.class),setStringT);
 
     public CompilerUtil(ProvFactory pFactory) {
         this.pFactory=pFactory;

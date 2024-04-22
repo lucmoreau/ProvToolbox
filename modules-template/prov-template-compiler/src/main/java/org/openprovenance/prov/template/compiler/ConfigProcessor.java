@@ -64,6 +64,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerTemplateBuilders compilerTemplateBuilders ;
     private final CompilerTableConfigurator compilerTableConfigurator;
     private final CompilerTableConfiguratorWithMap compilerTableConfiguratorWithMap ;
+    private final CompilerTableConfiguratorForTypes compilerTableConfiguratorForTypes;
     private final CompilerBeanProcessor compilerBeanProcessor;
     private final CompilerInputOutputProcessor compilerInputOutputProcessor;
     private final CompilerTemplateInvoker compilerTemplateInvoker;
@@ -131,6 +132,7 @@ public class ConfigProcessor implements Constants {
         this.compilerTableConfigurator =  new CompilerTableConfigurator(pFactory);
         this.compilerTableConfiguratorWithMap = new CompilerTableConfiguratorWithMap(pFactory);
         this.compilerTemplateBuilders = new CompilerTemplateBuilders(pFactory);
+        this.compilerTableConfiguratorForTypes = new CompilerTableConfiguratorForTypes(pFactory);
     }
 
     public String readCompilerVersion() {
@@ -533,6 +535,8 @@ public class ConfigProcessor implements Constants {
                 SpecificationFile tableConfiguratorWithMap=compilerTableConfiguratorWithMap.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnI)));
                 tableConfiguratorWithMap.save();
 
+                SpecificationFile tableConfiguratorForTypes=compilerTableConfiguratorForTypes.generateTableConfigurator(configs, locations, locations.convertToDirectory(l2p_src_dir,locations.getFileBackendPackage(bnI)));
+                tableConfiguratorForTypes.save();
 
             }
 

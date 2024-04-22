@@ -138,8 +138,8 @@ public class TemplatesToDot extends ProvToDot {
 
     }
 
-    String headstyle="inv";
-    String tailstyle="normal";
+    String headstyle="invempty";
+    String tailstyle="empty";
 
     private void emitEdge(String source, String destination, PrintStream out) {
         StringBuffer sb=new StringBuffer();

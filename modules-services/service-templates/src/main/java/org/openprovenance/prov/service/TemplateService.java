@@ -22,6 +22,7 @@ import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
+import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -32,6 +33,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
@@ -64,6 +66,7 @@ public class TemplateService {
     private final Querier querier;
     private final TemplateQuery queryTemplate;
     private final Map<String, Linker> compositeLinker;
+    private final Map<String, Map<String, Set<String>>> typeAssignment;
 
 
     static final String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
@@ -110,7 +113,6 @@ public class TemplateService {
             put("plead_transforming_composite", new Linker("plead_transforming_composite_linker", "plead_transforming"));
         }};
 
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om);
 
 
         if (conn!=null) {
@@ -129,7 +131,12 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3);
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher);
+        this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
+
+        this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3, this.typeAssignment);
+
+
     }
 
     private void executeStatementsFromFile(Connection conn, String filename) {

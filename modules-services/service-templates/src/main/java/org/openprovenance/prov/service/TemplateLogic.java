@@ -1,7 +1,6 @@
 package org.openprovenance.prov.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.core.StreamingOutput;
@@ -11,9 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.client.ProcessorArgsInterface;
 import org.openprovenance.prov.client.RecordsProcessorInterface;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
-import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
+import org.openprovenance.prov.template.library.plead.Plead_trainingBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
 
@@ -24,7 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
-import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 
 public class TemplateLogic {
 
@@ -39,9 +38,10 @@ public class TemplateLogic {
 
     private final EnactCsvRecords<Object> enactCsvRecords= new EnactCsvRecords<>();
     private final TemplateQuery templateQuery;
+    private final Map<String, Map<String, Set<String>>> typeAssignment;
 
 
-    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3) {
+    public TemplateLogic(ProvFactory pf, TemplateQuery templateQuery, TemplateDispatcher templateDispatcher, Object o1, Map<String, FileBuilder> documentBuilderDispatcher, ServiceUtils utils, ObjectMapper om, SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3, Map<String, Map<String, Set<String>>> typeAssignment) {
         this.pf = pf;
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
@@ -50,6 +50,7 @@ public class TemplateLogic {
         om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
         this.sqlCompositeBeanEnactor3 = sqlCompositeBeanEnactor3;
         this.templateQuery = templateQuery;
+        this.typeAssignment = typeAssignment;
     }
 
     public List<Object> processIncomingJson(List<Map<String, Object>> entries) {
@@ -149,6 +150,56 @@ public class TemplateLogic {
 
 
     public void generateViz(TemplateService.TemplatesVizConfig config, OutputStream out) {
+        Map<String, Set<String>> knownMap=plead_trainingLevel0( );
+
+        System.out.println("knownMap " + knownMap);
+        Map<String,String> baseTypes=knownMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> preferredType(e.getValue())));
+        System.out.println("baseTypes " + baseTypes);
         templateQuery.generateViz(config.id, config.template, config.property, out);
+    }
+
+
+    private int colorValue(String s) {
+        if (s==null) return 0;
+        switch (s) {
+            case "http://www.w3.org/ns/prov#Entity":
+                return 1;
+            case "http://www.w3.org/ns/prov#Activity":
+                return 2;
+            case "http://www.w3.org/ns/prov#Agent":
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    private String preferredType(Set<String> value) {
+        return value.stream().max(Comparator.comparingInt(this::colorValue)).orElse("none");
+    }
+
+    private Map<String, Set<String>> plead_trainingLevel0() {
+        String [] propertyOrder=templateDispatcher.getPropertyOrder().get("plead_training");
+        Plead_trainingBuilder plead_trainingBuilder = (Plead_trainingBuilder) documentBuilderDispatcher.get("plead_training");
+        Object[] record2=plead_trainingBuilder.make(plead_trainingBuilder.getTypedRecord()); //new Plead_trainingBuilderTypedRecord());
+        Map<QualifiedName, Set<String>> knownTypeMap=new HashMap<>();
+
+        plead_trainingBuilder.make(plead_trainingBuilder.getTypeManager(knownTypeMap, new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>()));
+        Map<String,Set<String>> propertyMap=new HashMap<>();
+        for (int i=0; i<record2.length; i++) {
+            String property=propertyOrder[i];
+            Object value=record2[i];
+            if (value instanceof QualifiedName) {
+                propertyMap.put(property, knownTypeMap.get((QualifiedName) value));
+            }
+        }
+
+
+        Map<String, Set<String>> propertyMap2=typeAssignment.get("plead_training");
+
+        System.out.println("propertyMap " + propertyMap);
+        System.out.println("propertyMap2 " + propertyMap2);
+
+
+        return propertyMap;
     }
 }

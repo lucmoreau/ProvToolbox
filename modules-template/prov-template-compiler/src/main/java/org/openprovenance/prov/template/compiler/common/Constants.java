@@ -117,4 +117,8 @@ public interface Constants {
     String BASETABLE_KEY_COLUMN = "key";
     String TABLE_NAME_COLUMN = "table_name";
     String CREATED_AT_COLUMN = "created_at";
+    String PROCESSOR = "_processor";
+    String DOCUMENT_BUILDER_DISPATCHER = "documentBuilderDispatcher";
+    String TEMPLATE_BUILDER = "templateBuilder";
+    String PROPERTY_MAP = "propertyMap";
 }

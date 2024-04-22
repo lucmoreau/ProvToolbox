@@ -7,6 +7,7 @@ import org.openprovenance.prov.client.RecordsProcessorInterface;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeEnactorConfigurator3;
 import org.openprovenance.prov.service.iobean.simple.SqlEnactorConfigurator3;
 import org.openprovenance.prov.template.library.plead.client.configurator.*;
+import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.library.plead.logger.TemplateBuilders;
 
 

@@ -42,6 +42,7 @@ public class TemplateQuery {
     private final Map<String, TemplateService.Linker> compositeLinker;
     private final ObjectMapper om;
     private final Map<String, Map<String, Map<String, String>>> ioMap;
+    private final Map<String, FileBuilder> documentBuilderDispatcher;
 
     final String ioMapString="{\"output\":{\"plead_validating\":{\"score\":\"score\",\"validating\":\"activity\"},\"plead_approving\":{\"approving\":\"activity\",\"approved_pipeline\":\"file\"},\"plead_filtering\":{\"filtered_file\":\"file\",\"filtering\":\"activity\"},\"plead_splitting\":{\"splitting\":\"activity\",\"split_file2\":\"file\",\"split_file1\":\"file\"},\"plead_training\":{\"pipeline\":\"file\",\"training\":\"activity\"},\"plead_transforming\":{\"transformed_file\":\"file\",\"transforming\":\"activity\"}},\"input\":{\"plead_validating\":{\"testing_dataset\":\"file\"},\"plead_approving\":{\"pipeline\":\"file\",\"score\":\"score\"},\"plead_filtering\":{\"file\":\"file\",\"method\":\"method\"},\"plead_splitting\":{\"file\":\"file\"},\"plead_training\":{\"training_dataset\":\"file\"},\"plead_transforming\":{\"file\":\"file\",\"method\":\"method\"}}}";
 
@@ -49,12 +50,12 @@ public class TemplateQuery {
     static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
 
 
-
-    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om) {
+    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
         this.compositeLinker = compositeLinker;
         this.om = om;
+        this.documentBuilderDispatcher = documentBuilderDispatcher;
         this.ioMap = getIoMap();
 
         System.out.println("*********** ioMap = " + ioMap);

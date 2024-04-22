@@ -30,8 +30,7 @@ public class TemplatesToDot extends ProvToDot {
         this.baseTypes = baseTypes;
     }
 
-    public static String createHtmlTable(String template,
-                                         String templateId,
+    public static String createHtmlTable(TemplateInfo templateInfo,
                                          List<String> inputsNames,
                                          List<String> inputsPorts,
                                          List<String> inputsColors,
@@ -45,18 +44,18 @@ public class TemplatesToDot extends ProvToDot {
 
         // First row with rowspan and input cells
         html.append("  <TR>\n");
-        html.append("    <TD ROWSPAN=\"3\">" +  templateId + "</TD>\n"); // Static cell with rowspan
+        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\">%s </TD>\n", templateInfo.url, templateInfo.templateId));
         for (int i = 0; i < inputsNames.size(); i++) {
-            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" >%s</TD>\n",
-                    inputsPorts.get(i), inputsColors.get(i), inputsNames.get(i)));
+            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" HREF=\"%s\">%s</TD>\n",
+                    inputsPorts.get(i), inputsColors.get(i), templateInfo.url.replace(".svg", "/"+inputsNames.get(i)), inputsNames.get(i)));
         }
         html.append("  </TR>\n");
 
         // Second row for outputs
         html.append("  <TR>\n");
         for (int i = 0; i < outputsNames.size(); i++) {
-            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" >%s</TD>\n",
-                    outputsPorts.get(i), outputColors.get(i), outputsNames.get(i)));
+            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\"  HREF=\"%s\">%s</TD>\n",
+                    outputsPorts.get(i), outputColors.get(i), templateInfo.url.replace(".svg", "/"+outputsNames.get(i)), outputsNames.get(i)));
         }
         html.append("  </TR>\n");
 
@@ -100,25 +99,21 @@ public class TemplatesToDot extends ProvToDot {
         prelude(doc, out);
 
         // pairs <template, templateInstance>
-        Set<Pair<String,String>> allTemplates = new HashSet<>();
+        Set<TemplateInfo> allTemplates = new HashSet<>();
         for (TemplateQuery.TemplateConnection templateConnection : templateConnections) {
-            allTemplates.add(Pair.of(templateConnection.in_template, templateName(templateConnection.in_template, templateConnection.in_id)));
-            allTemplates.add(Pair.of(templateConnection.out_template,templateName(templateConnection.out_template,templateConnection.out_id)));
+            allTemplates.add(TemplateInfo.of(templateConnection.in_template, templateName(templateConnection.in_template, templateConnection.in_id),  url(templateConnection.in_template,  templateConnection.in_id)));
+            allTemplates.add(TemplateInfo.of(templateConnection.out_template,templateName(templateConnection.out_template,templateConnection.out_id), url(templateConnection.out_template, templateConnection.out_id)));
         }
 
         Map<String, Map<String, String>> inputs=ioMap.get("input"); //templateDispatcher.getInputs();
         Map<String, Map<String, String>> outputs=ioMap.get("output"); //templateDispatcher.getOutputs();
 
-        //System.out.println("inputs: " + inputs);
-        //System.out.println("outputs: " + outputs);
-        //System.out.println("allTemplates: " + allTemplates);
 
+        for (TemplateInfo templateInfo: allTemplates) {
+           // System.out.println("- templateInfo: " + templateInfo);
 
-        for (Pair<String, String> template_templateInstance: allTemplates) {
-           // System.out.println("- template_templateInstance: " + template_templateInstance);
-
-            String template = template_templateInstance.getLeft();
-            String templateId = template_templateInstance.getRight();
+            String template = templateInfo.template;
+            String templateId = templateInfo.templateId;
             Map<String, String> templateBaseTypes = baseTypes.get(template);
 
 
@@ -132,7 +127,7 @@ public class TemplatesToDot extends ProvToDot {
             List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
 
 
-            String html = createHtmlTable(template, templateId, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
+            String html = createHtmlTable(templateInfo, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);
             emitTemplate(template, templateId, html, out);
 
         }
@@ -186,4 +181,35 @@ public class TemplatesToDot extends ProvToDot {
         return template+"_"+id;
     }
 
+    private String url(String template, Integer id) {
+        return "/ptl/provapi/template/" + template+"/"+id + ".svg";
+    }
+
+    public static class TemplateInfo {
+        private final String template;
+        private final String templateId;
+        private final String url;
+
+        private TemplateInfo (String template, String templateId, String url) {
+            this.template=template;
+            this.templateId=templateId;
+            this.url=url;
+        }
+        static public TemplateInfo of(String template, String templateId, String url) {
+            return new TemplateInfo(template, templateId, url);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TemplateInfo that = (TemplateInfo) o;
+            return Objects.equals(template, that.template) && Objects.equals(templateId, that.templateId) && Objects.equals(url, that.url);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(template, templateId, url);
+        }
+    }
 }

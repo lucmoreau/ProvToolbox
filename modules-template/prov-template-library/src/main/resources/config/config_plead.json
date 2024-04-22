@@ -78,6 +78,10 @@
 			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
+		"agent": {
+			"id": "SERIAL",
+			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
+		},
 		"score": {
 			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"

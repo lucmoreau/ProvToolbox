@@ -61,7 +61,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "An organization aiming managing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "engineer": [
@@ -69,7 +70,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "The engineer developing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "splitting": [

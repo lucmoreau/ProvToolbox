@@ -43,7 +43,6 @@ public enum OutputFieldValue {
         if (outputFieldValue == null) return false;
         switch (outputFieldValue) {
             case True:
-                return true;
             case Optional:
                 return true;
             case False:

@@ -63,7 +63,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "An organization aiming managing the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "manager": [
@@ -71,7 +72,8 @@
                 "@id": "ag:*",
                 "@type": "xsd:int",
                 "@documentation": "The manager approving the ML pipeline",
-                "@input": "optional"
+                "@input": "optional",
+                "@sql.table": "agent"
             }
         ],
         "approving": [

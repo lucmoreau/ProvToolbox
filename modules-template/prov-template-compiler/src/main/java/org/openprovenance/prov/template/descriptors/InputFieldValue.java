@@ -43,7 +43,6 @@ public enum InputFieldValue {
         if (inputFieldValue == null) return false;
         switch (inputFieldValue) {
             case Compulsory:
-                return true;
             case Optional:
                 return true;
             case False:

@@ -154,7 +154,8 @@ public class TemplateQuery {
 
     }
 
-    public void generateViz(Integer id, String template, String property, OutputStream out) {
+    public void generateViz(Integer id, String template, String property, Map<String, Map<String, String>> baseTypes, OutputStream out) {
+
         logger.info("generateViz " + id + " " + template + " " + property);
 
         List<TemplateConnection> templateConnections = recursiveTraversal(id, template, property);
@@ -162,7 +163,7 @@ public class TemplateQuery {
         Collections.reverse(templateConnections);
 
 
-        new TemplatesToDot(templateConnections, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
+        new TemplatesToDot(templateConnections, baseTypes, ioMap, templateDispatcher, pf).convert(null, out, "template_connections");
     }
 
     static public class TemplateConnection {

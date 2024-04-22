@@ -20,12 +20,14 @@ public class TemplatesToDot extends ProvToDot {
     private final List<TemplateQuery.TemplateConnection> templateConnections;
     private final TemplateDispatcher templateDispatcher;
     private final Map<String, Map<String, Map<String, String>>> ioMap;
+    private final Map<String, Map<String, String>> baseTypes;
 
-    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, Map<String, Map<String, Map<String, String>>> ioMap, TemplateDispatcher templateDispatcher, ProvFactory pf) {
+    public TemplatesToDot(List<TemplateQuery.TemplateConnection> templateConnections, Map<String, Map<String, String>> baseTypes, Map<String, Map<String, Map<String, String>>> ioMap, TemplateDispatcher templateDispatcher, ProvFactory pf) {
         super(pf);
         this.templateConnections = templateConnections;
         this.templateDispatcher = templateDispatcher;
         this.ioMap = ioMap;
+        this.baseTypes = baseTypes;
     }
 
     public static String createHtmlTable(String template,
@@ -64,6 +66,14 @@ public class TemplatesToDot extends ProvToDot {
         return html.toString();
     }
 
+   final Map<String, String> provcolors = new HashMap<>() {{
+        put("http://www.w3.org/ns/prov#Entity", ENTITY_FILLCOLOUR);
+        put("http://www.w3.org/ns/prov#Activity", ACTIVITY_FILL_COLOUR);
+        put("http://www.w3.org/ns/prov#Agent", AGENT_FILLCOLOUR);
+    }};
+
+
+
 
     public void convert(Document graph, OutputStream os, String title) {
 
@@ -83,9 +93,6 @@ public class TemplatesToDot extends ProvToDot {
             logger.throwing(e);
             throw new UncheckedException(e);
         }
-
-
-
     }
 
     public void convert(Document doc, PrintStream out, String title) {
@@ -112,14 +119,17 @@ public class TemplatesToDot extends ProvToDot {
 
             String template = template_templateInstance.getLeft();
             String templateId = template_templateInstance.getRight();
+            Map<String, String> templateBaseTypes = baseTypes.get(template);
+
+
 
             List<String> inputsNames  = new ArrayList<>(inputs.get(template).keySet());
             List<String> inputPorts   = inputsNames.stream().map(s -> portName(template,templateId,s)).collect(Collectors.toList());
-            List<String> inputsColors = inputPorts.stream().map(s -> "lightgreen").collect(Collectors.toList());
+            List<String> inputsColors = inputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //inputPorts.stream().map(s -> "lightgreen").collect(Collectors.toList());
 
             List<String> outputsNames  = new ArrayList<>(outputs.get(template).keySet());
             List<String> outputsPorts  = outputsNames.stream().map(s -> portName(template, templateId,s)).collect(Collectors.toList());
-            List<String> outputsColors = outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
+            List<String> outputsColors = outputsNames.stream().map(s -> provcolors.get(templateBaseTypes.get(s))).collect(Collectors.toList()); //outputsPorts.stream().map(s -> "orange").collect(Collectors.toList());
 
 
             String html = createHtmlTable(template, templateId, inputsNames, inputPorts, inputsColors, outputsNames, outputsPorts, outputsColors);

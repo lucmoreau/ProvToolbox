@@ -150,12 +150,28 @@ public class TemplateLogic {
 
 
     public void generateViz(TemplateService.TemplatesVizConfig config, OutputStream out) {
-        Map<String, Set<String>> knownMap=plead_trainingLevel0( );
 
-        System.out.println("knownMap " + knownMap);
-        Map<String,String> baseTypes=knownMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> preferredType(e.getValue())));
-        System.out.println("baseTypes " + baseTypes);
-        templateQuery.generateViz(config.id, config.template, config.property, out);
+        typeAssignment.entrySet().removeIf(entry -> entry.getValue() ==null || entry.getValue().isEmpty());
+
+        Map<String,Map<String,String>> baseTypes
+                = typeAssignment
+                .keySet()
+                .stream()
+                .collect(Collectors
+                        .toMap(tpl -> tpl,
+                                tpl ->
+                                        typeAssignment
+                                                .get(tpl)
+                                                .keySet()
+                                                .stream()
+                                                .collect(Collectors
+                                                        .toMap(var->var,
+                                                                var -> preferredType(typeAssignment
+                                                                        .get(tpl)
+                                                                        .get(var))))));
+
+        logger.info("baseTypes " + baseTypes);
+        templateQuery.generateViz(config.id, config.template, config.property, baseTypes, out);
     }
 
 

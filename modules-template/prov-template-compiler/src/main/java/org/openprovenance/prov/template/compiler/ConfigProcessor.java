@@ -269,7 +269,7 @@ public class ConfigProcessor implements Constants {
         compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
 
 
-        SpecificationFile logger=compilerLogger.generateLogger(configs, locations, configs.logger);
+        SpecificationFile logger=compilerLogger.generateLogger(configs, locations, configs.logger, getInputOutputMaps());
         logger.save();
 
         SpecificationFile intface=compilerLogger.generateBuilderInterface(configs, openprovenance_dir, BUILDER_INTERFACE + DOT_JAVA_EXTENSION);
@@ -655,16 +655,10 @@ public class ConfigProcessor implements Constants {
 
     public Map<String,Map<String, Map<String, String>>> getInputOutputMaps() {
         return new HashMap<>() {{
-            put("input", inputMap);
-            put("output", outputMap);
+            put(INPUT, inputMap);
+            put(OUTPUT, outputMap);
         }};
     }
-
-    /*
-    {
-    "output": {"plead_validating":{"score":"score","validating":"activity"},"plead_transforming_composite":{"transformed_file":"file","transforming":"activity"},"plead_approving":{"approving":"activity","approved_pipeline":"file"},"plead_filtering":{"filtered_file":"file","filtering":"activity"},"plead_splitting":{"splitting":"activity","split_file2":"file","split_file1":"file"},"plead_training":{"pipeline":"file","training":"activity"},"plead_transforming":{"transformed_file":"file","transforming":"activity"}},
-    "input":{"plead_validating":{"testing_dataset":"file"},"plead_transforming_composite":{"file":"file","method":"method"},"plead_approving":{"pipeline":"file","score":"score"},"plead_filtering":{"file":"file","method":"method"},"plead_splitting":{"file":"file"},"plead_training":{"training_dataset":"file"},"plead_transforming":{"file":"file","method":"method"}}}
-     */
 
     public void buildJoinTable(String templateName, TemplateBindingsSchema bindingsSchema) {
             for (String key: descriptorUtils.fieldNames(bindingsSchema)) {

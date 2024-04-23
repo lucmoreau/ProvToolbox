@@ -17,6 +17,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
+import static org.openprovenance.prov.template.compiler.common.Constants.INPUT;
+import static org.openprovenance.prov.template.compiler.common.Constants.OUTPUT;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote;
 
@@ -32,8 +34,7 @@ public class TemplateQuery {
     public static final String OUT_ID = "out_id";
     public static final String OUT_TEMPLATE = "out_template";
     public static final String OUT_PROPERTY = "out_property";
-    public static final String INPUT = "input";
-    public static final String OUTPUT = "output";
+
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
     public static final String[] SEARCH_RECORDS_COLUMNS = new String[]{"key", "created_at", "table_name"};
     private final Querier querier;
@@ -44,23 +45,21 @@ public class TemplateQuery {
     private final Map<String, Map<String, Map<String, String>>> ioMap;
     private final Map<String, FileBuilder> documentBuilderDispatcher;
 
-    final String ioMapString2="{\"output\":{\"plead_validating\":{\"score\":\"score\",\"validating\":\"activity\"},\"plead_approving\":{\"approving\":\"activity\",\"approved_pipeline\":\"file\"},\"plead_filtering\":{\"filtered_file\":\"file\",\"filtering\":\"activity\"},\"plead_splitting\":{\"splitting\":\"activity\",\"split_file2\":\"file\",\"split_file1\":\"file\"},\"plead_training\":{\"pipeline\":\"file\",\"training\":\"activity\"},\"plead_transforming\":{\"transformed_file\":\"file\",\"transforming\":\"activity\"}},\"input\":{\"plead_validating\":{\"testing_dataset\":\"file\"},\"plead_approving\":{\"pipeline\":\"file\",\"score\":\"score\"},\"plead_filtering\":{\"file\":\"file\",\"method\":\"method\"},\"plead_splitting\":{\"file\":\"file\"},\"plead_training\":{\"training_dataset\":\"file\"},\"plead_transforming\":{\"file\":\"file\",\"method\":\"method\",\"engineer\":\"engineer\"}}}";
-    final String ioMapString="{\"output\":{\"plead_validating\":{\"score\":\"score\",\"validating\":\"activity\"},\"plead_approving\":{\"approval_record\":\"approval_record\",\"approving\":\"activity\",\"approved_pipeline\":\"file\"},\"plead_filtering\":{\"filtered_file\":\"file\",\"filtering\":\"activity\"},\"plead_splitting\":{\"splitting\":\"activity\",\"split_file2\":\"file\",\"split_file1\":\"file\"},\"plead_training\":{\"pipeline\":\"file\",\"training\":\"activity\"},\"plead_transforming\":{\"transformed_file\":\"file\",\"transforming\":\"activity\"}},\"input\":{\"plead_validating\":{\"organization\":\"agent\",\"testing_dataset\":\"file\",\"engineer\":\"agent\"},\"plead_approving\":{\"pipeline\":\"file\",\"score\":\"score\",\"manager\":\"agent\",\"organization\":\"agent\"},\"plead_filtering\":{\"file\":\"file\",\"method\":\"method\",\"organization\":\"agent\",\"engineer\":\"agent\"},\"plead_splitting\":{\"file\":\"file\",\"organization\":\"agent\",\"engineer\":\"agent\"},\"plead_training\":{\"training_dataset\":\"file\",\"organization\":\"agent\",\"engineer\":\"agent\"},\"plead_transforming\":{\"file\":\"file\",\"method\":\"method\",\"organization\":\"agent\",\"engineer\":\"agent\"}}}";
 
     static TypeReference<Map<String,Map<String, Map<String, String>>>> typeRef = new TypeReference<>() {};
 
 
-    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher) {
+    public TemplateQuery(Querier querier, TemplateDispatcher templateDispatcher, Map<String, TemplateService.Linker> compositeLinker, ObjectMapper om, Map<String, FileBuilder> documentBuilderDispatcher, String ioMapString) {
         this.querier = querier;
         this.templateDispatcher = templateDispatcher;
         this.compositeLinker = compositeLinker;
         this.om = om;
         this.documentBuilderDispatcher = documentBuilderDispatcher;
-        this.ioMap = getIoMap();
+        this.ioMap = getIoMap(ioMapString);
 
-        System.out.println("*********** ioMap = " + ioMap);
-        generateTraversalMethods(querier,ioMap);
+        logger.info("ioMap = " + ioMap);
 
+        generateTraversalMethods(querier, this.ioMap);
     }
 
 
@@ -370,9 +369,13 @@ public class TemplateQuery {
     }
 
 
-    public Map<String, Map<String, Map<String, String>>> getIoMap() {
+    public Map<String, Map<String, Map<String, String>>> getIoMap(String ioMapString) {
+        List<String> toExclude = List.of("plead_transforming_composite");
         try {
-            return om.readValue(ioMapString, typeRef);
+            Map<String, Map<String, Map<String, String>>> ioMap = om.readValue(ioMapString, typeRef);
+            ioMap.get(INPUT). entrySet().removeIf( entry -> toExclude.contains(entry.getKey()) || entry.getValue() == null || entry.getValue().isEmpty());
+            ioMap.get(OUTPUT).entrySet().removeIf( entry -> toExclude.contains(entry.getKey()) || entry.getValue() == null || entry.getValue().isEmpty());
+            return ioMap;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -408,13 +411,7 @@ public class TemplateQuery {
         Set<String> allTables=ioMap.get(OUTPUT).values().stream().map(Map::values).flatMap(Collection::stream).collect(Collectors.toSet());
         allTables.addAll(ioMap.get(INPUT).values().stream().map(Map::values).flatMap(Collection::stream).collect(Collectors.toSet()));
 
-        System.out.println("allTables = " + allTables);
 
-        System.out.println("* successors: " + templateDispatcher.getSuccessors());
-        System.out.println("* predecessors: " + templateDispatcher.getPredecessors());
-
-        System.out.println(ioMap.get(INPUT));
-        System.out.println(ioMap.get(OUTPUT));
         Map<String, Map<String, String>> input = ioMap.get(INPUT);
         Map<String, Map<String, String>> output = ioMap.get(OUTPUT);
 
@@ -422,7 +419,7 @@ public class TemplateQuery {
 
         for (String table: allTables) {
 
-            System.out.println("table = " + table);
+            //System.out.println("table = " + table);
 
 
 

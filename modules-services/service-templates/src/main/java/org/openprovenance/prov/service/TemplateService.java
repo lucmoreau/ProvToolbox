@@ -131,7 +131,7 @@ public class TemplateService {
             put("PROV_API", provAPI);
         }};
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
-        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher);
+        this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.logger.Logger.ioMap);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
 
         this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3, this.typeAssignment);

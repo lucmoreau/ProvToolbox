@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
@@ -15,6 +16,7 @@ import static org.openprovenance.prov.template.compiler.CompilerBeanGenerator.ne
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfString;
 import static org.openprovenance.prov.template.compiler.CompilerConfigurations.processorOfUnknown;
 import static org.openprovenance.prov.template.compiler.CompilerUtil.builderMapType;
+import static org.openprovenance.prov.template.compiler.ConfigProcessor.objectMapper;
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.typeT;
 import static org.openprovenance.prov.template.compiler.common.CompilerCommon.*;
 import static org.openprovenance.prov.template.compiler.common.Constants.*;
@@ -29,7 +31,7 @@ public class CompilerLogger {
     }
 
 
-    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String fileName) {
+    SpecificationFile generateLogger(TemplatesCompilerConfig configs, Locations locations, String fileName, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
         StackTraceElement stackTraceElement=compilerUtil.thisMethodAndLine();
 
         TypeSpec.Builder builder = compilerUtil.generateClassInit(configs.logger);
@@ -85,6 +87,15 @@ public class CompilerLogger {
                 .initializer("$N($N $T())", INITIALIZE_BEAN_TABLE, "new", ClassName.get(configs.configurator_package,CSV_CONFIGURATOR))
                 // python conversion does not support javadoc .addJavadoc("generated Automatically by ProvToolbox ($N.$N())", this.getClass().getSimpleName(), "generateLogger")
                 .build());
+
+        try {
+            builder.addField(FieldSpec
+                    .builder(  ClassName.get(String.class), "ioMap", Modifier.STATIC, Modifier.PUBLIC, Modifier.FINAL)
+                    .initializer("$S", objectMapper.writeValueAsString(inputOutputMaps))
+                    .build());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
 
         TypeSpec theLogger = builder.build();

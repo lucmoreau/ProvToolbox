@@ -121,4 +121,6 @@ public interface Constants {
     String DOCUMENT_BUILDER_DISPATCHER = "documentBuilderDispatcher";
     String TEMPLATE_BUILDER = "templateBuilder";
     String PROPERTY_MAP = "propertyMap";
+    String INPUT = "input";
+    String OUTPUT = "output";
 }

@@ -22,7 +22,9 @@ import org.openprovenance.prov.template.compiler.expansion.CompilerExpansionBuil
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypeManagement;
 import org.openprovenance.prov.template.compiler.expansion.CompilerTypedRecord;
 import org.openprovenance.prov.template.compiler.integration.CompilerIntegrator;
+import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.DescriptorUtils;
+import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
 import java.io.File;
@@ -103,7 +105,7 @@ public class ConfigProcessor implements Constants {
         this.compilerUtil= new CompilerUtil(pFactory);
         this.compilerTypeConverter=new CompilerTypeConverter(pFactory);
         this.compilerBeanCompleter=new CompilerBeanCompleter(pFactory);
-        this.compilerSQL=new CompilerSQL(pFactory, true, "ID");
+        this.compilerSQL=new CompilerSQL(pFactory, "ID");
         this.compilerCommon = new CompilerCommon(pFactory,compilerSQL);
         this.compilerBeanGenerator =new CompilerBeanGenerator(pFactory);
         this.compilerIntegrator=new CompilerIntegrator(pFactory, compilerCommon,compilerBeanGenerator);
@@ -172,6 +174,7 @@ public class ConfigProcessor implements Constants {
 
             Locations locations=new Locations(configs,cli_src_dir);
 
+
             for (TemplateCompilerConfig aconfig: configs.templates) {
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
@@ -226,12 +229,34 @@ public class ConfigProcessor implements Constants {
         return 0;
     }
 
+    public Set<String> getReferencedSqlTables() {
+        return referencedSqlTables;
+    }
+
+    private Set<String> referencedSqlTables=new HashSet<>();
+
+    public void findSqlTableReferences(TemplateBindingsSchema config) {
+        Map<String, List<Descriptor>> vars=config.getVar();
+        for (String var: vars.keySet()) {
+            List<Descriptor> descriptors=vars.get(var);
+            for (Descriptor descriptor: descriptors) {
+                if (descriptor instanceof NameDescriptor) {
+                    NameDescriptor nd=(NameDescriptor) descriptor;
+                    if (nd.getTable()!=null) {
+                        referencedSqlTables.add(nd.getTable());
+                    }
+                }
+            }
+        }
+    }
+
+
     public void generateJSonSchemaEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
         if (configs.jsonschema!=null) compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
     }
 
     public void generateSQLEnd(TemplatesCompilerConfig configs, String cli_src_dir) {
-        if (configs.sqlFile!=null) compilerSQL.generateSQLEnd(configs.sqlFile, cli_src_dir +"/../resources");
+        if (configs.sqlFile!=null) compilerSQL.generateSQLEnd(configs.sqlFile, cli_src_dir +"/../resources", getReferencedSqlTables());
     }
 
     public void generateDocumentationEnd(TemplatesCompilerConfig configs, String cli_webjar_dir) {
@@ -430,6 +455,8 @@ public class ConfigProcessor implements Constants {
         JsonNode bindings_schema = compilerUtil.get_bindings_schema(config);
         TemplateBindingsSchema bindingsSchema=compilerUtil.getBindingsSchema(config);
 
+        findSqlTableReferences(bindingsSchema);
+
         Document doc;
         try {
             doc = readDocumentFromFile(config);
@@ -567,7 +594,7 @@ public class ConfigProcessor implements Constants {
                 if (!inComposition) {
 
                     compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema, null, "#/definitions/", sharing);
-                    compilerSQL.generateSQL(jsonschema + SQL_INTERFACE, templateName, cli_src_dir + "/../sql", bindingsSchema);
+                    compilerSQL.generateSQL(templateName, bindingsSchema);
                     compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
 
                     compilerSQL.generateSQLPrimitiveTables(sqlTables);
@@ -595,7 +622,7 @@ public class ConfigProcessor implements Constants {
                     TemplateBindingsSchema bindingsSchema2 = compilerUtil.getBindingsSchema(config);
                     compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema2, consistsOf, "#/definitions/", sharing);
 
-                    compilerSQL.generateSQL(jsonschema + SQL_INTERFACE, templateName, cli_src_dir + "/../sql", bindingsSchema2);
+                    compilerSQL.generateSQL(templateName, bindingsSchema2);
 
 
                     // LUC: FIXME: not generating processor fully, with composite subbean

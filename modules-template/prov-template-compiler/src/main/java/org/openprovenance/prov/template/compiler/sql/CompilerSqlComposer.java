@@ -29,11 +29,9 @@ public class CompilerSqlComposer {
     final Map<String,String> arrayFunctionDeclarations;
 
 
-    final public boolean withRelationId;
     private final String tableKey;
 
-    public CompilerSqlComposer(ProvFactory pFactory, boolean withRelationId, String tableKey, Map<String, String> functionDeclarations, Map<String,String> arrayFunctionDeclarations) {
-        this.withRelationId=withRelationId;
+    public CompilerSqlComposer(ProvFactory pFactory, String tableKey, Map<String, String> functionDeclarations, Map<String,String> arrayFunctionDeclarations) {
         this.tableKey=tableKey;
         this.functionDeclarations = functionDeclarations;
         this.arrayFunctionDeclarations = arrayFunctionDeclarations;
@@ -87,9 +85,8 @@ public class CompilerSqlComposer {
                                           key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
                                           (x, y) -> y,
                                           () -> new LinkedHashMap<String, Object>(){{
-                                                            if (withRelationId) {
-                                                                put(tableKey, unquote("INT"));
-                                                 }}}));
+                                              put(tableKey, unquote("INT"));
+                                          }}));
         if (functionReturns.keySet().size()==1) {
             // ensure that there are more than one column, otherwise postgres converts it to a scalar
             functionReturns.put(DUMMY, unquote("INT"));
@@ -192,9 +189,7 @@ public class CompilerSqlComposer {
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .map(key -> orig_templateName + "." + key)
                 .collect(Collectors.toCollection(() -> new LinkedList<>() {{
-                    if (withRelationId) {
-                        add(orig_templateName + "." + tableKey);
-                    }
+                    add(orig_templateName + "." + tableKey);
                 }}));
 
         // insuring that the table has more than one column, otherwise postgress converts it to a scalar
@@ -257,9 +252,8 @@ public class CompilerSqlComposer {
                         key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
                         (x, y) -> y,
                         () -> new LinkedHashMap<String, Object>(){{
-                            if (withRelationId) {
                                 put(tableKey, unquote("INT"));
-                            }}}));
+                        }}));
 
         Map<String,Function<PrettyPrinter, ?>> cteValues1=descriptorUtils
                 .fieldNames(templateBindingsSchema)
@@ -298,9 +292,8 @@ public class CompilerSqlComposer {
                 .filter(isOutput)
                 .map(key ->  shared.contains(key)? localId(key) : "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
                 .collect(Collectors.toCollection(() -> new LinkedList<>(){{
-                    if (withRelationId) {
                         add("(" + Constants.ARECORD_VAR + ")." + tableKey);
-                    }}}));
+                    }}));
 
         List<String> theArguments=descriptorUtils
                 .fieldNames(templateBindingsSchema)
@@ -312,14 +305,14 @@ public class CompilerSqlComposer {
 
 
         String PRELUDE_TO_AUTO_GENERATE="\n\n--- PRELUDE_TO_AUTO_GENERATE\n\n " +
-                "CREATE OR REPLACE FUNCTION insert_into_activity (input_id BIGINT)\n" +
+   /*             "CREATE OR REPLACE FUNCTION insert_into_activity (input_id BIGINT)\n" +
                 "    returns table(id INT)\n" +
                 "as $$\n" +
                 "INSERT INTO activity (id)\n" +
                 "SELECT input_id\n" +
                 "RETURNING activity.id as id\n" +
                 "$$ language SQL;\n" +
-                "\n\n" +
+                "\n\n" + */
                 "CREATE OR REPLACE FUNCTION insert_into_policy (input_id BIGINT, input_serial INT)\n" +
                 "                    returns table(id INT) \n" +
                 "                as $$\n" +
@@ -327,8 +320,8 @@ public class CompilerSqlComposer {
                 "                SELECT input_id, input_serial\n" +
                 "                RETURNING policy.id as id\n" +
                 "                $$ language SQL;\n" +
-                "\t\t\t\t"+
-                "\n\n" +
+                "\t\t\t\t"
+  /*              "\n\n" +
                 "CREATE OR REPLACE FUNCTION insert_into_assembled_collection (input_id BIGINT)\n" +
                 "    returns table(id INT)\n" +
                 "as $$\n" +
@@ -357,6 +350,8 @@ public class CompilerSqlComposer {
                 "RETURNING file.id as id\n" +
                 "$$ language SQL;\n" +
                 "\n\n"
+                */
+
 
 
 
@@ -433,9 +428,8 @@ public class CompilerSqlComposer {
                         key -> unquote(getTheSqlType(compilerUtil, key, templateBindingsSchema, var)),
                         (x, y) -> y,
                         () -> new LinkedHashMap<String, Object>(){{
-                            if (withRelationId) {
                                 put(tableKey, unquote("INT"));
-                            }}}));
+                            }}));
         functionReturns.put("parent", unquote("INT"));
 
         Map<String,Function<PrettyPrinter, ?>> cteValues2= new LinkedHashMap<>();
@@ -663,4 +657,52 @@ public class CompilerSqlComposer {
         arrayFunctionDeclarations.put(searchFunction, sql);
 
     }
+
+    public void generateInsertIntoSharedRelation(String template, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+        /*
+
+CREATE OR REPLACE FUNCTION insert_into_chart (input_id BIGINT)
+    returns table(id INT)
+as $$
+INSERT INTO chart (id)
+SELECT input_id
+RETURNING chart.id as id
+$$ language SQL;         */
+
+        Collection<String> sqlTables=new HashSet<>();
+        for (String key: shared) {
+            descriptorUtils.getSqlTable(key, templateBindingsSchema).ifPresent(sqlTables::add);
+        }
+
+        for (String relation: sqlTables) {
+
+            QueryBuilder fun =
+                    new QueryBuilder()
+                            .comment("Generated by method " + getClass().getName() + ".generateInsertIntoSharedRelation")
+                            .next(QueryBuilder.createFunction("insert_into_" + relation))
+                            .params(new HashMap<>() {{
+                                put("input_id", unquote("BIGINT"));
+                            }})
+                            .returns("table", new HashMap<>() {{
+                                put("id", unquote("INT"));
+                            }})
+                            .bodyStart("")
+                            .insertInto(relation).values(new HashMap<>() {{
+                                put("id",  (Function<PrettyPrinter, QueryBuilder>) (pp) -> QueryBuilder.select("input_id").apply(pp));
+                            }})
+                            .returning(Collections.singleton(relation + ".id as id"));
+
+
+            fun.bodyEnd("");
+            String sql = fun.getSQL();
+
+            System.out.println("###############################");
+
+            System.out.println(sql);
+        }
+
+
+    }
+
+
 }

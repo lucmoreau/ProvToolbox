@@ -123,4 +123,5 @@ public interface Constants {
     String PROPERTY_MAP = "propertyMap";
     String INPUT = "input";
     String OUTPUT = "output";
+    String SUFFIX_TYPE = "_type";
 }

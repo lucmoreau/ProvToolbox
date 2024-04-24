@@ -90,40 +90,13 @@
 			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
-		"pipeline": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"approved_pipeline": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
 		"activity": {
 			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
-
 		"method": {
 			"id": "SERIAL",
 			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"methods": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-
-		"assembled_collection": {
-			"id": "SERIAL",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"chart": {
-			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		}
 	}

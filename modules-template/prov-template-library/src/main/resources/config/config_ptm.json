@@ -43,72 +43,10 @@
 			"id": "SERIAL",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		},
-
-		"impact": {
+		"file": {
 			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"aspect": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"environmentType": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"policy": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"objective": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"target": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"reports": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-		"method": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"methods": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"progress": {
-			"id": "SERIAL",
-			"serial": "INT",
-			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
-		},
-
-		"obligation": {
-			"id": "SERIAL",
-			"serial": "INT",
 			"created_at": "timestamp with time zone NOT NULL DEFAULT NOW()"
 		}
-
 
 	}
 }

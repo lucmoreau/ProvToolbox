@@ -13,27 +13,30 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.io.output.AppendableOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
+import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
+import org.openprovenance.prov.service.readers.JsonOrCsv;
+import org.openprovenance.prov.service.readers.TableKeyList;
+import org.openprovenance.prov.template.library.plead.Plead_transformingBuilderTypedRecord;
+import org.openprovenance.prov.template.library.plead.client.common.Plead_transformingBuilder;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
+import org.openprovenance.prov.vanilla.ProvUtilities;
 
 import java.io.*;
 import java.security.Principal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
@@ -67,6 +70,7 @@ public class TemplateService {
     private final TemplateQuery queryTemplate;
     private final Map<String, Linker> compositeLinker;
     private final Map<String, Map<String, Set<String>>> typeAssignment;
+    private final Map<String, Function<Object[], Object[]>> recordMaker;
 
 
     static final String getSystemOrEnvironmentVariableOrDefault(String name, String defaultValue) {
@@ -133,6 +137,7 @@ public class TemplateService {
         this.documentBuilderDispatcher=initializeBeanTable(new org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorWithMap(map,pf));
         this.queryTemplate=new TemplateQuery(querier, templateDispatcher, compositeLinker, om, documentBuilderDispatcher, org.openprovenance.prov.template.library.plead.logger.Logger.ioMap);
         this.typeAssignment = initializeBeanTable(new TableConfiguratorForTypesWithMap(new HashMap<>(),templateDispatcher.getPropertyOrder(),this.documentBuilderDispatcher,null));
+        this.recordMaker=initializeBeanTable(new TableConfiguratorForObjectRecordMaker(documentBuilderDispatcher));
 
         this.templateLogic=new TemplateLogic(pf,queryTemplate,templateDispatcher,null,documentBuilderDispatcher, utils,om, sqlCompositeBeanEnactor3, this.typeAssignment);
 
@@ -218,6 +223,63 @@ public class TemplateService {
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
     }
 
+
+    @GET
+    @Path("/template/{template}/{id}/{variable}")
+    @Tag(name = "ems_q")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
+                                              @Context HttpServletRequest request,
+                                              @Context HttpHeaders headers,
+                                              @Context UriInfo uriInfo,
+                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                              @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id,
+                                              @Parameter(name = "variable", description = "variable", required = true) @PathParam("variable") String variable) {
+
+
+        logger.info("getTemplatePropertyInstanceWithId " + template + " " + id + " " + variable);
+
+        List<Object[]> records = queryTemplate.query(template, id, false);
+        //debugDisplay("records.size ", records.size());
+
+        Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
+
+
+        List<Object> selections=new LinkedList<>();
+        for (Object[] record: records) {
+            int index=java.util.Arrays.asList(templateDispatcher.getPropertyOrder().get(template)).indexOf(variable);
+            Object[] objectRecord=recordMaker.get(template).apply(record);
+            selections.add(objectRecord[index]);
+        }
+
+        Document newDoc=pf.newDocument();
+        newDoc.setNamespace(result.getNamespace());
+        for (Object selection: selections) {
+            QualifiedName qn=(QualifiedName)selection;
+            new ProvUtilities().getEntity(result).stream().filter(e -> qn.getUri().equals(e.getId().getUri())).forEach(e -> newDoc.getStatementOrBundle().add(e));
+            new ProvUtilities().getAgent(result).stream().filter(e -> qn.getUri().equals(e.getId().getUri())).forEach(e -> newDoc.getStatementOrBundle().add(e));
+            new ProvUtilities().getActivity(result).stream().filter(e -> qn.getUri().equals(e.getId().getUri())).forEach(e -> newDoc.getStatementOrBundle().add(e));
+        }
+
+        System.out.println("selections " + selections);
+
+
+        String extension="jsonld";
+
+
+        switch (extension) {
+            case "jsonld":
+                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+            case "provn":
+                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+            case "svg":
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_IMAGE_SVG_XML).build();
+
+        }
+        return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
+    }
+
+
     private void debugDisplay(String msg, Object object) {
         try {
             System.out.println(msg + om.writeValueAsString(object));
@@ -235,10 +297,10 @@ public class TemplateService {
     @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
     public Response getTemplates(@Context HttpServletResponse response,
-                                              @Context HttpServletRequest request,
-                                              @Context HttpHeaders headers,
-                                              @Context UriInfo uriInfo,
-                                              @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension,
+                                 @Context HttpServletRequest request,
+                                 @Context HttpHeaders headers,
+                                 @Context UriInfo uriInfo,
+                                 @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension,
                                  TableKeyList tableKey) {
 
         List<Object[]> records = queryTemplate.queryTemplates(tableKey, false);
@@ -252,7 +314,6 @@ public class TemplateService {
                 return ServiceUtils.composeResponseOK(result).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
             case "svg":
                 return ServiceUtils.composeResponseOK(result).type(MEDIA_IMAGE_SVG_XML).build();
-
         }
         return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
 

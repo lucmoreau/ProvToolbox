@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.service.TableKeyList;
 import org.openprovenance.prov.service.TemplateService;
 
 import java.io.IOException;

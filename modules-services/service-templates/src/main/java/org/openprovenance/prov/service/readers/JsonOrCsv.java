@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.readers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.csv.CSVParser;
@@ -9,7 +9,7 @@ import java.util.Map;
 public class JsonOrCsv {
 
     @JsonIgnore
-    CSVParser csv;
+    public CSVParser csv;
     @JsonIgnore
-    List<Map<String,Object>> json;
+    public List<Map<String,Object>> json;
 }

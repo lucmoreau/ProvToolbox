@@ -44,9 +44,9 @@ public class TemplatesToDot extends ProvToDot {
 
         // First row with rowspan and input cells
         html.append("  <TR>\n");
-        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\">%s </TD>\n", templateInfo.url, templateInfo.templateId));
+        html.append(String.format("    <TD ROWSPAN=\"3\" HREF=\"%s\"  TARGET=\"_blank\">%s </TD>\n", templateInfo.url, templateInfo.templateId));
         for (int i = 0; i < inputsNames.size(); i++) {
-            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" HREF=\"%s\">%s</TD>\n",
+            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\" HREF=\"%s\" TARGET=\"_blank\">%s</TD>\n",
                     inputsPorts.get(i), inputsColors.get(i), templateInfo.url.replace(".svg", "/"+inputsNames.get(i)), inputsNames.get(i)));
         }
         html.append("  </TR>\n");
@@ -54,7 +54,7 @@ public class TemplatesToDot extends ProvToDot {
         // Second row for outputs
         html.append("  <TR>\n");
         for (int i = 0; i < outputsNames.size(); i++) {
-            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\"  HREF=\"%s\">%s</TD>\n",
+            html.append(String.format("    <TD PORT=\"%s\" BGCOLOR=\"%s\"  HREF=\"%s\"  TARGET=\"_blank\">%s</TD>\n",
                     outputsPorts.get(i), outputColors.get(i), templateInfo.url.replace(".svg", "/"+outputsNames.get(i)), outputsNames.get(i)));
         }
         html.append("  </TR>\n");

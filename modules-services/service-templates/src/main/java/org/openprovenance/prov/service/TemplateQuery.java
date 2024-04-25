@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
+import org.openprovenance.prov.service.readers.TableKey;
+import org.openprovenance.prov.service.readers.TableKeyList;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -234,7 +236,7 @@ public class TemplateQuery {
     public List<Object[]> querySimple(String template, Integer id, boolean withTitles) {
         List<Object[]> the_records = new LinkedList<>();
         String[] propertyOrder=templateDispatcher.getPropertyOrder().get(template);
-        System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
+        //System.out.println("propertyOrder = " + Arrays.toString(propertyOrder));
         querier.do_query(the_records,
                 null,
                 (sb, data) -> {

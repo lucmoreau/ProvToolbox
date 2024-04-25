@@ -1,4 +1,4 @@
-package org.openprovenance.prov.service;
+package org.openprovenance.prov.service.readers;
 
 import java.util.LinkedList;
 import java.util.List;

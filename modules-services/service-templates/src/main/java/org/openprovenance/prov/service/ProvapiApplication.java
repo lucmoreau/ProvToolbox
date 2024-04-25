@@ -23,6 +23,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
+import org.openprovenance.prov.service.readers.JsonOrCsvMessageBodyReader;
 import org.openprovenance.prov.service.readers.TableKeyListMessageBodyReader;
 import org.openprovenance.prov.service.readers.TemplatesVizConfigMessageBodyReader;
 import org.openprovenance.prov.service.translation.TranslationService;

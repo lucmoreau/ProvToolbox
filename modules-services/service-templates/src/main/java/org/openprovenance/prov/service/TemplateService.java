@@ -23,7 +23,9 @@ import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.service.readers.JsonOrCsv;
+import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.service.readers.TableKeyList;
+import org.openprovenance.prov.service.readers.TemplatesVizConfig;
 import org.openprovenance.prov.template.library.plead.Plead_transformingBuilderTypedRecord;
 import org.openprovenance.prov.template.library.plead.client.common.Plead_transformingBuilder;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
@@ -320,7 +322,7 @@ public class TemplateService {
 
     }
 
-    @GET
+    @POST
     @Path("/templates/records")
     @Tag(name = "ems_q")
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
@@ -328,9 +330,12 @@ public class TemplateService {
     public Response getTemplatesRecords(@Context HttpServletResponse response,
                                         @Context HttpServletRequest request,
                                         @Context HttpHeaders headers,
-                                        @Context UriInfo uriInfo) {
+                                        @Context UriInfo uriInfo,
+                                        SearchConfig searchConfig) {
 
-        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords( false);
+        logger.info("getTemplatesRecords " + searchConfig);
+
+        List<TemplateQuery.RecordEntry2> records = queryTemplate.queryTemplatesRecords(searchConfig);
 
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader();
         StreamingOutput promise= out -> {
@@ -353,11 +358,7 @@ public class TemplateService {
 
     }
 
-    public static class TemplatesVizConfig {
-        public Integer id;
-        public String template;
-        public String property;
-    }
+
     @POST
     @Path("/templates/viz")
     @Tag(name = "ems_q")

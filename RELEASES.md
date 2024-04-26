@@ -26,6 +26,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: getting level0 types for template variables
 * service-templates: displaying level0 types colours for template variables
 * service-templates: viewing template instance value by property
+* service-templates: browsing template tab
 
 
 `2.0.5`

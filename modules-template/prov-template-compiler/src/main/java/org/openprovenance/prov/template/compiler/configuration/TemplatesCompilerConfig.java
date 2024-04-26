@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class TemplatesCompilerConfig {
@@ -21,6 +22,7 @@ public class TemplatesCompilerConfig {
     public String beanProcessor;
     public String logger_package;
     public String configurator_package;
+    public List<String> search;
     public String script;
     public String script_dir;
     public boolean jsweet;
@@ -45,6 +47,7 @@ public class TemplatesCompilerConfig {
                 ", beanProcessor='" + beanProcessor + '\'' +
                 ", logger_package='" + logger_package + '\'' +
                 ", configurator_package='" + configurator_package + '\'' +
+                ", search='" + search + '\'' +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
                 ", jsweet=" + jsweet +

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.IndexedDocument;
+import org.openprovenance.prov.service.readers.SearchConfig;
 import org.openprovenance.prov.service.readers.TableKey;
 import org.openprovenance.prov.service.readers.TableKeyList;
 import org.openprovenance.prov.template.compiler.sql.QueryBuilder;
@@ -38,7 +39,6 @@ public class TemplateQuery {
     public static final String OUT_PROPERTY = "out_property";
 
     public static final String[] COMPOSITE_LINKER_COLUMNS = new String[]{"composite","simple"};
-    public static final String[] SEARCH_RECORDS_COLUMNS = new String[]{"key", "created_at", "table_name"};
     private final Querier querier;
     private final ProvFactory pf = new ProvFactory();
     private final TemplateDispatcher templateDispatcher;
@@ -265,15 +265,22 @@ public class TemplateQuery {
         return the_records;
     }
 
-    public List<RecordEntry2> queryTemplatesRecords(boolean b) {
+    public List<RecordEntry2> queryTemplatesRecords(SearchConfig config) {
         List<RecordEntry2> linked_records = new LinkedList<>();
+        if (config.from_date != null) {
+            config.from_date = "'" + config.from_date + "'";
+        }
+        if (config.to_date != null) {
+            config.to_date = "'" + config.to_date + "'";
+        }
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
-                    sb.append("search_records(null,null)");
-                    sb.append("limit 10");
+                    sb.append("search_records_for_" + config.base_relation + "(").append(config.from_date).append(",").append(config.to_date).append(") ");
+                    sb.append("limit ").append(config.limit);
+                    System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
                     while (rs.next()) {

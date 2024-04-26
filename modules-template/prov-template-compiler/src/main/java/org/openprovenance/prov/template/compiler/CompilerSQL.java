@@ -16,6 +16,7 @@ import org.openprovenance.prov.template.descriptors.*;
 import javax.lang.model.element.Modifier;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.ConfigProcessor.*;
 import static org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer.getTheSqlType;
@@ -425,7 +426,7 @@ public class CompilerSQL {
 
      */
 
-    public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+    public void generateSQLInsertFunction(String jsonschema, String templateName, String consistOf, String root_dir, TemplateBindingsSchema templateBindingsSchema, List<String> shared, Map<String, Map<String, Map<String, String>>> inputOutputMaps, List<String> search) {
         new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertFunction(jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
 
         if (shared!=null && shared.size()>0) {
@@ -433,26 +434,57 @@ public class CompilerSQL {
             new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertArrayFunction(templateName, consistOf, templateBindingsSchema, shared);
             new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations).generateSQLInsertCompositeAndLinkerFunction(templateName, consistOf, templateBindingsSchema, shared);
         }
+
+        if (search!=null) {
+            for (String baseRelation : search) {
+
+                List<Pair<String, String>> templatesWithBaseRelation = getTemplatesWithBaseRelation(baseRelation, inputOutputMaps);
+                // group by first element in the pair, and associated it with a list of the second element in the pair
+                Map<String, List<String>> groupedTemplatesWithBaseRelation = templatesWithBaseRelation.stream().collect(Collectors.groupingBy(Pair::getLeft, Collectors.mapping(Pair::getRight, Collectors.toList())));
+
+                System.out.println("######## groupedTemplatesWithBaseRelation=" + groupedTemplatesWithBaseRelation);
+
+        /*
         List<Pair<String, String>> templates = List.of(
                 Pair.of("plead_transforming", "transforming"),
                 Pair.of("plead_filtering", "filtering")
         );
-        String baseRelation = "activity";
-        new CompilerSqlComposer(pFactory, tableKey, functionDeclarations,arrayFunctionDeclarations)
-                .generateSQLSearchRecordFunction(baseRelation, templates, jsonschema,templateName, consistOf, root_dir,templateBindingsSchema,shared);
 
+         */
+                new CompilerSqlComposer(pFactory, tableKey, functionDeclarations, arrayFunctionDeclarations)
+                        .generateSQLSearchRecordFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, consistOf, root_dir, templateBindingsSchema, shared);
+
+            }
+        }
 
     }
 
-
-
-/*
-    private boolean sepIfNotFirst(StringBuilder res, boolean first) {
-        return sepIfNotFirst(res,first,", ");
+    public List<Pair<String, String>> getTemplatesWithBaseRelation(String baseRelation, Map<String, Map<String, Map<String, String>>> inputOutputMaps) {
+        List<Pair<String, String>> templates2=new LinkedList<>();
+        if (inputOutputMaps !=null) {
+            for (String key: inputOutputMaps.keySet()) {
+                Map<String, Map<String, String>> map = inputOutputMaps.get(key);
+                for (String template: map.keySet()) {
+                    Map<String, String> map2 = map.get(template);
+                    for (String property: map2.keySet()) {
+                        if (map2.get(property).equals(baseRelation)) {
+                            templates2.add(Pair.of(template,property));
+                        }
+                    }
+                }
+            }
+        }
+        return templates2;
     }
 
 
- */
+    /*
+        private boolean sepIfNotFirst(StringBuilder res, boolean first) {
+            return sepIfNotFirst(res,first,", ");
+        }
+
+
+     */
     private boolean sepIfNotFirst(StringBuilder res, boolean first, String sep) {
         if (first) {
             first = false;

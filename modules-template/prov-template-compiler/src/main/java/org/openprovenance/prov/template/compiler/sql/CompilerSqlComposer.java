@@ -600,9 +600,9 @@ public class CompilerSqlComposer {
     }
 
 
-    public void generateSQLSearchRecordFunction(String baseRelation, List<Pair<String,String>> templates, String jsonschema, String templateName, String consistOf, String rootDir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
+    public void generateSQLSearchRecordFunction(String baseRelation, Map<String, List<String>> templates, String templateName, String consistOf, String rootDir, TemplateBindingsSchema templateBindingsSchema, List<String> shared) {
 
-        String searchFunction="search_records";
+        String searchFunction="search_records_for_" + baseRelation;
 
         Map<String,?> funParams=new HashMap<>() {{
             put("from_date", unquote("timestamptz"));
@@ -618,9 +618,18 @@ public class CompilerSqlComposer {
         }};
 
         //create string COALESCE(plead_transforming.transforming, plead_filtering.filtering) AS key,
-        String coalescedKey= templates.stream().map(p -> p.getLeft() + ".id").collect(Collectors.joining(", ", "COALESCE (", ")"));
+        String coalescedKey= templates.keySet().stream().map(p -> p + ".id").collect(Collectors.joining(", ", "COALESCE (", ")"));
 
-        String nameCase="CASE " + templates.stream().map(p -> "WHEN " + p.getLeft() + "." + p.getRight() + " IS NOT NULL THEN '" + p.getLeft() + "'").collect(Collectors.joining(" ")) + " END";
+        String nameCase= templates
+                .keySet()
+                .stream()
+                .map(p ->
+                        templates
+                                .get(p)
+                                .stream()
+                                .map(c -> p + "." + c + " IS NOT NULL ")
+                                .collect(Collectors.joining( " OR ", " WHEN " , "  THEN '" + p + "'")) )
+                .collect(Collectors.joining(" ", "CASE "," END"));
 
         QueryBuilder fun=
                 new QueryBuilder()
@@ -632,22 +641,34 @@ public class CompilerSqlComposer {
                         .selectExp(baseRelation+".id as ID", CREATED_AT_COLUMN, nameCase + " AS " + TABLE_NAME_COLUMN, coalescedKey + " as " + BASETABLE_KEY_COLUMN )
                         .from(baseRelation);
 
-        for (Pair<String,String> template: templates) {
-            fun.leftJoin(template.getLeft()).on(baseRelation + ".id = " + template.getLeft() + "." + template.getRight());
+        for (String template: templates.keySet()) {
+            boolean first=true;
+            fun.leftJoin(template);
+            for (String column: templates.get(template)) {
+                if (first) {
+                    fun.on(baseRelation + ".id = " + template + "." + column);
+                    first=false;
+                } else {
+                    fun.or(baseRelation + ".id = " + template + "." + column);
+                }
+            }
+            //fun.leftJoin(template.getLeft()).on(baseRelation + ".id = " + template.getLeft() + "." + template.getRight());
         }
-        fun.whereOpen("from_date", "is", "null").or(CREATED_AT_COLUMN, ">", "from_date").close();
+        fun.newline().whereOpen("from_date", "is", "null").or(CREATED_AT_COLUMN, ">", "from_date").close();
         fun.andOpen("to_date", "is", "null").or(CREATED_AT_COLUMN, "<", "to_date").close();
 
-        AtomicBoolean first= new AtomicBoolean(true);
-        templates.forEach(p -> {
-            if (first.get()) {
-                fun.andOpen(p.getLeft() + "." + p.getRight(), "is not", "null");
-                first.set(false);
-            } else {
-                fun.or(p.getLeft() + "." + p.getRight(), "is not", "null");
+        boolean first= true;
+        for (String template: templates.keySet()) {
+            for (String column: templates.get(template)) {
+                if (first) {
+                    fun.begin(5).andOpen(template + "." + column, "is not", "null");
+                    first = false;
+                } else {
+                    fun.allowBreak().or(template + "." + column, "is not", "null");
+                }
             }
-        });
-        fun.close();
+        };
+        fun.close().end();
         fun.orderBy(CREATED_AT_COLUMN).desc();
 
 

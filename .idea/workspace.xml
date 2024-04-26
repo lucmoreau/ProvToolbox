@@ -9,22 +9,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TableConfiguratorForObjectRecordMaker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/SearchConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/SearchConfigMessageBodyReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TemplatesVizConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/GenericJsonMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/GenericJsonMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/JsonOrCsv.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/JsonOrCsv.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/JsonOrCsvMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/JsonOrCsvMessageBodyReader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TableKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKey.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TableKeyList.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKeyList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplatesToDot.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplatesToDot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKeyListMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKeyListMessageBodyReader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TemplatesVizConfigMessageBodyReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TemplatesVizConfigMessageBodyReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/sql/utils.sql" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/sql/utils.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/ConfigProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/TemplatesCompilerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/configuration/TemplatesCompilerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/QueryBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/QueryBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_plead.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,9 +237,9 @@
       <recent name="org.openprovenance.prov" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.prov.service.readers" />
       <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.template.compiler" />
-      <recent name="org.openprovenance.prov.service.readers" />
       <recent name="org.openprovenance.prov.service.iobean.composite" />
       <recent name="org.openprovenance.prov.service.template" />
     </key>
@@ -1145,7 +1148,7 @@
       <workItem from="1713337784627" duration="9990000" />
       <workItem from="1713372878257" duration="5927000" />
       <workItem from="1713385489351" duration="267000" />
-      <workItem from="1713385763798" duration="137742000" />
+      <workItem from="1713385763798" duration="152331000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

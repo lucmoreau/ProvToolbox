@@ -117,10 +117,18 @@
             </div>
 
             <div id="tab_browser" class="tab-pane" role="tabpanel">
-                <div class="col-lg-1">
-                    <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse(true)">Refresh</button>
+                <div class="col-lg-2">
+                    <label for="browser_base_relation">Base relation:</label><input type="text" id="browser_base_relation" class="form-control" value="activity">
+                    <label for="browser_from_date">From date:</label><input type="datetime-local" id="browser_from_date" class="form-control" >
+                    <label for="browser_to_date">To date:</label><input type="datetime-local" id="browser_to_date" class="form-control" >
+                    <label for="browser_limit"></label><input type="number" id="browser_limit" class="form-control" value="10">
+
+                    <p></p>
+                    <button id="browser-refresh" type="button" class="btn btn-info" onclick="submitBrowse()">Refresh</button>
+                    <button id="browser-clear" type="button" class="btn btn-warning" onclick="clearBrowse()">Clear</button>
+
                 </div>
-                <div class="col-lg-11 first-column">
+                <div class="col-lg-10 first-column">
                     <table id="browser_list"
                            class="display"
                            style="width:80%">
@@ -297,34 +305,71 @@
         $(HTML_ANCHOR_ENACT_RESULT_PROV_LINK).html("");
     }
 
+    function clearBrowse() {
+        //$('#browser_list').DataTable().clear().destroy();
+        $('#browser_from_date').val("");
+        $('#browser_to_date').val("");
+        $('#browser_base_relation').val("activity");
+        $('#browser_limit').val("10");
+    }
 
-    function submitBrowse(b) {
+    function submitBrowse() {
         let url = "http://localhost:7072/ptl/provapi/templates/records"
         console.log("submitBrowse " + url)
         let id = '#browser_list'
+        let from_date = $('#browser_from_date').val()
+        let to_date = $('#browser_to_date').val()
+        let limit = $('#browser_limit').val()
 
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: "text",
-            success: function (contents) {
-                var data = $.csv.toArrays(contents);
-                data.shift()
-                var columns = data[0];
-                var titles = $.map(columns, function (column) {
-                    return {"title": column}
-                })
-                console.log(titles)
-                data.shift()
+        // if from_date is not empty string, replace by null
+        if (from_date === "") {
+            from_date = null
+        }
+        // if to_date is not empty string, replace by null
+        if (to_date === "") {
+            to_date = null
+        }
 
-                $(id).DataTable({
-                    destroy: true,
-                    "data": data,
-                    "columns": titles,
-                    order: [[1, 'desc']]
-                });
-            }
-        });
+
+
+        let search_config = {
+            base_relation: $('#browser_base_relation').val(),
+            from_date: from_date,
+            to_date: to_date,
+            limit: limit
+        }
+        let json_data=JSON.stringify(search_config)
+        console.log("submitBrowse " + json_data)
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.onerror= function(xhr,event) {
+            console.log("error with " + event);
+        };
+        xhr.onabort= function(xhr,event) {
+            console.log("abort with " + event);
+        };
+        xhr.onload= function (contents) {
+            let contents2 = xhr.responseText;
+            var data = $.csv.toArrays(contents2);
+            data.shift()
+            var columns = data[0];
+            var titles = $.map(columns, function (column) {
+                return {"title": column}
+            })
+            console.log(titles)
+            data.shift()
+
+            $(id).DataTable({
+                destroy: true,
+                "data": data,
+                "columns": titles,
+                order: [[1, 'desc']]
+            });
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(json_data);
+
     }
 
     function submitNavigate(id) {

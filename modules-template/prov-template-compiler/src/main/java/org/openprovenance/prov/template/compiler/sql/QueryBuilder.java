@@ -499,6 +499,16 @@ public class QueryBuilder {
         return this;
 
     }
+    public QueryBuilder allowBreak() {
+        prettyPrinter.allowBreak(0);
+        return this;
+    }
+    public QueryBuilder begin(int n) {
+        prettyPrinter.begin(n);
+        return this;
+    }
+
+
 
     private QueryBuilder conditionalStart(String operator) {
         prettyPrinter.write(operator);

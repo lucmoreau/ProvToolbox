@@ -99,6 +99,7 @@ public class ConfigProcessor implements Constants {
         descriptorUtils.setupDeserializer(objectMapper);
     }
 
+
     public ConfigProcessor(ProvFactory pFactory) {
         this.debugComment=true;
         this.pFactory=pFactory;
@@ -514,7 +515,8 @@ public class ConfigProcessor implements Constants {
             String compositeBeanNameClass=compilerUtil.commonNameClass(templateName);
 
 
-            buildJoinTable(templateName, bindingsSchema);
+            // ignore the composite templates when building join table.
+            if (consistsOf==null) buildJoinTable(templateName, bindingsSchema);
 
 
             IndexedDocument indexed = makeIndexedDocument(doc);
@@ -595,7 +597,7 @@ public class ConfigProcessor implements Constants {
 
                     compilerJsonSchema.generateJSonSchema(templateName, bindingsSchema, null, "#/definitions/", sharing);
                     compilerSQL.generateSQL(templateName, bindingsSchema);
-                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList());
+                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, null, cli_src_dir + "/../sql", bindingsSchema, Arrays.asList(), getInputOutputMaps(), configs.search);
 
                     compilerSQL.generateSQLPrimitiveTables(sqlTables);
                 }
@@ -611,7 +613,7 @@ public class ConfigProcessor implements Constants {
                     compilerJsonSchema.generateJSonSchema(templateName+"_1", bindingsSchema, null, "#/definitions/", null);
 
 
-                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing);
+                    compilerSQL.generateSQLInsertFunction(jsonschema + SQL_INTERFACE, templateName, consistsOf, cli_src_dir + "/../sql", bindingsSchema, sharing, getInputOutputMaps(), configs.search);
 
                     SimpleTemplateCompilerConfig config = new SimpleTemplateCompilerConfig();
                     config.name = compositeBeanNameClass;
@@ -678,13 +680,17 @@ public class ConfigProcessor implements Constants {
 
     private final Map<String, Map<String,String>> inputMap =new HashMap<>();
     private final Map<String, Map<String,String>> outputMap=new HashMap<>();
+    private HashMap<String, Map<String, Map<String, String>>> ioMap=null;
 
 
     public Map<String,Map<String, Map<String, String>>> getInputOutputMaps() {
-        return new HashMap<>() {{
+        if (ioMap!=null) return ioMap;
+        HashMap<String, Map<String, Map<String, String>>> map = new HashMap<>() {{
             put(INPUT, inputMap);
             put(OUTPUT, outputMap);
         }};
+        this.ioMap=map;
+        return map;
     }
 
     public void buildJoinTable(String templateName, TemplateBindingsSchema bindingsSchema) {

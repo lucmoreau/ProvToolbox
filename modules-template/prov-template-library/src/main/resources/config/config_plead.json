@@ -9,6 +9,7 @@
 	"templateBuilders": "TemplateBuilders",
 	"tableConfigurator": "TableConfigurator",
 	"beanProcessor": "BeanProcessor",
+	"search": ["activity", "file"],
 	"logger_package": "org.openprovenance.prov.template.library.plead.logger",
 	"configurator_package": "org.openprovenance.prov.template.library.plead.client.configurator",
 	"script": "ptm_plead_run",

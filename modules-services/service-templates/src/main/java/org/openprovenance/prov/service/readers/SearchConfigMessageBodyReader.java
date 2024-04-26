@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Provider;
 import org.openprovenance.prov.interop.InteropMediaType;
-import org.openprovenance.prov.service.TemplateService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +16,10 @@ import java.lang.reflect.Type;
 
 @Provider
 @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
-public class TemplatesVizConfigMessageBodyReader implements MessageBodyReader<TemplatesVizConfig> {
+public class SearchConfigMessageBodyReader implements MessageBodyReader<SearchConfig> {
 
-    public TemplatesVizConfigMessageBodyReader() {
-        System.out.println("TemplatesVizConfigMessageBodyReader ....");
+    public SearchConfigMessageBodyReader() {
+        System.out.println("SearchConfigMessageBodyReader ....");
     }
 
     public String trimCharSet(MediaType mediaType) {
@@ -39,14 +38,14 @@ public class TemplatesVizConfigMessageBodyReader implements MessageBodyReader<Te
     }
 
     @Override
-    public TemplatesVizConfig readFrom(Class<TemplatesVizConfig> aClass,
+    public SearchConfig readFrom(Class<SearchConfig> aClass,
                                                        Type type,
                                                        Annotation[] annotations,
                                                        MediaType mediaType,
                                                        MultivaluedMap<String, String> multivaluedMap,
                                                        InputStream inputStream) throws IOException, WebApplicationException {
 
-        TemplatesVizConfig tkl=om.readValue(inputStream, TemplatesVizConfig.class);
+        SearchConfig tkl=om.readValue(inputStream, SearchConfig.class);
 
         return tkl;
     }

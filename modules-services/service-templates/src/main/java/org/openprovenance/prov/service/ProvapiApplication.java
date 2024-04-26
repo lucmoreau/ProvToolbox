@@ -23,9 +23,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.service.core.*;
 import org.openprovenance.prov.service.core.writers.NodeMessageBodyWriter;
 import org.openprovenance.prov.service.core.writers.VanillaDocumentMessageBodyWriter;
-import org.openprovenance.prov.service.readers.JsonOrCsvMessageBodyReader;
-import org.openprovenance.prov.service.readers.TableKeyListMessageBodyReader;
-import org.openprovenance.prov.service.readers.TemplatesVizConfigMessageBodyReader;
+import org.openprovenance.prov.service.readers.*;
 import org.openprovenance.prov.service.translation.TranslationService;
 
 import jakarta.ws.rs.ApplicationPath;
@@ -112,6 +110,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(new JsonOrCsvMessageBodyReader());
 		singletons.add(new TableKeyListMessageBodyReader());
 		singletons.add(new TemplatesVizConfigMessageBodyReader());
+		singletons.add(new SearchConfigMessageBodyReader());
 
 
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));

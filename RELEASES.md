@@ -27,6 +27,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: displaying level0 types colours for template variables
 * service-templates: viewing template instance value by property
 * service-templates: browsing template tab
+* prov-template-compiler: sql generation for retrieving record for base_relation(id)
 
 
 `2.0.5`

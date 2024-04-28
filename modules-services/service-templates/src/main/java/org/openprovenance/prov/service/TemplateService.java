@@ -22,10 +22,7 @@ import org.openprovenance.prov.model.QualifiedName;
 import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
-import org.openprovenance.prov.service.readers.JsonOrCsv;
-import org.openprovenance.prov.service.readers.SearchConfig;
-import org.openprovenance.prov.service.readers.TableKeyList;
-import org.openprovenance.prov.service.readers.TemplatesVizConfig;
+import org.openprovenance.prov.service.readers.*;
 import org.openprovenance.prov.template.library.plead.Plead_transformingBuilderTypedRecord;
 import org.openprovenance.prov.template.library.plead.client.common.Plead_transformingBuilder;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
@@ -41,6 +38,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_IMAGE_SVG_XML;
+import static org.openprovenance.prov.interop.InteropMediaType.MEDIA_TEXT_HTML;
 import static org.openprovenance.prov.service.Storage.getStringFromClasspath;
 import static org.openprovenance.prov.template.library.plead.logger.Logger.initializeBeanTable;
 
@@ -227,16 +225,17 @@ public class TemplateService {
 
 
     @GET
-    @Path("/template/{template}/{id}/{variable}")
+    @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
     @Tag(name = "ems_q")
     @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
-                                              @Context HttpServletRequest request,
-                                              @Context HttpHeaders headers,
-                                              @Context UriInfo uriInfo,
-                                              @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
-                                              @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id,
-                                              @Parameter(name = "variable", description = "variable", required = true) @PathParam("variable") String variable) {
+                                                      @Context HttpServletRequest request,
+                                                      @Context HttpHeaders headers,
+                                                      @Context UriInfo uriInfo,
+                                                      @Parameter(name = "template", description = "template name", required = true) @PathParam("template") String template,
+                                                      @Parameter(name = "id", description = "record id", required = true) @PathParam("id") Integer id,
+                                                      @Parameter(name = "variable", description = "variable", required = true) @PathParam("variable") String variable,
+                                                      @Parameter(name = "extension", description = "extension", required = true) @PathParam("extension") String extension) {
 
 
         logger.info("getTemplatePropertyInstanceWithId " + template + " " + id + " " + variable);
@@ -266,7 +265,7 @@ public class TemplateService {
         System.out.println("selections " + selections);
 
 
-        String extension="jsonld";
+        extension = determineOptionalExtension(headers, extension);
 
 
         switch (extension) {
@@ -377,44 +376,95 @@ public class TemplateService {
 
     }
 
+    @GET
+    @Path("/live/{relation}/{id:\\d+}{extension:(\\.\\w+)?}")
+    @Tag(name = "ems_q")
+    @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
+    @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
+    public Response getLiveNode(@Context HttpServletResponse response,
+                                @Context HttpServletRequest request,
+                                @Context HttpHeaders headers,
+                                @Context UriInfo uriInfo,
+                                @Parameter(name = "relation", description = "relation", required = true) @PathParam("relation") String relation,
+                                @Parameter(name = "id", description = "id", required = true) @PathParam("id") Integer id,
+                                @Parameter(name = "extension", description = "extension", required = false) @PathParam("extension") String extension){
 
+        logger.info("getLiveNode " + relation + " " + id);
 
-    private InputStream getPart(List<InputPart> inputParts) {
-        if (inputParts==null) return null;
-        for (InputPart inputPart : inputParts) {
-            try {
-                //Use this header for extra processing if required
-                @SuppressWarnings("unused")
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
+        logger.info("accept header " + headers.getAcceptableMediaTypes());
 
-                // convert the uploaded file to inputstream
-                return inputPart.getBody(InputStream.class, null);
+        List<TemplateQuery.RecordEntry2> ll=templateLogic.generateLiveNode(relation, id);
+        TableKeyList tableKeyList=new TableKeyList();
+        ll.forEach(e -> tableKeyList.key.add(new TableKey() {{
+            isA=e.table_name;
+            ID=e.key;
+        }}));
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        logger.info("getLiveNode " + tableKeyList);
+
+        List<Object[]> records = queryTemplate.queryTemplates(tableKeyList, false);
+
+        Document result=queryTemplate.constructDocument(documentBuilderDispatcher,records);
+
+        Set<Object> selections=new HashSet<>();
+        for (int i=0; i<records.size(); i++) {
+            Object[] record=records.get(i);
+            String property=ll.get(i).property;
+            String template=(String)record[0];
+            logger.info("template " + template);
+            logger.info("property " + property);
+            logger.info("record " + java.util.Arrays.asList(record));
+
+            int index=java.util.Arrays.asList(templateDispatcher.getPropertyOrder().get(template)).indexOf(property);
+            Object[] objectRecord=recordMaker.get(template).apply(record);
+            selections.add(objectRecord[index]);
         }
-        return null;
-    }
-    private String getPartAsString(List<InputPart> inputParts) {
-        if (inputParts==null) return null;
-        for (InputPart inputPart : inputParts) {
-            try {
-                //Use this header for extra processing if required
-                @SuppressWarnings("unused")
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
 
-                // convert the uploaded file to inputstream
-                return inputPart.getBodyAsString();
+        logger.info("selections " + selections);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+        Document newDoc=pf.newDocument();
+        newDoc.setNamespace(result.getNamespace());
+        for (Object selection: selections) {
+            QualifiedName qn=(QualifiedName)selection;
+            new ProvUtilities().getEntity(result).stream().filter(e -> qn.getUri().equals(e.getId().getUri())).forEach(e -> newDoc.getStatementOrBundle().add(e));
+            new ProvUtilities().getAgent(result).stream().filter(e -> qn.getUri().equals(e.getId().getUri())).forEach(e -> newDoc.getStatementOrBundle().add(e));
+            new ProvUtilities().getActivity(result).stream().filter(e -> qn.getUri().equals(e.getId().getUri())).forEach(e -> newDoc.getStatementOrBundle().add(e));
         }
-        return null;
+
+        extension = determineOptionalExtension(headers, extension);
+
+        switch (extension) {
+            case "jsonld":
+                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_APPLICATION_JSONLD).build();
+            case "provn":
+                return ServiceUtils.composeResponseOK(newDoc).type(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION).build();
+            case "svg":
+                return ServiceUtils.composeResponseOK(newDoc).type(MEDIA_IMAGE_SVG_XML).build();
+        }
+        return utils.composeResponseBadRequest("unknown extension " + extension, new UnsupportedOperationException(extension));
+
+
     }
 
-
+    private String determineOptionalExtension(HttpHeaders headers, String extension) {
+        if (extension ==null || extension.isEmpty()) {
+            if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION))) {
+                extension ="provn";
+            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(InteropMediaType.MEDIA_APPLICATION_JSONLD))) {
+                extension ="jsonld";
+            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_IMAGE_SVG_XML))) {
+                extension ="svg";
+            } else if (headers.getAcceptableMediaTypes().contains(MediaType.valueOf(MEDIA_TEXT_HTML))) {
+                extension ="svg";
+            } else {
+                extension ="jsonld";
+            }
+        } else {
+            extension = extension.substring(1);
+        }
+        return extension;
+    }
 
 
 }

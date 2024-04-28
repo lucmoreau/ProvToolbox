@@ -20,8 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.openprovenance.prov.template.compiler.CompilerSQL.sqlify;
-import static org.openprovenance.prov.template.compiler.common.Constants.INPUT;
-import static org.openprovenance.prov.template.compiler.common.Constants.OUTPUT;
+import static org.openprovenance.prov.template.compiler.common.Constants.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.*;
 import static org.openprovenance.prov.template.compiler.sql.QueryBuilder.unquote;
 
@@ -254,7 +253,7 @@ public class TemplateQuery {
                             String columnLabel = sqlify(propertyOrder[i]);
                             Object o = rs.getObject(columnLabel);
                             if (o instanceof Timestamp) {
-                                o = o.toString();
+                                o = ((Timestamp)o).toInstant().toString();
                             }
                             record[i] = o;
                         }
@@ -266,20 +265,31 @@ public class TemplateQuery {
     }
 
     public List<RecordEntry2> queryTemplatesRecords(SearchConfig config) {
+        String base_relation = config.base_relation;
+        String from_date = config.from_date;
+        String to_date = config.to_date;
+        Integer limit = config.limit;
+
+        if (from_date != null) {
+            from_date = "'" + from_date + "'";
+        }
+        if (to_date != null) {
+            to_date = "'" + to_date + "'";
+        }
+
+
+        return queryTemplatesRecords(base_relation, from_date, to_date, limit);
+    }
+
+    private List<RecordEntry2> queryTemplatesRecords(String base_relation, String from_date, String to_date, Integer limit) {
         List<RecordEntry2> linked_records = new LinkedList<>();
-        if (config.from_date != null) {
-            config.from_date = "'" + config.from_date + "'";
-        }
-        if (config.to_date != null) {
-            config.to_date = "'" + config.to_date + "'";
-        }
 
         querier.do_query(linked_records,
                 null,
                 (sb, data) -> {
                     sb.append("SELECT * FROM ");
-                    sb.append("search_records_for_" + config.base_relation + "(").append(config.from_date).append(",").append(config.to_date).append(") ");
-                    sb.append("limit ").append(config.limit);
+                    sb.append("search_records_for_" + base_relation + "(").append(from_date).append(",").append(to_date).append(") ");
+                    sb.append("limit ").append(limit);
                     System.out.println("sb = " + sb.toString());
                 },
                 (rs, data) -> {
@@ -287,8 +297,36 @@ public class TemplateQuery {
                         RecordEntry2 record = new RecordEntry2();
                         record.key = rs.getObject("key", Integer.class);
                         record.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
-                        record.base_relation = "activity";
+                        record.base_relation = base_relation;
                         record.table_name = rs.getObject("table_name", String.class);
+                        record.id = rs.getObject("ID", Integer.class);
+
+                        data.add(record);
+                    }
+                });
+
+        return linked_records;
+    }
+
+    public List<RecordEntry2> queryTemplatesRecordsById(String base_relation, Integer id, Integer limit) {
+        List<RecordEntry2> linked_records = new LinkedList<>();
+
+        querier.do_query(linked_records,
+                null,
+                (sb, data) -> {
+                    sb.append("SELECT * FROM ");
+                    sb.append("search_records_by_id_for_" + base_relation + "(" + id + ") ");
+                    sb.append("limit ").append(limit);
+                    System.out.println("sb = " + sb.toString());
+                },
+                (rs, data) -> {
+                    while (rs.next()) {
+                        RecordEntry2 record = new RecordEntry2();
+                        record.key = rs.getObject("key", Integer.class);
+                        record.created_at = rs.getObject("created_at", Timestamp.class).toInstant().toString();
+                        record.base_relation = base_relation;
+                        record.table_name = rs.getObject(TABLE_NAME_COLUMN, String.class);
+                        record.property = rs.getObject(PROPERTY_COLUMN, String.class);
                         record.id = rs.getObject("ID", Integer.class);
 
                         data.add(record);
@@ -311,11 +349,18 @@ public class TemplateQuery {
     }
     public static class RecordEntry2 {
         public Integer key;
+        public String property;
+        public String base_relation;
+        public String created_at;
+        public String table_name;
+        public Integer id;
+
 
         @Override
         public String toString() {
             return "RecordEntry2{" +
                     "key=" + key +
+                    ", property='" + property + '\'' +
                     ", base_relation='" + base_relation + '\'' +
                     ", created_at='" + created_at + '\'' +
                     ", table_name='" + table_name + '\'' +
@@ -323,10 +368,7 @@ public class TemplateQuery {
                     '}';
         }
 
-        public String base_relation;
-        public String created_at;
-        public String table_name;
-        public Integer id;
+
 
 
     }
@@ -371,6 +413,7 @@ public class TemplateQuery {
     public List<Object[]> queryTemplates(TableKeyList tableKeyList, boolean withTitles) {
         List<Object[]> result = new LinkedList<>();
         for (TableKey tableKey : tableKeyList.key) {
+            logger.info("tableKey = " + tableKey);
             List<Object[]> tmp=query(tableKey.isA, tableKey.ID, withTitles);
             result.addAll(tmp);
         }

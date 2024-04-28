@@ -453,6 +453,8 @@ public class CompilerSQL {
          */
                 new CompilerSqlComposer(pFactory, tableKey, functionDeclarations, arrayFunctionDeclarations)
                         .generateSQLSearchRecordFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, consistOf, root_dir, templateBindingsSchema, shared);
+                new CompilerSqlComposer(pFactory, tableKey, functionDeclarations, arrayFunctionDeclarations)
+                        .generateSQLSearchRecordByIdFunction(baseRelation, groupedTemplatesWithBaseRelation, templateName, consistOf, root_dir, templateBindingsSchema, shared);
 
             }
         }

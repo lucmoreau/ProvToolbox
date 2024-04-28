@@ -65,7 +65,7 @@ public class PrettyPrinter
     public void end() {
         // Terminate the most recent outstanding "begin"
         current = current.parent;
-        if (current == null) throw new RuntimeException();
+        if (current == null) throw new RuntimeException("prettyprinter: unmatched end");
     }
     public void allowBreak(int n) {
         // Allow a newline. Indentation will be preserved.

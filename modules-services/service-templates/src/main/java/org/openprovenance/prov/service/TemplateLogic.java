@@ -219,4 +219,10 @@ public class TemplateLogic {
 
         return propertyMap;
     }
+
+    public List<TemplateQuery.RecordEntry2> generateLiveNode(String relation, Integer id) {
+        List<TemplateQuery.RecordEntry2> records=templateQuery.queryTemplatesRecordsById(relation, id, 30);
+        System.out.println("records " + records);
+        return records;
+    }
 }

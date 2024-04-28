@@ -116,6 +116,7 @@ public interface Constants {
     String THE_RECORD = "the_record";
     String BASETABLE_KEY_COLUMN = "key";
     String TABLE_NAME_COLUMN = "table_name";
+    String PROPERTY_COLUMN = "property";
     String CREATED_AT_COLUMN = "created_at";
     String PROCESSOR = "_processor";
     String DOCUMENT_BUILDER_DISPATCHER = "documentBuilderDispatcher";
@@ -124,4 +125,6 @@ public interface Constants {
     String INPUT = "input";
     String OUTPUT = "output";
     String SUFFIX_TYPE = "_type";
+    String INPUT_ID = "input_id";
+    String NAMED_PREFIX = "named_";
 }

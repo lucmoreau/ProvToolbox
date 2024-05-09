@@ -9,19 +9,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ExceptionHandlerServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RELEASES.md" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKey.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKeyList.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/readers/TableKeyList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/CompilerSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/common/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/CompilerSqlComposer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/PrettyPrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/compiler/sql/PrettyPrinter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_plead.json" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/src/main/resources/config/config_plead.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/template/WebTemplateInvoker.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/template/WebTemplateInvoker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/translator/ProvenanceIT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/test/java/org/openprovenance/prov/service/validator/ValidateIT.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-template/prov-template-library/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,14 +148,16 @@
     "JUnit.PleadTest.testPleadRemote.executor": "Run",
     "JUnit.PleadWorkflowIT.testPleadLocal.executor": "Run",
     "JUnit.PleadWorkflowIT.testPleadRemote.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "extract.method.default.visibility": "public",
     "git-widget-placeholder": "development2__0",
+    "jdk.selected.JAVA_MODULE": "17",
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
-    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-templates/src/main/java/org/openprovenance/prov",
+    "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/mojos/src/main/java/org/openprovenance/prov",
     "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-templates/src/main/java/org/openprovenance/prov/service",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
@@ -165,7 +170,7 @@
     "project.structure.side.proportion": "0.66091955",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "scala_project_settings_configurable.last_selected_tab_index": "0",
-    "settings.editor.selected.configurable": "editing.templates",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
@@ -231,11 +236,11 @@
       <recent name="org.openprovenance.prov" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.openprovenance.plugin" />
       <recent name="org.openprovenance.prov.service.readers" />
       <recent name="org.openprovenance.prov.service" />
       <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.service.iobean.composite" />
-      <recent name="org.openprovenance.prov.service.template" />
     </key>
   </component>
   <component name="RunManager" selected="Application.TemplatesToDot">
@@ -695,6 +700,7 @@
     <list>
       <item itemvalue="Application.TemplatesToDot" />
       <item itemvalue="JUnit.RoundTripFromJavaJSONTest" />
+      <item itemvalue="JUnit.DateTest.testDate5" />
       <item itemvalue="JUnit.PleadTest.testPlead1" />
       <item itemvalue="JUnit.PleadWorkflowIT.testPlead1" />
       <item itemvalue="JUnit.PleadWorkflowIT.testPleadLocal" />
@@ -1142,7 +1148,8 @@
       <workItem from="1713337784627" duration="9990000" />
       <workItem from="1713372878257" duration="5927000" />
       <workItem from="1713385489351" duration="267000" />
-      <workItem from="1713385763798" duration="168768000" />
+      <workItem from="1713385763798" duration="179264000" />
+      <workItem from="1714472444531" duration="61628000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

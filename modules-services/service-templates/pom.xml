@@ -223,6 +223,31 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.pac4j/pac4j-jakartaee -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-jakartaee</artifactId>
+            <version>${pac4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>jakartaee-pac4j</artifactId>
+            <version>7.1.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-oidc</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+
 
 
         <dependency>
@@ -472,7 +497,7 @@
 
                                 <configuration>
                                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                                    <webXml>src/main/webapp.filter/WEB-INF/tomcat-web.xml</webXml>
+                                    <webXml>src/main/webapp.filter/WEB-INF/web.xml</webXml>
                                     <webappDirectory>${project.build.directory}/${project.build.finalName}-tomcat</webappDirectory>
                                     <filters>
                                         <filter>
@@ -576,6 +601,24 @@
                                             <name>RESOURCES_HOST</name>
                                             <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi/resources</value>
                                         </property>
+                                        <!--
+                                        <property>
+                                            <name>TPL_DB_USER</name>
+                                            <value>luc</value>
+                                        </property>
+                                        <property>
+                                            <name>TPL_DB_PASS</name>
+                                            <value>admin</value>
+                                        </property>
+                                        <property>
+                                            <name>TPL_API</name>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}/provapi</value>
+                                        </property>
+                                        <property>
+                                            <name>TPL_HOST</name>
+                                            <value>${service.protocol}://${service.host}:${service.port}${service.context}</value>
+                                        </property>
+                                        -->
                                     </properties>
                                 </configuration>
                             </execution>

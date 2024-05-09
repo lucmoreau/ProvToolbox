@@ -5,4 +5,63 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+
+
+  <filter>
+    <filter-name>callbackFilter</filter-name>
+    <filter-class>org.pac4j.jee.filter.CallbackFilter</filter-class>
+    <init-param>
+      <param-name>defaultUrl</param-name>
+      <param-value>/</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>callbackFilter</filter-name>
+    <url-pattern>/callback</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>OidcFilter</filter-name>
+    <filter-class>org.pac4j.jee.filter.SecurityFilter</filter-class>
+    <init-param>
+      <param-name>configFactory</param-name>
+      <param-value>org.openprovenance.prov.service.SecurityConfigFactory</param-value>
+    </init-param>
+    <init-param>
+      <param-name>clients</param-name>
+      <param-value>KeycloakOidcClient</param-value>
+    </init-param>
+    <init-param>
+      <param-name>authorizers</param-name>
+      <param-value>isAuthenticated</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+  <!--
+
+  <servlet>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <servlet-class>org.openprovenance.prov.service.ExceptionHandler</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExceptionHandler</servlet-name>
+    <url-pattern>/ExceptionHandler</url-pattern>
+  </servlet-mapping>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/ExceptionHandler</location>
+  </error-page>
+  -->
+
 </web-app>

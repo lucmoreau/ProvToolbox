@@ -15,7 +15,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.openprovenance.prov.interop.InteropMediaType;
 import org.openprovenance.prov.model.Document;
 import org.openprovenance.prov.model.QualifiedName;
@@ -23,8 +22,6 @@ import org.openprovenance.prov.service.core.PostService;
 import org.openprovenance.prov.service.core.ServiceUtils;
 import org.openprovenance.prov.service.iobean.composite.SqlCompositeBeanEnactor3;
 import org.openprovenance.prov.service.readers.*;
-import org.openprovenance.prov.template.library.plead.Plead_transformingBuilderTypedRecord;
-import org.openprovenance.prov.template.library.plead.client.common.Plead_transformingBuilder;
 import org.openprovenance.prov.template.library.plead.configurator.TableConfiguratorForTypesWithMap;
 import org.openprovenance.prov.template.log2prov.FileBuilder;
 import org.openprovenance.prov.vanilla.ProvFactory;
@@ -53,16 +50,26 @@ public class TemplateService {
     private final Storage storage;
     final ProvFactory pf;
     private final Map<String, FileBuilder> documentBuilderDispatcher;
-    public static final String PROV_HOST = "PROV_HOST";
-    public static final String provHost =getSystemOrEnvironmentVariableOrDefault(PROV_HOST, "http://localhost:8080/ems");
-    public static final String PROV_API = "PROV_API";
-    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(PROV_API, "http://localhost:8080/ems/provapi");
+    public static final String TPL_HOST = "TPL_HOST";
+    public static final String provHost =getSystemOrEnvironmentVariableOrDefault(TPL_HOST, "http://localhost:8080/ems");
+    public static final String TPL_API = "TPL_API";
+    public static final String provAPI =getSystemOrEnvironmentVariableOrDefault(TPL_API, "http://localhost:8080/ems/provapi");
     public static final String POSTGRES_HOST = "POSTGRES_HOST";
     public static final String postgresHost=System.getProperty(POSTGRES_HOST, "localhost");
-    public static final String DB_USER = "PROV_DB_USER";
+    public static final String DB_USER = "TPL_DB_USER";
     public static final String postgresUsername=getSystemOrEnvironmentVariableOrDefault(DB_USER, "user");
-    public static final String DB_PASS = "PROV_DB_PASS";
+    public static final String DB_PASS = "TPL_DB_PASS";
     public static final String postgresPassword=getSystemOrEnvironmentVariableOrDefault(DB_PASS,"password");
+    public static final String TPL_KEYCLOAK = "TPL_KEYCLOAK";
+    public static final String tplKeycloak=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK, "http://localhost:8080/auth/realms/ems");
+    public static final String TPL_KEYCLOAK_BASEURI = "TPL_KEYCLOAK_BASEURI";
+    public static final String tplKeycloakBaseuri=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_BASEURI, "http://localhost:8080/auth");
+    public static final String TPL_KEYCLOAK_USERNAME = "TPL_KEYCLOAK_USERNAME";
+    public static final String tplKeycloakUsername=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_USERNAME, "user");
+    public static final String TPL_KEYCLOAK_PASSWORD = "TPL_KEYCLOAK_PASSWORD";
+    public static final String tplKeycloakPassword=getSystemOrEnvironmentVariableOrDefault(TPL_KEYCLOAK_PASSWORD, "password");
+
+
     private final TemplateLogic templateLogic;
     private final SqlCompositeBeanEnactor3 sqlCompositeBeanEnactor3;
 
@@ -168,7 +175,7 @@ public class TemplateService {
                                      // @Parameter(name = "id", description = "session id", required = true) @PathParam("id") String sessionUUID,
                                       JsonOrCsv documentOrCsv) {
         Principal principal = request.getUserPrincipal();
-        logger.debug("post statements id: principal " + principal);
+        logger.info("post statements id: principal " + principal);
 
         if (documentOrCsv==null) {
             return utils.composeResponseInternalServerError("null document", new NullPointerException());

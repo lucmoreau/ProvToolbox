@@ -24,7 +24,8 @@ import java.util.Set;
 import static org.openprovenance.prov.interop.InteropMediaType.*;
 import static org.openprovenance.prov.service.core.Constants.*;
 
-
+// currently not working, because protected?
+abstract
 public class ProvenanceIT extends TestCase implements ApiUriFragments {
     static Logger logger = LogManager.getLogger(ProvenanceIT.class);
     final static ClientConfig config=new ClientConfig(ProvenanceIT.class);
@@ -35,9 +36,9 @@ public class ProvenanceIT extends TestCase implements ApiUriFragments {
     public static HashMap<String, String> table= new HashMap<>();
 
     List<String> urls=List.of(
-            "http://localhost:7071/service/webjars/prov-template-library/2.0.4-SNAPSHOT/templates/org/openprovenance/prov/templates/plead/plead-validating.provn",
-            "http://localhost:7071/service/webjars/prov-template-library/2.0.4-SNAPSHOT/templates/org/openprovenance/prov/templates/plead/plead-validating.png",
-            "http://localhost:7071/service/webjars/prov-template-library/2.0.4-SNAPSHOT/templates/org/openprovenance/prov/templates/plead/prov-plead-validating.prov-csv");
+            "http://localhost:7072/ptl/webjars/prov-template-library/2.0.6-SNAPSHOT/templates/org/openprovenance/prov/templates/plead/plead-validating.provn",
+            "http://localhost:7072/ptl/webjars/prov-template-library/2.0.6-SNAPSHOT/templates/org/openprovenance/prov/templates/plead/plead-validating.png",
+            "http://localhost:7072/ptl/webjars/prov-template-library/2.0.6-SNAPSHOT/templates/org/openprovenance/prov/templates/plead/prov-plead-validating.prov-csv");
 
 
 

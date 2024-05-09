@@ -28,6 +28,8 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * service-templates: viewing template instance value by property
 * service-templates: browsing template tab
 * prov-template-compiler: sql generation for retrieving record for base_relation(id)
+* prov plugin for maven
+* service-templates: security configuration, oidc and keycloak
 
 
 `2.0.5`

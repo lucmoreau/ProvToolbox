@@ -47,9 +47,9 @@ public class WebTemplateInvoker extends TemplateInvoker {
     }
     public void setAuthoriser() {
         setAuthoriser(
-                getEnvironmentVariable(environment, "EMS_KEYCLOAK"),
-                getEnvironmentVariable(environment, "EMS_USERNAME"),
-                getEnvironmentVariable(environment, "EMS_PASSWORD"));
+                getEnvironmentVariable(environment, "TPL_KEYCLOAK"),
+                getEnvironmentVariable(environment, "TPL_KEYCLOAK_USERNAME"),
+                getEnvironmentVariable(environment, "TPL_KECYLOAK_PASSWORD"));
 
     }
 

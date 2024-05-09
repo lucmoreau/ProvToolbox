@@ -6,10 +6,14 @@ import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.security.OAuthFlow;
+import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +33,9 @@ import org.openprovenance.prov.service.translation.TranslationService;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.openprovenance.prov.service.validation.storage.StorageConfiguration;
+import org.pac4j.oidc.client.KeycloakOidcClient;
+import org.pac4j.oidc.client.OidcClient;
+import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,10 +82,12 @@ import static org.openprovenance.prov.service.core.SwaggerTags.*;
 		}
 )
 
+
 @ApplicationPath(FRAGMENT_PROVAPI)
 public class ProvapiApplication extends Application implements ApiUriFragments {
 
 	static Logger logger = LogManager.getLogger(ProvapiApplication.class);
+
 
 	private final Set<Object> singletons = new HashSet<>();
 
@@ -87,6 +96,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 	public ProvapiApplication() {
 		InteropFramework intF=new InteropFramework();
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
+
+
 
 		ServiceUtilsConfig config= sc.makeConfig(factory);
 
@@ -122,6 +133,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
         corsFilter.getAllowedOrigins().add("*");
         corsFilter.setAllowedMethods("OPTIONS, GET, POST, DELETE, PUT, PATCH");
         singletons.add(corsFilter);
+
 
 
 		logger.info("ProvapiApplication constructor ... completion");

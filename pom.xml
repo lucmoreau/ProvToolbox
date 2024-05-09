@@ -34,6 +34,7 @@
 		<module>modules-explanations</module>
 
 		<module>modules-executable-provman</module>
+        <module>prov-toolbox-plugin</module>
 
 	</modules>
 
@@ -362,6 +363,8 @@
 		<jakarta.servlet.version>5.0.0</jakarta.servlet.version>
 		<jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
 		<jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>  <!-- 3.0.1 -->
+
+		<pac4j.version>5.7.4</pac4j.version> <!-- lombok? 6.0.2 -->
 
 		<swagger.version>2.2.15</swagger.version> <!-- 2.0.8 -->
 

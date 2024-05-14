@@ -4,8 +4,17 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>Provenance Template Service</display-name>
 
+
+  <filter>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <filter-class>org.openprovenance.prov.service.HasProvenanceHeaderFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HasProvenanceHeaderFilter</filter-name>
+    <url-pattern>/webjars/*</url-pattern>
+  </filter-mapping>
 
   <filter>
     <filter-name>callbackFilter</filter-name>
@@ -40,9 +49,25 @@
 
   <filter-mapping>
     <filter-name>OidcFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/provapi/*</url-pattern>
     <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/forms.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/expander.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>OidcFilter</filter-name>
+    <url-pattern>/api.html</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
 
   <!--
 

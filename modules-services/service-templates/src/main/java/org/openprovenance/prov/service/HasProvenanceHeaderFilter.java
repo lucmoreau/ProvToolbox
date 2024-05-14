@@ -11,7 +11,6 @@ import org.openprovenance.prov.service.core.Constants;
 import java.io.IOException;
 
 
-
 public class HasProvenanceHeaderFilter  implements Filter, Constants {
 
 
@@ -30,10 +29,11 @@ public class HasProvenanceHeaderFilter  implements Filter, Constants {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String requestURI = httpServletRequest.getRequestURI();
 
+
         if (requestURI.contains("webjars/prov-template-library/")) {
 
             if (requestURI.contains("templates/org/openprovenance/prov/templates/")
-                    && (requestURI.endsWith(".provn") || requestURI.endsWith(".png")|| requestURI.endsWith(".prov-csv"))) {
+                    && (requestURI.endsWith(".provn") || requestURI.endsWith(".png") || requestURI.endsWith(".prov-csv"))) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
                 // last section of requestURI after the last slash
@@ -52,8 +52,6 @@ public class HasProvenanceHeaderFilter  implements Filter, Constants {
 
                 //Link: <http://acme.example.org/super-widget123/provenance>;
                 //         rel="http://www.w3.org/ns/prov#has_provenance"
-
-
 
                 logger.info("filter: " + requestURI);
                 logger.info("filter:   " + theProvenance);

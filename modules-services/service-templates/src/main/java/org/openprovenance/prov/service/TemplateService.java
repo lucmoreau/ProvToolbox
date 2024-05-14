@@ -165,7 +165,7 @@ public class TemplateService {
 
     @POST
     @Path("/statements")
-    @Tag(name = "ems_s")
+    @Tag(name = "template")
     @Consumes({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON})
     @Produces({InteropMediaType.MEDIA_TEXT_CSV, APPLICATION_VND_KCL_PROV_TEMPLATE_JSON}) //InteropMediaType.MEDIA_TEXT_CSV,
     public Response submitStatements(@Context HttpServletResponse response,
@@ -200,7 +200,7 @@ public class TemplateService {
 
     @GET
     @Path("/template/{template}/{id}.{extension}")
-    @Tag(name = "ems_q")
+    @Tag(name = "template")
     @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     public Response getTemplateInstanceWithId(@Context HttpServletResponse response,
                                                  @Context HttpServletRequest request,
@@ -233,7 +233,7 @@ public class TemplateService {
 
     @GET
     @Path("/template/{template}/{id}/{variable:\\w+}{extension:(\\.\\w+)?}")
-    @Tag(name = "ems_q")
+    @Tag(name = "template")
     @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     public Response getTemplatePropertyInstanceWithId(@Context HttpServletResponse response,
                                                       @Context HttpServletRequest request,
@@ -301,7 +301,7 @@ public class TemplateService {
 
     @POST
     @Path("/templates.{extension}")
-    @Tag(name = "ems_q")
+    @Tag(name = "template")
     @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
     public Response getTemplates(@Context HttpServletResponse response,
@@ -330,7 +330,7 @@ public class TemplateService {
 
     @POST
     @Path("/templates/records")
-    @Tag(name = "ems_q")
+    @Tag(name = "template")
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
     @Produces({InteropMediaType.MEDIA_TEXT_CSV})
     public Response getTemplatesRecords(@Context HttpServletResponse response,
@@ -367,7 +367,7 @@ public class TemplateService {
 
     @POST
     @Path("/templates/viz")
-    @Tag(name = "ems_q")
+    @Tag(name = "template")
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
     @Produces({MEDIA_IMAGE_SVG_XML})
     public Response getTemplatesViz(@Context HttpServletResponse response,
@@ -385,7 +385,7 @@ public class TemplateService {
 
     @GET
     @Path("/live/{relation}/{id:\\d+}{extension:(\\.\\w+)?}")
-    @Tag(name = "ems_q")
+    @Tag(name = "template")
     @Produces({ InteropMediaType.MEDIA_APPLICATION_JSONLD, InteropMediaType.MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_IMAGE_SVG_XML })
     @Consumes({InteropMediaType.MEDIA_APPLICATION_JSON})
     public Response getLiveNode(@Context HttpServletResponse response,

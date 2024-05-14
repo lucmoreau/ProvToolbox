@@ -124,6 +124,7 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		singletons.add(new SearchConfigMessageBodyReader());
 
 
+
 		singletons.add(new VanillaDocumentMessageBodyWriter(new InteropFramework()));
 		singletons.add(new NodeMessageBodyWriter());
 

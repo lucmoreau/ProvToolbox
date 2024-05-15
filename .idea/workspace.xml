@@ -9,13 +9,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32d81b8d-5fb4-47ec-a1fa-b0af3f34fabe" name="Default Changelist" comment="First cut of json-ld serialisation for activities">
-      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/expander.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/bin/keycloak-get-token.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modules-services/service-templates/src/test/resources/bindings/b1.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/HasProvenanceHeaderFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/ProvapiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/TemplateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/CommandLineArguments.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-executable/prov-interop/src/main/java/org/openprovenance/prov/interop/InteropFramework.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourcesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/prov-service-core/src/main/java/org/openprovenance/prov/service/core/ResourcesService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/config/log4j2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service/SecurityConfigFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/api.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/api.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/expander.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" beforeDir="false" afterPath="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/forms.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -150,7 +156,7 @@
     "js.last.introduce.type": "CONST",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "/Users/luc/IdeaProjects/ProvToolbox/mojos/src/main/java/org/openprovenance/prov",
-    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-templates/src/main/webapp.filter",
+    "last_opened_file_path": "/Users/luc/IdeaProjects/ProvToolbox/modules-services/service-templates",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -179,18 +185,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
-      <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.service" />
+      <recent name="org.openprovenance.prov.template.compiler" />
       <recent name="org.openprovenance.prov.template.emitter.minilanguage" />
       <recent name="org.openprovenance.prov.template.emitter" />
       <recent name="org.openprovenance.prov.model.builder" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules-services/service-templates" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/java/org/openprovenance/prov/service" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/webapp.filter/WEB-INF" />
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/main/resources/properties" />
-      <recent name="$PROJECT_DIR$/modules-services" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/modules-services/service-templates/src/test/resources" />
@@ -1142,7 +1148,7 @@
       <workItem from="1713385489351" duration="267000" />
       <workItem from="1713385763798" duration="179264000" />
       <workItem from="1714472444531" duration="62246000" />
-      <workItem from="1715690420906" duration="7259000" />
+      <workItem from="1715690420906" duration="43424000" />
     </task>
     <task id="LOCAL-00001" summary="First cut of json-ld serialisation for activities">
       <created>1566430960720</created>

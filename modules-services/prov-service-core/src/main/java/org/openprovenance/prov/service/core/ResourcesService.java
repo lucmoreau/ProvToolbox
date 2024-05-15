@@ -66,19 +66,6 @@ public class ResourcesService implements SwaggerTags {
 
         logger.info(" the_path " + the_path);
 
-        // basePath is already resolved as a Path.realPath from basedir
-        // classPath is already resolved as a Path.realPath from classDir
-        //java.nio.file.Path filePath;
-        //try {
-        //	filePath = java.nio.file.Path.of(the_path).toRealPath(LinkOption.NOFOLLOW_LINKS);
-        //} catch (IOException e) {
-        //	throw new UncheckedException("issue with path", e);
-        //}
-        //if (!filePath.startsWith(WEBRESOURCES_BASEPATH)){
-        // illegal file access....
-        //	throw new SecurityException("unauthorized access to file " + the_path);
-        //}
-
         // do not auto-close stream as returned in a closure
         InputStream stream=this.getClass().getClassLoader().getResourceAsStream(the_path);
         StreamingOutput promise;

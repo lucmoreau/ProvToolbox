@@ -247,6 +247,17 @@
             <artifactId>pac4j-core</artifactId>
             <version>${pac4j.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-http</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-jwt</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+
 
 
 

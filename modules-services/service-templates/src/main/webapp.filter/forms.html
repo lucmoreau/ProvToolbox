@@ -591,33 +591,9 @@
     tm.createDropdownForDocumentation(HTML_ANCHOR_TEMPLATE_DROPDOWN_DOCUMENTATOIN, "tm");
 
 
-    function updateURLInputBox(val){
-        document.getElementById("the-url-input").value = val;
-    }
-
-    function updateLocalURLInputBox(val){
-        document.getElementById("the-url-input").value =  urlPrefix + val;
-    }
-
-    function updateRootURLInputBox(val){
-        document.getElementById("the-url-input").value =  origin + val;
-    }
-
-    function updateRootBindingsBox(url){
-        if (url == '') {
-            document.getElementById("the-bindings-input").value =  '';
-        } else {
-            console.log(origin+url);
-            $.get(origin+url, function(data, status){
-                //console.log(data);
-                document.getElementById("the-bindings-input").value =  data;
-            }, "text");
-        }
-    }
-
 
 </script>
-
+<script src="provservice.js"></script>
 <script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/bootstrap.min.js"></script>
 <script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/dropdown.js"></script>
 <script src="${service.context}/webjars/bootstrap/${webjars.bootstrap.version}/js/tab.js"></script>

@@ -307,7 +307,7 @@ public class CommandLineArguments implements ErrorCodes {
         String template=null;
         String packge=null;
         String location=null;
-        int bindingsVersion=1;
+        int bindingsVersion=3; // change default is now 3
         boolean addOrderp=false;
         boolean listFormatsp = false;
         boolean allexpanded=false;
@@ -354,8 +354,8 @@ public class CommandLineArguments implements ErrorCodes {
                 try {
                     bindingsVersion  = Integer.valueOf(tmp);
                 } catch (Exception e){
-                    System.err.println("bindings version not an integer (using 1) " + tmp);
-                    bindingsVersion=1;
+                    System.err.println("bindings version not an integer (using 3) " + tmp);
+                    bindingsVersion=3;
                 }
                 
             }

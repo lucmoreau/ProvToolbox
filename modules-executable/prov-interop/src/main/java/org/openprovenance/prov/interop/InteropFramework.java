@@ -648,7 +648,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                         e.printStackTrace();
                     }
                 } else {
-                    throw new DocumentedUnsupportedCaseException("bindings version number < 3");
+                    throw new DocumentedUnsupportedCaseException("bindings version number < 3: " + config.bindingsVersion);
                 }
             }
 
@@ -671,7 +671,7 @@ public class InteropFramework implements InteropMediaType, org.openprovenance.pr
                     expanded = myExpand.expander(doc, inBindings);
 
                 } else {
-                    throw new DocumentedUnsupportedCaseException("bindings version number <> 3");
+                    throw new DocumentedUnsupportedCaseException("bindings version number <> 3: " + config.bindingsVersion);
                 }
                 boolean flag = myExpand.getAllExpanded();
                 outputer.writeDocumentToFileOrDefaultOutput(config.outfile, expanded, config.outformat);

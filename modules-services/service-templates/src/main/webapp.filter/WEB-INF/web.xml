@@ -30,6 +30,7 @@
     <url-pattern>/callback</url-pattern>
   </filter-mapping>
 
+
   <filter>
     <filter-name>OidcFilter</filter-name>
     <filter-class>org.pac4j.jee.filter.SecurityFilter</filter-class>
@@ -39,7 +40,7 @@
     </init-param>
     <init-param>
       <param-name>clients</param-name>
-      <param-value>KeycloakOidcClient</param-value>
+      <param-value>DirectBearerAuthClient,KeycloakOidcClient</param-value> <!-- DirectBearerAuthClient,KeycloakOidcClient -->
     </init-param>
     <init-param>
       <param-name>authorizers</param-name>
